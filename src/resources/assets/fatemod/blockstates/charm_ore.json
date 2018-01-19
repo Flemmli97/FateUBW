@@ -1,0 +1,6 @@
+{
+    "variants": {
+        "normal": { "model": "fatemod:charm_ore" },
+	"inventory": {"model": "fatemod:charm_ore"}
+    }
+}
