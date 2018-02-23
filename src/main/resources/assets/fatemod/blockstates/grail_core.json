@@ -1,0 +1,9 @@
+{
+    "variants": {
+	"inventory": {"model": "fatemod:grail_core"},
+	"facing=north": {"model": "fatemod:grail_core"},
+	"facing=east": {"model": "fatemod:grail_core","y":90},
+    	"facing=south": {"model": "fatemod:grail_core","y":180},
+    	"facing=west": {"model": "fatemod:grail_core","y":270}
+    }
+}
