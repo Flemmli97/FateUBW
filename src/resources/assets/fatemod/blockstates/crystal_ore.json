@@ -1,6 +1,0 @@
-{
-    "variants": {
-        "normal": { "model": "fatemod:crystal_ore" },
-	"inventory": {"model": "fatemod:crystal_ore"}
-    }
-}

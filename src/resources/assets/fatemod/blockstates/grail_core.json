@@ -1,6 +1,0 @@
-{
-    "variants": {
-        "normal": { "model": "fatemod:grail_core" },
-	"inventory": {"model": "fatemod:grail_core"}
-    }
-}
