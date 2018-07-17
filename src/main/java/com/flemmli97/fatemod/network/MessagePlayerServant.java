@@ -52,19 +52,19 @@ public class MessagePlayerServant  implements IMessage{
         		//normal mode
         		if(msg.command == 0)
         		{
-        			capSync.getServant().commandBehaviour = 0;
+        			capSync.getServant().updateAI(0);
         			player.addChatMessage(new TextComponentString(TextFormatting.RED + "Your servant now only attacks other servants"));
         		}
         		//aggressive mode
         		else if(msg.command == 1)
         		{
-        			capSync.getServant().commandBehaviour = 1;
+        			capSync.getServant().updateAI(1);
         			player.addChatMessage(new TextComponentString(TextFormatting.RED + "Your servant now attacks every mob"));
         		}
 	        	//defensive mode
 	        	else if(msg.command == 2)
 	        	{
-	        		capSync.getServant().commandBehaviour = 2;
+	        		capSync.getServant().updateAI(2);
 	        		player.addChatMessage(new TextComponentString(TextFormatting.RED + "Your servant now only fights back when attacked"));
 	        	}
         		//useNP
@@ -99,19 +99,19 @@ public class MessagePlayerServant  implements IMessage{
         		//follow
 	        	else if(msg.command == 4)
 	        	{
-	        		capSync.getServant().commandBehaviour = 3;
+	        		capSync.getServant().updateAI(3);
 	        		player.addChatMessage(new TextComponentString(TextFormatting.RED + "Your servant now follows you"));
 	        	}
         		//stay
 	        	else if(msg.command == 5)
         		{
-	        		capSync.getServant().commandBehaviour = 4;
+	        		capSync.getServant().updateAI(4);
 	        		player.addChatMessage(new TextComponentString(TextFormatting.RED + "You told your servant to hold their position"));
         		}
         		//protect
 	        	else if(msg.command == 6)
 	        	{
-	        		capSync.getServant().commandBehaviour = 5;
+	        		capSync.getServant().updateAI(5);
 	        		player.addChatMessage(new TextComponentString(TextFormatting.RED + "Your servant now protects this area"));
 	        	}
         		//kill

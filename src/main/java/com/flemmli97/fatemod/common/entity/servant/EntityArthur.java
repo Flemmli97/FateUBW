@@ -4,7 +4,6 @@ import com.flemmli97.fatemod.common.entity.EntityExcalibur;
 import com.flemmli97.fatemod.common.entity.ai.EntityAIArthur;
 import com.flemmli97.fatemod.common.init.ModItems;
 
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -24,21 +23,13 @@ public class EntityArthur extends EntityServant{
 
 	public EntityArthur(World world)
 	{
-		super(world, EnumServantType.SABER, "Excalibur", 100, new Item[] {ModItems.excalibur});
+		super(world, EnumServantType.SABER, "Excalibur", new Item[] {ModItems.excalibur});
         this.tasks.addTask(1, attackAI);
 	}
 
 	@Override
 	protected void setEquipmentBasedOnDifficulty(DifficultyInstance difficulty) {
 		this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(ModItems.invisexcabibur));       
-	}
-
-	@Override
-	protected void applyEntityAttributes() {
-		super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(300.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(10.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(17.0D);
 	}	
 
 	@Override
@@ -53,16 +44,17 @@ public class EntityArthur extends EntityServant{
 		}
 		super.updateAITasks();
 	}
-
+	
 	@Override
-	public boolean attackEntityFrom(DamageSource damageSource, float damage) {
-		if (!this.dead && this.getHealth()-(float) Math.min(50, damage) < 0.5 * this.getMaxHealth())
+	protected void damageEntity(DamageSource damageSrc, float damageAmount)
+    {
+		super.damageEntity(damageSrc, damageAmount);
+		if (!this.dead && this.getHealth() < 0.5 * this.getMaxHealth())
 		{
 			this.canUseNP=true;
 			this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(ModItems.excalibur));
 		}
-		return super.attackEntityFrom(damageSource, damage);
-	}
+    }
 
 	@Override
 	public void onLivingUpdate() {
@@ -88,6 +80,7 @@ public class EntityArthur extends EntityServant{
 	public void attackWithNP()
 	{
 		EntityExcalibur excalibur = new EntityExcalibur(worldObj, this);
-		this.worldObj.spawnEntityInWorld(excalibur);			
+		this.worldObj.spawnEntityInWorld(excalibur);
+		this.revealServant();
 	}
 }

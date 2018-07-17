@@ -28,17 +28,8 @@ public class EntityLancelot extends EntityServant {
 	private boolean pickUpWeapon;
 	
 	public EntityLancelot(World world) {
-		super(world, EnumServantType.BERSERKER, "Knight of Owner", 0, new Item[] {ModItems.arondight});
+		super(world, EnumServantType.BERSERKER, "Knight of Owner", new Item[] {ModItems.arondight});
         this.tasks.addTask(1, attackAI);
-	}
-
-	@Override
-	protected void applyEntityAttributes() {
-		super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(450.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.2D);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(9.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(14.0D);
 	}
 	
 	@Override

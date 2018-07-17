@@ -23,7 +23,7 @@ public class EntityDiarmuid extends EntityServant {
 	public EntityAIDiarmuid attackAI = new EntityAIDiarmuid(this);
 	
 	public EntityDiarmuid(World world) {
-		super(world, EnumServantType.LANCER, "", 80, new Item[] {ModItems.gaebuidhe, ModItems.gaedearg});
+		super(world, EnumServantType.LANCER, "", new Item[] {ModItems.gaebuidhe, ModItems.gaedearg});
         this.tasks.addTask(1, attackAI);
         this.targetTasks.addTask(1, targetServant);
 	}

@@ -1,9 +1,5 @@
 package com.flemmli97.fatemod.client.model.servant;
 
-import org.lwjgl.opengl.GL11;
-
-import com.flemmli97.fatemod.common.entity.servant.EntityArthur;
-
 import net.minecraft.entity.Entity;
 
 public class ModelArthur extends ModelServant {

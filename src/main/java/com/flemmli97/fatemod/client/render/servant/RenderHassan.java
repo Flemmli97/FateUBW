@@ -18,7 +18,8 @@ public class RenderHassan extends RenderServant<EntityHassan>
     /**
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
      */
-    protected ResourceLocation getEntityTexture(EntityHassan entity)
+    @Override
+    protected ResourceLocation servantTexture(EntityHassan entity)
     {
         return textures;
     }    

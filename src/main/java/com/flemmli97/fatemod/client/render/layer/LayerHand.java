@@ -11,7 +11,6 @@ import com.flemmli97.fatemod.common.entity.servant.EntityServant;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
@@ -21,7 +20,6 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.EntityLivingBase;
@@ -31,7 +29,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -180,7 +177,8 @@ public class LayerHand implements LayerRenderer<EntityServant>
         putQuadColor(wr, quad, auxColor);
     }
     
-    public static void putQuadColor(VertexBuffer renderer, BakedQuad quad, int color)
+    @SuppressWarnings("unused")
+	public static void putQuadColor(VertexBuffer renderer, BakedQuad quad, int color)
     {
         float cb = color & 0xFF;
         float cg = (color >>> 8) & 0xFF;

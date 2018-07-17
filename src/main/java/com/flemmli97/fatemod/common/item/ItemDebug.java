@@ -2,8 +2,6 @@ package com.flemmli97.fatemod.common.item;
 
 import com.flemmli97.fatemod.Fate;
 import com.flemmli97.fatemod.common.handler.GrailWarPlayerTracker;
-import com.flemmli97.fatemod.common.handler.capabilities.IPlayer;
-import com.flemmli97.fatemod.common.handler.capabilities.PlayerCapProvider;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -27,7 +25,7 @@ public class ItemDebug extends Item{
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand)
     {		
-		IPlayer capSync = player.getCapability(PlayerCapProvider.PlayerCap, null);
+		//IPlayer capSync = player.getCapability(PlayerCapProvider.PlayerCap, null);
 		if(!world.isRemote)
 		{
 			GrailWarPlayerTracker track = GrailWarPlayerTracker.get(player.worldObj);

@@ -18,7 +18,8 @@ public class RenderCuchulainn extends RenderServant<EntityCuchulainn>
 	/**
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
      */
-    protected ResourceLocation getEntityTexture(EntityCuchulainn entity)
+    @Override
+    protected ResourceLocation servantTexture(EntityCuchulainn entity)
     {
         return textures;
     }

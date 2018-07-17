@@ -1,13 +1,12 @@
 package com.flemmli97.fatemod.common.entity.ai;
 
 import com.flemmli97.fatemod.common.entity.servant.EntityArthur;
-import com.flemmli97.fatemod.common.entity.servant.EntityServant;
 
 import net.minecraft.entity.EntityLivingBase;
 
 public class EntityAIArthur extends EntityAIAnimatedAttack{
 	
-	public EntityAIArthur(EntityServant selectedEntity)
+	public EntityAIArthur(EntityArthur selectedEntity)
 	{
 		super(selectedEntity,false, 1, 10, 5, 50, 5, 1);
 	}

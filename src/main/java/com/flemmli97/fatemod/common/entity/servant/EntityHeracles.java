@@ -3,7 +3,6 @@ package com.flemmli97.fatemod.common.entity.servant;
 import com.flemmli97.fatemod.common.entity.ai.EntityAIHeracles;
 import com.flemmli97.fatemod.common.init.ModItems;
 
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -24,7 +23,7 @@ public class EntityHeracles extends EntityServant {
 	public EntityAIHeracles attackAI = new EntityAIHeracles(this);
 
 	public EntityHeracles(World world) {
-		super(world, EnumServantType.BERSERKER, "God Hand", 0, new Item[] {ModItems.heraclesAxe});
+		super(world, EnumServantType.BERSERKER, "God Hand", new Item[] {ModItems.heraclesAxe});
 		this.setSize(0.8F, 2.4F);
         this.tasks.addTask(1, attackAI);
 	}
@@ -32,17 +31,6 @@ public class EntityHeracles extends EntityServant {
 	@Override
 	protected void setEquipmentBasedOnDifficulty(DifficultyInstance difficulty) {
 		this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(ModItems.heraclesAxe));       
-	}
-	
-	@Override
-	protected void applyEntityAttributes() {
-		super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(100.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.21D);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(12.5D);
-        this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(0.9D);
-        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(5.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).setBaseValue(6.5D);
 	}
 	
 	@Override
@@ -113,6 +101,7 @@ public class EntityHeracles extends EntityServant {
 					this.setHealth((float) (heal*this.getMaxHealth()));
 					this.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:resistance"), 200, 3, false, false));
 					deathTicks = 0;
+					this.revealServant();
 				}
 			}
 			else

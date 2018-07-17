@@ -1,11 +1,9 @@
 package com.flemmli97.fatemod.common.entity.servant;
 
-import com.flemmli97.fatemod.common.entity.EntityMagicBeam;
 import com.flemmli97.fatemod.common.entity.ai.EntityAIMedea;
 import com.flemmli97.fatemod.common.init.ModItems;
 
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -17,19 +15,13 @@ public class EntityMedea extends EntityServant implements IRanged{
 
 	EntityAIMedea attackAI = new EntityAIMedea(this);
 	public EntityMedea(World world) {
-		super(world, EnumServantType.CASTER, "Rule Breaker", 100, new Item[] {ModItems.staff});
+		super(world, EnumServantType.CASTER, "Rule Breaker", new Item[] {ModItems.staff});
 		this.tasks.addTask(1, attackAI);
 	}
 	
 	@Override
 	protected void setEquipmentBasedOnDifficulty(DifficultyInstance difficulty) {
 		this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(ModItems.staff));       
-	}
-
-	@Override
-	protected void applyEntityAttributes() {
-		super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(350.0D);
 	}
 	
 	@Override

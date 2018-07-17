@@ -6,7 +6,6 @@ import com.flemmli97.fatemod.common.entity.ai.EntityAIGilgamesh;
 import com.flemmli97.fatemod.common.init.ModItems;
 
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -20,16 +19,8 @@ public class EntityGilgamesh extends EntityServant implements IRanged{
 	public EntityAIGilgamesh attackMelee = new EntityAIGilgamesh(this,false, 1, 15, 7, 15, 7, 1);
 
 	public EntityGilgamesh(World world) {
-		super(world, EnumServantType.ARCHER, "Enuma Elish", 100, new Item[] {ModItems.enumaelish/*babylon=*/});
+		super(world, EnumServantType.ARCHER, "Enuma Elish", new Item[] {ModItems.enumaelish/*babylon=*/});
         this.tasks.addTask(1, attackRanged);
-	}
-	
-	@Override
-	protected void applyEntityAttributes() {
-		super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(250.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(10.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(9.0D);
 	}
 	
 	@Override

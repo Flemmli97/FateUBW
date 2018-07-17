@@ -1,9 +1,6 @@
 package com.flemmli97.fatemod.common.item.weapon;
 
 import com.flemmli97.fatemod.Fate;
-import com.flemmli97.fatemod.common.entity.EntityExcalibur;
-import com.flemmli97.fatemod.common.handler.capabilities.IPlayer;
-import com.flemmli97.fatemod.common.handler.capabilities.PlayerCapProvider;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,8 +9,6 @@ import net.minecraft.item.ItemSword;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.util.EnumHelper;

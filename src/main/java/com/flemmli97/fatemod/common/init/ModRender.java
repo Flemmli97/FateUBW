@@ -8,6 +8,7 @@ import com.flemmli97.fatemod.client.render.RenderEA;
 import com.flemmli97.fatemod.client.render.RenderExcalibur;
 import com.flemmli97.fatemod.client.render.RenderGaeBolg;
 import com.flemmli97.fatemod.client.render.RenderGem;
+import com.flemmli97.fatemod.client.render.RenderGordiusWheel;
 import com.flemmli97.fatemod.client.render.RenderMagicBeam;
 import com.flemmli97.fatemod.client.render.RenderPegasus;
 import com.flemmli97.fatemod.client.render.servant.RenderArthur;
@@ -17,6 +18,7 @@ import com.flemmli97.fatemod.client.render.servant.RenderEmiya;
 import com.flemmli97.fatemod.client.render.servant.RenderGilgamesh;
 import com.flemmli97.fatemod.client.render.servant.RenderGilles;
 import com.flemmli97.fatemod.client.render.servant.RenderHassan;
+import com.flemmli97.fatemod.client.render.servant.RenderHassanCopy;
 import com.flemmli97.fatemod.client.render.servant.RenderHeracles;
 import com.flemmli97.fatemod.client.render.servant.RenderIskander;
 import com.flemmli97.fatemod.client.render.servant.RenderLancelot;
@@ -31,6 +33,7 @@ import com.flemmli97.fatemod.common.entity.EntityEnumaElish;
 import com.flemmli97.fatemod.common.entity.EntityExcalibur;
 import com.flemmli97.fatemod.common.entity.EntityGaeBolg;
 import com.flemmli97.fatemod.common.entity.EntityGem;
+import com.flemmli97.fatemod.common.entity.EntityGordiusWheel;
 import com.flemmli97.fatemod.common.entity.EntityMagicBeam;
 import com.flemmli97.fatemod.common.entity.EntityPegasus;
 import com.flemmli97.fatemod.common.entity.servant.EntityArthur;
@@ -40,6 +43,7 @@ import com.flemmli97.fatemod.common.entity.servant.EntityEmiya;
 import com.flemmli97.fatemod.common.entity.servant.EntityGilgamesh;
 import com.flemmli97.fatemod.common.entity.servant.EntityGilles;
 import com.flemmli97.fatemod.common.entity.servant.EntityHassan;
+import com.flemmli97.fatemod.common.entity.servant.EntityHassanCopy;
 import com.flemmli97.fatemod.common.entity.servant.EntityHeracles;
 import com.flemmli97.fatemod.common.entity.servant.EntityIskander;
 import com.flemmli97.fatemod.common.entity.servant.EntityLancelot;
@@ -70,6 +74,8 @@ public final class ModRender {
 		//rider class
 		//""
 		RenderingRegistry.registerEntityRenderingHandler(EntityHassan.class, RenderHassan::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityHassanCopy.class, RenderHassanCopy::new);
+
 		RenderingRegistry.registerEntityRenderingHandler(EntitySasaki.class, RenderSasaki::new);
 		//assassin class
 		//""
@@ -82,6 +88,8 @@ public final class ModRender {
 		//caster class
 		//""
 		RenderingRegistry.registerEntityRenderingHandler(EntityPegasus.class, RenderPegasus::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityGordiusWheel.class, RenderGordiusWheel::new);
+
 		/*RenderingRegistry.registerEntityRenderingHandler(EntityBukephalos.class, new RenderBukephalos(new ModelBiped(), 0.5F));
 		RenderingRegistry.registerEntityRenderingHandler(EntityGem.class, new RenderGem(ModItems.gemShard));*/
 		RenderingRegistry.registerEntityRenderingHandler(EntityGaeBolg.class, RenderGaeBolg::new);

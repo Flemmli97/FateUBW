@@ -5,7 +5,6 @@ import com.flemmli97.fatemod.common.entity.ai.EntityAICuchulainn;
 import com.flemmli97.fatemod.common.init.ModItems;
 
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -24,22 +23,13 @@ public class EntityCuchulainn extends EntityServant {
 	public EntityAICuchulainn attackAI = new EntityAICuchulainn(this);
 	
 	public EntityCuchulainn(World world) {
-		super(world, EnumServantType.LANCER, "Gae Bolg", 75, new Item[] {ModItems.gaebolg});
+		super(world, EnumServantType.LANCER, "Gae Bolg", new Item[] {ModItems.gaebolg});
         this.tasks.addTask(1, attackAI);
 	}
 	
 	@Override
 	protected void setEquipmentBasedOnDifficulty(DifficultyInstance difficulty) {
 		this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(ModItems.gaebolg));       
-	}
-	
-	@Override
-	protected void applyEntityAttributes() {
-		super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(275.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(7.5D);
-        this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(30.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(10.0D);
 	}
 
 	@Override

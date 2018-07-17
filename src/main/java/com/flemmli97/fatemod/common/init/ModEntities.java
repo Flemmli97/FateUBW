@@ -8,6 +8,7 @@ import com.flemmli97.fatemod.common.entity.EntityEnumaElish;
 import com.flemmli97.fatemod.common.entity.EntityExcalibur;
 import com.flemmli97.fatemod.common.entity.EntityGaeBolg;
 import com.flemmli97.fatemod.common.entity.EntityGem;
+import com.flemmli97.fatemod.common.entity.EntityGordiusWheel;
 import com.flemmli97.fatemod.common.entity.EntityMagicBeam;
 import com.flemmli97.fatemod.common.entity.EntityPegasus;
 import com.flemmli97.fatemod.common.entity.servant.EntityArthur;
@@ -17,6 +18,7 @@ import com.flemmli97.fatemod.common.entity.servant.EntityEmiya;
 import com.flemmli97.fatemod.common.entity.servant.EntityGilgamesh;
 import com.flemmli97.fatemod.common.entity.servant.EntityGilles;
 import com.flemmli97.fatemod.common.entity.servant.EntityHassan;
+import com.flemmli97.fatemod.common.entity.servant.EntityHassanCopy;
 import com.flemmli97.fatemod.common.entity.servant.EntityHeracles;
 import com.flemmli97.fatemod.common.entity.servant.EntityIskander;
 import com.flemmli97.fatemod.common.entity.servant.EntityLancelot;
@@ -47,6 +49,8 @@ public class ModEntities {
 		//rider class
 		//""
 		EntityRegistry.registerModEntity(EntityHassan.class, "hassan", ++entityID, Fate.instance, 64, 3, true);
+		EntityRegistry.registerModEntity(EntityHassanCopy.class, "hassanCopy", ++entityID, Fate.instance, 64, 3, true);
+
 		EntityRegistry.registerModEntity(EntitySasaki.class, "sasaki", ++entityID, Fate.instance, 64, 3, true);
 		//herobrine :O
 		EntityRegistry.registerModEntity(EntityLancelot.class, "lancelot", ++entityID, Fate.instance, 64, 3, true);
@@ -61,6 +65,8 @@ public class ModEntities {
 		//EntityRegistry.registerModEntity(EntityBukephalos.class, "bukephalos", ++entityID, FateMod.instance, 64, 3, true);
 		//pegasus
 		//gordius wheel
+		EntityRegistry.registerModEntity(EntityGordiusWheel.class, "gordius", ++entityID, Fate.instance, 64, 3, true);
+
 		//the bulls
 		EntityRegistry.registerModEntity(EntityGem.class, "entityGem", ++entityID, Fate.instance, 64, 10, true);
 		EntityRegistry.registerModEntity(EntityExcalibur.class, "entityExcalibur", ++entityID, Fate.instance, 64, 10, true);

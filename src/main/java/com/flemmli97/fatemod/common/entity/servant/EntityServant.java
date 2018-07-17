@@ -8,6 +8,8 @@ import javax.annotation.Nullable;
 import com.flemmli97.fatemod.common.entity.ai.EntityAIFollowMaster;
 import com.flemmli97.fatemod.common.entity.ai.EntityAIRetaliate;
 import com.flemmli97.fatemod.common.handler.GrailWarPlayerTracker;
+import com.flemmli97.fatemod.common.handler.ServantAttribute;
+import com.flemmli97.fatemod.common.handler.ServantAttributes;
 import com.flemmli97.fatemod.common.handler.capabilities.IPlayer;
 import com.flemmli97.fatemod.common.handler.capabilities.PlayerCapProvider;
 import com.flemmli97.fatemod.network.CustomDataPacket;
@@ -40,6 +42,7 @@ import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DamageSource;
@@ -54,15 +57,15 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 /**
  * 	Base servant class
  */
-public class EntityServant extends EntityCreature{
+public abstract class EntityServant extends EntityCreature{
 	
-	private int servantMana, antiRegen, attackTimer, counter, hoguManaUse;
-		
+	private int antiRegen, attackTimer, counter, hoguManaUse;
+	protected int servantMana;
 	public boolean canUseNP, critHealth, nearbyEnemy, stay, forcedNP;
 	public int specialAnimation, attackTimerValue, specialAnimationValue, deathTicks;
 	
 	/** 0 = normal, 1 = aggressive, 2 = defensive, 3 = follow, 4 = stay, 5 = guard an area */
-	public int commandBehaviour;
+	protected int commandBehaviour;
 			
 	/* variables here are/should be set at init */
 	private EnumServantType servantType = EnumServantType.NOTASSIGNED;
@@ -71,7 +74,8 @@ public class EntityServant extends EntityCreature{
 	//===========//
 	protected static final DataParameter<ItemStack> itemStackMain = EntityDataManager.<ItemStack>createKey(EntityServant.class, CustomDataPacket.ITEM_STACK);
     protected static final DataParameter<ItemStack> itemStackOff = EntityDataManager.<ItemStack>createKey(EntityServant.class, CustomDataPacket.ITEM_STACK);
-    
+	protected static final DataParameter<Boolean> showServant = EntityDataManager.<Boolean>createKey(EntityServant.class, DataSerializers.BOOLEAN);
+
 	public EntityAINearestAttackableTarget<EntityServant> targetServant = new EntityAINearestAttackableTarget<EntityServant>(this, EntityServant.class, 10, true, true, new Predicate<EntityServant>()    {
         public boolean apply(@Nullable EntityServant living)
         {
@@ -97,12 +101,13 @@ public class EntityServant extends EntityCreature{
 	public EntityAINearestAttackableTarget<EntityLiving> targetMob = new EntityAINearestAttackableTarget<EntityLiving>(this, EntityLiving.class, 10, true, true, new Predicate<EntityLiving>()    {
         public boolean apply(@Nullable EntityLiving living)
         {
-            return living != null && IMob.VISIBLE_MOB_SELECTOR.apply(living);
+            return living != null&&!(living instanceof EntityServant) && IMob.VISIBLE_MOB_SELECTOR.apply(living);
         }});
 	
-	public EntityAIFollowMaster follow = new EntityAIFollowMaster(this, 1.0D, 20.0F, 4.0F, this.getOwner());
+	public EntityAIFollowMaster follow = new EntityAIFollowMaster(this, 1.0D, 15.0F, 4.0F);
 	public EntityAIRetaliate targetHurt = new EntityAIRetaliate(this);
 	public EntityAIMoveTowardsRestriction restrictArea = new EntityAIMoveTowardsRestriction(this, 1.0D);
+	private ServantAttribute prop;
 	public static final IAttribute MAGIC_RESISTANCE = (new RangedAttribute((IAttribute)null, "generic.magicResistance", 0.0D, 0.0D, 1.0D)).setDescription("Magic Resistance");
 	public static final IAttribute PROJECTILE_RESISTANCE = (new RangedAttribute((IAttribute)null, "generic.projectileResistance", 0.0D, 0.0D, 30.0D)).setDescription("Projectile Resistance");
 	 
@@ -119,14 +124,17 @@ public class EntityServant extends EntityCreature{
 	    this.targetTasks.addTask(0, targetServant);
 	    this.targetTasks.addTask(1, targetPlayer);
 	    this.targetTasks.addTask(2, targetHurt);
+		this.prop=ServantAttributes.attributes.get(this.getClass());
+		if(this.prop==null)
+			throw new NullPointerException("Stats of " + this.getClass() +" are null. This is not allowed");
+		this.updateAttributes();
 	}
 	
-	public EntityServant(World world, EnumServantType servantType, String hogu, int hoguMana, Item[] drops)
+	public EntityServant(World world, EnumServantType servantType, String hogu, Item[] drops)
 	{
 		this(world);
-		this.setServantAttributes(servantType);
 		this.hogu = hogu;
-		this.hoguManaUse = hoguMana;
+		this.hoguManaUse = this.prop.hogouMana();
 		this.drops = drops;
 	}
 
@@ -138,6 +146,7 @@ public class EntityServant extends EntityCreature{
         super.entityInit();
         this.dataManager.register(itemStackMain, null);
         this.dataManager.register(itemStackOff, null);
+        this.dataManager.register(showServant, false);
     }
 	
 	@Override
@@ -146,61 +155,36 @@ public class EntityServant extends EntityCreature{
 		return livingdata;
 	}
 	
+	public void revealServant()
+	{
+		this.dataManager.set(showServant, true);
+	}
+	
+	public boolean showServant()
+	{
+		return this.dataManager.get(showServant);
+	}
+	
 	@Override
 	protected void applyEntityAttributes()
     {
         super.applyEntityAttributes();
-        this.getAttributeMap().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(1.0D);
+        this.getAttributeMap().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(1);
         this.getAttributeMap().registerAttribute(EntityServant.MAGIC_RESISTANCE);
         this.getAttributeMap().registerAttribute(EntityServant.PROJECTILE_RESISTANCE);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.3D);
-        this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(24.0D);
+        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.3);//default 0.3
+        this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(32.0D);
     }
 	
-	/** Attributes like magic resistance, projectile resistance etc are defined here
-	 * Saber:
-	 * Lancer:
-	 * Archer:
-	 * Berserker:
-	 * Rider:
-	 * Caster:
-	 * Assassin:
-	 * */
-	private void setServantAttributes(EnumServantType type)
+	private void updateAttributes()
 	{
-		if(type == EnumServantType.SABER)
-		{
-			this.getEntityAttribute(MAGIC_RESISTANCE).setBaseValue(0.8D);
-			this.getEntityAttribute(PROJECTILE_RESISTANCE).setBaseValue(7.0D);
-		}
-		else if(type == EnumServantType.ARCHER)
-		{
-			this.getEntityAttribute(MAGIC_RESISTANCE).setBaseValue(0.2D);
-			this.getEntityAttribute(PROJECTILE_RESISTANCE).setBaseValue(10.0D);
-		}
-		else if(type == EnumServantType.LANCER)
-		{
-			this.getEntityAttribute(MAGIC_RESISTANCE).setBaseValue(0.4D);
-			this.getEntityAttribute(PROJECTILE_RESISTANCE).setBaseValue(11.0D);
-		}
-		else if(type == EnumServantType.BERSERKER)
-		{
-			this.getEntityAttribute(MAGIC_RESISTANCE).setBaseValue(0.1D);
-			this.getEntityAttribute(PROJECTILE_RESISTANCE).setBaseValue(8.0D);
-		}
-		else if(type == EnumServantType.CASTER)
-		{
-			this.getEntityAttribute(MAGIC_RESISTANCE).setBaseValue(0.9D);
-		}
-		else if(type == EnumServantType.ASSASSIN)
-		{
-			this.getEntityAttribute(PROJECTILE_RESISTANCE).setBaseValue(13.0D);
-		}
-		else if(type == EnumServantType.RIDER)
-		{
-			this.getEntityAttribute(MAGIC_RESISTANCE).setBaseValue(0.2D);
-			this.getEntityAttribute(PROJECTILE_RESISTANCE).setBaseValue(4.0D);
-		}
+		this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(this.prop.health());
+		this.setHealth(this.getMaxHealth());
+        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(this.prop.strength());
+        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(this.prop.armor());
+        this.getEntityAttribute(EntityServant.MAGIC_RESISTANCE).setBaseValue(this.prop.magicRes());;
+        this.getEntityAttribute(EntityServant.PROJECTILE_RESISTANCE).setBaseValue(this.prop.projectileProt());;
+        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(this.prop.moveSpeed());//default 0.3
 	}
 	
 	//=====Client-Server sync
@@ -272,7 +256,7 @@ public class EntityServant extends EntityCreature{
     				if(servantMana < 100)
     				{
     					++counter;
-    					if(counter == 7)
+    					if(counter == 20)
     					{
     						this.servantMana += 1;
     						counter = 0;
@@ -293,8 +277,11 @@ public class EntityServant extends EntityCreature{
 	
 	//=====Entity AI updating
 	
-	@Override
-	protected void updateAITasks() {
+	/** 
+	 * @param bevahiour 0 = normal, 1 = aggressive, 2 = defensive, 3 = follow, 4 = stay, 5 = guard an area
+	 */
+	public void updateAI(int behaviour) {
+		this.commandBehaviour=behaviour;
 		if(commandBehaviour == 0)
 		{
 			this.targetTasks.removeTask(targetMob);
@@ -365,8 +352,8 @@ public class EntityServant extends EntityCreature{
     
     public void setOwner(EntityPlayer player)
     {
-    		if(player!=null)
-    			this.owner = player.getUniqueID().toString(); 		
+		if(player!=null)
+			this.owner = player.getUniqueID().toString(); 		
     }
 
     //=====NBT
@@ -383,6 +370,7 @@ public class EntityServant extends EntityCreature{
 		tag.setInteger("Command", commandBehaviour);
 		tag.setInteger("Mana", servantMana);
 		tag.setBoolean("HealthMessage", critHealth);
+		tag.setBoolean("Revealed", this.showServant());
 	}
 
 	@Override
@@ -395,9 +383,10 @@ public class EntityServant extends EntityCreature{
 		}
 		canUseNP = tag.getBoolean("CanUseNP");
 		deathTicks = tag.getInteger("Death");
-		commandBehaviour = tag.getInteger("Command");
+		this.updateAI(tag.getInteger("Command"));
 		servantMana = tag.getInteger("Mana");
 		critHealth = tag.getBoolean("HealthMessage");
+		this.dataManager.set(showServant, tag.getBoolean("Revealed"));
 	}
 	
 	//=====Helper methods
@@ -510,7 +499,7 @@ public class EntityServant extends EntityCreature{
 		for(int i = 0; i < this.drops.length; i++)
 		{
 			int chance = rand.nextInt(100)-lootingModifier*20;
-			if(chance < 10)
+			if(chance < this.prop.dropChance())
 			{
 				this.dropItem(drops[i], 1);
 			}

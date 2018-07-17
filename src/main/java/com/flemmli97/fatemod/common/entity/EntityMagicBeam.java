@@ -3,7 +3,6 @@ package com.flemmli97.fatemod.common.entity;
 import com.flemmli97.fatemod.common.handler.CustomDamageSource;
 
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 

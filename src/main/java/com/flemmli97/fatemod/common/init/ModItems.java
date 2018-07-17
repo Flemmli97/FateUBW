@@ -25,6 +25,7 @@ import com.flemmli97.fatemod.common.item.weapon.ItemHeraclesAxe;
 import com.flemmli97.fatemod.common.item.weapon.ItemInvisExcalibur;
 import com.flemmli97.fatemod.common.item.weapon.ItemKanshou;
 import com.flemmli97.fatemod.common.item.weapon.ItemKatana;
+import com.flemmli97.fatemod.common.item.weapon.ItemKupriots;
 import com.flemmli97.fatemod.common.item.weapon.ItemRuleBreaker;
 import com.flemmli97.fatemod.common.item.weapon.ItemStaff;
 
@@ -51,6 +52,7 @@ public class ModItems {
     public static Item staff;
     public static Item grimoire;
     public static Item dagger;
+    public static Item kupriots;
         
     public static Item manaBottle;
     public static Item babylon;
@@ -86,6 +88,7 @@ public class ModItems {
 		staff = new ItemStaff();
 		grimoire = new ItemGrimoire();
 		dagger = new ItemAssassinDagger();
+		kupriots = new ItemKupriots();
 		
 		crystal = new ItemGemShard();
 		crystalCluster = new ItemGemCluster();
@@ -121,6 +124,7 @@ public class ModItems {
 		((ItemStaff) staff).initModel();
 		((ItemGrimoire) grimoire).initModel();
 		((ItemAssassinDagger) dagger).initModel();
+		((ItemKupriots) kupriots).initModel();
 		
 		((ItemSpawn) spawnEgg).initModel();
 		((ItemManaBottle) manaBottle).initModel();

@@ -20,6 +20,7 @@ public class RenderMedea extends RenderBiped<EntityMedea>
 	/**
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
      */
+    @Override
     protected ResourceLocation getEntityTexture(EntityMedea entity)
     {
         return textures;

@@ -5,7 +5,6 @@ import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityMoveHelper;
-import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -23,7 +22,6 @@ public class EntityPegasus extends EntityCreature{
 
 	}
 
-	private PathNavigate flyNavigator;
 	public EntityPegasus(World world) {
 		super(world);
 		this.stepHeight=1.0F;

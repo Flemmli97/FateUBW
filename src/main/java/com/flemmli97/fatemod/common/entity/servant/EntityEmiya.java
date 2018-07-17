@@ -6,7 +6,6 @@ import com.flemmli97.fatemod.common.entity.ai.EntityAIEmiya;
 import com.flemmli97.fatemod.common.init.ModItems;
 
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
@@ -23,7 +22,7 @@ public class EntityEmiya extends EntityServant implements IRanged{
 	EntityAIEmiya attackRanged = new EntityAIEmiya(this, true, 1, 30, 25, 40, 10, 16);
 
 	public EntityEmiya(World world) {
-		super(world, EnumServantType.ARCHER, "Calad Bolg II", 66, new Item[] {ModItems.archbow, ModItems.bakuya, ModItems.kanshou});
+		super(world, EnumServantType.ARCHER, "Calad Bolg II", new Item[] {ModItems.archbow, ModItems.bakuya, ModItems.kanshou});
 		this.tasks.addTask(1, attackMelee);
 	}	
 	
@@ -31,15 +30,6 @@ public class EntityEmiya extends EntityServant implements IRanged{
 	protected void setEquipmentBasedOnDifficulty(DifficultyInstance difficulty) {
 		this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(ModItems.kanshou));
 		this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, new ItemStack(ModItems.bakuya));
-	}
-
-	@Override
-	protected void applyEntityAttributes() {
-		super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(250.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.33D);
-        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(8.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(5.0D);
 	}
 	
 	@Override

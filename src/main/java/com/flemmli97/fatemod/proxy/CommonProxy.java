@@ -1,8 +1,6 @@
 package com.flemmli97.fatemod.proxy;
 
 
-import java.io.File;
-
 import com.flemmli97.fatemod.Fate;
 import com.flemmli97.fatemod.common.gen.WorldGen;
 import com.flemmli97.fatemod.common.handler.BabylonWeapon;
@@ -16,15 +14,14 @@ import com.flemmli97.fatemod.common.handler.capabilities.PlayerCapNetwork;
 import com.flemmli97.fatemod.common.init.ModBlocks;
 import com.flemmli97.fatemod.common.init.ModEntities;
 import com.flemmli97.fatemod.common.init.ModItems;
-import com.flemmli97.fatemod.network.PacketHandler;
 import com.flemmli97.fatemod.network.CustomDataPacket;
+import com.flemmli97.fatemod.network.PacketHandler;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -39,7 +36,7 @@ public class CommonProxy {
 	    	ModItems.init();
 	    	ModEntities.mainRegistry();
 	    	PacketHandler.registerPackets();
-	    	ConfigHandler.loadConfig(new Configuration(new File(e.getModConfigurationDirectory()+"/fate/", "main.cfg")));
+	    	ConfigHandler.loadConfig(e.getModConfigurationDirectory()+"/fate/");
     }
     
     public void init(FMLInitializationEvent e) {

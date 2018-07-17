@@ -18,7 +18,8 @@ public class RenderEmiya extends RenderServant<EntityEmiya> {
 	/**
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
      */
-    protected ResourceLocation getEntityTexture(EntityEmiya entity)
+    @Override
+    protected ResourceLocation servantTexture(EntityEmiya entity)
     {
         return textures;
     }

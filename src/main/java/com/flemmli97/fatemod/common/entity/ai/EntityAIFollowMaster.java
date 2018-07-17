@@ -4,7 +4,7 @@ import com.flemmli97.fatemod.common.entity.servant.EntityServant;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathNodeType;
@@ -14,17 +14,17 @@ import net.minecraft.world.World;
 
 public class EntityAIFollowMaster extends EntityAIBase
 {
-    private EntityServant servant;
-    private Entity follow;
+    public final EntityServant servant;
+    private EntityLivingBase follow;
     World theWorld;
     private double d1;
     private PathNavigate pathfinder;
     private int followDelay;
-    float maxDist;
-    float minDist;
+    public final float maxDist;
+    public final float minDist;
     private float avoidWater;
 
-    public EntityAIFollowMaster(EntityServant servant, double teleport, float minDistance, float maxDistance, Entity toFollow)
+    public EntityAIFollowMaster(EntityServant servant, double teleport, float minDistance, float maxDistance)
     {
         this.servant = servant;
         this.theWorld = servant.worldObj;
@@ -32,7 +32,6 @@ public class EntityAIFollowMaster extends EntityAIBase
         this.pathfinder = servant.getNavigator();
         this.minDist = minDistance;
         this.maxDist = maxDistance;
-        this.follow=toFollow;
         this.setMutexBits(3);
     }
 
@@ -41,22 +40,29 @@ public class EntityAIFollowMaster extends EntityAIBase
      */
     public boolean shouldExecute()
     {
-        if (follow == null)
+    	EntityLivingBase owner = this.servant.getOwner();
+        if (owner == null)
         {
             return false;
         }
-        else if (this.servant.getDistanceSqToEntity(follow) < (double)(this.minDist * this.minDist))
+        else if (this.servant.getDistanceSqToEntity(owner) < (double)(this.minDist * this.minDist))
         {
             return false;
         }
         else if(this.servant.getAttackTarget() != null)
         {
-        		return false;
+    		return false;
         }
         else
         {
+        	this.setFollowTarget(owner);
             return true;
         }
+    }
+    
+    public void setFollowTarget(EntityLivingBase entity)
+    {
+    	this.follow=entity;
     }
 
     /**

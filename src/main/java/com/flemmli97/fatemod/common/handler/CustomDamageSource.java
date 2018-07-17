@@ -1,5 +1,7 @@
 package com.flemmli97.fatemod.common.handler;
 
+import com.flemmli97.fatemod.common.entity.EntityGordiusWheel;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
@@ -45,5 +47,10 @@ public class CustomDamageSource extends DamageSource{
 	public static DamageSource hiKen(EntityLivingBase sourceEntity)
     {
         return (new EntityDamageSource("tsubame",sourceEntity)).setDamageBypassesArmor();
+    }
+	
+	public static DamageSource gordiusTrample(EntityGordiusWheel source, EntityLivingBase sourceEntity)
+    {
+        return (new EntityDamageSourceIndirect("gordius", source, sourceEntity));
     }
 }

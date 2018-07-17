@@ -11,11 +11,11 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemAlexanderSword extends ItemSword{
+public class ItemKupriots extends ItemSword{
 	
     public static ToolMaterial isk_mat = EnumHelper.addToolMaterial("isk_mat", 0, 700, 0.0F, 2.0F, 10);
 
-    public ItemAlexanderSword() {
+    public ItemKupriots() {
     	super(isk_mat);
     	setUnlocalizedName("isk_sword");
     	setCreativeTab(Fate.customTab);
