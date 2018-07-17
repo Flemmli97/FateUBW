@@ -1,0 +1,64 @@
+item.fatemod:excalibur.name=Holy Sword Excalibur
+item.fatemod:arondight.name=Arondight
+item.fatemod:archer_bow.name=Emiyas Bow
+item.fatemod:enuma_elish.name=Enuma Elish
+item.fatemod:gate_of_babylon.name=Gate of Babylon
+item.fatemod:gae_buidhe.name=Gae Buidhe
+item.fatemod:gae_dearg.name=Gae Dearg
+item.fatemod:gae_bolg.name=Gae Bolg
+item.fatemod:invis_excalibur.name=Prop
+item.fatemod:kanshou.name=Kanshou
+item.fatemod:bakuya.name=Bakuya
+item.fatemod:rule_breaker.name=Rule Breaker
+item.fatemod:heracles_axe.name=Heracles Axe
+item.fatemod:katana.name=Monohoshi Zao
+item.fatemod:dagger.name=Medusas Dagger
+item.fatemod:staff.name=Medeas Staff
+item.fatemod:chalk.name=Drawing Chalk
+item.fatemod:prelati.name=Prelatis Spellbook
+item.fatemod:assassindagger.name=Dagger
+item.fatemod:isk_sword.name=Kypriots
+
+item.fire_gem_shard.name=Jewel (Fire)
+item.water_gem_shard.name=Jewel (Water)
+item.earth_gem_shard.name=Jewel (Earth)
+item.wind_gem_shard.name=Jewel (Wind)
+item.void_gem_shard.name=Jewel (Void)
+item.fatemod:gem_cluster.name=Jewel Cluster
+item.servant_medallion.name=Servant Medallion
+item.saber_servant_medallion.name=Servant Medallion (Saber)
+item.archer_servant_medallion.name=Servant Medallion (Archer)
+item.lancer_servant_medallion.name=Servant Medallion (Lancer)
+item.berserker_servant_medallion.name=Servant Medallion (Berserker)
+item.assassin_servant_medallion.name=Servant Medallion (Assassin)
+item.caster_servant_medallion.name=Servant Medallion (Caster)
+item.rider_servant_medallion.name=Servant Medallion (Rider)
+item.fatemod:holy_grail.name=The Holy Grail
+item.fatemod:spawn_egg.name=Spawn
+item.fatemod:mana_bottle.name=Mana Bottle
+
+tile.fatemod:altar.name=Summoning Altar
+tile.fatemod:crystal_ore.name=Magic Gem Ore
+tile.fatemod:charm_ore.name=Artifact Ore
+tile.fatemod:chalk_line.name=Chalk Line
+
+entity.arthur.name=King Arthur
+entity.gilgamesh.name=King Gilgamesh
+entity.cuchulainn.name=Cuchulainn
+entity.diarmuid.name=Diarmuid ua Duibhne
+entity.emiya.name=Archer Emiya
+entity.gilles.name=Gilles de Rais
+entity.hassan.name=Hassan-i-Sabbah
+entity.heracles.name=Heracles
+entity.alexander.name=Alexander the Great
+entity.lancelot.name=Sir Lancelot
+entity.medea.name=Medea
+entity.medusa.name=Medusa
+entity.sasaki.name=Sasaki Kojiro
+
+itemGroup.fate=The Fate Universe
+
+death.attack.excalibur=%1$s was vaporized by %2$s with excalibur
+death.attack.babylon=%1$s was impaled by %2$s with the gate of babylon
+death.attack.gaeBolg=%1$s's heart was pierced with gae bolg
+death.attack.arrow = %1$s was shoot by %2$s
