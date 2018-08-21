@@ -36,7 +36,7 @@ public class EntityArthur extends EntityServant{
 	@Override
 	public Pair<Integer, Integer> attackTickerFromState(State state) {
 		// TODO Auto-generated method stub
-		return Pair.of(30, 20);
+		return Pair.of(15, 7);
 	}	
 
 	@Override
@@ -76,7 +76,7 @@ public class EntityArthur extends EntityServant{
 				}
 				critHealth = true;
 			}
-			if(!this.isPotionActive(Potion.getPotionById(10)))
+			if(!this.isPotionActive(Potion.getPotionFromResourceLocation("minecraft:regeneration")))
 			{
 				this.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:regeneration"), 40, 3, false, false));
 			}			

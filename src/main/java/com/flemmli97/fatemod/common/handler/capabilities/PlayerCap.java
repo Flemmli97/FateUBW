@@ -10,6 +10,7 @@ import com.flemmli97.fatemod.network.PacketHandler;
 import com.google.common.collect.Sets;
 
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTBase;
@@ -22,10 +23,12 @@ public class PlayerCap implements IPlayer{
 	
 	private int currentMana = 0;
 	private EntityServant servant;
+	//Used during load
+	private String servantUUID = "";
 	private int commandSeals = 0;
 	private Set<String> truceSet = Sets.<String>newLinkedHashSet();
 	private String requestPlayer = "";
-	
+		
 	public PlayerCap() {}
 	
 	@Override
@@ -75,6 +78,22 @@ public class PlayerCap implements IPlayer{
 			return I18n.format(servant.getName());
 		}
 		return "No servant";
+	}
+	
+	@Override
+	public void initServant(EntityPlayer player)
+	{
+		if(!this.servantUUID.isEmpty())
+		{
+			for(Entity e : player.world.getLoadedEntityList())
+			{
+				if(e.getCachedUniqueIdString().equals(this.servantUUID) && e instanceof EntityServant)
+				{
+					this.setServant(player, (EntityServant) e);
+					return;
+				}
+			}
+		}
 	}
 	
 	@Override
@@ -144,9 +163,7 @@ public class PlayerCap implements IPlayer{
 		compound.setInteger("CommandSeal", this.commandSeals);
 		if(this.servant!=null)
 		{
-			NBTTagCompound nbt = new NBTTagCompound();
-			this.servant.writeToNBT(nbt);
-			compound.setTag("Servant", nbt);
+			compound.setString("ServantUUID", this.servant.getCachedUniqueIdString());
 		}
 		NBTTagList truce = new NBTTagList();
 		for(String s : this.truceSet)
@@ -161,6 +178,8 @@ public class PlayerCap implements IPlayer{
 	{
 		this.currentMana=compound.getInteger("Mana");
 		this.commandSeals=compound.getInteger("CommandSeal");
+		if(compound.hasKey("ServantUUID"))
+			this.servantUUID=compound.getString("ServantUUID");
 		for(NBTBase s : compound.getTagList("Truce", Constants.NBT.TAG_STRING))
 			this.truceSet.add(((NBTTagString)s).getString());
 		this.requestPlayer=compound.getString("CurrentReq");

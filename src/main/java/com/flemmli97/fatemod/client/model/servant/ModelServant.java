@@ -2,12 +2,11 @@ package com.flemmli97.fatemod.client.model.servant;
 
 import org.lwjgl.opengl.GL11;
 
-import com.flemmli97.fatemod.common.entity.servant.EntityServant;
+import com.flemmli97.fatemod.client.model.ModelUtils;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.math.MathHelper;
 
@@ -42,7 +41,6 @@ public class ModelServant extends ModelBase{
     public ModelRenderer servantLeftLegDown;
     public ModelRenderer servantLeftLegDownOverlay;
     
-    private float partialTicks;
     public int heldItemMain, heldItemOff;
 
     //ModelRenderer(Model, TextureOffsetX, TextureOffsetY)
@@ -170,35 +168,37 @@ public class ModelServant extends ModelBase{
         this.servantBodyOverlay.addChild(servantLeftLegUpOverlay);
 	}
 	
-	public void render(Entity entity, float f0, float f1, float f2, float f3, float f4, float scale)
-	{
-		this.setRotationAngles(f0, f1, f2, f3, f4, scale, entity);
-		servantBody.render(scale);
+	@Override
+	 public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale)
+    {
+		this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);
+		this.servantBody.render(scale);
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		servantBodyOverlay.render(scale);
+		this.servantBodyOverlay.render(scale);
 		GL11.glDisable(GL11.GL_BLEND);
 	}
 	
-	public void setRotationAngles(float f1, float f2, float f3, float f4, float f5, float f6, Entity entity) {
-        this.setRotationAnglesPre(f1, f2, f3, f4, f5, f6, entity);
-        	
+	@Override
+	public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale, Entity entity)
+    {
+		this.setRotationAnglesPre(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);
         syncOverlay();
 	}
 	
-	public void setRotationAnglesPre(float armSwingTime, float armSwingReach, float partialTick, float f4, float f5, float scale, Entity entity) {
-
-        this.servantHead.rotateAngleY = f4 / (180F / (float)Math.PI);
-        this.servantHead.rotateAngleX = f5 / (180F / (float)Math.PI);
+	public void setRotationAnglesPre(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale, Entity entity) {
+		this.resetModel();
+        this.servantHead.rotateAngleY = netHeadYaw / (180F / (float)Math.PI);
+        this.servantHead.rotateAngleX = headPitch / (180F / (float)Math.PI);
         this.servantHeadOverlay.rotateAngleY = this.servantHead.rotateAngleY;
         this.servantHeadOverlay.rotateAngleX = this.servantHead.rotateAngleX;
         
-        this.servantRightArmUp.rotateAngleX = MathHelper.cos(armSwingTime * 0.6662F + (float)Math.PI) * 2.0F * armSwingReach * 0.5F;
-        this.servantLeftArmUp.rotateAngleX = MathHelper.cos(armSwingTime * 0.6662F) * 2.0F * armSwingReach * 0.5F;
+        this.servantRightArmUp.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 2.0F * limbSwingAmount * 0.5F;
+        this.servantLeftArmUp.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 2.0F * limbSwingAmount * 0.5F;
         this.servantRightArmUp.rotateAngleZ = 0.0F;
         this.servantLeftArmUp.rotateAngleZ = 0.0F;
-        this.servantRightLegUp.rotateAngleX = MathHelper.cos(armSwingTime * 0.6662F) * 1.4F * armSwingReach;
-        this.servantLeftLegUp.rotateAngleX = MathHelper.cos(armSwingTime * 0.6662F + (float)Math.PI) * 1.4F * armSwingReach;
+        this.servantRightLegUp.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+        this.servantLeftLegUp.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
         this.servantRightLegUp.rotateAngleY = 0.0F;
         this.servantLeftLegUp.rotateAngleY = 0.0F;
         
@@ -256,10 +256,10 @@ public class ModelServant extends ModelBase{
         this.servantHead.rotationPointY = 0.0F;
         this.servantHeadOverlay.rotationPointY = 0.0F;
         
-        this.servantRightArmUp.rotateAngleZ += MathHelper.cos(partialTick * 0.09F) * 0.05F + 0.05F;
-        this.servantLeftArmUp.rotateAngleZ -= MathHelper.cos(partialTick * 0.09F) * 0.05F + 0.05F;
-        this.servantRightArmUp.rotateAngleX += MathHelper.sin(partialTick * 0.067F) * 0.05F;
-        this.servantLeftArmUp.rotateAngleX -= MathHelper.sin(partialTick * 0.067F) * 0.05F;
+        this.servantRightArmUp.rotateAngleZ += MathHelper.cos(ageInTicks * 0.09F) * 0.05F + 0.05F;
+        this.servantLeftArmUp.rotateAngleZ -= MathHelper.cos(ageInTicks * 0.09F) * 0.05F + 0.05F;
+        this.servantRightArmUp.rotateAngleX += MathHelper.sin(ageInTicks * 0.067F) * 0.05F;
+        this.servantLeftArmUp.rotateAngleX -= MathHelper.sin(ageInTicks * 0.067F) * 0.05F;
 	}
 	
 	public void syncOverlay()
@@ -284,103 +284,30 @@ public class ModelServant extends ModelBase{
 		copyModelAngles(servantBody, servantBodyOverlay);
 	}
 	
-	public float degToRad(float degree)
-	{
-		float radiant = degree/ (180F / (float)Math.PI);
-		return radiant;
-	}
-	
-	/**endTick for early stop, should be smaller than animationTicker; last par is type of attack: 0=normal, 1=special*/
-	protected float animating(EntityServant servant, float animationTicker, float startDegree, float endDegree, float endTick, int type)
-	{
-		int x=0;
-		if(type==0)
-		{
-			//x=servant.attackTimer();
-		}
-		else
-		{
-			//x=servant.specialAnimationValue;
-		}
-		if(animationTicker >=endTick){
-			float m = (startDegree - endDegree)/x;
-			float rotationLastTick = degToRad(endDegree + m*(animationTicker+1));
-			float rotationNow = degToRad(endDegree + m*(animationTicker));
-			float actualRotation = rotationLastTick + (rotationNow - rotationLastTick) * (this.partialTicks);
-			return actualRotation;
-		}
-		else
-		{
-			float m = (startDegree - endDegree)/x;
-			return degToRad(endDegree + m*(endTick));
-		}
-	}
-	
-	/** */
-	protected float animating2(EntityServant servant, float animationTicker, float startDegree, float midDegree, float endDegree, float changeTick, int type)
-	{
-		float rotationLastTick;
-		float rotationNow;
-		float actualRotation;
-		int x = 0;
-		if(type==0)
-		{
-			//x=servant.attackTimerValue;
-		}
-		else
-		{
-			//x=servant.specialAnimationValue;
-		}
-		if(animationTicker >= changeTick)
-		{
-			float m = (startDegree - midDegree)/(x-changeTick);
-			float b = midDegree-(m*changeTick);
-			rotationLastTick = degToRad(b + m*(animationTicker+1));
-			rotationNow = degToRad(b + m*(animationTicker));
-			actualRotation = rotationLastTick + (rotationNow - rotationLastTick) * (this.partialTicks);
-			return actualRotation;
-		}
-		else
-		{
-			float m = (midDegree - endDegree)/changeTick;			
-			rotationLastTick = degToRad(endDegree + m*(animationTicker+1));
-			rotationNow = degToRad(endDegree + m*(animationTicker));
-			actualRotation = rotationLastTick + (rotationNow - rotationLastTick) * (this.partialTicks);
-			return actualRotation;
-		}
-	}
-	
 	public void resetModel()
 	{
+		servantRightArmJoint.rotateAngleX = ModelUtils.degToRad(0.0F);
+		servantLeftArmJoint.rotateAngleX = ModelUtils.degToRad(0.0F);
+		servantRightArmJoint.rotateAngleY = ModelUtils.degToRad(0.0F);
+		servantLeftArmJoint.rotateAngleY = ModelUtils.degToRad(0.0F);
+		servantRightArmJoint.rotateAngleZ = ModelUtils.degToRad(0.0F);
+		servantLeftArmJoint.rotateAngleZ = ModelUtils.degToRad(0.0F);
 		
-		servantRightArmJoint.rotateAngleX = degToRad(0.0F);
-		servantLeftArmJoint.rotateAngleX = degToRad(0.0F);
-		servantRightArmJoint.rotateAngleY = degToRad(0.0F);
-		servantLeftArmJoint.rotateAngleY = degToRad(0.0F);
-		servantRightArmJoint.rotateAngleZ = degToRad(0.0F);
-		servantLeftArmJoint.rotateAngleZ = degToRad(0.0F);
+		servantRightArmDown.rotateAngleX= ModelUtils.degToRad(0);
+		servantLeftArmDown.rotateAngleX= ModelUtils.degToRad(0);		
+		servantRightArmDown.rotateAngleY= ModelUtils.degToRad(0);	
+		servantLeftArmDown.rotateAngleY= ModelUtils.degToRad(0);
+		servantRightArmDown.rotateAngleZ = ModelUtils.degToRad(0);
+		servantLeftArmDown.rotateAngleZ = ModelUtils.degToRad(0);
 		
-		servantRightArmDown.rotateAngleX= degToRad(0);
-		servantLeftArmDown.rotateAngleX= degToRad(0);		
-		servantRightArmDown.rotateAngleY= degToRad(0);	
-		servantLeftArmDown.rotateAngleY= degToRad(0);
-		servantRightArmDown.rotateAngleZ = degToRad(0);
-		servantLeftArmDown.rotateAngleZ = degToRad(0);
-		
-		servantRightLegDown.rotateAngleX= degToRad(0);
-		servantLeftLegDown.rotateAngleX= degToRad(0);
-		servantRightLegDown.rotateAngleY= degToRad(0);
-		servantLeftLegDown.rotateAngleY= degToRad(0);
-		servantRightLegDown.rotateAngleZ= degToRad(0);
-		servantLeftLegDown.rotateAngleZ= degToRad(0);
+		servantRightLegDown.rotateAngleX= ModelUtils.degToRad(0);
+		servantLeftLegDown.rotateAngleX= ModelUtils.degToRad(0);
+		servantRightLegDown.rotateAngleY= ModelUtils.degToRad(0);
+		servantLeftLegDown.rotateAngleY= ModelUtils.degToRad(0);
+		servantRightLegDown.rotateAngleZ= ModelUtils.degToRad(0);
+		servantLeftLegDown.rotateAngleZ= ModelUtils.degToRad(0);
 		
 		syncOverlay();
-	}
-	
-	@Override
-	public void setLivingAnimations(EntityLivingBase livingBase, float armSwingTime, float armSwingReach, float partialTick) {
-		this.partialTicks = partialTick;
-		super.setLivingAnimations(livingBase, armSwingTime, armSwingReach, partialTick);
 	}
 	
 	public void postRenderArm(float scale, EnumHandSide side)

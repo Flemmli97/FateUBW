@@ -18,6 +18,8 @@ public class EntityAIRetaliate extends EntityAITarget {
 	}
 
 	public boolean shouldExecute() {
+		if(this.taskOwner.getAttackTarget()!=null)
+			return false;
 		int revengeTimer = this.taskOwner.getRevengeTimer();
         return revengeTimer != this.revengeTimer && this.checkTarget(this.taskOwner.getAttackTarget());
 	}
@@ -43,13 +45,13 @@ public class EntityAIRetaliate extends EntityAITarget {
 			{
 				return false;
 			}
-			else if(capSync.isPlayerTruce((EntityPlayer) livingBase))
+			else if(livingBase instanceof EntityPlayer && capSync.isPlayerTruce((EntityPlayer) livingBase))
 			{
 				return false;
 			}
-			//else if(capSync.getServantTruce().contains(livingBase))
+			else if(livingBase instanceof EntityServant && ((EntityServant)livingBase).getOwner()!=null && capSync.isPlayerTruce(((EntityServant)livingBase).getOwner()) )
 			{
-			//	return false;
+				return false;
 			}
 			return super.isSuitableTarget(livingBase, true);
 

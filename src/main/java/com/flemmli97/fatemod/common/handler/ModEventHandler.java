@@ -38,10 +38,10 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -50,7 +50,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ModEventHandler {
 	
 	public static final ResourceLocation PlayerCap = new ResourceLocation(LibReference.MODID, "playerCap");
-	private	GrailWarPlayerTracker tracker=null;
 
     @SubscribeEvent
     public void attachCapability(AttachCapabilitiesEvent<Entity> event)
@@ -62,13 +61,15 @@ public class ModEventHandler {
     }
     
     @SubscribeEvent
-    public void initTracker(WorldEvent.Load e)
+    public void login(PlayerLoggedInEvent event)
     {
-    		if(e.getWorld()!=null && !e.getWorld().isRemote)
-    			this.tracker = GrailWarPlayerTracker.get(e.getWorld());
+    	if(!event.player.world.isRemote)
+    	{
+			IPlayer cap = event.player.getCapability(PlayerCapProvider.PlayerCap, null);
+			cap.initServant(event.player);
+    	}
     }
     
-    //or PlayerLoggedInEvent
     @SubscribeEvent
     public void joinWorld(EntityJoinWorldEvent event)
     {
@@ -118,34 +119,35 @@ public class ModEventHandler {
     @SubscribeEvent
     public void updateGrailWar(WorldTickEvent event)
     {
-    		if(event.phase == Phase.END && !event.world.isRemote)
-    		{
-	    	  	if(this.tracker !=null)
-	    	  	{
-	    	  		if(this.tracker.joinTicker>0)
+		if(event.phase == Phase.END && !event.world.isRemote)
+		{
+			GrailWarPlayerTracker tracker = GrailWarPlayerTracker.get(event.world);
+    	  	if(tracker !=null)
+    	  	{
+    	  		if(tracker.joinTicker>0)
+    	  		{
+	    	  		tracker.joinTicker--;
+	    	  		if(tracker.joinTicker==0)
 	    	  		{
-		    	  		this.tracker.joinTicker--;
-		    	  		if(this.tracker.joinTicker==0)
-		    	  		{
-		    	  			this.tracker.startGrailWar(event.world);
-		    	  		}
+	    	  			tracker.startGrailWar(event.world);
 	    	  		}
-	    	  		if(this.tracker.winningDelay>0)
+    	  		}
+    	  		if(tracker.winningDelay>0)
+    	  		{
+    	  			tracker.winningDelay--;
+    	  			if(tracker.winningDelay==0)
 	    	  		{
-	    	  			this.tracker.winningDelay--;
-	    	  			if(this.tracker.winningDelay==0)
-		    	  		{
-		    	  			EntityPlayer player = this.tracker.getWinningPlayer();
-		    	  			this.tracker.removePlayer(player);
-		    	  			EntityItem holyGrail = new EntityItem(player.world, player.posX+event.world.rand.nextInt(9)-4, player.posY, player.posZ+ event.world.rand.nextInt(9)-4, new ItemStack(ModItems.grail));
-		    	  			holyGrail.lifespan = 6000;
-		    	  			holyGrail.setOwner(player.getName());
-		    	  			holyGrail.setEntityInvulnerable(true);
-		    	  			event.world.spawnEntity(holyGrail);
-		    	  		}
+	    	  			EntityPlayer player = tracker.getWinningPlayer();
+	    	  			tracker.removePlayer(player);
+	    	  			EntityItem holyGrail = new EntityItem(player.world, player.posX+event.world.rand.nextInt(9)-4, player.posY, player.posZ+ event.world.rand.nextInt(9)-4, new ItemStack(ModItems.grail));
+	    	  			holyGrail.lifespan = 6000;
+	    	  			holyGrail.setOwner(player.getName());
+	    	  			holyGrail.setEntityInvulnerable(true);
+	    	  			event.world.spawnEntity(holyGrail);
 	    	  		}
-	    	  	}
-    		}
+    	  		}
+    	  	}
+		}
     }
     
 	@SideOnly(Side.CLIENT)

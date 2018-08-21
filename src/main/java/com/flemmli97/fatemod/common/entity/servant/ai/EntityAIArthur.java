@@ -27,10 +27,10 @@ public class EntityAIArthur extends EntityAIAnimatedAttack{
             {
             	if(this.attackingEntity.canAttack())
             	{
-            		if(!attackingEntity.forcedNP)
-            			attackingEntity.useMana(attackingEntity.props().hogouMana());
-            		((EntityArthur)attackingEntity).attackWithNP();
-            		attackingEntity.forcedNP = false;
+            		if(!this.attackingEntity.forcedNP)
+            			attackingEntity.useMana(this.attackingEntity.props().hogouMana());
+            		((EntityArthur)this.attackingEntity).attackWithNP();
+            		this.attackingEntity.forcedNP = false;
             	}       		
             }
 		}

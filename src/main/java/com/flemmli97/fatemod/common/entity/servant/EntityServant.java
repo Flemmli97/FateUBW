@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.flemmli97.fatemod.Fate;
 import com.flemmli97.fatemod.common.entity.servant.ai.EntityAIFollowMaster;
 import com.flemmli97.fatemod.common.entity.servant.ai.EntityAIRetaliate;
 import com.flemmli97.fatemod.common.handler.GrailWarPlayerTracker;
@@ -46,11 +47,15 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeChunkManager;
+import net.minecraftforge.common.ForgeChunkManager.Ticket;
+import net.minecraftforge.common.ForgeChunkManager.Type;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public abstract class EntityServant extends EntityCreature{
@@ -58,7 +63,7 @@ public abstract class EntityServant extends EntityCreature{
 	//Mana
 	private int servantMana, antiRegen, counter;
 	protected int deathTicks, combatTick;
-	protected boolean canUseNP, stay, nearbyEnemy, critHealth;
+	protected boolean canUseNP, critHealth;
 	/*private int , attackTimer, , ;*/
 	public boolean forcedNP;
 	
@@ -81,7 +86,8 @@ public abstract class EntityServant extends EntityCreature{
 	public static final IAttribute PROJECTILE_RESISTANCE = (new RangedAttribute((IAttribute)null, "generic.projectileResistance", 0.0D, 0.0D, 30.0D)).setDescription("Projectile Resistance");
 	
 	private ServantProperties prop;
-
+	//Chunk load ticket
+	private Ticket ticket;
 	public EntityAINearestAttackableTarget<EntityServant> targetServant = new EntityAINearestAttackableTarget<EntityServant>(this, EntityServant.class, 10, true, true, new Predicate<EntityServant>()    {
         public boolean apply(@Nullable EntityServant living)
         {
@@ -113,25 +119,28 @@ public abstract class EntityServant extends EntityCreature{
 	public EntityAIFollowMaster follow = new EntityAIFollowMaster(this, 1.0D, 15.0F, 4.0F);
 	public EntityAIRetaliate targetHurt = new EntityAIRetaliate(this);
 	public EntityAIMoveTowardsRestriction restrictArea = new EntityAIMoveTowardsRestriction(this, 1.0D);
-	
+	public EntityAIWander wander = new EntityAIWander(this, 1.0D);
 	private EntityServant(World world) {
 		super(world);
 		this.experienceValue = 50;
-	    //this.tasks.addTask(0, follow);
-        //this.tasks.addTask(1, restrictArea);
-	    this.tasks.addTask(2, new EntityAIWander(this, 1.0D));
+	    this.tasks.addTask(0, this.follow);
+        this.tasks.addTask(1, this.restrictArea);
+	    this.tasks.addTask(2, this.wander);
 	    this.tasks.addTask(3, new EntityAISwimming(this));
 	    this.tasks.addTask(4, new EntityAILookIdle(this));
 	    this.tasks.addTask(5, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
 	    this.tasks.addTask(6, new EntityAIOpenDoor(this, true));
-	    this.targetTasks.addTask(0, targetServant);
-	    this.targetTasks.addTask(1, targetPlayer);
-	    //this.targetTasks.addTask(2, targetHurt);
+	    this.targetTasks.addTask(0, this.targetServant);
+	    this.targetTasks.addTask(1, this.targetPlayer);
+	    this.targetTasks.addTask(2, this.targetHurt);
 		this.prop = ServantAttributes.attributes.get(this.getClass());
 		if (this.prop == null) {
             throw new NullPointerException("Properties of " + this.getClass() + " is null. This is not allowed");
         }
 		this.updateAttributes();
+		this.ticket = ForgeChunkManager.requestTicket(Fate.instance, world, Type.ENTITY);
+		this.ticket.bindEntity(this);
+		this.ticket.setChunkListDepth(1);
 	}
 	
 	public EntityServant(World world, EnumServantType type, String hogou, ItemStack[] drops)
@@ -354,6 +363,11 @@ public abstract class EntityServant extends EntityCreature{
 		tag.setInteger("Mana", this.servantMana);
 		tag.setBoolean("HealthMessage", this.critHealth);
 		tag.setBoolean("Revealed", this.showServant());
+		if(this.ticket!=null)
+		{
+			this.ticket.getModData().setIntArray("Chunk", 
+					new int[] { MathHelper.floor(this.posX) >> 4, MathHelper.floor(this.posZ) >> 4});
+		}
 	}
 
 	@Override
@@ -366,17 +380,7 @@ public abstract class EntityServant extends EntityCreature{
 		this.servantMana = tag.getInteger("Mana");
 		this.critHealth = tag.getBoolean("HealthMessage");
 		this.dataManager.set(showServant, tag.getBoolean("Revealed"));
-		this.getOwner();
 	}
-	
-	//Prevents entity saving to disk, when a player is the master (Entity will be saved at the player).
-	@Override
-    public boolean writeToNBTOptional(NBTTagCompound compound)
-    {
-       if(this.hasOwner())
-    	   return false;
-       return super.writeToNBTOptional(compound);
-    }
 	
 	//=====Entity AI updating
 	
@@ -408,8 +412,8 @@ public abstract class EntityServant extends EntityCreature{
 			this.targetTasks.addTask(2, targetHurt);
 			this.targetTasks.addTask(0, targetServant);
 			this.tasks.addTask(0, follow);
-			this.stay = false;
-			this.world.setEntityState(this, (byte)7);
+			this.tasks.addTask(2, this.wander);
+			this.setState(State.IDDLE);
 			this.detachHome();
 		}
 		else if(commandBehaviour == 4)
@@ -418,17 +422,17 @@ public abstract class EntityServant extends EntityCreature{
 			this.targetTasks.removeTask(targetServant);
 			this.targetTasks.removeTask(targetMob);
 			this.tasks.removeTask(follow);
-			this.stay = true;
-			this.world.setEntityState(this, (byte)6);
+			this.tasks.removeTask(this.wander);
+			this.setState(State.STAY);
 			this.getNavigator().clearPath();
 			this.setAttackTarget(null);
 			this.detachHome();
 		}
 		else if(commandBehaviour == 5)
 		{
-			this.stay = false;
+			this.setState(State.IDDLE);
 			this.tasks.removeTask(follow);
-			this.world.setEntityState(this, (byte)7);
+			this.tasks.addTask(2, this.wander);
 			this.setHomePosAndDistance(this.getOwner().getPosition(), 8);
 		}
 	}
@@ -439,15 +443,24 @@ public abstract class EntityServant extends EntityCreature{
 	@Override
 	public void onLivingUpdate() {
 		super.onLivingUpdate();		
+		this.attackTimer=Math.max(0, --this.attackTimer);
 		if(!this.world.isRemote)
 		{
-			regenMana();
+			this.regenMana();
+			this.combatTick=Math.max(0, --this.combatTick);
+			//Decide it on server, wether attack has finished or not
+			if(!this.world.isRemote && this.attackTimer==0 && State.isAttack(this.entityState()))
+				this.setState(State.IDDLE);
+			if(this.ticksExisted%10==0)
+				System.out.println("chunk " + this.getPosition());
+			if(this.ticket!=null && this.shouldLoadChunk())
+				ForgeChunkManager.forceChunk(this.ticket, new ChunkPos(this.getPosition()));
 		}
-		this.nearbyEnemy = ServantUtils.testNearbyEnemy(this);				
-		this.attackTimer=Math.max(0, --this.attackTimer);
-		if(this.attackTimer==0 && this.entityState()!=State.IDDLE)//||this.entityState()!=State.))
-			this.setState(State.IDDLE);
-		this.combatTick=Math.max(0, --this.combatTick);
+	}
+	
+	public boolean shouldLoadChunk()
+	{
+		return this.deathTicks==0;//this.isEntityAlive();
 	}
 	
 	//=====Death Handling
@@ -456,6 +469,12 @@ public abstract class EntityServant extends EntityCreature{
 	{
 		return this.deathTicks;
 	}
+	
+	@Override
+    protected boolean canDespawn()
+    {
+        return false;
+    }
 	
 	@Override
 	protected void onDeathUpdate() {
@@ -475,6 +494,8 @@ public abstract class EntityServant extends EntityCreature{
 					GrailWarPlayerTracker track = GrailWarPlayerTracker.get(this.world);
 					track.removePlayer(this.getOwner());
 				}
+				if(this.ticket!=null)
+					ForgeChunkManager.unforceChunk(this.ticket, new ChunkPos(this.getPosition()));
 			}
 			int exp;
 	        int splitExp;
@@ -511,7 +532,7 @@ public abstract class EntityServant extends EntityCreature{
 	
 	public boolean canAttack()
 	{
-		return this.entityState()!=State.IDDLE && this.attackTimer==this.attackTickerFromState(this.entityState()).getRight();
+		return State.isAttack(this.entityState()) && this.attackTimer==this.attackTickerFromState(this.entityState()).getRight();
 	}
 
 	@Override
@@ -658,7 +679,7 @@ public abstract class EntityServant extends EntityCreature{
 	public static enum State
 	{
 		IDDLE,
-		//STAY,
+		STAY,
 		ATTACK1,
 		ATTACK2,
 		ATTACK3,
@@ -677,7 +698,7 @@ public abstract class EntityServant extends EntityCreature{
 		
 		public static boolean isAttack(State state)
 		{
-			return state!=IDDLE ;//&& state!=STAY;
+			return state!=IDDLE && state!=STAY;
 		}
 	}
 	public static enum EnumServantType

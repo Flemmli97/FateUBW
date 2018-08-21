@@ -8,6 +8,8 @@ import com.flemmli97.fatemod.common.handler.capabilities.PlayerCapProvider;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -30,14 +32,17 @@ public class MessageServantSync  implements IMessage{
 	
 	@Override
 	public void fromBytes(ByteBuf buf) {
-		this.id=buf.readInt();
-		this.isNull=buf.readBoolean();
+		NBTTagCompound compound = ByteBufUtils.readTag(buf);
+		this.id=compound.getInteger("Id");
+		this.isNull=compound.getBoolean("IsNull");
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf) {
-		buf.writeInt(this.id);
-		buf.writeBoolean(isNull);
+		NBTTagCompound compound = new NBTTagCompound();
+		compound.setInteger("Id", this.id);
+		compound.setBoolean("IsNull", this.isNull);
+		ByteBufUtils.writeTag(buf, compound);
 	}
 	
 	public static class Handler implements IMessageHandler<MessageServantSync, IMessage> {

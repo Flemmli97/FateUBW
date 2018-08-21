@@ -31,7 +31,7 @@ public class PlayerCapProvider implements ICapabilitySerializable<NBTBase>{
     @Override
     public void deserializeNBT(NBTBase nbt)
     {
-    		PlayerCap.getStorage().readNBT(PlayerCap, this.instance, null, nbt);
+		PlayerCap.getStorage().readNBT(PlayerCap, this.instance, null, nbt);
     }
 
 }

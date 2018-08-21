@@ -6,7 +6,6 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import com.flemmli97.fatemod.Fate;
-import com.flemmli97.fatemod.client.render.MultiItemColor;
 import com.flemmli97.fatemod.common.entity.servant.EntityServant;
 import com.flemmli97.fatemod.common.handler.GrailWarPlayerTracker;
 import com.flemmli97.fatemod.common.handler.capabilities.IPlayer;
@@ -17,9 +16,7 @@ import com.flemmli97.fatemod.common.utils.SpawnEntityCustomList;
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -54,9 +51,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemSpawn extends Item implements IModelRegister{
-	
-	ItemColors color = Minecraft.getMinecraft().getItemColors();
-	MultiItemColor icolor;
 	
 	public ItemSpawn()
 	{
@@ -140,6 +134,7 @@ public class ItemSpawn extends Item implements IModelRegister{
                 		IPlayer cap = player.getCapability(PlayerCapProvider.PlayerCap, null);
             			if(cap.getServant()==null)
             			{
+                			cap.setServant(player, (EntityServant) entity);
                 			((EntityServant) entity).setOwner(player);
                 			GrailWarPlayerTracker track = GrailWarPlayerTracker.get(world);
                 			track.addPlayer(player);  
@@ -226,7 +221,7 @@ public class ItemSpawn extends Item implements IModelRegister{
                     			IPlayer cap = player.getCapability(PlayerCapProvider.PlayerCap, null);
                     			if(cap.getServant()==null)
                     			{
-	                    			//cap.setServant(player, (EntityServant) entity);
+	                    			cap.setServant(player, (EntityServant) entity);
 	                    			((EntityServant) entity).setOwner(player);
 	                    			GrailWarPlayerTracker track = GrailWarPlayerTracker.get(world);
 	                    			track.addPlayer(player);  

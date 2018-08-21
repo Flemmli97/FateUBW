@@ -106,8 +106,10 @@ public class EntityAIAnimatedAttack extends EntityAIBase{
         double distanceToTarget = this.attackingEntity.getDistanceSq(target.posX, target.getEntityBoundingBox().minY, target.posZ);
         double attackRange = rangeModifier*(double)(this.attackingEntity.width * 2.0F * this.attackingEntity.width * 2.0F + target.width+1);
         --this.moveDelay;
+        State state = this.attackingEntity.entityState();
+
         //Movement
-        if ((this.attackingEntity.getEntitySenses().canSee(target)) && this.moveDelay <= 0 && (this.posX == 0.0D && this.posY == 0.0D && this.posZ == 0.0D || this.attackingEntity.getRNG().nextFloat() < 1.0F))
+        if (!State.isAttack(state) && (this.attackingEntity.getEntitySenses().canSee(target)) && this.moveDelay <= 0 && (this.posX == 0.0D && this.posY == 0.0D && this.posZ == 0.0D || this.attackingEntity.getRNG().nextFloat() < 1.0F))
         {
             this.posX = target.posX;
             this.posY = target.getEntityBoundingBox().minY;
@@ -130,15 +132,14 @@ public class EntityAIAnimatedAttack extends EntityAIBase{
         }
 
         //Attack
-        State state = this.attackingEntity.entityState();
         if (distanceToTarget <= attackRange)
         {
         	if(state==State.IDDLE)
         	{
-        		this.attackingEntity.getNavigator().clearPath();
-        		State randomAttack = State.randomAttackState(this.attackingEntity.getRNG());
-        		this.attackingEntity.setState(randomAttack);
+        		this.attackingEntity.setState(State.randomAttackState(this.attackingEntity.getRNG()));
         	}
+        	if(State.isAttack(state))
+        		this.attackingEntity.getNavigator().clearPath();
         	if(this.attackingEntity.canAttack())
         	{
         		this.attackingEntity.attackEntityAsMob(target);
@@ -209,7 +210,7 @@ public class EntityAIAnimatedAttack extends EntityAIBase{
         {
         	if(state==State.IDDLE)
         	{
-        		this.attackingEntity.getNavigator().clearPath();
+        		//this.attackingEntity.getNavigator().clearPath();
         		State randomAttack = State.randomAttackState(this.attackingEntity.getRNG());
         		this.attackingEntity.setState(randomAttack);
         	}

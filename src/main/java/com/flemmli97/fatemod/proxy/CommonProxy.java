@@ -1,6 +1,8 @@
 package com.flemmli97.fatemod.proxy;
 
 
+import java.util.List;
+
 import com.flemmli97.fatemod.Fate;
 import com.flemmli97.fatemod.client.gui.GuiHandler;
 import com.flemmli97.fatemod.common.gen.WorldGen;
@@ -11,11 +13,17 @@ import com.flemmli97.fatemod.common.handler.capabilities.IPlayer;
 import com.flemmli97.fatemod.common.handler.capabilities.PlayerCap;
 import com.flemmli97.fatemod.common.handler.capabilities.PlayerCapNetwork;
 import com.flemmli97.fatemod.common.init.ModEntities;
+import com.flemmli97.fatemod.network.CustomDataPacket;
 import com.flemmli97.fatemod.network.PacketHandler;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.IThreadListener;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.ForgeChunkManager;
+import net.minecraftforge.common.ForgeChunkManager.LoadingCallback;
+import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -42,6 +50,22 @@ public class CommonProxy {
 
     public void postInit(FMLPostInitializationEvent e) {
 		BabylonWeapon.init();
+		CustomDataPacket.registerData();
+		ForgeChunkManager.setForcedChunkLoadingCallback(Fate.instance, new LoadingCallback() {
+			@Override
+			public void ticketsLoaded(List<Ticket> tickets, World world) {
+				for(Ticket ticket : tickets)
+				{
+					if(ticket.getEntity()!=null && ticket.getEntity().isEntityAlive())
+					{
+						if(ticket.getModData().hasKey("Chunk"))
+						{
+							int[] arr = ticket.getModData().getIntArray("Chunk");
+							ForgeChunkManager.forceChunk(ticket, new ChunkPos(arr[0], arr[1]));
+						}
+					}
+				}
+			}});
     }
     
     public IThreadListener getListener(MessageContext ctx) {

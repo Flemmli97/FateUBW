@@ -33,7 +33,7 @@ public class EntitySasaki extends EntityServant {
 	
 	public boolean canAttack()
 	{
-		return this.entityState()!=State.IDDLE && this.attackTimer()==this.attackTickerFromState(this.entityState()).getRight();
+		return State.isAttack(this.entityState()) && this.attackTimer()==this.attackTickerFromState(this.entityState()).getRight();
 	}
 	
 	@Override

@@ -55,6 +55,7 @@ public class EntityHassanCopy extends EntityServant{
 		this.targetTasks.removeTask(targetServant);
 	    this.targetTasks.removeTask(targetPlayer);
 	    this.targetTasks.removeTask(targetHurt);
+		this.experienceValue = 0;
 	}
 	@Override
 	public void onLivingUpdate()
@@ -83,13 +84,6 @@ public class EntityHassanCopy extends EntityServant{
     {
 		return false;
     }
-	
-	public NBTTagCompound entityNBT(NBTTagCompound compound)
-	{
-		//compound.setString("id", this.getEntityString());
-		this.writeToNBT(compound);
-		return compound;
-	}
 	
 	private void updateAttributes()
 	{

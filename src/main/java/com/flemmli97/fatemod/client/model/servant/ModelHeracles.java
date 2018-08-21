@@ -1,5 +1,7 @@
 package com.flemmli97.fatemod.client.model.servant;
 
+import com.flemmli97.fatemod.client.model.ModelUtils;
+
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
@@ -554,8 +556,8 @@ public class ModelHeracles extends ModelServant {
      * This is a helper function from Tabula to set the rotation of model parts
      */
     public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.rotateAngleX = this.degToRad(x);
-        modelRenderer.rotateAngleY = this.degToRad(y);
-        modelRenderer.rotateAngleZ = this.degToRad(z);
+        modelRenderer.rotateAngleX = ModelUtils.degToRad(x);
+        modelRenderer.rotateAngleY = ModelUtils.degToRad(y);
+        modelRenderer.rotateAngleZ = ModelUtils.degToRad(z);
     }
 }

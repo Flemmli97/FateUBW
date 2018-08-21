@@ -22,6 +22,8 @@ public interface IPlayer {
 	public void setServant(EntityPlayer player, EntityServant servant);
 	
 	public String getServantName();
+		
+	public void initServant(EntityPlayer player);
 	
 	//Command seals
 	public int getCommandSeals();

@@ -1,6 +1,7 @@
 package com.flemmli97.fatemod.client.render.servant;
 
 import com.flemmli97.fatemod.client.model.servant.ModelServant;
+import com.flemmli97.fatemod.client.render.layer.LayerHand;
 import com.flemmli97.fatemod.common.entity.servant.EntityServant;
 import com.flemmli97.fatemod.common.handler.capabilities.PlayerCapProvider;
 
@@ -14,21 +15,16 @@ import net.minecraft.util.ResourceLocation;
 
 public abstract class RenderServant<T extends EntityServant> extends RenderLiving<T>{
 	
-	
     private static final ResourceLocation DEFAULT_RES_LOC = new ResourceLocation("textures/entity/steve.png");
     protected ModelServant modelServantMain;
     protected ModelServant defaultModel = new ModelServant();
-    protected float scale;
-
+    
     public RenderServant(RenderManager renderManagerIn, ModelServant modelServant, float shadowSize)
     {
         super(renderManagerIn, modelServant, shadowSize);
         this.modelServantMain = modelServant;
         this.addLayer(new LayerCustomHead(modelServant.servantHead));
-        //this.addLayer(layer)
-        //this.addLayer(new LayerHand(this));
-        //this.addLayer(new LayerHeldItem(this));
-
+        this.addLayer(new LayerHand(this));
     }
     
     @Override
@@ -45,22 +41,24 @@ public abstract class RenderServant<T extends EntityServant> extends RenderLivin
     	{
     		modelServantMain.heldItemOff = 1;
     	}
-    	if(!servant.showServant())
+    	if(!showIdentity(servant))
     		this.mainModel=this.defaultModel;
-		super.preRenderCallback(servant, partialTickTime);
+    	else
+    		this.mainModel=this.modelServantMain;
 	}
 
-	/*@Override
-	public void doRender(T entity, double x, double y, double z, float entityYaw, float partialTicks) {
-    	super.doRender(entity, x, y, z, entityYaw, partialTicks);
-	}*/
 	@Override
 	protected ResourceLocation getEntityTexture(T entity)
 	{
-		EntityPlayer player = Minecraft.getMinecraft().player;
-		boolean owner = player.hasCapability(PlayerCapProvider.PlayerCap, null)?player.getCapability(PlayerCapProvider.PlayerCap, null).getServant()==entity:false;
-        return (entity.showServant() || owner || entity.getDeathTick()>0)?this.servantTexture(entity):DEFAULT_RES_LOC;
+		return showIdentity(entity)?this.servantTexture(entity):DEFAULT_RES_LOC;
     }
+	
+	public static boolean showIdentity(EntityServant servant)
+	{
+		EntityPlayer player = Minecraft.getMinecraft().player;
+		boolean owner = player!=null?player.getCapability(PlayerCapProvider.PlayerCap, null).getServant()==servant:false;
+		return (servant.showServant() || owner || servant.getDeathTick()>0);
+	}
 	
 	protected abstract ResourceLocation servantTexture(T entity);
 }
