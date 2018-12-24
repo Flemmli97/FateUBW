@@ -36,8 +36,7 @@ public class EntityHeracles extends EntityServant {
 	
 	@Override
 	public Pair<Integer, Integer> attackTickerFromState(State state) {
-		// TODO Auto-generated method stub
-		return Pair.of(0, 0);
+		return Pair.of(20, 20);
 	}
 	
 	@Override
@@ -48,7 +47,8 @@ public class EntityHeracles extends EntityServant {
     }
 	
 	@Override
-	protected void updateAITasks() {
+	public void updateAI(int behaviour) {
+		super.updateAI(behaviour);
 		if(commandBehaviour == 3)
 		{
 			this.tasks.addTask(1, attackAI);
@@ -57,7 +57,6 @@ public class EntityHeracles extends EntityServant {
 		{
 			this.tasks.removeTask(attackAI);
 		}
-		super.updateAITasks();
 	}
 	
 	public void setDeathNumber(int death)
@@ -72,6 +71,8 @@ public class EntityHeracles extends EntityServant {
 	
 	@Override
 	public boolean attackEntityFrom(DamageSource damageSource, float damage) {
+		if(damageSource != DamageSource.OUT_OF_WORLD && damage<4)
+			return false;
 		return super.attackEntityFrom(damageSource, damage);
 	}
 	

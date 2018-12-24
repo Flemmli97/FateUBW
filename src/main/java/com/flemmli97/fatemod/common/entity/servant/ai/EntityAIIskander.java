@@ -23,12 +23,13 @@ public class EntityAIIskander extends EntityAIAnimatedAttack{
 		EntityLivingBase var1 = this.attackingEntity.getAttackTarget();
 		if((attackingEntity.canUseNP() && attackingEntity.getOwner() == null && attackingEntity.getMana()>=attackingEntity.props().hogouMana()) || attackingEntity.forcedNP)
 		{
-	        State state = this.attackingEntity.entityState();
+			State state = this.attackingEntity.entityState();
 	        if(state==State.IDDLE)
 	        {
-	        	this.attackingEntity.setState(State.NP);
+	        	state = State.NP;
+	        	this.attackingEntity.setState(state);
 	        }
-        	else if(state==State.NP)
+        	if(state==State.NP)
             {
             	if(this.attackingEntity.canAttack())
             	{

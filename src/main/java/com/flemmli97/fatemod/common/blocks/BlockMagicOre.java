@@ -11,16 +11,11 @@ import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockMagicOre extends Block{
 
@@ -44,7 +39,7 @@ public class BlockMagicOre extends Block{
 	@Override
 	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
 		ArrayList<ItemStack> drops = new ArrayList<ItemStack>();
-	    drops.add(new ItemStack(ModItems.crystal, 1+Block.RANDOM.nextInt(2)+Block.RANDOM.nextInt(fortune+1), Block.RANDOM.nextInt(5)));
+	    drops.add(new ItemStack(ModItems.crystals[Block.RANDOM.nextInt(ModItems.crystals.length)], 1+Block.RANDOM.nextInt(2)+Block.RANDOM.nextInt(fortune+1)));
 	    return drops;
 	}
 
@@ -52,10 +47,4 @@ public class BlockMagicOre extends Block{
 	public int getExpDrop(IBlockState state, IBlockAccess world, BlockPos pos, int fortune) {
 		return Block.RANDOM.nextInt(10)+2;
 	}
-	
-	@SideOnly(Side.CLIENT)
-    public void initModel() {
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(getRegistryName(), "inventory"));
-    }
-
 }

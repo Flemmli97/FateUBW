@@ -5,9 +5,9 @@ import java.util.List;
 
 import com.flemmli97.fatemod.Fate;
 import com.flemmli97.fatemod.client.gui.GuiHandler;
+import com.flemmli97.fatemod.common.entity.servant.EntityHassanCopy;
+import com.flemmli97.fatemod.common.entity.servant.EntityServant;
 import com.flemmli97.fatemod.common.gen.WorldGen;
-import com.flemmli97.fatemod.common.handler.BabylonWeapon;
-import com.flemmli97.fatemod.common.handler.ConfigHandler;
 import com.flemmli97.fatemod.common.handler.ModEventHandler;
 import com.flemmli97.fatemod.common.handler.capabilities.IPlayer;
 import com.flemmli97.fatemod.common.handler.capabilities.PlayerCap;
@@ -31,14 +31,16 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class CommonProxy {
 
-    public void preInit(FMLPreInitializationEvent e) {
+    private static int servants;
+
+	public void preInit(FMLPreInitializationEvent e) {
     	ModEntities.mainRegistry();
     	PacketHandler.registerPackets();
-    	ConfigHandler.loadConfig(e.getModConfigurationDirectory()+"/fate/");
     }
     
     public void init(FMLInitializationEvent e) {
@@ -49,7 +51,6 @@ public class CommonProxy {
     }
 
     public void postInit(FMLPostInitializationEvent e) {
-		BabylonWeapon.init();
 		CustomDataPacket.registerData();
 		ForgeChunkManager.setForcedChunkLoadingCallback(Fate.instance, new LoadingCallback() {
 			@Override
@@ -66,6 +67,17 @@ public class CommonProxy {
 					}
 				}
 			}});
+		ForgeRegistries.ENTITIES.forEach(entry->{
+			if(EntityServant.class.isAssignableFrom(entry.getEntityClass()) && !entry.getEntityClass().equals(EntityHassanCopy.class))
+			{
+				++servants;
+			}
+		});
+    }
+    
+    public static int servants()
+    {
+    	return servants;
     }
     
     public IThreadListener getListener(MessageContext ctx) {
@@ -75,4 +87,14 @@ public class CommonProxy {
     public EntityPlayer getPlayerEntity(MessageContext ctx) {
    	 return ctx.getServerHandler().player;
    	}
+    
+    public String entityName(EntityServant servant)
+    {
+    	return servant.getRealName();
+    }
+    
+    public void updateGuiTruce()
+    {
+    	
+    }
 }

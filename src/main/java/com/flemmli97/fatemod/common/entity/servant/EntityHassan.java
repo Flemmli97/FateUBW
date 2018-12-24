@@ -8,9 +8,8 @@ import javax.annotation.Nullable;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.flemmli97.fatemod.common.entity.servant.ai.EntityAIHassan;
-import com.flemmli97.fatemod.common.handler.capabilities.IPlayer;
-import com.flemmli97.fatemod.common.handler.capabilities.PlayerCapProvider;
 import com.flemmli97.fatemod.common.init.ModItems;
+import com.flemmli97.fatemod.common.utils.ServantUtils;
 import com.google.common.base.Predicate;
 
 import net.minecraft.entity.EntityLiving;
@@ -28,11 +27,15 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 
 public class EntityHassan extends EntityServant {
 
 	public EntityAIHassan attackAI = new EntityAIHassan(this);
-	private List<EntityHassanCopy> copies = new ArrayList<EntityHassanCopy>();
+	
+	private List<String> copieUUID = new ArrayList<String>();
+	
+	public static final int maxCopies = 5;
 	
 	public EntityHassan(World world) {
 		super(world, EnumServantType.ASSASSIN, "Delusional Illusion", new ItemStack[] {new ItemStack(ModItems.dagger)});
@@ -46,10 +49,9 @@ public class EntityHassan extends EntityServant {
 
 	        		if(EntityHassan.this.getOwner()!=null && targetOwner!=null)
 	        		{
-	        			IPlayer capSync = EntityHassan.this.getOwner().getCapability(PlayerCapProvider.PlayerCap, null);
-	        			flag = !capSync.isPlayerTruce(targetOwner);
+	        			flag = !ServantUtils.inSameTeam(EntityHassan.this.getOwner(), targetOwner);
 	        		}
-	            return living != null && flag && !EntityHassan.this.copies.contains(living);
+	            return living != null && flag && !EntityHassan.this.copieUUID.contains(living.getCachedUniqueIdString());
 	        }});
 	    this.targetTasks.addTask(0, targetServant);
 	}
@@ -62,19 +64,43 @@ public class EntityHassan extends EntityServant {
 	@Override
 	public Pair<Integer, Integer> attackTickerFromState(State state) {
 		// TODO Auto-generated method stub
-		return Pair.of(0, 0);
+		return Pair.of(15, 15);
 	}
 	
 	public void removeCopy(EntityHassanCopy copy)
 	{
-		this.copies.remove(copy);
+		this.copieUUID.remove(copy.getCachedUniqueIdString());
+	}
+	
+	public boolean addCopy(EntityHassanCopy copy)
+	{
+		if(this.copieUUID.size()<maxCopies)
+		{
+			this.copieUUID.add(copy.getCachedUniqueIdString());
+			return true;
+		}
+		return false;
+	}
+	
+	private List<EntityHassanCopy> gatherCopies()
+	{
+		ArrayList<EntityHassanCopy> list = new ArrayList<EntityHassanCopy>();
+		for(EntityHassanCopy e : this.world.getEntitiesWithinAABB(EntityHassanCopy.class, this.getEntityBoundingBox().grow(32)))
+		{
+			if(this.copieUUID.contains(e.getCachedUniqueIdString()))
+			{
+				e.setOriginal(this);
+				list.add(e);
+			}
+		}
+		return list;
 	}
 	
 	@Override
 	public void setAttackTarget(EntityLivingBase entitylivingbaseIn) {
-		for(EntityHassanCopy hassan : this.copies)
+		for(EntityHassanCopy hassan : this.gatherCopies())
 		{
-			if(hassan!=null)
+			if(hassan!=null && hassan.isEntityAlive())
 				hassan.setAttackTarget(entitylivingbaseIn);
 		}
 		super.setAttackTarget(entitylivingbaseIn);
@@ -105,28 +131,29 @@ public class EntityHassan extends EntityServant {
 
 	public void attackWithNP()
 	{
-		if(this.copies.isEmpty())
+		if(this.gatherCopies().isEmpty())
 		{
-			for(int i = 0; i < 5; i++)
+			this.copieUUID.clear();
+			for(int i = 0; i < maxCopies; i++)
 			{
 				EntityHassanCopy hassan = new EntityHassanCopy(world, this);
 				hassan.setLocationAndAngles(this.posX, this.posY,this.posZ, MathHelper.wrapDegrees(this.world.rand.nextFloat() * 360.0F), 0.0F);
-				hassan.setOwner(this.getOwner());
 				hassan.setAttackTarget(this.getAttackTarget());
 				hassan.onInitialSpawn(this.world.getDifficultyForLocation(this.getPosition()), null);
 				this.world.spawnEntity(hassan); 
-				this.copies.add(hassan);
+				this.addCopy(hassan);
 			}
 			this.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:invisibility"),3600,1,true,false));
 			this.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:resistance"),100,2,true,false));
 			if(this.getAttackTarget() instanceof EntityLiving)
 				((EntityLiving) this.getAttackTarget()).setAttackTarget(null);
+			this.revealServant();
 		}
 	}
 
 	@Override
 	protected void onDeathUpdate() {
-		for(EntityHassanCopy hassan : this.copies)
+		for(EntityHassanCopy hassan : this.gatherCopies())
 		{
 			if(hassan!=null)
 				hassan.attackEntityFrom(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
@@ -138,10 +165,9 @@ public class EntityHassan extends EntityServant {
 	public void writeEntityToNBT(NBTTagCompound tag) {
 		super.writeEntityToNBT(tag);
 		NBTTagList copies = new NBTTagList();
-		for(EntityHassanCopy hassan : this.copies)
+		for(String hassan : this.copieUUID)
 		{
-			if(hassan!=null)
-				copies.appendTag(new NBTTagString(hassan.getCachedUniqueIdString()));
+			copies.appendTag(new NBTTagString(hassan));
 		}
 		tag.setTag("Copies", copies);
 	}
@@ -149,7 +175,11 @@ public class EntityHassan extends EntityServant {
 	@Override
 	public void readEntityFromNBT(NBTTagCompound tag) {
 		super.readEntityFromNBT(tag);
-		//this.copies.clear();
-		//NBTTagList copies = tag.getTagList("Copies", Constants.NBT.TAG_COMPOUND);
+		NBTTagList list = tag.getTagList("Copies", Constants.NBT.TAG_STRING);
+		for(int i = 0 ; i < list.tagCount(); i++)
+		{
+			this.copieUUID.add(list.getStringTagAt(i));
+		}
+		this.gatherCopies();
 	}
 }

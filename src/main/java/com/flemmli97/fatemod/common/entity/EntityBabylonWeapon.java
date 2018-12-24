@@ -1,12 +1,17 @@
 package com.flemmli97.fatemod.common.entity;
 
-import com.flemmli97.fatemod.common.handler.BabylonWeapon;
+import java.util.Collection;
+
 import com.flemmli97.fatemod.common.handler.CustomDamageSource;
+import com.flemmli97.tenshilib.common.item.ItemUtil;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -19,19 +24,23 @@ import net.minecraft.world.World;
 public class EntityBabylonWeapon extends EntitySpecialProjectile{
 	
     protected static final DataParameter<ItemStack> weaponType = EntityDataManager.<ItemStack>createKey(EntityBabylonWeapon.class, DataSerializers.ITEM_STACK);
-	public boolean iddle;
+    protected static final DataParameter<Integer> shootTime = EntityDataManager.<Integer>createKey(EntityBabylonWeapon.class, DataSerializers.VARINT);
+
+    public boolean iddle;
 	EntityLivingBase target;
-	
+	private double dmg;
 	public EntityBabylonWeapon(World world)
 	{
 		super(world);
 		this.livingTickMax=400;
+		this.dataManager.set(shootTime, this.rand.nextInt(10)+25);
 	}
 	
 	public EntityBabylonWeapon(World world, EntityLivingBase shootingEntity)
 	{
 		super(world, shootingEntity, false, false);
 		this.livingTickMax=400;
+		this.dataManager.set(shootTime, this.rand.nextInt(20)+25);
 	}
 	
 	public EntityBabylonWeapon(World world, EntityLivingBase shootingEntity, EntityLivingBase target)
@@ -45,17 +54,18 @@ public class EntityBabylonWeapon extends EntitySpecialProjectile{
     {
         super.entityInit();
         this.dataManager.register(weaponType, null);
+        this.dataManager.register(shootTime, 0);
     }
 
 	@Override
 	public void onUpdate() {
 		EntityLivingBase thrower = getThrower();
-		if(livingTick<=30)
+		if(livingTick<=this.dataManager.get(shootTime))
 		{
 			livingTick++;
 			iddle=true;;
 		}
-		if(livingTick == 30)
+		if(livingTick == this.dataManager.get(shootTime))
 		{
 			if(!world.isRemote)
 			{
@@ -63,7 +73,6 @@ public class EntityBabylonWeapon extends EntitySpecialProjectile{
 				{
 					RayTraceResult hit = this.entityRayTrace(64);
 					this.setHeadingToPosition(hit.hitVec.x, hit.hitVec.y, hit.hitVec.z, 0.5F, 0.5F);
-
 				}
 				else if(target!=null)
 				{
@@ -71,7 +80,7 @@ public class EntityBabylonWeapon extends EntitySpecialProjectile{
 				}
 			}
 		}
-		else if(livingTick>30)
+		else if(livingTick>this.dataManager.get(shootTime))
 		{
 			iddle=false;
 			if(!world.isRemote) 
@@ -94,7 +103,7 @@ public class EntityBabylonWeapon extends EntitySpecialProjectile{
 	
 	public void setEntityProperties()
 	{	
-		this.setWeapon(BabylonWeapon.getWeapon());
+		this.setWeapon(ItemUtil.getRandomFromSlot(EntityEquipmentSlot.MAINHAND));
 		super.setProjectileAreaPosition(7);
 	}
 	
@@ -105,8 +114,28 @@ public class EntityBabylonWeapon extends EntitySpecialProjectile{
 	
 	public void setWeapon(ItemStack stack)
 	{
-		if(stack!=null)
+		if(!stack.isEmpty())
+		{
 			this.dataManager.set(weaponType, stack);
+			Collection<AttributeModifier> atts = this.getWeapon().getAttributeModifiers(EntityEquipmentSlot.MAINHAND).get(SharedMonsterAttributes.ATTACK_DAMAGE.getName());
+			for(AttributeModifier mod : atts)
+			{
+				if(mod.getOperation()==0)
+					dmg+=mod.getAmount();
+			}
+			double value = dmg;
+			for(AttributeModifier mod : atts)
+			{
+				if(mod.getOperation()==1)
+					value+=dmg*mod.getAmount();
+			}
+			for(AttributeModifier mod : atts)
+			{
+				if(mod.getOperation()==2)
+					value*=1+mod.getAmount();
+			}
+			dmg=SharedMonsterAttributes.ATTACK_DAMAGE.clampValue(value);
+		}
 	}
 
 	@Override
@@ -115,7 +144,7 @@ public class EntityBabylonWeapon extends EntitySpecialProjectile{
         {
     		if (result.entityHit != null && result.entityHit != this.getThrower())
             {
-    			result.entityHit.attackEntityFrom(CustomDamageSource.babylon(this, this.getThrower()), 10.0F);
+    			result.entityHit.attackEntityFrom(CustomDamageSource.babylon(this, this.getThrower()), (float)this.dmg*1.5F);
     			this.setDead();
             }
     		else if(result.typeOfHit == RayTraceResult.Type.BLOCK)

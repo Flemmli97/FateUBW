@@ -1,7 +1,9 @@
 package com.flemmli97.fatemod.common.entity;
 
+import com.flemmli97.fatemod.common.items.ItemGemShard;
+import com.flemmli97.fatemod.common.items.ItemGemShard.ShardType;
+
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -18,10 +20,10 @@ public class EntityGem extends EntitySpecialProjectile {
 		super(world);
 	}
 	
-    public EntityGem(World world, EntityLivingBase thrower, ItemStack stack)
+    public EntityGem(World world, EntityLivingBase thrower, ItemGemShard item)
     {
         super(world, thrower, false, false);
-        this.dataManager.set(meta, Integer.valueOf(stack.getMetadata()));
+        this.dataManager.set(meta, item.getType().ordinal());
     }
 
     public EntityGem(World world, double d1, double d2, double d3)
@@ -35,9 +37,9 @@ public class EntityGem extends EntitySpecialProjectile {
         this.dataManager.register(meta, Integer.valueOf(0));
     }
     
-    public int getStackMeta()
+    public ShardType getType()
     {
-    	return this.dataManager.get(meta);
+    	return ShardType.values()[this.dataManager.get(meta)];
     }
 
 	@Override

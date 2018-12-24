@@ -5,7 +5,6 @@ import com.flemmli97.fatemod.common.init.ModBlocks;
 import com.flemmli97.fatemod.common.lib.LibReference;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
@@ -18,11 +17,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemChalk extends Item implements IModelRegister{
+public class ItemChalk extends Item{
 
 	public ItemChalk() {
 		this.setCreativeTab(Fate.customTab);
@@ -51,10 +47,4 @@ public class ItemChalk extends Item implements IModelRegister{
 		}
 		return EnumActionResult.FAIL;
 	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-    public void initModel() {
-        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(getRegistryName(), "inventory"));
-    }
 }

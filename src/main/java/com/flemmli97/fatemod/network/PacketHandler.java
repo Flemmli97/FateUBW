@@ -22,9 +22,9 @@ public class PacketHandler {
 		dispatcher.registerMessage(MessageServantSync.Handler.class, MessageServantSync.class, id++, Side.CLIENT);
 		dispatcher.registerMessage(MessageGui.Handler.class, MessageGui.class, id++, Side.SERVER);
 		dispatcher.registerMessage(MessageWarTracker.Handler.class, MessageWarTracker.class, id++, Side.CLIENT);
-		dispatcher.registerMessage(MessageExtendedHit.Handler.class, MessageExtendedHit.class, id++, Side.SERVER);
 		dispatcher.registerMessage(MessageAltarUpdate.Handler.class, MessageAltarUpdate.class, id++, Side.CLIENT);
 		dispatcher.registerMessage(MessageCommandSeals.Handler.class, MessageCommandSeals.class, id++, Side.CLIENT);
+		dispatcher.registerMessage(MessageTruce.Handler.class, MessageTruce.class, id++, Side.SERVER);
 	}
 	
 	public static final void sendTo(IMessage message, EntityPlayerMP player) {

@@ -2,6 +2,7 @@ package com.flemmli97.fatemod.network;
 
 import com.flemmli97.fatemod.Fate;
 import com.flemmli97.fatemod.common.handler.GrailWarPlayerTracker;
+import com.flemmli97.fatemod.common.handler.TruceMapHandler;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,23 +14,29 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class MessageWarTracker  implements IMessage{
 
-	public NBTTagCompound compound = new NBTTagCompound();
+	public NBTTagCompound grailWarTracker = new NBTTagCompound();
+	public NBTTagCompound truceMap = new NBTTagCompound();
+
 	public MessageWarTracker(){}
 	
 	public MessageWarTracker(World world)
 	{
-		GrailWarPlayerTracker track = GrailWarPlayerTracker.get(world);
-		if(track!=null&& track.playerCount()>0)
-			track.writeToNBT(compound);
+		GrailWarPlayerTracker.get(world).writeToNBT(grailWarTracker);
+		TruceMapHandler.get(world).writeToNBT(truceMap);
 	}
 	
 	@Override
 	public void fromBytes(ByteBuf buf) {
-		compound = ByteBufUtils.readTag(buf);
+		NBTTagCompound compound = ByteBufUtils.readTag(buf);
+		this.grailWarTracker=compound.getCompoundTag("GrailWarTracker");
+		this.truceMap=compound.getCompoundTag("TruceMap");
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf) {
+		NBTTagCompound compound = new NBTTagCompound();
+		compound.setTag("GrailWarTracker", grailWarTracker);
+		compound.setTag("TruceMap", truceMap);
 		ByteBufUtils.writeTag(buf, compound);
 	}
 	
@@ -40,11 +47,12 @@ public class MessageWarTracker  implements IMessage{
         	World world = Fate.proxy.getPlayerEntity(ctx).world;
 
 			GrailWarPlayerTracker tracker = GrailWarPlayerTracker.get(world);
-			if(tracker != null && msg.compound!=null)
-			{
-				tracker.reset();
-				tracker.readFromNBT(msg.compound);
-			}      	
+				tracker.reset(world);
+				tracker.readFromNBT(msg.grailWarTracker);
+			TruceMapHandler truce = TruceMapHandler.get(world);
+				truce.reset();
+				truce.readFromNBT(msg.truceMap);
+			Fate.proxy.updateGuiTruce();
             return null;
         }
     }

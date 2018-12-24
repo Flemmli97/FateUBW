@@ -16,32 +16,32 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class MessageServantSync  implements IMessage{
 
-	public int id;
 	//Since i have no idea what range the entityId goes from.
-	public boolean isNull;
-	
+	public NBTTagCompound servant = new NBTTagCompound();
+	public int entityID;
 	public MessageServantSync(){}
 	
 	public MessageServantSync(EntityServant servant)
 	{
-		if(servant==null)
-			this.isNull=true;
-		else
-			this.id=servant.getEntityId();
+		if(servant!=null)
+		{
+			servant.writeToNBTAtomically(this.servant);
+			this.entityID=servant.getEntityId();
+		}
 	}
 	
 	@Override
 	public void fromBytes(ByteBuf buf) {
 		NBTTagCompound compound = ByteBufUtils.readTag(buf);
-		this.id=compound.getInteger("Id");
-		this.isNull=compound.getBoolean("IsNull");
+		this.servant=compound.getCompoundTag("Entity");
+		this.entityID=compound.getInteger("ID");
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf) {
 		NBTTagCompound compound = new NBTTagCompound();
-		compound.setInteger("Id", this.id);
-		compound.setBoolean("IsNull", this.isNull);
+		compound.setTag("Entity", this.servant);
+		compound.setInteger("ID", this.entityID);
 		ByteBufUtils.writeTag(buf, compound);
 	}
 	
@@ -49,19 +49,22 @@ public class MessageServantSync  implements IMessage{
 
         @Override
         public IMessage onMessage(MessageServantSync msg, MessageContext ctx) {
-    		EntityPlayer player =  Fate.proxy.getPlayerEntity(ctx);
-			if(player!=null)
-			{
-				IPlayer capSync = player.getCapability(PlayerCapProvider.PlayerCap, null); 
-				Entity e = player.world.getEntityByID(msg.id);
-				if(capSync != null)
+        	Fate.proxy.getListener(ctx).addScheduledTask(new Runnable() {
+				@Override
+				public void run() 
 				{
-					if(e instanceof EntityServant)
-						capSync.setServant(player, (EntityServant) e);
-					else if(msg.isNull)
-						capSync.setServant(player, null);
-				}					
-			}
+					EntityPlayer player =  Fate.proxy.getPlayerEntity(ctx);
+					if(player!=null)
+					{
+						IPlayer capSync = player.getCapability(PlayerCapProvider.PlayerCap, null); 
+						Entity fromId = player.world.getEntityByID(msg.entityID);
+						if(fromId instanceof EntityServant)
+							capSync.setServant(player, (EntityServant) fromId);
+						else
+							capSync.setServant(player, null);
+					
+					}
+				}});
             return null;
         }
     }

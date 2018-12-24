@@ -1,0 +1,12 @@
+[{
+  "modid": "fatemod",
+  "name": "Fate/UBW",
+  "description": "The Holy Grail War! Brought to minecraft",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateJSON": "",
+  "authorList": ["Flemmli97"],
+  "credits": "Many thanks to BlackSaturn in creating all the models and textures",
+  "logoFile": ""
+}]

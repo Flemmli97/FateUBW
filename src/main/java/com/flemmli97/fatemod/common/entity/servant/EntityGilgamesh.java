@@ -24,16 +24,25 @@ public class EntityGilgamesh extends EntityServant implements IRanged{
 	public EntityGilgamesh(World world) {
 		super(world, EnumServantType.ARCHER, "Enuma Elish", new ItemStack[] {new ItemStack(ModItems.enumaelish)/*babylon=*/});
         this.tasks.addTask(1, attackRanged);
+        this.revealServant();
 	}
 	
 	@Override
 	public Pair<Integer, Integer> attackTickerFromState(State state) {
-		// TODO Auto-generated method stub
-		return Pair.of(0, 0);
+		if(this.rangedAttack)
+			return Pair.of(20, 10);
+		return Pair.of(20, 20);
 	}
 	
 	@Override
-	protected void updateAITasks() {
+	public int attackCooldown()
+	{
+		return this.rangedAttack?40:10;
+	}
+
+	@Override
+	public void updateAI(int behaviour) {
+		super.updateAI(behaviour);
 		if(commandBehaviour == 3)
 		{
 			this.updateAI();
@@ -43,14 +52,13 @@ public class EntityGilgamesh extends EntityServant implements IRanged{
 			this.tasks.removeTask(attackRanged);
 			this.tasks.removeTask(attackMelee);
 		}
-		super.updateAITasks();
 	}
 	
 	@Override
 	protected void damageEntity(DamageSource damageSrc, float damageAmount)
     {
 		super.damageEntity(damageSrc, damageAmount);
-		if (!this.canUseNP && !this.dead && this.getHealth() < 0.5 * this.getMaxHealth())
+		if (!this.canUseNP && !this.isDead() && this.getHealth() < 0.5 * this.getMaxHealth())
 		{
 			this.canUseNP = true;
 			this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(ModItems.enumaelish));
@@ -87,7 +95,7 @@ public class EntityGilgamesh extends EntityServant implements IRanged{
 
 	@Override
 	public void attackWithRangedAttack(EntityLivingBase target) {
-		int weaponAmount = this.getRNG().nextInt(10)+1;
+		int weaponAmount = this.getRNG().nextInt(15)+4;
 		for(int x = 0; x < weaponAmount; x++)
 		{
 			EntityBabylonWeapon weapon = new EntityBabylonWeapon(this.world, this, target);

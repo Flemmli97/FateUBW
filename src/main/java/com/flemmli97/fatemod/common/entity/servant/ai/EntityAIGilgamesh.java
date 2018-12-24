@@ -22,9 +22,10 @@ public class EntityAIGilgamesh extends EntityAIAnimatedAttack{
 	        State state = this.attackingEntity.entityState();
 	        if(state==State.IDDLE)
 	        {
-	        	this.attackingEntity.setState(State.NP);
+	        	state = State.NP;
+	        	this.attackingEntity.setState(state);
 	        }
-        	else if(state==State.NP)
+        	if(state==State.NP)
             {
             	if(this.attackingEntity.canAttack())
             	{

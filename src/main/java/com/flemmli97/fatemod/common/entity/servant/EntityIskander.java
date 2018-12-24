@@ -2,9 +2,11 @@ package com.flemmli97.fatemod.common.entity.servant;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.flemmli97.fatemod.common.entity.EntityGordiusWheel;
 import com.flemmli97.fatemod.common.entity.servant.ai.EntityAIIskander;
 import com.flemmli97.fatemod.common.init.ModItems;
 
+import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
@@ -28,8 +30,7 @@ public class EntityIskander extends EntityServant {
 
 	@Override
 	public Pair<Integer, Integer> attackTickerFromState(State state) {
-		// TODO Auto-generated method stub
-		return Pair.of(0, 0);
+		return Pair.of(20, 20);
 	}
 	
 	@Override
@@ -47,7 +48,8 @@ public class EntityIskander extends EntityServant {
     }
 	
 	@Override
-	protected void updateAITasks() {
+	public void updateAI(int behaviour) {
+		super.updateAI(behaviour);
 		if(commandBehaviour == 3)
 		{
 			this.tasks.addTask(1, attackAI);
@@ -56,12 +58,19 @@ public class EntityIskander extends EntityServant {
 		{
 			this.tasks.removeTask(attackAI);
 		}
-		super.updateAITasks();
 	}
 	
 	public boolean attackWithNP() {
-		if(this.isRiding())
+		
+		if(this.isRiding() || this.world.isRemote)
 			return false;
+		EntityGordiusWheel wheel = new EntityGordiusWheel(this.world);
+		wheel.setPosition(this.posX, this.posY, this.posZ);
+		this.world.spawnEntity(wheel);
+		this.startRiding(wheel);
+		//spawn lightning
+		this.world.addWeatherEffect(new EntityLightningBolt(this.world, this.posX, this.posY, this.posZ, true));
+		this.revealServant();
 		return true;
 	}
 }

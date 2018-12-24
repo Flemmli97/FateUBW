@@ -22,17 +22,6 @@ public class ItemDebug extends Item{
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
     {		
-		//IPlayer capSync = player.getCapability(PlayerCapProvider.PlayerCap, null);
-		/*if(!world.isRemote)
-		{
-			GrailWarPlayerTracker track = GrailWarPlayerTracker.get(player.world);
-			if(player.isSneaking())
-			{
-				track.reset();
-			}
-			else
-				track.addPlayer(player);
-		}*/
 		/*if(player.isSneaking())
 		{
 			capSync.useCommandSeal(player);

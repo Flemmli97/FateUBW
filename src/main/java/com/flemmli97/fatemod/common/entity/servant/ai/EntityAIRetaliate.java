@@ -1,8 +1,8 @@
 package com.flemmli97.fatemod.common.entity.servant.ai;
 
+import com.flemmli97.fatemod.common.entity.IServantMinion;
 import com.flemmli97.fatemod.common.entity.servant.EntityServant;
-import com.flemmli97.fatemod.common.handler.capabilities.IPlayer;
-import com.flemmli97.fatemod.common.handler.capabilities.PlayerCapProvider;
+import com.flemmli97.fatemod.common.utils.ServantUtils;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAITarget;
@@ -10,46 +10,47 @@ import net.minecraft.entity.player.EntityPlayer;
 
 public class EntityAIRetaliate extends EntityAITarget {
 	
-	private int revengeTimer;
 	public EntityAIRetaliate(EntityServant servant)
 	{
 		super(servant, false);
 		this.setMutexBits(1);
 	}
 
+	@Override
 	public boolean shouldExecute() {
-		if(this.taskOwner.getAttackTarget()!=null)
-			return false;
-		int revengeTimer = this.taskOwner.getRevengeTimer();
-        return revengeTimer != this.revengeTimer && this.checkTarget(this.taskOwner.getAttackTarget());
+		if(this.taskOwner.getRevengeTarget() instanceof IServantMinion || (this.taskOwner.getAttackTarget()==null && this.taskOwner.getRevengeTarget()!=null))
+			return this.checkTarget(this.taskOwner.getRevengeTarget());
+		return false;
 	}
 	
+	private boolean isNotSameTarget()
+	{
+		if(this.taskOwner.getAttackTarget()==null)
+			return true;
+		return !this.taskOwner.getRevengeTarget().equals(this.taskOwner.getAttackTarget());
+	}
+	@Override
 	public void startExecuting()
 	{
-        this.taskOwner.setAttackTarget(this.taskOwner.getAttackTarget());
-        this.revengeTimer = this.taskOwner.getRevengeTimer();
-        this.unseenMemoryTicks = 300;
-
+		if(this.isNotSameTarget())
+			this.taskOwner.setAttackTarget(this.taskOwner.getRevengeTarget());
         super.startExecuting();
-        
 	}
 	
 	protected boolean checkTarget(EntityLivingBase livingBase)
 	{
 		EntityServant servant = (EntityServant) taskOwner;
 		if(servant.getOwner()!=null)
-		{
-			IPlayer capSync = servant.getOwner().getCapability(PlayerCapProvider.PlayerCap, null);
-	
+		{	
 			if(servant.getOwner() == livingBase)
 			{
 				return false;
 			}
-			else if(livingBase instanceof EntityPlayer && capSync.isPlayerTruce((EntityPlayer) livingBase))
+			else if(livingBase instanceof EntityPlayer && ServantUtils.inSameTeam(servant.getOwner(), (EntityPlayer) livingBase))
 			{
 				return false;
 			}
-			else if(livingBase instanceof EntityServant && ((EntityServant)livingBase).getOwner()!=null && capSync.isPlayerTruce(((EntityServant)livingBase).getOwner()) )
+			else if(livingBase instanceof EntityServant && ((EntityServant)livingBase).getOwner()!=null && ServantUtils.inSameTeam(servant.getOwner(), ((EntityServant)livingBase).getOwner()) )
 			{
 				return false;
 			}

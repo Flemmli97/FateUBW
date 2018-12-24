@@ -9,6 +9,7 @@ import com.flemmli97.fatemod.common.entity.EntityExcalibur;
 import com.flemmli97.fatemod.common.entity.EntityGaeBolg;
 import com.flemmli97.fatemod.common.entity.EntityGem;
 import com.flemmli97.fatemod.common.entity.EntityGordiusWheel;
+import com.flemmli97.fatemod.common.entity.EntityLesserMonster;
 import com.flemmli97.fatemod.common.entity.EntityMagicBeam;
 import com.flemmli97.fatemod.common.entity.EntityPegasus;
 import com.flemmli97.fatemod.common.entity.servant.EntityArthur;
@@ -78,6 +79,9 @@ public class ModEntities {
 		EntityRegistry.registerModEntity(new ResourceLocation(LibReference.MODID, "entityCaladBolg"), EntityCaladBolg.class, "entityCaladBolg", ++entityID, Fate.instance, 64, 10, true);
 		EntityRegistry.registerModEntity(new ResourceLocation(LibReference.MODID, "entityMagicBeam"), EntityMagicBeam.class, "entityMagicBeam", ++entityID, Fate.instance, 64, 10, true);
 		EntityRegistry.registerModEntity(new ResourceLocation(LibReference.MODID, "entityEA"), EntityEnumaElish.class, "entityEA", ++entityID, Fate.instance, 64, 10, true);
+		
+		EntityRegistry.registerModEntity(new ResourceLocation(LibReference.MODID, "monsterSmall"), EntityLesserMonster.class, "monsterSmall", ++entityID, Fate.instance, 64, 3, true);
+
 	}
 }
 

@@ -35,7 +35,8 @@ public class EntityMedea extends EntityServant implements IRanged{
 	}
 	
 	@Override
-	protected void updateAITasks() {
+	public void updateAI(int behaviour) {
+		super.updateAI(behaviour);
 		if(commandBehaviour == 3)
 		{
 			this.tasks.addTask(1, attackAI);
@@ -44,7 +45,6 @@ public class EntityMedea extends EntityServant implements IRanged{
 		{
 			this.tasks.removeTask(attackAI);
 		}
-		super.updateAITasks();
 	}
 	
 	@Override
@@ -66,6 +66,7 @@ public class EntityMedea extends EntityServant implements IRanged{
 	public void attackWithRangedAttack(EntityLivingBase target) {
 		//EntityMagicBeam beam = new EntityMagicBeam(this.worldObj, this, target);
 		//beam.setProjectileAreaPosition(3);
+		this.revealServant();
 	}
 
 	@Override

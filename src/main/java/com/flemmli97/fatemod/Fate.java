@@ -2,6 +2,7 @@ package com.flemmli97.fatemod;
 
 import java.util.Random;
 
+import com.flemmli97.fatemod.common.commands.GrailWarReset;
 import com.flemmli97.fatemod.common.init.ModItems;
 import com.flemmli97.fatemod.common.lib.LibReference;
 import com.flemmli97.fatemod.proxy.CommonProxy;
@@ -15,6 +16,7 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
 @Mod(modid = LibReference.MODID, name = LibReference.MODNAME, version = LibReference.VERSION)
 public class Fate {
@@ -39,12 +41,18 @@ public class Fate {
 	public void postInit(FMLPostInitializationEvent e) {
 		proxy.postInit(e);
 	}
+	
+    
+    @EventHandler
+    public void serverStart(FMLServerStartingEvent event) {
+        event.registerServerCommand(new GrailWarReset());
+    }
 
 	public static CreativeTabs customTab = new CreativeTabs("fate") {
 
 		@Override
 		public ItemStack getTabIconItem() {
-			return new ItemStack(ModItems.icon, 1, new Random().nextInt(4));
+			return new ItemStack(ModItems.ICONS[new Random().nextInt(ModItems.ICONS.length)]);
 		}
 	};
 

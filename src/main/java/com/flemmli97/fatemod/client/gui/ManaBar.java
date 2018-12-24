@@ -27,10 +27,6 @@ public class ManaBar extends Gui {
 
 	private void renderBar() {
 		IPlayer cap = this.mc.player.getCapability(PlayerCapProvider.PlayerCap, null);
-		if (cap == null)
-		{
-			return;
-		}
 		int xPos = 2;
 		int yPos = 2;
 

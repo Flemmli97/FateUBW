@@ -1,7 +1,7 @@
 package com.flemmli97.fatemod.client.render;
 
 import com.flemmli97.fatemod.common.entity.EntityGem;
-import com.flemmli97.fatemod.common.init.ModItems;
+import com.flemmli97.fatemod.common.items.ItemGemShard;
 
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.item.ItemStack;
@@ -15,7 +15,7 @@ public class RenderGem extends RenderProjectileBase<EntityGem> {
 
 	@Override
 	public ItemStack renderItemStackFromEntity(EntityGem entity) {
-		return new ItemStack(ModItems.crystal, 1, entity.getStackMeta());
+		return new ItemStack(ItemGemShard.getItemFromType(entity.getType()));
 	}
 
 	@Override

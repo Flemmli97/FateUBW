@@ -2,10 +2,9 @@ package com.flemmli97.fatemod.common.items;
 
 import com.flemmli97.fatemod.Fate;
 import com.flemmli97.fatemod.common.entity.EntityGem;
+import com.flemmli97.fatemod.common.init.ModItems;
 import com.flemmli97.fatemod.common.lib.LibReference;
 
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
@@ -13,37 +12,37 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemGemShard extends Item implements IModelRegister{
+public class ItemGemShard extends Item{
 		
-	private String[] name = {"fire", "water", "earth", "wind", "void"};
-
-	public ItemGemShard()
+	private ShardType type;
+	
+	public ItemGemShard(ShardType type)
     {
+		this.type=type;
         this.setCreativeTab(Fate.customTab);
-        this.setHasSubtypes(true);
-		this.setRegistryName(new ResourceLocation(LibReference.MODID, "gem_shard"));
+		this.setRegistryName(new ResourceLocation(LibReference.MODID, "gem_shard_"+type.getName()));
 		this.setUnlocalizedName(this.getRegistryName().toString());
     }
 	
-	@Override
-	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list) {
-    	if(tab==this.getCreativeTab())
-		    for (int i = 0; i < 5; i ++) {
-		        list.add(new ItemStack(this, 1, i));
-		    }
+	public static Item getItemFromType(ShardType type)
+	{
+		switch(type)
+		{
+			case EARTH:return ModItems.crystalEarth;
+			case FIRE:return ModItems.crystalFire;
+			case VOID:return ModItems.crystalVoid;
+			case WATER:return ModItems.crystalWater;
+			case WIND:return ModItems.crystalWind;
+		}
+		return ModItems.crystalFire;
 	}
-
-	@Override
-	public String getUnlocalizedName(ItemStack stack) {
-		String addName = name[stack.getMetadata()];
-		return "item." + addName + "_gem_shard";		
+	
+	public ShardType getType()
+	{
+		return this.type;
 	}
 
 	@Override
@@ -53,23 +52,48 @@ public class ItemGemShard extends Item implements IModelRegister{
         {
             stack.shrink(1);
         }
+        switch(this.type)
+        {
+			case EARTH:
+				break;
+			case FIRE:
+				break;
+			case VOID:
+				break;
+			case WATER:
+				break;
+			case WIND:
+				break;
+        }
 
 		player.playSound(SoundEvents.ENTITY_ARROW_SHOOT, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 
         if (!world.isRemote)
        	{       	
-        	EntityGem gem = new EntityGem(world, player, stack);
+        	EntityGem gem = new EntityGem(world, player, this);
         	gem.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 0);	
        		world.spawnEntity(gem);
        	}  
         return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
 	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-    public void initModel() {
-        for(int x=0;x<5;x++)
-            ModelLoader.setCustomModelResourceLocation(this, x, new ModelResourceLocation(this.getRegistryName()+"_"+name[x], "inventory"));
-    }
 
+	public static enum ShardType
+	{
+		FIRE("fire"),
+		WATER("water"),
+		EARTH("earth"),
+		WIND("wind"),
+		VOID("void");
+		
+		String name;
+		ShardType(String s)
+		{
+			this.name=s;
+		}
+		
+		protected String getName()
+		{
+			return this.name;
+		}
+	}
 }

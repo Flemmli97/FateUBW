@@ -21,7 +21,7 @@ public class CustomDamageSource extends DamageSource{
 	
 	public static DamageSource babylon(Entity source, EntityLivingBase sourceEntity)
     {
-        return (new EntityDamageSourceIndirect("babylon", source, sourceEntity));
+        return (new EntityDamageSourceIndirect("babylon", source, sourceEntity).setProjectile());
     }
 	
 	public static DamageSource gaeBolg(Entity source, EntityLivingBase sourceEntity)

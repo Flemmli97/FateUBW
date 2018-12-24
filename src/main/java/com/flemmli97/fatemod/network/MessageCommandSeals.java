@@ -23,12 +23,12 @@ public class MessageCommandSeals implements IMessage{
 	
 	@Override
 	public void fromBytes(ByteBuf buf) {
-		commandSeals = buf.readInt();
+		this.commandSeals = buf.readInt();
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf) {
-		buf.writeInt(commandSeals);		
+		buf.writeInt(this.commandSeals);		
 	}
 	
 	public static class Handler implements IMessageHandler<MessageCommandSeals, IMessage> {
@@ -38,11 +38,7 @@ public class MessageCommandSeals implements IMessage{
     		EntityPlayer player =  Fate.proxy.getPlayerEntity(ctx);
 		if(player!=null)
 		{
-			IPlayer capSync = player.getCapability(PlayerCapProvider.PlayerCap, null);
-			if(capSync != null)
-			{
-				capSync.setCommandSeals(player, msg.commandSeals);
-			}							
+			player.getCapability(PlayerCapProvider.PlayerCap, null).setCommandSeals(player, msg.commandSeals);
 		}	
             return null;
         }

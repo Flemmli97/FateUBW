@@ -37,7 +37,8 @@ public class EntitySasaki extends EntityServant {
 	}
 	
 	@Override
-	protected void updateAITasks() {
+	public void updateAI(int behaviour) {
+		super.updateAI(behaviour);
 		if(commandBehaviour == 3)
 		{
 			this.tasks.addTask(1, attackAI);
@@ -46,7 +47,6 @@ public class EntitySasaki extends EntityServant {
 		{
 			this.tasks.removeTask(attackAI);
 		}
-		super.updateAITasks();
 	}
 	
 	@Override
@@ -61,7 +61,7 @@ public class EntitySasaki extends EntityServant {
 	
 	public void attackWithNP(EntityLivingBase living)
 	{
-		
+		this.revealServant();
 	}
 
 }

@@ -17,7 +17,6 @@ import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -31,7 +30,6 @@ import net.minecraft.world.ChunkCache;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -122,13 +120,13 @@ public class BlockChalkLine extends Block implements ITileEntityProvider{
         return false;
     }
 	
-    @Override
+    /*@Override
 	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
     {
 		if(!worldIn.isRemote){
 	        worldIn.setBlockState(pos, state);
 		}
-    }
+    }*/
     
 	@Override
 	public boolean isOpaqueCube(IBlockState state) {
@@ -146,11 +144,6 @@ public class BlockChalkLine extends Block implements ITileEntityProvider{
     public BlockRenderLayer getBlockLayer()
     {
         return BlockRenderLayer.CUTOUT;
-    }
-	
-	@SideOnly(Side.CLIENT)
-    public void initModel() {
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(getRegistryName(), "inventory"));
     }
 
 	@Override

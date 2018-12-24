@@ -11,16 +11,17 @@ import com.flemmli97.fatemod.common.handler.GrailWarPlayerTracker;
 import com.flemmli97.fatemod.common.handler.capabilities.IPlayer;
 import com.flemmli97.fatemod.common.handler.capabilities.PlayerCapProvider;
 import com.flemmli97.fatemod.common.lib.LibReference;
+import com.flemmli97.fatemod.common.utils.ServantUtils;
 import com.flemmli97.fatemod.common.utils.SpawnEntityCustomList;
 
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
@@ -43,14 +44,13 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemSpawn extends Item implements IModelRegister{
+public class ItemSpawn extends Item{
 	
 	public ItemSpawn()
 	{
@@ -62,20 +62,20 @@ public class ItemSpawn extends Item implements IModelRegister{
 
     @Override
 	public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag advanced) {
-		tooltip.add(TextFormatting.GOLD + "Rename to \"Summon\" to spawn as your servant");
+		tooltip.add(TextFormatting.GOLD + I18n.format("item.spawn.tooltip"));
 	}
 
-    @Override
+    @SideOnly(Side.CLIENT)
+	@Override
 	public String getItemStackDisplayName(ItemStack stack)
     {
         String s = ("" + I18n.format(this.getUnlocalizedName() + ".name")).trim();
-		String entityName = getEntityIdFromItem(stack);
+		ResourceLocation entityName = getEntityIdFromItem(stack);
 
         if (entityName != null)
         {
-            s = s + " " + I18n.format("entity." + entityName  + ".name");
+            s = s + " " + I18n.format("entity." + entityName.getResourcePath()  + ".name");
         }
-
         return s;
     }
     
@@ -102,7 +102,7 @@ public class ItemSpawn extends Item implements IModelRegister{
                 if (tileentity instanceof TileEntityMobSpawner)
                 {
                     MobSpawnerBaseLogic mobspawnerbaselogic = ((TileEntityMobSpawner)tileentity).getSpawnerBaseLogic();
-                    mobspawnerbaselogic.setEntityId(new ResourceLocation(getEntityIdFromItem(stack)));
+                    mobspawnerbaselogic.setEntityId(getEntityIdFromItem(stack));
                     tileentity.markDirty();
                     world.notifyBlockUpdate(pos, iblockstate, iblockstate, 3);
 
@@ -132,7 +132,7 @@ public class ItemSpawn extends Item implements IModelRegister{
                 	if("Summon".equals(stack.getDisplayName()))
                 	{
                 		IPlayer cap = player.getCapability(PlayerCapProvider.PlayerCap, null);
-            			if(cap.getServant()==null)
+            			if(cap.getServant(player)==null)
             			{
                 			cap.setServant(player, (EntityServant) entity);
                 			((EntityServant) entity).setOwner(player);
@@ -141,7 +141,7 @@ public class ItemSpawn extends Item implements IModelRegister{
             			}
             			else
             			{
-            				player.sendMessage(new TextComponentString(TextFormatting.RED + "You already have a servant, spawned a masterless one"));
+            				player.sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.item.spawn"), TextFormatting.RED));
             			}
                 	}
                 	else
@@ -219,7 +219,7 @@ public class ItemSpawn extends Item implements IModelRegister{
                         	if("Summon".equals(stack.getDisplayName()))
                         	{
                     			IPlayer cap = player.getCapability(PlayerCapProvider.PlayerCap, null);
-                    			if(cap.getServant()==null)
+                    			if(cap.getServant(player)==null)
                     			{
 	                    			cap.setServant(player, (EntityServant) entity);
 	                    			((EntityServant) entity).setOwner(player);
@@ -228,7 +228,7 @@ public class ItemSpawn extends Item implements IModelRegister{
                     			}
                     			else
                     			{
-                    				player.sendMessage(new TextComponentString(TextFormatting.RED + "You already have a servant, spawned a masterless one"));
+                    				player.sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.item.spawn"), TextFormatting.RED));
                     			}
                         	}
                         	else
@@ -259,26 +259,20 @@ public class ItemSpawn extends Item implements IModelRegister{
     }
 
     @Nullable
-    public static Entity spawnCreature(World worldIn, @Nullable String entityID, double x, double y, double z)
+    public static Entity spawnCreature(World worldIn, @Nullable ResourceLocation entityID, double x, double y, double z)
     {
-        if (entityID != null && SpawnEntityCustomList.entityEggs.containsKey(entityID))
+        if (entityID != null)
         {
-            Entity entity = null;
-
-            for (int i = 0; i < 1; ++i)
+            Entity entity = EntityList.createEntityByIDFromName(entityID, worldIn);
+            if (entity instanceof EntityLivingBase)
             {
-                entity = SpawnEntityCustomList.createEntityByName(entityID, worldIn);
-
-                if (entity instanceof EntityLivingBase)
-                {
-                    EntityLiving entityliving = (EntityLiving)entity;
-                    entity.setLocationAndAngles(x, y, z, MathHelper.wrapDegrees(worldIn.rand.nextFloat() * 360.0F), 0.0F);
-                    entityliving.rotationYawHead = entityliving.rotationYaw;
-                    entityliving.renderYawOffset = entityliving.rotationYaw;
-                    entityliving.onInitialSpawn(worldIn.getDifficultyForLocation(new BlockPos(entityliving)), (IEntityLivingData)null);
-                    worldIn.spawnEntity(entity);
-                    entityliving.playLivingSound();
-                }
+                EntityLiving entityliving = (EntityLiving)entity;
+                entity.setLocationAndAngles(x, y, z, MathHelper.wrapDegrees(worldIn.rand.nextFloat() * 360.0F), 0.0F);
+                entityliving.rotationYawHead = entityliving.rotationYaw;
+                entityliving.renderYawOffset = entityliving.rotationYaw;
+                entityliving.onInitialSpawn(worldIn.getDifficultyForLocation(new BlockPos(entityliving)), (IEntityLivingData)null);
+                worldIn.spawnEntity(entity);
+                entityliving.playLivingSound();
             }
 
             return entity;
@@ -297,10 +291,10 @@ public class ItemSpawn extends Item implements IModelRegister{
     {
     	if(tab==this.getCreativeTab())
     	{
-	        for (SpawnEntityCustomList.EntityEggInfo eggEntity  : SpawnEntityCustomList.entityEggs.values())
+	        for (EntityList.EntityEggInfo eggEntity  : SpawnEntityCustomList.entityEggs.values())
 	        {            
 	        	ItemStack stack = new ItemStack(this, 1);
-	        	applyEntityIdToItemStack(stack, eggEntity.spawnedID);
+	        	applyEntityIdToItemStack(stack, eggEntity.spawnedID.toString());
 	            subItems.add(stack);
 	        }
     	}
@@ -323,7 +317,7 @@ public class ItemSpawn extends Item implements IModelRegister{
     /**
      * Gets the entity ID associated with a given ItemStack in its NBT data.
      */
-    public static String getEntityIdFromItem(ItemStack stack)
+    public static ResourceLocation getEntityIdFromItem(ItemStack stack)
     {
         NBTTagCompound nbttagcompound = stack.getTagCompound();
 
@@ -338,13 +332,7 @@ public class ItemSpawn extends Item implements IModelRegister{
         else
         {
             NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("EntityTag");
-            return !nbttagcompound1.hasKey("id", 8) ? null : nbttagcompound1.getString("id");
+            return !nbttagcompound1.hasKey("id", 8) ? null : new ResourceLocation(nbttagcompound1.getString("id"));
         }
-    }
-       
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void initModel() {
-        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(getRegistryName(), "inventory"));
     }
 }

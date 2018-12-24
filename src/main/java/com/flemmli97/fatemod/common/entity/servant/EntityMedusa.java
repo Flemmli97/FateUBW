@@ -39,7 +39,8 @@ public class EntityMedusa extends EntityServant {
 	}
 	
 	@Override
-	protected void updateAITasks() {
+	public void updateAI(int behaviour) {
+		super.updateAI(behaviour);
 		if(commandBehaviour == 3)
 		{
 			this.tasks.addTask(1, attackAI);
@@ -48,7 +49,6 @@ public class EntityMedusa extends EntityServant {
 		{
 			this.tasks.removeTask(attackAI);
 		}
-		super.updateAITasks();
 	}
 	
 	@Override
@@ -94,6 +94,7 @@ public class EntityMedusa extends EntityServant {
 				}
 			}
 			this.world.spawnEntity(peg);
+			this.revealServant();
 		}
 	}
 

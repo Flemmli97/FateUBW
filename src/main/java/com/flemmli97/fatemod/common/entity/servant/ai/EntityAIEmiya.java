@@ -28,7 +28,9 @@ public class EntityAIEmiya extends EntityAIAnimatedAttack{
         	State state = this.attackingEntity.entityState();
  	        if(state==State.IDDLE)
  	        {
- 	        	this.attackingEntity.setState(State.NP);
+ 	        	state = State.NP;
+ 	        	this.attackingEntity.setState(state);
+ 	        	
 	        	//Temporary replaces held items with his bow
 	        	if(this.attackingEntity.getHeldItem(EnumHand.MAIN_HAND).getItem()!=ModItems.archbow)
 	        	{
@@ -38,7 +40,7 @@ public class EntityAIEmiya extends EntityAIAnimatedAttack{
 		        	this.attackingEntity.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, ItemStack.EMPTY);
 	        	}
  	        }
- 	        else if(state==State.NP)
+ 	        if(state==State.NP)
  	        {
         		this.attackingEntity.getMoveHelper().strafe(-2, 0);
  	        	if(this.attackingEntity.canAttack())

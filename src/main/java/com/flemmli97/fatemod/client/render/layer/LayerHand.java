@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerHeldItem;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHandSide;
@@ -26,30 +27,34 @@ public class LayerHand extends LayerHeldItem
     	super(renderLiving);
     }
 
-    public void doRenderLayer(EntityServant servant, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
+    @Override
+    public void doRenderLayer(EntityLivingBase servant, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
     {
-    	if(RenderServant.showIdentity(servant))
+    	if(servant instanceof EntityServant)
     	{
-    		super.doRenderLayer(servant, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
-    	}
-    	else
-    	{
-    		GlStateManager.pushMatrix();
-    		EnumHandSide side = servant.getPrimaryHand();
-            boolean leftHanded = side == EnumHandSide.LEFT;
-    		ItemCameraTransforms.TransformType trans = leftHanded?TransformType.THIRD_PERSON_LEFT_HAND:TransformType.THIRD_PERSON_RIGHT_HAND;
-
-            if (servant.isSneaking())
-            {
-                GlStateManager.translate(0.0F, 0.2F, 0.0F);
-            }
-            // Forge: moved this call down, fixes incorrect offset while sneaking.
-            this.translateToHand(side);
-            GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
-            GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
-            GlStateManager.translate((leftHanded ? -1 : 1) / 16.0F, 0.125F, -0.625F);
-            Minecraft.getMinecraft().getItemRenderer().renderItemSide(servant, genericWeapon, trans, leftHanded);
-            GlStateManager.popMatrix();
+	    	if(RenderServant.showIdentity((EntityServant) servant))
+	    	{
+	    		super.doRenderLayer(servant, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
+	    	}
+	    	else
+	    	{
+	    		GlStateManager.pushMatrix();
+	    		EnumHandSide side = servant.getPrimaryHand();
+	            boolean leftHanded = side == EnumHandSide.LEFT;
+	    		ItemCameraTransforms.TransformType trans = leftHanded?TransformType.THIRD_PERSON_LEFT_HAND:TransformType.THIRD_PERSON_RIGHT_HAND;
+	
+	            if (servant.isSneaking())
+	            {
+	                GlStateManager.translate(0.0F, 0.2F, 0.0F);
+	            }
+	            // Forge: moved this call down, fixes incorrect offset while sneaking.
+	            this.translateToHand(side);
+	            GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
+	            GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
+	            GlStateManager.translate((leftHanded ? -1 : 1) / 16.0F, 0.125F, -0.625F);
+	            Minecraft.getMinecraft().getItemRenderer().renderItemSide(servant, genericWeapon, trans, leftHanded);
+	            GlStateManager.popMatrix();
+	    	}
     	}
     }
     

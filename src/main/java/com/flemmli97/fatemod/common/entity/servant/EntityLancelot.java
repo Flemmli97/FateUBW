@@ -27,7 +27,6 @@ import net.minecraft.world.World;
 public class EntityLancelot extends EntityServant {
 
 	public EntityAILancelot attackAI = new EntityAILancelot(this);
-	private boolean pickUpWeapon;
 	
 	public EntityLancelot(World world) {
 		super(world, EnumServantType.BERSERKER, "Knight of Owner", new ItemStack[] {new ItemStack(ModItems.arondight)});
@@ -37,11 +36,12 @@ public class EntityLancelot extends EntityServant {
 	@Override
 	public Pair<Integer, Integer> attackTickerFromState(State state) {
 		// TODO Auto-generated method stub
-		return Pair.of(0, 0);
+		return Pair.of(20, 20);
 	}
 	
 	@Override
-	protected void updateAITasks() {
+	public void updateAI(int behaviour) {
+		super.updateAI(behaviour);
 		if(commandBehaviour == 3)
 		{
 			this.tasks.addTask(1, attackAI);
@@ -50,7 +50,6 @@ public class EntityLancelot extends EntityServant {
 		{
 			this.tasks.removeTask(attackAI);
 		}
-		super.updateAITasks();
 	}
 	
 	@Override
@@ -61,7 +60,6 @@ public class EntityLancelot extends EntityServant {
 		{
 			this.canUseNP=true;
 			this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(ModItems.arondight)); 
-			this.pickUpWeapon = false;
 		}
     }
 	
@@ -75,7 +73,7 @@ public class EntityLancelot extends EntityServant {
 	
 	public boolean canPickWeapon()
 	{
-		return this.pickUpWeapon;
+		return this.getHeldItemMainhand().getItem()!=ModItems.arondight;
 	}
 
 	@Override
@@ -90,17 +88,18 @@ public class EntityLancelot extends EntityServant {
         		rand.nextGaussian() * 0.02D,
         		rand.nextGaussian() * 0.02D, 1);
 			}	
-		if (!this.world.isRemote && this.canPickWeapon() && !this.dead && this.world.getGameRules().getBoolean("mobGriefing"))
+		if (!this.world.isRemote && this.canPickWeapon() && !this.isDead() && this.world.getGameRules().getBoolean("mobGriefing"))
         {
             for (EntityItem entityitem : this.world.getEntitiesWithinAABB(EntityItem.class, this.getEntityBoundingBox().expand(1.0D, 0.0D, 1.0D)))
             {
-                if (!entityitem.isDead && entityitem.getItem() != null && !entityitem.cannotPickup() && checkItemToWield(entityitem.getItem()))
+                if (!entityitem.isDead && !entityitem.cannotPickup() && checkItemToWield(entityitem.getItem()))
                 {
                     this.updateEquipmentIfNeeded(entityitem);
+                    this.revealServant();
                 }
             }
         }
-		this.testForRiding();
+		//this.testForRiding();
 		super.onLivingUpdate();
 	}
 	
@@ -114,7 +113,7 @@ public class EntityLancelot extends EntityServant {
 		return false;
 	}
 	
-	public void testForRiding()
+	/*public void testForRiding()
 	{
 		List<EntityLiving> list = this.world.getEntitiesWithinAABB(EntityLiving.class, this.getEntityBoundingBox().expand((double)8, 3.0D, (double)8));
 		
@@ -138,6 +137,6 @@ public class EntityLancelot extends EntityServant {
 				}
 			}
 		}
-	}
+	}*/
 	
 }

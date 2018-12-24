@@ -37,19 +37,26 @@ public class EntityEmiya extends EntityServant implements IRanged{
 	
 	@Override
 	public Pair<Integer, Integer> attackTickerFromState(State state) {
-		// TODO Auto-generated method stub
-		return Pair.of(0, 0);
+		if(this.rangedAttack)
+			return Pair.of(10, 10);
+		return Pair.of(20, 20);
+	}
+	
+	@Override
+	public int attackCooldown()
+	{
+		return this.rangedAttack?40:0;
 	}
 	
 	@Override
 	protected void damageEntity(DamageSource damageSrc, float damageAmount)
     {
 		super.damageEntity(damageSrc, damageAmount);
-		if (!this.canUseNP && !this.dead && this.getHealth() < 0.5 * this.getMaxHealth())
+		if (!this.canUseNP && !this.isDead() && this.getHealth() < 0.5 * this.getMaxHealth())
 		{
 			this.canUseNP=true;
 			this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(ModItems.archbow));
-			this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, null);
+			this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, ItemStack.EMPTY);
 			this.setAttackAI();
 		}
     }
@@ -70,6 +77,20 @@ public class EntityEmiya extends EntityServant implements IRanged{
 			this.rangedAttack=false;
 		}
 	}
+	
+	@Override
+	public void updateAI(int behaviour) {
+		super.updateAI(behaviour);
+		if(commandBehaviour == 3)
+		{
+			this.setAttackAI();
+		}
+		else if(commandBehaviour == 4)
+		{
+			this.tasks.removeTask(attackMelee);
+			this.tasks.removeTask(attackRanged);
+		}
+	}
 
 	@Override
 	public void attackWithRangedAttack(EntityLivingBase target) {
@@ -80,9 +101,9 @@ public class EntityEmiya extends EntityServant implements IRanged{
 			double d1 = target.getEntityBoundingBox().minY + (double)(target.height / 3.0F) - arrow.posY;
 			double d2 = target.posZ - this.posZ;
 			double d3 = (double)MathHelper.sqrt(d0 * d0 + d2 * d2);
-			arrow.shoot(d0, d1 + d3 * 0.20000000298023224D, d2, 1.6F, 0);	       
+			arrow.shoot(d0, d1 + d3 * 0.20000000298023224D, d2, 1.6F, 2);	       
 			arrow.setDamage(arrow.getDamage()+5.0);	        
-			arrow.setKnockbackStrength(1);	       
+			arrow.setKnockbackStrength(0);	       
 			this.playSound(SoundEvents.ENTITY_SKELETON_SHOOT, 1.0F, 1.0F / (this.getRNG().nextFloat() * 0.4F + 0.8F));	        
 			this.world.spawnEntity(arrow);
 		}
@@ -101,6 +122,7 @@ public class EntityEmiya extends EntityServant implements IRanged{
 			EntityCaladBolg bolg = new EntityCaladBolg(this.world, this);
 			bolg.setHeadingToPosition(target.posX, target.posY+target.getEyeHeight(), target.posZ, 2F, 0);
 			this.world.spawnEntity(bolg);
+			this.revealServant();
 		}
 	}
 

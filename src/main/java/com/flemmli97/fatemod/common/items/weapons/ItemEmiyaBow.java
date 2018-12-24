@@ -7,10 +7,8 @@ import com.flemmli97.fatemod.common.entity.EntityArcherArrow;
 import com.flemmli97.fatemod.common.entity.EntityCaladBolg;
 import com.flemmli97.fatemod.common.handler.capabilities.IPlayer;
 import com.flemmli97.fatemod.common.handler.capabilities.PlayerCapProvider;
-import com.flemmli97.fatemod.common.items.IModelRegister;
 import com.flemmli97.fatemod.common.lib.LibReference;
 
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
@@ -28,11 +26,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemEmiyaBow extends ItemBow implements IModelRegister{
+public class ItemEmiyaBow extends ItemBow{
 		
 	public ItemEmiyaBow() {
     	super();
@@ -183,11 +178,4 @@ public class ItemEmiyaBow extends ItemBow implements IModelRegister{
 		compound.setBoolean("Charged", flag);
 		stack.setTagCompound(compound);
 	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-    public void initModel() {
-	        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(getRegistryName(), "inventory"));
-	    }
-
 }

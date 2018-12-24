@@ -40,8 +40,8 @@ public class MessageGui  implements IMessage{
         	if(msg.message==1)
         	{
         		IPlayer cap = player.getCapability(PlayerCapProvider.PlayerCap, null);
-        		if(cap.getServant()!=null)
-        			PacketHandler.sendTo(new MessageServantSync(cap.getServant()), (EntityPlayerMP) player);
+        		if(cap.getServant(player)!=null)
+        			PacketHandler.sendTo(new MessageServantSync(cap.getServant(player)), (EntityPlayerMP) player);
         	}
         	else if(msg.message==2)
         	{

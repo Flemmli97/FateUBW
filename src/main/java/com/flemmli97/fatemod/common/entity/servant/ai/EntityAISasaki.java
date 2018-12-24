@@ -20,12 +20,13 @@ public class EntityAISasaki extends EntityAIAnimatedAttack{
         this.attackingEntity.getLookHelper().setLookPositionWithEntity(target, 30.0F, 30.0F);
         if((attackingEntity.canUseNP() && attackingEntity.getOwner() == null && attackingEntity.getMana()>=attackingEntity.props().hogouMana()) || attackingEntity.forcedNP)
 		{
-	        State state = this.attackingEntity.entityState();
+        	State state = this.attackingEntity.entityState();
 	        if(state==State.IDDLE)
 	        {
-	        	this.attackingEntity.setState(State.NP);
+	        	state = State.NP;
+	        	this.attackingEntity.setState(state);
 	        }
-        	else if(state==State.NP)
+        	if(state==State.NP)
             {
 		        double distanceToTarget = this.attackingEntity.getDistanceSq(target.posX, target.getEntityBoundingBox().minY, target.posZ);
 				this.attackingEntity.getNavigator().tryMoveToEntityLiving(target, 1);

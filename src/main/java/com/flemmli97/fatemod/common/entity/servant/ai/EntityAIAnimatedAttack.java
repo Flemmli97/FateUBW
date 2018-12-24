@@ -24,6 +24,7 @@ public class EntityAIAnimatedAttack extends EntityAIBase{
 	protected boolean evade, isRanged;
     
     protected int moveDelay;
+    private int attackCooldown;
     protected double posX,posY,posZ,rangeModifier;
 	
     /**doAttackTime is the time during animationDuration, when the entity should deal damage. Should be smaller than animationduration;
@@ -104,7 +105,7 @@ public class EntityAIAnimatedAttack extends EntityAIBase{
         this.attackingEntity.getLookHelper().setLookPositionWithEntity(target, 30.0F, 30.0F);
         
         double distanceToTarget = this.attackingEntity.getDistanceSq(target.posX, target.getEntityBoundingBox().minY, target.posZ);
-        double attackRange = rangeModifier*(double)(this.attackingEntity.width * 2.0F * this.attackingEntity.width * 2.0F + target.width+1);
+        double attackRange = rangeModifier*(double)(this.attackingEntity.width * 2.2F * this.attackingEntity.width * 2.2F + target.width+1);
         --this.moveDelay;
         State state = this.attackingEntity.entityState();
 
@@ -132,11 +133,18 @@ public class EntityAIAnimatedAttack extends EntityAIBase{
         }
 
         //Attack
-        if (distanceToTarget <= attackRange)
+        if(state==State.IDDLE)
+        	--this.attackCooldown;
+        if (distanceToTarget <= attackRange*1.5)
         {
         	if(state==State.IDDLE)
         	{
-        		this.attackingEntity.setState(State.randomAttackState(this.attackingEntity.getRNG()));
+        		if(this.attackCooldown<=0)
+        		{
+	        		state = State.randomAttackState(this.attackingEntity.getRNG());
+	        		this.attackingEntity.setState(state);
+	        		this.attackCooldown=this.attackingEntity.attackCooldown();
+        		}
         	}
         	if(State.isAttack(state))
         		this.attackingEntity.getNavigator().clearPath();
@@ -176,44 +184,58 @@ public class EntityAIAnimatedAttack extends EntityAIBase{
 		boolean canSee = this.attackingEntity.getEntitySenses().canSee(target);
         this.attackingEntity.getLookHelper().setLookPositionWithEntity(target, 30.0F, 30.0F);
         --followTicker;
+        State state = this.attackingEntity.entityState();
+
         double distanceToTarget = this.attackingEntity.getDistanceSq(target.posX, target.getEntityBoundingBox().minY, target.posZ);
         //Movement
-        if(canSee)
+        if(!State.isAttack(state))
         {
-        	followTicker = 60;
-        	if(distanceToTarget<64.0D)
-        	{
-        		evade = true;
-        		float strafeSideRand = this.attackingEntity.getRNG().nextFloat();
-                this.attackingEntity.getNavigator().clearPath();
-                this.attackingEntity.getMoveHelper().strafe(-0.5F, strafeSideRand < 0.5 ? 0.5F : -0.5F);
-                this.attackingEntity.faceEntity(target, 30.0F, 30.0F);
-        	}
-        	else
-        	{
-        		evade = false;
-        	}
-        }
-        else
-        {
-        		evade = false;
-        }
-        if(!canSee && followTicker>0 || canSee && !evade && distanceToTarget > 81.0D)
-        {
-    		this.attackingEntity.getNavigator().tryMoveToEntityLiving(target, this.speedTowardsTarget);
+	        if(canSee)
+	        {
+	        	followTicker = 60;
+	        	if(distanceToTarget<64.0D)
+	        	{
+	        		evade = true;
+	        		float strafeSideRand = this.attackingEntity.getRNG().nextFloat();
+	                this.attackingEntity.getNavigator().clearPath();
+	                this.attackingEntity.getMoveHelper().strafe(-0.5F, strafeSideRand < 0.5 ? 0.5F : -0.5F);
+	                this.attackingEntity.faceEntity(target, 30.0F, 30.0F);
+	        	}
+	        	else
+	        	{
+	        		evade = false;
+	        	}
+	        }
+	        else
+	        {
+	        		evade = false;
+	        }
+	        
+	        if(!canSee && followTicker>0 || canSee && !evade && distanceToTarget > 81.0D)
+	        {
+	    		this.attackingEntity.getNavigator().tryMoveToEntityLiving(target, this.speedTowardsTarget);
+	        }
         }
         
         //Attack
-        
-        State state = this.attackingEntity.entityState();
+        if(state==State.IDDLE)
+    	{
+    		this.attackCooldown--;
+    	}
         if (distanceToTarget <= rangeModifier && canSee)
         {
         	if(state==State.IDDLE)
         	{
+        		if(this.attackCooldown<=0)
+        		{
         		//this.attackingEntity.getNavigator().clearPath();
-        		State randomAttack = State.randomAttackState(this.attackingEntity.getRNG());
-        		this.attackingEntity.setState(randomAttack);
+	        		state = State.randomAttackState(this.attackingEntity.getRNG());
+	        		this.attackingEntity.setState(state);
+	        		this.attackCooldown=this.attackingEntity.attackCooldown();
+        		}
         	}
+        	if(State.isAttack(state))
+        		this.attackingEntity.getNavigator().clearPath();
         	if(this.attackingEntity.canAttack())
         	{
          		iRanged.attackWithRangedAttack(target);

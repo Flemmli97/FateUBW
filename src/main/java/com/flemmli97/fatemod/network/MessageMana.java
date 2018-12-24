@@ -35,15 +35,16 @@ public class MessageMana  implements IMessage{
 
         @Override
         public IMessage onMessage(MessageMana msg, MessageContext ctx) {
-			EntityPlayer player =  Fate.proxy.getPlayerEntity(ctx);
-			if(player!=null)
-			{
-				IPlayer capSync = player.getCapability(PlayerCapProvider.PlayerCap, null);
-				if(capSync != null)
-			    {
-					capSync.setMana(player, msg.manaValue);				     	
-			    }					
-			}	
+        	Fate.proxy.getListener(ctx).addScheduledTask(new Runnable() {
+				@Override
+				public void run() {
+					EntityPlayer player =  Fate.proxy.getPlayerEntity(ctx);
+					if(player!=null)
+					{
+						player.getCapability(PlayerCapProvider.PlayerCap, null).setMana(player, msg.manaValue);				     	
+					}
+				}
+        	});	
             return null;
         }
     }

@@ -4,19 +4,18 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.flemmli97.fatemod.common.entity.servant.ai.EntityAIDiarmuid;
 import com.flemmli97.fatemod.common.init.ModItems;
+import com.flemmli97.fatemod.common.utils.ServantUtils;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class EntityDiarmuid extends EntityServant {
 
@@ -36,7 +35,7 @@ public class EntityDiarmuid extends EntityServant {
 	@Override
 	public Pair<Integer, Integer> attackTickerFromState(State state) {
 		// TODO Auto-generated method stub
-		return Pair.of(0, 0);
+		return Pair.of(15, 10);
 	}
 	
 	@Override
@@ -44,7 +43,8 @@ public class EntityDiarmuid extends EntityServant {
 	}
 	
 	@Override
-	protected void updateAITasks() {
+	public void updateAI(int behaviour) {
+		super.updateAI(behaviour);
 		if(commandBehaviour == 3)
 		{
 			this.tasks.addTask(1, attackAI);
@@ -53,14 +53,13 @@ public class EntityDiarmuid extends EntityServant {
 		{
 			this.tasks.removeTask(attackAI);
 		}
-		super.updateAITasks();
 	}
 	
 	@Override
 	protected void damageEntity(DamageSource damageSrc, float damageAmount)
     {
 		super.damageEntity(damageSrc, damageAmount);
-		if (!this.canUseNP && !this.dead && this.getHealth() < 0.5 * this.getMaxHealth())
+		if (!this.canUseNP && !this.isDead() && this.getHealth() < 0.5 * this.getMaxHealth())
 		{
 			this.canUseNP=true;
 		}
@@ -68,18 +67,17 @@ public class EntityDiarmuid extends EntityServant {
 	
 	@Override
 	public void onLivingUpdate() {
-		if (this.getHealth() < 0.25 * this.getMaxHealth())
+		if (this.getHealth() < 0.25 * this.getMaxHealth() && this.getHealth()>0)
 		{
-			if(critHealth == false)	
+			if(this.critHealth == false)	
 			{
-				MinecraftServer minecraftserver = FMLCommonHandler.instance().getMinecraftServerInstance();
 				if(!world.isRemote)
 				{
-					minecraftserver.getPlayerList().sendMessage(new TextComponentString(TextFormatting.GOLD + "Avalons healing ability has activated"));
+					//this.world.getMinecraftServer().getPlayerList().sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.servant.diarmuid"), TextFormatting.GOLD));
 				}
-				critHealth = true;
+				this.critHealth = true;
 			}
-			this.addPotionEffect(new PotionEffect(Potion.getPotionById(1), 1, 4));
+			//this.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:speed"), 1, 2, false, false));
 		}
 		super.onLivingUpdate();
 	}
@@ -98,6 +96,6 @@ public class EntityDiarmuid extends EntityServant {
 	public void attackWithNP(EntityLivingBase target) {
 		target.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:weakness"), 7200, 2));
 		target.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:poison"), 800, 1));
-
+		this.revealServant();
 	}
 }

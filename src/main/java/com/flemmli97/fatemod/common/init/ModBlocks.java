@@ -9,9 +9,12 @@ import com.flemmli97.fatemod.common.blocks.tile.TileChalkLine;
 import com.flemmli97.fatemod.common.lib.LibReference;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -33,8 +36,8 @@ public final class ModBlocks {
 		event.getRegistry().register(magicOre);
 		event.getRegistry().register(servantCharmBlock);
 		event.getRegistry().register(chalkLine);
-  		GameRegistry.registerTileEntity(TileAltar.class, LibReference.MODID+":tile_grail");
-  		GameRegistry.registerTileEntity(TileChalkLine.class, LibReference.MODID+":tile_chalk");
+  		GameRegistry.registerTileEntity(TileAltar.class, new ResourceLocation(LibReference.MODID,"tile_grail"));
+  		GameRegistry.registerTileEntity(TileChalkLine.class, new ResourceLocation(LibReference.MODID,"tile_chalk"));
     }
 	
 	@SubscribeEvent
@@ -56,9 +59,14 @@ public final class ModBlocks {
 	@SideOnly(Side.CLIENT)
 	public static final void initModel(ModelRegistryEvent event)
     {
-		((BlockAltar) grailWarKey).initModel();
-		((BlockMagicOre) magicOre).initModel();
-		((BlockServantCharm) servantCharmBlock).initModel();
-		((BlockChalkLine) chalkLine).initModel();
+		registerDefaultModel(grailWarKey);
+		registerDefaultModel(magicOre);
+		registerDefaultModel(servantCharmBlock);
+		registerDefaultModel(chalkLine);
+    }
+	
+	@SideOnly(Side.CLIENT)
+    public static void registerDefaultModel(Block block) {
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0, new ModelResourceLocation(block.getRegistryName(), "inventory"));
     }
 }

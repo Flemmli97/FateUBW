@@ -1,43 +1,40 @@
 package com.flemmli97.fatemod.common.handler;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
+import java.util.UUID;
 
 import com.flemmli97.fatemod.Fate;
 import com.flemmli97.fatemod.client.gui.ManaBar;
+import com.flemmli97.fatemod.common.entity.servant.EntityServant;
 import com.flemmli97.fatemod.common.handler.capabilities.IPlayer;
 import com.flemmli97.fatemod.common.handler.capabilities.PlayerCapProvider;
-import com.flemmli97.fatemod.common.init.ModItems;
-import com.flemmli97.fatemod.common.items.IExtendedReach;
 import com.flemmli97.fatemod.common.lib.LibReference;
-import com.flemmli97.fatemod.network.MessageExtendedHit;
+import com.flemmli97.fatemod.common.utils.ServantUtils;
 import com.flemmli97.fatemod.network.MessageMana;
 import com.flemmli97.fatemod.network.MessagePlayerServant;
+import com.flemmli97.fatemod.network.MessageServantSync;
 import com.flemmli97.fatemod.network.PacketHandler;
 import com.flemmli97.fatemod.proxy.ClientProxy;
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EntitySelectors;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.SPacketEntityMetadata;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
@@ -65,8 +62,7 @@ public class ModEventHandler {
     {
     	if(!event.player.world.isRemote)
     	{
-			IPlayer cap = event.player.getCapability(PlayerCapProvider.PlayerCap, null);
-			cap.initServant(event.player);
+			GrailWarPlayerTracker.get(event.player.world).updatePlayerName(event.player);
     	}
     }
     
@@ -75,25 +71,53 @@ public class ModEventHandler {
     {
         if (event.getEntity() instanceof EntityPlayer && !event.getEntity().world.isRemote)
         {
-			IPlayer cap = event.getEntity().getCapability(PlayerCapProvider.PlayerCap, null);
-			PacketHandler.sendTo(new MessageMana(cap), (EntityPlayerMP) event.getEntity());
+        	EntityPlayerMP player = (EntityPlayerMP) event.getEntity();
+        	if(GrailWarPlayerTracker.get(player.world).shouldSeverConnection(player))
+        	{
+        		GrailWarPlayerTracker.get(player.world).removePlayer(player);
+        	}
+			PacketHandler.sendTo(new MessageMana(player.getCapability(PlayerCapProvider.PlayerCap, null)), (EntityPlayerMP) player);
+			for(UUID uuid : TruceMapHandler.get(player.world).getRequests(player))
+			{
+				String name = GrailWarPlayerTracker.get(player.world).getPlayerNameFromUUID(uuid);
+				player.sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.truce.pending", name), TextFormatting.GOLD));
+			}
+			if(player.getCapability(PlayerCapProvider.PlayerCap, null).getServant(player)!=null)
+				this.trackEntity(player, player.getCapability(PlayerCapProvider.PlayerCap, null).getServant(player));
         }
     }
-
+    
     @SubscribeEvent
-    public void extendedReach(PlayerInteractEvent.LeftClickEmpty event)
+    public void tracking(PlayerEvent.StartTracking event)
     {
-    	ItemStack stack = event.getEntityPlayer().getHeldItemMainhand();
-    	if(stack!=null)
-    	if(stack.getItem() instanceof IExtendedReach)
+    	if(event.getTarget() instanceof EntityServant)
     	{
-    		IExtendedReach item = (IExtendedReach) stack.getItem();
-	    	RayTraceResult result = ModEventHandler.calculateEntityFromLook(event.getEntityPlayer(), item.getRange());
-	    	if(result!=null)
-	    	{
-	    		PacketHandler.sendToServer(new MessageExtendedHit(result.entityHit.getUniqueID().toString()));
-	    	}
+    		EntityServant servant = (EntityServant) event.getTarget();
+    		if(servant.getOwner()!=null)
+    		{
+				PacketHandler.sendTo(new MessageServantSync(servant), (EntityPlayerMP) servant.getOwner());
+    		}
     	}
+    }
+    
+    @SubscribeEvent
+    public void reTracking(PlayerEvent.StopTracking event)
+    {
+    	if(event.getTarget() instanceof EntityServant)
+    	{
+            this.trackEntity((EntityPlayerMP) event.getEntityPlayer(), event.getTarget());
+    	}
+    }
+    
+    private void trackEntity(EntityPlayerMP player, Entity e)
+    {
+    	Packet<?> packet = net.minecraftforge.fml.common.network.internal.FMLNetworkHandler.getEntitySpawningPacket(e);
+    	player.addEntity(e);
+    	player.connection.sendPacket(packet);
+        if (!e.getDataManager().isEmpty())
+        {
+        	player.connection.sendPacket(new SPacketEntityMetadata(e.getEntityId(), e.getDataManager(), true));
+        }
     }
 
     @SubscribeEvent
@@ -119,35 +143,22 @@ public class ModEventHandler {
     @SubscribeEvent
     public void updateGrailWar(WorldTickEvent event)
     {
-		if(event.phase == Phase.END && !event.world.isRemote)
+		if(event.phase == Phase.END && !event.world.isRemote && event.world.provider.getDimension()==0)
 		{
-			GrailWarPlayerTracker tracker = GrailWarPlayerTracker.get(event.world);
-    	  	if(tracker !=null)
-    	  	{
-    	  		if(tracker.joinTicker>0)
-    	  		{
-	    	  		tracker.joinTicker--;
-	    	  		if(tracker.joinTicker==0)
-	    	  		{
-	    	  			tracker.startGrailWar(event.world);
-	    	  		}
-    	  		}
-    	  		if(tracker.winningDelay>0)
-    	  		{
-    	  			tracker.winningDelay--;
-    	  			if(tracker.winningDelay==0)
-	    	  		{
-	    	  			EntityPlayer player = tracker.getWinningPlayer();
-	    	  			tracker.removePlayer(player);
-	    	  			EntityItem holyGrail = new EntityItem(player.world, player.posX+event.world.rand.nextInt(9)-4, player.posY, player.posZ+ event.world.rand.nextInt(9)-4, new ItemStack(ModItems.grail));
-	    	  			holyGrail.lifespan = 6000;
-	    	  			holyGrail.setOwner(player.getName());
-	    	  			holyGrail.setEntityInvulnerable(true);
-	    	  			event.world.spawnEntity(holyGrail);
-	    	  		}
-    	  		}
-    	  	}
+			GrailWarPlayerTracker.get(event.world).updateGrailWar((WorldServer) event.world);;
 		}
+    }
+    
+    @SubscribeEvent
+    public void clone(PlayerEvent.Clone event) 
+    {
+        if (event.isWasDeath()) 
+        {
+            IPlayer capSync = event.getOriginal().getCapability(PlayerCapProvider.PlayerCap, null);
+            NBTTagCompound oldNBT = new NBTTagCompound();
+            capSync.writeToNBT(oldNBT);
+            event.getEntityPlayer().getCapability(PlayerCapProvider.PlayerCap, null).readFromNBT(oldNBT);
+        }
     }
     
 	@SideOnly(Side.CLIENT)
@@ -178,46 +189,5 @@ public class ModEventHandler {
 		{
 			new ManaBar(Minecraft.getMinecraft());
 		}
-	}
-	
-	public static RayTraceResult calculateEntityFromLook(EntityPlayer player, float reach)
-	{
-		RayTraceResult result = null;
-		if(player.world!=null)
-		{
-			Entity entity = null;
-            Vec3d posVec = player.getPositionEyes(1);
-			Vec3d look = player.getLook(1);
-            Vec3d rangeVec = posVec.addVector(look.x * reach, look.y * reach, look.z * reach);
-            Vec3d hitVec = null;
-            List<Entity> list = player.world.getEntitiesInAABBexcluding(player, player.getEntityBoundingBox().expand(look.x * reach, look.y * reach, look.z * reach).expand(1.0D, 1.0D, 1.0D), Predicates.and(EntitySelectors.NOT_SPECTATING, new Predicate<Entity>()
-            {
-                public boolean apply(@Nullable Entity entity)
-                {
-                    return entity != null && entity.canBeCollidedWith();
-                }
-            }));
-            for(int i = 0; i < list.size(); ++i)
-            {
-            	Entity entity1 = (Entity)list.get(i);
-                AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().grow((double)entity1.getCollisionBorderSize());
-                RayTraceResult raytraceresult = axisalignedbb.calculateIntercept(posVec, rangeVec);
-                if (raytraceresult != null)
-                {
-                    double d3 = posVec.distanceTo(raytraceresult.hitVec);
-
-                    if (d3 < reach)
-                    {
-                        entity = entity1;
-                        hitVec = raytraceresult.hitVec;
-                    }
-                }
-            }
-            if(entity!=null)
-            {
-            	result = new RayTraceResult(entity, hitVec);
-            }
-		}
-		return result;
 	}
 }

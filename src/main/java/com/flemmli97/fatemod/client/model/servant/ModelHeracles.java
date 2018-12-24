@@ -463,18 +463,22 @@ public class ModelHeracles extends ModelServant {
     }
 
     @Override
-    public void render(Entity entity, float f0, float f1, float f2, float f3, float f4, float scale) { 
-    	this.setRotationAngles(f0, f1, f2, f3, f4, scale, entity);
+    public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) { 
+    	this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);
         this.upperTorso.render(scale);
     }
     
-    public void setRotationAnglesPre(float f1, float f2, float f3, float f4, float f5, float f6, Entity entity) {
-        this.rightArmUp.rotateAngleX = MathHelper.cos(f1 * 0.6662F + (float)Math.PI) * 2.0F * f2 * 0.5F;
-        this.leftArmUp.rotateAngleX = MathHelper.cos(f1 * 0.6662F) * 2.0F * f2 * 0.5F;
+    @Override
+    public void setRotationAnglesPre(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale, Entity entity) {    	
+    	this.head.rotateAngleY = netHeadYaw / (180F / (float)Math.PI);
+        this.head.rotateAngleX = headPitch / (180F / (float)Math.PI);
+        
+        this.rightArmUp.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 2.0F * limbSwingAmount * 0.5F;
+        this.leftArmUp.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 2.0F * limbSwingAmount * 0.5F;
         this.rightArmUp.rotateAngleZ = 0.0F;
         this.leftArmUp.rotateAngleZ = 0.0F;
-        this.rightUpperThigh.rotateAngleX = MathHelper.cos(f1 * 0.6662F) * f2;
-        this.leftUpperThigh.rotateAngleX = MathHelper.cos(f1 * 0.6662F + (float)Math.PI) * f2;
+        this.rightUpperThigh.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * limbSwingAmount;
+        this.leftUpperThigh.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * limbSwingAmount;
         
         if (this.isRiding)
         {
@@ -521,11 +525,11 @@ public class ModelHeracles extends ModelServant {
         
         this.upperTorso.rotateAngleX = 0.0F;
         
-        this.rightArmUp.rotateAngleZ += MathHelper.cos(f3 * 0.09F) * 0.05F + 0.05F;
-        this.leftArmUp.rotateAngleZ -= MathHelper.cos(f3 * 0.09F) * 0.05F + 0.05F;
-        this.rightArmUp.rotateAngleX += MathHelper.sin(f3 * 0.067F) * 0.05F;
+        this.rightArmUp.rotateAngleZ += MathHelper.cos(ageInTicks * 0.09F) * 0.05F + 0.05F;
+        this.leftArmUp.rotateAngleZ -= MathHelper.cos(ageInTicks * 0.09F) * 0.05F + 0.05F;
+        this.rightArmUp.rotateAngleX += MathHelper.sin(ageInTicks * 0.067F) * 0.05F;
         this.rightArmUp.rotateAngleX = -this.rightArmUp.rotateAngleX;
-        this.leftArmUp.rotateAngleX -= MathHelper.sin(f3 * 0.067F) * 0.05F;
+        this.leftArmUp.rotateAngleX -= MathHelper.sin(ageInTicks * 0.067F) * 0.05F;
 	}
     
     public void postRenderArm(float scale, EnumHandSide side)

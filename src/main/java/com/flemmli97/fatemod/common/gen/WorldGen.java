@@ -17,9 +17,7 @@ public class WorldGen implements IWorldGenerator {
 	
 	private WorldGenerator gem_ore;
 	private WorldGenerator servant_charm;
-    int config_gem = ConfigHandler.gemSpawnRate;
-    int config_charm = ConfigHandler.charmSpawnRate;
-    
+
     public WorldGen() {
 	    this.servant_charm = new WorldGenCharm();
 	    this.gem_ore = new WorldGenMinable(ModBlocks.magicOre.getDefaultState(), 8);
@@ -29,8 +27,8 @@ public class WorldGen implements IWorldGenerator {
 	public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator,
 			IChunkProvider chunkProvider) {
 		if (world.provider.getDimension() == 0) {
-	    	this.runGenerator(gem_ore, world, random, chunkX, chunkZ, config_gem, 1, 40);
-	    	this.runGenerator(servant_charm, world, random, chunkX, chunkZ, config_charm, 1, 30);
+	    	this.runGenerator(gem_ore, world, random, chunkX, chunkZ, ConfigHandler.general.gemSpawnRate, 1, 40);
+	    	this.runGenerator(servant_charm, world, random, chunkX, chunkZ, ConfigHandler.general.charmSpawnRate, 1, 30);
 	    }		
 	}
 	

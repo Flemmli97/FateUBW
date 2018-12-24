@@ -23,13 +23,14 @@ public class EntityAICuchulainn extends EntityAIAnimatedAttack{
         	State state = this.attackingEntity.entityState();
 	        if(state==State.IDDLE)
 	        {			
-	        	this.attackingEntity.setState(State.NP);
+	        	state = State.NP;
+	        	this.attackingEntity.setState(state);
         		attackingEntity.motionX=0;
         		attackingEntity.motionZ=0;
         		Vec3d back = attackingEntity.getLookVec().scale(-2);
         		attackingEntity.setVelocity(back.x, 1.2, back.z);
         	}
-	        else if(state==State.NP)
+	        if(state==State.NP)
             {
 	        	if(this.attackingEntity.canAttack() && !attackingEntity.onGround)
             	{

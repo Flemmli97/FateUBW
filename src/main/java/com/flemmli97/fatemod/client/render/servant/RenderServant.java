@@ -9,7 +9,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.layers.LayerCustomHead;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -33,6 +32,8 @@ public abstract class RenderServant<T extends EntityServant> extends RenderLivin
     	ItemStack stackOff = servant.getHeldItemOffhand();
 		modelServantMain.heldItemMain = 0;
 		modelServantMain.heldItemOff = 0;
+		this.defaultModel.heldItemMain=1;
+		this.defaultModel.heldItemOff=0;
     	if(!stackMain.isEmpty())
     	{
     		modelServantMain.heldItemMain = 1;
@@ -55,9 +56,14 @@ public abstract class RenderServant<T extends EntityServant> extends RenderLivin
 	
 	public static boolean showIdentity(EntityServant servant)
 	{
-		EntityPlayer player = Minecraft.getMinecraft().player;
-		boolean owner = player!=null?player.getCapability(PlayerCapProvider.PlayerCap, null).getServant()==servant:false;
-		return (servant.showServant() || owner || servant.getDeathTick()>0);
+		//Else tabula throws so many errors...
+		if(Minecraft.getMinecraft().player!=null)
+		{
+			EntityServant playerServant = Minecraft.getMinecraft().player.getCapability(PlayerCapProvider.PlayerCap, null).getServant(Minecraft.getMinecraft().player);
+			boolean owner = playerServant!=null && playerServant.equals(servant);
+			return (servant.showServant() || owner || servant.getDeathTick()>0);
+		}
+		return true;
 	}
 	
 	protected abstract ResourceLocation servantTexture(T entity);

@@ -27,8 +27,9 @@ import com.flemmli97.fatemod.common.handler.capabilities.IPlayer;
 import com.flemmli97.fatemod.common.handler.capabilities.PlayerCapProvider;
 import com.flemmli97.fatemod.common.init.ModBlocks;
 import com.flemmli97.fatemod.common.init.ModItems;
-import com.flemmli97.fatemod.common.items.IModelRegister;
+import com.flemmli97.fatemod.common.items.ItemServantCharm;
 import com.flemmli97.fatemod.common.lib.LibReference;
+import com.flemmli97.fatemod.common.utils.ServantUtils;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
@@ -39,14 +40,12 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
@@ -60,16 +59,15 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 //somehow this class got real messy
-public class BlockAltar extends BlockContainer implements IModelRegister{
+public class BlockAltar extends BlockContainer{
 		
     public static final PropertyDirection FACING = BlockHorizontal.FACING;
 	private static final double pixel = 0.0625;
@@ -198,12 +196,12 @@ public class BlockAltar extends BlockContainer implements IModelRegister{
 				{
 					if (!world.isRemote)
 					{
-						if(cap.getServant() == null)
+						if(cap.getServant(player) == null)
 						{
 							if(grail.isComplete())
 							{
 								if(!grail.isSummoning())
-									if(tracker.addPlayer(player))
+									if(tracker.canJoin(player) && tracker.canSpawnOtherServants())
 									{
 										if(!player.capabilities.isCreativeMode)
 										{
@@ -216,18 +214,18 @@ public class BlockAltar extends BlockContainer implements IModelRegister{
 									}
 									else
 									{
-										player.sendMessage(new TextComponentString(TextFormatting.DARK_RED + "Summon failed either because you can't join the current war or joined already"));
+										player.sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.altar.fail"), TextFormatting.DARK_RED));
 									}
 							}
 							else
 							{
 								grail.setComplete(false);
-								player.sendMessage(new TextComponentString(TextFormatting.DARK_RED + "Incomplete Structure"));
+								player.sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.altar.incomplete"), TextFormatting.DARK_RED));
 							}
 						}
 						else
 						{
-							player.sendMessage(new TextComponentString(TextFormatting.DARK_RED + "How dare you to summon another servant"));
+							player.sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.altar.existing"), TextFormatting.DARK_RED));
 	
 						}
 					}
@@ -241,20 +239,21 @@ public class BlockAltar extends BlockContainer implements IModelRegister{
 	public static void summonRandomServant(ItemStack stack, EntityPlayer player, BlockPos pos, World world, IPlayer cap)
 	{
 		EnumServantType type = EnumServantType.values()[Block.RANDOM.nextInt(EnumServantType.values().length-1)];
-		if(stack!=null && Block.RANDOM.nextFloat()<=0.6)
-			type = EnumServantType.values()[stack.getMetadata()-1];
+		if(stack!=null && Block.RANDOM.nextFloat()<=0.6 && stack.getItem() instanceof ItemServantCharm)
+			type = ((ItemServantCharm)stack.getItem()).type();
 
 		int servant = Block.RANDOM.nextInt(2);
+		EntityServant entity=null;
 		switch(type)
 		{
 			case SABER:
 				switch (servant) 
 				{
 					case 0:
-						summonServant(new EntityArthur(world), player, world, cap, pos);
+						entity=new EntityArthur(world);
 						break;
 					case 1:
-						summonServant(new EntityArthur(world), player, world, cap, pos);
+						entity=new EntityArthur(world);
 						break;
 					case 2:
 						//spawn a saber class
@@ -268,10 +267,10 @@ public class BlockAltar extends BlockContainer implements IModelRegister{
 				switch (servant)
 				{
 					case 0:
-						summonServant(new EntityCuchulainn(world), player, world, cap, pos);
+						entity=new EntityCuchulainn(world);
 						break;
 					case 1:
-						summonServant(new EntityDiarmuid(world), player, world, cap, pos);
+						entity=new EntityDiarmuid(world);
 						break;
 					case 2:
 						//spawn a lancer class
@@ -285,10 +284,10 @@ public class BlockAltar extends BlockContainer implements IModelRegister{
 				switch (servant)
 				{
 					case 0:
-						summonServant(new EntityEmiya(world), player, world, cap, pos);
+						entity=new EntityEmiya(world);
 						break;
 					case 1:
-						summonServant(new EntityGilgamesh(world), player, world, cap, pos);
+						entity=new EntityGilgamesh(world);
 						break;
 					case 2:
 						//spawn an archer class
@@ -302,10 +301,10 @@ public class BlockAltar extends BlockContainer implements IModelRegister{
 				switch (servant)
 				{
 					case 0:		
-						summonServant(new EntityMedusa(world), player, world, cap, pos);
+						entity=new EntityMedusa(world);
 						break;	
 					case 1:
-						summonServant(new EntityIskander(world), player, world, cap, pos);
+						entity=new EntityIskander(world);
 						break;
 					case 2:
 						//spawn a rider class
@@ -319,11 +318,11 @@ public class BlockAltar extends BlockContainer implements IModelRegister{
 				switch (servant)
 				{
 					case 0:	
-						summonServant(new EntityMedea(world), player, world, cap, pos);
+						entity=new EntityMedea(world);
 
 						break;	
 					case 1:
-						summonServant(new EntityGilles(world), player, world, cap, pos);
+						entity=new EntityGilles(world);
 						break;
 					case 2:
 						//spawn a caster class
@@ -337,10 +336,10 @@ public class BlockAltar extends BlockContainer implements IModelRegister{
 				switch (servant)
 				{
 					case 0:			
-						summonServant(new EntitySasaki(world), player, world, cap, pos);
+						entity=new EntitySasaki(world);
 						break;	
 					case 1:
-						summonServant(new EntityHassan(world), player, world, cap, pos);
+						entity=new EntityHassan(world);
 						break;
 					case 2:
 						//spawn an assassin class
@@ -354,10 +353,10 @@ public class BlockAltar extends BlockContainer implements IModelRegister{
 				switch (servant)
 				{
 					case 0:				
-						summonServant(new EntityHeracles(world), player, world, cap, pos);
+						entity=new EntityHeracles(world);
 						break;	
 					case 1:
-						summonServant(new EntityLancelot(world), player, world, cap, pos);
+						entity=new EntityLancelot(world);
 						break;
 					case 2:
 						//spawn a berseker class
@@ -370,6 +369,10 @@ public class BlockAltar extends BlockContainer implements IModelRegister{
 			case NOTASSIGNED:
 				break;	
 		}	
+		if(entity!=null && GrailWarPlayerTracker.get(world).canSpawnServant(entity))
+			summonServant(entity, player, world, cap, pos);
+		else
+			summonRandomServant(stack, player, pos, world, cap);
 	}
 	
 	public static void summonServant(EntityServant servant, EntityPlayer player, World world, IPlayer cap, BlockPos pos)
@@ -378,6 +381,7 @@ public class BlockAltar extends BlockContainer implements IModelRegister{
 		servant.setLocationAndAngles(pos.getX()+0.5, pos.getY()+1, pos.getZ()+0.5, MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F);
 		servant.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(servant)), (IEntityLivingData)null);
 		world.spawnEntity(servant);
+		GrailWarPlayerTracker.get(world).addPlayer(player);
 	}
 	
 	@Override
@@ -517,11 +521,6 @@ public class BlockAltar extends BlockContainer implements IModelRegister{
 		world.removeTileEntity(pos);
 		world.setBlockToAir(pos);
 	}
-
-	@SideOnly(Side.CLIENT)
-    public void initModel() {
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(getRegistryName(), "inventory"));
-    }
 	
 	@Override
 	public TileEntity createNewTileEntity(World worldIn, int meta) {

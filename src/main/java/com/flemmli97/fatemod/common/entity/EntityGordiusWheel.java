@@ -22,7 +22,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class EntityGordiusWheel extends EntityCreature{
+public class EntityGordiusWheel extends EntityCreature implements IServantMinion{
 
 	//static AxisAlignedBB wheelBox = new AxisAlignedBB(0, 0, 0, 2.5, 1.5, 3.25);
 	//static AxisAlignedBB bullBox = new AxisAlignedBB(0, 0, 0, 2.25, 1.5, 1.75);
@@ -126,7 +126,9 @@ public class EntityGordiusWheel extends EntityCreature{
 			for(EntityLivingBase e : list)
 			{
 				if(this.getPassengers().get(0)!=e && e != this)
+				{
 					e.attackEntityFrom(CustomDamageSource.gordiusTrample(this, (EntityLivingBase) this.getPassengers().get(0)), 5);
+				}
 			}
 	        this.playSound(SoundEvents.ENTITY_COW_STEP, 0.4F, 0.4F);
 		}

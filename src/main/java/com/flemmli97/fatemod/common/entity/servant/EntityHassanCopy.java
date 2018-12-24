@@ -2,6 +2,7 @@ package com.flemmli97.fatemod.common.entity.servant;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.flemmli97.fatemod.common.entity.IServantMinion;
 import com.flemmli97.fatemod.common.entity.servant.ai.EntityAIAnimatedAttack;
 import com.flemmli97.fatemod.common.entity.servant.ai.EntityAIFollowMaster;
 import com.flemmli97.fatemod.common.init.ModItems;
@@ -14,15 +15,15 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
-public class EntityHassanCopy extends EntityServant{
+public class EntityHassanCopy extends EntityServant implements IServantMinion{
 
-	private EntityHassan original;
+	private String originalUUID;
 	private int livingTick;
 	public EntityAIFollowMaster followOriginal = new EntityAIFollowMaster(this, 1.0D, 8.0F, 4.0F) {
 		@Override
 		public boolean shouldExecute()
 	    {
-	    	EntityLivingBase owner = EntityHassanCopy.this.original;
+	    	EntityLivingBase owner = EntityHassanCopy.this.getOriginal();
 	        if (owner == null)
 	        {
 	            return false;
@@ -48,15 +49,37 @@ public class EntityHassanCopy extends EntityServant{
 	}
 	public EntityHassanCopy(World world, EntityHassan original) {
 		super(world, EnumServantType.ASSASSIN, "", new ItemStack[] {});
-		this.original=original;
+		this.setOriginal(original);
 	    this.tasks.addTask(1, this.followOriginal);
 	    this.updateAttributes();
 	    this.tasks.addTask(1, attackAI);
+		this.removeTargetAI();
+		this.experienceValue = 0;
+		this.revealServant();
+	}
+	
+	private void removeTargetAI()
+	{
 		this.targetTasks.removeTask(targetServant);
 	    this.targetTasks.removeTask(targetPlayer);
 	    this.targetTasks.removeTask(targetHurt);
-		this.experienceValue = 0;
 	}
+	
+	public void setOriginal(EntityHassan original)
+	{
+		if(original!=null)
+			this.originalUUID = original.getCachedUniqueIdString();
+	}
+	
+	private EntityHassan getOriginal()
+	{
+		if(this.originalUUID!=null)
+			for(EntityHassan hassan : this.world.getEntitiesWithinAABB(EntityHassan.class, this.getEntityBoundingBox().grow(32)))
+				if(hassan.getCachedUniqueIdString().equals(this.originalUUID))
+					return hassan;
+		return null;
+	}
+	
 	@Override
 	public void onLivingUpdate()
 	{
@@ -65,8 +88,6 @@ public class EntityHassanCopy extends EntityServant{
 		if(this.livingTick>3600)
 			this.setDead();
 	}
-	@Override
-	protected void updateAITasks() {}
 
 	@Override
 	protected void setEquipmentBasedOnDifficulty(DifficultyInstance difficulty) {
@@ -76,14 +97,8 @@ public class EntityHassanCopy extends EntityServant{
 	@Override
 	public Pair<Integer, Integer> attackTickerFromState(State state) {
 		// TODO Auto-generated method stub
-		return Pair.of(0, 0);
+		return Pair.of(5, 5);
 	}
-	
-	@Override
-	public boolean writeToNBTOptional(NBTTagCompound compound)
-    {
-		return false;
-    }
 	
 	private void updateAttributes()
 	{
@@ -94,8 +109,27 @@ public class EntityHassanCopy extends EntityServant{
 	
 	@Override
 	protected void onDeathUpdate() {
-		if(this.original!=null)
-			this.original.removeCopy(this);
+		EntityHassan orig = this.getOriginal();
+		if(orig!=null)
+			orig.removeCopy(this);
 		super.onDeathUpdate();
+	}
+	
+	@Override
+	public void writeEntityToNBT(NBTTagCompound tag) {
+		super.writeEntityToNBT(tag);
+		if(this.originalUUID!=null)
+			tag.setString("OriginalUUID", this.originalUUID);
+	}
+	
+	@Override
+	public void readEntityFromNBT(NBTTagCompound tag) {
+		super.readEntityFromNBT(tag);
+		if(tag.hasKey("OriginalUUID"))
+		{
+			this.originalUUID = tag.getString("OriginalUUID");
+			
+		}
+		this.removeTargetAI();
 	}
 }

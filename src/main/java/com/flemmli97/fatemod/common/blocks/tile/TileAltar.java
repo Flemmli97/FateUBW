@@ -1,8 +1,10 @@
 package com.flemmli97.fatemod.common.blocks.tile;
 
 import com.flemmli97.fatemod.common.blocks.BlockAltar;
+import com.flemmli97.fatemod.common.entity.servant.EntityServant.EnumServantType;
 import com.flemmli97.fatemod.common.handler.capabilities.PlayerCapProvider;
 import com.flemmli97.fatemod.common.init.ModItems;
+import com.flemmli97.fatemod.common.items.ItemServantCharm;
 import com.flemmli97.fatemod.network.MessageAltarUpdate;
 import com.flemmli97.fatemod.network.PacketHandler;
 
@@ -49,7 +51,7 @@ public final class TileAltar extends TileEntity implements ITickable{
 	public boolean addItem(EntityPlayer player, ItemStack stack)
 	{
 		boolean flag = false;
-		if(stack.getItem() == ModItems.charm && stack.getItemDamage()!=0)
+		if(stack.getItem() instanceof ItemServantCharm && ((ItemServantCharm)stack.getItem()).type()!=EnumServantType.NOTASSIGNED)
 		{
 			if(this.inventoryCharm.isEmpty())
 			{

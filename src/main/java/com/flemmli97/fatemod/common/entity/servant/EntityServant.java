@@ -1,6 +1,8 @@
 package com.flemmli97.fatemod.common.entity.servant;
 
+import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
@@ -10,13 +12,15 @@ import org.apache.commons.lang3.tuple.Pair;
 import com.flemmli97.fatemod.Fate;
 import com.flemmli97.fatemod.common.entity.servant.ai.EntityAIFollowMaster;
 import com.flemmli97.fatemod.common.entity.servant.ai.EntityAIRetaliate;
+import com.flemmli97.fatemod.common.handler.ConfigHandler;
+import com.flemmli97.fatemod.common.handler.ConfigHandler.ServantAttributes;
 import com.flemmli97.fatemod.common.handler.GrailWarPlayerTracker;
 import com.flemmli97.fatemod.common.handler.capabilities.IPlayer;
 import com.flemmli97.fatemod.common.handler.capabilities.PlayerCapProvider;
-import com.flemmli97.fatemod.common.init.ServantAttributes;
 import com.flemmli97.fatemod.common.utils.ServantProperties;
 import com.flemmli97.fatemod.common.utils.ServantUtils;
 import com.google.common.base.Predicate;
+import com.google.common.collect.Lists;
 
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -32,11 +36,14 @@ import net.minecraft.entity.ai.EntityAIOpenDoor;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
+import net.minecraft.entity.ai.attributes.AttributeMap;
 import net.minecraft.entity.ai.attributes.IAttribute;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.ai.attributes.RangedAttribute;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemAxe;
@@ -45,25 +52,27 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.network.play.server.SPacketEntityMetadata;
+import net.minecraft.network.play.server.SPacketEntityProperties;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.ForgeChunkManager.Type;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public abstract class EntityServant extends EntityCreature{
 
 	//Mana
 	private int servantMana, antiRegen, counter;
+	private boolean died = false;
 	protected int deathTicks, combatTick;
-	protected boolean canUseNP, critHealth;
+	protected boolean canUseNP, critHealth, disableChunkload;
 	/*private int , attackTimer, , ;*/
 	public boolean forcedNP;
 	
@@ -84,7 +93,8 @@ public abstract class EntityServant extends EntityCreature{
 
 	public static final IAttribute MAGIC_RESISTANCE = (new RangedAttribute((IAttribute)null, "generic.magicResistance", 0.0D, 0.0D, 1.0D)).setDescription("Magic Resistance");
 	public static final IAttribute PROJECTILE_RESISTANCE = (new RangedAttribute((IAttribute)null, "generic.projectileResistance", 0.0D, 0.0D, 30.0D)).setDescription("Projectile Resistance");
-	
+	public static final IAttribute PROJECTILE_BLOCKCHANCE = (new RangedAttribute((IAttribute)null, "generic.projectileBlockChance", 0.0D, 0.0D, 1.0D)).setDescription("Projectile Block Chance");
+
 	private ServantProperties prop;
 	//Chunk load ticket
 	private Ticket ticket;
@@ -95,8 +105,7 @@ public abstract class EntityServant extends EntityCreature{
         		EntityPlayer targetOwner = living.getOwner();
         		if(EntityServant.this.getOwner()!=null && targetOwner!=null)
         		{
-        			IPlayer capSync = EntityServant.this.getOwner().getCapability(PlayerCapProvider.PlayerCap, null);
-        			flag = !capSync.isPlayerTruce(targetOwner);
+        			flag = !ServantUtils.inSameTeam(EntityServant.this.getOwner(), targetOwner);
         		}
             return living != null && flag;
         }});
@@ -106,8 +115,7 @@ public abstract class EntityServant extends EntityCreature{
         	boolean flag = true;
     		if(EntityServant.this.getOwner()!=null)
     		{
-    			IPlayer capSync = EntityServant.this.getOwner().getCapability(PlayerCapProvider.PlayerCap, null);
-    			flag = !capSync.isPlayerTruce(living);
+    			flag = !ServantUtils.inSameTeam(EntityServant.this.getOwner(), living);
     		}
             return living != null && living != EntityServant.this.getOwner() && flag;
         }});
@@ -120,7 +128,7 @@ public abstract class EntityServant extends EntityCreature{
 	public EntityAIRetaliate targetHurt = new EntityAIRetaliate(this);
 	public EntityAIMoveTowardsRestriction restrictArea = new EntityAIMoveTowardsRestriction(this, 1.0D);
 	public EntityAIWander wander = new EntityAIWander(this, 1.0D);
-	private EntityServant(World world) {
+	public EntityServant(World world, EnumServantType type, String hogou, ItemStack[] drops) {
 		super(world);
 		this.experienceValue = 50;
 	    this.tasks.addTask(0, this.follow);
@@ -130,28 +138,31 @@ public abstract class EntityServant extends EntityCreature{
 	    this.tasks.addTask(4, new EntityAILookIdle(this));
 	    this.tasks.addTask(5, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
 	    this.tasks.addTask(6, new EntityAIOpenDoor(this, true));
-	    this.targetTasks.addTask(0, this.targetServant);
-	    this.targetTasks.addTask(1, this.targetPlayer);
-	    this.targetTasks.addTask(2, this.targetHurt);
+	    this.targetTasks.addTask(0, this.targetHurt);
+	    this.targetTasks.addTask(1, this.targetServant);
+	    this.targetTasks.addTask(2, this.targetPlayer);
 		this.prop = ServantAttributes.attributes.get(this.getClass());
+		if(this.prop==null && EntityHassanCopy.class.isAssignableFrom(this.getClass()))
+			this.prop=ConfigHandler.minions.hassansCopy;
 		if (this.prop == null) {
             throw new NullPointerException("Properties of " + this.getClass() + " is null. This is not allowed");
         }
 		this.updateAttributes();
-		this.ticket = ForgeChunkManager.requestTicket(Fate.instance, world, Type.ENTITY);
-		this.ticket.bindEntity(this);
-		this.ticket.setChunkListDepth(1);
-	}
-	
-	public EntityServant(World world, EnumServantType type, String hogou, ItemStack[] drops)
-	{
-		this(world);
+		this.ticket = requestTicket(this);
+		this.servantType=type;
 		this.drops=drops;
 		this.hogou=hogou;
 	}
 	
+	public static Ticket requestTicket(Entity entity)
+	{
+		Ticket ticket = ForgeChunkManager.requestTicket(Fate.instance, entity.world, Type.ENTITY);
+		ticket.bindEntity(entity);
+		ticket.setChunkListDepth(1);
+		return ticket;	
+	}
+	
 	//=========Servant specifig data
-
 	public ServantProperties props()
 	{
 		return this.prop;
@@ -169,6 +180,17 @@ public abstract class EntityServant extends EntityCreature{
 	public ItemStack[] drops()
 	{
 		return this.drops;
+	}
+	
+	@Override
+	public String getName()
+	{
+		return Fate.proxy.entityName(this);
+	}
+	
+	public String getRealName()
+	{
+		return super.getName();
 	}
 	
 	//=====Client-Server sync
@@ -191,9 +213,10 @@ public abstract class EntityServant extends EntityCreature{
         }
     }
 	
+	//Reverse the ticker so it counts up
 	public int attackTimer()
 	{
-		return this.attackTimer;
+		return this.attackTickerFromState(this.entityState()).getLeft()-this.attackTimer;
 	}
 	
 	public State entityState()
@@ -215,12 +238,23 @@ public abstract class EntityServant extends EntityCreature{
 	}
 	
 	/**
-	 * For attacks
+	 * For attacks. Used in the animation
 	 * @param state IDDLE and STAY should be ignored
 	 * @return First number is animation duration, second is when to actually do damage. 
 	 * Example: an armswing should do damage when the sword "hits", not when its swung at beginning
 	 */
-	public abstract Pair<Integer, Integer> attackTickerFromState(State state);
+	public Pair<Integer, Integer> attackTickerFromState(State state)
+	{
+		return Pair.of(20, 20);
+	}
+	
+	/**
+	 * Cooldown between each attack. (The time after an attack has fully finished)
+	 */
+	public int attackCooldown()
+	{
+		return 0;
+	}
 	
 	//=====Init
 	
@@ -246,8 +280,10 @@ public abstract class EntityServant extends EntityCreature{
         this.getAttributeMap().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(1);
         this.getAttributeMap().registerAttribute(EntityServant.MAGIC_RESISTANCE);
         this.getAttributeMap().registerAttribute(EntityServant.PROJECTILE_RESISTANCE);
+        this.getAttributeMap().registerAttribute(EntityServant.PROJECTILE_BLOCKCHANCE);
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.3);//default 0.3
         this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(32.0D);
+        //this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1D);
     }
 	
 	private void updateAttributes()
@@ -256,8 +292,9 @@ public abstract class EntityServant extends EntityCreature{
 		this.setHealth(this.getMaxHealth());
         this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(this.prop.strength());
         this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(this.prop.armor());
-        this.getEntityAttribute(EntityServant.MAGIC_RESISTANCE).setBaseValue(this.prop.magicRes());;
-        this.getEntityAttribute(EntityServant.PROJECTILE_RESISTANCE).setBaseValue(this.prop.projectileProt());;
+        this.getEntityAttribute(EntityServant.MAGIC_RESISTANCE).setBaseValue(this.prop.magicRes());
+        this.getEntityAttribute(EntityServant.PROJECTILE_BLOCKCHANCE).setBaseValue(this.prop.projectileBlockChance());
+        this.getEntityAttribute(EntityServant.PROJECTILE_RESISTANCE).setBaseValue(this.prop.projectileProt());
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(this.prop.moveSpeed());//default 0.3
 	}
 	
@@ -310,19 +347,17 @@ public abstract class EntityServant extends EntityCreature{
 	
 	//=====Player-Owner handling
 	
+	/**
+	 * Can return null despite having an owner if player is offline
+	 * @return
+	 */
     public EntityPlayer getOwner()
     {
-    	if(this.owner!=null)
+    	if(this.owner!=null && this.owner.isEntityAlive())
     		return this.owner;
-        try
-        {
-            UUID var1 = UUID.fromString(this.dataManager.get(ownerUUID));
-            return var1 == null ? null : this.world.getPlayerEntityByUUID(var1);
-        }
-        catch (IllegalArgumentException var2)
-        {
-            return null;
-        }
+    	if(this.hasOwner())
+    		return this.world.getPlayerEntityByUUID(UUID.fromString(this.dataManager.get(ownerUUID)));
+        return null;
     }
     
     public boolean hasOwner()
@@ -330,7 +365,7 @@ public abstract class EntityServant extends EntityCreature{
     	return !this.dataManager.get(ownerUUID).isEmpty();
     }
     
-    @Override
+    /*@Override
     public void notifyDataManagerChange(DataParameter<?> key)
     {
     	if(key==ownerUUID)
@@ -341,12 +376,15 @@ public abstract class EntityServant extends EntityCreature{
     			capSync.setServant(this.getOwner(), this);
     		}
     	}
-    }
+    }*/
     
     public void setOwner(EntityPlayer player)
     {
 		if(player!=null)
+		{
 			this.dataManager.set(ownerUUID, player.getUniqueID().toString());
+			player.getCapability(PlayerCapProvider.PlayerCap, null).setServant(player, this);
+		}
 		else
 			this.dataManager.set(ownerUUID, "");
 		this.owner=player;
@@ -359,10 +397,12 @@ public abstract class EntityServant extends EntityCreature{
 		tag.setString("Owner", this.dataManager.get(ownerUUID));
 		tag.setBoolean("CanUseNP", this.canUseNP);
 		tag.setInteger("Death", this.deathTicks);
+		tag.setBoolean("IsDead", this.died);
 		tag.setInteger("Command", this.commandBehaviour);
 		tag.setInteger("Mana", this.servantMana);
 		tag.setBoolean("HealthMessage", this.critHealth);
 		tag.setBoolean("Revealed", this.showServant());
+		tag.setBoolean("DisableChunkload", this.disableChunkload);
 		if(this.ticket!=null)
 		{
 			this.ticket.getModData().setIntArray("Chunk", 
@@ -376,10 +416,12 @@ public abstract class EntityServant extends EntityCreature{
 		this.dataManager.set(ownerUUID, tag.getString("Owner"));
 		this.canUseNP = tag.getBoolean("CanUseNP");
 		this.deathTicks = tag.getInteger("Death");
+		this.died=tag.getBoolean("IsDead");
 		this.updateAI(tag.getInteger("Command"));
 		this.servantMana = tag.getInteger("Mana");
 		this.critHealth = tag.getBoolean("HealthMessage");
 		this.dataManager.set(showServant, tag.getBoolean("Revealed"));
+		this.disableChunkload=tag.getBoolean("DisableChunkload");
 	}
 	
 	//=====Entity AI updating
@@ -392,25 +434,25 @@ public abstract class EntityServant extends EntityCreature{
 		if(commandBehaviour == 0)
 		{
 			this.targetTasks.removeTask(targetMob);
-			this.targetTasks.addTask(2, targetHurt);
-			this.targetTasks.addTask(0, targetServant);
+			this.targetTasks.addTask(0, targetHurt);
+			this.targetTasks.addTask(1, targetServant);
 		}
 		else if(commandBehaviour == 1)
 		{
-			this.targetTasks.addTask(2, targetHurt);
-			this.targetTasks.addTask(0, targetServant);
+			this.targetTasks.addTask(0, targetHurt);
+			this.targetTasks.addTask(1, targetServant);
 			this.targetTasks.addTask(3, targetMob);
 		}
 		else if(commandBehaviour == 2)
 		{
-			this.targetTasks.addTask(2, targetHurt);
+			this.targetTasks.addTask(0, targetHurt);
 			this.targetTasks.removeTask(targetServant);
 			this.targetTasks.removeTask(targetMob);
 		}
 		else if(commandBehaviour == 3)
 		{
-			this.targetTasks.addTask(2, targetHurt);
-			this.targetTasks.addTask(0, targetServant);
+			this.targetTasks.addTask(0, targetHurt);
+			this.targetTasks.addTask(1, targetServant);
 			this.tasks.addTask(0, follow);
 			this.tasks.addTask(2, this.wander);
 			this.setState(State.IDDLE);
@@ -451,23 +493,63 @@ public abstract class EntityServant extends EntityCreature{
 			//Decide it on server, wether attack has finished or not
 			if(!this.world.isRemote && this.attackTimer==0 && State.isAttack(this.entityState()))
 				this.setState(State.IDDLE);
-			if(this.ticksExisted%10==0)
-				System.out.println("chunk " + this.getPosition());
-			if(this.ticket!=null && this.shouldLoadChunk())
-				ForgeChunkManager.forceChunk(this.ticket, new ChunkPos(this.getPosition()));
+			if(this.ticket!=null)
+			{
+				if(!this.disableChunkload)
+					ForgeChunkManager.forceChunk(this.ticket, new ChunkPos(this.getPosition()));
+				else
+				{
+					ForgeChunkManager.releaseTicket(this.ticket);
+					this.ticket=null;
+				}
+			}
+			if(this.getOwner()!=null && !this.tracked.contains(this.getOwner()))
+				this.updateDataManager((EntityPlayerMP) this.getOwner(), this);
 		}
 	}
 	
-	public boolean shouldLoadChunk()
-	{
-		return this.deathTicks==0;//this.isEntityAlive();
-	}
+	private List<EntityPlayerMP> tracked = Lists.newArrayList();
+	public void addTrackingPlayer(EntityPlayerMP player)
+    {
+		this.tracked.add(player);
+    }
+    
+    private void updateDataManager(EntityPlayerMP player, Entity e)
+    {
+    	EntityDataManager entitydatamanager = e.getDataManager();
+
+        if (entitydatamanager.isDirty())
+        {
+        	player.connection.sendPacket(new SPacketEntityMetadata(e.getEntityId(), entitydatamanager, false));
+        }
+
+        if (e instanceof EntityLivingBase)
+        {
+            AttributeMap attributemap = (AttributeMap)((EntityLivingBase)e).getAttributeMap();
+            Set<IAttributeInstance> set = attributemap.getDirtyInstances();
+
+            if (!set.isEmpty())
+            {
+            	player.connection.sendPacket(new SPacketEntityProperties(e.getEntityId(), set));
+            }
+
+            set.clear();
+        }
+    }
 	
 	//=====Death Handling
 	
 	public int getDeathTick()
 	{
 		return this.deathTicks;
+	}
+	
+	/**
+	 * Since onDeathUpdate doesnt kill it immediatly
+	 */
+	public boolean isDead()
+	{
+		return this.died;
 	}
 	
 	@Override
@@ -479,23 +561,27 @@ public abstract class EntityServant extends EntityCreature{
 	@Override
 	protected void onDeathUpdate() {
 		++this.deathTicks;
+		this.died=true;
 		if(!this.world.isRemote)
 		{
 			if(deathTicks == 1)
 			{	
-				this.dead=true;
-				MinecraftServer minecraftserver = FMLCommonHandler.instance().getMinecraftServerInstance();
-				minecraftserver.getPlayerList().sendMessage(new TextComponentString(TextFormatting.RED + "A servant has been killed"));			
+				//if(this.getLastDamageSource()!=DamageSource.OUT_OF_WORLD)
+					this.world.getMinecraftServer().getPlayerList().sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.servant.death"), TextFormatting.RED));			
 				this.playSound(SoundEvents.ENTITY_WITHER_SPAWN, 1.0F, 1.0F);
+				GrailWarPlayerTracker track = GrailWarPlayerTracker.get(this.world);
 				if(this.getOwner() != null)
 				{
 					IPlayer servantprop = this.getOwner().getCapability(PlayerCapProvider.PlayerCap, null);
 					servantprop.setServant(this.getOwner(), null);
-					GrailWarPlayerTracker track = GrailWarPlayerTracker.get(this.world);
+					
 					track.removePlayer(this.getOwner());
 				}
-				if(this.ticket!=null)
-					ForgeChunkManager.unforceChunk(this.ticket, new ChunkPos(this.getPosition()));
+				else if(this.hasOwner())
+				{
+					track.removeServantOwner(UUID.fromString(this.dataManager.get(ownerUUID)));
+				}
+				this.disableChunkload=true;
 			}
 			int exp;
 	        int splitExp;
@@ -541,7 +627,11 @@ public abstract class EntityServant extends EntityCreature{
         {
             damageAmount = net.minecraftforge.common.ForgeHooks.onLivingHurt(this, damageSrc, damageAmount);
             if (damageAmount <= 0) return;
+            if(damageSrc.isProjectile())
+            	damageAmount=ServantUtils.projectileReduce(this, damageAmount);
             damageAmount = this.applyArmorCalculations(damageSrc, damageAmount);
+            if(damageSrc.isMagicDamage())
+            	damageAmount = ServantUtils.getDamageAfterMagicAbsorb(this, damageAmount);
             damageAmount = this.applyPotionDamageCalculations(damageSrc, damageAmount);
             float f = damageAmount;
             damageAmount = Math.max(damageAmount - this.getAbsorptionAmount(), 0.0F);
@@ -552,7 +642,7 @@ public abstract class EntityServant extends EntityCreature{
             {
                 float f1 = this.getHealth();
                 this.getCombatTracker().trackDamage(damageSrc, f1, damageAmount);
-                this.setHealth(f1 - damageAmount); // Forge: moved to fix MC-121048
+                this.setHealth(f1 - damageAmount);
                 this.setAbsorptionAmount(this.getAbsorptionAmount() - damageAmount);
                 this.combatTick=300;
             }
@@ -570,41 +660,26 @@ public abstract class EntityServant extends EntityCreature{
 		{
 			if(!(damageSource.getTrueSource() instanceof EntityServant))
 				damage*=0.5;
-			if(damageSource.isMagicDamage())
-				damage = ServantUtils.getDamageAfterMagicAbsorb(this, damage);
-			if(damageSource.isProjectile())
+			
+			if(damageSource.isProjectile() && !damageSource.isUnblockable() && this.projectileBlockChance(damageSource, damage))
 			{
-				damage = ServantUtils.projectileReduce(this, damage);
-				if(damage<=0)
-					return false;
+				this.world.playSound(null, this.getPosition(), SoundEvents.ITEM_SHIELD_BLOCK, SoundCategory.NEUTRAL, 1, 1);
+				if(damageSource.getImmediateSource()!=null)
+					damageSource.getImmediateSource().setDead();
+				return false;
 			}
 			return this.preAttackEntityFrom(damageSource, (float) Math.min(50, damage));
 		}
     }
 	
+	public boolean projectileBlockChance(DamageSource damageSource, float damage)
+	{
+		return this.rand.nextFloat()>= (float) this.getEntityAttribute(EntityServant.PROJECTILE_BLOCKCHANCE).getAttributeValue();
+	}
+	
 	private boolean preAttackEntityFrom(DamageSource damageSource, float par2)
 	{
-		if (this.isEntityInvulnerable(damageSource))
-        {
-            return false;
-        }
-        else if (super.attackEntityFrom(damageSource, par2))
-        {
-            Entity var3 = damageSource.getTrueSource();
-
-            if (!this.isRidingOrBeingRiddenBy(var3))
-            { 
-                return true;
-            }
-            else
-            {
-                return true;
-            }
-        }
-        else
-        {
-            return false;
-        }
+        return super.attackEntityFrom(damageSource, par2);
 	}
 
 	@Override
@@ -676,6 +751,8 @@ public abstract class EntityServant extends EntityCreature{
 		super.knockBack(entityIn, strenght, xRatio, zRatio);
 	}
 	
+	
+	
 	public static enum State
 	{
 		IDDLE,
@@ -703,13 +780,24 @@ public abstract class EntityServant extends EntityCreature{
 	}
 	public static enum EnumServantType
 	{
-		SABER,
-		ARCHER,
-		LANCER,
-		RIDER,
-		BERSERKER,
-		CASTER,
-		ASSASSIN,
-		NOTASSIGNED;
+		SABER("saber"),
+		ARCHER("archer"),
+		LANCER("lancer"),
+		RIDER("rider"),
+		BERSERKER("berserker"),
+		CASTER("caster"),
+		ASSASSIN("assassin"),
+		NOTASSIGNED("undef");
+		
+		private String name;
+		EnumServantType(String s)
+		{
+			this.name=s;
+		}
+		
+		public String getLowercase()
+		{
+			return this.name;
+		}
 	}
 }

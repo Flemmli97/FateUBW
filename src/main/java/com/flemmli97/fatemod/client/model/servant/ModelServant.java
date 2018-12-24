@@ -2,157 +2,154 @@ package com.flemmli97.fatemod.client.model.servant;
 
 import org.lwjgl.opengl.GL11;
 
-import com.flemmli97.fatemod.client.model.ModelUtils;
+import com.flemmli97.tenshilib.client.model.IResetModel;
+import com.flemmli97.tenshilib.client.model.ModelRendererPlus;
 
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.math.MathHelper;
 
-public class ModelServant extends ModelBase{
+public class ModelServant extends ModelBase implements IResetModel{
 	
-    public ModelRenderer servantHead;
-    public ModelRenderer servantHeadOverlay;
-    public ModelRenderer servantBody;
-    public ModelRenderer servantBodyOverlay;
+    public ModelRendererPlus servantHead;
+    public ModelRendererPlus servantHeadOverlay;
+    public ModelRendererPlus servantBody;
+    public ModelRendererPlus servantBodyOverlay;
     
-    public ModelRenderer servantRightArmUp;
-    public ModelRenderer servantRightArmUpOverlay;
-    public ModelRenderer servantRightArmJoint;
-    public ModelRenderer servantRightArmOverlayJoint;
-    public ModelRenderer servantRightArmDown;
-    public ModelRenderer servantRightArmDownOverlay;
+    public ModelRendererPlus servantRightArmUp;
+    public ModelRendererPlus servantRightArmUpOverlay;
+    public ModelRendererPlus servantRightArmJoint;
+    public ModelRendererPlus servantRightArmOverlayJoint;
+    public ModelRendererPlus servantRightArmDown;
+    public ModelRendererPlus servantRightArmDownOverlay;
     
-    public ModelRenderer servantLeftArmUp;
-    public ModelRenderer servantLeftArmUpOverlay;
-    public ModelRenderer servantLeftArmJoint;
-    public ModelRenderer servantLeftArmOverlayJoint;
-    public ModelRenderer servantLeftArmDown;
-    public ModelRenderer servantLeftArmDownOverlay;
+    public ModelRendererPlus servantLeftArmUp;
+    public ModelRendererPlus servantLeftArmUpOverlay;
+    public ModelRendererPlus servantLeftArmJoint;
+    public ModelRendererPlus servantLeftArmOverlayJoint;
+    public ModelRendererPlus servantLeftArmDown;
+    public ModelRendererPlus servantLeftArmDownOverlay;
     
-    public ModelRenderer servantRightLegUp;
-    public ModelRenderer servantRightLegUpOverlay;
-    public ModelRenderer servantRightLegDown;
-    public ModelRenderer servantRightLegDownOverlay;
+    public ModelRendererPlus servantRightLegUp;
+    public ModelRendererPlus servantRightLegUpOverlay;
+    public ModelRendererPlus servantRightLegDown;
+    public ModelRendererPlus servantRightLegDownOverlay;
     
-    public ModelRenderer servantLeftLegUp;
-    public ModelRenderer servantLeftLegUpOverlay;
-    public ModelRenderer servantLeftLegDown;
-    public ModelRenderer servantLeftLegDownOverlay;
+    public ModelRendererPlus servantLeftLegUp;
+    public ModelRendererPlus servantLeftLegUpOverlay;
+    public ModelRendererPlus servantLeftLegDown;
+    public ModelRendererPlus servantLeftLegDownOverlay;
     
     public int heldItemMain, heldItemOff;
 
-    //ModelRenderer(Model, TextureOffsetX, TextureOffsetY)
-    // .addBox(positionX, positionY, positionZ, sizeX, sizeY, sizeZ, scalefactor)
-    // .setRotationPoint(pointX, pointY, pointZ)
 	public ModelServant() {
 		
 		this.textureWidth = 64;
         this.textureHeight = 64;
         
-        this.servantHead = new ModelRenderer(this, 0, 0);
-        this.servantHead.addBox(-4.0F, -8.0F, -4.0F, 8, 8, 8, 0.0F);       
-        this.servantHead.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.servantHeadOverlay = new ModelRenderer(this, 32, 0);
+        this.servantHead = new ModelRendererPlus(this, 0, 0);
+        this.servantHead.addBox(-4.0F, -8.0F, -4.0F, 8, 8, 8, 0);       
+        this.servantHead.setDefaultRotPoint(0, 0, 0);
+        this.servantHeadOverlay = new ModelRendererPlus(this, 32, 0);
         this.servantHeadOverlay.addBox(-4.0F, -8.0F, -4.0F, 8, 8, 8, 0.5F);
-        this.servantHeadOverlay.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.servantHeadOverlay.setDefaultRotPoint(0, 0, 0);
         
-        this.servantBody = new ModelRenderer(this, 16, 16);
-        this.servantBody.addBox(-4.0F, 0.0F, -2.0F, 8, 12, 4, 0.0F);
-        this.servantBody.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.servantBodyOverlay = new ModelRenderer(this, 16, 32);
-		this.servantBodyOverlay.addBox(-4.0F, 0.0F, -2.0F, 8, 12, 4, 0.25F);
-		this.servantBodyOverlay.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.servantBody = new ModelRendererPlus(this, 16, 16);
+        this.servantBody.addBox(-4.0F, 0, -2.0F, 8, 12, 4, 0);
+        this.servantBody.setDefaultRotPoint(0, 0, 0);
+        this.servantBodyOverlay = new ModelRendererPlus(this, 16, 32);
+		this.servantBodyOverlay.addBox(-4.0F, 0, -2.0F, 8, 12, 4, 0.25F);
+		this.servantBodyOverlay.setDefaultRotPoint(0, 0, 0);
 		
-		this.servantLeftArmUp = new ModelRenderer(this, 40, 16);
+		this.servantLeftArmUp = new ModelRendererPlus(this, 40, 16);
 		this.servantLeftArmUp.mirror=true;
-		this.servantLeftArmUp.addBox(-1.0F, -2.0F, -2.0F, 4, 6, 4, 0.0F);
-		this.servantLeftArmUp.setRotationPoint(5.0F, 2.0F, 0.0F);
-		this.servantLeftArmUpOverlay = new ModelRenderer(this, 40, 32);
+		this.servantLeftArmUp.addBox(-1.0F, -2.0F, -2.0F, 4, 6, 4, 0);
+		this.servantLeftArmUp.setDefaultRotPoint(5.0F, 2.0F, 0);
+		this.servantLeftArmUpOverlay = new ModelRendererPlus(this, 40, 32);
 		this.servantLeftArmUpOverlay.mirror=true;
 		this.servantLeftArmUpOverlay.addBox(-1.0F, -2.0F, -2.0F, 4, 6, 4, 0.25F);
-		this.servantLeftArmUpOverlay.setRotationPoint(5.0F, 2.0F, 0.0F);
+		this.servantLeftArmUpOverlay.setDefaultRotPoint(5.0F, 2.0F, 0);
 		
-		this.servantLeftArmJoint = new ModelRenderer (this, 0, 0);
-		this.servantLeftArmJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0);
-		this.servantLeftArmJoint.setRotationPoint(3.0F, 4.0F, 0.0F);
+		this.servantLeftArmJoint = new ModelRendererPlus (this, 0, 0);
+		this.servantLeftArmJoint.addBox(0, 0, 0, 0, 0, 0);
+		this.servantLeftArmJoint.setDefaultRotPoint(3.0F, 4.0F, 0);
 		this.servantLeftArmUp.addChild(servantLeftArmJoint);
-		this.servantLeftArmOverlayJoint = new ModelRenderer (this, 0, 0);
-		this.servantLeftArmOverlayJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0);
-		this.servantLeftArmOverlayJoint.setRotationPoint(3.0F, 4.0F, 0.0F);
+		this.servantLeftArmOverlayJoint = new ModelRendererPlus (this, 0, 0);
+		this.servantLeftArmOverlayJoint.addBox(0, 0, 0, 0, 0, 0);
+		this.servantLeftArmOverlayJoint.setDefaultRotPoint(3.0F, 4.0F, 0);
 		this.servantLeftArmUpOverlay.addChild(servantLeftArmOverlayJoint);
 		
-		this.servantLeftArmDown = new ModelRenderer(this, 32, 54);
+		this.servantLeftArmDown = new ModelRendererPlus(this, 32, 54);
 		this.servantLeftArmDown.mirror=true;
-		this.servantLeftArmDown.addBox(-4.0F, 0.0F, -2.0F, 4, 6, 4, 0.0F);
-		this.servantLeftArmDown.setRotationPoint(0.0F, 0.0F, 0.0F);
+		this.servantLeftArmDown.addBox(-4.0F, 0, -2.0F, 4, 6, 4, 0);
+		this.servantLeftArmDown.setDefaultRotPoint(0, 0, 0);
 		this.servantLeftArmJoint.addChild(servantLeftArmDown);
-		this.servantLeftArmDownOverlay = new ModelRenderer(this, 48, 54);
+		this.servantLeftArmDownOverlay = new ModelRendererPlus(this, 48, 54);
 		this.servantLeftArmDownOverlay.mirror=true;
-		this.servantLeftArmDownOverlay.addBox(-4.0F, 0.0F, -2.0F, 4, 6, 4, 0.25F);
-		this.servantLeftArmDownOverlay.setRotationPoint(0.0F, 0.0F, 0.0F);
+		this.servantLeftArmDownOverlay.addBox(-4.0F, 0, -2.0F, 4, 6, 4, 0.25F);
+		this.servantLeftArmDownOverlay.setDefaultRotPoint(0, 0, 0);
 		this.servantLeftArmOverlayJoint.addChild(servantLeftArmDownOverlay);
 		
-        this.servantRightArmUp = new ModelRenderer(this, 40, 16);
-        this.servantRightArmUp.addBox(-3.0F, -2.0F, -2.0F, 4, 6, 4, 0.0F);
-        this.servantRightArmUp.setRotationPoint(-5.0F, 2.0F, 0.0F);
-        this.servantRightArmUpOverlay = new ModelRenderer(this, 40, 32);
+        this.servantRightArmUp = new ModelRendererPlus(this, 40, 16);
+        this.servantRightArmUp.addBox(-3.0F, -2.0F, -2.0F, 4, 6, 4, 0);
+        this.servantRightArmUp.setDefaultRotPoint(-5.0F, 2.0F, 0);
+        this.servantRightArmUpOverlay = new ModelRendererPlus(this, 40, 32);
         this.servantRightArmUpOverlay.addBox(-3.0F, -2.0F, -2.0F, 4, 6, 4,0.25F);
-        this.servantRightArmUpOverlay.setRotationPoint(-5.0F, 2.0F, 0.0F);
+        this.servantRightArmUpOverlay.setDefaultRotPoint(-5.0F, 2.0F, 0);
         
-        this.servantRightArmJoint = new ModelRenderer(this, 0, 0);
-        this.servantRightArmJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0);		
-        this.servantRightArmJoint.setRotationPoint(-3.0F, 4.0F, 0.0F);
+        this.servantRightArmJoint = new ModelRendererPlus(this, 0, 0);
+        this.servantRightArmJoint.addBox(0, 0, 0, 0, 0, 0);		
+        this.servantRightArmJoint.setDefaultRotPoint(-3.0F, 4.0F, 0);
         this.servantRightArmUp.addChild(servantRightArmJoint);
-        this.servantRightArmOverlayJoint = new ModelRenderer(this, 0, 0);
-        this.servantRightArmOverlayJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0);
-        this.servantRightArmOverlayJoint.setRotationPoint(-3.0F, 4.0F, 0.0F);
+        this.servantRightArmOverlayJoint = new ModelRendererPlus(this, 0, 0);
+        this.servantRightArmOverlayJoint.addBox(0, 0, 0, 0, 0, 0);
+        this.servantRightArmOverlayJoint.setDefaultRotPoint(-3.0F, 4.0F, 0);
         this.servantRightArmUpOverlay.addChild(servantRightArmOverlayJoint);
         
-        this.servantRightArmDown = new ModelRenderer(this, 32, 54);
-        this.servantRightArmDown.addBox(0.0F, 0.0F, -2.0F, 4, 6, 4, 0.0F);
-        this.servantRightArmDown.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.servantRightArmDown = new ModelRendererPlus(this, 32, 54);
+        this.servantRightArmDown.addBox(0, 0, -2.0F, 4, 6, 4, 0);
+        this.servantRightArmDown.setDefaultRotPoint(0, 0, 0);
         this.servantRightArmJoint.addChild(servantRightArmDown);
-        this.servantRightArmDownOverlay = new ModelRenderer(this, 48, 54);
-        this.servantRightArmDownOverlay.addBox(0.0F, 0.0F, -2.0F, 4, 6, 4, 0.25F);
-        this.servantRightArmDownOverlay.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.servantRightArmDownOverlay = new ModelRendererPlus(this, 48, 54);
+        this.servantRightArmDownOverlay.addBox(0, 0, -2.0F, 4, 6, 4, 0.25F);
+        this.servantRightArmDownOverlay.setDefaultRotPoint(0, 0, 0);
         this.servantRightArmOverlayJoint.addChild(servantRightArmDownOverlay);
         
-        this.servantLeftLegUp = new ModelRenderer(this, 0, 16);
+        this.servantLeftLegUp = new ModelRendererPlus(this, 0, 16);
         this.servantLeftLegUp.mirror=true;
-        this.servantLeftLegUp.addBox(-2.0F, 0.0F, -2.0F, 4, 6, 4, 0.0F);
-        this.servantLeftLegUp.setRotationPoint(1.9F, 12.0F, 0.0F);
-        this.servantLeftLegUpOverlay = new ModelRenderer(this, 0, 32);
+        this.servantLeftLegUp.addBox(-2.0F, 0, -2.0F, 4, 6, 4, 0);
+        this.servantLeftLegUp.setDefaultRotPoint(1.9F, 12.0F, 0);
+        this.servantLeftLegUpOverlay = new ModelRendererPlus(this, 0, 32);
         this.servantLeftLegUpOverlay.mirror=true;
-        this.servantLeftLegUpOverlay.addBox(-2.0F, 0.0F, -2.0F, 4, 6, 4, 0.25F);
-        this.servantLeftLegUpOverlay.setRotationPoint(1.9F, 12.0F, 0.0F);
+        this.servantLeftLegUpOverlay.addBox(-2.0F, 0, -2.0F, 4, 6, 4, 0.25F);
+        this.servantLeftLegUpOverlay.setDefaultRotPoint(1.9F, 12.0F, 0);
         
-        this.servantLeftLegDown = new ModelRenderer(this, 16, 54);
+        this.servantLeftLegDown = new ModelRendererPlus(this, 16, 54);
         this.servantLeftLegDown.mirror=true;
-        this.servantLeftLegDown.addBox(-2.0F, 0.0F, 0.0F, 4, 6, 4, 0.0F);
-        this.servantLeftLegDown.setRotationPoint(0.0F, 6.0F, -2.0F);
+        this.servantLeftLegDown.addBox(-2.0F, 0, 0, 4, 6, 4, 0);
+        this.servantLeftLegDown.setDefaultRotPoint(0, 6.0F, -2.0F);
         this.servantLeftLegUp.addChild(servantLeftLegDown);
-        this.servantLeftLegDownOverlay = new ModelRenderer(this, 0, 54);
+        this.servantLeftLegDownOverlay = new ModelRendererPlus(this, 0, 54);
         this.servantLeftLegDownOverlay.mirror=true;
-        this.servantLeftLegDownOverlay.addBox(-2.0F, 0.0F, 0.0F, 4, 6, 4, 0.25F);
-        this.servantLeftLegDownOverlay.setRotationPoint(0.0F, 6.0F, -2.0F);
+        this.servantLeftLegDownOverlay.addBox(-2.0F, 0, 0, 4, 6, 4, 0.25F);
+        this.servantLeftLegDownOverlay.setDefaultRotPoint(0, 6.0F, -2.0F);
         this.servantLeftLegUpOverlay.addChild(servantLeftLegDownOverlay);
 
-        this.servantRightLegUp = new ModelRenderer(this, 0, 16);
-        this.servantRightLegUp.addBox(-2.0F, 0.0F, -2.0F, 4, 6, 4, 0.0F);
-        this.servantRightLegUp.setRotationPoint(-1.9F, 12.0F, 0.0F);
-        this.servantRightLegUpOverlay = new ModelRenderer(this, 0, 32);
-        this.servantRightLegUpOverlay.addBox(-2.0F, 0.0F, -2.0F, 4, 6, 4, 0.25F);
-        this.servantRightLegUpOverlay.setRotationPoint(-1.9F, 12.0F, 0.0F);
+        this.servantRightLegUp = new ModelRendererPlus(this, 0, 16);
+        this.servantRightLegUp.addBox(-2.0F, 0, -2.0F, 4, 6, 4, 0);
+        this.servantRightLegUp.setDefaultRotPoint(-1.9F, 12.0F, 0);
+        this.servantRightLegUpOverlay = new ModelRendererPlus(this, 0, 32);
+        this.servantRightLegUpOverlay.addBox(-2.0F, 0, -2.0F, 4, 6, 4, 0.25F);
+        this.servantRightLegUpOverlay.setRotationPoint(-1.9F, 12.0F, 0);
        
-        this.servantRightLegDown = new ModelRenderer(this, 16, 54);
-        this.servantRightLegDown.addBox(-2.0F, 0.0F, 0.0F, 4, 6, 4, 0.0F);
-        this.servantRightLegDown.setRotationPoint(0.0F, 6.0F, -2.0F);
+        this.servantRightLegDown = new ModelRendererPlus(this, 16, 54);
+        this.servantRightLegDown.addBox(-2.0F, 0, 0, 4, 6, 4, 0);
+        this.servantRightLegDown.setDefaultRotPoint(0, 6.0F, -2.0F);
         this.servantRightLegUp.addChild(servantRightLegDown);
-        this.servantRightLegDownOverlay = new ModelRenderer(this, 0, 54);
-        this.servantRightLegDownOverlay.addBox(-2.0F, 0.0F, 0.0F, 4, 6, 4, 0.25F);
-        this.servantRightLegDownOverlay.setRotationPoint(0.0F, 6.0F, -2.0F);
+        this.servantRightLegDownOverlay = new ModelRendererPlus(this, 0, 54);
+        this.servantRightLegDownOverlay.addBox(-2.0F, 0, 0, 4, 6, 4, 0.25F);
+        this.servantRightLegDownOverlay.setDefaultRotPoint(0, 6.0F, -2.0F);
         this.servantRightLegUpOverlay.addChild(servantRightLegDownOverlay);
         
         this.servantBody.addChild(servantHead);
@@ -169,7 +166,7 @@ public class ModelServant extends ModelBase{
 	}
 	
 	@Override
-	 public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale)
+	public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale)
     {
 		this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);
 		this.servantBody.render(scale);
@@ -195,12 +192,12 @@ public class ModelServant extends ModelBase{
         
         this.servantRightArmUp.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 2.0F * limbSwingAmount * 0.5F;
         this.servantLeftArmUp.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 2.0F * limbSwingAmount * 0.5F;
-        this.servantRightArmUp.rotateAngleZ = 0.0F;
-        this.servantLeftArmUp.rotateAngleZ = 0.0F;
+        this.servantRightArmUp.rotateAngleZ = 0;
+        this.servantLeftArmUp.rotateAngleZ = 0;
         this.servantRightLegUp.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
         this.servantLeftLegUp.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
-        this.servantRightLegUp.rotateAngleY = 0.0F;
-        this.servantLeftLegUp.rotateAngleY = 0.0F;
+        this.servantRightLegUp.rotateAngleY = 0;
+        this.servantLeftLegUp.rotateAngleY = 0;
         
         if (this.isRiding)
         {
@@ -221,12 +218,12 @@ public class ModelServant extends ModelBase{
             this.servantRightArmUp.rotateAngleX = this.servantRightArmUp.rotateAngleX * 0.5F - ((float)Math.PI / 10F) ;
         }
         
-        this.servantRightArmUp.rotateAngleY = 0.0F;
-        this.servantLeftArmUp.rotateAngleY = 0.0F;
+        this.servantRightArmUp.rotateAngleY = 0;
+        this.servantLeftArmUp.rotateAngleY = 0;
         float var8;
         float var9;
         
-        if (this.swingProgress > -9990.0F)
+        if (this.swingProgress > -9990)
         {
             var8 = this.swingProgress;
             this.servantBody.rotateAngleY = MathHelper.sin(MathHelper.sqrt(var8) * (float)Math.PI * 2.0F) * 0.2F;
@@ -248,13 +245,13 @@ public class ModelServant extends ModelBase{
             this.servantRightArmUp.rotateAngleZ = MathHelper.sin(this.swingProgress * (float)Math.PI) * -0.4F;
         }
         
-        this.servantBody.rotateAngleX = 0.0F;
+        this.servantBody.rotateAngleX = 0;
         this.servantRightLegUp.rotationPointZ = 0.1F;
         this.servantLeftLegUp.rotationPointZ = 0.1F;
         this.servantRightLegUp.rotationPointY = 12.0F;
         this.servantLeftLegUp.rotationPointY = 12.0F;
-        this.servantHead.rotationPointY = 0.0F;
-        this.servantHeadOverlay.rotationPointY = 0.0F;
+        this.servantHead.rotationPointY = 0;
+        this.servantHeadOverlay.rotationPointY = 0;
         
         this.servantRightArmUp.rotateAngleZ += MathHelper.cos(ageInTicks * 0.09F) * 0.05F + 0.05F;
         this.servantLeftArmUp.rotateAngleZ -= MathHelper.cos(ageInTicks * 0.09F) * 0.05F + 0.05F;
@@ -284,29 +281,25 @@ public class ModelServant extends ModelBase{
 		copyModelAngles(servantBody, servantBodyOverlay);
 	}
 	
+	@Override
 	public void resetModel()
 	{
-		servantRightArmJoint.rotateAngleX = ModelUtils.degToRad(0.0F);
-		servantLeftArmJoint.rotateAngleX = ModelUtils.degToRad(0.0F);
-		servantRightArmJoint.rotateAngleY = ModelUtils.degToRad(0.0F);
-		servantLeftArmJoint.rotateAngleY = ModelUtils.degToRad(0.0F);
-		servantRightArmJoint.rotateAngleZ = ModelUtils.degToRad(0.0F);
-		servantLeftArmJoint.rotateAngleZ = ModelUtils.degToRad(0.0F);
-		
-		servantRightArmDown.rotateAngleX= ModelUtils.degToRad(0);
-		servantLeftArmDown.rotateAngleX= ModelUtils.degToRad(0);		
-		servantRightArmDown.rotateAngleY= ModelUtils.degToRad(0);	
-		servantLeftArmDown.rotateAngleY= ModelUtils.degToRad(0);
-		servantRightArmDown.rotateAngleZ = ModelUtils.degToRad(0);
-		servantLeftArmDown.rotateAngleZ = ModelUtils.degToRad(0);
-		
-		servantRightLegDown.rotateAngleX= ModelUtils.degToRad(0);
-		servantLeftLegDown.rotateAngleX= ModelUtils.degToRad(0);
-		servantRightLegDown.rotateAngleY= ModelUtils.degToRad(0);
-		servantLeftLegDown.rotateAngleY= ModelUtils.degToRad(0);
-		servantRightLegDown.rotateAngleZ= ModelUtils.degToRad(0);
-		servantLeftLegDown.rotateAngleZ= ModelUtils.degToRad(0);
-		
+		//Rotation point reset
+        this.servantHead.reset();
+        this.servantBody.reset();
+        
+        this.servantLeftArmUp.reset();
+		this.servantLeftArmJoint.reset();
+		this.servantLeftArmDown.reset();
+
+        this.servantRightArmUp.reset();	
+        this.servantRightArmJoint.reset();
+        this.servantRightArmDown.reset();
+
+        this.servantLeftLegUp.reset();
+        this.servantLeftLegDown.reset();
+        this.servantRightLegUp.reset();
+        this.servantRightLegDown.reset();
 		syncOverlay();
 	}
 	

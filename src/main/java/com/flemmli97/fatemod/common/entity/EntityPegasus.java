@@ -11,7 +11,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
-public class EntityPegasus extends EntityCreature{
+public class EntityPegasus extends EntityCreature implements IServantMinion{
 
 	public class PegasusMoveHelper extends EntityMoveHelper {
 

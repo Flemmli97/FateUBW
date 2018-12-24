@@ -4,25 +4,21 @@ import com.flemmli97.fatemod.Fate;
 import com.flemmli97.fatemod.common.entity.EntityGaeBolg;
 import com.flemmli97.fatemod.common.handler.capabilities.IPlayer;
 import com.flemmli97.fatemod.common.handler.capabilities.PlayerCapProvider;
-import com.flemmli97.fatemod.common.items.IModelRegister;
 import com.flemmli97.fatemod.common.lib.LibReference;
+import com.flemmli97.fatemod.common.utils.ServantUtils;
 
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.util.EnumHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemGaeBolg extends ClassSpear implements IModelRegister{
+public class ItemGaeBolg extends ClassSpear{
 
     public static ToolMaterial gaebolg_mat = EnumHelper.addToolMaterial("gaebolg_mat", 0, 900, 0.0F, 3.5F, 14);
 
@@ -54,16 +50,10 @@ public class ItemGaeBolg extends ClassSpear implements IModelRegister{
 				}
 				else
 				{
-					player.sendMessage(new TextComponentString(TextFormatting.AQUA + "You don't have enough mana"));
+					player.sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.mana.missing"), TextFormatting.AQUA));
 				}
 			}
 		}
 		return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
-    }
-    
-    @Override
-	@SideOnly(Side.CLIENT)
-    public void initModel() {
-        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(getRegistryName(), "inventory"));
     }
 }
