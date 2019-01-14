@@ -14,7 +14,7 @@ import net.minecraft.world.World;
 public class EntityGem extends EntitySpecialProjectile {
 
 	private int stackMeta;
-    protected static final DataParameter<Integer> meta = EntityDataManager.<Integer>createKey(EntityBabylonWeapon.class, DataSerializers.VARINT);
+    protected static final DataParameter<Integer> meta = EntityDataManager.<Integer>createKey(EntityGem.class, DataSerializers.VARINT);
 
 	public EntityGem(World world) {
 		super(world);

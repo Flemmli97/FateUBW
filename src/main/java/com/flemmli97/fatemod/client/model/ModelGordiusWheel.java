@@ -893,14 +893,14 @@ public class ModelGordiusWheel extends ModelBase {
 		this.Axel2.rotateAngleX=MathHelper.cos(limbSwing)*(float)Math.PI;
 		this.WheelWeaponMainframe.rotateAngleX=-this.Axel1.rotateAngleX;
 		this.WheelWeaponMainframe_1.rotateAngleX=this.Axel1.rotateAngleX;
-		this.FootLeftFront.rotateAngleX=MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
-		this.FootRightFront.rotateAngleX=MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
-		this.FootLeftFront_2.rotateAngleX=MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
-		this.FootRightFront_2.rotateAngleX=MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
-		this.FootLeftRear.rotateAngleX=MathHelper.cos(limbSwing * 0.6662F) * 1.1F * limbSwingAmount;
-		this.FootRightRear.rotateAngleX=MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.1F * limbSwingAmount;
-		this.FootLeftRear_2.rotateAngleX=MathHelper.cos(limbSwing * 0.6662F) * 1.1F * limbSwingAmount;
-		this.FootRightRear_2.rotateAngleX=MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.1F * limbSwingAmount;
+		this.FootLeftFront.rotateAngleX=MathHelper.cos(limbSwing * 0.6662F) * limbSwingAmount;
+		this.FootRightFront.rotateAngleX=MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI)* limbSwingAmount;
+		this.FootLeftFront_2.rotateAngleX=MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * limbSwingAmount;
+		this.FootRightFront_2.rotateAngleX=MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * limbSwingAmount;
+		this.FootLeftRear.rotateAngleX=MathHelper.cos(limbSwing * 0.6662F) * limbSwingAmount;
+		this.FootRightRear.rotateAngleX=MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * limbSwingAmount;
+		this.FootLeftRear_2.rotateAngleX=MathHelper.cos(limbSwing * 0.6662F) * limbSwingAmount;
+		this.FootRightRear_2.rotateAngleX=MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * limbSwingAmount;
 	}
 
 	/**

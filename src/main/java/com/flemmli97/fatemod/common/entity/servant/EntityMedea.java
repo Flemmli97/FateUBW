@@ -2,6 +2,7 @@ package com.flemmli97.fatemod.common.entity.servant;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.flemmli97.fatemod.common.entity.EntityMagicBeam;
 import com.flemmli97.fatemod.common.entity.servant.ai.EntityAIMedea;
 import com.flemmli97.fatemod.common.init.ModItems;
 
@@ -30,8 +31,7 @@ public class EntityMedea extends EntityServant implements IRanged{
 
 	@Override
 	public Pair<Integer, Integer> attackTickerFromState(State state) {
-		// TODO Auto-generated method stub
-		return Pair.of(0, 0);
+		return Pair.of(20, 20);
 	}
 	
 	@Override
@@ -64,8 +64,8 @@ public class EntityMedea extends EntityServant implements IRanged{
 
 	@Override
 	public void attackWithRangedAttack(EntityLivingBase target) {
-		//EntityMagicBeam beam = new EntityMagicBeam(this.worldObj, this, target);
-		//beam.setProjectileAreaPosition(3);
+		EntityMagicBeam beam = new EntityMagicBeam(this.world, this, target);
+		beam.setProjectileAreaPosition(3);
 		this.revealServant();
 	}
 

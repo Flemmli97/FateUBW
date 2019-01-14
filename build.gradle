@@ -9,9 +9,9 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
-apply plugin: 'signing'
 
-version = "1.12.2-a0.0.0"
+
+version = "${mcversion}-${modversion}"
 group = "com.flemmli97.fatemod"
 archivesBaseName = "FateUBW"
 
@@ -21,15 +21,31 @@ compileJava {
 }
 
 minecraft {
-    version = "1.12.2-14.23.4.2750"
+    version = "${mcversion}-${forge_version}"
     runDir = "run"
 
-    mappings = "snapshot_20171003"
+    mappings = mcp_mapping
     makeObfSourceJar = false
+    replace '${@VERSION}', modversion
+    replaceIn versionfile
+}
+
+repositories {
+    maven {
+      name = "CurseForge"
+      url = "https://minecraft.curseforge.com/api/maven/"
+      }
+}
+
+jar {
+    manifest {
+
+    }
+
 }
 
 dependencies {
-
+  compile tenshilib_dep
 }
 
 processResources {
@@ -40,11 +56,11 @@ processResources {
     // replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-                
-        // replace version and mcversion
+
+        // replace all variables from config
         expand 'version':project.version, 'mcversion':project.minecraft.version
     }
-        
+
     // copy everything else except the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'

@@ -99,7 +99,7 @@ public class GrailWarPlayerTracker extends WorldSavedData {
 				if(this.uuidNameMap.isEmpty() && this.joinTicker==0)
 				{
 					//start
-					this.joinTicker=ConfigHandler.general.joinTime;
+					this.joinTicker=ConfigHandler.joinTime;
 					player.world.getMinecraftServer().getPlayerList().sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.grailwar.init", this.joinTicker/20), TextFormatting.RED));
 				}
 				if(this.joinTicker>0)
@@ -149,7 +149,7 @@ public class GrailWarPlayerTracker extends WorldSavedData {
 	
 	public boolean canSpawnOtherServants()
 	{
-		if(!ConfigHandler.general.allowDuplicateServant)
+		if(!ConfigHandler.allowDuplicateServant)
 		{
 			List<ResourceLocation> noDups = Lists.newArrayList();
 			for(ResourceLocation res : this.servants)
@@ -159,7 +159,7 @@ public class GrailWarPlayerTracker extends WorldSavedData {
 			}
 			return noDups.size()<CommonProxy.servants();
 		}
-		if(!ConfigHandler.general.allowDuplicateClass)
+		if(!ConfigHandler.allowDuplicateClass)
 		{
 			List<EnumServantType> noDups = Lists.newArrayList();
 			for(EnumServantType type : this.servantClass)
@@ -174,9 +174,9 @@ public class GrailWarPlayerTracker extends WorldSavedData {
 	
 	public boolean canSpawnServant(EntityServant entity)
 	{
-		if(!ConfigHandler.general.allowDuplicateServant)
+		if(!ConfigHandler.allowDuplicateServant)
 			return !this.servants.contains(EntityList.getKey(entity));
-		if(!ConfigHandler.general.allowDuplicateClass)
+		if(!ConfigHandler.allowDuplicateClass)
 			return !this.servantClass.contains(entity.getServantType());
 		return true;
 	}
@@ -185,7 +185,7 @@ public class GrailWarPlayerTracker extends WorldSavedData {
 	{
 		if(this.uuidNameMap.size()==1 && this.joinTicker==-1)
 		{
-			this.winningDelay=ConfigHandler.general.rewardDelay;
+			this.winningDelay=ConfigHandler.rewardDelay;
 			for(Entry<UUID, String> entry : this.uuidNameMap.entrySet())
 			{
 				world.getMinecraftServer().getPlayerList().sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.grailwar.win", entry.getValue()), TextFormatting.RED));
@@ -211,7 +211,7 @@ public class GrailWarPlayerTracker extends WorldSavedData {
 	
 	public void startGrailWar(WorldServer world)
 	{
-		if(this.uuidNameMap.size()>=ConfigHandler.general.minPlayer)
+		if(this.uuidNameMap.size()>=ConfigHandler.minPlayer)
 		{
 			this.joinTicker=-1;
 			world.getMinecraftServer().getPlayerList().sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.grailwar.start"), TextFormatting.RED));
@@ -219,7 +219,7 @@ public class GrailWarPlayerTracker extends WorldSavedData {
 		}
 		else
 		{
-			this.joinTicker=ConfigHandler.general.joinTime;
+			this.joinTicker=ConfigHandler.joinTime;
 			world.getMinecraftServer().getPlayerList().sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.grailwar.missingplayer"), TextFormatting.RED));
 			this.markDirty();
 		}

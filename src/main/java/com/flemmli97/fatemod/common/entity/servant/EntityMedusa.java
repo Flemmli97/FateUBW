@@ -21,7 +21,7 @@ import net.minecraft.world.World;
 
 public class EntityMedusa extends EntityServant {
 
-	EntityAIMedusa attackAI = new EntityAIMedusa(this, false, 1, 1);
+	EntityAIMedusa attackAI = new EntityAIMedusa(this);
 	public EntityMedusa(World world) {
 		super(world, EnumServantType.RIDER, "Bellerophon", new ItemStack[] {new ItemStack(ModItems.medusaDagger)});
 		this.tasks.addTask(1, attackAI);
@@ -34,8 +34,7 @@ public class EntityMedusa extends EntityServant {
 	
 	@Override
 	public Pair<Integer, Integer> attackTickerFromState(State state) {
-		// TODO Auto-generated method stub
-		return Pair.of(0, 0);
+		return Pair.of(20, 20);
 	}
 	
 	@Override
@@ -76,12 +75,12 @@ public class EntityMedusa extends EntityServant {
 		if(!this.world.isRemote)
 		{
 			EntityPegasus peg = new EntityPegasus(this.world);
+			peg.setPosition(this.posX, this.posY, this.posZ);
 			for(int x=0;x < 5;x++)
 			{
-				EntityLightningBolt bolt = new EntityLightningBolt(this.world, this.posX, this.posY, this.posZ, true);
-				this.world.spawnEntity(bolt);
+				this.world.addWeatherEffect(new EntityLightningBolt(this.world, this.posX, this.posY, this.posZ, true));
 			}
-			List<Entity> list =this.world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().expand((double)15, 3.0D, (double)15));
+			List<Entity> list =this.world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().expand(15, 3.0D, 15));
 			for(int x = 0; x< list.size();x++)
 			{
 				if(list.get(x) instanceof EntityLivingBase)
@@ -90,10 +89,11 @@ public class EntityMedusa extends EntityServant {
 					//Vec3d posVec = ent.getPositionVector();
 					//Vec3d distVec;
 					//float degree;
-	                ent.knockBack(this, 1.0F, (double)MathHelper.sin(this.rotationYaw * 0.017453292F), (double)(-MathHelper.cos(this.rotationYaw * 0.017453292F)));
+	                ent.knockBack(this, 5.0F, (double)MathHelper.sin(this.rotationYaw * 0.017453292F), (double)(-MathHelper.cos(this.rotationYaw * 0.017453292F)));
 				}
 			}
 			this.world.spawnEntity(peg);
+			this.startRiding(peg);
 			this.revealServant();
 		}
 	}

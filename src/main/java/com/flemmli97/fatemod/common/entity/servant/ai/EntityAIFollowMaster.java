@@ -2,12 +2,13 @@ package com.flemmli97.fatemod.common.entity.servant.ai;
 
 import com.flemmli97.fatemod.common.entity.servant.EntityServant;
 
-import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathNodeType;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -71,7 +72,7 @@ public class EntityAIFollowMaster extends EntityAIBase
     public boolean continueExecuting()
     {
         return !this.pathfinder.noPath() && this.servant.getDistanceSq(this.follow) 
-        		> (double)(this.maxDist * this.maxDist);
+        		> (this.maxDist * this.maxDist);
     }
 
     /**
@@ -93,12 +94,6 @@ public class EntityAIFollowMaster extends EntityAIBase
         this.pathfinder.clearPath();
         this.servant.setPathPriority(PathNodeType.WATER, avoidWater);
     }
-    
-    private boolean isEmptyBlock(BlockPos pos)
-    {
-        IBlockState iblockstate = this.theWorld.getBlockState(pos);
-        return iblockstate.getMaterial() == Material.AIR ? true : !iblockstate.isFullCube();
-    }
 
     /**
      * Updates the task
@@ -111,12 +106,13 @@ public class EntityAIFollowMaster extends EntityAIBase
             {
                 this.followDelay = 10;
 
-                if (!this.pathfinder.tryMoveToEntityLiving(this.follow, this.d1))
+                if (!this.pathfinder.tryMoveToEntityLiving(this.follow, 1))
                 {
-                    if (!this.servant.getLeashed())
-                    {
-                        if (this.servant.getDistanceSq(this.follow) >= 576.0D)
+                        if (this.servant.getDistanceSq(this.follow) >= this.d1*this.d1)
                         {
+                        	//Try teleport
+                        	
+                        	
                             int i = MathHelper.floor(this.follow.posX) - 2;
                             int j = MathHelper.floor(this.follow.posZ) - 2;
                             int k = MathHelper.floor(this.follow.getEntityBoundingBox().minY);
@@ -125,7 +121,7 @@ public class EntityAIFollowMaster extends EntityAIBase
                             {
                                 for (int i1 = 0; i1 <= 4; ++i1)
                                 {
-                                    if ((l < 1 || i1 < 1 || l > 3 || i1 > 3) && this.theWorld.getBlockState(new BlockPos(i + l, k - 1, j + i1)).isOpaqueCube() && this.isEmptyBlock(new BlockPos(i + l, k, j + i1)) && this.isEmptyBlock(new BlockPos(i + l, k + 1, j + i1)))
+                                    if ((l < 1 || i1 < 1 || l > 3 || i1 > 3) && this.isTeleportFriendlyBlock(i, j, k, l, i1))
                                     {
                                         this.servant.setLocationAndAngles((double)((float)(i + l) + 0.5F), (double)k, (double)((float)(j + i1) + 0.5F), this.servant.rotationYaw, this.servant.rotationPitch);
                                         this.pathfinder.clearPath();
@@ -133,10 +129,15 @@ public class EntityAIFollowMaster extends EntityAIBase
                                     }
                                 }
                             }
-                        }
                     }
                 }
-            }
-        
+            } 
+    }
+    
+    protected boolean isTeleportFriendlyBlock(int x, int p_192381_2_, int y, int p_192381_4_, int p_192381_5_)
+    {
+        BlockPos blockpos = new BlockPos(x + p_192381_4_, y - 1, p_192381_2_ + p_192381_5_);
+        IBlockState iblockstate = this.servant.world.getBlockState(blockpos);
+        return iblockstate.getBlockFaceShape(this.servant.world, blockpos, EnumFacing.DOWN) == BlockFaceShape.SOLID && this.servant.world.isAirBlock(blockpos.up()) && this.servant.world.isAirBlock(blockpos.up(2));
     }
 }

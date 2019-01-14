@@ -18,7 +18,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
-@Mod(modid = LibReference.MODID, name = LibReference.MODNAME, version = LibReference.VERSION)
+@Mod(modid = LibReference.MODID, name = LibReference.MODNAME, version = LibReference.VERSION, dependencies = LibReference.DEPENDENCIES, guiFactory = LibReference.guiFactory)
 public class Fate {
 
 	@Instance

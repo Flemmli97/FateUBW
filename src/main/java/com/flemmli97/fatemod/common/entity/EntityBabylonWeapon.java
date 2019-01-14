@@ -53,36 +53,36 @@ public class EntityBabylonWeapon extends EntitySpecialProjectile{
 	protected void entityInit()
     {
         super.entityInit();
-        this.dataManager.register(weaponType, null);
+        this.dataManager.register(weaponType, ItemStack.EMPTY);
         this.dataManager.register(shootTime, 0);
     }
 
 	@Override
 	public void onUpdate() {
 		EntityLivingBase thrower = getThrower();
-		if(livingTick<=this.dataManager.get(shootTime))
+		if(this.livingTick<=this.dataManager.get(shootTime))
 		{
-			livingTick++;
-			iddle=true;;
+			this.livingTick++;
+			this.iddle=true;;
 		}
-		if(livingTick == this.dataManager.get(shootTime))
+		if(this.livingTick == this.dataManager.get(shootTime))
 		{
-			if(!world.isRemote)
+			if(!this.world.isRemote)
 			{
 				if(thrower instanceof EntityPlayer)
 				{
 					RayTraceResult hit = this.entityRayTrace(64);
 					this.setHeadingToPosition(hit.hitVec.x, hit.hitVec.y, hit.hitVec.z, 0.5F, 0.5F);
 				}
-				else if(target!=null)
+				else if(this.target!=null)
 				{
-					this.setHeadingToPosition(target.posX, target.posY+target.height/2, target.posZ, 0.5F , 1);
+					this.setHeadingToPosition(this.target.posX, this.target.posY+target.height/2, this.target.posZ, 0.5F , 1);
 				}
 			}
 		}
-		else if(livingTick>this.dataManager.get(shootTime))
+		else if(this.livingTick>this.dataManager.get(shootTime))
 		{
-			iddle=false;
+			this.iddle=false;
 			if(!world.isRemote) 
 			{
 				if(thrower == null || thrower.isDead) 
@@ -121,20 +121,20 @@ public class EntityBabylonWeapon extends EntitySpecialProjectile{
 			for(AttributeModifier mod : atts)
 			{
 				if(mod.getOperation()==0)
-					dmg+=mod.getAmount();
+					this.dmg+=mod.getAmount();
 			}
-			double value = dmg;
+			double value = this.dmg;
 			for(AttributeModifier mod : atts)
 			{
 				if(mod.getOperation()==1)
-					value+=dmg*mod.getAmount();
+					value+=this.dmg*mod.getAmount();
 			}
 			for(AttributeModifier mod : atts)
 			{
 				if(mod.getOperation()==2)
 					value*=1+mod.getAmount();
 			}
-			dmg=SharedMonsterAttributes.ATTACK_DAMAGE.clampValue(value);
+			this.dmg=SharedMonsterAttributes.ATTACK_DAMAGE.clampValue(value);
 		}
 	}
 
@@ -159,13 +159,18 @@ public class EntityBabylonWeapon extends EntitySpecialProjectile{
 		NBTTagCompound tag = new NBTTagCompound();
 		this.getWeapon().writeToNBT(tag);
 		compound.setTag("Weapon", tag);
+		compound.setInteger("LivingTick", this.livingTick);
 		return super.writeToNBT(compound);
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
-		NBTTagCompound tag = (NBTTagCompound) compound.getTag("Weapon");
-		this.setWeapon(new ItemStack(tag));
+		if(compound.hasKey("Weapon"))
+		{
+			NBTTagCompound tag = (NBTTagCompound) compound.getTag("Weapon");
+			this.setWeapon(new ItemStack(tag));
+		}
+		this.livingTick=compound.getInteger("LivingTick");
 		super.readFromNBT(compound);
 
 	}

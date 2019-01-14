@@ -1,11 +1,14 @@
 package com.flemmli97.fatemod.client.render.servant;
 
+import org.lwjgl.opengl.GL11;
+
 import com.flemmli97.fatemod.client.model.servant.ModelServant;
 import com.flemmli97.fatemod.client.render.layer.LayerHand;
 import com.flemmli97.fatemod.common.entity.servant.EntityServant;
 import com.flemmli97.fatemod.common.handler.capabilities.PlayerCapProvider;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.layers.LayerCustomHead;
@@ -27,6 +30,45 @@ public abstract class RenderServant<T extends EntityServant> extends RenderLivin
     }
     
     @Override
+    protected void renderModel(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor)
+    {
+        boolean flag = this.isVisible(entity);
+        boolean flag1 = !flag && !entity.isInvisibleToPlayer(Minecraft.getMinecraft().player);
+        boolean flag2 = !flag1 && entity.isDead();
+        if (flag || flag1)
+        {
+            if (!this.bindEntityTexture(entity))
+            {
+                return;
+            }
+
+            if (flag1)
+            {
+                GlStateManager.enableBlendProfile(GlStateManager.Profile.TRANSPARENT_MODEL);
+            }
+            else if(flag2)
+            {
+                GlStateManager.enableBlend();
+                GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+                GlStateManager.alphaFunc(GL11.GL_GEQUAL, 1/255f);
+            	GlStateManager.color(1.0F, 1.0F, 1.0F, 1-(entity.getDeathTick()/(float)entity.maxDeathTick()));
+            }
+
+            this.mainModel.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
+
+            if (flag1)
+            {
+                GlStateManager.disableBlendProfile(GlStateManager.Profile.TRANSPARENT_MODEL);
+            }
+            else if(flag2)
+            {
+            	GlStateManager.disableBlend();
+                GlStateManager.alphaFunc(GL11.GL_GEQUAL, 0.1F);
+            }
+        }
+    }
+
+	@Override
 	protected void preRenderCallback(T servant, float partialTickTime) {
     	ItemStack stackMain = servant.getHeldItemMainhand();
     	ItemStack stackOff = servant.getHeldItemOffhand();

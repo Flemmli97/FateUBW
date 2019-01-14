@@ -13,7 +13,6 @@ import com.flemmli97.fatemod.Fate;
 import com.flemmli97.fatemod.common.entity.servant.ai.EntityAIFollowMaster;
 import com.flemmli97.fatemod.common.entity.servant.ai.EntityAIRetaliate;
 import com.flemmli97.fatemod.common.handler.ConfigHandler;
-import com.flemmli97.fatemod.common.handler.ConfigHandler.ServantAttributes;
 import com.flemmli97.fatemod.common.handler.GrailWarPlayerTracker;
 import com.flemmli97.fatemod.common.handler.capabilities.IPlayer;
 import com.flemmli97.fatemod.common.handler.capabilities.PlayerCapProvider;
@@ -124,7 +123,7 @@ public abstract class EntityServant extends EntityCreature{
         {
             return living != null&&!(living instanceof EntityServant) && IMob.VISIBLE_MOB_SELECTOR.apply(living);
         }});
-	public EntityAIFollowMaster follow = new EntityAIFollowMaster(this, 1.0D, 15.0F, 4.0F);
+	public EntityAIFollowMaster follow = new EntityAIFollowMaster(this, 15.0D, 8.0F, 4.0F);
 	public EntityAIRetaliate targetHurt = new EntityAIRetaliate(this);
 	public EntityAIMoveTowardsRestriction restrictArea = new EntityAIMoveTowardsRestriction(this, 1.0D);
 	public EntityAIWander wander = new EntityAIWander(this, 1.0D);
@@ -141,9 +140,9 @@ public abstract class EntityServant extends EntityCreature{
 	    this.targetTasks.addTask(0, this.targetHurt);
 	    this.targetTasks.addTask(1, this.targetServant);
 	    this.targetTasks.addTask(2, this.targetPlayer);
-		this.prop = ServantAttributes.attributes.get(this.getClass());
+		this.prop = ConfigHandler.attributes.get(this.getClass());
 		if(this.prop==null && EntityHassanCopy.class.isAssignableFrom(this.getClass()))
-			this.prop=ConfigHandler.minions.hassansCopy;
+			this.prop=ConfigHandler.hassanCopy;
 		if (this.prop == null) {
             throw new NullPointerException("Properties of " + this.getClass() + " is null. This is not allowed");
         }
@@ -595,11 +594,16 @@ public abstract class EntityServant extends EntityCreature{
                     this.world.spawnEntity(new EntityXPOrb(this.world, this.posX, this.posY, this.posZ, splitExp));
                 }
 	        }
-			if (this.deathTicks == 200)
+			if (this.deathTicks == this.maxDeathTick())
 	        {
 	            this.setDead();
 	        }
 		}
+	}
+	
+	public int maxDeathTick()
+	{
+		return 200;
 	}
 	
 	@Override

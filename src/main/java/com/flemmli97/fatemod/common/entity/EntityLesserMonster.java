@@ -67,7 +67,7 @@ public class EntityLesserMonster extends EntityCreature implements IServantMinio
 	public void onLivingUpdate() {
 		super.onLivingUpdate();
 		this.livingTicks++;
-		if(this.livingTicks>ConfigHandler.minions.gillesMinionDuration)
+		if(this.livingTicks>ConfigHandler.gillesMinionDuration)
 			this.setDead();
 	}
 	

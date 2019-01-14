@@ -19,7 +19,7 @@ public class EntityHassanCopy extends EntityServant implements IServantMinion{
 
 	private String originalUUID;
 	private int livingTick;
-	public EntityAIFollowMaster followOriginal = new EntityAIFollowMaster(this, 1.0D, 8.0F, 4.0F) {
+	public EntityAIFollowMaster followOriginal = new EntityAIFollowMaster(this, 15.0D, 8.0F, 4.0F) {
 		@Override
 		public boolean shouldExecute()
 	    {

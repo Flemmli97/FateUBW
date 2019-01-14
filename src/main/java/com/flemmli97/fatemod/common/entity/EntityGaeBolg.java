@@ -14,7 +14,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
 public class EntityGaeBolg extends EntitySpecialProjectile{
-	
+		
 	public EntityGaeBolg(World worldIn)
     {
         super(worldIn);
@@ -79,6 +79,4 @@ public class EntityGaeBolg extends EntitySpecialProjectile{
 	protected float getGravityVelocity() {
 		return 0.01F;
 	}
-	
-	
 }

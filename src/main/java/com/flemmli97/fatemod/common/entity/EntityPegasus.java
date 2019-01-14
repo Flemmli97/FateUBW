@@ -1,17 +1,17 @@
 package com.flemmli97.fatemod.common.entity;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityMoveHelper;
+import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
-public class EntityPegasus extends EntityCreature implements IServantMinion{
+public class EntityPegasus extends AbstractHorse implements IServantMinion{
 
 	public class PegasusMoveHelper extends EntityMoveHelper {
 
@@ -47,18 +47,12 @@ public class EntityPegasus extends EntityCreature implements IServantMinion{
 
 	@Override
 	public boolean attackEntityFrom(DamageSource source, float amount) {
-		if(this.isBeingRidden() && source!=DamageSource.OUT_OF_WORLD)
-		{
-			return this.getRidingEntity().attackEntityFrom(source, amount);
-		}
-		else
-		{
 			return super.attackEntityFrom(source, amount);
-		}
 	}
 
 	@Override
 	public void onUpdate() {
+		super.onUpdate();
 		if(this.getRidingEntity()!=null && this.getRidingEntity() instanceof EntityLiving)
 		{
 			EntityLiving rider = (EntityLiving) this.getRidingEntity();

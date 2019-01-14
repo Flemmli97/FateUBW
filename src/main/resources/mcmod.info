@@ -4,7 +4,7 @@
   "description": "The Holy Grail War! Brought to minecraft",
   "version": "${version}",
   "mcversion": "${mcversion}",
-  "url": "",
+  "url": "https://github.com/Flemmli97/FateUBW",
   "updateJSON": "",
   "authorList": ["Flemmli97"],
   "credits": "Many thanks to BlackSaturn in creating all the models and textures",

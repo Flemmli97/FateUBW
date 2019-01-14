@@ -103,4 +103,4 @@ config.fatemod.general.tooltip=
 config.fatemod.servants=Servants
 config.fatemod.servants.tooltip=Configure individual servants
 config.fatemod.minions=Servant minions
-entity.minions.hassanscopy.name=Hassan Clone
+config.fatemod.hassancopy=Hassan Clone
