@@ -120,7 +120,7 @@ public class EntityEmiya extends EntityServant implements IRanged{
 		if(target != null)
 		{
 			EntityCaladBolg bolg = new EntityCaladBolg(this.world, this);
-			bolg.setHeadingToPosition(target.posX, target.posY+target.getEyeHeight(), target.posZ, 2F, 0);
+			bolg.shootAtPosition(target.posX, target.posY+target.getEyeHeight(), target.posZ, 2F, 0);
 			this.world.spawnEntity(bolg);
 			this.revealServant();
 		}

@@ -71,7 +71,7 @@ public class ItemGemShard extends Item{
         if (!world.isRemote)
        	{       	
         	EntityGem gem = new EntityGem(world, player, this);
-        	gem.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 0);	
+        	gem.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 0);	
        		world.spawnEntity(gem);
        	}  
         return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);

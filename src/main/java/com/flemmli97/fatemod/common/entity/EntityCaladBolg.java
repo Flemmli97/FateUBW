@@ -1,45 +1,44 @@
 package com.flemmli97.fatemod.common.entity;
 
 import com.flemmli97.fatemod.common.handler.CustomDamageSource;
+import com.flemmli97.tenshilib.common.entity.EntityProjectile;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
-public class EntityCaladBolg extends EntitySpecialProjectile{
+public class EntityCaladBolg extends EntityProjectile{
 
 	public EntityCaladBolg(World worldIn)
     {
         super(worldIn);
-		this.livingTickMax = 100;
     }
 
 	public EntityCaladBolg(World world, EntityLivingBase shootingEntity)
     {
-		super(world, shootingEntity, false, false);
-		this.livingTickMax = 100;
+		super(world, shootingEntity);
 	}
 	
 	public EntityCaladBolg(World worldIn, double x, double y, double z)
     {
         super(worldIn, x, y, z);
-		this.livingTickMax = 100;
     }
+	
+	@Override
+	public int livingTickMax()
+	{
+		return 100;
+	}
 
 	@Override
 	protected void onImpact(RayTraceResult result) {
 		if(!world.isRemote)
 		{
-			if(result.entityHit != null && result.entityHit instanceof EntityLivingBase && result.entityHit != this.getThrower())
+			if(result.entityHit != null)
 			{
-				EntityLivingBase hittedEntity = (EntityLivingBase) result.entityHit;
-				hittedEntity.attackEntityFrom(CustomDamageSource.caladBolg(this, this.getThrower()), 25);
-				this.setDead();
+				result.entityHit.attackEntityFrom(CustomDamageSource.caladBolg(this, this.getShooter()), 25);
 			}
-			else if(result.typeOfHit == RayTraceResult.Type.BLOCK)
-			{
-				this.setDead();
-			}
+			this.setDead();
 		}
 	}
 	

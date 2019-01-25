@@ -16,8 +16,10 @@ import com.flemmli97.fatemod.common.handler.ConfigHandler;
 import com.flemmli97.fatemod.common.handler.GrailWarPlayerTracker;
 import com.flemmli97.fatemod.common.handler.capabilities.IPlayer;
 import com.flemmli97.fatemod.common.handler.capabilities.PlayerCapProvider;
+import com.flemmli97.fatemod.common.init.ModRender;
 import com.flemmli97.fatemod.common.utils.ServantProperties;
 import com.flemmli97.fatemod.common.utils.ServantUtils;
+import com.flemmli97.tenshilib.client.particles.ParticleHandler;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 
@@ -561,6 +563,13 @@ public abstract class EntityServant extends EntityCreature{
 	protected void onDeathUpdate() {
 		++this.deathTicks;
 		this.died=true;
+			for(int i = 0; i < ((int)((7/(float)this.maxDeathTick())*this.deathTicks-1)); i++)
+				ParticleHandler.spawnParticle(ModRender.particleFade, this.world, this.posX + (this.rand.nextDouble() - 0.5D) * (this.width+3),
+        		this.posY + this.rand.nextDouble() * (this.height+1.5), 
+        		this.posZ + (this.rand.nextDouble() - 0.5D) * (this.width+3), 
+        		this.rand.nextGaussian() * 0.02D, 
+        		this.rand.nextGaussian() * 0.02D,
+        		this.rand.nextGaussian() * 0.02D);
 		if(!this.world.isRemote)
 		{
 			if(deathTicks == 1)
@@ -582,11 +591,11 @@ public abstract class EntityServant extends EntityCreature{
 				}
 				this.disableChunkload=true;
 			}
-			int exp;
-	        int splitExp;
+			
 	        if (this.deathTicks > 15 && this.deathTicks % 5 == 0 && (this.recentlyHit > 0 || this.isPlayer()) && this.canDropLoot() && this.world.getGameRules().getBoolean("doMobLoot"))
 	        {
-                exp = this.experienceValue;
+	        	int exp=this.experienceValue;
+		        int splitExp;
                 while (exp > 0)
                 {
                     splitExp = EntityXPOrb.getXPSplit(exp);

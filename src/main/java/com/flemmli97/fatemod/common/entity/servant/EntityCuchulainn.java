@@ -88,7 +88,7 @@ public class EntityCuchulainn extends EntityServant {
 		if(target != null)
 		{
 			EntityGaeBolg gaeBolg = new EntityGaeBolg(this.world, this);
-			gaeBolg.setHeadingToPosition(target.posX, target.posY+target.getEyeHeight(), target.posZ, 1.5F, 0);
+			gaeBolg.shootAtPosition(target.posX, target.posY+target.getEyeHeight(), target.posZ, 1.5F, 0);
 			this.world.spawnEntity(gaeBolg);
 			this.revealServant();
 		}

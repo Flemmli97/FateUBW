@@ -77,9 +77,9 @@ public class ItemEmiyaBow extends ItemBow{
 		{
             int i = this.getMaxItemUseDuration(stack) - timeLeft;
 			float f = getArrowVelocity(i);
-            if ((double)f >= 0.1D)
+            if (f >= 0.1D)
             {
-	            bolg.setHeadingFromThrower(entityLiving, entityLiving.rotationPitch, entityLiving.rotationYaw, 0, f*2, 0);
+	            bolg.shoot(entityLiving, entityLiving.rotationPitch, entityLiving.rotationYaw, 0, f*2, 0);
 	            world.spawnEntity(bolg);	            
 	            this.setCharged(stack, false);
             }

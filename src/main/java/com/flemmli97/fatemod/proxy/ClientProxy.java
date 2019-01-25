@@ -33,6 +33,7 @@ public class ClientProxy extends CommonProxy {
     public void preInit(FMLPreInitializationEvent e) {
         super.preInit(e);
         ModRender.registerRenderers();
+        ModRender.registerParticles();
     }
 
     @Override

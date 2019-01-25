@@ -35,7 +35,7 @@ public class ItemGaeBolg extends ClassSpear{
     	if(!world.isRemote)
 		{
 			EntityGaeBolg gaeBolg = new EntityGaeBolg(world, player);			     
-			gaeBolg.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 0);	
+			gaeBolg.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 0);	
 			IPlayer mana = player.getCapability(PlayerCapProvider.PlayerCap, null);
 			if(player.capabilities.isCreativeMode)
 			{

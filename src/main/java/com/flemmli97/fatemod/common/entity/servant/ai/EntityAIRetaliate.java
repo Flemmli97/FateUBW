@@ -57,7 +57,7 @@ public class EntityAIRetaliate extends EntityAITarget {
 			return super.isSuitableTarget(livingBase, true);
 
 		}
-		return super.isSuitableTarget(livingBase, true);
+		return super.isSuitableTarget(livingBase, false);
 	}
 
 }

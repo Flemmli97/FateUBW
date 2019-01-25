@@ -1,14 +1,16 @@
 package com.flemmli97.fatemod.common.entity;
 
-import java.util.Collection;
+import java.util.List;
+import java.util.Random;
 
 import com.flemmli97.fatemod.common.handler.CustomDamageSource;
+import com.flemmli97.tenshilib.common.entity.EntityProjectile;
 import com.flemmli97.tenshilib.common.item.ItemUtil;
+import com.flemmli97.tenshilib.common.world.RayTraceUtils;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -18,29 +20,28 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class EntityBabylonWeapon extends EntitySpecialProjectile{
+public class EntityBabylonWeapon extends EntityProjectile{
 	
     protected static final DataParameter<ItemStack> weaponType = EntityDataManager.<ItemStack>createKey(EntityBabylonWeapon.class, DataSerializers.ITEM_STACK);
     protected static final DataParameter<Integer> shootTime = EntityDataManager.<Integer>createKey(EntityBabylonWeapon.class, DataSerializers.VARINT);
 
-    public boolean iddle;
+    public boolean iddle=true;
 	EntityLivingBase target;
 	private double dmg;
 	public EntityBabylonWeapon(World world)
 	{
 		super(world);
-		this.livingTickMax=400;
-		this.dataManager.set(shootTime, this.rand.nextInt(10)+25);
 	}
 	
 	public EntityBabylonWeapon(World world, EntityLivingBase shootingEntity)
 	{
-		super(world, shootingEntity, false, false);
-		this.livingTickMax=400;
-		this.dataManager.set(shootTime, this.rand.nextInt(20)+25);
+		super(world, shootingEntity);
 	}
 	
 	public EntityBabylonWeapon(World world, EntityLivingBase shootingEntity, EntityLivingBase target)
@@ -50,37 +51,39 @@ public class EntityBabylonWeapon extends EntitySpecialProjectile{
 	}
 	
 	@Override
+	public int livingTickMax()
+	{
+		return 400;
+	}
+	
+	@Override
 	protected void entityInit()
     {
-        super.entityInit();
         this.dataManager.register(weaponType, ItemStack.EMPTY);
-        this.dataManager.register(shootTime, 0);
+        this.dataManager.register(shootTime, this.rand.nextInt(20)+25);
     }
 
 	@Override
 	public void onUpdate() {
-		EntityLivingBase thrower = getThrower();
-		if(this.livingTick<=this.dataManager.get(shootTime))
-		{
-			this.livingTick++;
-			this.iddle=true;;
-		}
-		if(this.livingTick == this.dataManager.get(shootTime))
+		EntityLivingBase thrower = this.getShooter();
+		if(this.livingTicks<=this.dataManager.get(shootTime))
+			this.livingTicks++;
+		if(this.livingTicks() == this.dataManager.get(shootTime))
 		{
 			if(!this.world.isRemote)
 			{
 				if(thrower instanceof EntityPlayer)
 				{
-					RayTraceResult hit = this.entityRayTrace(64);
-					this.setHeadingToPosition(hit.hitVec.x, hit.hitVec.y, hit.hitVec.z, 0.5F, 0.5F);
+					RayTraceResult hit = RayTraceUtils.entityRayTrace(this, 64, true, true, false);
+					this.shoot(hit.hitVec.x, hit.hitVec.y, hit.hitVec.z, 0.5F, 0.5F);
 				}
 				else if(this.target!=null)
 				{
-					this.setHeadingToPosition(this.target.posX, this.target.posY+target.height/2, this.target.posZ, 0.5F , 1);
+					this.shoot(this.target.posX, this.target.posY+target.height/2, this.target.posZ, 0.5F , 1);
 				}
 			}
 		}
-		else if(this.livingTick>this.dataManager.get(shootTime))
+		else if(this.livingTicks()>this.dataManager.get(shootTime))
 		{
 			this.iddle=false;
 			if(!world.isRemote) 
@@ -104,7 +107,7 @@ public class EntityBabylonWeapon extends EntitySpecialProjectile{
 	public void setEntityProperties()
 	{	
 		this.setWeapon(ItemUtil.getRandomFromSlot(EntityEquipmentSlot.MAINHAND));
-		super.setProjectileAreaPosition(7);
+		this.setProjectileAreaPosition(7);
 	}
 	
 	public ItemStack getWeapon()
@@ -117,24 +120,7 @@ public class EntityBabylonWeapon extends EntitySpecialProjectile{
 		if(!stack.isEmpty())
 		{
 			this.dataManager.set(weaponType, stack);
-			Collection<AttributeModifier> atts = this.getWeapon().getAttributeModifiers(EntityEquipmentSlot.MAINHAND).get(SharedMonsterAttributes.ATTACK_DAMAGE.getName());
-			for(AttributeModifier mod : atts)
-			{
-				if(mod.getOperation()==0)
-					this.dmg+=mod.getAmount();
-			}
-			double value = this.dmg;
-			for(AttributeModifier mod : atts)
-			{
-				if(mod.getOperation()==1)
-					value+=this.dmg*mod.getAmount();
-			}
-			for(AttributeModifier mod : atts)
-			{
-				if(mod.getOperation()==2)
-					value*=1+mod.getAmount();
-			}
-			this.dmg=SharedMonsterAttributes.ATTACK_DAMAGE.clampValue(value);
+			this.dmg=ItemUtil.damage(stack);
 		}
 	}
 
@@ -142,36 +128,65 @@ public class EntityBabylonWeapon extends EntitySpecialProjectile{
 	protected void onImpact(RayTraceResult result) {
 		if (!this.world.isRemote)
         {
-    		if (result.entityHit != null && result.entityHit != this.getThrower())
+    		if (result.entityHit != null)
             {
-    			result.entityHit.attackEntityFrom(CustomDamageSource.babylon(this, this.getThrower()), (float)this.dmg*1.5F);
-    			this.setDead();
+    			result.entityHit.attackEntityFrom(CustomDamageSource.babylon(this, this.getShooter()), (float)this.dmg*1.5F);
             }
-    		else if(result.typeOfHit == RayTraceResult.Type.BLOCK)
-    		{
-    			this.setDead();
-    		}
+			this.setDead();
         }
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-		NBTTagCompound tag = new NBTTagCompound();
-		this.getWeapon().writeToNBT(tag);
-		compound.setTag("Weapon", tag);
-		compound.setInteger("LivingTick", this.livingTick);
-		return super.writeToNBT(compound);
+		super.writeToNBT(compound);
+		compound.setTag("Weapon", this.getWeapon().writeToNBT(new NBTTagCompound()));
+		return compound;
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
-		if(compound.hasKey("Weapon"))
-		{
-			NBTTagCompound tag = (NBTTagCompound) compound.getTag("Weapon");
-			this.setWeapon(new ItemStack(tag));
-		}
-		this.livingTick=compound.getInteger("LivingTick");
 		super.readFromNBT(compound);
-
+		this.setWeapon(new ItemStack(compound.getCompoundTag("Weapon")));
 	}
+	
+	/**for symmetry range should be odd number, minimum is 3*/
+    public void setProjectileAreaPosition(int range)
+    {		
+		Random rand = new Random();
+		EntityLivingBase thrower = this.getShooter();
+		Vec3d pos = thrower.getPositionVector();
+		Vec3d look = thrower.getLookVec();
+		Vec3d vert = new Vec3d(0, 1, 0);
+		if(-20<thrower.rotationPitch && thrower.rotationPitch>20)
+			vert.rotatePitch(thrower.rotationPitch);
+		if(-20>thrower.rotationPitch)
+			vert.rotatePitch(-20);
+		if(20<thrower.rotationPitch)
+			vert.rotatePitch(20);
+		Vec3d hor = look.crossProduct(vert);
+		vert.normalize();
+		hor.normalize();
+		int scaleHor= rand.nextInt(range)-(range-1)/2;
+		int scaleVert = rand.nextInt((range+1)/2);
+		double distance = (scaleHor*scaleHor + scaleVert*scaleVert);
+		float rangeSq = (range-1)/2*(range-1)/2;
+		boolean playerSpace = (scaleVert==0 && scaleHor==0);
+		if(distance<=rangeSq && !playerSpace)
+		{
+			Vec3d area = pos.add(hor.scale(scaleHor*2)).add(vert.scale(scaleVert*2+1));
+			BlockPos spawnPos = new BlockPos(area);
+			AxisAlignedBB axis = new AxisAlignedBB(spawnPos, spawnPos).grow(1.0);
+			List<Entity> list = this.world.getEntitiesWithinAABB(EntityBabylonWeapon.class, axis);
+			if(list.isEmpty())
+			{
+				this.shoot(thrower, thrower.rotationPitch, thrower.rotationYaw, 0, 0.5F, 0);	
+				this.setPosition(area.x, area.y, area.z);
+				this.world.spawnEntity(this);
+			}
+		}
+		else
+		{
+			this.setProjectileAreaPosition(range);
+		}
+    }
 }

@@ -48,10 +48,12 @@ public abstract class RenderServant<T extends EntityServant> extends RenderLivin
             }
             else if(flag2)
             {
+            	GlStateManager.pushMatrix();
                 GlStateManager.enableBlend();
-                GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-                GlStateManager.alphaFunc(GL11.GL_GEQUAL, 1/255f);
-            	GlStateManager.color(1.0F, 1.0F, 1.0F, 1-(entity.getDeathTick()/(float)entity.maxDeathTick()));
+                GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, 
+                		GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+                GlStateManager.alphaFunc(GL11.GL_GEQUAL, 1/255f);               
+            	GlStateManager.color(1.0F, 1.0F, 1.0F, Math.max(0.1f, 1-(entity.getDeathTick()/(float)entity.maxDeathTick())));
             }
 
             this.mainModel.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
@@ -64,6 +66,7 @@ public abstract class RenderServant<T extends EntityServant> extends RenderLivin
             {
             	GlStateManager.disableBlend();
                 GlStateManager.alphaFunc(GL11.GL_GEQUAL, 0.1F);
+                GlStateManager.popMatrix();
             }
         }
     }
@@ -99,13 +102,16 @@ public abstract class RenderServant<T extends EntityServant> extends RenderLivin
 	public static boolean showIdentity(EntityServant servant)
 	{
 		//Else tabula throws so many errors...
-		if(Minecraft.getMinecraft().player!=null)
+		try
 		{
 			EntityServant playerServant = Minecraft.getMinecraft().player.getCapability(PlayerCapProvider.PlayerCap, null).getServant(Minecraft.getMinecraft().player);
 			boolean owner = playerServant!=null && playerServant.equals(servant);
 			return (servant.showServant() || owner || servant.getDeathTick()>0);
 		}
-		return true;
+		catch(Exception e)
+		{
+			return true;
+		}
 	}
 	
 	protected abstract ResourceLocation servantTexture(T entity);

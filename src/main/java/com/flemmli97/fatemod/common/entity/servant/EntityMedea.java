@@ -65,7 +65,8 @@ public class EntityMedea extends EntityServant implements IRanged{
 	@Override
 	public void attackWithRangedAttack(EntityLivingBase target) {
 		EntityMagicBeam beam = new EntityMagicBeam(this.world, this, target);
-		beam.setProjectileAreaPosition(3);
+		//beam.setProjectileAreaPosition(3);
+		this.world.spawnEntity(beam);
 		this.revealServant();
 	}
 

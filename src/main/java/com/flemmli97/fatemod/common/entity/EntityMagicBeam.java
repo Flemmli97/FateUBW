@@ -1,18 +1,18 @@
 package com.flemmli97.fatemod.common.entity;
 
 import com.flemmli97.fatemod.common.handler.CustomDamageSource;
+import com.flemmli97.tenshilib.common.entity.EntityBeam;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
-public class EntityMagicBeam extends EntityExcalibur{
+public class EntityMagicBeam extends EntityBeam{
 
 	EntityLivingBase target;
 	
 	public EntityMagicBeam(World worldIn) {
 		super(worldIn);
-		this.livingTickMax = 50;
     }
 
 	public EntityMagicBeam(World world, EntityLivingBase shootingEntity)
@@ -23,8 +23,9 @@ public class EntityMagicBeam extends EntityExcalibur{
 	public EntityMagicBeam(World world, EntityLivingBase shootingEntity, EntityLivingBase target)
     {
 		this(world, shootingEntity);
-		this.target = target;
+		this.target=target;
 	}
+	
 	@Override
 	public void onUpdate() {
 		/*EntityLivingBase thrower = getThrower();
@@ -59,29 +60,15 @@ public class EntityMagicBeam extends EntityExcalibur{
 			super.onUpdate();
 		}*/
 		super.onUpdate();
-
 	}
 
 	@Override
 	protected void onImpact(RayTraceResult result) {
 		if(!world.isRemote)
 		{
-			if(result.entityHit != null && result.entityHit instanceof EntityLivingBase && result.entityHit != this.getThrower())
-			{
-				EntityLivingBase hittedEntity = (EntityLivingBase) result.entityHit;
-				hittedEntity.attackEntityFrom(CustomDamageSource.magicBeam(this, this.getThrower()), 5);
-				this.setDead();
-			}
-			else
-			{
-				this.setDead();
-			}
+			EntityLivingBase hittedEntity = (EntityLivingBase) result.entityHit;
+			hittedEntity.attackEntityFrom(CustomDamageSource.magicBeam(this, this.getShooter()), 5);
+			this.setDead();
 		}
 	}
-
-	@Override
-	protected float getGravityVelocity() {
-		return 0;
-	}
-	
 }

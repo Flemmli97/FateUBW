@@ -2,6 +2,7 @@ package com.flemmli97.fatemod.common.entity;
 
 import com.flemmli97.fatemod.common.items.ItemGemShard;
 import com.flemmli97.fatemod.common.items.ItemGemShard.ShardType;
+import com.flemmli97.tenshilib.common.entity.EntityProjectile;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -11,7 +12,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
-public class EntityGem extends EntitySpecialProjectile {
+public class EntityGem extends EntityProjectile {
 
 	private int stackMeta;
     protected static final DataParameter<Integer> meta = EntityDataManager.<Integer>createKey(EntityGem.class, DataSerializers.VARINT);
@@ -22,7 +23,7 @@ public class EntityGem extends EntitySpecialProjectile {
 	
     public EntityGem(World world, EntityLivingBase thrower, ItemGemShard item)
     {
-        super(world, thrower, false, false);
+        super(world, thrower);
         this.dataManager.set(meta, item.getType().ordinal());
     }
 
@@ -43,11 +44,10 @@ public class EntityGem extends EntitySpecialProjectile {
     }
 
 	@Override
-	protected void onImpact(RayTraceResult result) {
-		
+	protected void onImpact(RayTraceResult result) {	
         if (!this.world.isRemote)
         {
-        	world.createExplosion(this, this.posX, this.posY, this.posZ, 2.0F, false);
+        	this.world.createExplosion(this, this.posX, this.posY, this.posZ, 2.0F, false);
             this.setDead();
         }		
 	}

@@ -11,6 +11,7 @@ import com.flemmli97.fatemod.client.render.RenderGem;
 import com.flemmli97.fatemod.client.render.RenderGordiusWheel;
 import com.flemmli97.fatemod.client.render.RenderMagicBeam;
 import com.flemmli97.fatemod.client.render.RenderPegasus;
+import com.flemmli97.fatemod.client.render.particles.ParticleFade;
 import com.flemmli97.fatemod.client.render.servant.RenderArthur;
 import com.flemmli97.fatemod.client.render.servant.RenderCuchulainn;
 import com.flemmli97.fatemod.client.render.servant.RenderDiarmuid;
@@ -50,13 +51,18 @@ import com.flemmli97.fatemod.common.entity.servant.EntityLancelot;
 import com.flemmli97.fatemod.common.entity.servant.EntityMedea;
 import com.flemmli97.fatemod.common.entity.servant.EntityMedusa;
 import com.flemmli97.fatemod.common.entity.servant.EntitySasaki;
+import com.flemmli97.fatemod.common.lib.LibReference;
+import com.flemmli97.tenshilib.client.particles.ParticleHandler;
 
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public final class ModRender {
+	
+	public static final ResourceLocation particleFade = new ResourceLocation(LibReference.MODID, "death_fade");
 	
 	@SideOnly(value=Side.CLIENT)
 	public static final void registerRenderers(){
@@ -107,4 +113,8 @@ public final class ModRender {
         ClientRegistry.bindTileEntitySpecialRenderer(TileAltar.class, new RenderAltar());
 	}
 
+	public static final void registerParticles()
+	{
+		ParticleHandler.ParticleRegistries.registerParticle(particleFade, new ParticleFade.Factory());
+	}
 }
