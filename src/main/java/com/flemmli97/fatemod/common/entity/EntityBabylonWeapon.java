@@ -28,8 +28,8 @@ import net.minecraft.world.World;
 
 public class EntityBabylonWeapon extends EntityProjectile{
 	
-    protected static final DataParameter<ItemStack> weaponType = EntityDataManager.<ItemStack>createKey(EntityBabylonWeapon.class, DataSerializers.ITEM_STACK);
-    protected static final DataParameter<Integer> shootTime = EntityDataManager.<Integer>createKey(EntityBabylonWeapon.class, DataSerializers.VARINT);
+    protected static final DataParameter<ItemStack> weaponType = EntityDataManager.createKey(EntityBabylonWeapon.class, DataSerializers.ITEM_STACK);
+    protected static final DataParameter<Integer> shootTime = EntityDataManager.createKey(EntityBabylonWeapon.class, DataSerializers.VARINT);
 
     public boolean iddle=true;
 	EntityLivingBase target;
@@ -53,12 +53,13 @@ public class EntityBabylonWeapon extends EntityProjectile{
 	@Override
 	public int livingTickMax()
 	{
-		return 400;
+		return 200;
 	}
 	
 	@Override
 	protected void entityInit()
     {
+		super.entityInit();
         this.dataManager.register(weaponType, ItemStack.EMPTY);
         this.dataManager.register(shootTime, this.rand.nextInt(20)+25);
     }
@@ -74,12 +75,12 @@ public class EntityBabylonWeapon extends EntityProjectile{
 			{
 				if(thrower instanceof EntityPlayer)
 				{
-					RayTraceResult hit = RayTraceUtils.entityRayTrace(this, 64, true, true, false);
-					this.shoot(hit.hitVec.x, hit.hitVec.y, hit.hitVec.z, 0.5F, 0.5F);
+					RayTraceResult hit = RayTraceUtils.entityRayTrace(thrower, 64, true, true, false);
+					this.shootAtPosition(hit.hitVec.x, hit.hitVec.y, hit.hitVec.z, 0.5F, 0.5F);
 				}
 				else if(this.target!=null)
 				{
-					this.shoot(this.target.posX, this.target.posY+target.height/2, this.target.posZ, 0.5F , 1);
+					this.shootAtPosition(this.target.posX, this.target.posY+target.height/2, this.target.posZ, 0.5F , 1);
 				}
 			}
 		}
@@ -102,6 +103,12 @@ public class EntityBabylonWeapon extends EntityProjectile{
 	@Override
 	protected float getGravityVelocity() {
 		return 0;
+	}
+	
+	@Override
+	protected float motionReduction()
+	{
+		return 1;
 	}
 	
 	public void setEntityProperties()

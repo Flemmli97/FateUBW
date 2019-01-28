@@ -14,7 +14,7 @@ public class ItemAssassinDagger extends ItemSword{
 	public ItemAssassinDagger() {
     	super(dagger_mat);
     	this.setCreativeTab(Fate.customTab);
-		this.setRegistryName(new ResourceLocation(LibReference.MODID, "assassinDagger"));
+		this.setRegistryName(new ResourceLocation(LibReference.MODID, "assassin_dagger"));
 		this.setUnlocalizedName(this.getRegistryName().toString());
     }
 }

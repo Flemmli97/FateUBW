@@ -68,7 +68,7 @@ public class EntityGaeBolg extends EntityProjectile{
 	@Override
     public void setDead()
     {
-		if(this.getShooter() instanceof EntityPlayer)
+		if(!this.world.isRemote && this.getShooter() instanceof EntityPlayer)
 		{
 			EntityPlayer player = (EntityPlayer) this.getShooter();
 			if(!player.capabilities.isCreativeMode)

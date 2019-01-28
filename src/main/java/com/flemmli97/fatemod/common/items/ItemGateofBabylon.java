@@ -32,9 +32,9 @@ public class ItemGateofBabylon extends Item{
 
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
-		EntityBabylonWeapon weapon = new EntityBabylonWeapon(world, player);
 		if(!world.isRemote)
 		{
+			EntityBabylonWeapon weapon = new EntityBabylonWeapon(world, player);
 			weapon.setEntityProperties();
 		}
         return new ActionResult<ItemStack>(EnumActionResult.PASS, player.getHeldItem(hand));

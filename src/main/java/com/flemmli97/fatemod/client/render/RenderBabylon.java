@@ -19,17 +19,16 @@ public class RenderBabylon extends RenderProjectileItem<EntityBabylonWeapon>{
     }
     
 	@Override
-	public void doRender(EntityBabylonWeapon projectile, double x, double y, double z, float entityYaw,
-			float partialTick) {
+	public void doRender(EntityBabylonWeapon projectile, double x, double y, double z, float entityYaw, float partialTick) {
 		if(projectile.iddle)
 		{
 			RenderUtils.renderTexture(this.renderManager, babylonIddle, x, y, z, 1.6f, 1.6f, RenderUtils.defaultColor,
-					projectile.prevRotationYaw + (projectile.rotationYaw - projectile.prevRotationYaw) * partialTick, 
-					projectile.prevRotationPitch + (projectile.rotationPitch - projectile.prevRotationPitch) * partialTick);
+					projectile.prevRotationYaw + (projectile.rotationYaw - projectile.prevRotationYaw) * partialTick+180, 
+					projectile.prevRotationPitch + (projectile.rotationPitch - projectile.prevRotationPitch) * partialTick+5);
 		}
 		super.doRender(projectile, x, y, z, entityYaw, partialTick);
 	}
-
+	
 	@Override
 	public ItemStack getRenderItemStack(EntityBabylonWeapon entity) {
 		return entity.getWeapon();

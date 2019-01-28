@@ -88,9 +88,9 @@ public abstract class EntityServant extends EntityCreature{
 	private String hogou="";
 	private ItemStack[] drops;
 	
-	protected static final DataParameter<Boolean> showServant = EntityDataManager.<Boolean>createKey(EntityServant.class, DataSerializers.BOOLEAN);
-	protected static final DataParameter<Integer> entityState = EntityDataManager.<Integer>createKey(EntityServant.class, DataSerializers.VARINT);
-	protected static final DataParameter<String> ownerUUID = EntityDataManager.<String>createKey(EntityServant.class, DataSerializers.STRING);
+	protected static final DataParameter<Boolean> showServant = EntityDataManager.createKey(EntityServant.class, DataSerializers.BOOLEAN);
+	protected static final DataParameter<Integer> entityState = EntityDataManager.createKey(EntityServant.class, DataSerializers.VARINT);
+	protected static final DataParameter<String> ownerUUID = EntityDataManager.createKey(EntityServant.class, DataSerializers.STRING);
 
 	public static final IAttribute MAGIC_RESISTANCE = (new RangedAttribute((IAttribute)null, "generic.magicResistance", 0.0D, 0.0D, 1.0D)).setDescription("Magic Resistance");
 	public static final IAttribute PROJECTILE_RESISTANCE = (new RangedAttribute((IAttribute)null, "generic.projectileResistance", 0.0D, 0.0D, 30.0D)).setDescription("Projectile Resistance");
