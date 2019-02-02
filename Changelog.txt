@@ -1,0 +1,22 @@
+Fate UBW a0.2.0
+==============
+- Made servants load the chunk they are in
+- Improved hassans code
+- Added an easy animation system (though there are no animation atm)
+- Added a command to manually reset a grail war "/grailWarReset"
+- Improved the truce screen gui and added the truce system
+- Removed metadata from items
+- Made the projectiles from gate of babylon do damage according to their items
+- Added gilles tentacle monster (model missing atm)
+- Fixed residual bugs from 1.10 port
+- Added attack ai to gilles
+- Lowered knockback from emiyas arrows
+- Added iskanders gordius wheel
+- Fixed the retaliate ai
+- Added a config gui
+- Fixed player servants client-server sync issues after world reload
+- Improved build script
+- Made servant fade away and spawn particles when they die
+- Removed code for projectile rendering as thats now part of TenshiLib
+- Improved some projectile code
+- Fixed config gui not saving

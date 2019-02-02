@@ -78,7 +78,7 @@ public class ConfigHandler {
 			ConfigCategory hassan = config.getCategory("minions.hassancopy");
 			hassan.setLanguageKey("config.fatemod.hassancopy");
 			hassan.setComment("Hassans Clones");
-			hassanCopy = hassanCopy.config(config, hassanCopy, "minions.hassancopy");
+			hassanCopy.config(config, "minions.hassancopy");
 		}
 		config.save();
 	}
@@ -88,8 +88,8 @@ public class ConfigHandler {
 		ConfigCategory cat = config.getCategory("servants");
 		cat.setLanguageKey("config.fatemod.servants");
 		cat.setComment("Configure individual servants");
-		attributes.replaceAll((clss, prop)->{
-			return prop.config(config, prop, "servants."+EntityList.getKey(clss).toString());
+		attributes.forEach((clss, prop)->{
+			 prop.config(config, "servants."+EntityList.getKey(clss).toString());
 		});
 	}
 		

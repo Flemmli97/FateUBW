@@ -68,7 +68,7 @@ public class ServantProperties implements IConfigSerializable<ServantProperties>
 	}
 
 	@Override
-	public ServantProperties config(Configuration config, ServantProperties old, String configCategory) {
+	public ServantProperties config(Configuration config, String configCategory) {
 		ConfigCategory cat = config.getCategory(configCategory);
 		cat.setLanguageKey("entity."+configCategory.substring(configCategory.indexOf(":")+1)+".name");
 		this.health=config.get(configCategory, "Health", this.health, "Health of the servant").getDouble(); 

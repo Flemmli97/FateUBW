@@ -14,6 +14,7 @@ import com.flemmli97.fatemod.network.MessagePlayerServant;
 import com.flemmli97.fatemod.network.MessageServantSync;
 import com.flemmli97.fatemod.network.PacketHandler;
 import com.flemmli97.fatemod.proxy.ClientProxy;
+import com.flemmli97.tenshilib.common.config.ConfigUtils.LoadState;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -35,6 +36,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
@@ -189,5 +191,12 @@ public class ModEventHandler {
 		{
 			new ManaBar(Minecraft.getMinecraft());
 		}
+	}
+	
+	@SubscribeEvent
+	public void config(OnConfigChangedEvent event)
+	{
+		if(event.getModID().equals(LibReference.MODID))
+			ConfigHandler.load(LoadState.SYNC);
 	}
 }
