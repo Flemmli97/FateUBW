@@ -1,5 +1,7 @@
 package com.flemmli97.fatemod.client.render;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.flemmli97.fatemod.common.entity.EntityEnumaElish;
 import com.flemmli97.fatemod.common.lib.LibReference;
 import com.flemmli97.tenshilib.client.render.RenderBeam;
@@ -19,5 +21,17 @@ public class RenderEA extends RenderBeam<EntityEnumaElish>{
 	@Override
 	protected ResourceLocation getEntityTexture(EntityEnumaElish entity) {
 		return tex;
+	}
+
+	@Override
+	public Pair<ResourceLocation, Integer> startTexture(EntityEnumaElish entity) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Pair<ResourceLocation, Integer> endTexture(EntityEnumaElish entity) {
+		// TODO Auto-generated method stub
+		return null;
 	}  
 }

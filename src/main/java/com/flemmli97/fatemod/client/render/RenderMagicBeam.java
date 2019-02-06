@@ -1,5 +1,7 @@
 package com.flemmli97.fatemod.client.render;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.flemmli97.fatemod.common.entity.EntityMagicBeam;
 import com.flemmli97.fatemod.common.lib.LibReference;
 import com.flemmli97.tenshilib.client.render.RenderBeam;
@@ -18,6 +20,18 @@ public class RenderMagicBeam extends RenderBeam<EntityMagicBeam>{
 	@Override
 	protected ResourceLocation getEntityTexture(EntityMagicBeam entity) {
 		return tex;
+	}
+
+	@Override
+	public Pair<ResourceLocation, Integer> startTexture(EntityMagicBeam entity) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Pair<ResourceLocation, Integer> endTexture(EntityMagicBeam entity) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

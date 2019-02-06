@@ -8,6 +8,7 @@ import com.flemmli97.fatemod.client.render.servant.RenderServant;
 import com.flemmli97.fatemod.common.entity.servant.EntityServant;
 import com.flemmli97.fatemod.common.init.ModItems;
 import com.flemmli97.fatemod.common.init.ModRender;
+import com.google.common.collect.ImmutableMap;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -16,6 +17,9 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.IThreadListener;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraftforge.common.model.animation.IAnimationStateMachine;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -80,5 +84,10 @@ public class ClientProxy extends CommonProxy {
     	{
     		((CommandGui)gui).updatePlayerButtons();
     	}
+    }
+	
+	public IAnimationStateMachine getASM(ResourceLocation res)
+    {
+    	return ModelLoaderRegistry.loadASM(res, ImmutableMap.of());
     }
 }

@@ -50,6 +50,7 @@ public abstract class RenderServant<T extends EntityServant> extends RenderLivin
             {
             	GlStateManager.pushMatrix();
                 GlStateManager.enableBlend();
+
                 GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, 
                 		GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
                 GlStateManager.alphaFunc(GL11.GL_GEQUAL, 1/255f);               
