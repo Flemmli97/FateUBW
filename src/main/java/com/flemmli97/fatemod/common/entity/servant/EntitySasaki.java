@@ -30,7 +30,8 @@ public class EntitySasaki extends EntityServant {
 		// TODO Auto-generated method stub
 		return Pair.of(0, 0);
 	}
-	
+
+    @Override
 	public boolean canAttack()
 	{
 		return State.isAttack(this.entityState()) && this.attackTimer()==this.attackTickerFromState(this.entityState()).getRight();

@@ -77,6 +77,7 @@ public class EntityArcherArrow extends EntityArrow implements IEntityAdditionalS
 		}
 	}
 	
+	@Override
 	public void setKnockbackStrength(int knockbackStrengthIn)
     {
         this.knockbackStrength = knockbackStrengthIn;

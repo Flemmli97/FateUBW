@@ -24,7 +24,8 @@ public class RenderBukephalos<T extends EntityLiving> extends RenderLiving<T>
     {
         return -1;
     }
-    
+
+    @Override
     protected ResourceLocation getEntityTexture(EntityLiving entity)
     {
         return textures;

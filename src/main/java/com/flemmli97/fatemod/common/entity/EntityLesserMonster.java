@@ -31,7 +31,8 @@ public class EntityLesserMonster extends EntityCreature implements IServantMinio
 	private EntityLivingBase owner;
 	private int livingTicks;
 	public EntityAINearestAttackableTarget<EntityLivingBase> target = new EntityAINearestAttackableTarget<EntityLivingBase>(this, EntityLivingBase.class, 10, true, true, new Predicate<EntityLivingBase>()    {
-        public boolean apply(@Nullable EntityLivingBase living)
+        @Override
+		public boolean apply(@Nullable EntityLivingBase living)
         {
             return EntityLesserMonster.this.canAttackTarget(living);
         }});

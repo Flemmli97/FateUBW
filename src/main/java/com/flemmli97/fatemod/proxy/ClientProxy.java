@@ -86,6 +86,7 @@ public class ClientProxy extends CommonProxy {
     	}
     }
 	
+	@Override
 	public IAnimationStateMachine getASM(ResourceLocation res)
     {
     	return ModelLoaderRegistry.loadASM(res, ImmutableMap.of());

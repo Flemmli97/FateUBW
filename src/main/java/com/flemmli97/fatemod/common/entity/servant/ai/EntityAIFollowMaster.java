@@ -39,7 +39,8 @@ public class EntityAIFollowMaster extends EntityAIBase
     /**
      * Returns whether the EntityAIBase should begin execution.
      */
-    public boolean shouldExecute()
+    @Override
+	public boolean shouldExecute()
     {
     	EntityLivingBase owner = this.servant.getOwner();
         if (owner == null)
@@ -78,7 +79,8 @@ public class EntityAIFollowMaster extends EntityAIBase
     /**
      * Execute a one shot task or start executing a continuous task
      */
-    public void startExecuting()
+    @Override
+	public void startExecuting()
     {
         this.followDelay = 0;
         this.avoidWater = this.servant.getPathPriority(PathNodeType.WATER);
@@ -88,7 +90,8 @@ public class EntityAIFollowMaster extends EntityAIBase
     /**
      * Resets the task
      */
-    public void resetTask()
+    @Override
+	public void resetTask()
     {
         this.follow = null;
         this.pathfinder.clearPath();
@@ -98,7 +101,8 @@ public class EntityAIFollowMaster extends EntityAIBase
     /**
      * Updates the task
      */
-    public void updateTask()
+    @Override
+	public void updateTask()
     {
         this.servant.getLookHelper().setLookPositionWithEntity(this.follow, 10.0F, (float)this.servant.getVerticalFaceSpeed());
         

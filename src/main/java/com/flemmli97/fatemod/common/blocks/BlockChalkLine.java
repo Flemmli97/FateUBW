@@ -122,7 +122,8 @@ public class BlockChalkLine extends Block implements ITileEntityProvider{
 	public boolean isOpaqueCube(IBlockState state) {
 		return false;
 	}
-	
+
+    @Override
 	@Nullable
     public Item getItemDropped(IBlockState state, Random rand, int fortune)
     {

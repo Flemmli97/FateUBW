@@ -100,7 +100,8 @@ public abstract class EntityServant extends EntityCreature{
 	//Chunk load ticket
 	private Ticket ticket;
 	public EntityAINearestAttackableTarget<EntityServant> targetServant = new EntityAINearestAttackableTarget<EntityServant>(this, EntityServant.class, 10, true, true, new Predicate<EntityServant>()    {
-        public boolean apply(@Nullable EntityServant living)
+        @Override
+		public boolean apply(@Nullable EntityServant living)
         {
         		boolean flag = true;
         		EntityPlayer targetOwner = living.getOwner();
@@ -111,7 +112,8 @@ public abstract class EntityServant extends EntityCreature{
             return living != null && flag;
         }});
 	public EntityAINearestAttackableTarget<EntityPlayer> targetPlayer = new EntityAINearestAttackableTarget<EntityPlayer>(this, EntityPlayer.class, 0, true, true, new Predicate<EntityPlayer>()    {
-        public boolean apply(@Nullable EntityPlayer living)
+        @Override
+		public boolean apply(@Nullable EntityPlayer living)
         {
         	boolean flag = true;
     		if(EntityServant.this.getOwner()!=null)
@@ -121,7 +123,8 @@ public abstract class EntityServant extends EntityCreature{
             return living != null && living != EntityServant.this.getOwner() && flag;
         }});
 	public EntityAINearestAttackableTarget<EntityLiving> targetMob = new EntityAINearestAttackableTarget<EntityLiving>(this, EntityLiving.class, 10, true, true, new Predicate<EntityLiving>()    {
-        public boolean apply(@Nullable EntityLiving living)
+        @Override
+		public boolean apply(@Nullable EntityLiving living)
         {
             return living != null&&!(living instanceof EntityServant) && IMob.VISIBLE_MOB_SELECTOR.apply(living);
         }});
@@ -510,6 +513,7 @@ public abstract class EntityServant extends EntityCreature{
 	}
 	
 	private List<EntityPlayerMP> tracked = Lists.newArrayList();
+	@Override
 	public void addTrackingPlayer(EntityPlayerMP player)
     {
 		this.tracked.add(player);

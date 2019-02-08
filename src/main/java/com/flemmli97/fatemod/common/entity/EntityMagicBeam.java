@@ -64,11 +64,7 @@ public class EntityMagicBeam extends EntityBeam{
 
 	@Override
 	protected void onImpact(RayTraceResult result) {
-		if(!world.isRemote)
-		{
-			EntityLivingBase hittedEntity = (EntityLivingBase) result.entityHit;
-			hittedEntity.attackEntityFrom(CustomDamageSource.magicBeam(this, this.getShooter()), 5);
-			this.setDead();
-		}
+		result.entityHit.attackEntityFrom(CustomDamageSource.magicBeam(this, this.getShooter()), 5);
+		this.setDead();
 	}
 }

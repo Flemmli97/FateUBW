@@ -32,7 +32,7 @@ public class EntityBabylonWeapon extends EntityProjectile{
     protected static final DataParameter<Integer> shootTime = EntityDataManager.createKey(EntityBabylonWeapon.class, DataSerializers.VARINT);
 
     public boolean iddle=true;
-	EntityLivingBase target;
+	private EntityLivingBase target;
 	private double dmg;
 	public EntityBabylonWeapon(World world)
 	{
@@ -132,27 +132,23 @@ public class EntityBabylonWeapon extends EntityProjectile{
 	}
 
 	@Override
-	protected void onImpact(RayTraceResult result) {
-		if (!this.world.isRemote)
+	public void onImpact(RayTraceResult result) {
+		if (result.entityHit != null)
         {
-    		if (result.entityHit != null)
-            {
-    			result.entityHit.attackEntityFrom(CustomDamageSource.babylon(this, this.getShooter()), (float)this.dmg*1.5F);
-            }
-			this.setDead();
+			result.entityHit.attackEntityFrom(CustomDamageSource.babylon(this, this.getShooter()), (float)this.dmg*1.5F);
         }
+		this.setDead();
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-		super.writeToNBT(compound);
+	protected void writeEntityToNBT(NBTTagCompound compound) {
+		super.writeEntityToNBT(compound);
 		compound.setTag("Weapon", this.getWeapon().writeToNBT(new NBTTagCompound()));
-		return compound;
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound compound) {
-		super.readFromNBT(compound);
+	protected void readEntityFromNBT(NBTTagCompound compound) {
+		super.readEntityFromNBT(compound);
 		this.setWeapon(new ItemStack(compound.getCompoundTag("Weapon")));
 	}
 	

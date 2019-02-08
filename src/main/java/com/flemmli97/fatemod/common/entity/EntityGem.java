@@ -32,6 +32,7 @@ public class EntityGem extends EntityProjectile {
         super(world, d1, d2, d3);
     }
     
+    @Override
     protected void entityInit()
     {
         super.entityInit();
@@ -45,11 +46,8 @@ public class EntityGem extends EntityProjectile {
 
 	@Override
 	protected void onImpact(RayTraceResult result) {	
-        if (!this.world.isRemote)
-        {
-        	this.world.createExplosion(this, this.posX, this.posY, this.posZ, 2.0F, false);
-            this.setDead();
-        }		
+    	this.world.createExplosion(this, this.posX, this.posY, this.posZ, 2.0F, false);
+        this.setDead();
 	}
 
 	@Override

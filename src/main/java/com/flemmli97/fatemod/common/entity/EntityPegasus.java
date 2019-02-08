@@ -69,6 +69,7 @@ public class EntityPegasus extends AbstractHorse implements IServantMinion{
 		return super.getMountedYOffset();
 	}
 	
+	@Override
 	public void updatePassenger(Entity passenger)
     {
         super.updatePassenger(passenger);

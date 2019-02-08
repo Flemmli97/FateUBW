@@ -45,23 +45,20 @@ public class EntityGaeBolg extends EntityProjectile{
 
 	@Override
 	protected void onImpact(RayTraceResult raytraceResultIn) {
-		if(!this.world.isRemote)
+		if(raytraceResultIn.entityHit != null && raytraceResultIn.entityHit instanceof EntityLivingBase && raytraceResultIn.entityHit != this.getShooter())
 		{
-			if(raytraceResultIn.entityHit != null && raytraceResultIn.entityHit instanceof EntityLivingBase && raytraceResultIn.entityHit != this.getShooter())
+			EntityLivingBase hittedEntity = (EntityLivingBase) raytraceResultIn.entityHit;
+			hittedEntity.attackEntityFrom(CustomDamageSource.gaeBolg(this, this.getShooter()), 10);
+			if(!(hittedEntity instanceof EntityPlayer) || ((EntityPlayer) hittedEntity).capabilities.isCreativeMode)
 			{
-				EntityLivingBase hittedEntity = (EntityLivingBase) raytraceResultIn.entityHit;
-				hittedEntity.attackEntityFrom(CustomDamageSource.gaeBolg(this, this.getShooter()), 10);
-				if(!(hittedEntity instanceof EntityPlayer) || ((EntityPlayer) hittedEntity).capabilities.isCreativeMode)
-				{
-					hittedEntity.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:wither"), 200, 2));
-					hittedEntity.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:slowness"), 100, 7));
-					hittedEntity.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:jump_boost"), 100, 128));
-				}
+				hittedEntity.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:wither"), 200, 2));
+				hittedEntity.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:slowness"), 100, 7));
+				hittedEntity.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:jump_boost"), 100, 128));
 			}
-			if(raytraceResultIn.typeOfHit==Type.BLOCK)
-			{
-				this.setDead();
-			}
+		}
+		if(raytraceResultIn.typeOfHit==Type.BLOCK)
+		{
+			this.setDead();
 		}
 	}
 	

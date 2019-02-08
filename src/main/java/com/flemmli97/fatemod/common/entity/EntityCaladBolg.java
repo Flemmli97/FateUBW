@@ -32,14 +32,11 @@ public class EntityCaladBolg extends EntityProjectile{
 
 	@Override
 	protected void onImpact(RayTraceResult result) {
-		if(!world.isRemote)
+		if(result.entityHit != null)
 		{
-			if(result.entityHit != null)
-			{
-				result.entityHit.attackEntityFrom(CustomDamageSource.caladBolg(this, this.getShooter()), 25);
-			}
-			this.setDead();
+			result.entityHit.attackEntityFrom(CustomDamageSource.caladBolg(this, this.getShooter()), 25);
 		}
+		this.setDead();
 	}
 	
 	@Override

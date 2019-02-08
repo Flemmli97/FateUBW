@@ -42,9 +42,6 @@ public class EntityEnumaElish extends EntityBeam{
 
 	@Override
 	protected void onImpact(RayTraceResult result) {
-		if (!this.world.isRemote)
-        {
-			result.entityHit.attackEntityFrom(CustomDamageSource.excalibur(this, this.getShooter()), 13.0F);
-        }
+		result.entityHit.attackEntityFrom(CustomDamageSource.excalibur(this, this.getShooter()), 13.0F);
 	}
 }

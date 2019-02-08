@@ -58,7 +58,8 @@ public class LayerHand extends LayerHeldItem
     	}
     }
     
-    protected void translateToHand(EnumHandSide handSide)
+    @Override
+	protected void translateToHand(EnumHandSide handSide)
     {
         ((ModelServant) this.livingEntityRenderer.getMainModel()).postRenderArm(0.0625F, handSide);
     }

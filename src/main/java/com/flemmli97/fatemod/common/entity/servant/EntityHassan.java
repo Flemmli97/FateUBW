@@ -42,7 +42,8 @@ public class EntityHassan extends EntityServant {
         this.tasks.addTask(1, attackAI);
 	    this.targetTasks.removeTask(targetServant);
 	    this.targetServant = new EntityAINearestAttackableTarget<EntityServant>(this, EntityServant.class, 10, true, true, new Predicate<EntityServant>()    {
-	        public boolean apply(@Nullable EntityServant living)
+	        @Override
+			public boolean apply(@Nullable EntityServant living)
 	        {
 	        		boolean flag = true;
 	        		EntityPlayer targetOwner = living.getOwner();

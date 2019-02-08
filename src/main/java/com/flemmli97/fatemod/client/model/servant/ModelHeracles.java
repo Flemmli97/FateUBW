@@ -532,7 +532,8 @@ public class ModelHeracles extends ModelServant {
         this.leftArmUp.rotateAngleX -= MathHelper.sin(ageInTicks * 0.067F) * 0.05F;
 	}
     
-    public void postRenderArm(float scale, EnumHandSide side)
+    @Override
+	public void postRenderArm(float scale, EnumHandSide side)
     {
         if(side == EnumHandSide.LEFT)
         {

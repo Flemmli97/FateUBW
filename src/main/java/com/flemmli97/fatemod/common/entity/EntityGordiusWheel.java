@@ -183,7 +183,8 @@ public class EntityGordiusWheel extends EntityCreature implements IServantMinion
 		return SoundEvents.ENTITY_COW_DEATH;
 	}
 
-    protected float getSoundPitch()
+    @Override
+	protected float getSoundPitch()
     {
         return (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F;
     }
