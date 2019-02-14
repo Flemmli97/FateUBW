@@ -1,25 +1,16 @@
 package com.flemmli97.fatemod.common.entity.servant;
 
-import java.util.List;
-
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.flemmli97.fatemod.common.entity.servant.ai.EntityAILancelot;
 import com.flemmli97.fatemod.common.init.ModItems;
 
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.monster.EntityMob;
-import net.minecraft.entity.passive.EntityAnimal;
-import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.item.ItemTool;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
@@ -35,7 +26,6 @@ public class EntityLancelot extends EntityServant {
 
 	@Override
 	public Pair<Integer, Integer> attackTickerFromState(State state) {
-		// TODO Auto-generated method stub
 		return Pair.of(20, 20);
 	}
 	

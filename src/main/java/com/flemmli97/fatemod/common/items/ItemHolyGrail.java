@@ -8,6 +8,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class ItemHolyGrail extends Item{
 
+	//Rewards: xp, items, keep servant
 	public ItemHolyGrail() {
     	this.setCreativeTab(Fate.customTab);
     	this.setMaxStackSize(1);

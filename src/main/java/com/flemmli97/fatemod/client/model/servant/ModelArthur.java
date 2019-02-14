@@ -28,13 +28,13 @@ public class ModelArthur extends ModelServant {
 		switch(state)
 		{
 			case ATTACK1:
-				RenderArthur.hit1.animate(attack, partialTicks);
+				//RenderArthur.hit1.animate(attack, partialTicks);
 				break;
 			case ATTACK2:
-				RenderArthur.hit1.animate(attack, partialTicks);
+				//RenderArthur.hit1.animate(attack, partialTicks);
 				break;
 			case ATTACK3:
-				RenderArthur.hit1.animate(attack, partialTicks);
+				//RenderArthur.hit1.animate(attack, partialTicks);
 				break;
 			case NP:
 				break;

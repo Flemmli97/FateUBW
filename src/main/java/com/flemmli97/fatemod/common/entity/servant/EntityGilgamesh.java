@@ -30,7 +30,7 @@ public class EntityGilgamesh extends EntityServant implements IRanged{
 	@Override
 	public Pair<Integer, Integer> attackTickerFromState(State state) {
 		if(this.rangedAttack)
-			return Pair.of(20, 10);
+			return Pair.of(30, 20);
 		return Pair.of(20, 20);
 	}
 	

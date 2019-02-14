@@ -40,7 +40,7 @@ public class ConfigHandler {
 	public static int gemSpawnRate;
 	public static boolean allowDuplicateServant;
 	public static boolean allowDuplicateClass;
-	
+	public static boolean fillMissingSlots=true;
 	//Servants
 	public static final Map<Class<? extends Entity>, ServantProperties> attributes = Maps.newHashMap();
 
@@ -64,9 +64,10 @@ public class ConfigHandler {
 		rewardDelay = ConfigUtils.getIntConfig(config, "Reward Delay", "general", 2000, 0 ,"Delay after an ended grail war for getting the grail");
 		charmSpawnRate = ConfigUtils.getIntConfig(config, "Medallion Rate", "general", 1, 0 ,"Customize the spawn rate of the servant medallion ores, higher value means higher spawn rate");
 		gemSpawnRate = ConfigUtils.getIntConfig(config, "Magic Gem Rate", "general", 10, 0 ,"Customize the spawn rate of the magic gem ores, higher value means higher spawn rate");
-		allowDuplicateServant = config.getBoolean("Allow Duplicate Servants", "general", false, "Allow the summoning of duplicate servants during a grail war");
-		allowDuplicateClass = config.getBoolean("Allow Duplicate Classes", "general", false, "Allow the summoning of duplicate servant classes during a grail war");
-		
+		allowDuplicateServant = config.getBoolean("Allow Duplicate Servants", "general", allowDuplicateServant, "Allow the summoning of duplicate servants during a grail war");
+		allowDuplicateClass = config.getBoolean("Allow Duplicate Classes", "general", allowDuplicateClass, "Allow the summoning of duplicate servant classes during a grail war");
+		fillMissingSlots = config.getBoolean("Fill Empty Slots", "general", fillMissingSlots, "Fill in missing players till max allowed with npc");
+
 		if(state==LoadState.POSTINIT||state==LoadState.SYNC)
 			servants();
 		

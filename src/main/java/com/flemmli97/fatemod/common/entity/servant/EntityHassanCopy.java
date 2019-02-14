@@ -96,8 +96,7 @@ public class EntityHassanCopy extends EntityServant implements IServantMinion{
 	
 	@Override
 	public Pair<Integer, Integer> attackTickerFromState(State state) {
-		// TODO Auto-generated method stub
-		return Pair.of(5, 5);
+		return Pair.of(20, 20);
 	}
 	
 	private void updateAttributes()

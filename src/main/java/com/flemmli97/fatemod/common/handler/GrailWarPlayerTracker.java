@@ -102,7 +102,7 @@ public class GrailWarPlayerTracker extends WorldSavedData {
 					this.joinTicker=ConfigHandler.joinTime;
 					player.world.getMinecraftServer().getPlayerList().sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.grailwar.init", this.joinTicker/20), TextFormatting.RED));
 				}
-				if(this.joinTicker>0)
+				if(this.joinTicker>0 && this.uuidNameMap.size()<ConfigHandler.maxPlayer)
 				{
 					this.uuidNameMap.put(uuid, player.getName());
 					//Player joining grailwar should have a servant
@@ -215,6 +215,14 @@ public class GrailWarPlayerTracker extends WorldSavedData {
 		{
 			this.joinTicker=-1;
 			world.getMinecraftServer().getPlayerList().sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.grailwar.start"), TextFormatting.RED));
+			if(ConfigHandler.fillMissingSlots)
+			{
+				int diff = ConfigHandler.maxPlayer-this.uuidNameMap.size();
+				for(int i = 0; i < diff; i++)
+				{
+					
+				}
+			}
 			this.markDirty();
 		}
 		else

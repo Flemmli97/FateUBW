@@ -73,7 +73,8 @@ public abstract class EntityServant extends EntityCreature{
 	private int servantMana, antiRegen, counter;
 	private boolean died = false;
 	protected int deathTicks, combatTick;
-	protected boolean canUseNP, critHealth, disableChunkload;
+	protected boolean canUseNP, critHealth;
+	protected boolean disableChunkload = true;
 	/*private int , attackTimer, , ;*/
 	public boolean forcedNP;
 	
@@ -266,7 +267,7 @@ public abstract class EntityServant extends EntityCreature{
 	protected void entityInit()
     {
         super.entityInit();
-        this.dataManager.register(entityState, 0);
+        this.dataManager.register(entityState, State.IDDLE.ordinal());
         this.dataManager.register(showServant, false);
         this.dataManager.register(ownerUUID, "");
     }
@@ -392,6 +393,7 @@ public abstract class EntityServant extends EntityCreature{
 		else
 			this.dataManager.set(ownerUUID, "");
 		this.owner=player;
+		this.disableChunkload=this.dataManager.get(ownerUUID).isEmpty();
     }
     
     //=====NBT
@@ -494,8 +496,7 @@ public abstract class EntityServant extends EntityCreature{
 		{
 			this.regenMana();
 			this.combatTick=Math.max(0, --this.combatTick);
-			//Decide it on server, wether attack has finished or not
-			if(!this.world.isRemote && this.attackTimer==0 && State.isAttack(this.entityState()))
+			if(this.attackTimer==0 && State.isAttack(this.entityState()))
 				this.setState(State.IDDLE);
 			if(this.ticket!=null)
 			{
@@ -567,13 +568,13 @@ public abstract class EntityServant extends EntityCreature{
 	protected void onDeathUpdate() {
 		++this.deathTicks;
 		this.died=true;
-			for(int i = 0; i < ((int)((7/(float)this.maxDeathTick())*this.deathTicks-1)); i++)
-				ParticleHandler.spawnParticle(ModRender.particleFade, this.world, this.posX + (this.rand.nextDouble() - 0.5D) * (this.width+3),
-        		this.posY + this.rand.nextDouble() * (this.height+1.5), 
-        		this.posZ + (this.rand.nextDouble() - 0.5D) * (this.width+3), 
-        		this.rand.nextGaussian() * 0.02D, 
-        		this.rand.nextGaussian() * 0.02D,
-        		this.rand.nextGaussian() * 0.02D);
+		for(int i = 0; i < ((int)((7/(float)this.maxDeathTick())*this.deathTicks-1)); i++)
+			ParticleHandler.spawnParticle(ModRender.particleFade, this.world, this.posX + (this.rand.nextDouble() - 0.5D) * (this.width+3),
+    		this.posY + this.rand.nextDouble() * (this.height+1.5), 
+    		this.posZ + (this.rand.nextDouble() - 0.5D) * (this.width+3), 
+    		this.rand.nextGaussian() * 0.02D, 
+    		this.rand.nextGaussian() * 0.02D,
+    		this.rand.nextGaussian() * 0.02D);
 		if(!this.world.isRemote)
 		{
 			if(deathTicks == 1)

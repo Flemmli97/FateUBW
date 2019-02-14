@@ -34,7 +34,7 @@ public class EntityArthur extends EntityServant{
 
 	@Override
 	public Pair<Integer, Integer> attackTickerFromState(State state) {
-		return Pair.of(18, 10);
+		return Pair.of(20, 20);
 	}	
 
 	@Override

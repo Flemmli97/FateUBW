@@ -64,8 +64,7 @@ public class EntityHassan extends EntityServant {
 	
 	@Override
 	public Pair<Integer, Integer> attackTickerFromState(State state) {
-		// TODO Auto-generated method stub
-		return Pair.of(15, 15);
+		return Pair.of(20, 20);
 	}
 	
 	public void removeCopy(EntityHassanCopy copy)
