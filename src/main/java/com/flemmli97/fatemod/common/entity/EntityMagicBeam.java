@@ -1,5 +1,6 @@
 package com.flemmli97.fatemod.common.entity;
 
+import com.flemmli97.fatemod.common.handler.ConfigHandler;
 import com.flemmli97.fatemod.common.handler.CustomDamageSource;
 import com.flemmli97.tenshilib.common.entity.EntityBeam;
 
@@ -64,7 +65,6 @@ public class EntityMagicBeam extends EntityBeam{
 
 	@Override
 	protected void onImpact(RayTraceResult result) {
-		result.entityHit.attackEntityFrom(CustomDamageSource.magicBeam(this, this.getShooter()), 5);
-		this.setDead();
+		result.entityHit.attackEntityFrom(CustomDamageSource.magicBeam(this, this.getShooter()), ConfigHandler.magicBeam);
 	}
 }

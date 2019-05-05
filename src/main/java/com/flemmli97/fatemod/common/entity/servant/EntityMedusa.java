@@ -21,7 +21,8 @@ import net.minecraft.world.World;
 
 public class EntityMedusa extends EntityServant {
 
-	EntityAIMedusa attackAI = new EntityAIMedusa(this);
+	public EntityAIMedusa attackAI = new EntityAIMedusa(this);
+	
 	public EntityMedusa(World world) {
 		super(world, EnumServantType.RIDER, "Bellerophon", new ItemStack[] {new ItemStack(ModItems.medusaDagger)});
 		this.tasks.addTask(1, attackAI);
@@ -80,16 +81,13 @@ public class EntityMedusa extends EntityServant {
 			{
 				this.world.addWeatherEffect(new EntityLightningBolt(this.world, this.posX, this.posY, this.posZ, true));
 			}
-			List<Entity> list =this.world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().expand(15, 3.0D, 15));
+			List<Entity> list =this.world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().expand(5, 3.0D, 5));
 			for(int x = 0; x< list.size();x++)
 			{
 				if(list.get(x) instanceof EntityLivingBase)
 				{
 					EntityLivingBase ent = (EntityLivingBase) list.get(x);
-					//Vec3d posVec = ent.getPositionVector();
-					//Vec3d distVec;
-					//float degree;
-	                ent.knockBack(this, 5.0F, (double)MathHelper.sin(this.rotationYaw * 0.017453292F), (double)(-MathHelper.cos(this.rotationYaw * 0.017453292F)));
+	                ent.knockBack(this, 5.0F, MathHelper.sin(this.rotationYaw * 0.017453292F), (-MathHelper.cos(this.rotationYaw * 0.017453292F)));
 				}
 			}
 			this.world.spawnEntity(peg);

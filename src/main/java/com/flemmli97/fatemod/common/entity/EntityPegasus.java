@@ -1,17 +1,20 @@
 package com.flemmli97.fatemod.common.entity;
 
+import com.flemmli97.fatemod.common.handler.ConfigHandler;
+
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityMoveHelper;
-import net.minecraft.entity.passive.AbstractHorse;
+import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
-public class EntityPegasus extends AbstractHorse implements IServantMinion{
+public class EntityPegasus extends EntityAnimal implements IServantMinion{
 
 	public class PegasusMoveHelper extends EntityMoveHelper {
 
@@ -37,7 +40,7 @@ public class EntityPegasus extends AbstractHorse implements IServantMinion{
 	protected void applyEntityAttributes()
     {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(53.0D);
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(ConfigHandler.pegasusHealth);
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.22499999403953552D);
     }
 
@@ -156,5 +159,10 @@ public class EntityPegasus extends AbstractHorse implements IServantMinion{
 
             return true;
         }		
+	}
+
+	@Override
+	public EntityAgeable createChild(EntityAgeable ageable) {
+		return null;
 	}
 }

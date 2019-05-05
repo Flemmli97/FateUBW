@@ -18,7 +18,8 @@ public class EntityArcherArrow extends EntityArrow implements IEntityAdditionalS
 	
 	private int knockbackStrength;
 
-	public EntityArcherArrow(World world) {
+	public EntityArcherArrow(World world) 
+	{
 		super(world);
 	}
 	
@@ -28,12 +29,14 @@ public class EntityArcherArrow extends EntityArrow implements IEntityAdditionalS
     }
 
 	@Override
-	protected ItemStack getArrowStack() {
-		return null;
+	protected ItemStack getArrowStack() 
+	{
+		return ItemStack.EMPTY;
 	}
 
 	@Override
-	protected void onHit(RayTraceResult result) {
+	protected void onHit(RayTraceResult result) 
+	{
 		Entity hit = result.entityHit;
 		if(hit!=null)
 		{

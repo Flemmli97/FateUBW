@@ -5,7 +5,7 @@ import com.flemmli97.fatemod.common.entity.EntityGaeBolg;
 import com.flemmli97.fatemod.common.handler.capabilities.IPlayer;
 import com.flemmli97.fatemod.common.handler.capabilities.PlayerCapProvider;
 import com.flemmli97.fatemod.common.lib.LibReference;
-import com.flemmli97.fatemod.common.utils.ServantUtils;
+import com.flemmli97.tenshilib.common.TextHelper;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -50,7 +50,7 @@ public class ItemGaeBolg extends ClassSpear{
 				}
 				else
 				{
-					player.sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.mana.missing"), TextFormatting.AQUA));
+					player.sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.mana.missing"), TextFormatting.AQUA));
 				}
 			}
 		}

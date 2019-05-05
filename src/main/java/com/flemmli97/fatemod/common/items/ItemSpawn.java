@@ -7,12 +7,12 @@ import javax.annotation.Nullable;
 
 import com.flemmli97.fatemod.Fate;
 import com.flemmli97.fatemod.common.entity.servant.EntityServant;
-import com.flemmli97.fatemod.common.handler.GrailWarPlayerTracker;
+import com.flemmli97.fatemod.common.handler.GrailWarHandler;
 import com.flemmli97.fatemod.common.handler.capabilities.IPlayer;
 import com.flemmli97.fatemod.common.handler.capabilities.PlayerCapProvider;
 import com.flemmli97.fatemod.common.lib.LibReference;
-import com.flemmli97.fatemod.common.utils.ServantUtils;
 import com.flemmli97.fatemod.common.utils.SpawnEntityCustomList;
+import com.flemmli97.tenshilib.common.TextHelper;
 
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.BlockLiquid;
@@ -136,12 +136,12 @@ public class ItemSpawn extends Item{
             			{
                 			cap.setServant(player, (EntityServant) entity);
                 			((EntityServant) entity).setOwner(player);
-                			GrailWarPlayerTracker track = GrailWarPlayerTracker.get(world);
-                			track.addPlayer(player);  
+                			GrailWarHandler track = GrailWarHandler.get(world);
+                			track.join(player);  
             			}
             			else
             			{
-            				player.sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.item.spawn"), TextFormatting.RED));
+            				player.sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.item.spawn"), TextFormatting.RED));
             			}
                 	}
                 	else
@@ -223,12 +223,12 @@ public class ItemSpawn extends Item{
                     			{
 	                    			cap.setServant(player, (EntityServant) entity);
 	                    			((EntityServant) entity).setOwner(player);
-	                    			GrailWarPlayerTracker track = GrailWarPlayerTracker.get(world);
-	                    			track.addPlayer(player);  
+	                    			GrailWarHandler track = GrailWarHandler.get(world);
+	                    			track.join(player);  
                     			}
                     			else
                     			{
-                    				player.sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.item.spawn"), TextFormatting.RED));
+                    				player.sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.item.spawn"), TextFormatting.RED));
                     			}
                         	}
                         	else

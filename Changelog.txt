@@ -1,4 +1,4 @@
-Fate UBW a0.2.0
+ Fate UBW a0.3.0
 ==============
 - Made servants load the chunk they are in
 - Improved hassans code
@@ -20,3 +20,13 @@ Fate UBW a0.2.0
 - Removed code for projectile rendering as thats now part of TenshiLib
 - Improved some projectile code
 - Fixed config gui not saving
+
+- Added option to fill in missing slots with npc servants which will spawn near players
+- Removed camel case of resourcelocation for entity names
+- Fixed crash with armatures model for ea
+- Changed how the grail war is handled. Made servants able to spawn (filling missing slots from players)
+- Made damage etc. from projectiles and others configurable
+- Reduced xp amount from servants a little
+- Made servants able to attack from their mount
+- Made servants attack other servants mount first instead of going after the unreachable enemy
+- Added some advancements

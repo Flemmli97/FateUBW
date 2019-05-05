@@ -3,6 +3,7 @@ package com.flemmli97.fatemod.common.entity;
 import java.util.List;
 
 import com.flemmli97.fatemod.common.entity.servant.EntityIskander;
+import com.flemmli97.fatemod.common.handler.ConfigHandler;
 import com.flemmli97.fatemod.common.handler.CustomDamageSource;
 
 import net.minecraft.entity.Entity;
@@ -84,7 +85,7 @@ public class EntityGordiusWheel extends EntityCreature implements IServantMinion
 	protected void applyEntityAttributes()
     {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(53.0D);
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(ConfigHandler.gordiusHealth);
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.22499999403953552D);
         this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(32.0D);
     }
@@ -127,7 +128,7 @@ public class EntityGordiusWheel extends EntityCreature implements IServantMinion
 			{
 				if(this.getPassengers().get(0)!=e && e != this)
 				{
-					e.attackEntityFrom(CustomDamageSource.gordiusTrample(this, (EntityLivingBase) this.getPassengers().get(0)), 5);
+					e.attackEntityFrom(CustomDamageSource.gordiusTrample(this, (EntityLivingBase) this.getPassengers().get(0)), ConfigHandler.gordiusDmg);
 				}
 			}
 	        this.playSound(SoundEvents.ENTITY_COW_STEP, 0.4F, 0.4F);

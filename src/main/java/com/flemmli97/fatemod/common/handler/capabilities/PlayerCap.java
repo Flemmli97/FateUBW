@@ -1,15 +1,16 @@
 package com.flemmli97.fatemod.common.handler.capabilities;
 
 import java.util.UUID;
+import java.util.function.Predicate;
 
 import com.flemmli97.fatemod.common.entity.servant.EntityServant;
 import com.flemmli97.fatemod.network.MessageCommandSeals;
 import com.flemmli97.fatemod.network.MessageMana;
 import com.flemmli97.fatemod.network.MessageServantSync;
 import com.flemmli97.fatemod.network.PacketHandler;
+import com.flemmli97.tenshilib.common.entity.EntityUtil;
 
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -50,18 +51,17 @@ public class PlayerCap implements IPlayer{
 		return flag;
 	}
 	
+	private static final Predicate<EntityServant> notDead = new Predicate<EntityServant>() {
+		@Override
+		public boolean test(EntityServant t) {
+			return !t.isDead();
+		}};
+		
 	@Override
 	public EntityServant getServant(EntityPlayer player) {
 		if(this.servant==null && this.servantUUID!=null)
 		{
-			for(Entity e : player.world.loadedEntityList)
-			{
-				if(e.getUniqueID().equals(this.servantUUID) && e instanceof EntityServant && !((EntityServant) e).isDead())
-				{
-					this.setServant(player, (EntityServant) e);
-					break;
-				}
-			}
+			this.setServant(player, EntityUtil.findFromUUID(EntityServant.class, player.world, this.servantUUID, notDead));
 		}
 		return this.servant;
 	}

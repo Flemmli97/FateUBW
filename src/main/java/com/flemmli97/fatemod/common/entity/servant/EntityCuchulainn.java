@@ -5,7 +5,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import com.flemmli97.fatemod.common.entity.EntityGaeBolg;
 import com.flemmli97.fatemod.common.entity.servant.ai.EntityAICuchulainn;
 import com.flemmli97.fatemod.common.init.ModItems;
-import com.flemmli97.fatemod.common.utils.ServantUtils;
+import com.flemmli97.tenshilib.common.TextHelper;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -71,7 +71,7 @@ public class EntityCuchulainn extends EntityServant {
 			{
 				if(!this.world.isRemote)
 				{
-					this.world.getMinecraftServer().getPlayerList().sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.servant.cuchulainn"), TextFormatting.GOLD));
+					this.world.getMinecraftServer().getPlayerList().sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.servant.cuchulainn"), TextFormatting.GOLD));
 				}
 				this.critHealth = true;
 			}

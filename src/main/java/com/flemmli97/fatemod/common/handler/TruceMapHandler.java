@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import com.flemmli97.fatemod.common.handler.capabilities.PlayerCapProvider;
-import com.flemmli97.fatemod.common.utils.ServantUtils;
+import com.flemmli97.tenshilib.common.TextHelper;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 
@@ -55,10 +55,10 @@ public class TruceMapHandler extends WorldSavedData{
 		if(this.pendingRequests.put(to, from.getUniqueID()))
 		{
 			this.markDirty();
-			from.sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.truce.send", GrailWarPlayerTracker.get(from.world).getPlayerNameFromUUID(to)), TextFormatting.GOLD));
+			from.sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.truce.send", GrailWarHandler.get(from.world).getPlayerNameFromUUID(to)), TextFormatting.GOLD));
 			EntityPlayer player = from.world.getPlayerEntityByUUID(to);
 			if(player!=null)
-				player.sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.truce.request", from.getName()), TextFormatting.GOLD));
+				player.sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.truce.request", from.getName()), TextFormatting.GOLD));
 			return true;
 		}
 		return false;
@@ -81,13 +81,13 @@ public class TruceMapHandler extends WorldSavedData{
 			this.pendingRequests.remove(player.getUniqueID(), request);
 			this.truceMap.put(player.getUniqueID(), request);
 			this.truceMap.put(request, player.getUniqueID());
-			player.sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.truce.accept", GrailWarPlayerTracker.get(player.world).getPlayerNameFromUUID(request)), TextFormatting.GOLD));
+			player.sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.truce.accept", GrailWarHandler.get(player.world).getPlayerNameFromUUID(request)), TextFormatting.GOLD));
 			if(player.getCapability(PlayerCapProvider.PlayerCap, null).getServant(player)!=null)
 				player.getCapability(PlayerCapProvider.PlayerCap, null).getServant(player).setAttackTarget(null);
 			EntityPlayer other= player.world.getPlayerEntityByUUID(request);
 			if(other!=null)
 			{
-				other.sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.truce.requestsuccess", player.getName()), TextFormatting.GOLD));
+				other.sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.truce.requestsuccess", player.getName()), TextFormatting.GOLD));
 				if(other.getCapability(PlayerCapProvider.PlayerCap, null).getServant(other)!=null)
 					other.getCapability(PlayerCapProvider.PlayerCap, null).getServant(other).setAttackTarget(null);
 			}

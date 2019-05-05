@@ -4,7 +4,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.flemmli97.fatemod.common.entity.servant.ai.EntityAIDiarmuid;
 import com.flemmli97.fatemod.common.init.ModItems;
-import com.flemmli97.fatemod.common.utils.ServantUtils;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -12,8 +11,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
@@ -70,14 +67,10 @@ public class EntityDiarmuid extends EntityServant {
 		{
 			if(this.critHealth == false)	
 			{
-				if(!world.isRemote)
-				{
-					//this.world.getMinecraftServer().getPlayerList().sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.servant.diarmuid"), TextFormatting.GOLD));
-				}
 				this.critHealth = true;
 			}
-			//this.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:speed"), 1, 2, false, false));
 		}
+		this.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:speed"), 1, 1, false, false));
 		super.onLivingUpdate();
 	}
 	

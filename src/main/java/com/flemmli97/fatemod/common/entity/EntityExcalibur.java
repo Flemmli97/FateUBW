@@ -1,5 +1,6 @@
 package com.flemmli97.fatemod.common.entity;
 
+import com.flemmli97.fatemod.common.handler.ConfigHandler;
 import com.flemmli97.fatemod.common.handler.CustomDamageSource;
 import com.flemmli97.tenshilib.common.entity.EntityBeam;
 
@@ -42,6 +43,6 @@ public class EntityExcalibur extends EntityBeam{
 
 	@Override
 	protected void onImpact(RayTraceResult result) {
-		result.entityHit.attackEntityFrom(CustomDamageSource.excalibur(this, this.getShooter()), 19.0F);
+		result.entityHit.attackEntityFrom(CustomDamageSource.excalibur(this, this.getShooter()), ConfigHandler.excaliburDamage);
 	}
 }

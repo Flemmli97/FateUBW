@@ -96,7 +96,7 @@ public final class ModRender {
 		RenderingRegistry.registerEntityRenderingHandler(EntityMedea.class, RenderMedea::new);
 		//caster class
 		//""
-		RenderingRegistry.registerEntityRenderingHandler(EntityPegasus.class, RenderPegasus::new);
+		//RenderingRegistry.registerEntityRenderingHandler(EntityPegasus.class, RenderPegasus::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityGordiusWheel.class, RenderGordiusWheel::new);
 
 		//RenderingRegistry.registerEntityRenderingHandler(EntityBukephalos.class, new RenderBukephalos(new ModelBiped(), 0.5F));

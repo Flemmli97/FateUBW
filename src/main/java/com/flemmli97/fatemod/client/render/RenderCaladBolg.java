@@ -21,6 +21,7 @@ public class RenderCaladBolg extends RenderProjectileModel<EntityCaladBolg>{
 		return tex;
 	}
 
+	@Override
 	public float yawOffset() {
 		return 180;
 	}

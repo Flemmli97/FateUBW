@@ -3,6 +3,7 @@ package com.flemmli97.fatemod.common.entity;
 import java.util.List;
 import java.util.Random;
 
+import com.flemmli97.fatemod.common.handler.ConfigHandler;
 import com.flemmli97.fatemod.common.handler.CustomDamageSource;
 import com.flemmli97.tenshilib.common.entity.EntityProjectile;
 import com.flemmli97.tenshilib.common.item.ItemUtil;
@@ -127,7 +128,7 @@ public class EntityBabylonWeapon extends EntityProjectile{
 		if(!stack.isEmpty())
 		{
 			this.dataManager.set(weaponType, stack);
-			this.dmg=ItemUtil.damage(stack);
+			this.dmg=ItemUtil.damage(stack)*ConfigHandler.babylonScale;
 		}
 	}
 

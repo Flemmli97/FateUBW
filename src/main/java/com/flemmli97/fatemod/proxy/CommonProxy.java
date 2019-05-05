@@ -13,6 +13,7 @@ import com.flemmli97.fatemod.common.handler.ModEventHandler;
 import com.flemmli97.fatemod.common.handler.capabilities.IPlayer;
 import com.flemmli97.fatemod.common.handler.capabilities.PlayerCap;
 import com.flemmli97.fatemod.common.handler.capabilities.PlayerCapNetwork;
+import com.flemmli97.fatemod.common.init.AdvancementRegister;
 import com.flemmli97.fatemod.common.init.ModEntities;
 import com.flemmli97.fatemod.network.CustomDataPacket;
 import com.flemmli97.fatemod.network.PacketHandler;
@@ -46,6 +47,7 @@ public class CommonProxy {
     	ConfigHandler.load(LoadState.PREINIT);
     	ModEntities.mainRegistry();
     	PacketHandler.registerPackets();
+    	AdvancementRegister.init();
     }
     
     public void init(FMLInitializationEvent e) {

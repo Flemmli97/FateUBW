@@ -1,5 +1,6 @@
 package com.flemmli97.fatemod.common.entity;
 
+import com.flemmli97.fatemod.common.handler.ConfigHandler;
 import com.flemmli97.fatemod.common.handler.CustomDamageSource;
 import com.flemmli97.fatemod.common.init.ModItems;
 import com.flemmli97.tenshilib.common.entity.EntityProjectile;
@@ -9,7 +10,6 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
@@ -48,12 +48,11 @@ public class EntityGaeBolg extends EntityProjectile{
 		if(raytraceResultIn.entityHit != null && raytraceResultIn.entityHit instanceof EntityLivingBase && raytraceResultIn.entityHit != this.getShooter())
 		{
 			EntityLivingBase hittedEntity = (EntityLivingBase) raytraceResultIn.entityHit;
-			hittedEntity.attackEntityFrom(CustomDamageSource.gaeBolg(this, this.getShooter()), 10);
+			hittedEntity.attackEntityFrom(CustomDamageSource.gaeBolg(this, this.getShooter()), ConfigHandler.gaeBolgDmg);
 			if(!(hittedEntity instanceof EntityPlayer) || ((EntityPlayer) hittedEntity).capabilities.isCreativeMode)
 			{
-				hittedEntity.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:wither"), 200, 2));
-				hittedEntity.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:slowness"), 100, 7));
-				hittedEntity.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:jump_boost"), 100, 128));
+				for(PotionEffect effect : ConfigHandler.gaeBolgEffect.potions())
+					hittedEntity.addPotionEffect(effect);
 			}
 		}
 		if(raytraceResultIn.typeOfHit==Type.BLOCK)

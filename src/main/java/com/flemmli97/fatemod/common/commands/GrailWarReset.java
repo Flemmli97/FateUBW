@@ -4,7 +4,7 @@ package com.flemmli97.fatemod.common.commands;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.flemmli97.fatemod.common.handler.GrailWarPlayerTracker;
+import com.flemmli97.fatemod.common.handler.GrailWarHandler;
 import com.google.common.collect.Lists;
 
 import net.minecraft.command.CommandException;
@@ -39,7 +39,7 @@ public class GrailWarReset implements ICommand{
 
 	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-		GrailWarPlayerTracker.get(server.getEntityWorld()).reset(server.getEntityWorld());
+		GrailWarHandler.get(server.getEntityWorld()).reset(server.getEntityWorld());
 	}
 
 	@Override

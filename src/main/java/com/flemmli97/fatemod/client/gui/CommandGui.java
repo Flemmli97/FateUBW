@@ -8,7 +8,7 @@ import java.util.UUID;
 
 import com.flemmli97.fatemod.client.gui.GuiPlayerButton.State;
 import com.flemmli97.fatemod.common.entity.servant.EntityServant;
-import com.flemmli97.fatemod.common.handler.GrailWarPlayerTracker;
+import com.flemmli97.fatemod.common.handler.GrailWarHandler;
 import com.flemmli97.fatemod.common.handler.capabilities.IPlayer;
 import com.flemmli97.fatemod.common.handler.capabilities.PlayerCapProvider;
 import com.flemmli97.fatemod.common.lib.LibReference;
@@ -147,8 +147,8 @@ public class CommandGui extends GuiScreen {
 		}
 		else if (currentPage == 3)
 		{
-			Set<Entry<UUID, String>> players = GrailWarPlayerTracker.get(this.mc.world).players();
-			if(GrailWarPlayerTracker.get(this.mc.world).containsPlayer(this.guiPlayer))
+			Set<Entry<UUID, String>> players = GrailWarHandler.get(this.mc.world).players();
+			if(GrailWarHandler.get(this.mc.world).containsPlayer(this.guiPlayer))
 			{
 				this.playerButton = new GuiPlayerButton[players.size()-1];
 				int i = 0;

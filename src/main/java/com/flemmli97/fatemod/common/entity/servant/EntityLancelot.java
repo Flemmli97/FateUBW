@@ -89,7 +89,6 @@ public class EntityLancelot extends EntityServant {
                 }
             }
         }
-		//this.testForRiding();
 		super.onLivingUpdate();
 	}
 	
@@ -102,31 +101,4 @@ public class EntityLancelot extends EntityServant {
 		}
 		return false;
 	}
-	
-	/*public void testForRiding()
-	{
-		List<EntityLiving> list = this.world.getEntitiesWithinAABB(EntityLiving.class, this.getEntityBoundingBox().expand((double)8, 3.0D, (double)8));
-		
-		if (!list.isEmpty())
-		{
-			for(int x=0;x<list.size();x++)
-			{
-				EntityLiving entity = list.get(x);
-				if(!this.isRiding())
-				{
-					if(entity != this && !entity.isBeingRidden() && entity instanceof EntityAnimal || entity instanceof EntityMob)
-					{
-							if(entity instanceof EntityHorse)
-								((EntityHorse)entity).setHorseTamed(true);
-							double old = entity.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MAX_HEALTH).getAttributeValue();
-							entity.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(old*3);
-							entity.setHealth(entity.getMaxHealth());
-							entity.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:resistance"), 1000, 1));
-							this.startRiding(entity);
-					}
-				}
-			}
-		}
-	}*/
-	
 }

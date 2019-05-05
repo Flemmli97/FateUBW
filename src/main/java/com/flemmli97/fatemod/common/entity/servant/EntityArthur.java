@@ -5,7 +5,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import com.flemmli97.fatemod.common.entity.EntityExcalibur;
 import com.flemmli97.fatemod.common.entity.servant.ai.EntityAIArthur;
 import com.flemmli97.fatemod.common.init.ModItems;
-import com.flemmli97.fatemod.common.utils.ServantUtils;
+import com.flemmli97.tenshilib.common.TextHelper;
 
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
@@ -69,13 +69,13 @@ public class EntityArthur extends EntityServant{
 			{
 				if(!this.world.isRemote)
 				{
-					this.world.getMinecraftServer().getPlayerList().sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.servant.avalon"), TextFormatting.GOLD));
+					this.world.getMinecraftServer().getPlayerList().sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.servant.avalon"), TextFormatting.GOLD));
 				}
 				critHealth = true;
 			}
 			if(!this.isPotionActive(Potion.getPotionFromResourceLocation("minecraft:regeneration")))
 			{
-				this.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:regeneration"), 40, 3, false, false));
+				this.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:regeneration"), 40, 2, false, false));
 			}			
 		}
 		super.onLivingUpdate();

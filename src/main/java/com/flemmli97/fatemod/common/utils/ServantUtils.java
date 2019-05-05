@@ -6,8 +6,6 @@ import com.flemmli97.fatemod.common.entity.servant.EntityServant;
 import com.flemmli97.fatemod.common.handler.TruceMapHandler;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
 
 public class ServantUtils {
 
@@ -48,11 +46,5 @@ public class ServantUtils {
 	public static boolean inSameTeam(EntityPlayer player, EntityPlayer other)
 	{
 		return TruceMapHandler.get(player.world).playerTruces(player).contains(other.getUniqueID());
-	}
-	
-	public static TextComponentTranslation setColor(TextComponentTranslation text, TextFormatting color)
-	{
-		text.getStyle().setColor(color);
-		return text;
 	}
 }

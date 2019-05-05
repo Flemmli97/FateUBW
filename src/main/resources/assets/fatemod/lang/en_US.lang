@@ -96,7 +96,7 @@ chat.command.spellfail=You don't have any command spells anymore
 death.attack.excalibur=%1$s was vaporized by %2$s with excalibur
 death.attack.babylon=%1$s was impaled by %2$s with the gate of babylon
 death.attack.gaeBolg=%1$s's heart was pierced with gae bolg
-death.attack.arrow = %1$s was shoot by %2$s
+death.attack.arrow =%1$s was shoot by %2$s
 
 config.fatemod.general=General
 config.fatemod.general.tooltip=
@@ -104,3 +104,12 @@ config.fatemod.servants=Servants
 config.fatemod.servants.tooltip=Configure individual servants
 config.fatemod.minions=Servant minions
 config.fatemod.hassancopy=Hassan Clone
+
+advancements.fate.title=Welcome to the §k__§r grailwar
+advancements.fate.description=Mine some gem shards to start
+advancements.fate.charm.title=To get the strongest servant
+advancements.fate.charm.description=Find a charm to increase the odds of a class
+advancements.fate.join.title=A fight between heroes
+advancements.fate.join.description=Join or start a grailwar
+advancements.fate.win.title=People die if they are killed
+advancements.fate.win.description=Win a grailwar. Sounds easy right

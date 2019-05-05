@@ -13,13 +13,13 @@ import com.flemmli97.fatemod.Fate;
 import com.flemmli97.fatemod.common.entity.servant.ai.EntityAIFollowMaster;
 import com.flemmli97.fatemod.common.entity.servant.ai.EntityAIRetaliate;
 import com.flemmli97.fatemod.common.handler.ConfigHandler;
-import com.flemmli97.fatemod.common.handler.GrailWarPlayerTracker;
-import com.flemmli97.fatemod.common.handler.capabilities.IPlayer;
+import com.flemmli97.fatemod.common.handler.GrailWarHandler;
 import com.flemmli97.fatemod.common.handler.capabilities.PlayerCapProvider;
 import com.flemmli97.fatemod.common.init.ModRender;
 import com.flemmli97.fatemod.common.utils.ServantProperties;
 import com.flemmli97.fatemod.common.utils.ServantUtils;
 import com.flemmli97.tenshilib.client.particles.ParticleHandler;
+import com.flemmli97.tenshilib.common.TextHelper;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 
@@ -135,7 +135,7 @@ public abstract class EntityServant extends EntityCreature{
 	public EntityAIWander wander = new EntityAIWander(this, 1.0D);
 	public EntityServant(World world, EnumServantType type, String hogou, ItemStack[] drops) {
 		super(world);
-		this.experienceValue = 50;
+		this.experienceValue = 35;
 	    this.tasks.addTask(0, this.follow);
         this.tasks.addTask(1, this.restrictArea);
 	    this.tasks.addTask(2, this.wander);
@@ -196,6 +196,11 @@ public abstract class EntityServant extends EntityCreature{
 	public String getRealName()
 	{
 		return super.getName();
+	}
+	
+	public boolean attacksFromMount()
+	{
+		return true;
 	}
 	
 	//=====Client-Server sync
@@ -370,6 +375,13 @@ public abstract class EntityServant extends EntityCreature{
     	return !this.dataManager.get(ownerUUID).isEmpty();
     }
     
+    public UUID ownerUUID()
+    {
+    	if(this.hasOwner())
+    		return UUID.fromString(this.dataManager.get(ownerUUID));
+    	return null;
+    }
+    
     /*@Override
     public void notifyDataManagerChange(DataParameter<?> key)
     {
@@ -510,6 +522,8 @@ public abstract class EntityServant extends EntityCreature{
 			}
 			if(this.getOwner()!=null && !this.tracked.contains(this.getOwner()))
 				this.updateDataManager((EntityPlayerMP) this.getOwner(), this);
+			if(this.getAttackTarget()!=null && this.getAttackTarget().getRidingEntity() instanceof EntityLivingBase)
+				this.setAttackTarget((EntityLivingBase) this.getAttackTarget().getRidingEntity());
 		}
 	}
 	
@@ -580,20 +594,9 @@ public abstract class EntityServant extends EntityCreature{
 			if(deathTicks == 1)
 			{	
 				//if(this.getLastDamageSource()!=DamageSource.OUT_OF_WORLD)
-					this.world.getMinecraftServer().getPlayerList().sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.servant.death"), TextFormatting.RED));			
+					this.world.getMinecraftServer().getPlayerList().sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.servant.death"), TextFormatting.RED));			
 				this.playSound(SoundEvents.ENTITY_WITHER_SPAWN, 1.0F, 1.0F);
-				GrailWarPlayerTracker track = GrailWarPlayerTracker.get(this.world);
-				if(this.getOwner() != null)
-				{
-					IPlayer servantprop = this.getOwner().getCapability(PlayerCapProvider.PlayerCap, null);
-					servantprop.setServant(this.getOwner(), null);
-					
-					track.removePlayer(this.getOwner());
-				}
-				else if(this.hasOwner())
-				{
-					track.removeServantOwner(UUID.fromString(this.dataManager.get(ownerUUID)));
-				}
+				GrailWarHandler.get(this.world).removeServant(this);
 				this.disableChunkload=true;
 			}
 			

@@ -43,7 +43,7 @@ public class ItemEnumaElish extends ItemSword{
 
     	@Override
     	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-    		return CapabilityAnimation.ANIMATION_CAPABILITY.cast(this.asm);
+    		return hasCapability(capability, facing) ? CapabilityAnimation.ANIMATION_CAPABILITY.cast(this.asm) : null;
     	}
     }
 }

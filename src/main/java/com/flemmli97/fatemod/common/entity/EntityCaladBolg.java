@@ -1,5 +1,6 @@
 package com.flemmli97.fatemod.common.entity;
 
+import com.flemmli97.fatemod.common.handler.ConfigHandler;
 import com.flemmli97.fatemod.common.handler.CustomDamageSource;
 import com.flemmli97.tenshilib.common.entity.EntityProjectile;
 
@@ -34,7 +35,7 @@ public class EntityCaladBolg extends EntityProjectile{
 	protected void onImpact(RayTraceResult result) {
 		if(result.entityHit != null)
 		{
-			result.entityHit.attackEntityFrom(CustomDamageSource.caladBolg(this, this.getShooter()), 25);
+			result.entityHit.attackEntityFrom(CustomDamageSource.caladBolg(this, this.getShooter()), ConfigHandler.caladBolgDmg);
 		}
 		this.setDead();
 	}

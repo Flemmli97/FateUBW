@@ -8,12 +8,12 @@ import com.flemmli97.fatemod.common.entity.servant.EntityServant;
 import com.flemmli97.fatemod.common.handler.capabilities.IPlayer;
 import com.flemmli97.fatemod.common.handler.capabilities.PlayerCapProvider;
 import com.flemmli97.fatemod.common.lib.LibReference;
-import com.flemmli97.fatemod.common.utils.ServantUtils;
 import com.flemmli97.fatemod.network.MessageMana;
 import com.flemmli97.fatemod.network.MessagePlayerServant;
 import com.flemmli97.fatemod.network.MessageServantSync;
 import com.flemmli97.fatemod.network.PacketHandler;
 import com.flemmli97.fatemod.proxy.ClientProxy;
+import com.flemmli97.tenshilib.common.TextHelper;
 import com.flemmli97.tenshilib.common.config.ConfigUtils.LoadState;
 
 import net.minecraft.client.Minecraft;
@@ -64,7 +64,7 @@ public class ModEventHandler {
     {
     	if(!event.player.world.isRemote)
     	{
-			GrailWarPlayerTracker.get(event.player.world).updatePlayerName(event.player);
+			GrailWarHandler.get(event.player.world).updatePlayerName(event.player);
     	}
     }
     
@@ -74,15 +74,17 @@ public class ModEventHandler {
         if (event.getEntity() instanceof EntityPlayer && !event.getEntity().world.isRemote)
         {
         	EntityPlayerMP player = (EntityPlayerMP) event.getEntity();
-        	if(GrailWarPlayerTracker.get(player.world).shouldSeverConnection(player))
+        	GrailWarHandler handler =GrailWarHandler.get(player.world);
+        	if(handler.shouldSeverConnection(player))
         	{
-        		GrailWarPlayerTracker.get(player.world).removePlayer(player);
+        		handler.removePlayer(player);
         	}
+        	handler.checkWinCondition(player.getServerWorld(), false);
 			PacketHandler.sendTo(new MessageMana(player.getCapability(PlayerCapProvider.PlayerCap, null)), (EntityPlayerMP) player);
 			for(UUID uuid : TruceMapHandler.get(player.world).getRequests(player))
 			{
-				String name = GrailWarPlayerTracker.get(player.world).getPlayerNameFromUUID(uuid);
-				player.sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.truce.pending", name), TextFormatting.GOLD));
+				String name = GrailWarHandler.get(player.world).getPlayerNameFromUUID(uuid);
+				player.sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.truce.pending", name), TextFormatting.GOLD));
 			}
 			if(player.getCapability(PlayerCapProvider.PlayerCap, null).getServant(player)!=null)
 				this.trackEntity(player, player.getCapability(PlayerCapProvider.PlayerCap, null).getServant(player));
@@ -147,7 +149,7 @@ public class ModEventHandler {
     {
 		if(event.phase == Phase.END && !event.world.isRemote && event.world.provider.getDimension()==0)
 		{
-			GrailWarPlayerTracker.get(event.world).updateGrailWar((WorldServer) event.world);;
+			GrailWarHandler.get(event.world).tick((WorldServer) event.world);;
 		}
     }
     

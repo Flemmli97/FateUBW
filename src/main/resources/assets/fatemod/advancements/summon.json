@@ -1,0 +1,22 @@
+{
+    "display": {
+        "icon": {
+            "item": "fatemod:altar"
+        },
+        "title": {
+            "translate": "advancements.fate.join.title"
+        },
+        "description": {
+            "translate": "advancements.fate.join.description"
+        }
+    },
+    "parent": "fatemod:root",
+    "criteria": {
+        "join": {
+            "trigger": "fatemod:altar",
+            "conditions": {
+                "joining": "true"
+            }
+        }
+    }
+}

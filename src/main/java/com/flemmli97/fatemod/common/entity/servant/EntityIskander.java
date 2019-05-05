@@ -73,4 +73,10 @@ public class EntityIskander extends EntityServant {
 		this.revealServant();
 		return true;
 	}
+	
+	@Override
+	public boolean attacksFromMount()
+	{
+		return false;
+	}
 }

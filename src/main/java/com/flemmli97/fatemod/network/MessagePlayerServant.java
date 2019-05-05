@@ -1,10 +1,10 @@
 package com.flemmli97.fatemod.network;
 
 import com.flemmli97.fatemod.Fate;
-import com.flemmli97.fatemod.common.handler.GrailWarPlayerTracker;
+import com.flemmli97.fatemod.common.handler.GrailWarHandler;
 import com.flemmli97.fatemod.common.handler.capabilities.IPlayer;
 import com.flemmli97.fatemod.common.handler.capabilities.PlayerCapProvider;
-import com.flemmli97.fatemod.common.utils.ServantUtils;
+import com.flemmli97.tenshilib.common.TextHelper;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
@@ -56,19 +56,19 @@ public class MessagePlayerServant  implements IMessage{
     		if(msg.command == 0)
     		{
     			capSync.getServant(player).updateAI(0);
-    			player.sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.command.attackservant"), TextFormatting.RED));
+    			player.sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.command.attackservant"), TextFormatting.RED));
     		}
     		//aggressive mode
     		else if(msg.command == 1)
     		{
     			capSync.getServant(player).updateAI(1);
-    			player.sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.command.attackall"), TextFormatting.RED));
+    			player.sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.command.attackall"), TextFormatting.RED));
     		}
         	//defensive mode
         	else if(msg.command == 2)
         	{
         		capSync.getServant(player).updateAI(2);
-        		player.sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.command.defensive"), TextFormatting.RED));
+        		player.sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.command.defensive"), TextFormatting.RED));
         	}
     		//useNP
         	else if(msg.command == 3)
@@ -79,54 +79,54 @@ public class MessagePlayerServant  implements IMessage{
         			{
         				if(capSync.useMana(player, capSync.getServant(player).props().hogouMana()) && capSync.useCommandSeal(player))
         				{
-        					player.sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.command.npsuccess"), TextFormatting.RED));	        							
+        					player.sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.command.npsuccess"), TextFormatting.RED));	        							
         					capSync.getServant(player).forcedNP = true;
         					capSync.useCommandSeal(player);
         				}
         				else
         				{
-        					player.sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.command.npfail"), TextFormatting.RED));
+        					player.sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.command.npfail"), TextFormatting.RED));
         				}
         			}
         			else
         			{
-    					player.sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.command.npsuccess"), TextFormatting.RED));	        							
+    					player.sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.command.npsuccess"), TextFormatting.RED));	        							
         				capSync.getServant(player).forcedNP = true;
         			}
         		}
 				else
 				{
-					player.sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.command.npprep"), TextFormatting.RED));
+					player.sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.command.npprep"), TextFormatting.RED));
 				}
         	}
     		//follow
         	else if(msg.command == 4)
         	{
         		capSync.getServant(player).updateAI(3);
-        		player.sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.command.follow"), TextFormatting.RED));
+        		player.sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.command.follow"), TextFormatting.RED));
         	}
     		//stay
         	else if(msg.command == 5)
     		{
         		capSync.getServant(player).updateAI(4);
-        		player.sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.command.stay"), TextFormatting.RED));
+        		player.sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.command.stay"), TextFormatting.RED));
     		}
     		//protect
         	else if(msg.command == 6)
         	{
         		capSync.getServant(player).updateAI(5);
-        		player.sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.command.patrol"), TextFormatting.RED));
+        		player.sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.command.patrol"), TextFormatting.RED));
         	}
     		//kill
         	else if(msg.command == 7)
         	{
         		capSync.getServant(player).attackEntityFrom(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
-        		player.sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.command.kill"), TextFormatting.RED));
+        		player.sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.command.kill"), TextFormatting.RED));
         	}
     		//forfeit
         	else if(msg.command == 8)
         	{
-        		GrailWarPlayerTracker track = GrailWarPlayerTracker.get(player.world);
+        		GrailWarHandler track = GrailWarHandler.get(player.world);
         		if(track.containsPlayer(player))
         		{
 	        		track.removePlayer(player);
@@ -147,10 +147,10 @@ public class MessagePlayerServant  implements IMessage{
 	        		capSync.getServant(player).addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:regeneration"), 6000, 1, true, false));
 	        		capSync.getServant(player).addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:strength"), 6000, 2, true, false));
 	        		capSync.getServant(player).addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:speed"), 6000, 2, true, false));
-	        		player.sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.command.spell.success"), TextFormatting.RED));
+	        		player.sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.command.spell.success"), TextFormatting.RED));
         		}
         		else
-	        		player.sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.command.spell.fail"), TextFormatting.RED));
+	        		player.sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.command.spell.fail"), TextFormatting.RED));
         	}
 			return null;
         	

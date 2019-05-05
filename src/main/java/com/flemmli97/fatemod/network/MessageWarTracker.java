@@ -1,7 +1,7 @@
 package com.flemmli97.fatemod.network;
 
 import com.flemmli97.fatemod.Fate;
-import com.flemmli97.fatemod.common.handler.GrailWarPlayerTracker;
+import com.flemmli97.fatemod.common.handler.GrailWarHandler;
 import com.flemmli97.fatemod.common.handler.TruceMapHandler;
 
 import io.netty.buffer.ByteBuf;
@@ -21,7 +21,7 @@ public class MessageWarTracker  implements IMessage{
 	
 	public MessageWarTracker(World world)
 	{
-		GrailWarPlayerTracker.get(world).writeToNBT(grailWarTracker);
+		GrailWarHandler.get(world).writeToNBT(grailWarTracker);
 		TruceMapHandler.get(world).writeToNBT(truceMap);
 	}
 	
@@ -46,7 +46,7 @@ public class MessageWarTracker  implements IMessage{
         public IMessage onMessage(MessageWarTracker msg, MessageContext ctx) {
         	World world = Fate.proxy.getPlayerEntity(ctx).world;
 
-			GrailWarPlayerTracker tracker = GrailWarPlayerTracker.get(world);
+			GrailWarHandler tracker = GrailWarHandler.get(world);
 				tracker.reset(world);
 				tracker.readFromNBT(msg.grailWarTracker);
 			TruceMapHandler truce = TruceMapHandler.get(world);

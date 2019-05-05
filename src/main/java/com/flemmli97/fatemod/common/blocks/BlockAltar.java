@@ -22,14 +22,15 @@ import com.flemmli97.fatemod.common.entity.servant.EntityMedusa;
 import com.flemmli97.fatemod.common.entity.servant.EntitySasaki;
 import com.flemmli97.fatemod.common.entity.servant.EntityServant;
 import com.flemmli97.fatemod.common.entity.servant.EntityServant.EnumServantType;
-import com.flemmli97.fatemod.common.handler.GrailWarPlayerTracker;
+import com.flemmli97.fatemod.common.handler.GrailWarHandler;
 import com.flemmli97.fatemod.common.handler.capabilities.IPlayer;
 import com.flemmli97.fatemod.common.handler.capabilities.PlayerCapProvider;
+import com.flemmli97.fatemod.common.init.AdvancementRegister;
 import com.flemmli97.fatemod.common.init.ModBlocks;
 import com.flemmli97.fatemod.common.init.ModItems;
 import com.flemmli97.fatemod.common.items.ItemServantCharm;
 import com.flemmli97.fatemod.common.lib.LibReference;
-import com.flemmli97.fatemod.common.utils.ServantUtils;
+import com.flemmli97.tenshilib.common.TextHelper;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
@@ -44,6 +45,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -177,7 +179,7 @@ public class BlockAltar extends BlockContainer{
 		TileAltar grail = (TileAltar) world.getTileEntity(pos);
 		ItemStack stack = player.getHeldItemMainhand();
 		IPlayer cap = player.getCapability(PlayerCapProvider.PlayerCap, null);
-		GrailWarPlayerTracker tracker = GrailWarPlayerTracker.get(world);
+		GrailWarHandler tracker = GrailWarHandler.get(world);
 		if(!this.testStructure(world, pos, player.getHorizontalFacing()))
 		{
 			grail.setComplete(false);
@@ -209,23 +211,22 @@ public class BlockAltar extends BlockContainer{
 										}
 										grail.setSummoning(player);
 										cap.setCommandSeals(player, 3);
-										//boolean multiyPlayer = ConfigHandler.multiPlayer;
-										//if(multiyPlayer)
+										AdvancementRegister.grailWarTrigger.trigger((EntityPlayerMP) player, true);
 									}
 									else
 									{
-										player.sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.altar.fail"), TextFormatting.DARK_RED));
+										player.sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.altar.fail"), TextFormatting.DARK_RED));
 									}
 							}
 							else
 							{
 								grail.setComplete(false);
-								player.sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.altar.incomplete"), TextFormatting.DARK_RED));
+								player.sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.altar.incomplete"), TextFormatting.DARK_RED));
 							}
 						}
 						else
 						{
-							player.sendMessage(ServantUtils.setColor(new TextComponentTranslation("chat.altar.existing"), TextFormatting.DARK_RED));
+							player.sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.altar.existing"), TextFormatting.DARK_RED));
 	
 						}
 					}
@@ -369,7 +370,7 @@ public class BlockAltar extends BlockContainer{
 			case NOTASSIGNED:
 				break;	
 		}	
-		if(entity!=null && GrailWarPlayerTracker.get(world).canSpawnServant(entity))
+		if(entity!=null && GrailWarHandler.get(world).canSpawnServant(entity))
 			summonServant(entity, player, world, cap, pos);
 		else
 			summonRandomServant(stack, player, pos, world, cap);
@@ -381,7 +382,7 @@ public class BlockAltar extends BlockContainer{
 		servant.setLocationAndAngles(pos.getX()+0.5, pos.getY()+1, pos.getZ()+0.5, MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F);
 		servant.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(servant)), (IEntityLivingData)null);
 		world.spawnEntity(servant);
-		GrailWarPlayerTracker.get(world).addPlayer(player);
+		GrailWarHandler.get(world).join(player);
 	}
 	
 	@Override

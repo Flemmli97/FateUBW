@@ -58,8 +58,7 @@ public class EntityLesserMonster extends EntityCreature implements IServantMinio
     protected void applyEntityAttributes()
     {
         super.applyEntityAttributes();
-        //TODO:config
-        this.getAttributeMap().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(15);
+        this.getAttributeMap().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(ConfigHandler.smallMonsterDamage);
         this.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
         this.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.2D);
     }
