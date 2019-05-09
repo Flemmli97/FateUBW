@@ -20,13 +20,13 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
 @Mod(modid = LibReference.MODID, name = LibReference.MODNAME, version = LibReference.VERSION, dependencies = LibReference.DEPENDENCIES, guiFactory = LibReference.guiFactory)
 public class Fate {
-
+	
 	@Instance
 	public static Fate instance = new Fate();
 
 	@SidedProxy(clientSide = "com.flemmli97.fatemod.proxy.ClientProxy", serverSide = "com.flemmli97.fatemod.proxy.CommonProxy")
 	public static CommonProxy proxy;
-
+	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent e) {
 		proxy.preInit(e);
