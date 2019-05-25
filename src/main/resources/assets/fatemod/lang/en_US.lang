@@ -21,8 +21,8 @@ item.fatemod:isk_sword.name=Kypriots
 
 item.fatemod:gem_shard_fire.name=Red Gem Shard
 item.fatemod:gem_shard_water.name=Blue Gem Shard
-item.fatemod:gem_shard_earth.name=Yellow Gem Shard
-item.fatemod:gem_shard_wind.name=Green Gem Shard
+item.fatemod:gem_shard_earth.name=Green Gem Shard
+item.fatemod:gem_shard_wind.name=Yellow Gem Shard
 item.fatemod:gem_shard_void.name=Black Gem Shard
 item.fatemod:gem_cluster.name=Synthesized Gem
 item.fatemod:servant_medallion_undef.name=Servant Medallion
