@@ -695,10 +695,10 @@ public abstract class EntityServant extends EntityCreature{
 	
 	public boolean projectileBlockChance(DamageSource damageSource, float damage)
 	{
-		return this.rand.nextFloat()>= (float) this.getEntityAttribute(EntityServant.PROJECTILE_BLOCKCHANCE).getAttributeValue();
+		return this.rand.nextFloat()< (float) this.getEntityAttribute(EntityServant.PROJECTILE_BLOCKCHANCE).getAttributeValue();
 	}
 	
-	private boolean preAttackEntityFrom(DamageSource damageSource, float par2)
+	protected boolean preAttackEntityFrom(DamageSource damageSource, float par2)
 	{
         return super.attackEntityFrom(damageSource, par2);
 	}
