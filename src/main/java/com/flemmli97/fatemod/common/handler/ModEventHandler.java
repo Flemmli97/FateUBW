@@ -45,7 +45,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-//TODO death capabilites
+
 public class ModEventHandler {
 	
 	public static final ResourceLocation PlayerCap = new ResourceLocation(LibReference.MODID, "playerCap");

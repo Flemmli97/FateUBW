@@ -14,7 +14,8 @@ import net.minecraft.world.World;
 
 public class EntitySasaki extends EntityServant {
 
-	EntityAISasaki attackAI = new EntityAISasaki(this);
+	public EntityAISasaki attackAI = new EntityAISasaki(this);
+	
 	public EntitySasaki(World world) {
 		super(world, EnumServantType.ASSASSIN, "Tsubame Gaeshi", new ItemStack[] {new ItemStack(ModItems.katana)});
         this.tasks.addTask(1, attackAI);

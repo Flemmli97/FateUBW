@@ -81,7 +81,7 @@ public class EntityBabylonWeapon extends EntityProjectile{
 				}
 				else if(this.target!=null)
 				{
-					this.shootAtPosition(this.target.posX, this.target.posY+target.height/2, this.target.posZ, 0.5F , 1);
+					this.shootAtPosition(this.target.posX, this.target.posY+target.height/2, this.target.posZ, 0.5F , 5);
 				}
 			}
 		}
