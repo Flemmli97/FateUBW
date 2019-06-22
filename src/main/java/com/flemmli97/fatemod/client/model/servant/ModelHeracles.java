@@ -1,6 +1,6 @@
 package com.flemmli97.fatemod.client.model.servant;
 
-import com.flemmli97.fatemod.client.model.ModelUtils;
+import com.flemmli97.tenshilib.client.model.ModelUtils;
 
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -28,7 +28,7 @@ public class ModelHeracles extends ModelServant {
     public ModelRenderer absMuscles3;
     public ModelRenderer absMuscles4;
     public ModelRenderer absMuscles5;
-    public ModelRenderer absMuscles_6;
+    public ModelRenderer absMuscles6;
     public ModelRenderer rightUpperThigh;
     public ModelRenderer leftUpperThigh;
     public ModelRenderer outerSkirt;
@@ -120,9 +120,9 @@ public class ModelHeracles extends ModelServant {
         this.leftThumpUp.setRotationPoint(-1.0F, 0.5F, -1.7F);
         this.leftThumpUp.addBox(-0.5F, 0.0F, -0.5F, 1, 2, 1, 0.0F);
         this.setRotateAngle(leftThumpUp, -45.32F, 0.0F, 0.0F);
-        this.absMuscles_6 = new ModelRenderer(this, 0, 0);
-        this.absMuscles_6.setRotationPoint(1.1F, 1.0F, -2.3F);
-        this.absMuscles_6.addBox(-1.0F, -0.5F, -0.5F, 2, 1, 1, 0.0F);
+        this.absMuscles6 = new ModelRenderer(this, 0, 0);
+        this.absMuscles6.setRotationPoint(1.1F, 1.0F, -2.3F);
+        this.absMuscles6.addBox(-1.0F, -0.5F, -0.5F, 2, 1, 1, 0.0F);
         this.Waist = new ModelRenderer(this, 0, 35);
         this.Waist.setRotationPoint(0.0F, 4.0F, 0.0F);
         this.Waist.addBox(-4.5F, -2.0F, -2.0F, 9, 4, 4, 0.0F);
@@ -386,7 +386,7 @@ public class ModelHeracles extends ModelServant {
         this.leftHand.addChild(this.leftFinger2);
         this.head.addChild(this.nose);
         this.leftWrist.addChild(this.leftThumpUp);
-        this.lowerTorso.addChild(this.absMuscles_6);
+        this.lowerTorso.addChild(this.absMuscles6);
         this.lowerTorso.addChild(this.Waist);
         this.leftFoot.addChild(this.lFootShape2);
         this.rightfoot.addChild(this.rightToe4);

@@ -1,9 +1,8 @@
 package com.flemmli97.fatemod.client.model.servant;
 
-import com.flemmli97.fatemod.client.model.ModelUtils;
-import com.flemmli97.fatemod.client.render.servant.RenderArthur;
 import com.flemmli97.fatemod.common.entity.servant.EntityArthur;
 import com.flemmli97.fatemod.common.entity.servant.EntityServant.State;
+import com.flemmli97.tenshilib.client.model.ModelUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -18,6 +17,8 @@ public class ModelArthur extends ModelServant {
 	@Override
 	public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale, Entity entity)
     {
+		if(!(entity instanceof EntityArthur))
+			return;
 		super.setRotationAnglesPre(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);
 
 		EntityArthur arthur = (EntityArthur)entity;

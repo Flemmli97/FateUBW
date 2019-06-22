@@ -74,7 +74,7 @@ public class ServantProperties implements IConfigSerializable<ServantProperties>
 		this.health=config.get(configCategory, "Health", this.health, "Health of the servant").getDouble(); 
 		this.strength=config.get(configCategory, "Strength", this.strength, "Attack damage of the servant").getDouble();
 		this.armor=config.get(configCategory, "Armor", this.armor, "Generic armor of the servant").getDouble();
-		this.block=(float) config.get(configCategory, "Block", this.block, "Chance of blocking incoming projectiles").getDouble();
+		this.block=config.getFloat(configCategory, "Block", this.block, 0, 1, "Chance of blocking incoming projectiles");
 		this.proj=config.get(configCategory, "ProjectProt", this.proj, "Projectile armor of the servant").getDouble();
 		this.magic=config.get(configCategory, "MagicProt", this.magic, "Magic protection of the servant").getDouble();
 		this.move=config.get(configCategory, "MoveSpeed", this.move, "Move speed of the servant").getDouble();
