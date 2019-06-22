@@ -4,8 +4,12 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import com.flemmli97.fatemod.common.entity.ai.EntityAIStarfishAttack;
 import com.flemmli97.fatemod.common.entity.servant.EntityServant;
 import com.flemmli97.fatemod.common.handler.ConfigHandler;
+import com.flemmli97.tenshilib.common.entity.AnimatedAction;
+import com.flemmli97.tenshilib.common.entity.EntityUtil;
+import com.flemmli97.tenshilib.common.entity.IAnimated;
 import com.flemmli97.tenshilib.common.world.RayTraceUtils;
 import com.google.common.base.Predicate;
 
@@ -13,7 +17,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAILookIdle;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.ai.EntityAISwimming;
@@ -25,11 +28,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
-public class EntityLesserMonster extends EntityCreature implements IServantMinion{
+public class EntityLesserMonster extends EntityCreature implements IServantMinion, IAnimated{
 
 	private UUID ownerUUID;
 	private EntityLivingBase owner;
 	private int livingTicks;
+	private AnimatedAction currentAnim;
+	public static final AnimatedAction walk = new AnimatedAction(31, 0, "walk");
+	public static final AnimatedAction attack = new AnimatedAction(20, 15, "attack");
+	private static final AnimatedAction[] anims = new AnimatedAction[] {walk, attack};
 	public EntityAINearestAttackableTarget<EntityLivingBase> target = new EntityAINearestAttackableTarget<EntityLivingBase>(this, EntityLivingBase.class, 10, true, true, new Predicate<EntityLivingBase>()    {
         @Override
 		public boolean apply(@Nullable EntityLivingBase living)
@@ -39,7 +46,7 @@ public class EntityLesserMonster extends EntityCreature implements IServantMinio
 	
 	public EntityLesserMonster(World worldIn) {
 		super(worldIn);
-		this.tasks.addTask(2, new EntityAIAttackMelee(this, 1, false));
+		this.tasks.addTask(2, new EntityAIStarfishAttack(this, 1));
 	    this.tasks.addTask(3, new EntityAISwimming(this));
 	    this.tasks.addTask(4, new EntityAILookIdle(this));
 	    this.tasks.addTask(5, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
@@ -69,20 +76,28 @@ public class EntityLesserMonster extends EntityCreature implements IServantMinio
 		this.livingTicks++;
 		if(this.livingTicks>ConfigHandler.gillesMinionDuration)
 			this.setDead();
+		if(!this.world.isRemote && this.currentAnim==null && (this.motionX!=0||this.motionZ!=0))
+			this.setAnimation(walk);
+		this.tickAnimation();
+	}
+	
+	@Override
+	public void tickAnimation()
+	{
+		if(this.getAnimation()!=null && this.getAnimation().tick())
+		{
+			if(this.getAnimation().getID().equals("walk") && this.motionX!=0||this.motionZ!=0)
+				this.getAnimation().reset();
+			else
+				this.setAnimation(null);
+		}
 	}
 	
 	public EntityLivingBase getOwner()
 	{
 		if(this.owner==null && this.ownerUUID!=null)
 		{
-			for(Entity e : this.world.loadedEntityList)
-			{
-				if(e.getUniqueID().equals(this.ownerUUID) && e instanceof EntityLivingBase)
-				{
-					this.owner=(EntityLivingBase) e;
-					break;
-				}
-			}
+			this.owner=EntityUtil.findFromUUID(EntityLivingBase.class, this.world, this.ownerUUID);
 		}
 		return this.owner;
 	}
@@ -121,5 +136,21 @@ public class EntityLesserMonster extends EntityCreature implements IServantMinio
 		super.writeEntityToNBT(tag);
 		if(this.ownerUUID!=null)
 			tag.setString("Owner", this.ownerUUID.toString());
+	}
+
+	@Override
+	public AnimatedAction getAnimation() {
+		return this.currentAnim;
+	}
+
+	@Override
+	public void setAnimation(AnimatedAction anim) {
+		this.currentAnim=anim==null?null:anim.create();
+		IAnimated.sentToClient(this);
+	}
+
+	@Override
+	public AnimatedAction[] getAnimations() {
+		return anims;
 	}
 }
