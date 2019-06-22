@@ -32,7 +32,7 @@ public class EntityAIAnimatedAttack extends EntityAIBase{
 		this.attackingEntity = selectedEntity;
 		this.speedTowardsTarget = speedToTarget;  
         this.setMutexBits(3);
-        this.rangeModifier = rangeModifier*rangeModifier; 
+        this.rangeModifier = isRanged?rangeModifier*rangeModifier:rangeModifier; 
         this.isRanged = isRanged;
 	}
 
@@ -100,11 +100,10 @@ public class EntityAIAnimatedAttack extends EntityAIBase{
         
         EntityLivingBase distEnt = this.attackingEntity.attacksFromMount() && this.attackingEntity.getRidingEntity() instanceof EntityLivingBase?(EntityLivingBase) this.attackingEntity.getRidingEntity():this.attackingEntity;
         double distanceToTarget = distEnt.getDistanceSq(target.posX, target.getEntityBoundingBox().minY, target.posZ);
-        double attackRange = rangeModifier*(double)(distEnt.width * 2.0F * distEnt.width * 2.0F + target.width);
+        double attackRange = this.rangeModifier*(double)(distEnt.width * 2.0F * distEnt.width * 2.0F + target.width);
 
         --this.moveDelay;
         State state = this.attackingEntity.entityState();
-
         //Movement
         if (!State.isAttack(state) && (this.attackingEntity.getEntitySenses().canSee(target)) && this.moveDelay <= 0 && (this.posX == 0.0D && this.posY == 0.0D && this.posZ == 0.0D || this.attackingEntity.getRNG().nextFloat() < 1.0F))
         {

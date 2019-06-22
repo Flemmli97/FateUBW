@@ -1,6 +1,6 @@
 package com.flemmli97.fatemod.common.entity.servant.ai;
 
-import com.flemmli97.fatemod.common.entity.servant.EntityServant;
+import com.flemmli97.fatemod.common.entity.servant.EntitySasaki;
 import com.flemmli97.fatemod.common.entity.servant.EntityServant.State;
 import com.flemmli97.fatemod.common.handler.CustomDamageSource;
 
@@ -10,8 +10,8 @@ public class EntityAISasaki extends EntityAIAnimatedAttack{
 
 	private int attackCount;
 	private int[] damageAdd = new int [] {0,5,15};
-	public EntityAISasaki(EntityServant selectedEntity) {
-		super(selectedEntity, false, 1, 2);
+	public EntityAISasaki(EntitySasaki selectedEntity) {
+		super(selectedEntity, false, 1, 1.5);
 	}
 
 	@Override
