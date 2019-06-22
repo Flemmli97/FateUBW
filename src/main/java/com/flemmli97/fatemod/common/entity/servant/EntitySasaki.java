@@ -30,12 +30,6 @@ public class EntitySasaki extends EntityServant {
 	public Pair<Integer, Integer> attackTickerFromState(State state) {
 		return Pair.of(20, 20);
 	}
-
-    @Override
-	public boolean canAttack()
-	{
-		return State.isAttack(this.entityState()) && this.attackTimer()==this.attackTickerFromState(this.entityState()).getRight();
-	}
 	
 	@Override
 	public void updateAI(int behaviour) {
@@ -49,6 +43,14 @@ public class EntitySasaki extends EntityServant {
 			this.tasks.removeTask(attackAI);
 		}
 	}
+	
+	@Override
+	public boolean attackEntityFrom(DamageSource damageSource, float damage)
+    {
+		if(this.entityState()==State.NP)
+			return false;
+		return super.attackEntityFrom(damageSource, damage);
+    }
 	
 	@Override
 	protected void damageEntity(DamageSource damageSrc, float damageAmount)
