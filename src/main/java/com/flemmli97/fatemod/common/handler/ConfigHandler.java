@@ -50,7 +50,7 @@ public class ConfigHandler {
 	public static boolean fillMissingSlots=true;
 	//Servants
 	public static final Map<Class<? extends Entity>, ServantProperties> attributes = Maps.newHashMap();
-
+	public static float lancelotReflectChance = 0.3f;
 	//Minions
 	public static int gillesMinionDuration=6000;
 	public static float smallMonsterDamage=8;
@@ -68,6 +68,8 @@ public class ConfigHandler {
 	public static float gordiusHealth = 53;
 	public static float gordiusDmg = 10;
 	public static float pegasusHealth = 53;
+	public static int medeaCircleSpan = 12000;
+	public static float medeaCircleRange=32;
 	
 	public static void load(LoadState state)
 	{
@@ -88,7 +90,6 @@ public class ConfigHandler {
 		allowDuplicateServant = config.getBoolean("Allow Duplicate Servants", "general", allowDuplicateServant, "Allow the summoning of duplicate servants during a grail war");
 		allowDuplicateClass = config.getBoolean("Allow Duplicate Classes", "general", allowDuplicateClass, "Allow the summoning of duplicate servant classes during a grail war");
 		fillMissingSlots = config.getBoolean("Fill Empty Slots", "general", fillMissingSlots, "Fill in missing players till max allowed with npc");
-
 		if(state==LoadState.POSTINIT||state==LoadState.SYNC)
 			servants();
 		
@@ -113,6 +114,9 @@ public class ConfigHandler {
 		gordiusHealth = ConfigUtils.getFloatConfig(config, "Gordius Wheel Health", "minions", gordiusHealth, "");
 		gordiusDmg = ConfigUtils.getFloatConfig(config, "Gordius Wheel Damage", "minions", gordiusDmg, "");
 		pegasusHealth = ConfigUtils.getFloatConfig(config, "Pegasus Health", "minions", pegasusHealth, "");
+		medeaCircleSpan = ConfigUtils.getIntConfig(config, "Medea Circle Duration", "minions", medeaCircleSpan, 0, "How long casters magic circle will stay");
+		medeaCircleRange = ConfigUtils.getFloatConfig(config, "Medea Circle Range", "minions", medeaCircleRange, "");
+
 		config.save();
 	}
 	
@@ -123,6 +127,9 @@ public class ConfigHandler {
 		cat.setComment("Configure individual servants");
 		attributes.forEach((clss, prop)->{
 			 prop.config(config, "servants."+EntityList.getKey(clss).toString());
+			 if(clss==EntityLancelot.class)
+				 lancelotReflectChance=config.getFloat("Projectile Reflect chance", "servants."+EntityList.getKey(clss).toString(), lancelotReflectChance, 0, 1, "Chance for lancelot to reflect a blocked projectile");
+
 		});
 	}
 			
@@ -183,7 +190,7 @@ public class ConfigHandler {
 	}
 	static
 	{
-		attributes.put(EntityArthur.class, new ServantProperties(300, 10, 17, 0.7F, 12, 10, 0.3, 100, 10, 5));
+		attributes.put(EntityArthur.class, new ServantProperties(300, 10, 17, 0.4F, 12, 10, 0.3, 100, 10, 5));
 		attributes.put(EntityCuchulainn.class, new ServantProperties(275, 7.5, 10, 0, 14, 6, 0.35, 75, 10, 5));
 		attributes.put(EntityDiarmuid.class, new ServantProperties(310, 8.5, 12, 0, 13, 7, 0.35, 80, 10, 5));
 		attributes.put(EntityEmiya.class, new ServantProperties(250, 7.5, 8, 0, 15.5, 7, 0.33, 66, 10, 5));
@@ -191,7 +198,7 @@ public class ConfigHandler {
 		attributes.put(EntityGilles.class, new ServantProperties(350, 5.5, 7, 0, 5, 14, 0.3, 80, 10, 5));
 		attributes.put(EntityHassan.class, new ServantProperties(200, 6, 8.5, 0, 17, 4, 0.34, 1, 10, 5));
 		attributes.put(EntityHeracles.class, new ServantProperties(75, 12.5, 10, 0, 17, 9.5, 0.2, 0, 10, 5));
-		attributes.put(EntityLancelot.class, new ServantProperties(450, 9, 14, 0, 19, 4, 0.2, 0, 10, 5));
+		attributes.put(EntityLancelot.class, new ServantProperties(450, 9, 14, 0.4f, 19, 4, 0.2, 0, 10, 5));
 		attributes.put(EntityMedea.class, new ServantProperties(350, 9.5, 5, 0, 4, 17.5, 0.2, 100, 10, 5));
 		attributes.put(EntityIskander.class, new ServantProperties(400, 5.5, 10, 0, 9, 9.5, 0.3, 100, 10, 5));
 		attributes.put(EntityMedusa.class, new ServantProperties(250, 4.5, 11, 0, 7, 10, 0.3, 80, 10, 5));
