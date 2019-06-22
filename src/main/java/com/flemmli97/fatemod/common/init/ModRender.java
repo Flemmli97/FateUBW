@@ -10,7 +10,7 @@ import com.flemmli97.fatemod.client.render.RenderGaeBolg;
 import com.flemmli97.fatemod.client.render.RenderGem;
 import com.flemmli97.fatemod.client.render.RenderGordiusWheel;
 import com.flemmli97.fatemod.client.render.RenderMagicBeam;
-import com.flemmli97.fatemod.client.render.RenderPegasus;
+import com.flemmli97.fatemod.client.render.RenderStarfish;
 import com.flemmli97.fatemod.client.render.particles.ParticleFade;
 import com.flemmli97.fatemod.client.render.servant.RenderArthur;
 import com.flemmli97.fatemod.client.render.servant.RenderCuchulainn;
@@ -35,8 +35,8 @@ import com.flemmli97.fatemod.common.entity.EntityExcalibur;
 import com.flemmli97.fatemod.common.entity.EntityGaeBolg;
 import com.flemmli97.fatemod.common.entity.EntityGem;
 import com.flemmli97.fatemod.common.entity.EntityGordiusWheel;
+import com.flemmli97.fatemod.common.entity.EntityLesserMonster;
 import com.flemmli97.fatemod.common.entity.EntityMagicBeam;
-import com.flemmli97.fatemod.common.entity.EntityPegasus;
 import com.flemmli97.fatemod.common.entity.servant.EntityArthur;
 import com.flemmli97.fatemod.common.entity.servant.EntityCuchulainn;
 import com.flemmli97.fatemod.common.entity.servant.EntityDiarmuid;
@@ -109,6 +109,7 @@ public final class ModRender {
 		RenderingRegistry.registerEntityRenderingHandler(EntityCaladBolg.class, RenderCaladBolg::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityMagicBeam.class, RenderMagicBeam::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityEnumaElish.class, RenderEA::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityLesserMonster.class, RenderStarfish::new);
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileAltar.class, new RenderAltar());
 	}
