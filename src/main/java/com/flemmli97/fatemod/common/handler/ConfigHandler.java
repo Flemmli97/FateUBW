@@ -1,6 +1,7 @@
 package com.flemmli97.fatemod.common.handler;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -19,16 +20,19 @@ import com.flemmli97.fatemod.common.entity.servant.EntityLancelot;
 import com.flemmli97.fatemod.common.entity.servant.EntityMedea;
 import com.flemmli97.fatemod.common.entity.servant.EntityMedusa;
 import com.flemmli97.fatemod.common.entity.servant.EntitySasaki;
+import com.flemmli97.fatemod.common.lib.LibEntities;
 import com.flemmli97.fatemod.common.utils.ServantProperties;
 import com.flemmli97.tenshilib.api.config.IConfigArrayValue;
 import com.flemmli97.tenshilib.common.config.ConfigUtils;
 import com.flemmli97.tenshilib.common.config.ConfigUtils.LoadState;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Loader;
@@ -39,7 +43,7 @@ public class ConfigHandler {
 	public static Configuration config;
 
 	//General
-	public static int minPlayer=0;
+	public static int minPlayer=1;
 	public static int maxPlayer=7;
 	public static int joinTime=12000;
 	public static int rewardDelay=2000;
@@ -48,6 +52,17 @@ public class ConfigHandler {
 	public static boolean allowDuplicateServant;
 	public static boolean allowDuplicateClass;
 	public static boolean fillMissingSlots=true;
+	public static int maxServantCircle=1;
+	public static int servantSpawnDelay=6000;
+
+	private static final String[] notifyListDef = new String[] {
+			LibEntities.arthur.toString(), LibEntities.gilgamesh.toString(), LibEntities.emiya.toString(), 
+			LibEntities.diarmuid.toString(), LibEntities.cuchulainn.toString(), LibEntities.alexander.toString(),
+			LibEntities.medusa.toString(), LibEntities.lancelot.toString(), LibEntities.heracles.toString(),
+	};
+	
+	public static List<ResourceLocation> notifyList = Lists.newArrayList();
+	public static boolean notifyAll=true;
 	//Servants
 	public static final Map<Class<? extends Entity>, ServantProperties> attributes = Maps.newHashMap();
 	public static float lancelotReflectChance = 0.3f;
@@ -55,7 +70,7 @@ public class ConfigHandler {
 	public static int gillesMinionDuration=6000;
 	public static float smallMonsterDamage=8;
 	public static ServantProperties hassanCopy = new ServantProperties(50, 4, 3.5, 0, 12, 2, 0.34, 0, 10, 5);
-	public static float babylonScale = 1;
+	public static float babylonScale = 1.5f;
 	public static float eaDamage=13;
 	public static float excaliburDamage=19;
 	public static float caladBolgDmg = 25;
@@ -81,8 +96,8 @@ public class ConfigHandler {
 		
 		ConfigCategory general = config.getCategory("general");
 		general.setLanguageKey("config.fatemod.general");
-		maxPlayer = ConfigUtils.getIntConfig(config, "Max Player", "general", maxPlayer, 0 ,"Maximum of player allowed in a grail war");
-		minPlayer = ConfigUtils.getIntConfig(config, "Min Player", "general", minPlayer, maxPlayer, "Minimum of player count required to start a grail war");
+		maxPlayer = ConfigUtils.getIntConfig(config, "Max Player", "general", maxPlayer, 1 ,"Maximum of player allowed in a grail war");
+		minPlayer = Math.min(maxPlayer, ConfigUtils.getIntConfig(config, "Min Player", "general", minPlayer, 1, "Minimum of player count required to start a grail war"));
 		joinTime = ConfigUtils.getIntConfig(config, "Join Time", "general", joinTime, 0 ,"Time buffer to join a grail war after start");
 		rewardDelay = ConfigUtils.getIntConfig(config, "Reward Delay", "general", rewardDelay, 0 ,"Delay after an ended grail war for getting the grail");
 		charmSpawnRate = ConfigUtils.getIntConfig(config, "Medallion Rate", "general", charmSpawnRate, 0 ,"Customize the spawn rate of the servant medallion ores, higher value means higher spawn rate");
@@ -90,6 +105,15 @@ public class ConfigHandler {
 		allowDuplicateServant = config.getBoolean("Allow Duplicate Servants", "general", allowDuplicateServant, "Allow the summoning of duplicate servants during a grail war");
 		allowDuplicateClass = config.getBoolean("Allow Duplicate Classes", "general", allowDuplicateClass, "Allow the summoning of duplicate servant classes during a grail war");
 		fillMissingSlots = config.getBoolean("Fill Empty Slots", "general", fillMissingSlots, "Fill in missing players till max allowed with npc");
+		maxServantCircle=ConfigUtils.getIntConfig(config, "Servant Amount", "general", maxServantCircle, 1 ,"Amount of masterless servant that can spawn each time. (Fill Empty Slots needs to be true)");
+		servantSpawnDelay=ConfigUtils.getIntConfig(config, "Servant Spawn Delay", "general", servantSpawnDelay, 1200 ,"Time between each attempt to spawn masterless servants. (Fill Empty Slots needs to be true)");
+		
+		notifyList.clear();
+		for(String s : config.getStringList("Servant notification", "general", notifyListDef, "Servants that will notify players when spawned (from filling missing slots)"))
+			notifyList.add(new ResourceLocation(s));
+		
+		notifyAll = config.getBoolean("Notify Everyone", "general", notifyAll, "Notify everyone if a servant spawns. Else only the player the servant spawned on will be notified");;
+		
 		if(state==LoadState.POSTINIT||state==LoadState.SYNC)
 			servants();
 		
@@ -188,6 +212,7 @@ public class ConfigHandler {
 		}
 		
 	}
+	
 	static
 	{
 		attributes.put(EntityArthur.class, new ServantProperties(300, 10, 17, 0.4F, 12, 10, 0.3, 100, 10, 5));

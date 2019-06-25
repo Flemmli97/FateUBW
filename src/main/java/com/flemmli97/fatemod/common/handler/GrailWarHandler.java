@@ -36,6 +36,7 @@ import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
@@ -55,7 +56,7 @@ public class GrailWarHandler extends WorldSavedData{
 	private Map<UUID,EnumServantType> servantClass = Maps.newLinkedHashMap();
 	private State state = State.NOTHING;
 
-	private int joinTicker, winningDelay, timeToNextServant;
+	private int joinTicker, winningDelay, timeToNextServant, spawnedServants;
 
 	private List<UUID> shedulePlayerRemoval = Lists.newArrayList();
 
@@ -87,6 +88,7 @@ public class GrailWarHandler extends WorldSavedData{
 			UUID uuid=player.getUniqueID();
 			if(!this.players.containsKey(uuid) && this.servants.size()<ConfigHandler.maxPlayer)
 			{
+				System.out.println("joined");
 				EntityServant servant = player.getCapability(PlayerCapProvider.PlayerCap, null).getServant(player);
 				if(this.addServant(servant))
 				{
@@ -135,16 +137,21 @@ public class GrailWarHandler extends WorldSavedData{
 	
 	public void checkWinCondition(WorldServer world, boolean announce)
 	{
-		if(this.players.size()==1 && this.state==State.RUN)
+		if(this.state==State.RUN)
 		{
-			this.winningDelay=ConfigHandler.rewardDelay;
-			for(Entry<UUID, String> entry : this.players.entrySet())
+			if(this.players.size()==1)
 			{
-				world.getMinecraftServer().getPlayerList().sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.grailwar.win", entry.getValue()), TextFormatting.RED));
-				EntityPlayerMP player = EntityUtil.findFromUUID(EntityPlayerMP.class, world, entry.getKey());
-				if(player!=null)
-					AdvancementRegister.grailWarTrigger.trigger(player, false);
+				this.winningDelay=ConfigHandler.rewardDelay;
+				for(Entry<UUID, String> entry : this.players.entrySet())
+				{
+					world.getMinecraftServer().getPlayerList().sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.grailwar.win", entry.getValue()), TextFormatting.RED));
+					EntityPlayerMP player = EntityUtil.findFromUUID(EntityPlayerMP.class, world, entry.getKey());
+					if(player!=null)
+						AdvancementRegister.grailWarTrigger.trigger(player, false);
+				}
 			}
+			else if(this.players.size()==0)
+				this.reset(world);
 		}
 	}
 	
@@ -197,6 +204,7 @@ public class GrailWarHandler extends WorldSavedData{
 			this.servants.put(servant.getUniqueID(), EntityList.getKey(servant));
 			this.servantClass.put(servant.getUniqueID(), servant.getServantType());
 			this.markDirty();
+			this.spawnedServants++;
 			return true;
 		}
 		return false;
@@ -240,32 +248,66 @@ public class GrailWarHandler extends WorldSavedData{
 		}
 		else if(this.state==State.RUN)
 		{
-			if(ConfigHandler.fillMissingSlots && this.servants.size()<ConfigHandler.maxPlayer && world.getTotalWorldTime()%800==0 && --this.timeToNextServant==0)
+			if(ConfigHandler.fillMissingSlots && (this.servants.size() + this.spawnedServants)<ConfigHandler.maxPlayer && --this.timeToNextServant<=0)
 	  		{
-	  			List<Chunk> list = Lists.newArrayList(world.getChunkProvider().getLoadedChunks());
-	  			Chunk chunk = list.get(world.rand.nextInt(list.size()));
-	  			int x = chunk.x * 16 + world.rand.nextInt(16);
-	  	        int z = chunk.z * 16 + world.rand.nextInt(16);
-	  	        int k = MathHelper.roundUp(chunk.getHeight(new BlockPos(x, 0, z)) + 1, 16);
-	  	        int y = world.rand.nextInt(k > 0 ? k : chunk.getTopFilledSegment() + 16 - 1);
-	  	        if(!world.isAnyPlayerWithinRangeAt(x, y, z, 32))
-	  	        {
-	  	  	        EntityServant servant = this.tryGetServant(world); 	  	    
-	  	  	        if(servant!=null)
-	  	  	        {
-	  	  	        	servant.setLocationAndAngles(x, y, z, world.rand.nextFloat() * 360.0F, 0);
-		  	  	        net.minecraftforge.fml.common.eventhandler.Event.Result canSpawn = net.minecraftforge.event.ForgeEventFactory.canEntitySpawn(servant, world, x, y, z, null);
-		                if (canSpawn == net.minecraftforge.fml.common.eventhandler.Event.Result.ALLOW || (canSpawn == net.minecraftforge.fml.common.eventhandler.Event.Result.DEFAULT && (servant.getCanSpawnHere() && servant.isNotColliding())))
-		                {
-		                	servant.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(servant)), null);
-		                	world.spawnEntity(servant);
-		                	this.addServant(servant);
-		                	this.timeToNextServant=6000;
-		                }
-	  	  	        }
-	  	        }
+				System.out.println("try spawning servant");
+				List<EntityPlayer> players = Lists.newArrayList();
+				world.playerEntities.forEach(player->{
+					if(this.players.containsKey(player.getUniqueID()))
+						players.add(player);
+				});
+				int spawns = world.rand.nextInt(ConfigHandler.maxServantCircle)+1;
+				for(int i = 0; i < spawns; i++)
+				{
+					if(!players.isEmpty())
+					{
+						EntityPlayer player = players.remove(world.rand.nextInt(players.size()));
+						List<ChunkPos> chunks = Lists.newArrayList();
+						int chunkX = MathHelper.floor(player.posX / 16.0D);
+	                    int chunkZ = MathHelper.floor(player.posZ / 16.0D);
+
+	                    for (int x = -7; x <= 7; ++x)
+	                    {
+	                        for (int z = -7; z <= 7; ++z)
+	                        {
+	                            ChunkPos chunkpos = new ChunkPos(x + chunkX, z + chunkZ);
+	                            if (!chunks.contains(chunkpos) && world.getWorldBorder().contains(chunkpos))
+	                            {
+	                            	chunks.add(chunkpos);
+	                            }
+	                        }
+	                    }	             
+	                    ChunkPos pos = chunks.get(world.rand.nextInt(chunks.size()));
+	                    Chunk chunk = world.getChunkFromChunkCoords(pos.x, pos.z);
+	    	  			int x = chunk.x * 16 + world.rand.nextInt(16);
+	    	  	        int z = chunk.z * 16 + world.rand.nextInt(16);
+	    	  	        int k = MathHelper.roundUp(chunk.getHeight(new BlockPos(x, 0, z)) + 1, 16);
+	    	  	        int y = world.rand.nextInt(k > 0 ? k : chunk.getTopFilledSegment() + 16 - 1);
+	    	  	        if(!world.isAnyPlayerWithinRangeAt(x, y, z, 32))
+	    	  	        {
+	    	  	        	EntityServant servant = this.tryGetServant(world); 	  	    
+	    	  	  	        if(servant!=null)
+	    	  	  	        {
+	    	  	  	        	servant.setLocationAndAngles(x, y, z, world.rand.nextFloat() * 360.0F, 0);
+	    		  	  	        net.minecraftforge.fml.common.eventhandler.Event.Result canSpawn = net.minecraftforge.event.ForgeEventFactory.canEntitySpawn(servant, world, x, y, z, null);
+	    		                if (canSpawn == net.minecraftforge.fml.common.eventhandler.Event.Result.ALLOW || (canSpawn == net.minecraftforge.fml.common.eventhandler.Event.Result.DEFAULT && (servant.getCanSpawnHere() && servant.isNotColliding())))
+	    		                {
+	    		                	servant.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(servant)), null);
+	    		                	world.spawnEntity(servant);
+	    		                	this.addServant(servant);
+	    		                	this.timeToNextServant=ConfigHandler.servantSpawnDelay;
+	    		                	if(ConfigHandler.notifyList.contains(EntityList.getKey(servant)))
+	    		                		if(ConfigHandler.notifyAll)
+	    		                			world.getMinecraftServer().getPlayerList().sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.grailwar.spawn", player.getName()), TextFormatting.GOLD));
+	    		                		else
+	    		                			player.sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.grailwar.spawn", player.getName()), TextFormatting.GOLD));
+	    		                }
+	    	  	  	        }
+	    	  	        }
+					}
+				}
 	  		}
-  			if(--this.winningDelay==0)
+  			if(--this.winningDelay<=0)
 	  		{
 	  			EntityPlayer player = this.getWinningPlayer(world);
 	  			if(player!=null)
@@ -286,21 +328,21 @@ public class GrailWarHandler extends WorldSavedData{
 	
 	public void reset(World world)
 	{
-		this.players.clear();
-		this.servants.clear();
-		this.servantClass.clear();
-		this.joinTicker = 0;
-		this.winningDelay=0;
-		this.timeToNextServant=0;
-		this.state=State.NOTHING;
-		world.loadedEntityList.forEach(e-> {
-			if(this.servants.containsKey(e.getUniqueID()))
-			{
-				e.attackEntityFrom(DamageSource.OUT_OF_WORLD, Integer.MAX_VALUE);
-			}
-		});
 		if(!world.isRemote)
 		{
+			this.players.clear();
+			this.joinTicker = 0;
+			this.winningDelay=0;
+			this.timeToNextServant=0;
+			this.state=State.NOTHING;
+			this.servants.forEach((uuid,res)->{
+				EntityServant servant = EntityUtil.findFromUUID(EntityServant.class, world, uuid);
+				if(servant!=null)
+					servant.attackEntityFrom(DamageSource.OUT_OF_WORLD, Integer.MAX_VALUE);
+			});
+			this.servants.clear();
+			this.servantClass.clear();
+			this.spawnedServants=0;
 			world.getMinecraftServer().getPlayerList().sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.grailwar.end"), TextFormatting.RED));
 			PacketHandler.sendToAll(new MessageWarTracker(world));
 		}
@@ -377,6 +419,7 @@ public class GrailWarHandler extends WorldSavedData{
 		this.winningDelay = nbt.getInteger("WinDelay");
 		this.timeToNextServant= nbt.getInteger("SpawnTick");
 		this.state=State.valueOf(nbt.getString("State"));
+		this.spawnedServants=nbt.getInteger("SpawnedServants");
 	}
 
 	@Override
@@ -397,6 +440,7 @@ public class GrailWarHandler extends WorldSavedData{
 		compound.setInteger("WinDelay", this.winningDelay);
 		compound.setInteger("SpawnTick", this.timeToNextServant);
 		compound.setString("State", this.state.toString());
+		compound.setInteger("SpawnedServants", this.spawnedServants);
 		return compound;
 	}
 	

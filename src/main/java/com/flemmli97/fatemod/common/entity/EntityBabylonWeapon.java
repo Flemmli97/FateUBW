@@ -31,10 +31,14 @@ public class EntityBabylonWeapon extends EntityProjectile{
 	
     protected static final DataParameter<ItemStack> weaponType = EntityDataManager.createKey(EntityBabylonWeapon.class, DataSerializers.ITEM_STACK);
     protected static final DataParameter<Integer> shootTime = EntityDataManager.createKey(EntityBabylonWeapon.class, DataSerializers.VARINT);
+    protected static final DataParameter<Integer> preShootTick = EntityDataManager.createKey(EntityBabylonWeapon.class, DataSerializers.VARINT);
 
     public boolean iddle=true;
 	private EntityLivingBase target;
 	private double dmg;
+	
+	public final int renderRand = this.rand.nextInt(10);
+	
 	public EntityBabylonWeapon(World world)
 	{
 		super(world);
@@ -63,14 +67,18 @@ public class EntityBabylonWeapon extends EntityProjectile{
 		super.entityInit();
         this.dataManager.register(weaponType, ItemStack.EMPTY);
         this.dataManager.register(shootTime, this.rand.nextInt(20)+25);
+        this.dataManager.register(preShootTick, 0);
     }
 
 	@Override
 	public void onUpdate() {
 		EntityLivingBase thrower = this.getShooter();
-		if(this.livingTicks<=this.dataManager.get(shootTime))
+		if(this.getPreShootTick()<=this.dataManager.get(shootTime))
+		{
 			this.livingTicks++;
-		if(this.livingTicks() == this.dataManager.get(shootTime))
+			this.updatePreShootTick();
+		}
+		if(this.getPreShootTick() == this.dataManager.get(shootTime))
 		{
 			if(!this.world.isRemote)
 			{
@@ -81,11 +89,11 @@ public class EntityBabylonWeapon extends EntityProjectile{
 				}
 				else if(this.target!=null)
 				{
-					this.shootAtPosition(this.target.posX, this.target.posY+target.height/2, this.target.posZ, 0.5F , 5);
+					this.shootAtPosition(this.target.posX, this.target.posY+target.height/2, this.target.posZ, 0.5F , 4);
 				}
 			}
 		}
-		else if(this.livingTicks()>this.dataManager.get(shootTime))
+		else if(this.getPreShootTick()>this.dataManager.get(shootTime))
 		{
 			this.iddle=false;
 			if(!world.isRemote) 
@@ -99,6 +107,22 @@ public class EntityBabylonWeapon extends EntityProjectile{
 			this.world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, this.posX, this.posY, this.posZ , 0, 0,0, Block.getStateId(Blocks.GOLD_BLOCK.getDefaultState()));
 			super.onUpdate();
 		}
+	}
+	
+	private int getPreShootTick()
+	{
+		return this.dataManager.get(preShootTick);
+	}
+	
+	private void updatePreShootTick()
+	{
+		this.dataManager.set(preShootTick, this.getPreShootTick()+1);
+	}
+	
+	@Override
+	public int livingTicks()
+	{
+		return Math.max(this.getPreShootTick(), this.livingTicks);
 	}
 	
 	@Override
@@ -145,12 +169,14 @@ public class EntityBabylonWeapon extends EntityProjectile{
 	protected void writeEntityToNBT(NBTTagCompound compound) {
 		super.writeEntityToNBT(compound);
 		compound.setTag("Weapon", this.getWeapon().writeToNBT(new NBTTagCompound()));
+		compound.setInteger("PreShoot", this.getPreShootTick());
 	}
 
 	@Override
 	protected void readEntityFromNBT(NBTTagCompound compound) {
 		super.readEntityFromNBT(compound);
 		this.setWeapon(new ItemStack(compound.getCompoundTag("Weapon")));
+		this.dataManager.set(preShootTick, compound.getInteger("PreShoot"));
 	}
 	
 	/**for symmetry range should be odd number, minimum is 3*/

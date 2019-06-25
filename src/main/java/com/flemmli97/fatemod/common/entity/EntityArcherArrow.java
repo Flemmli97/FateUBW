@@ -90,6 +90,7 @@ public class EntityArcherArrow extends EntityArrow implements IEntityAdditionalS
 
 	@Override
 	public void writeSpawnData(ByteBuf buf) {
+		buf.writeBoolean(this.shootingEntity!=null);
 		if(this.shootingEntity!=null)
 		{
 			buf.writeInt(this.shootingEntity.getEntityId());
@@ -98,13 +99,16 @@ public class EntityArcherArrow extends EntityArrow implements IEntityAdditionalS
 
 	@Override
 	public void readSpawnData(ByteBuf buf) {
-		int x = buf.readInt();
-		if(x!=0)
+		if(buf.readBoolean())
 		{
-			Entity shooter = world.getEntityByID(x);
-			if (shooter instanceof EntityLivingBase) 
+			int x = buf.readInt();
+			if(x!=0)
 			{
-				shootingEntity = (EntityLivingBase) shooter;
+				Entity shooter = world.getEntityByID(x);
+				if (shooter instanceof EntityLivingBase) 
+				{
+					shootingEntity = (EntityLivingBase) shooter;
+				}
 			}
 		}
 	}

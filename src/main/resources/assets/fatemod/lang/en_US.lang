@@ -1,7 +1,7 @@
 item.fatemod:excalibur.name=Holy Sword Excalibur
 item.fatemod:arondight.name=Arondight
 item.fatemod:archer_bow.name=Emiyas Bow
-item.fatemod:enuma_elish.name=Enuma Elish
+item.fatemod:enuma_elish.name=EA
 item.fatemod:gate_of_babylon.name=Gate of Babylon
 item.fatemod:gae_buidhe.name=Gae Buidhe
 item.fatemod:gae_dearg.name=Gae Dearg
@@ -67,6 +67,7 @@ chat.grailwar.start=Joining is now locked.
 chat.grailwar.missingplayer=Not enough player, restarting timer
 chat.grailwar.win=%1$s won the grail war.
 chat.grailwar.playerout=%1$s is out.
+chat.grailwar.spawn=A servant has spawned near %1$s.
 chat.grailwar.end=The grailwar has ended
 chat.truce.send=Send a truce request to %1$s
 chat.truce.pending=Pending truce request from %1$s

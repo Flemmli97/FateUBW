@@ -129,7 +129,7 @@ public class ItemSpawn extends Item{
             {
                 if (entity instanceof EntityLivingBase && stack.hasDisplayName())
                 {
-                	if("Summon".equals(stack.getDisplayName()))
+                	if(entity instanceof EntityServant && "Summon".equals(stack.getDisplayName()))
                 	{
                 		IPlayer cap = player.getCapability(PlayerCapProvider.PlayerCap, null);
             			if(cap.getServant(player)==null)
@@ -145,7 +145,7 @@ public class ItemSpawn extends Item{
             			}
                 	}
                 	else
-                    entity.setCustomNameTag(stack.getDisplayName());
+                		entity.setCustomNameTag(stack.getDisplayName());
                 }
 
                 applyItemEntityDataToEntity(world, player, stack, entity);
@@ -216,7 +216,7 @@ public class ItemSpawn extends Item{
                     {
                         if (entity instanceof EntityLivingBase && stack.hasDisplayName())
                         {
-                        	if("Summon".equals(stack.getDisplayName()))
+                        	if(entity instanceof EntityServant && "Summon".equals(stack.getDisplayName()))
                         	{
                     			IPlayer cap = player.getCapability(PlayerCapProvider.PlayerCap, null);
                     			if(cap.getServant(player)==null)

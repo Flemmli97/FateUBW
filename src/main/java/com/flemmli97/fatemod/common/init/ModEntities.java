@@ -31,7 +31,7 @@ import com.flemmli97.fatemod.common.entity.servant.EntityMedusa;
 import com.flemmli97.fatemod.common.entity.servant.EntitySasaki;
 import com.flemmli97.fatemod.common.entity.servant.EntityServant;
 import com.flemmli97.fatemod.common.entity.servant.EntityServant.EnumServantType;
-import com.flemmli97.fatemod.common.lib.LibReference;
+import com.flemmli97.fatemod.common.lib.LibEntities;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -45,49 +45,49 @@ public class ModEntities {
 	
 	public static void mainRegistry(){
 		int entityID = 0;
-		registerServant(new ResourceLocation(LibReference.MODID, "arthur"), EntityArthur.class, ++entityID, EnumServantType.SABER);
+		registerServant(LibEntities.arthur, EntityArthur.class, ++entityID, EnumServantType.SABER);
 		//saber class
 		//""
 		//""
-		registerServant(new ResourceLocation(LibReference.MODID, "gilgamesh"), EntityGilgamesh.class, ++entityID, EnumServantType.ARCHER);
-		registerServant(new ResourceLocation(LibReference.MODID, "emiya"), EntityEmiya.class, ++entityID, EnumServantType.ARCHER);
+		registerServant(LibEntities.gilgamesh, EntityGilgamesh.class, ++entityID, EnumServantType.ARCHER);
+		registerServant(LibEntities.emiya, EntityEmiya.class, ++entityID, EnumServantType.ARCHER);
 		//archer class
 		//""
-		registerServant(new ResourceLocation(LibReference.MODID, "diarmuid"), EntityDiarmuid.class, ++entityID, EnumServantType.LANCER);
-		registerServant(new ResourceLocation(LibReference.MODID, "cuchulainn"), EntityCuchulainn.class, ++entityID, EnumServantType.LANCER);
+		registerServant(LibEntities.diarmuid, EntityDiarmuid.class, ++entityID, EnumServantType.LANCER);
+		registerServant(LibEntities.cuchulainn, EntityCuchulainn.class, ++entityID, EnumServantType.LANCER);
 		//lancer class
 		//""
-		registerServant(new ResourceLocation(LibReference.MODID, "alexander"), EntityIskander.class, ++entityID, EnumServantType.RIDER);
-		registerServant(new ResourceLocation(LibReference.MODID, "medusa"), EntityMedusa.class, ++entityID, EnumServantType.RIDER);
+		registerServant(LibEntities.alexander, EntityIskander.class, ++entityID, EnumServantType.RIDER);
+		registerServant(LibEntities.medusa, EntityMedusa.class, ++entityID, EnumServantType.RIDER);
 		//rider class
 		//""
-		registerServant(new ResourceLocation(LibReference.MODID, "hassan"), EntityHassan.class, ++entityID, EnumServantType.ASSASSIN);
-		EntityRegistry.registerModEntity(new ResourceLocation(LibReference.MODID, "hassan_copy"), EntityHassanCopy.class, "hassan_copy", ++entityID, Fate.instance, 64, 3, true);
+		registerServant(LibEntities.hassan, EntityHassan.class, ++entityID, EnumServantType.ASSASSIN);
+		EntityRegistry.registerModEntity(LibEntities.hassan_copy, EntityHassanCopy.class, LibEntities.hassan_copy.getResourcePath(), ++entityID, Fate.instance, 64, 3, true);
 
-		registerServant(new ResourceLocation(LibReference.MODID, "sasaki"), EntitySasaki.class, ++entityID, EnumServantType.ASSASSIN);
+		registerServant(LibEntities.sasaki, EntitySasaki.class, ++entityID, EnumServantType.ASSASSIN);
 		//herobrine :O
-		registerServant(new ResourceLocation(LibReference.MODID, "lancelot"), EntityLancelot.class, ++entityID, EnumServantType.BERSERKER);
-		registerServant(new ResourceLocation(LibReference.MODID, "heracles"), EntityHeracles.class, ++entityID, EnumServantType.BERSERKER);
+		registerServant(LibEntities.lancelot, EntityLancelot.class, ++entityID, EnumServantType.BERSERKER);
+		registerServant(LibEntities.heracles, EntityHeracles.class, ++entityID, EnumServantType.BERSERKER);
 		//berserker class
 		//""
-		registerServant(new ResourceLocation(LibReference.MODID, "gilles"), EntityGilles.class, ++entityID, EnumServantType.CASTER);
-		registerServant(new ResourceLocation(LibReference.MODID, "medea"), EntityMedea.class, ++entityID, EnumServantType.CASTER);
+		registerServant(LibEntities.gilles, EntityGilles.class, ++entityID, EnumServantType.CASTER);
+		registerServant(LibEntities.medea, EntityMedea.class, ++entityID, EnumServantType.CASTER);
 		//caster class
 		//""
-		EntityRegistry.registerModEntity(new ResourceLocation(LibReference.MODID, "pegasus"), EntityPegasus.class, "pegasus", ++entityID, Fate.instance, 64, 3, true);
+		EntityRegistry.registerModEntity(LibEntities.pegasus, EntityPegasus.class, LibEntities.pegasus.getResourcePath(), ++entityID, Fate.instance, 64, 3, true);
 		//EntityRegistry.registerModEntity(EntityBukephalos.class, "bukephalos", ++entityID, FateMod.instance, 64, 3, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(LibReference.MODID, "gordius"), EntityGordiusWheel.class, "gordius", ++entityID, Fate.instance, 64, 3, true);
+		EntityRegistry.registerModEntity(LibEntities.gordius, EntityGordiusWheel.class, LibEntities.gordius.getResourcePath(), ++entityID, Fate.instance, 64, 3, true);
 
-		EntityRegistry.registerModEntity(new ResourceLocation(LibReference.MODID, "entity_gem"), EntityGem.class, "entity_gem", ++entityID, Fate.instance, 64, 10, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(LibReference.MODID, "excalibur"), EntityExcalibur.class, "excalibur", ++entityID, Fate.instance, 64, 10, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(LibReference.MODID, "gae_bolg"), EntityGaeBolg.class, "gae_bolg", ++entityID, Fate.instance, 64, 10, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(LibReference.MODID, "archer_arrow"), EntityArcherArrow.class, "archer_arrow", ++entityID, Fate.instance, 64, 10, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(LibReference.MODID, "babylon"), EntityBabylonWeapon.class, "babylon", ++entityID, Fate.instance, 64, 10, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(LibReference.MODID, "caladbolg"), EntityCaladBolg.class, "caladbolg", ++entityID, Fate.instance, 64, 10, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(LibReference.MODID, "magic_beam"), EntityMagicBeam.class, "magic_beam", ++entityID, Fate.instance, 64, 10, true);
-		EntityRegistry.registerModEntity(new ResourceLocation(LibReference.MODID, "ea"), EntityEnumaElish.class, "ea", ++entityID, Fate.instance, 64, 10, true);
+		EntityRegistry.registerModEntity(LibEntities.entity_gem, EntityGem.class, LibEntities.entity_gem.getResourcePath(), ++entityID, Fate.instance, 64, 10, true);
+		EntityRegistry.registerModEntity(LibEntities.excalibur, EntityExcalibur.class, LibEntities.excalibur.getResourcePath(), ++entityID, Fate.instance, 64, 10, true);
+		EntityRegistry.registerModEntity(LibEntities.gae_bolg, EntityGaeBolg.class, LibEntities.gae_bolg.getResourcePath(), ++entityID, Fate.instance, 64, 10, true);
+		EntityRegistry.registerModEntity(LibEntities.archer_arrow, EntityArcherArrow.class, LibEntities.archer_arrow.getResourcePath(), ++entityID, Fate.instance, 64, 10, true);
+		EntityRegistry.registerModEntity(LibEntities.babylon, EntityBabylonWeapon.class, LibEntities.babylon.getResourcePath(), ++entityID, Fate.instance, 64, 10, true);
+		EntityRegistry.registerModEntity(LibEntities.caladbolg, EntityCaladBolg.class, LibEntities.caladbolg.getResourcePath(), ++entityID, Fate.instance, 64, 10, true);
+		EntityRegistry.registerModEntity(LibEntities.magic_beam, EntityMagicBeam.class, LibEntities.magic_beam.getResourcePath(), ++entityID, Fate.instance, 64, 10, true);
+		EntityRegistry.registerModEntity(LibEntities.ea, EntityEnumaElish.class, LibEntities.ea.getResourcePath(), ++entityID, Fate.instance, 64, 10, true);
 		
-		EntityRegistry.registerModEntity(new ResourceLocation(LibReference.MODID, "monster_small"), EntityLesserMonster.class, "monster_small", ++entityID, Fate.instance, 64, 3, true);
+		EntityRegistry.registerModEntity(LibEntities.monster_small, EntityLesserMonster.class, LibEntities.monster_small.getResourcePath(), ++entityID, Fate.instance, 64, 3, true);
 
 	}
 	
