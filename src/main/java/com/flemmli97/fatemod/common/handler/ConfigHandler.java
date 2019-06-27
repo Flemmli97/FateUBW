@@ -68,7 +68,7 @@ public class ConfigHandler {
 	public static float lancelotReflectChance = 0.3f;
 	//Minions
 	public static int gillesMinionDuration=6000;
-	public static float smallMonsterDamage=8;
+	public static float smallMonsterDamage=12;
 	public static ServantProperties hassanCopy = new ServantProperties(50, 4, 3.5, 0, 12, 2, 0.34, 0, 10, 5);
 	public static float babylonScale = 1.5f;
 	public static float eaDamage=13;
