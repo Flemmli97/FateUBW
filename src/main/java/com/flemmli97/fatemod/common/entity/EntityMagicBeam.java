@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 public class EntityMagicBeam extends EntityBeam{
 
 	EntityLivingBase target;
-	
+	private int strengthMod;
 	public EntityMagicBeam(World worldIn) {
 		super(worldIn);
     }
@@ -25,6 +25,12 @@ public class EntityMagicBeam extends EntityBeam{
     {
 		this(world, shootingEntity);
 		this.target=target;
+	}
+	
+	public EntityMagicBeam(World world, EntityLivingBase shootingEntity, EntityLivingBase target, int strength)
+    {
+		this(world, shootingEntity, target);
+		this.strengthMod=strength;
 	}
 	
 	@Override
@@ -65,6 +71,6 @@ public class EntityMagicBeam extends EntityBeam{
 
 	@Override
 	protected void onImpact(RayTraceResult result) {
-		result.entityHit.attackEntityFrom(CustomDamageSource.magicBeam(this, this.getShooter()), ConfigHandler.magicBeam);
+		result.entityHit.attackEntityFrom(CustomDamageSource.magicBeam(this, this.getShooter()), ConfigHandler.magicBeam*(1+0.25f*this.strengthMod));
 	}
 }
