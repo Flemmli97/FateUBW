@@ -30,7 +30,7 @@ public class EntityGilles extends EntityServant implements IRanged{
 	
 	@Override
 	public Pair<Integer, Integer> attackTickerFromState(State state) {
-		return Pair.of(50, 30);
+		return Pair.of(80, 30);
 	}
 	
 	@Override
