@@ -1,9 +1,12 @@
 package com.flemmli97.fatemod.network;
 
 import com.flemmli97.fatemod.Fate;
+import com.flemmli97.fatemod.common.entity.servant.EntityServant;
+import com.flemmli97.fatemod.common.handler.ConfigHandler;
 import com.flemmli97.fatemod.common.handler.GrailWarHandler;
 import com.flemmli97.fatemod.common.handler.capabilities.IPlayer;
 import com.flemmli97.fatemod.common.handler.capabilities.PlayerCapProvider;
+import com.flemmli97.fatemod.common.utils.ServantUtils;
 import com.flemmli97.tenshilib.common.TextHelper;
 
 import io.netty.buffer.ByteBuf;
@@ -137,6 +140,13 @@ public class MessagePlayerServant  implements IMessage{
         	{
         		capSync.getServant(player).attemptTeleport(player.posX, player.posY, player.posZ);
         		capSync.getServant(player).setAttackTarget(null);
+        		if(ConfigHandler.punishTeleport)
+	        		for(EntityServant others : player.world.getEntitiesWithinAABB(EntityServant.class, player.getEntityBoundingBox().grow(32)))
+	        			if(others!=capSync.getServant(player) && !ServantUtils.inSameTeam(player, others))
+	        			{
+	        				others.setAttackTarget(player);
+	        				others.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:speed"), 600, 1));
+	        			}
         	}
     		//boost
         	else if(msg.command==10)

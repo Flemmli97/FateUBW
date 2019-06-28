@@ -1,6 +1,7 @@
 package com.flemmli97.fatemod.common.utils;
 
 import java.util.List;
+import java.util.UUID;
 
 import com.flemmli97.fatemod.common.entity.servant.EntityServant;
 import com.flemmli97.fatemod.common.handler.TruceMapHandler;
@@ -46,5 +47,18 @@ public class ServantUtils {
 	public static boolean inSameTeam(EntityPlayer player, EntityPlayer other)
 	{
 		return TruceMapHandler.get(player.world).playerTruces(player).contains(other.getUniqueID());
+	}
+	
+	public static boolean inSameTeam(EntityPlayer player, EntityServant servant)
+	{
+		UUID other = servant.ownerUUID();
+		return other==null?false:TruceMapHandler.get(player.world).playerTruces(player).contains(other);
+	}
+	
+	public static boolean inSameTeam(EntityServant servant, EntityServant other)
+	{
+		UUID first = servant.ownerUUID();
+		UUID second = other.ownerUUID();
+		return (first==null||other==null)?false:TruceMapHandler.get(servant.world).playerTruces(first).contains(second);
 	}
 }

@@ -9,7 +9,6 @@ import com.flemmli97.fatemod.client.render.servant.RenderServant;
 import com.flemmli97.fatemod.common.entity.servant.EntityLancelot;
 import com.flemmli97.fatemod.common.entity.servant.EntityServant;
 import com.flemmli97.fatemod.common.init.ModItems;
-import com.flemmli97.fatemod.common.lib.LibReference;
 import com.flemmli97.tenshilib.common.javahelper.ReflectionUtils;
 
 import net.minecraft.block.Block;

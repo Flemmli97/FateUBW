@@ -54,7 +54,7 @@ public class ConfigHandler {
 	public static boolean fillMissingSlots=true;
 	public static int maxServantCircle=1;
 	public static int servantSpawnDelay=6000;
-
+	public static boolean punishTeleport=true;
 	private static final String[] notifyListDef = new String[] {
 			LibEntities.arthur.toString(), LibEntities.gilgamesh.toString(), LibEntities.emiya.toString(), 
 			LibEntities.diarmuid.toString(), LibEntities.cuchulainn.toString(), LibEntities.alexander.toString(),
@@ -107,7 +107,8 @@ public class ConfigHandler {
 		fillMissingSlots = config.getBoolean("Fill Empty Slots", "general", fillMissingSlots, "Fill in missing players till max allowed with npc");
 		maxServantCircle=ConfigUtils.getIntConfig(config, "Servant Amount", "general", maxServantCircle, 1 ,"Amount of masterless servant that can spawn each time. (Fill Empty Slots needs to be true)");
 		servantSpawnDelay=ConfigUtils.getIntConfig(config, "Servant Spawn Delay", "general", servantSpawnDelay, 1200 ,"Time between each attempt to spawn masterless servants. (Fill Empty Slots needs to be true)");
-		
+		punishTeleport = config.getBoolean("Punish Teleport", "general", punishTeleport, "If true makes nearby non friendly servants get speed and target the player when you recall your servant");
+
 		notifyList.clear();
 		for(String s : config.getStringList("Servant notification", "general", notifyListDef, "Servants that will notify players when spawned (from filling missing slots)"))
 			notifyList.add(new ResourceLocation(s));

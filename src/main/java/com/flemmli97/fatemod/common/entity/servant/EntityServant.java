@@ -104,24 +104,13 @@ public abstract class EntityServant extends EntityCreature implements IAnimated{
         @Override
 		public boolean apply(@Nullable EntityServant living)
         {
-        		boolean flag = true;
-        		EntityPlayer targetOwner = living.getOwner();
-        		if(EntityServant.this.getOwner()!=null && targetOwner!=null)
-        		{
-        			flag = !ServantUtils.inSameTeam(EntityServant.this.getOwner(), targetOwner);
-        		}
-            return living != null && flag;
+            return living != null && !ServantUtils.inSameTeam(EntityServant.this, living);
         }});
 	public EntityAINearestAttackableTarget<EntityPlayer> targetPlayer = new EntityAINearestAttackableTarget<EntityPlayer>(this, EntityPlayer.class, 0, true, true, new Predicate<EntityPlayer>()    {
         @Override
 		public boolean apply(@Nullable EntityPlayer living)
         {
-        	boolean flag = true;
-    		if(EntityServant.this.getOwner()!=null)
-    		{
-    			flag = !ServantUtils.inSameTeam(EntityServant.this.getOwner(), living);
-    		}
-            return living != null && living != EntityServant.this.getOwner() && flag;
+            return living != null && living != EntityServant.this.getOwner() && !ServantUtils.inSameTeam(living, EntityServant.this);
         }});
 	public EntityAINearestAttackableTarget<EntityLiving> targetMob = new EntityAINearestAttackableTarget<EntityLiving>(this, EntityLiving.class, 10, true, true, new Predicate<EntityLiving>()    {
         @Override

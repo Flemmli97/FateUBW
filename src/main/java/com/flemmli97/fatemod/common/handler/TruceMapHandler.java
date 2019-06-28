@@ -100,6 +100,11 @@ public class TruceMapHandler extends WorldSavedData{
 		return this.truceMap.get(player.getUniqueID());
 	}
 	
+	public Set<UUID> playerTruces(UUID player)
+	{
+		return this.truceMap.get(player);
+	}
+	
 	public void disbandTruce(EntityPlayer player, UUID other)
 	{
 		if(this.truceMap.get(player.getUniqueID()).contains(other))
