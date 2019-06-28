@@ -73,7 +73,7 @@ public class ConfigHandler {
 	public static float babylonScale = 1.5f;
 	public static float eaDamage=13;
 	public static float excaliburDamage=19;
-	public static float caladBolgDmg = 25;
+	public static float caladBolgDmg = 18;
 	public static float magicBeam = 5;
 	public static float gaeBolgDmg = 10;
 	public static PotionEffectsConfig gaeBolgEffect = new PotionEffectsConfig()

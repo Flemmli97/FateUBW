@@ -32,7 +32,7 @@ public class EntityAIEmiya extends EntityAIAnimatedAttack{
         	if(this.attackingEntity.getHeldItem(EnumHand.MAIN_HAND).getItem()!=ModItems.archbow)
         	{
 	        	this.main = this.attackingEntity.getHeldItem(EnumHand.MAIN_HAND).copy();
-	        	this.off = this.attackingEntity.getHeldItem(EnumHand.MAIN_HAND).copy();
+	        	this.off = this.attackingEntity.getHeldItem(EnumHand.OFF_HAND).copy();
 	        	this.attackingEntity.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(ModItems.archbow));
 	        	this.attackingEntity.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, ItemStack.EMPTY);
         	}

@@ -136,6 +136,14 @@ public class EntityGordiusWheel extends EntityCreature implements IServantMinion
 	}
 	
 	@Override
+	public boolean attackEntityFrom(DamageSource damageSource, float damage)
+    {
+		if(damageSource != DamageSource.OUT_OF_WORLD && this.isCharging())
+			damage*=0.5f;
+		return super.attackEntityFrom(damageSource, damage);
+    }
+	
+	@Override
 	public void onEntityUpdate() {
 		super.onEntityUpdate();
 		if(this.isBeingRidden())
