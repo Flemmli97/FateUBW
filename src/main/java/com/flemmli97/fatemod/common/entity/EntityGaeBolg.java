@@ -1,5 +1,6 @@
 package com.flemmli97.fatemod.common.entity;
 
+import com.flemmli97.fatemod.common.entity.servant.EntityCuchulainn;
 import com.flemmli97.fatemod.common.handler.ConfigHandler;
 import com.flemmli97.fatemod.common.handler.CustomDamageSource;
 import com.flemmli97.fatemod.common.init.ModItems;
@@ -54,8 +55,9 @@ public class EntityGaeBolg extends EntityProjectile{
 				for(PotionEffect effect : ConfigHandler.gaeBolgEffect.potions())
 					hittedEntity.addPotionEffect(effect);
 			}
+			this.setDead();
 		}
-		if(raytraceResultIn.typeOfHit==Type.BLOCK)
+		else if(raytraceResultIn.typeOfHit==Type.BLOCK)
 		{
 			this.setDead();
 		}
@@ -64,15 +66,22 @@ public class EntityGaeBolg extends EntityProjectile{
 	@Override
     public void setDead()
     {
-		if(!this.world.isRemote && this.getShooter() instanceof EntityPlayer)
+		if(!this.world.isRemote)
 		{
-			EntityPlayer player = (EntityPlayer) this.getShooter();
-			if(!player.capabilities.isCreativeMode)
+			if(this.getShooter() instanceof EntityPlayer)
 			{
-				EntityItem gaeBolg = new EntityItem(world, this.getShooter().posX, this.getShooter().posY, this.getShooter().posZ, new ItemStack(ModItems.gaebolg));
-				gaeBolg.setPickupDelay(0);
-				player.world.spawnEntity(gaeBolg);	
-				player.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 0.8f, 1);
+				EntityPlayer player = (EntityPlayer) this.getShooter();
+				if(!player.capabilities.isCreativeMode)
+				{
+					EntityItem gaeBolg = new EntityItem(world, this.getShooter().posX, this.getShooter().posY, this.getShooter().posZ, new ItemStack(ModItems.gaebolg));
+					gaeBolg.setPickupDelay(0);
+					player.world.spawnEntity(gaeBolg);	
+					player.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 0.8f, 1);
+				}
+			}
+			else if(this.getShooter() instanceof EntityCuchulainn)
+			{
+				((EntityCuchulainn)this.getShooter()).retrieveGaeBolg();
 			}
 		}
         super.setDead();

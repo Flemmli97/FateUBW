@@ -1,13 +1,10 @@
 package com.flemmli97.fatemod.common.entity.servant;
 
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
-
-import org.apache.commons.lang3.tuple.Pair;
 
 import com.flemmli97.fatemod.Fate;
 import com.flemmli97.fatemod.common.entity.servant.ai.EntityAIFollowMaster;
@@ -20,6 +17,8 @@ import com.flemmli97.fatemod.common.utils.ServantProperties;
 import com.flemmli97.fatemod.common.utils.ServantUtils;
 import com.flemmli97.tenshilib.client.particles.ParticleHandler;
 import com.flemmli97.tenshilib.common.TextHelper;
+import com.flemmli97.tenshilib.common.entity.AnimatedAction;
+import com.flemmli97.tenshilib.common.entity.IAnimated;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 
@@ -67,7 +66,7 @@ import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.ForgeChunkManager.Type;
 
-public abstract class EntityServant extends EntityCreature{
+public abstract class EntityServant extends EntityCreature implements IAnimated{
 
 	//Mana
 	private int servantMana, antiRegen, counter;
@@ -81,7 +80,8 @@ public abstract class EntityServant extends EntityCreature{
 	/**0 = normal, 1 = aggressive, 2 = defensive, 3 = follow, 4 = stay, 5 = guard an area*/
 	protected int commandBehaviour;
 			
-	private int attackTimer;
+	private AnimatedAction currentAnim;
+
 	private EnumServantType servantType = EnumServantType.NOTASSIGNED;
 	//PlayerUUID
 	private EntityPlayer owner;
@@ -90,7 +90,7 @@ public abstract class EntityServant extends EntityCreature{
 	private ItemStack[] drops;
 	
 	protected static final DataParameter<Boolean> showServant = EntityDataManager.createKey(EntityServant.class, DataSerializers.BOOLEAN);
-	protected static final DataParameter<Integer> entityState = EntityDataManager.createKey(EntityServant.class, DataSerializers.VARINT);
+	protected static final DataParameter<Boolean> stationary = EntityDataManager.createKey(EntityServant.class, DataSerializers.BOOLEAN);
 	protected static final DataParameter<String> ownerUUID = EntityDataManager.createKey(EntityServant.class, DataSerializers.STRING);
 
 	public static final IAttribute MAGIC_RESISTANCE = (new RangedAttribute((IAttribute)null, "generic.magicResistance", 0.0D, 0.0D, 1.0D)).setDescription("Magic Resistance");
@@ -129,7 +129,7 @@ public abstract class EntityServant extends EntityCreature{
         {
             return living != null&&!(living instanceof EntityServant) && IMob.VISIBLE_MOB_SELECTOR.apply(living);
         }});
-	public EntityAIFollowMaster follow = new EntityAIFollowMaster(this, 15.0D, 8.0F, 4.0F);
+	public EntityAIFollowMaster follow = new EntityAIFollowMaster(this, 15.0D, 16.0F, 2.0F);
 	public EntityAIRetaliate targetHurt = new EntityAIRetaliate(this);
 	public EntityAIMoveTowardsRestriction restrictArea = new EntityAIMoveTowardsRestriction(this, 1.0D);
 	public EntityAIWander wander = new EntityAIWander(this, 1.0D);
@@ -209,53 +209,20 @@ public abstract class EntityServant extends EntityCreature{
 	{
 		return this.dataManager.get(showServant);
 	}
-
-	@Override
-	public void handleStatusUpdate(byte b)
-    {
-        if (b == 4)
-        {
-           this.attackTimer = this.attackTickerFromState(this.entityState()).getLeft();
-        }
-        else
-        {
-            super.handleStatusUpdate(b);
-        }
-    }
 	
-	//Reverse the ticker so it counts up
-	public int attackTimer()
+	public boolean isStaying()
 	{
-		return this.attackTickerFromState(this.entityState()).getLeft()-this.attackTimer;
+		return this.dataManager.get(stationary);
 	}
 	
-	public State entityState()
+	public void setStaying(boolean stay)
 	{
-		return State.values()[this.dataManager.get(entityState)];
-	}
-	
-	public void setState(State state)
-	{
-		this.dataManager.set(entityState, state.ordinal());
-		if(!this.world.isRemote)
-           this.attackTimer = this.attackTickerFromState(this.entityState()).getLeft();
-		this.world.setEntityState(this, (byte) 4);
+		this.dataManager.set(stationary, stay);
 	}
 	
 	public void revealServant()
 	{
 		this.dataManager.set(showServant, true);
-	}
-	
-	/**
-	 * For attacks. Used in the animation
-	 * @param state IDDLE and STAY should be ignored
-	 * @return First number is animation duration, second is when to actually do damage. 
-	 * Example: an armswing should do damage when the sword "hits", not when its swung at beginning
-	 */
-	public Pair<Integer, Integer> attackTickerFromState(State state)
-	{
-		return Pair.of(20, 20);
 	}
 	
 	/**
@@ -272,7 +239,7 @@ public abstract class EntityServant extends EntityCreature{
 	protected void entityInit()
     {
         super.entityInit();
-        this.dataManager.register(entityState, State.IDDLE.ordinal());
+        this.dataManager.register(stationary, false);
         this.dataManager.register(showServant, false);
         this.dataManager.register(ownerUUID, "");
     }
@@ -292,7 +259,7 @@ public abstract class EntityServant extends EntityCreature{
         this.getAttributeMap().registerAttribute(EntityServant.PROJECTILE_RESISTANCE);
         this.getAttributeMap().registerAttribute(EntityServant.PROJECTILE_BLOCKCHANCE);
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.3);//default 0.3
-        this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(32.0D);
+        this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(24.0D);
         //this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1D);
     }
 	
@@ -382,19 +349,6 @@ public abstract class EntityServant extends EntityCreature{
     	return null;
     }
     
-    /*@Override
-    public void notifyDataManagerChange(DataParameter<?> key)
-    {
-    	if(key==ownerUUID)
-    	{
-    		if(this.getOwner()!=null)
-    		{
-    			IPlayer capSync = this.getOwner().getCapability(PlayerCapProvider.PlayerCap, null);
-    			capSync.setServant(this.getOwner(), this);
-    		}
-    	}
-    }*/
-    
     public void setOwner(EntityPlayer player)
     {
 		if(player!=null)
@@ -473,7 +427,7 @@ public abstract class EntityServant extends EntityCreature{
 			this.targetTasks.addTask(1, targetServant);
 			this.tasks.addTask(0, follow);
 			this.tasks.addTask(2, this.wander);
-			this.setState(State.IDDLE);
+			this.setStaying(false);
 			this.detachHome();
 		}
 		else if(commandBehaviour == 4)
@@ -483,14 +437,14 @@ public abstract class EntityServant extends EntityCreature{
 			this.targetTasks.removeTask(targetMob);
 			this.tasks.removeTask(follow);
 			this.tasks.removeTask(this.wander);
-			this.setState(State.STAY);
+			this.setStaying(true);
 			this.getNavigator().clearPath();
 			this.setAttackTarget(null);
 			this.detachHome();
 		}
 		else if(commandBehaviour == 5)
 		{
-			this.setState(State.IDDLE);
+			this.setStaying(false);
 			this.tasks.removeTask(follow);
 			this.tasks.addTask(2, this.wander);
 			this.setHomePosAndDistance(this.getOwner().getPosition(), 8);
@@ -503,13 +457,11 @@ public abstract class EntityServant extends EntityCreature{
 	@Override
 	public void onLivingUpdate() {
 		super.onLivingUpdate();		
-		this.attackTimer=Math.max(0, --this.attackTimer);
+		this.tickAnimation();
 		if(!this.world.isRemote)
 		{
 			this.regenMana();
 			this.combatTick=Math.max(0, --this.combatTick);
-			if(this.attackTimer==0 && State.isAttack(this.entityState()))
-				this.setState(State.IDDLE);
 			if(this.ticket!=null)
 			{
 				if(!this.disableChunkload)
@@ -637,11 +589,30 @@ public abstract class EntityServant extends EntityCreature{
 	
 	//=====Entity attack etc.
 	
-	public boolean canAttack()
+	@Override
+	@Nullable
+	public AnimatedAction getAnimation()
 	{
-		return State.isAttack(this.entityState()) && this.attackTimer==this.attackTickerFromState(this.entityState()).getRight();
+		return this.currentAnim;
 	}
+	
+	@Override
+	public void setAnimation(AnimatedAction anim) 
+	{
+		this.currentAnim=anim==null?null:anim.create();
+		IAnimated.sentToClient(this);
+	}
+	
+	public abstract boolean canUse(AnimatedAction anim, AttackType type);
 
+	public AnimatedAction getRandomAttack(AttackType type)
+	{
+		AnimatedAction anim = this.getAnimations()[this.rand.nextInt(this.getAnimations().length)];
+		if(this.canUse(anim, type))
+			return anim;
+		return this.getRandomAttack(type);
+	}
+	
 	@Override
 	protected void damageEntity(DamageSource damageSrc, float damageAmount) {
         if (!this.isEntityInvulnerable(damageSrc))
@@ -772,33 +743,6 @@ public abstract class EntityServant extends EntityCreature{
 		super.knockBack(entityIn, strenght, xRatio, zRatio);
 	}
 	
-	
-	
-	public static enum State
-	{
-		IDDLE,
-		STAY,
-		ATTACK1,
-		ATTACK2,
-		ATTACK3,
-		NP;
-		
-		public static State randomAttackState(Random rand)
-		{
-			switch(rand.nextInt(3))
-			{
-				case 0: return ATTACK1;
-				case 1: return ATTACK2;
-				case 2: return ATTACK3;
-			}
-			return ATTACK1;
-		}
-		
-		public static boolean isAttack(State state)
-		{
-			return state!=IDDLE && state!=STAY;
-		}
-	}
 	public static enum EnumServantType
 	{
 		SABER("saber"),
@@ -820,5 +764,12 @@ public abstract class EntityServant extends EntityCreature{
 		{
 			return this.name;
 		}
+	}
+	
+	public static enum AttackType
+	{
+		RANGED,
+		MELEE,
+		NP;
 	}
 }

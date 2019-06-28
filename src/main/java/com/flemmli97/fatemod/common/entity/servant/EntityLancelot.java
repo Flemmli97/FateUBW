@@ -1,10 +1,9 @@
 package com.flemmli97.fatemod.common.entity.servant;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.flemmli97.fatemod.common.entity.servant.ai.EntityAILancelot;
 import com.flemmli97.fatemod.common.handler.ConfigHandler;
 import com.flemmli97.fatemod.common.init.ModItems;
+import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import com.flemmli97.tenshilib.common.item.ItemUtil;
 
 import net.minecraft.entity.Entity;
@@ -29,15 +28,21 @@ import net.minecraftforge.common.util.Constants;
 public class EntityLancelot extends EntityServant {
 
 	public EntityAILancelot attackAI = new EntityAILancelot(this);
-	
+
 	public EntityLancelot(World world) {
 		super(world, EnumServantType.BERSERKER, "Knight of Owner", new ItemStack[] {new ItemStack(ModItems.arondight)});
         this.tasks.addTask(1, attackAI);
 	}
 
 	@Override
-	public Pair<Integer, Integer> attackTickerFromState(State state) {
-		return Pair.of(20, 20);
+	public boolean canUse(AnimatedAction anim, AttackType type)
+	{
+		return true;
+	}
+	
+	@Override
+	public AnimatedAction[] getAnimations() {
+		return AnimatedAction.vanillaAttackOnly;
 	}
 	
 	@Override

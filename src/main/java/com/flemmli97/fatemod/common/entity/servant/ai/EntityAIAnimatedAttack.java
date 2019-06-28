@@ -1,8 +1,9 @@
 package com.flemmli97.fatemod.common.entity.servant.ai;
 
 import com.flemmli97.fatemod.common.entity.servant.EntityServant;
-import com.flemmli97.fatemod.common.entity.servant.EntityServant.State;
+import com.flemmli97.fatemod.common.entity.servant.EntityServant.AttackType;
 import com.flemmli97.fatemod.common.entity.servant.IRanged;
+import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
@@ -103,10 +104,36 @@ public class EntityAIAnimatedAttack extends EntityAIBase{
         double attackRange = this.rangeModifier*(double)(distEnt.width * 2.0F * distEnt.width * 2.0F + target.width);
 
         --this.moveDelay;
-        State state = this.attackingEntity.entityState();
-        //Movement
-        if (!State.isAttack(state) && (this.attackingEntity.getEntitySenses().canSee(target)) && this.moveDelay <= 0 && (this.posX == 0.0D && this.posY == 0.0D && this.posZ == 0.0D || this.attackingEntity.getRNG().nextFloat() < 1.0F))
+        AnimatedAction anim = this.attackingEntity.getAnimation();
+       
+        //Attack
+        if(anim==null)
+        	--this.attackCooldown;
+        if (distanceToTarget <= attackRange)
         {
+        	if(anim==null)
+        	{
+        		if(this.attackCooldown<=0)
+        		{
+	        		anim = this.attackingEntity.getRandomAttack(AttackType.MELEE);
+	        		this.attackingEntity.setAnimation(anim);
+	        		this.attackCooldown=this.attackingEntity.attackCooldown();
+        		}
+        	}
+        }
+        if(anim!=null && this.attackingEntity.canUse(anim, AttackType.MELEE))
+        {
+    		this.attackingEntity.getNavigator().clearPath();
+	        if (distanceToTarget <= attackRange*2 && anim.canAttack())
+	        {
+	        	this.attackingEntity.attackEntityAsMob(target);
+	        }
+        }
+        
+        //Movement
+        if (anim==null && (this.attackingEntity.getEntitySenses().canSee(target)) && this.moveDelay <= 0 && (this.posX == 0.0D && this.posY == 0.0D && this.posZ == 0.0D || this.attackingEntity.getRNG().nextFloat() < 1.0F))
+        {
+        	--this.attackCooldown;
             this.posX = target.posX;
             this.posY = target.getEntityBoundingBox().minY;
             this.posZ = target.posZ;
@@ -126,27 +153,6 @@ public class EntityAIAnimatedAttack extends EntityAIBase{
                 this.moveDelay += 10;
             }
         }
-        //Attack
-        if(state==State.IDDLE)
-        	--this.attackCooldown;
-        if (distanceToTarget <= attackRange)
-        {
-        	if(state==State.IDDLE)
-        	{
-        		if(this.attackCooldown<=0)
-        		{
-	        		state = State.randomAttackState(this.attackingEntity.getRNG());
-	        		this.attackingEntity.setState(state);
-	        		this.attackCooldown=this.attackingEntity.attackCooldown();
-        		}
-        	}
-        }
-        if(State.isAttack(state))
-    		this.attackingEntity.getNavigator().clearPath();
-        if (distanceToTarget <= attackRange*2 && this.attackingEntity.canAttack())
-        {
-        	this.attackingEntity.attackEntityAsMob(target);
-        }
 	}
 	
 	public void rangedAttack()
@@ -156,11 +162,42 @@ public class EntityAIAnimatedAttack extends EntityAIBase{
 		boolean canSee = this.attackingEntity.getEntitySenses().canSee(target);
         this.attackingEntity.getLookHelper().setLookPositionWithEntity(target, 30.0F, 30.0F);
         --this.followTicker;
-        State state = this.attackingEntity.entityState();
 
         double distanceToTarget = this.attackingEntity.getDistanceSq(target.posX, target.getEntityBoundingBox().minY, target.posZ);
-        //Movement
-        if(!State.isAttack(state))
+        
+        AnimatedAction anim = this.attackingEntity.getAnimation();
+        
+        //Attack
+        if(anim==null)
+    	{
+    		this.attackCooldown--;
+    	}
+        
+        if (distanceToTarget <= this.rangeModifier && canSee)
+        {
+        	if(anim==null)
+        	{
+        		if(this.attackCooldown<=0)
+        		{
+	        		anim = this.attackingEntity.getRandomAttack(AttackType.RANGED);
+	        		this.attackingEntity.setAnimation(anim);
+	        		this.attackCooldown=this.attackingEntity.attackCooldown();
+	        		this.attackingEntity.motionX=0;
+	        		this.attackingEntity.motionZ=0;
+        		}
+        	}
+        	if(anim!=null && this.attackingEntity.canUse(anim, AttackType.RANGED))
+        	{
+        		this.attackingEntity.getNavigator().clearPath();
+	        	if(anim.canAttack())
+	        	{
+	         		iRanged.attackWithRangedAttack(target);
+	        	}
+        	}
+        }
+    	
+    	//Movement
+        if(anim==null)
         {
 	        if(canSee)
 	        {
@@ -187,30 +224,5 @@ public class EntityAIAnimatedAttack extends EntityAIBase{
 	    		this.attackingEntity.getNavigator().tryMoveToEntityLiving(target, this.speedTowardsTarget);
 	        }
         } 
-        //Attack
-        if(state==State.IDDLE)
-    	{
-    		this.attackCooldown--;
-    	}
-        if (distanceToTarget <= this.rangeModifier && canSee)
-        {
-        	if(state==State.IDDLE)
-        	{
-        		if(this.attackCooldown<=0)
-        		{
-	        		state = State.randomAttackState(this.attackingEntity.getRNG());
-	        		this.attackingEntity.setState(state);
-	        		this.attackCooldown=this.attackingEntity.attackCooldown();
-	        		this.attackingEntity.motionX=0;
-	        		this.attackingEntity.motionZ=0;
-        		}
-        	}
-        	if(this.attackingEntity.canAttack())
-        	{
-         		iRanged.attackWithRangedAttack(target);
-        	}
-        }
-    	if(State.isAttack(state))
-    		this.attackingEntity.getNavigator().clearPath();
 	}
 }

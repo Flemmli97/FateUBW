@@ -1,11 +1,10 @@
 package com.flemmli97.fatemod.common.entity.servant;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.flemmli97.fatemod.common.entity.EntityBabylonWeapon;
 import com.flemmli97.fatemod.common.entity.EntityEnumaElish;
 import com.flemmli97.fatemod.common.entity.servant.ai.EntityAIGilgamesh;
 import com.flemmli97.fatemod.common.init.ModItems;
+import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -19,8 +18,11 @@ public class EntityGilgamesh extends EntityServant implements IRanged{
 	public EntityAIGilgamesh attackRanged = new EntityAIGilgamesh(this,true, 1, 16);
 	public EntityAIGilgamesh attackMelee = new EntityAIGilgamesh(this,false, 1, 1);
 
-	private boolean rangedAttack;
-
+	private boolean doRangedAttack;
+	private static final AnimatedAction rangedAttack = new AnimatedAction(40, 10, "babylon");
+	private static final AnimatedAction npAttack = new AnimatedAction(20,0,"np");
+	private static final AnimatedAction[] anims = new AnimatedAction[] {AnimatedAction.vanillaAttack, rangedAttack, npAttack};
+	
 	public EntityGilgamesh(World world) {
 		super(world, EnumServantType.ARCHER, "Enuma Elish", new ItemStack[] {new ItemStack(ModItems.enumaelish)/*babylon=*/});
         this.tasks.addTask(1, attackRanged);
@@ -28,16 +30,24 @@ public class EntityGilgamesh extends EntityServant implements IRanged{
 	}
 	
 	@Override
-	public Pair<Integer, Integer> attackTickerFromState(State state) {
-		if(this.rangedAttack)
-			return Pair.of(40, 30);
-		return Pair.of(20, 20);
+	public boolean canUse(AnimatedAction anim, AttackType type)
+	{
+		if(type==AttackType.RANGED)
+			return anim.getID().equals("babylon");
+		else if(type==AttackType.NP)
+			return anim.getID().equals("np");
+		return anim.getID().equals("vanilla");
+	}
+	
+	@Override
+	public AnimatedAction[] getAnimations() {
+		return anims;
 	}
 	
 	@Override
 	public int attackCooldown()
 	{
-		return this.rangedAttack?40:10;
+		return this.doRangedAttack?40:0;
 	}
 
 	@Override
@@ -71,13 +81,13 @@ public class EntityGilgamesh extends EntityServant implements IRanged{
 		{
 			this.tasks.removeTask(attackRanged);
 			this.tasks.addTask(1, attackMelee);
-			this.rangedAttack=false;
+			this.doRangedAttack=false;
 		}
 		else
 		{
 			this.tasks.removeTask(attackMelee);
 			this.tasks.addTask(1, attackRanged);
-			this.rangedAttack=true;
+			this.doRangedAttack=true;
 		}
 	}
 
@@ -108,6 +118,6 @@ public class EntityGilgamesh extends EntityServant implements IRanged{
 	
 	@Override
 	public boolean isDoingRangedAttack() {
-		return this.rangedAttack;
+		return this.doRangedAttack;
 	}
 }

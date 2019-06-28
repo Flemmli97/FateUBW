@@ -2,11 +2,10 @@ package com.flemmli97.fatemod.common.entity.servant;
 
 import java.util.List;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.flemmli97.fatemod.common.entity.EntityPegasus;
 import com.flemmli97.fatemod.common.entity.servant.ai.EntityAIMedusa;
 import com.flemmli97.fatemod.common.init.ModItems;
+import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -23,6 +22,9 @@ public class EntityMedusa extends EntityServant {
 
 	public EntityAIMedusa attackAI = new EntityAIMedusa(this);
 	
+	private static final AnimatedAction npAttack = new AnimatedAction(20,0,"np");
+	private static final AnimatedAction[] anims = new AnimatedAction[] {AnimatedAction.vanillaAttack, npAttack};
+	
 	public EntityMedusa(World world) {
 		super(world, EnumServantType.RIDER, "Bellerophon", new ItemStack[] {new ItemStack(ModItems.medusaDagger)});
 		this.tasks.addTask(1, attackAI);
@@ -33,9 +35,18 @@ public class EntityMedusa extends EntityServant {
 		this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(ModItems.medusaDagger));       
 	}
 	
+	
 	@Override
-	public Pair<Integer, Integer> attackTickerFromState(State state) {
-		return Pair.of(20, 20);
+	public boolean canUse(AnimatedAction anim, AttackType type)
+	{
+		if(type==AttackType.NP)
+			return anim.getID().equals("np");
+		return anim.getID().equals("vanilla");
+	}
+	
+	@Override
+	public AnimatedAction[] getAnimations() {
+		return anims;
 	}
 	
 	@Override

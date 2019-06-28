@@ -1,9 +1,8 @@
 package com.flemmli97.fatemod.common.entity.servant;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.flemmli97.fatemod.common.entity.servant.ai.EntityAIHeracles;
 import com.flemmli97.fatemod.common.init.ModItems;
+import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
@@ -35,8 +34,14 @@ public class EntityHeracles extends EntityServant {
 	}
 	
 	@Override
-	public Pair<Integer, Integer> attackTickerFromState(State state) {
-		return Pair.of(20, 20);
+	public boolean canUse(AnimatedAction anim, AttackType type)
+	{
+		return true;
+	}
+	
+	@Override
+	public AnimatedAction[] getAnimations() {
+		return AnimatedAction.vanillaAttackOnly;
 	}
 	
 	@Override

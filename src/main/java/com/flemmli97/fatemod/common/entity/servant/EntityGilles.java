@@ -1,11 +1,10 @@
 package com.flemmli97.fatemod.common.entity.servant;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.flemmli97.fatemod.common.entity.EntityLesserMonster;
 import com.flemmli97.fatemod.common.entity.EntityMonster;
 import com.flemmli97.fatemod.common.entity.servant.ai.EntityAIGilles;
 import com.flemmli97.fatemod.common.init.ModItems;
+import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -18,6 +17,10 @@ public class EntityGilles extends EntityServant implements IRanged{
 
 	EntityAIGilles attackAI = new EntityAIGilles(this);
 
+	private static final AnimatedAction rangedAttack = new AnimatedAction(80, 40, "ranged");
+	private static final AnimatedAction npAttack = new AnimatedAction(20,0,"np");
+	private static final AnimatedAction[] anims = new AnimatedAction[] {rangedAttack, npAttack};
+
 	public EntityGilles(World world) {
 		super(world, EnumServantType.CASTER, "Prelati's Spellbook", new ItemStack[] {new ItemStack(ModItems.grimoire)});
 		this.tasks.addTask(1, attackAI);
@@ -29,8 +32,16 @@ public class EntityGilles extends EntityServant implements IRanged{
 	}
 	
 	@Override
-	public Pair<Integer, Integer> attackTickerFromState(State state) {
-		return Pair.of(80, 30);
+	public boolean canUse(AnimatedAction anim, AttackType type)
+	{
+		if(type==AttackType.NP)
+			return anim.getID().equals("np");
+		return anim.getID().equals("ranged");
+	}
+	
+	@Override
+	public AnimatedAction[] getAnimations() {
+		return anims;
 	}
 	
 	@Override

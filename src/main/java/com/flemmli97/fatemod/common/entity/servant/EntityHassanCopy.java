@@ -1,11 +1,10 @@
 package com.flemmli97.fatemod.common.entity.servant;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.flemmli97.fatemod.common.entity.IServantMinion;
 import com.flemmli97.fatemod.common.entity.servant.ai.EntityAIAnimatedAttack;
 import com.flemmli97.fatemod.common.entity.servant.ai.EntityAIFollowMaster;
 import com.flemmli97.fatemod.common.init.ModItems;
+import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -19,6 +18,7 @@ public class EntityHassanCopy extends EntityServant implements IServantMinion{
 
 	private String originalUUID;
 	private int livingTick;
+
 	public EntityAIFollowMaster followOriginal = new EntityAIFollowMaster(this, 15.0D, 8.0F, 4.0F) {
 		@Override
 		public boolean shouldExecute()
@@ -95,8 +95,14 @@ public class EntityHassanCopy extends EntityServant implements IServantMinion{
 	}
 	
 	@Override
-	public Pair<Integer, Integer> attackTickerFromState(State state) {
-		return Pair.of(20, 20);
+	public boolean canUse(AnimatedAction anim, AttackType type)
+	{
+		return true;
+	}
+	
+	@Override
+	public AnimatedAction[] getAnimations() {
+		return AnimatedAction.vanillaAttackOnly;
 	}
 	
 	private void updateAttributes()

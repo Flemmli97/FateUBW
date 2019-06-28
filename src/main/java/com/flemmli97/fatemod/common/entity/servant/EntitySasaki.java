@@ -1,9 +1,8 @@
 package com.flemmli97.fatemod.common.entity.servant;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.flemmli97.fatemod.common.entity.servant.ai.EntityAISasaki;
 import com.flemmli97.fatemod.common.init.ModItems;
+import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -16,6 +15,9 @@ public class EntitySasaki extends EntityServant {
 
 	public EntityAISasaki attackAI = new EntityAISasaki(this);
 	
+	private static final AnimatedAction npAttack = new AnimatedAction(20,0,"np");
+	private static final AnimatedAction[] anims = new AnimatedAction[] {AnimatedAction.vanillaAttack, npAttack};
+
 	public EntitySasaki(World world) {
 		super(world, EnumServantType.ASSASSIN, "Tsubame Gaeshi", new ItemStack[] {new ItemStack(ModItems.katana)});
         this.tasks.addTask(1, attackAI);
@@ -27,8 +29,16 @@ public class EntitySasaki extends EntityServant {
 	}
 	
 	@Override
-	public Pair<Integer, Integer> attackTickerFromState(State state) {
-		return Pair.of(20, 20);
+	public boolean canUse(AnimatedAction anim, AttackType type)
+	{
+		if(type==AttackType.NP)
+			return anim.getID().equals("np");
+		return anim.getID().equals("vanilla");
+	}
+	
+	@Override
+	public AnimatedAction[] getAnimations() {
+		return anims;
 	}
 	
 	@Override
@@ -47,7 +57,7 @@ public class EntitySasaki extends EntityServant {
 	@Override
 	public boolean attackEntityFrom(DamageSource damageSource, float damage)
     {
-		if(this.entityState()==State.NP)
+		if(this.getAnimation()!=null && this.canUse(this.getAnimation(), AttackType.NP))
 			return false;
 		return super.attackEntityFrom(damageSource, damage);
     }
@@ -65,6 +75,10 @@ public class EntitySasaki extends EntityServant {
 	public void attackWithNP(EntityLivingBase living)
 	{
 		this.revealServant();
+	}
+
+	public boolean canAttackNP() {
+		return false;
 	}
 
 }

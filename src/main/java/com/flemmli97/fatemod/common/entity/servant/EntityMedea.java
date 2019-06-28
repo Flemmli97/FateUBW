@@ -1,13 +1,12 @@
 package com.flemmli97.fatemod.common.entity.servant;
 
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.flemmli97.fatemod.common.entity.EntityCasterCircle;
 import com.flemmli97.fatemod.common.entity.EntityMagicBeam;
 import com.flemmli97.fatemod.common.entity.servant.ai.EntityAIMedea;
 import com.flemmli97.fatemod.common.handler.ConfigHandler;
 import com.flemmli97.fatemod.common.init.ModItems;
+import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import com.google.common.base.Predicate;
 
 import net.minecraft.entity.EntityLivingBase;
@@ -22,6 +21,9 @@ import net.minecraft.world.World;
 public class EntityMedea extends EntityServant implements IRanged{
 
 	EntityAIMedea attackAI = new EntityAIMedea(this);
+	
+	private static final AnimatedAction npAttack = new AnimatedAction(20,0,"np");
+	private static final AnimatedAction[] anims = new AnimatedAction[] {AnimatedAction.vanillaAttack, npAttack};
 	
 	private boolean rangedAttack;
 	private final Predicate<EntityCasterCircle> circlePred = new Predicate<EntityCasterCircle>() {
@@ -42,8 +44,16 @@ public class EntityMedea extends EntityServant implements IRanged{
 	}
 
 	@Override
-	public Pair<Integer, Integer> attackTickerFromState(State state) {
-		return Pair.of(20, 20);
+	public boolean canUse(AnimatedAction anim, AttackType type)
+	{
+		if(type==AttackType.NP)
+			return anim.getID().equals("np");
+		return anim.getID().equals("vanilla");
+	}
+	
+	@Override
+	public AnimatedAction[] getAnimations() {
+		return anims;
 	}
 	
 	@Override

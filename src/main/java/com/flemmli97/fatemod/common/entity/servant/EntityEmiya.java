@@ -1,11 +1,10 @@
 package com.flemmli97.fatemod.common.entity.servant;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.flemmli97.fatemod.common.entity.EntityArcherArrow;
 import com.flemmli97.fatemod.common.entity.EntityCaladBolg;
 import com.flemmli97.fatemod.common.entity.servant.ai.EntityAIEmiya;
 import com.flemmli97.fatemod.common.init.ModItems;
+import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.SoundEvents;
@@ -19,10 +18,14 @@ import net.minecraft.world.World;
 
 public class EntityEmiya extends EntityServant implements IRanged{
 	
-	EntityAIEmiya attackMelee = new EntityAIEmiya(this, false, 1, 1);
-	EntityAIEmiya attackRanged = new EntityAIEmiya(this, true, 1, 16);
+	public EntityAIEmiya attackMelee = new EntityAIEmiya(this, false, 1, 1);
+	public EntityAIEmiya attackRanged = new EntityAIEmiya(this, true, 1, 16);
 
-	private boolean rangedAttack;
+	private static final AnimatedAction rangedAttack = new AnimatedAction(30, 10, "ranged");
+	private static final AnimatedAction npAttack = new AnimatedAction(20,0,"np");
+	private static final AnimatedAction[] anims = new AnimatedAction[] {AnimatedAction.vanillaAttack, rangedAttack, npAttack};
+	
+	private boolean doRangedAttack;
 	
 	public EntityEmiya(World world) {
 		super(world, EnumServantType.ARCHER, "Calad Bolg II", new ItemStack[] {new ItemStack(ModItems.archbow), new ItemStack(ModItems.bakuya), new ItemStack(ModItems.kanshou)});
@@ -36,16 +39,24 @@ public class EntityEmiya extends EntityServant implements IRanged{
 	}
 	
 	@Override
-	public Pair<Integer, Integer> attackTickerFromState(State state) {
-		if(this.rangedAttack)
-			return Pair.of(30, 20);
-		return Pair.of(20, 20);
+	public boolean canUse(AnimatedAction anim, AttackType type)
+	{
+		if(type==AttackType.RANGED)
+			return anim.getID().equals("ranged");
+		else if(type==AttackType.NP)
+			return anim.getID().equals("np");
+		return anim.getID().equals("vanilla");
+	}
+	
+	@Override
+	public AnimatedAction[] getAnimations() {
+		return anims;
 	}
 	
 	@Override
 	public int attackCooldown()
 	{
-		return this.rangedAttack?40:0;
+		return this.doRangedAttack?40:0;
 	}
 	
 	@Override
@@ -69,12 +80,12 @@ public class EntityEmiya extends EntityServant implements IRanged{
 		if(itemstack!=null && itemstack.getItem() == ModItems.archbow)
 		{
 			this.tasks.addTask(1, attackRanged);
-			this.rangedAttack=true;
+			this.doRangedAttack=true;
 		}
 		else
 		{
 			this.tasks.addTask(1, attackMelee);
-			this.rangedAttack=false;
+			this.doRangedAttack=false;
 		}
 	}
 	
@@ -128,6 +139,6 @@ public class EntityEmiya extends EntityServant implements IRanged{
 
 	@Override
 	public boolean isDoingRangedAttack() {
-		return this.rangedAttack;
+		return this.doRangedAttack;
 	}
 }

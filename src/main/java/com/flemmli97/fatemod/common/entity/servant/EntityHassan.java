@@ -5,11 +5,10 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.flemmli97.fatemod.common.entity.servant.ai.EntityAIHassan;
 import com.flemmli97.fatemod.common.init.ModItems;
 import com.flemmli97.fatemod.common.utils.ServantUtils;
+import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import com.google.common.base.Predicate;
 
 import net.minecraft.entity.EntityLiving;
@@ -35,6 +34,9 @@ public class EntityHassan extends EntityServant {
 	
 	private List<String> copieUUID = new ArrayList<String>();
 	
+	private static final AnimatedAction npAttack = new AnimatedAction(20,0,"np");
+	private static final AnimatedAction[] anims = new AnimatedAction[] {AnimatedAction.vanillaAttack, npAttack};
+
 	public static final int maxCopies = 5;
 	
 	public EntityHassan(World world) {
@@ -63,8 +65,16 @@ public class EntityHassan extends EntityServant {
 	}
 	
 	@Override
-	public Pair<Integer, Integer> attackTickerFromState(State state) {
-		return Pair.of(20, 20);
+	public boolean canUse(AnimatedAction anim, AttackType type)
+	{
+		if(type==AttackType.NP)
+			return anim.getID().equals("np");
+		return anim.getID().equals("vanilla");
+	}
+	
+	@Override
+	public AnimatedAction[] getAnimations() {
+		return anims;
 	}
 	
 	public void removeCopy(EntityHassanCopy copy)
