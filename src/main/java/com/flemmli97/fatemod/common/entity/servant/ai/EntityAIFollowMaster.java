@@ -18,7 +18,7 @@ public class EntityAIFollowMaster extends EntityAIBase
     public final EntityServant servant;
     private EntityLivingBase follow;
     World theWorld;
-    private double d1;
+    private double minTPDist;
     private PathNavigate pathfinder;
     private int followDelay;
     public final float maxDist;
@@ -29,7 +29,7 @@ public class EntityAIFollowMaster extends EntityAIBase
     {
         this.servant = servant;
         this.theWorld = servant.world;
-        this.d1 = teleport;
+        this.minTPDist = teleport;
         this.pathfinder = servant.getNavigator();
         this.minDist = minDistance;
         this.maxDist = maxDistance;
@@ -70,10 +70,10 @@ public class EntityAIFollowMaster extends EntityAIBase
     /**
      * Returns whether an in-progress EntityAIBase should continue executing
      */
-    public boolean continueExecuting()
+    @Override
+	public boolean shouldContinueExecuting()
     {
-        return !this.pathfinder.noPath() && this.servant.getDistanceSq(this.follow) 
-        		> (this.maxDist * this.maxDist);
+        return !this.pathfinder.noPath() && this.servant.getDistanceSq(this.follow) > (this.maxDist * this.maxDist);
     }
 
     /**
@@ -112,27 +112,25 @@ public class EntityAIFollowMaster extends EntityAIBase
 
                 if (!this.pathfinder.tryMoveToEntityLiving(this.follow, 1))
                 {
-                        if (this.servant.getDistanceSq(this.follow) >= this.d1*this.d1)
-                        {
-                        	//Try teleport
-                        	
-                        	
-                            int i = MathHelper.floor(this.follow.posX) - 2;
-                            int j = MathHelper.floor(this.follow.posZ) - 2;
-                            int k = MathHelper.floor(this.follow.getEntityBoundingBox().minY);
+                    if (this.servant.getDistanceSq(this.follow) >= this.minTPDist*this.minTPDist && !this.servant.isRiding())
+                    {
+                    	//Try teleport
+                        int i = MathHelper.floor(this.follow.posX) - 2;
+                        int j = MathHelper.floor(this.follow.posZ) - 2;
+                        int k = MathHelper.floor(this.follow.getEntityBoundingBox().minY);
 
-                            for (int l = 0; l <= 4; ++l)
+                        for (int l = 0; l <= 4; ++l)
+                        {
+                            for (int i1 = 0; i1 <= 4; ++i1)
                             {
-                                for (int i1 = 0; i1 <= 4; ++i1)
+                                if ((l < 1 || i1 < 1 || l > 3 || i1 > 3) && this.isTeleportFriendlyBlock(i, j, k, l, i1))
                                 {
-                                    if ((l < 1 || i1 < 1 || l > 3 || i1 > 3) && this.isTeleportFriendlyBlock(i, j, k, l, i1))
-                                    {
-                                        this.servant.setLocationAndAngles((double)((float)(i + l) + 0.5F), (double)k, (double)((float)(j + i1) + 0.5F), this.servant.rotationYaw, this.servant.rotationPitch);
-                                        this.pathfinder.clearPath();
-                                        return;
-                                    }
+                                    this.servant.setLocationAndAngles((double)((float)(i + l) + 0.5F), (double)k, (double)((float)(j + i1) + 0.5F), this.servant.rotationYaw, this.servant.rotationPitch);
+                                    this.pathfinder.clearPath();
+                                    return;
                                 }
                             }
+                        }
                     }
                 }
             } 

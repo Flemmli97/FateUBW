@@ -129,7 +129,7 @@ public abstract class EntityServant extends EntityCreature implements IAnimated{
         {
             return living != null&&!(living instanceof EntityServant) && IMob.VISIBLE_MOB_SELECTOR.apply(living);
         }});
-	public EntityAIFollowMaster follow = new EntityAIFollowMaster(this, 15.0D, 16.0F, 2.0F);
+	public EntityAIFollowMaster follow = new EntityAIFollowMaster(this, 15.0D, 16.0F, 3.0F);
 	public EntityAIRetaliate targetHurt = new EntityAIRetaliate(this);
 	public EntityAIMoveTowardsRestriction restrictArea = new EntityAIMoveTowardsRestriction(this, 1.0D);
 	public EntityAIWander wander = new EntityAIWander(this, 1.0D);
