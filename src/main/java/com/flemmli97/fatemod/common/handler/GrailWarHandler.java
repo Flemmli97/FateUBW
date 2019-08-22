@@ -86,9 +86,8 @@ public class GrailWarHandler extends WorldSavedData{
 		if(!player.world.isRemote)
 		{
 			UUID uuid=player.getUniqueID();
-			if(!this.players.containsKey(uuid) && this.servants.size()<ConfigHandler.maxPlayer)
+			if(!this.players.containsKey(uuid) && this.servants.size() <ConfigHandler.maxPlayer)
 			{
-				System.out.println("joined");
 				EntityServant servant = player.getCapability(PlayerCapProvider.PlayerCap, null).getServant(player);
 				if(this.addServant(servant))
 				{
@@ -129,7 +128,8 @@ public class GrailWarHandler extends WorldSavedData{
 			cap.setServant(player, null);
 			TruceMapHandler.get(player.world).disbandAllTruce(player);
 			player.world.getMinecraftServer().getPlayerList().sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.grailwar.playerout", player.getName()), TextFormatting.RED));
-			this.checkWinCondition((WorldServer) player.world, true);
+			if(!player.world.isRemote)
+				this.checkWinCondition((WorldServer) player.world, true);
 			
 			this.markDirty();
 		}
@@ -139,9 +139,10 @@ public class GrailWarHandler extends WorldSavedData{
 	{
 		if(this.state==State.RUN)
 		{
-			if(this.players.size()==1)
+			if(this.servants.size() == 1 && this.spawnedServants>=ConfigHandler.maxPlayer && this.players.size()==1)
 			{
 				this.winningDelay=ConfigHandler.rewardDelay;
+				this.state=State.FINISH;
 				for(Entry<UUID, String> entry : this.players.entrySet())
 				{
 					world.getMinecraftServer().getPlayerList().sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.grailwar.win", entry.getValue()), TextFormatting.RED));
@@ -176,18 +177,23 @@ public class GrailWarHandler extends WorldSavedData{
 	
 	public void removeServant(EntityServant servant)
 	{
-		this.servants.remove(servant.getUniqueID());
+		boolean flag=this.servants.remove(servant.getUniqueID())!=null;
 		this.servantClass.remove(servant.getUniqueID());
-		if(servant.getOwner() != null)
+		if(flag)
 		{
-			IPlayer servantprop = servant.getOwner().getCapability(PlayerCapProvider.PlayerCap, null);
-			servantprop.setServant(servant.getOwner(), null);
-			
-			this.removePlayer(servant.getOwner());
-		}
-		else if(servant.hasOwner())
-		{
-			this.shedulePlayerRemoval.add(servant.ownerUUID());
+			if(!servant.world.isRemote)
+				this.checkWinCondition((WorldServer) servant.world, true);
+			if(servant.getOwner() != null)
+			{
+				IPlayer servantprop = servant.getOwner().getCapability(PlayerCapProvider.PlayerCap, null);
+				servantprop.setServant(servant.getOwner(), null);
+				
+				this.removePlayer(servant.getOwner());
+			}
+			else if(servant.hasOwner())
+			{
+				this.shedulePlayerRemoval.add(servant.ownerUUID());
+			}
 		}
 		this.markDirty();
 	}
@@ -248,9 +254,8 @@ public class GrailWarHandler extends WorldSavedData{
 		}
 		else if(this.state==State.RUN)
 		{
-			if(ConfigHandler.fillMissingSlots && (this.servants.size() + this.spawnedServants)<ConfigHandler.maxPlayer && --this.timeToNextServant<=0)
+			if(ConfigHandler.fillMissingSlots && this.spawnedServants<ConfigHandler.maxPlayer && --this.timeToNextServant<=0)
 	  		{
-				System.out.println("try spawning servant");
 				List<EntityPlayer> players = Lists.newArrayList();
 				world.playerEntities.forEach(player->{
 					if(this.players.containsKey(player.getUniqueID()))
@@ -266,9 +271,9 @@ public class GrailWarHandler extends WorldSavedData{
 						int chunkX = MathHelper.floor(player.posX / 16.0D);
 	                    int chunkZ = MathHelper.floor(player.posZ / 16.0D);
 
-	                    for (int x = -7; x <= 7; ++x)
+	                    for (int x = -9; x <= 9; ++x)
 	                    {
-	                        for (int z = -7; z <= 7; ++z)
+	                        for (int z = -9; z <= 9; ++z)
 	                        {
 	                            ChunkPos chunkpos = new ChunkPos(x + chunkX, z + chunkZ);
 	                            if (!chunks.contains(chunkpos) && world.getWorldBorder().contains(chunkpos))
@@ -283,7 +288,7 @@ public class GrailWarHandler extends WorldSavedData{
 	    	  	        int z = chunk.z * 16 + world.rand.nextInt(16);
 	    	  	        int k = MathHelper.roundUp(chunk.getHeight(new BlockPos(x, 0, z)) + 1, 16);
 	    	  	        int y = world.rand.nextInt(k > 0 ? k : chunk.getTopFilledSegment() + 16 - 1);
-	    	  	        if(!world.isAnyPlayerWithinRangeAt(x, y, z, 32))
+	    	  	        if(!world.isAnyPlayerWithinRangeAt(x, y, z, 48))
 	    	  	        {
 	    	  	        	EntityServant servant = this.tryGetServant(world); 	  	    
 	    	  	  	        if(servant!=null)
@@ -295,7 +300,7 @@ public class GrailWarHandler extends WorldSavedData{
 	    		                	servant.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(servant)), null);
 	    		                	world.spawnEntity(servant);
 	    		                	this.addServant(servant);
-	    		                	this.timeToNextServant=ConfigHandler.servantSpawnDelay;
+	    		                	this.timeToNextServant=MathHelper.getInt(world.rand, ConfigHandler.servantMinSpawnDelay, ConfigHandler.servantMaxSpawnDelay);
 	    		                	if(ConfigHandler.notifyList.contains(EntityList.getKey(servant)))
 	    		                		if(ConfigHandler.notifyAll)
 	    		                			world.getMinecraftServer().getPlayerList().sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.grailwar.spawn", player.getName()), TextFormatting.GOLD));
@@ -307,7 +312,10 @@ public class GrailWarHandler extends WorldSavedData{
 					}
 				}
 	  		}
-  			if(--this.winningDelay<=0)
+		}
+		else if(this.state==State.FINISH)
+		{
+			if(--this.winningDelay<=0)
 	  		{
 	  			EntityPlayer player = this.getWinningPlayer(world);
 	  			if(player!=null)
@@ -319,6 +327,7 @@ public class GrailWarHandler extends WorldSavedData{
     	  			holyGrail.setGlowing(true);
     	  			holyGrail.setEntityInvulnerable(true);
     	  			world.spawnEntity(holyGrail);
+					player.getCapability(PlayerCapProvider.PlayerCap, null).saveServant(player);
 	  			}
   				this.reset(world);
 	  		}
@@ -448,6 +457,7 @@ public class GrailWarHandler extends WorldSavedData{
 	{
 		JOIN,
 		RUN,
+		FINISH,
 		NOTHING;
 	}
 }

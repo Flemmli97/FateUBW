@@ -79,7 +79,6 @@ public class ModEventHandler {
         	{
         		handler.removePlayer(player);
         	}
-        	handler.checkWinCondition(player.getServerWorld(), false);
 			PacketHandler.sendTo(new MessageMana(player.getCapability(PlayerCapProvider.PlayerCap, null)), (EntityPlayerMP) player);
 			for(UUID uuid : TruceMapHandler.get(player.world).getRequests(player))
 			{
@@ -182,6 +181,10 @@ public class ModEventHandler {
 		if(ClientProxy.boost.isPressed())
 		{
 			PacketHandler.sendToServer(new MessagePlayerServant(10));
+		}
+		if(ClientProxy.target.isPressed())
+		{
+			PacketHandler.sendToServer(new MessagePlayerServant(11));
 		}
     }	
 	

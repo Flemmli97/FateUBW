@@ -11,9 +11,12 @@ import com.flemmli97.fatemod.network.PacketHandler;
 import com.flemmli97.tenshilib.common.entity.EntityUtil;
 
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.Vec3d;
 
 public class PlayerCap implements IPlayer{
 	
@@ -22,7 +25,9 @@ public class PlayerCap implements IPlayer{
 	//Used during load
 	private UUID servantUUID =null;
 	private int commandSeals = 0;
-		
+	
+	private NBTTagCompound savedServant;
+	
 	public PlayerCap() {}
 	
 	@Override
@@ -89,6 +94,36 @@ public class PlayerCap implements IPlayer{
 	}
 	
 	@Override
+	public void saveServant(EntityPlayer player) {
+		if(this.getServant(player)!=null)
+		{
+			this.savedServant=this.getServant(player).writeToNBT(new NBTTagCompound());
+			this.savedServant.removeTag("Pos");
+			this.savedServant.removeTag("Motion");
+			this.savedServant.removeTag("Rotation");
+			this.savedServant.removeTag("UUIDMost");
+			this.savedServant.removeTag("UUIDLeast");
+			//Vanilla-fix incompability
+			this.savedServant.removeTag("VFAABB");
+		}
+	}
+
+	//TODO: to improve
+	@Override
+	public void restoreServant(EntityPlayer player) {
+		/*if(this.savedServant!=null && !player.world.isRemote)
+		{
+			Entity e = EntityList.createEntityFromNBT(this.savedServant, player.world);
+			if(e!=null)
+			{
+				Vec3d look = player.getLookVec();
+				e.setPosition(player.posX+look.x, player.posY, player.posZ+look.z);
+				player.world.spawnEntity(e);
+			}
+		}*/
+	}
+	
+	@Override
 	public int getCommandSeals() {
 		return this.commandSeals;
 	}
@@ -123,6 +158,8 @@ public class PlayerCap implements IPlayer{
 		{
 			compound.setString("ServantUUID", this.servant.getCachedUniqueIdString());
 		}
+		if(this.savedServant!=null)
+			compound.setTag("SavedServant", this.savedServant);
 		return compound;
 	}
 	
@@ -135,5 +172,7 @@ public class PlayerCap implements IPlayer{
 		{
 			this.servantUUID=UUID.fromString(compound.getString("ServantUUID"));
 		}
+		if(compound.hasKey("SavedServant"))
+			this.savedServant=compound.getCompoundTag("SavedServant");
 	}
 }

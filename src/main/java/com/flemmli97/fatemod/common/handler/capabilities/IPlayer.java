@@ -21,13 +21,17 @@ public interface IPlayer {
 	
 	public String getServantName();
 			
+	public void saveServant(EntityPlayer player);
+	
+	public void restoreServant(EntityPlayer player);
+	
 	//Command seals
 	public int getCommandSeals();
 	
 	public boolean useCommandSeal(EntityPlayer player);
 	
 	public void setCommandSeals(EntityPlayer player, int amount);
-
+	
 	//NBT
 	
 	public NBTTagCompound writeToNBT(NBTTagCompound compound);
