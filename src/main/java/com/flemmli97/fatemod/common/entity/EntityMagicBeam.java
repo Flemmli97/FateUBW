@@ -20,16 +20,11 @@ public class EntityMagicBeam extends EntityBeam{
     {
 		super(world, shootingEntity);
 	}  
-	 
-	public EntityMagicBeam(World world, EntityLivingBase shootingEntity, EntityLivingBase target)
-    {
-		this(world, shootingEntity);
-		this.target=target;
-	}
 	
 	public EntityMagicBeam(World world, EntityLivingBase shootingEntity, EntityLivingBase target, int strength)
     {
-		this(world, shootingEntity, target);
+		this(world, shootingEntity);
+		this.target=target;
 		this.strengthMod=strength;
 	}
 	

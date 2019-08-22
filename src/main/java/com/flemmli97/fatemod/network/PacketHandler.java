@@ -25,6 +25,8 @@ public class PacketHandler {
 		dispatcher.registerMessage(MessageAltarUpdate.Handler.class, MessageAltarUpdate.class, id++, Side.CLIENT);
 		dispatcher.registerMessage(MessageCommandSeals.Handler.class, MessageCommandSeals.class, id++, Side.CLIENT);
 		dispatcher.registerMessage(MessageTruce.Handler.class, MessageTruce.class, id++, Side.SERVER);
+		dispatcher.registerMessage(MessageServantSpecial.Handler.class, MessageServantSpecial.class, id++, Side.SERVER);
+
 	}
 	
 	public static final void sendTo(IMessage message, EntityPlayerMP player) {

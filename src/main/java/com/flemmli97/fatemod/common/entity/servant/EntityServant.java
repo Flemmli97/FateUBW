@@ -19,7 +19,6 @@ import com.flemmli97.tenshilib.client.particles.ParticleHandler;
 import com.flemmli97.tenshilib.common.TextHelper;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import com.flemmli97.tenshilib.common.entity.IAnimated;
-import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -100,24 +99,13 @@ public abstract class EntityServant extends EntityCreature implements IAnimated{
 	private ServantProperties prop;
 	//Chunk load ticket
 	private Ticket ticket;
-	public EntityAINearestAttackableTarget<EntityServant> targetServant = new EntityAINearestAttackableTarget<EntityServant>(this, EntityServant.class, 10, true, true, new Predicate<EntityServant>()    {
-        @Override
-		public boolean apply(@Nullable EntityServant living)
-        {
-            return living != null && !ServantUtils.inSameTeam(EntityServant.this, living);
-        }});
-	public EntityAINearestAttackableTarget<EntityPlayer> targetPlayer = new EntityAINearestAttackableTarget<EntityPlayer>(this, EntityPlayer.class, 0, true, true, new Predicate<EntityPlayer>()    {
-        @Override
-		public boolean apply(@Nullable EntityPlayer living)
-        {
-            return living != null && living != EntityServant.this.getOwner() && !ServantUtils.inSameTeam(living, EntityServant.this);
-        }});
-	public EntityAINearestAttackableTarget<EntityLiving> targetMob = new EntityAINearestAttackableTarget<EntityLiving>(this, EntityLiving.class, 10, true, true, new Predicate<EntityLiving>()    {
-        @Override
-		public boolean apply(@Nullable EntityLiving living)
-        {
-            return living != null&&!(living instanceof EntityServant) && IMob.VISIBLE_MOB_SELECTOR.apply(living);
-        }});
+	public EntityAINearestAttackableTarget<EntityServant> targetServant = new EntityAINearestAttackableTarget<EntityServant>(this, EntityServant.class, 10, true, true, 
+			(servant)->servant != null && !ServantUtils.inSameTeam(EntityServant.this, servant));
+	public EntityAINearestAttackableTarget<EntityPlayer> targetPlayer = new EntityAINearestAttackableTarget<EntityPlayer>(this, EntityPlayer.class, 0, true, true, 
+			(player)->player != null && player != EntityServant.this.getOwner() && !ServantUtils.inSameTeam(player, EntityServant.this));
+	public EntityAINearestAttackableTarget<EntityLiving> targetMob = new EntityAINearestAttackableTarget<EntityLiving>(this, EntityLiving.class, 10, true, true, 
+			(living)->living != null&&!(living instanceof EntityServant) && IMob.VISIBLE_MOB_SELECTOR.apply(living));
+
 	public EntityAIFollowMaster follow = new EntityAIFollowMaster(this, 15.0D, 16.0F, 3.0F);
 	public EntityAIRetaliate targetHurt = new EntityAIRetaliate(this);
 	public EntityAIMoveTowardsRestriction restrictArea = new EntityAIMoveTowardsRestriction(this, 1.0D);
@@ -190,6 +178,20 @@ public abstract class EntityServant extends EntityCreature implements IAnimated{
 	public boolean attacksFromMount()
 	{
 		return true;
+	}
+	
+	/**
+	 * 5 max atm
+	 */
+	@Nullable
+	public String[] specialCommands()
+	{
+		return null;
+	}
+	
+	public void doSpecialCommand(String s)
+	{
+		
 	}
 	
 	//=====Client-Server sync
@@ -652,6 +654,17 @@ public abstract class EntityServant extends EntityCreature implements IAnimated{
 			return this.preAttackEntityFrom(damageSource, (float) Math.min(50, damage));
 		}
     }
+	
+	public void onKillOrder(EntityPlayer player, boolean success)
+	{
+		this.attackEntityFrom(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
+		player.sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.command.kill"), TextFormatting.RED));
+	}
+	
+	public void onForfeit(EntityPlayer player)
+	{
+		
+	}
 	
 	public boolean projectileBlockChance(DamageSource damageSource, float damage)
 	{

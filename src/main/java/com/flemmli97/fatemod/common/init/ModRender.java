@@ -4,6 +4,7 @@ import com.flemmli97.fatemod.client.render.RenderAltar;
 import com.flemmli97.fatemod.client.render.RenderArcherArrow;
 import com.flemmli97.fatemod.client.render.RenderBabylon;
 import com.flemmli97.fatemod.client.render.RenderCaladBolg;
+import com.flemmli97.fatemod.client.render.RenderCasterCircle;
 import com.flemmli97.fatemod.client.render.RenderEA;
 import com.flemmli97.fatemod.client.render.RenderExcalibur;
 import com.flemmli97.fatemod.client.render.RenderGaeBolg;
@@ -30,6 +31,7 @@ import com.flemmli97.fatemod.common.blocks.tile.TileAltar;
 import com.flemmli97.fatemod.common.entity.EntityArcherArrow;
 import com.flemmli97.fatemod.common.entity.EntityBabylonWeapon;
 import com.flemmli97.fatemod.common.entity.EntityCaladBolg;
+import com.flemmli97.fatemod.common.entity.EntityCasterCircle;
 import com.flemmli97.fatemod.common.entity.EntityEnumaElish;
 import com.flemmli97.fatemod.common.entity.EntityExcalibur;
 import com.flemmli97.fatemod.common.entity.EntityGaeBolg;
@@ -110,6 +112,7 @@ public final class ModRender {
 		RenderingRegistry.registerEntityRenderingHandler(EntityMagicBeam.class, RenderMagicBeam::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityEnumaElish.class, RenderEA::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityLesserMonster.class, RenderStarfish::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityCasterCircle.class, RenderCasterCircle::new);
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileAltar.class, new RenderAltar());
 	}

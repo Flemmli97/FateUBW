@@ -32,6 +32,7 @@ public class ClientProxy extends CommonProxy {
 	public static KeyBinding command = new KeyBinding("fate.command", Keyboard.KEY_H, "key.categories.misc");
 	public static KeyBinding special = new KeyBinding("fate.special", Keyboard.KEY_V, "key.categories.misc");
 	public static KeyBinding boost = new KeyBinding("fate.boost", Keyboard.KEY_G, "key.categories.misc");
+	public static KeyBinding target = new KeyBinding("fate.target", Keyboard.KEY_B, "key.categories.misc");
 
     @Override
     public void preInit(FMLPreInitializationEvent e) {

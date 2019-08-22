@@ -24,13 +24,11 @@ public class RenderMagicBeam extends RenderBeam<EntityMagicBeam>{
 
 	@Override
 	public Pair<ResourceLocation, Float> startTexture(EntityMagicBeam entity) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Pair<ResourceLocation, Float> endTexture(EntityMagicBeam entity) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
