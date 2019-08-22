@@ -3,6 +3,7 @@ package com.flemmli97.fatemod.common.entity.servant;
 import com.flemmli97.fatemod.common.entity.EntityLesserMonster;
 import com.flemmli97.fatemod.common.entity.EntityMonster;
 import com.flemmli97.fatemod.common.entity.servant.ai.EntityAIGilles;
+import com.flemmli97.fatemod.common.handler.ConfigHandler;
 import com.flemmli97.fatemod.common.init.ModItems;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 
@@ -86,8 +87,7 @@ public class EntityGilles extends EntityServant implements IRanged{
 	public void attackWithRangedAttack(EntityLivingBase target) {
 		if(!this.world.isRemote)
 		{
-			//TODO: config
-			if(this.world.getEntitiesWithinAABB(EntityLesserMonster.class, this.getEntityBoundingBox().grow(16)).size()<6)
+			if(this.world.getEntitiesWithinAABB(EntityLesserMonster.class, this.getEntityBoundingBox().grow(16)).size()<ConfigHandler.gillesMinionAmount)
 			{
 				EntityLesserMonster minion = new EntityLesserMonster(this.world, this);
 				this.world.spawnEntity(minion);

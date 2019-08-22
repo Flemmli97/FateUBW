@@ -31,6 +31,7 @@ import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.model.animation.IAnimationStateMachine;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -43,6 +44,7 @@ public class CommonProxy {
 
     private static int servants;
 
+    public static boolean astralSorcery;
 	public void preInit(FMLPreInitializationEvent e) {
     	ConfigHandler.load(LoadState.PREINIT);
     	ModEntities.mainRegistry();
@@ -55,6 +57,9 @@ public class CommonProxy {
 		GameRegistry.registerWorldGenerator(new WorldGen(), 1);
      	NetworkRegistry.INSTANCE.registerGuiHandler(Fate.instance, new GuiHandler());
         MinecraftForge.EVENT_BUS.register(new ModEventHandler());
+        if (Loader.isModLoaded("astralsorcery")) {
+        	astralSorcery=true;
+        }
     }
 
     public void postInit(FMLPostInitializationEvent e) {

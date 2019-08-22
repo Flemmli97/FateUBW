@@ -56,16 +56,26 @@ public class ModelMedea extends ModelBiped {
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) { 
-        this.RightLeg.render(f5);
-        this.Head.render(f5);
-        this.Body.render(f5);
-        this.LeftLeg.render(f5);
-        this.RightArm.render(f5);
-        this.CloakBody.render(f5);
-        this.Hat.render(f5);
-        this.LeftArm.render(f5);
-        this.CloakLegs.render(f5);
+    public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+    	this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);
+        this.RightLeg.render(scale);
+        this.Head.render(scale);
+        this.Body.render(scale);
+        this.LeftLeg.render(scale);
+        this.RightArm.render(scale);
+        this.CloakBody.render(scale);
+        this.Hat.render(scale);
+        this.LeftArm.render(scale);
+        this.CloakLegs.render(scale);
+    }
+    
+    @Override
+	public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale, Entity entity)
+    {
+    	this.Head.rotateAngleY = netHeadYaw / (180F / (float)Math.PI);
+        this.Head.rotateAngleX = headPitch / (180F / (float)Math.PI);
+        this.Hat.rotateAngleY = netHeadYaw / (180F / (float)Math.PI);
+        this.Hat.rotateAngleX = headPitch / (180F / (float)Math.PI);
     }
 
 }

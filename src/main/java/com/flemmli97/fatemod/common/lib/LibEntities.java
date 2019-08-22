@@ -29,5 +29,6 @@ public class LibEntities {
 	public static final ResourceLocation magic_beam=new ResourceLocation(LibReference.MODID, "magic_beam");
 	public static final ResourceLocation ea=new ResourceLocation(LibReference.MODID, "ea");
 	public static final ResourceLocation monster_small=new ResourceLocation(LibReference.MODID, "monster_small");
+	public static final ResourceLocation medea_circle=new ResourceLocation(LibReference.MODID, "medea_circle");
 
 }

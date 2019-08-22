@@ -7,6 +7,7 @@ import com.flemmli97.fatemod.Fate;
 import com.flemmli97.fatemod.common.entity.EntityArcherArrow;
 import com.flemmli97.fatemod.common.entity.EntityBabylonWeapon;
 import com.flemmli97.fatemod.common.entity.EntityCaladBolg;
+import com.flemmli97.fatemod.common.entity.EntityCasterCircle;
 import com.flemmli97.fatemod.common.entity.EntityEnumaElish;
 import com.flemmli97.fatemod.common.entity.EntityExcalibur;
 import com.flemmli97.fatemod.common.entity.EntityGaeBolg;
@@ -88,6 +89,7 @@ public class ModEntities {
 		EntityRegistry.registerModEntity(LibEntities.ea, EntityEnumaElish.class, LibEntities.ea.getResourcePath(), ++entityID, Fate.instance, 64, 10, true);
 		
 		EntityRegistry.registerModEntity(LibEntities.monster_small, EntityLesserMonster.class, LibEntities.monster_small.getResourcePath(), ++entityID, Fate.instance, 64, 3, true);
+		EntityRegistry.registerModEntity(LibEntities.medea_circle, EntityCasterCircle.class, LibEntities.medea_circle.getResourcePath(), ++entityID, Fate.instance, 64, 3, true);
 
 	}
 	

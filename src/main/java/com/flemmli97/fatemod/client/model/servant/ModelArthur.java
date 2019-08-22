@@ -11,7 +11,6 @@ public class ModelArthur extends ModelServant {
 		super();
 	}
 
-	@SuppressWarnings("incomplete-switch")
 	@Override
 	public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale, Entity entity)
     {

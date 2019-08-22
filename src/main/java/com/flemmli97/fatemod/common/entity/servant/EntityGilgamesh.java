@@ -19,9 +19,10 @@ public class EntityGilgamesh extends EntityServant implements IRanged{
 	public EntityAIGilgamesh attackMelee = new EntityAIGilgamesh(this,false, 1, 1);
 
 	private boolean doRangedAttack;
-	private static final AnimatedAction rangedAttack = new AnimatedAction(40, 10, "babylon");
+	private static final AnimatedAction rangedAttack = new AnimatedAction(40, 10, "babylon1");
+	private static final AnimatedAction rangedAttack2 = new AnimatedAction(40, 10, "babylon2");
 	private static final AnimatedAction npAttack = new AnimatedAction(20,0,"np");
-	private static final AnimatedAction[] anims = new AnimatedAction[] {AnimatedAction.vanillaAttack, rangedAttack, npAttack};
+	private static final AnimatedAction[] anims = new AnimatedAction[] {AnimatedAction.vanillaAttack, rangedAttack, npAttack, rangedAttack2};
 	
 	public EntityGilgamesh(World world) {
 		super(world, EnumServantType.ARCHER, "Enuma Elish", new ItemStack[] {new ItemStack(ModItems.enumaelish)/*babylon=*/});
@@ -33,7 +34,7 @@ public class EntityGilgamesh extends EntityServant implements IRanged{
 	public boolean canUse(AnimatedAction anim, AttackType type)
 	{
 		if(type==AttackType.RANGED)
-			return anim.getID().equals("babylon");
+			return anim.getID().equals("babylon1")||anim.getID().equals("babylon2");
 		else if(type==AttackType.NP)
 			return anim.getID().equals("np");
 		return anim.getID().equals("vanilla");
@@ -106,14 +107,34 @@ public class EntityGilgamesh extends EntityServant implements IRanged{
 	@Override
 	public void attackWithRangedAttack(EntityLivingBase target) {
 		int weaponAmount = this.getRNG().nextInt(15)+4;
-		for(int x = 0; x < weaponAmount; x++)
+		if(this.getAnimations()==null||this.getAnimation().getID().equals("babylon1"))
+			this.spawnBehind(target, weaponAmount);
+		else if(this.getAnimation().getID().equals("babylon2"))
+			this.spawnAroundTarget(target, weaponAmount);
+	}
+	
+	private void spawnBehind(EntityLivingBase target, int amount)
+	{
+		for(int x = 0; x < amount; x++)
 		{
 			EntityBabylonWeapon weapon = new EntityBabylonWeapon(this.world, this, target);
 			if(!world.isRemote)
 			{
 				weapon.setEntityProperties();
 			}
-		}	
+		}
+	}
+	
+	private void spawnAroundTarget(EntityLivingBase target, int amount)
+	{
+		for(int x = 0; x < amount; x++)
+		{
+			EntityBabylonWeapon weapon = new EntityBabylonWeapon(this.world, this, target);
+			if(!world.isRemote)
+			{
+				weapon.setEntityProperties();
+			}
+		}
 	}
 	
 	@Override

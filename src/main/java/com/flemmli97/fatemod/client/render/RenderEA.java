@@ -25,13 +25,11 @@ public class RenderEA extends RenderBeam<EntityEnumaElish>{
 
 	@Override
 	public Pair<ResourceLocation, Float> startTexture(EntityEnumaElish entity) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Pair<ResourceLocation, Float> endTexture(EntityEnumaElish entity) {
-		// TODO Auto-generated method stub
 		return null;
 	}  
 }

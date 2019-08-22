@@ -11,7 +11,6 @@ public class EntityAILancelot extends EntityAIAnimatedAttack{
 
 	@Override
 	public void updateTask() {
-		// TODO Auto-generated method stub
 		super.updateTask();
 	}
 }

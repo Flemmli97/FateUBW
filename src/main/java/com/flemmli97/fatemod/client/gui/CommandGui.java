@@ -29,10 +29,10 @@ public class CommandGui extends GuiScreen {
 	
 	public EntityPlayer guiPlayer;
 	public EntityServant servant;
-	private GuiButton attack,aggressive,normal,defensive,useNP,move,follow,stay,protect,truce,kill,back,call;
+	private GuiButton attack,aggressive,normal,defensive,useNP,move,follow,stay,protect,truce,kill,back,call,special;
 	private ButtonTrucePage next, prev;
 	private GuiUUIDButton accept, remove, request;
-	private int currentPage = 0;
+	private Pages currentPage = Pages.MENU;
 	private int trucePage = 0;
 	private Random rand = new Random();
 	private int command1 = rand.nextInt(3);
@@ -62,7 +62,7 @@ public class CommandGui extends GuiScreen {
 		this.drawDefaultBackground();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         
-		if(currentPage!=3)
+		if(currentPage!=Pages.TRUCE)
 		{
 			this.mc.getTextureManager().bindTexture(guiBackGround);
 			this.drawTexturedModalRect(this.width/2 -100, this.height / 2 - 100, 0, 0, 201, 210);
@@ -122,22 +122,26 @@ public class CommandGui extends GuiScreen {
 	public void initGui() {
 		this.buttonList.clear();
 		this.labelList.clear();
-		if(currentPage == 0)
+		if(currentPage == Pages.MENU)
 		{
 			this.buttonList.add(attack = new GuiButton(0, this.width / 2+10 , this.height / 2 - 82, 80, 20, "Attack"));
 			this.buttonList.add(move = new GuiButton(0, this.width / 2+10 , this.height / 2 - 52, 80, 20, "Movement"));
 			this.buttonList.add(truce = new GuiButton(0, this.width / 2+10 , this.height / 2 - 22, 80, 20, "Truce"));
 			this.buttonList.add(kill = new GuiButton(0, this.width / 2+10 , this.height / 2 + 8, 80, 20, "Kill Servant"));
-			//this.buttonList.add(forfeit = new GuiButton(0, this.width / 2+10 , this.height / 2 + 38, 80, 20, "Give up"));
+			if(this.guiPlayer.getCapability(PlayerCapProvider.PlayerCap, null).getServant(this.guiPlayer)!=null)
+			{
+				if(this.guiPlayer.getCapability(PlayerCapProvider.PlayerCap, null).getServant(this.guiPlayer).specialCommands()!=null)
+					this.buttonList.add(special = new GuiButton(0, this.width / 2+10 , this.height / 2 + 38, 80, 20, "Special"));
+			}
 		}
-		else if (currentPage == 1)
+		else if (currentPage == Pages.ATTACK)
 		{
 			this.buttonList.add(back = new GuiButton(0, this.width / 2+10 , this.height / 2 - 82, 80, 20, "Back"));
 			this.buttonList.add(aggressive = new GuiButton(0, this.width / 2+10 , this.height / 2 - 52, 80, 20, "Aggressive"));
 			this.buttonList.add(normal = new GuiButton(0, this.width / 2+10, this.height / 2 - 22, 80, 20, "Normal"));
 			this.buttonList.add(defensive = new GuiButton(0, this.width / 2+10 , this.height / 2 + 8, 80, 20, "Defensive"));
 		}
-		else if (currentPage == 2)
+		else if (currentPage == Pages.MOVEMENT)
 		{
 			this.buttonList.add(back = new GuiButton(0, this.width / 2+10, this.height / 2 -82, 80, 20, "Back"));
 			this.buttonList.add(follow = new GuiButton(0, this.width / 2+10 , this.height / 2 -52, 80, 20, "Follow"));
@@ -145,7 +149,14 @@ public class CommandGui extends GuiScreen {
 			this.buttonList.add(protect = new GuiButton(0, this.width / 2+10 , this.height / 2 + 8, 80, 20, "Protect"));
 			this.buttonList.add(call = new GuiButton(0, this.width / 2+10 , this.height / 2 + 38, 80, 20, "Call"));
 		}
-		else if (currentPage == 3)
+		else if(currentPage == Pages.SPECIAL)
+		{
+			this.buttonList.add(back = new GuiButton(0, this.width / 2+10, this.height / 2 -82, 80, 20, "Back"));
+			EntityServant servant = this.guiPlayer.getCapability(PlayerCapProvider.PlayerCap, null).getServant(this.guiPlayer);
+			for(int i = 0; i < servant.specialCommands().length; i++)
+				this.buttonList.add(new ButtonSpecial(0, this.width / 2+10 , this.height / 2 -52, 80, 20, servant.specialCommands()[i]));
+		}
+		else if (currentPage == Pages.TRUCE)
 		{
 			Set<Entry<UUID, String>> players = GrailWarHandler.get(this.mc.world).players();
 			if(GrailWarHandler.get(this.mc.world).containsPlayer(this.guiPlayer))
@@ -187,17 +198,22 @@ public class CommandGui extends GuiScreen {
 	@Override
 	protected void actionPerformed(GuiButton button) {
 		if (button == this.attack) {
-			this.currentPage = 1;
+			this.currentPage = Pages.ATTACK;
 			this.initGui();
 	    }
 		if (button == this.move)
 		{
-			this.currentPage = 2;
+			this.currentPage = Pages.MOVEMENT;
 			this.initGui();
 		}
 		if (button == this.truce)
 		{
-			this.currentPage = 3;
+			this.currentPage = Pages.TRUCE;
+			this.initGui();
+		}
+		if(button == this.special)
+		{
+			this.currentPage = Pages.SPECIAL;
 			this.initGui();
 		}
 		if (button == this.kill)
@@ -303,6 +319,10 @@ public class CommandGui extends GuiScreen {
 				theButton.selected=false;
 			}
 		}
+		if(button instanceof ButtonSpecial)
+		{
+			((ButtonSpecial)button).onPressed();
+		}
 		if(button==this.next)
 		{
 			if(this.playerButton!=null && this.trucePage<this.playerButton.length/7)
@@ -321,7 +341,7 @@ public class CommandGui extends GuiScreen {
 		}
 		if(button == this.back)
 		{
-			this.currentPage = 0;
+			this.currentPage = Pages.MENU;
 			this.trucePage=0;
 			this.initGui();
 		}
@@ -382,4 +402,12 @@ public class CommandGui extends GuiScreen {
         }
     }
 	
+	private static enum Pages
+	{
+		MENU,
+		MOVEMENT,
+		ATTACK,
+		SPECIAL,
+		TRUCE;
+	}
 }

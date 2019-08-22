@@ -60,6 +60,8 @@ entity.sasaki.name=Sasaki Kojiro
 servant.unknown=Unknown Servant
 itemGroup.fate=The Fate Universe
 
+medea.circle=Spawn Magic Circle
+
 chat.item.spawn=You already have a servant, spawned a masterless one
 chat.mana.missing=You don't have enough mana
 chat.grailwar.init=A grailwar has been initialized. You have %1$s seconds to join it.

@@ -6,6 +6,12 @@ Fate UBW a0.3.1
 - WIP animation for babylon rings
 - Medea can place a magic circle which empowers her (strength, regen, resistance)
 - Lancelot has a chance to reflect back projectiles
+- Changed to new animation system
+- Fixed EntityAIFollowMaster
+- Gordius wheel takes less damage when charging
+- Added punishment for recalling servants
+- Added magic circle for medea
+- Basically finished grailwar system. Loot as .json file.
 
 Fate UBW a0.3.0
 ==============

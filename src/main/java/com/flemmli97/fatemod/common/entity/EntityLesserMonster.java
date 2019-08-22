@@ -2,8 +2,6 @@ package com.flemmli97.fatemod.common.entity;
 
 import java.util.UUID;
 
-import javax.annotation.Nullable;
-
 import com.flemmli97.fatemod.common.entity.ai.EntityAIStarfishAttack;
 import com.flemmli97.fatemod.common.entity.servant.EntityServant;
 import com.flemmli97.fatemod.common.handler.ConfigHandler;
@@ -11,7 +9,6 @@ import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import com.flemmli97.tenshilib.common.entity.EntityUtil;
 import com.flemmli97.tenshilib.common.entity.IAnimated;
 import com.flemmli97.tenshilib.common.world.RayTraceUtils;
-import com.google.common.base.Predicate;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
@@ -34,15 +31,11 @@ public class EntityLesserMonster extends EntityCreature implements IServantMinio
 	private EntityLivingBase owner;
 	private int livingTicks;
 	private AnimatedAction currentAnim;
-	public static final AnimatedAction walk = new AnimatedAction(31, 0, "walk");
+	public static final AnimatedAction walk = new AnimatedAction(31, 0, "walk", false, 1.1f);
 	public static final AnimatedAction attack = new AnimatedAction(20, 15, "attack");
 	private static final AnimatedAction[] anims = new AnimatedAction[] {walk, attack};
-	public EntityAINearestAttackableTarget<EntityLivingBase> target = new EntityAINearestAttackableTarget<EntityLivingBase>(this, EntityLivingBase.class, 10, true, true, new Predicate<EntityLivingBase>()    {
-        @Override
-		public boolean apply(@Nullable EntityLivingBase living)
-        {
-            return EntityLesserMonster.this.canAttackTarget(living);
-        }});
+	public EntityAINearestAttackableTarget<EntityLivingBase> target = new EntityAINearestAttackableTarget<EntityLivingBase>(this, EntityLivingBase.class, 10, true, true, 
+			(living)->EntityLesserMonster.this.canAttackTarget(living));
 	
 	public EntityLesserMonster(World worldIn) {
 		super(worldIn);
@@ -67,17 +60,22 @@ public class EntityLesserMonster extends EntityCreature implements IServantMinio
         super.applyEntityAttributes();
         this.getAttributeMap().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(ConfigHandler.smallMonsterDamage);
         this.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
-        this.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.24D);
+        this.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
     }
 	
 	@Override
 	public void onLivingUpdate() {
 		super.onLivingUpdate();
-		this.livingTicks++;
-		if(this.livingTicks>ConfigHandler.gillesMinionDuration)
-			this.setDead();
-		if(!this.world.isRemote && this.currentAnim==null && (this.motionX!=0||this.motionZ!=0))
-			this.setAnimation(walk);
+		if(!this.world.isRemote )
+		{
+			this.livingTicks++;
+			if(this.livingTicks>ConfigHandler.gillesMinionDuration)
+				this.setDead();
+			if(this.currentAnim==null && (this.motionX!=0||this.motionZ!=0))
+				this.setAnimation(walk);
+			if(this.getOwner()!=null && this.getOwner().getRevengeTarget()!=null && this.getAttackTarget()==null)
+				this.setAttackTarget(this.getOwner().getRevengeTarget());
+		}
 		this.tickAnimation();
 	}
 	

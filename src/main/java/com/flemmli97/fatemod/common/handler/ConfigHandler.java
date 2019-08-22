@@ -53,7 +53,9 @@ public class ConfigHandler {
 	public static boolean allowDuplicateClass;
 	public static boolean fillMissingSlots=true;
 	public static int maxServantCircle=1;
-	public static int servantSpawnDelay=6000;
+	public static int servantMinSpawnDelay=3000;
+	public static int servantMaxSpawnDelay=6000;
+
 	public static boolean punishTeleport=true;
 	private static final String[] notifyListDef = new String[] {
 			LibEntities.arthur.toString(), LibEntities.gilgamesh.toString(), LibEntities.emiya.toString(), 
@@ -68,6 +70,7 @@ public class ConfigHandler {
 	public static float lancelotReflectChance = 0.3f;
 	//Minions
 	public static int gillesMinionDuration=6000;
+	public static int gillesMinionAmount=6;
 	public static float smallMonsterDamage=12;
 	public static ServantProperties hassanCopy = new ServantProperties(50, 4, 3.5, 0, 12, 2, 0.34, 0, 10, 5);
 	public static float babylonScale = 1.5f;
@@ -106,7 +109,8 @@ public class ConfigHandler {
 		allowDuplicateClass = config.getBoolean("Allow Duplicate Classes", "general", allowDuplicateClass, "Allow the summoning of duplicate servant classes during a grail war");
 		fillMissingSlots = config.getBoolean("Fill Empty Slots", "general", fillMissingSlots, "Fill in missing players till max allowed with npc");
 		maxServantCircle=ConfigUtils.getIntConfig(config, "Servant Amount", "general", maxServantCircle, 1 ,"Amount of masterless servant that can spawn each time. (Fill Empty Slots needs to be true)");
-		servantSpawnDelay=ConfigUtils.getIntConfig(config, "Servant Spawn Delay", "general", servantSpawnDelay, 1200 ,"Time between each attempt to spawn masterless servants. (Fill Empty Slots needs to be true)");
+		servantMinSpawnDelay=ConfigUtils.getIntConfig(config, "Servant Spawn Delay (Min)", "general", servantMinSpawnDelay, 300 ,"Minimum time between each attempt to spawn masterless servants. (Fill Empty Slots needs to be true)");
+		servantMaxSpawnDelay=ConfigUtils.getIntConfig(config, "Servant Spawn Delay (Max)", "general", servantMaxSpawnDelay, servantMinSpawnDelay ,"Maximum time between each attempt to spawn masterless servants. (Fill Empty Slots needs to be true)");
 		punishTeleport = config.getBoolean("Punish Teleport", "general", punishTeleport, "If true makes nearby non friendly servants get speed and target the player when you recall your servant");
 
 		notifyList.clear();
@@ -121,14 +125,17 @@ public class ConfigHandler {
 		ConfigCategory minions = config.getCategory("minions");
 		minions.setLanguageKey("config.fatemod.minions");
 		gillesMinionDuration = config.get("minions", "Gilles Monster", gillesMinionDuration).getInt();
+		gillesMinionAmount = config.get("minions", "Gilles Monster Max Amount", gillesMinionAmount).getInt();
+
 		if(state==LoadState.POSTINIT||state==LoadState.SYNC)
 		{
 			ConfigCategory hassan = config.getCategory("minions.hassancopy");
 			hassan.setLanguageKey("config.fatemod.hassancopy");
 			hassan.setComment("Hassans Clones");
 			hassanCopy.config(config, "minions.hassancopy");
-			gaeBolgEffect.readFromString(config.getStringList("Gae Bolg Effects", "minion", gaeBolgEffect.writeToString(), gaeBolgEffect.usage()));
+			gaeBolgEffect.readFromString(config.getStringList("Gae Bolg Effects", "minions", gaeBolgEffect.writeToString(), gaeBolgEffect.usage()));
 			gaeBolgDmg = ConfigUtils.getFloatConfig(config, "Gae Bolg Damage", "minions", gaeBolgDmg, "");
+			GrailReward.load();
 		}
 		smallMonsterDamage  = ConfigUtils.getFloatConfig(config, "Small Monster Damage", "minions", smallMonsterDamage, "Monster summoned by Gilles");
 		babylonScale = ConfigUtils.getFloatConfig(config, "Babylon Damage Scale", "minions", babylonScale, "Damage scaling for projectiles from the gate of babylon");

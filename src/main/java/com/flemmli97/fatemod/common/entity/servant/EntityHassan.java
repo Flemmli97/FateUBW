@@ -3,18 +3,14 @@ package com.flemmli97.fatemod.common.entity.servant;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import com.flemmli97.fatemod.common.entity.servant.ai.EntityAIHassan;
 import com.flemmli97.fatemod.common.init.ModItems;
 import com.flemmli97.fatemod.common.utils.ServantUtils;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
-import com.google.common.base.Predicate;
 
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -43,19 +39,9 @@ public class EntityHassan extends EntityServant {
 		super(world, EnumServantType.ASSASSIN, "Delusional Illusion", new ItemStack[] {new ItemStack(ModItems.dagger)});
         this.tasks.addTask(1, attackAI);
 	    this.targetTasks.removeTask(targetServant);
-	    this.targetServant = new EntityAINearestAttackableTarget<EntityServant>(this, EntityServant.class, 10, true, true, new Predicate<EntityServant>()    {
-	        @Override
-			public boolean apply(@Nullable EntityServant living)
-	        {
-	        		boolean flag = true;
-	        		EntityPlayer targetOwner = living.getOwner();
+	    this.targetServant = new EntityAINearestAttackableTarget<EntityServant>(this, EntityServant.class, 10, true, true, 
+	    		(living)->living != null && !ServantUtils.inSameTeam(living, EntityHassan.this) && !EntityHassan.this.copieUUID.contains(living.getCachedUniqueIdString()));
 
-	        		if(EntityHassan.this.getOwner()!=null && targetOwner!=null)
-	        		{
-	        			flag = !ServantUtils.inSameTeam(EntityHassan.this.getOwner(), targetOwner);
-	        		}
-	            return living != null && flag && !EntityHassan.this.copieUUID.contains(living.getCachedUniqueIdString());
-	        }});
 	    this.targetTasks.addTask(0, targetServant);
 	}
 	
