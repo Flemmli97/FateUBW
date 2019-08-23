@@ -1,4 +1,4 @@
-Fate UBW a0.3.1
+Fate UBW a0.4.0
 =============
 - Added model for gilles tentacle monster
 - Fixed sasaki not attacking
