@@ -47,6 +47,7 @@ jar {
 }
 
 dependencies {
+  compile astral_scorcery_dep
   deobfCompile "tenshilib:TenshiLib:1.12.2:${tenshilib_version}"
 }
 
