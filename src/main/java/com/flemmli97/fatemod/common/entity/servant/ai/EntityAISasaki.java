@@ -31,7 +31,7 @@ public class EntityAISasaki extends EntityAIAnimatedAttack{
 			this.attackingEntity.getNavigator().tryMoveToEntityLiving(target, 1);
         	if(((EntitySasaki)this.attackingEntity).canAttackNP() && distanceToTarget<(2.5*2.5))
         	{
-        		target.attackEntityFrom(CustomDamageSource.hiKen(attackingEntity), 10*this.damageAdd[this.attackCount]);
+        		target.attackEntityFrom(CustomDamageSource.hiKen(attackingEntity), 10+this.damageAdd[this.attackCount]);
 				this.attackCount++;
 				if(this.attackCount>2)
 				{
@@ -39,6 +39,7 @@ public class EntityAISasaki extends EntityAIAnimatedAttack{
         				this.attackingEntity.useMana(attackingEntity.props().hogouMana());
 					this.attackCount=0;
         			this.attackingEntity.forcedNP = false;
+        			this.attackCooldown=10;
 				}
         	}       		
         }

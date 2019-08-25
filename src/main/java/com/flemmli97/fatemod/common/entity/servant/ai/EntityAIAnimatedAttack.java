@@ -21,7 +21,7 @@ public class EntityAIAnimatedAttack extends EntityAIBase{
 	protected boolean evade, isRanged;
     
     protected int moveDelay;
-    private int attackCooldown;
+    protected int attackCooldown;
     protected double posX,posY,posZ,rangeModifier;
 	
     /**doAttackTime is the time during animationDuration, when the entity should deal damage. Should be smaller than animationduration;

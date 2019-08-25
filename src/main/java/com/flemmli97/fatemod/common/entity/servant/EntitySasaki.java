@@ -15,7 +15,7 @@ public class EntitySasaki extends EntityServant {
 
 	public EntityAISasaki attackAI = new EntityAISasaki(this);
 	
-	private static final AnimatedAction npAttack = new AnimatedAction(20,0,"np");
+	private static final AnimatedAction npAttack = new AnimatedAction(40,0,"np");
 	private static final AnimatedAction[] anims = new AnimatedAction[] {AnimatedAction.vanillaAttack, npAttack};
 
 	public EntitySasaki(World world) {
@@ -78,7 +78,10 @@ public class EntitySasaki extends EntityServant {
 	}
 
 	public boolean canAttackNP() {
-		return false;
+		if(this.getAnimation()==null || !this.canUse(this.getAnimation(), AttackType.NP))
+			return false;
+		int i = this.getAnimation().getTick();
+		return i==30||i==20||i==10;
 	}
 
 }
