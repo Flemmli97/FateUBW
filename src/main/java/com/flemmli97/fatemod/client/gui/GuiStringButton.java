@@ -7,24 +7,25 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.ResourceLocation;
 
 
-public class GuiUUIDButton extends GuiButton{
+public class GuiStringButton extends GuiButton{
 
 	public boolean selected;
-	private String uuid="";
+	private String string="";
 	protected static final ResourceLocation guiStuff = new ResourceLocation(LibReference.MODID + "textures/gui/buttons.png");
 
-	public GuiUUIDButton(int buttonId, int x, int y, int widthIn, int heightIn, String buttonText) {
+	public GuiStringButton(int buttonId, int x, int y, int widthIn, int heightIn, String buttonText) {
 		super(buttonId, x, y, widthIn, heightIn, buttonText);
 	}
 	
-	public void setUUID(String uuid)
+	public GuiStringButton setSavedString(String uuid)
 	{
-		this.uuid=uuid;
+		this.string=uuid;
+		return this;
 	}
 	
-	public String getUUID()
+	public String getSavedString()
 	{
-		return this.uuid;
+		return this.string;
 	}
 
 	@Override

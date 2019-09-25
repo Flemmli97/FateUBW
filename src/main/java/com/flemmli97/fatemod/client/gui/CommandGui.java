@@ -31,7 +31,7 @@ public class CommandGui extends GuiScreen {
 	public EntityServant servant;
 	private GuiButton attack,aggressive,normal,defensive,useNP,move,follow,stay,protect,truce,kill,back,call,special;
 	private ButtonTrucePage next, prev;
-	private GuiUUIDButton accept, remove, request;
+	private GuiStringButton accept, remove, request;
 	private Pages currentPage = Pages.MENU;
 	private int trucePage = 0;
 	private Random rand = new Random();
@@ -186,9 +186,9 @@ public class CommandGui extends GuiScreen {
 			this.buttonList.add(this.prev=new ButtonTrucePage(0,this.width / 2+4,this.height / 2+62,false));
 
 			this.buttonList.add(this.back = new GuiButton(0, this.width / 2-90, this.height / 2 -5, 80, 20, "Back"));
-			this.buttonList.add(this.request = new GuiUUIDButton(0, this.width / 2-90 , this.height / 2 +25, 80, 20, "Request Truce"));
-			this.buttonList.add(this.accept = new GuiUUIDButton(0, this.width / 2-90 , this.height / 2 +45, 80, 20, "Accept"));
-			this.buttonList.add(this.remove = new GuiUUIDButton(0, this.width / 2-90 , this.height / 2 +65, 80, 20, "Remove"));
+			this.buttonList.add(this.request = new GuiStringButton(0, this.width / 2-90 , this.height / 2 +25, 80, 20, "Request Truce"));
+			this.buttonList.add(this.accept = new GuiStringButton(0, this.width / 2-90 , this.height / 2 +45, 80, 20, "Accept"));
+			this.buttonList.add(this.remove = new GuiStringButton(0, this.width / 2-90 , this.height / 2 +65, 80, 20, "Remove"));
 			this.request.enabled=false;
 			this.accept.enabled=false;
 			this.remove.enabled=false;
@@ -259,28 +259,28 @@ public class CommandGui extends GuiScreen {
 		}
 		if(button == this.request)
 		{
-			GuiUUIDButton req = (GuiUUIDButton) button;
-			if(!req.getUUID().isEmpty())
+			GuiStringButton req = (GuiStringButton) button;
+			if(!req.getSavedString().isEmpty())
 			{
-				PacketHandler.sendToServer(new MessageTruce(0, req.getUUID()));
+				PacketHandler.sendToServer(new MessageTruce(0, req.getSavedString()));
 				this.initGui();
 			}
 		}
 		if(button == this.accept)
 		{
-			GuiUUIDButton req = (GuiUUIDButton) button;
-			if(!req.getUUID().isEmpty())
+			GuiStringButton req = (GuiStringButton) button;
+			if(!req.getSavedString().isEmpty())
 			{
-				PacketHandler.sendToServer(new MessageTruce(1, req.getUUID()));
+				PacketHandler.sendToServer(new MessageTruce(1, req.getSavedString()));
 				this.initGui();
 			}
 		}
 		if(button == this.remove)
 		{
-			GuiUUIDButton req = (GuiUUIDButton) button;
-			if(!req.getUUID().isEmpty())
+			GuiStringButton req = (GuiStringButton) button;
+			if(!req.getSavedString().isEmpty())
 			{
-				PacketHandler.sendToServer(new MessageTruce(2, req.getUUID()));
+				PacketHandler.sendToServer(new MessageTruce(2, req.getSavedString()));
 				this.initGui();
 			}
 		}
@@ -296,13 +296,13 @@ public class CommandGui extends GuiScreen {
 				switch(theButton.getState())
 				{
 				case NONE:
-					request.setUUID(theButton.getUUID());
+					request.setSavedString(theButton.getUUID());
 					break;
 				case PENDING:
-					accept.setUUID(theButton.getUUID());
+					accept.setSavedString(theButton.getUUID());
 					break;
 				case TRUCE:
-					remove.setUUID(theButton.getUUID());
+					remove.setSavedString(theButton.getUUID());
 					break;
 				default:
 					break;	
@@ -313,9 +313,9 @@ public class CommandGui extends GuiScreen {
 				request.enabled=false;
 				accept.enabled=false;
 				remove.enabled=false;
-				request.setUUID("");
-				accept.setUUID("");
-				remove.setUUID("");
+				request.setSavedString("");
+				accept.setSavedString("");
+				remove.setSavedString("");
 				theButton.selected=false;
 			}
 		}
@@ -388,9 +388,9 @@ public class CommandGui extends GuiScreen {
 		request.enabled=false;
 		accept.enabled=false;
 		remove.enabled=false;
-		request.setUUID("");
-		accept.setUUID("");
-		remove.setUUID("");
+		request.setSavedString("");
+		accept.setSavedString("");
+		remove.setSavedString("");
 	}
 	
 	@Override

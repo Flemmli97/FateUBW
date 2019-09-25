@@ -2,6 +2,7 @@ package com.flemmli97.fatemod.proxy;
 
 
 import java.util.List;
+import java.util.Set;
 
 import com.flemmli97.fatemod.Fate;
 import com.flemmli97.fatemod.client.gui.GuiHandler;
@@ -114,5 +115,10 @@ public class CommonProxy {
     public IAnimationStateMachine getASM(ResourceLocation res)
     {
     	return null;
+    }
+    
+    public void openGrailGui(Set<String> rewards)
+    {
+    	
     }
 }

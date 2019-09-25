@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class MessageGui  implements IMessage{
 
-	int message;
+	private int message;
 	public MessageGui(){}
 	
 	/** 1=ServantInfo, 2=GrailWarTracker*/
@@ -32,10 +32,12 @@ public class MessageGui  implements IMessage{
 		buf.writeInt(message);
 	}
 	
-	public static class Handler implements IMessageHandler<MessageGui, IMessage> {
+	public static class Handler implements IMessageHandler<MessageGui, IMessage> 
+	{
 
         @Override
-        public IMessage onMessage(MessageGui msg, MessageContext ctx) {
+        public IMessage onMessage(MessageGui msg, MessageContext ctx) 
+        {
         	EntityPlayer player = Fate.proxy.getPlayerEntity(ctx);
         	if(msg.message==1)
         	{

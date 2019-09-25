@@ -38,7 +38,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public class GrailReward {
 
-	private static Map<String,List<Loot>> loots = Maps.newHashMap();
+	private static Map<String,List<Loot>> loots = Maps.newLinkedHashMap();
 	private static final Gson GSON  = new GsonBuilder().create();
 	private static JsonConfig<JsonObject> lootConf;
 	
@@ -133,7 +133,8 @@ public class GrailReward {
 
 	public static void giveRewards(String type, EntityPlayer player)
 	{
-		loots.get(type).forEach(loot->{if(player.getRNG().nextFloat()<loot.getChance()) loot.give(player);});
+		if(loots.containsKey(type))
+			loots.get(type).forEach(loot->{if(player.getRNG().nextFloat()<loot.getChance()) loot.give(player);});
 	}
 	
 	public static Set<String> lootSets()

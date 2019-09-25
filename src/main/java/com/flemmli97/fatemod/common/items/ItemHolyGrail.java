@@ -1,10 +1,12 @@
 package com.flemmli97.fatemod.common.items;
 
 import com.flemmli97.fatemod.Fate;
-import com.flemmli97.fatemod.common.handler.GrailReward;
 import com.flemmli97.fatemod.common.lib.LibReference;
+import com.flemmli97.fatemod.network.MessageGrailGui;
+import com.flemmli97.fatemod.network.PacketHandler;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
@@ -26,9 +28,8 @@ public class ItemHolyGrail extends Item{
 	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
 		if(world.isRemote)
 			return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
-		//GrailReward.giveRewards("astral", player);
-		player.getHeldItem(hand).shrink(1);
 		//TODO: add some kind of animation?
+		PacketHandler.sendTo(new MessageGrailGui(), (EntityPlayerMP) player);
 		return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
 	}
 	

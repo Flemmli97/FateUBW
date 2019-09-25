@@ -1,8 +1,11 @@
 package com.flemmli97.fatemod.proxy;
 
+import java.util.Set;
+
 import org.lwjgl.input.Keyboard;
 
 import com.flemmli97.fatemod.client.gui.CommandGui;
+import com.flemmli97.fatemod.client.gui.GuiHolyGrail;
 import com.flemmli97.fatemod.client.render.MultiItemColor;
 import com.flemmli97.fatemod.client.render.servant.RenderServant;
 import com.flemmli97.fatemod.common.entity.servant.EntityServant;
@@ -91,5 +94,11 @@ public class ClientProxy extends CommonProxy {
 	public IAnimationStateMachine getASM(ResourceLocation res)
     {
     	return ModelLoaderRegistry.loadASM(res, ImmutableMap.of());
+    }
+	
+	@Override
+	public void openGrailGui(Set<String> rewards)
+    {
+    	Minecraft.getMinecraft().displayGuiScreen(new GuiHolyGrail(rewards));
     }
 }
