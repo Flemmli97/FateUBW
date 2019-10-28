@@ -25,7 +25,7 @@ public class EntityCuchulainn extends EntityServant {
 	
 	private int gaeBolgThrowTick;
 	
-	private static final AnimatedAction npAttack = new AnimatedAction(20,10,"np");
+	private static final AnimatedAction npAttack = new AnimatedAction(19,15,"gae_bolg");
 	private static final AnimatedAction[] anims = new AnimatedAction[] {AnimatedAction.vanillaAttack, npAttack};
 
 	public EntityCuchulainn(World world) {
@@ -42,7 +42,7 @@ public class EntityCuchulainn extends EntityServant {
 	public boolean canUse(AnimatedAction anim, AttackType type)
 	{
 		if(type==AttackType.NP)
-			return anim.getID().equals("np");
+			return anim.getID().equals("gae_bolg");
 		return anim.getID().equals("vanilla");
 	}
 	

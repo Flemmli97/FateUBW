@@ -1,0 +1,669 @@
+{
+  "name": "Swing1",
+  "identifier": "YY/>.i^2$r%h*PDJ_QBK",
+  "loops": true,
+  "sets": {
+    "=h^O>mln(#qJhur['>aV": [
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          15.0,
+          0.0,
+          0.0
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "progressionCoords": [
+          [
+            0.316,
+            0.968
+          ],
+          [
+            0.704,
+            0.616
+          ]
+        ],
+        "name": "leftlegdown",
+        "length": 10,
+        "startKey": 0,
+        "hidden": false,
+        "identifier": "u/`IQErJD4$wirG[Uf$9"
+      },
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          -15.0,
+          0.0,
+          0.0
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "NewComponent",
+        "length": 3,
+        "startKey": 15,
+        "hidden": false,
+        "identifier": "K`Qst)NqEjUA<KfjgP!6"
+      }
+    ],
+    "DPiw;,ZMQP__k~Qt\\H\"Y": [
+      {
+        "posChange": [
+          0.0,
+          1.8,
+          0.0
+        ],
+        "rotChange": [
+          20.0,
+          -15.0,
+          0.0
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "body",
+        "length": 10,
+        "startKey": 0,
+        "hidden": false,
+        "identifier": "Bqgy)Ow+70/b`D1hk`\"%"
+      },
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          -10.0,
+          20.0,
+          0.0
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "body2",
+        "length": 5,
+        "startKey": 10,
+        "hidden": false,
+        "identifier": "c'O{##hrm=[)>XSdz5a:"
+      },
+      {
+        "posChange": [
+          0.0,
+          -1.8,
+          0.0
+        ],
+        "rotChange": [
+          -10.0,
+          -5.0,
+          0.0
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "NewComponent",
+        "length": 3,
+        "startKey": 15,
+        "hidden": false,
+        "identifier": "5EtSZesX-AY7~HE\"9;:q"
+      }
+    ],
+    "N*F)8\\6Y'V<2\\NnH&CyV": [
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          20.0,
+          0.0,
+          0.0
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "rightlegdown",
+        "length": 10,
+        "startKey": 0,
+        "hidden": false,
+        "identifier": "-Y)J6E/QN[bmlkU\\Ehz5"
+      },
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          -20.0,
+          0.0,
+          -0.9367682586775997
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "NewComponent",
+        "length": 3,
+        "startKey": 15,
+        "hidden": false,
+        "identifier": "{J9`CumX13+N')F?b^xj"
+      }
+    ],
+    "T>6E;7^Vxg<pk5Y*RcTX": [
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          -40.0,
+          5.0,
+          0.0
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "rightleg",
+        "length": 10,
+        "startKey": 0,
+        "hidden": false,
+        "identifier": ",I'K|$p5W3HK&pA6Wd~f"
+      },
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          40.0,
+          -5.0,
+          0.0
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "NewComponent",
+        "length": 3,
+        "startKey": 15,
+        "hidden": false,
+        "identifier": "+.~]uw$<h]GTRNQ_5IUi"
+      }
+    ],
+    "YX^ZWg\"T&]Xr^Vg5u_1m": [
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          -45.0,
+          -31.3,
+          -10.430000000000383
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "rightarm",
+        "length": 10,
+        "startKey": 0,
+        "hidden": false,
+        "identifier": "*\"K|}071mZcX/Y]K @0-"
+      },
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          -15.0,
+          106.95,
+          59.99999999999962
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "rightarm2",
+        "length": 5,
+        "startKey": 10,
+        "hidden": false,
+        "identifier": "%!hdN?&wu6q-\"%FO}%yr"
+      },
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          60.0,
+          -75.64999999999998,
+          -49.569999999999624
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "NewComponent",
+        "length": 3,
+        "startKey": 15,
+        "hidden": false,
+        "identifier": "K>*:/1{a9@.Cwq\"SuWi-"
+      }
+    ],
+    "eZpeOvv~,q3dEXNP@x6+": [
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          -10.43,
+          0.0,
+          0.0
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "NewComponent",
+        "length": 5,
+        "startKey": 10,
+        "hidden": false,
+        "identifier": "}Bkih8fw>}4@9(SWSonw"
+      },
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          10.43,
+          0.0,
+          0.0
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "NewComponent",
+        "length": 3,
+        "startKey": 15,
+        "hidden": false,
+        "identifier": "/$2HIL{a?oc@1M_W-S/k"
+      }
+    ],
+    "zvC9'k]GdZrA_x{pOJZ<": [
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          0.0,
+          0.0,
+          -40.0
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "rightarmdown",
+        "length": 10,
+        "startKey": 0,
+        "hidden": false,
+        "identifier": "T8\"<,@Q)YR%$smh]JAz]"
+      },
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          0.0,
+          0.0,
+          40.0
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "rightarm2",
+        "length": 5,
+        "startKey": 10,
+        "hidden": false,
+        "identifier": "g7TYA:eU+t|n=*x`1~*Y"
+      }
+    ]
+  },
+  "identifierMap": {
+    "servantBody": "DPiw;,ZMQP__k~Qt\\H\"Y",
+    "servantHead": "tIv,_nq[vIqT1Ka>SZ~S",
+    "servantLeftArmUp": "eZpeOvv~,q3dEXNP@x6+",
+    "servantLeftArmJoint": "Y4O(A9sCTpNR2\\v)MHlJ",
+    "servantLeftArmDown": "[)\"c0U}I&/e loG3vJvA",
+    "servantLeftLegUp": "o\"u4e5w$RfpX#P BolrK",
+    "servantLeftLegDown": "=h^O>mln(#qJhur['>aV",
+    "servantRightLegUp": "T>6E;7^Vxg<pk5Y*RcTX",
+    "servantRightLegDown": "N*F)8\\6Y'V<2\\NnH&CyV",
+    "servantRightArmUp": "YX^ZWg\"T&]Xr^Vg5u_1m",
+    "servantRightArmJoint": ".5!?Lrm-9oay6}.1}c^+",
+    "servantRightArmDown": "zvC9'k]GdZrA_x{pOJZ<"
+  }
+}

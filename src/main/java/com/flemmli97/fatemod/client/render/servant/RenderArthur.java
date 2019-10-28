@@ -11,9 +11,13 @@ import net.minecraft.util.ResourceLocation;
 public class RenderArthur extends RenderServant<EntityArthur>
 {
     private static final ResourceLocation textures = new ResourceLocation(LibReference.MODID, "textures/entity/servant/arthur.png");
-	private static ModelArthur model = new ModelArthur();
-	public static Animation hit1 = new Animation(model, new ResourceLocation(LibReference.MODID, "models/entity/animation/arthur 1.json"));
-    public RenderArthur(RenderManager renderManager)
+	private static final ModelArthur model = new ModelArthur();
+	//18, attack at 15
+	public static Animation swing_1 = new Animation(model, new ResourceLocation(LibReference.MODID, "models/entity/animation/swing_1.json"));
+    //21, attack at 17
+	public static Animation excalibur = new Animation(model, new ResourceLocation(LibReference.MODID, "models/entity/animation/excalibur.json"));
+
+	public RenderArthur(RenderManager renderManager)
     {
         super(renderManager, model, 0.5F);
     }

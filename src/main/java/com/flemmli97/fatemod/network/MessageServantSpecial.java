@@ -5,9 +5,9 @@ import com.flemmli97.fatemod.common.entity.servant.EntityServant;
 import com.flemmli97.fatemod.common.handler.capabilities.IPlayer;
 import com.flemmli97.fatemod.common.handler.capabilities.PlayerCapProvider;
 
-import hellfirepvp.astralsorcery.common.util.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -25,12 +25,12 @@ public class MessageServantSpecial implements IMessage{
 	
 	@Override
 	public void fromBytes(ByteBuf buf) {
-		specialID = ByteBufUtils.readString(buf);
+		specialID = ByteBufUtils.readUTF8String(buf);
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf) {
-		ByteBufUtils.writeString(buf, specialID);
+		ByteBufUtils.writeUTF8String(buf, specialID);
 	}
 	
 	public static class Handler implements IMessageHandler<MessageServantSpecial, IMessage> {

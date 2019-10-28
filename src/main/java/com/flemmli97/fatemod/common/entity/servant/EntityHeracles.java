@@ -18,6 +18,9 @@ import net.minecraft.world.World;
 
 public class EntityHeracles extends EntityServant {
 
+	private static final AnimatedAction swing_1 = new AnimatedAction(20,18,"swing_1");
+	private static final AnimatedAction[] anims = new AnimatedAction[] {swing_1};
+
     protected static final DataParameter<Integer> deathCount = EntityDataManager.<Integer>createKey(EntityHeracles.class, DataSerializers.VARINT );
 	private boolean voidDeath;
 	public EntityAIHeracles attackAI = new EntityAIHeracles(this);
@@ -41,7 +44,7 @@ public class EntityHeracles extends EntityServant {
 	
 	@Override
 	public AnimatedAction[] getAnimations() {
-		return AnimatedAction.vanillaAttackOnly;
+		return anims;
 	}
 	
 	@Override
@@ -138,5 +141,9 @@ public class EntityHeracles extends EntityServant {
 		this.voidDeath = tag.getBoolean("DeathType");
 	}
 	
-	
+	@Override
+	public int attackCooldown()
+	{
+		return 7;
+	}
 }

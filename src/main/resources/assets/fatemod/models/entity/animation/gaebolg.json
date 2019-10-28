@@ -1,0 +1,895 @@
+{
+  "name": "gaeBolg",
+  "identifier": "l+u72}__Q!m5F$g<]-K{",
+  "loops": false,
+  "sets": {
+    "=h^O>mln(#qJhur['>aV": [
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          5.0,
+          0.0,
+          0.0
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "NewComponent",
+        "length": 5,
+        "startKey": 10,
+        "hidden": false,
+        "identifier": "S$L|v0vK:7Ew:i*!&K8 "
+      },
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          -5.0,
+          0.0,
+          0.0
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "NewComponent",
+        "length": 4,
+        "startKey": 15,
+        "hidden": false,
+        "identifier": "Ci/&c'A*M_\\3vm^AFVu+"
+      }
+    ],
+    "DPiw;,ZMQP__k~Qt\\H\"Y": [
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          -5.0,
+          10.0,
+          0.0
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "NewComponent",
+        "length": 10,
+        "startKey": 0,
+        "hidden": false,
+        "identifier": "y$u1wCSrv*[)2;28]Zgr"
+      },
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          15.0,
+          -15.0,
+          0.0
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "NewComponent",
+        "length": 5,
+        "startKey": 10,
+        "hidden": false,
+        "identifier": "2ngjVX/G@O,8/Qo+|=|A"
+      },
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          -10.0,
+          5.0,
+          0.0
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "NewComponent",
+        "length": 4,
+        "startKey": 15,
+        "hidden": false,
+        "identifier": "B!_X?s\\*9&5cs6k&\"^X\\"
+      }
+    ],
+    "N*F)8\\6Y'V<2\\NnH&CyV": [
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          5.0,
+          0.0,
+          0.0
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "NewComponent",
+        "length": 5,
+        "startKey": 10,
+        "hidden": false,
+        "identifier": "~X~2?'d%~8~O+jT2v&N0"
+      },
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          -5.0,
+          0.0,
+          0.0
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "NewComponent",
+        "length": 4,
+        "startKey": 15,
+        "hidden": false,
+        "identifier": "T=ztEuxkLc?mf./bm_QC"
+      }
+    ],
+    "T>6E;7^Vxg<pk5Y*RcTX": [
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          7.0,
+          0.0,
+          0.0
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "NewComponent",
+        "length": 10,
+        "startKey": 0,
+        "hidden": false,
+        "identifier": "^~xT TZ]+clOsUq\"R(!T"
+      },
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          8.0,
+          0.0,
+          0.0
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "NewComponent",
+        "length": 5,
+        "startKey": 10,
+        "hidden": false,
+        "identifier": "=gwEWh)sS%QmUFLCQ:gl"
+      },
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          -15.0,
+          0.0,
+          0.0
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "NewComponent",
+        "length": 4,
+        "startKey": 15,
+        "hidden": false,
+        "identifier": "ba_iZL^/c u9=[,TUW\\<"
+      }
+    ],
+    "YX^ZWg\"T&]Xr^Vg5u_1m": [
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          -200.0,
+          0.0,
+          0.0
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "NewComponent",
+        "length": 10,
+        "startKey": 0,
+        "hidden": false,
+        "identifier": "c^V]{nu9\\D;S:\"5sMbXF"
+      },
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          160.0,
+          0.0,
+          0.0
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "NewComponent",
+        "length": 5,
+        "startKey": 10,
+        "hidden": false,
+        "identifier": "@h2?A@q1\"QK3ZTzN\"u6R"
+      },
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          40.0,
+          0.0,
+          0.0
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "NewComponent",
+        "length": 4,
+        "startKey": 15,
+        "hidden": false,
+        "identifier": "v\"J9t_B+lMPU^`:cjI~F"
+      }
+    ],
+    "[)\"c0U}I&/e loG3vJvA": [
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          -5.0,
+          0.0,
+          0.0
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "NewComponent",
+        "length": 10,
+        "startKey": 0,
+        "hidden": false,
+        "identifier": ".E3,Mc5r8A4mD@IH1,$r"
+      },
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          10.0,
+          0.0,
+          0.0
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "NewComponent",
+        "length": 5,
+        "startKey": 10,
+        "hidden": false,
+        "identifier": ":}3<H*=AUw*rR4EOH)`0"
+      },
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          -5.0,
+          0.0,
+          0.0
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "NewComponent",
+        "length": 4,
+        "startKey": 15,
+        "hidden": false,
+        "identifier": "tfRzBrR>ejIE8A_,*D_}"
+      }
+    ],
+    "eZpeOvv~,q3dEXNP@x6+": [
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          -10.0,
+          0.0,
+          0.0
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "NewComponent",
+        "length": 10,
+        "startKey": 0,
+        "hidden": false,
+        "identifier": "y/87{W#)E2nm{1ThdThM"
+      },
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          30.0,
+          0.0,
+          0.0
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "NewComponent",
+        "length": 5,
+        "startKey": 10,
+        "hidden": false,
+        "identifier": "vZdwUdkC_Ey1W`Pr+M0X"
+      },
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          -20.0,
+          0.0,
+          0.0
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "NewComponent",
+        "length": 4,
+        "startKey": 15,
+        "hidden": false,
+        "identifier": "e\\B(s(I~Ti@UWRaTs$?K"
+      }
+    ],
+    "o\"u4e5w$RfpX#P BolrK": [
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          7.0,
+          0.0,
+          0.0
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "NewComponent",
+        "length": 10,
+        "startKey": 0,
+        "hidden": false,
+        "identifier": "mr?a1jYZ{r_TKdbXbC<d"
+      },
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          8.0,
+          0.0,
+          0.0
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "NewComponent",
+        "length": 5,
+        "startKey": 10,
+        "hidden": false,
+        "identifier": ")FHJ7rMhUNGGMxr,Mj ~"
+      },
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          -15.0,
+          0.0,
+          0.0
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "NewComponent",
+        "length": 4,
+        "startKey": 15,
+        "hidden": false,
+        "identifier": ")fq^hyYO))o:vbKMtqJE"
+      }
+    ]
+  },
+  "identifierMap": {
+    "servantBody": "DPiw;,ZMQP__k~Qt\\H\"Y",
+    "servantHead": "tIv,_nq[vIqT1Ka>SZ~S",
+    "servantLeftArmUp": "eZpeOvv~,q3dEXNP@x6+",
+    "servantLeftArmJoint": "Y4O(A9sCTpNR2\\v)MHlJ",
+    "servantLeftArmDown": "[)\"c0U}I&/e loG3vJvA",
+    "servantLeftLegUp": "o\"u4e5w$RfpX#P BolrK",
+    "servantLeftLegDown": "=h^O>mln(#qJhur['>aV",
+    "servantRightLegUp": "T>6E;7^Vxg<pk5Y*RcTX",
+    "servantRightLegDown": "N*F)8\\6Y'V<2\\NnH&CyV",
+    "servantRightArmUp": "YX^ZWg\"T&]Xr^Vg5u_1m",
+    "servantRightArmJoint": ".5!?Lrm-9oay6}.1}c^+",
+    "servantRightArmDown": "zvC9'k]GdZrA_x{pOJZ<"
+  }
+}

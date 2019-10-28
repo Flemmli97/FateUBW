@@ -31,7 +31,7 @@ public class EntityLesserMonster extends EntityCreature implements IServantMinio
 	private EntityLivingBase owner;
 	private int livingTicks;
 	private AnimatedAction currentAnim;
-	public static final AnimatedAction walk = new AnimatedAction(31, 0, "walk", false, 1.1f);
+	public static final AnimatedAction walk = new AnimatedAction(31, 0, "walk");
 	public static final AnimatedAction attack = new AnimatedAction(20, 15, "attack");
 	private static final AnimatedAction[] anims = new AnimatedAction[] {walk, attack};
 	public EntityAINearestAttackableTarget<EntityLivingBase> target = new EntityAINearestAttackableTarget<EntityLivingBase>(this, EntityLivingBase.class, 10, true, true, 
@@ -59,6 +59,7 @@ public class EntityLesserMonster extends EntityCreature implements IServantMinio
     {
         super.applyEntityAttributes();
         this.getAttributeMap().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(ConfigHandler.smallMonsterDamage);
+        this.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(18);;
         this.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
         this.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
     }

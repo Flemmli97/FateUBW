@@ -1,13 +1,17 @@
 package com.flemmli97.fatemod.client.model.servant;
 
+import com.flemmli97.fatemod.client.render.servant.RenderArthur;
 import com.flemmli97.fatemod.common.entity.servant.EntityArthur;
 import com.flemmli97.tenshilib.client.model.ModelUtils;
+import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 
 public class ModelArthur extends ModelServant {
 	
-	public ModelArthur() {
+	public ModelArthur() 
+	{
 		super();
 	}
 
@@ -20,7 +24,6 @@ public class ModelArthur extends ModelServant {
 
 		EntityArthur arthur = (EntityArthur)entity;
 		
-		//float partialTicks = Minecraft.getMinecraft().getRenderPartialTicks();
 		if(arthur.isStaying())
 		{
 			servantRightArmUp.rotateAngleX = ModelUtils.degToRad(-28.70F);
@@ -46,6 +49,18 @@ public class ModelArthur extends ModelServant {
 			servantRightLegUp.rotateAngleX = ModelUtils.degToRad(-14);
 			servantRightLegDown.rotateAngleX= ModelUtils.degToRad(14);
 		}
-		syncOverlay();		
+		else
+		{
+			float partialTicks = Minecraft.getMinecraft().getRenderPartialTicks();
+			AnimatedAction anim = arthur.getAnimation();
+	    	if(anim!=null)
+	    	{
+	    		if(anim.getID().equals("swing_1"))
+	    			RenderArthur.swing_1.animate(anim.getTick(), partialTicks);
+	    		if(anim.getID().equals("excalibur"))
+	    			RenderArthur.excalibur.animate(anim.getTick(), partialTicks);
+	    	}
+		}
+		this.syncOverlay();		
 	}	
 }

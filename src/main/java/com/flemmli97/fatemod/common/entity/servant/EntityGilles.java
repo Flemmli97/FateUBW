@@ -18,7 +18,7 @@ public class EntityGilles extends EntityServant implements IRanged{
 
 	EntityAIGilles attackAI = new EntityAIGilles(this);
 
-	private static final AnimatedAction rangedAttack = new AnimatedAction(80, 40, "ranged");
+	private static final AnimatedAction rangedAttack = new AnimatedAction(38, 25, "ranged");
 	private static final AnimatedAction npAttack = new AnimatedAction(20,0,"np");
 	private static final AnimatedAction[] anims = new AnimatedAction[] {rangedAttack, npAttack};
 
@@ -48,7 +48,7 @@ public class EntityGilles extends EntityServant implements IRanged{
 	@Override
 	public int attackCooldown()
 	{
-		return 20;
+		return 60;
 	}
 	
 	@Override
@@ -77,9 +77,9 @@ public class EntityGilles extends EntityServant implements IRanged{
 	public void attackWithNP() {
 		if(!this.world.isRemote)
 		{
-			EntityMonster minion = new EntityMonster(this.world, this);
-			this.world.spawnEntity(minion);
-			minion.setAttackTarget(this.getAttackTarget());
+			//EntityMonster minion = new EntityMonster(this.world, this);
+			//this.world.spawnEntity(minion);
+			//minion.setAttackTarget(this.getAttackTarget());
 		}
 	}
 

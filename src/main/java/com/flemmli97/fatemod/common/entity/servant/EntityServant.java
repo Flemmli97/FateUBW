@@ -740,9 +740,9 @@ public abstract class EntityServant extends EntityCreature implements IAnimated{
 	}
 	
 	@Override
-	public void knockBack(Entity entityIn, float strenght, double xRatio, double zRatio) {
-		strenght *= 0.75F;
-		super.knockBack(entityIn, strenght, xRatio, zRatio);
+	public void knockBack(Entity entityIn, float strength, double xRatio, double zRatio) {
+		strength *= 0.75F;
+		super.knockBack(entityIn, strength, xRatio, zRatio);
 	}
 	
 	public static enum EnumServantType

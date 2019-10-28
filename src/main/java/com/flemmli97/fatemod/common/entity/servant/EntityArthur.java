@@ -20,8 +20,10 @@ public class EntityArthur extends EntityServant{
 	
 	public EntityAIArthur attackAI = new EntityAIArthur(this);
 
-	private static final AnimatedAction npAttack = new AnimatedAction(20,0,"np");
-	private static final AnimatedAction[] anims = new AnimatedAction[] {AnimatedAction.vanillaAttack, npAttack};
+	private static final AnimatedAction swing_1 = new AnimatedAction(18,15,"swing_1");
+
+	private static final AnimatedAction npAttack = new AnimatedAction(21,17,"excalibur");
+	private static final AnimatedAction[] anims = new AnimatedAction[] {swing_1, npAttack};
 
 	public EntityArthur(World world)
 	{
@@ -38,8 +40,8 @@ public class EntityArthur extends EntityServant{
 	public boolean canUse(AnimatedAction anim, AttackType type)
 	{
 		if(type==AttackType.NP)
-			return anim.getID().equals("np");
-		return anim.getID().equals("vanilla");
+			return anim.getID().equals("excalibur");
+		return anim.getID().equals("swing_1");
 	}
 	
 	@Override
@@ -85,7 +87,7 @@ public class EntityArthur extends EntityServant{
 			}
 			if(!this.isPotionActive(Potion.getPotionFromResourceLocation("minecraft:regeneration")))
 			{
-				this.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:regeneration"), 40, 2, false, false));
+				this.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:regeneration"), 40, 1, false, false));
 			}			
 		}
 		super.onLivingUpdate();

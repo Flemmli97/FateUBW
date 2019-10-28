@@ -71,7 +71,7 @@ public class ConfigHandler {
 	//Minions
 	public static int gillesMinionDuration=6000;
 	public static int gillesMinionAmount=6;
-	public static float smallMonsterDamage=12;
+	public static float smallMonsterDamage=14;
 	public static ServantProperties hassanCopy = new ServantProperties(50, 4, 3.5, 0, 12, 2, 0.34, 0, 10, 5);
 	public static float babylonScale = 1.5f;
 	public static float eaDamage=13;
@@ -165,7 +165,7 @@ public class ConfigHandler {
 		});
 	}
 			
-	public static class PotionEffectsConfig implements IConfigArrayValue
+	public static class PotionEffectsConfig implements IConfigArrayValue<PotionEffectsConfig>
 	{
 		Map<Potion,Pair<Integer,Integer>> potions = Maps.newHashMap();
 		
@@ -177,7 +177,7 @@ public class ConfigHandler {
 		}
 		
 		@Override
-		public IConfigArrayValue readFromString(String[] s) {
+		public PotionEffectsConfig readFromString(String[] s) {
 			for(String p : s)
 			{
 				String[] sub = p.split(",");
@@ -230,7 +230,7 @@ public class ConfigHandler {
 		attributes.put(EntityGilgamesh.class, new ServantProperties(250, 10, 9, 0, 12.5, 5, 0.3, 100, 10, 5));
 		attributes.put(EntityGilles.class, new ServantProperties(350, 5.5, 7, 0, 5, 14, 0.3, 80, 10, 5));
 		attributes.put(EntityHassan.class, new ServantProperties(200, 6, 8.5, 0, 17, 4, 0.34, 1, 10, 5));
-		attributes.put(EntityHeracles.class, new ServantProperties(75, 12.5, 10, 0, 17, 9.5, 0.2, 0, 10, 5));
+		attributes.put(EntityHeracles.class, new ServantProperties(75, 7.5, 10, 0, 17, 9.5, 0.2, 0, 10, 5));
 		attributes.put(EntityLancelot.class, new ServantProperties(450, 9, 14, 0.4f, 19, 4, 0.2, 0, 10, 5));
 		attributes.put(EntityMedea.class, new ServantProperties(350, 9.5, 5, 0, 4, 17.5, 0.2, 100, 10, 5));
 		attributes.put(EntityIskander.class, new ServantProperties(400, 5.5, 10, 0, 9, 9.5, 0.3, 100, 10, 5));
