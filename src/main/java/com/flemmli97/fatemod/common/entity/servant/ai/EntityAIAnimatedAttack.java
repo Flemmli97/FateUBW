@@ -10,9 +10,9 @@ import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.DamageSource;
 
-public class EntityAIAnimatedAttack extends EntityAIBase{
+public class EntityAIAnimatedAttack<T extends EntityServant> extends EntityAIBase{
 
-    protected EntityServant attackingEntity;
+    protected T attackingEntity;
     protected int followTicker;
     protected double speedTowardsTarget;
 
@@ -28,7 +28,7 @@ public class EntityAIAnimatedAttack extends EntityAIBase{
      * duration is in tick (20 tick = 1 sec); minecraft mob default attack speed is 20 tick;
      * default rangeModifier should be 1;
      * for ranged=true --> rangeModifier = range*/
-	public EntityAIAnimatedAttack(EntityServant selectedEntity, boolean isRanged, double speedToTarget,double rangeModifier) 
+	public EntityAIAnimatedAttack(T selectedEntity, boolean isRanged, double speedToTarget,double rangeModifier) 
 	{
 		this.attackingEntity = selectedEntity;
 		this.speedTowardsTarget = speedToTarget;  
@@ -124,7 +124,7 @@ public class EntityAIAnimatedAttack extends EntityAIBase{
         if(anim!=null && this.attackingEntity.canUse(anim, AttackType.MELEE))
         {
     		this.attackingEntity.getNavigator().clearPath();
-	        if (distanceToTarget <= attackRange*2 && anim.canAttack())
+	        if (distanceToTarget <= attackRange*3 && anim.canAttack())
 	        {
 	        	this.attackingEntity.attackEntityAsMob(target);
 	        }
@@ -133,7 +133,6 @@ public class EntityAIAnimatedAttack extends EntityAIBase{
         //Movement
         if (anim==null && (this.attackingEntity.getEntitySenses().canSee(target)) && this.moveDelay <= 0 && (this.posX == 0.0D && this.posY == 0.0D && this.posZ == 0.0D || this.attackingEntity.getRNG().nextFloat() < 1.0F))
         {
-        	--this.attackCooldown;
             this.posX = target.posX;
             this.posY = target.getEntityBoundingBox().minY;
             this.posZ = target.posZ;
@@ -184,6 +183,7 @@ public class EntityAIAnimatedAttack extends EntityAIBase{
 	        		this.attackCooldown=this.attackingEntity.attackCooldown();
 	        		this.attackingEntity.motionX=0;
 	        		this.attackingEntity.motionZ=0;
+	        		this.attackingEntity.getNavigator().clearPath();
         		}
         	}
         	if(anim!=null && this.attackingEntity.canUse(anim, AttackType.RANGED))

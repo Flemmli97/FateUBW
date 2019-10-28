@@ -7,7 +7,7 @@ import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.Vec3d;
 
-public class EntityAICuchulainn extends EntityAIAnimatedAttack{
+public class EntityAICuchulainn extends EntityAIAnimatedAttack<EntityCuchulainn>{
 	
 	public EntityAICuchulainn(EntityCuchulainn selectedEntity) 
 	{
@@ -37,7 +37,7 @@ public class EntityAICuchulainn extends EntityAIAnimatedAttack{
         		this.attackingEntity.motionY=0;
         		if(!this.attackingEntity.forcedNP)
         			this.attackingEntity.useMana(this.attackingEntity.props().hogouMana());
-    			((EntityCuchulainn)this.attackingEntity).attackWithNP();
+    			this.attackingEntity.attackWithNP();
     			this.attackingEntity.forcedNP = false;
         	}       		
         }

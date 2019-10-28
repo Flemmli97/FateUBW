@@ -6,7 +6,7 @@ import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 
 import net.minecraft.entity.EntityLivingBase;
 
-public class EntityAIGilles extends EntityAIAnimatedAttack{
+public class EntityAIGilles extends EntityAIAnimatedAttack<EntityGilles>{
 
 	public EntityAIGilles(EntityGilles selectedEntity) {
 		super(selectedEntity,true, 1, 16);
@@ -28,7 +28,7 @@ public class EntityAIGilles extends EntityAIAnimatedAttack{
         	{
         		if(!this.attackingEntity.forcedNP)
         			this.attackingEntity.useMana(this.attackingEntity.props().hogouMana());
-        		((EntityGilles)this.attackingEntity).attackWithNP();
+        		this.attackingEntity.attackWithNP();
         		this.attackingEntity.forcedNP = false;
         	}       		
         }

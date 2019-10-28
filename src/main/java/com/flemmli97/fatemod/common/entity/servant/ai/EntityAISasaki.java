@@ -7,7 +7,7 @@ import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 
 import net.minecraft.entity.EntityLivingBase;
 
-public class EntityAISasaki extends EntityAIAnimatedAttack{
+public class EntityAISasaki extends EntityAIAnimatedAttack<EntitySasaki>{
 
 	private int attackCount;
 	private int[] damageAdd = new int [] {0,5,15};
@@ -29,7 +29,7 @@ public class EntityAISasaki extends EntityAIAnimatedAttack{
         {
 			double distanceToTarget = this.attackingEntity.getDistanceSq(target.posX, target.getEntityBoundingBox().minY, target.posZ);
 			this.attackingEntity.getNavigator().tryMoveToEntityLiving(target, 1);
-        	if(((EntitySasaki)this.attackingEntity).canAttackNP() && distanceToTarget<(2.5*2.5))
+        	if(this.attackingEntity.canAttackNP() && distanceToTarget<(2.5*2.5))
         	{
         		target.attackEntityFrom(CustomDamageSource.hiKen(attackingEntity), 10+this.damageAdd[this.attackCount]);
 				this.attackCount++;

@@ -10,7 +10,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.Vec3d;
 
-public class EntityAIIskander extends EntityAIAnimatedAttack{
+public class EntityAIIskander extends EntityAIAnimatedAttack<EntityIskander>{
 	
 	private int prepare = 0;
 
@@ -34,7 +34,7 @@ public class EntityAIIskander extends EntityAIAnimatedAttack{
         	{
         		if(!this.attackingEntity.forcedNP)
         			this.attackingEntity.useMana(this.attackingEntity.props().hogouMana());
-        		((EntityIskander)this.attackingEntity).attackWithNP();
+        		this.attackingEntity.attackWithNP();
         		this.attackingEntity.forcedNP = false;
         	}       		
         }

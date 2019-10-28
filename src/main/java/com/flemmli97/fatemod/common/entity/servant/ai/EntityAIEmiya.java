@@ -1,7 +1,6 @@
 package com.flemmli97.fatemod.common.entity.servant.ai;
 
 import com.flemmli97.fatemod.common.entity.servant.EntityEmiya;
-import com.flemmli97.fatemod.common.entity.servant.EntityServant;
 import com.flemmli97.fatemod.common.entity.servant.EntityServant.AttackType;
 import com.flemmli97.fatemod.common.init.ModItems;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
@@ -11,12 +10,12 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 
-public class EntityAIEmiya extends EntityAIAnimatedAttack{
+public class EntityAIEmiya extends EntityAIAnimatedAttack<EntityEmiya>{
 	
 	private ItemStack main = ItemStack.EMPTY;
 	private ItemStack off = ItemStack.EMPTY;
 
-	public EntityAIEmiya(EntityServant selectedEntity, boolean isRanged, double speedToTarget, double rangeModifier) {
+	public EntityAIEmiya(EntityEmiya selectedEntity, boolean isRanged, double speedToTarget, double rangeModifier) {
 		super(selectedEntity, isRanged, speedToTarget, rangeModifier);
 	}
 
@@ -45,7 +44,7 @@ public class EntityAIEmiya extends EntityAIAnimatedAttack{
         	{
         		if(!attackingEntity.forcedNP)
         			this.attackingEntity.useMana(attackingEntity.props().hogouMana());
-        		((EntityEmiya)attackingEntity).attackWithNP();
+        		attackingEntity.attackWithNP();
         		this.attackingEntity.forcedNP = false;
         		//Switch items back
 	        	if(!this.main.isEmpty()||!this.off.isEmpty())

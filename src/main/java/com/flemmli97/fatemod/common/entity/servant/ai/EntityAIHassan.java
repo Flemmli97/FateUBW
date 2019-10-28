@@ -6,7 +6,7 @@ import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 
 import net.minecraft.entity.EntityLivingBase;
 
-public class EntityAIHassan extends EntityAIAnimatedAttack{
+public class EntityAIHassan extends EntityAIAnimatedAttack<EntityHassan>{
 	
 	public EntityAIHassan(EntityHassan selectedEntity)
 	{
@@ -29,7 +29,7 @@ public class EntityAIHassan extends EntityAIAnimatedAttack{
         	{
         		if(!this.attackingEntity.forcedNP)
         			this.attackingEntity.useMana(this.attackingEntity.props().hogouMana());
-        		((EntityHassan)this.attackingEntity).attackWithNP();
+        		this.attackingEntity.attackWithNP();
         		this.attackingEntity.forcedNP = false;
         	}       		
         }

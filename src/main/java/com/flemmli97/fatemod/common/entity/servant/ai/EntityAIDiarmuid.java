@@ -6,7 +6,7 @@ import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 
 import net.minecraft.entity.EntityLivingBase;
 
-public class EntityAIDiarmuid extends EntityAIAnimatedAttack{
+public class EntityAIDiarmuid extends EntityAIAnimatedAttack<EntityDiarmuid>{
 
 	public EntityAIDiarmuid(EntityDiarmuid selectedEntity) {
 		super(selectedEntity, false, 1, 1.5);
@@ -31,7 +31,7 @@ public class EntityAIDiarmuid extends EntityAIAnimatedAttack{
         	{
         		if(!this.attackingEntity.forcedNP)
         			this.attackingEntity.useMana(this.attackingEntity.props().hogouMana());
-        		((EntityDiarmuid)this.attackingEntity).attackWithNP(target);
+        		this.attackingEntity.attackWithNP(target);
         		this.attackingEntity.forcedNP = false;
         	}       		
         }

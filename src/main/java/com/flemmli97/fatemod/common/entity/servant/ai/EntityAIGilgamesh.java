@@ -6,7 +6,7 @@ import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 
 import net.minecraft.entity.EntityLivingBase;
 
-public class EntityAIGilgamesh extends EntityAIAnimatedAttack{
+public class EntityAIGilgamesh extends EntityAIAnimatedAttack<EntityGilgamesh>{
 
 	public EntityAIGilgamesh(EntityGilgamesh selectedEntity, boolean isRanged, double speedToTarget, double rangeModifier) {
 		super(selectedEntity,isRanged, speedToTarget, rangeModifier);
@@ -28,7 +28,7 @@ public class EntityAIGilgamesh extends EntityAIAnimatedAttack{
         	{
         		if(!this.attackingEntity.forcedNP)
         			this.attackingEntity.useMana(this.attackingEntity.props().hogouMana());
-        		((EntityGilgamesh)this.attackingEntity).attackWithNP();
+        		this.attackingEntity.attackWithNP();
         		this.attackingEntity.forcedNP = false;
         	}       		
         }
