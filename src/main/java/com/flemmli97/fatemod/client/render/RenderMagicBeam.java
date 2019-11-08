@@ -11,7 +11,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class RenderMagicBeam extends RenderBeam<EntityMagicBeam>{
 
-    private static final ResourceLocation tex = new ResourceLocation(LibReference.MODID, "textures/entity/beam.png");
+    private static final ResourceLocation tex = new ResourceLocation(LibReference.MODID, "textures/entity/magic_beam.png");
 
 	public RenderMagicBeam(RenderManager renderManagerIn) {
 		super(renderManagerIn, 0.5f);

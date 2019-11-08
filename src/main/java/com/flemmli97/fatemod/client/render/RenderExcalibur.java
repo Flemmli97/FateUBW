@@ -12,13 +12,14 @@ import net.minecraft.util.ResourceLocation;
 public class RenderExcalibur extends RenderBeam<EntityExcalibur>{
 	
     private static final ResourceLocation tex = new ResourceLocation(LibReference.MODID, "textures/entity/excalibur.png");
-    private static final Pair<ResourceLocation,Float> start = Pair.of(new ResourceLocation(LibReference.MODID, "textures/entity/excalibur_start.png"), 1f);
-    private static final Pair<ResourceLocation,Float> end = Pair.of(new ResourceLocation(LibReference.MODID, "textures/entity/excalibur_end.png"), 0.5f);
+    //private static final Pair<ResourceLocation,Float> start = Pair.of(new ResourceLocation(LibReference.MODID, "textures/entity/excalibur_start.png"), 1f);
+    //private static final Pair<ResourceLocation,Float> end = Pair.of(new ResourceLocation(LibReference.MODID, "textures/entity/excalibur_end.png"), 0.5f);
 
     public RenderExcalibur(RenderManager renderManagerIn)
     {
         super(renderManagerIn, EntityExcalibur.radius);
-        this.setAlpha(200);
+        //this.setAlpha(200);
+        this.setColor(255, 255, 51);
     }  
 
 	@Override
@@ -28,25 +29,25 @@ public class RenderExcalibur extends RenderBeam<EntityExcalibur>{
 
 	@Override
 	public Pair<ResourceLocation, Float> startTexture(EntityExcalibur entity) {
-		return start;
+		return null;
 	}
 
 	@Override
 	public Pair<ResourceLocation, Float> endTexture(EntityExcalibur entity) {
-		return end;
+		return null;
 	}
 	
 	@Override
 	public double segmentLength()
 	{
-		return 4;
+		return 0;
 	}
 
 	@Override
 	public int animationFrames(BeamPart part)
 	{
 		if(part==BeamPart.MIDDLE)
-			return 8;
+			return 4;
 		return 1;
 	}
 }
