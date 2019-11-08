@@ -10,8 +10,8 @@ import net.minecraft.world.World;
 
 public class EntityEnumaElish extends EntityBeam{
 
-	public static final float radius = 1.2f;
-	public static final float range = 48;
+	public static final float radius = 1.5f;
+	public static final float range = 24;
 	
     public EntityEnumaElish(World worldIn)
     {

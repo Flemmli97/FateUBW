@@ -21,7 +21,7 @@ public class EntityGilgamesh extends EntityServant implements IRanged{
 	private boolean doRangedAttack;
 	private static final AnimatedAction rangedAttack = new AnimatedAction(40, 10, "babylon1");
 	private static final AnimatedAction rangedAttack2 = new AnimatedAction(40, 10, "babylon2");
-	private static final AnimatedAction npAttack = new AnimatedAction(20,0,"np");
+	private static final AnimatedAction npAttack = new AnimatedAction(20,10,"np");
 	private static final AnimatedAction[] anims = new AnimatedAction[] {AnimatedAction.vanillaAttack, rangedAttack, npAttack, rangedAttack2};
 	
 	public EntityGilgamesh(World world) {
@@ -91,12 +91,15 @@ public class EntityGilgamesh extends EntityServant implements IRanged{
 			this.doRangedAttack=true;
 		}
 	}
-
-	public void attackWithNP()
-	{
-		EntityEnumaElish excalibur = new EntityEnumaElish(world, this);
-		this.world.spawnEntity(excalibur);	
-	}
+	
+	public void attackWithNP(double[] pos)
+    {
+        EntityEnumaElish ea = new EntityEnumaElish(world, this);
+        if(pos!=null)
+            ea.setRotationTo(pos[0], pos[1], pos[2], 0);
+        this.world.spawnEntity(ea);
+        this.revealServant();
+    }
 	
 	@Override
 	public void readEntityFromNBT(NBTTagCompound tag) {

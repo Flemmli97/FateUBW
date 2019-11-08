@@ -93,9 +93,11 @@ public class EntityArthur extends EntityServant{
 		super.onLivingUpdate();
 	}		
 	
-	public void attackWithNP()
+	public void attackWithNP(double[] pos)
 	{
 		EntityExcalibur excalibur = new EntityExcalibur(this.world, this);
+		if(pos!=null)
+		    excalibur.setRotationTo(pos[0], pos[1], pos[2], 0);
 		this.world.spawnEntity(excalibur);
 		this.revealServant();
 	}

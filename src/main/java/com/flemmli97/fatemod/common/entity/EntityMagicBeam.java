@@ -5,13 +5,21 @@ import com.flemmli97.fatemod.common.handler.CustomDamageSource;
 import com.flemmli97.tenshilib.common.entity.EntityBeam;
 
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
 public class EntityMagicBeam extends EntityBeam{
 
-	EntityLivingBase target;
+    protected static final DataParameter<Integer> shootTime = EntityDataManager.createKey(EntityMagicBeam.class, DataSerializers.VARINT);
+    protected static final DataParameter<Integer> preShootTick = EntityDataManager.createKey(EntityMagicBeam.class, DataSerializers.VARINT);
+
+	private EntityLivingBase target;
 	private int strengthMod;
+    public boolean iddle=true;
 	public EntityMagicBeam(World worldIn) {
 		super(worldIn);
     }
@@ -29,43 +37,75 @@ public class EntityMagicBeam extends EntityBeam{
 	}
 	
 	@Override
+    protected void entityInit()
+    {
+        super.entityInit();
+        this.dataManager.register(shootTime, this.rand.nextInt(20)+25);
+        this.dataManager.register(preShootTick, 0);
+    }
+	
+	/*@Override
+    public int livingTickMax()
+    {
+        return this.dataManager.get(shootTime)+20;
+    }*/
+	
+	@Override
 	public void onUpdate() {
-		/*EntityLivingBase thrower = getThrower();
-		if(this.livingTick<=10)
-		{
-			livingTick++;
-		}
-		if(livingTick == 10)
-		{
-			if(!worldObj.isRemote)
-			{
-				if(thrower instanceof EntityPlayer)
-				{
-					this.entityRayTrace(64);
-				}
-				else if(target!=null)
-				{
-					this.setHeadingToPosition(target.posX, target.posY+target.height/2, target.posZ, 0.5F , 1);
-				}
-			}
-		}
-		else if(livingTick>10)
-		{
-			if(!worldObj.isRemote) 
-			{
-				if(thrower == null || thrower.isDead) 
-				{
-					setDead();
-					return;
-				}
-			}
-			super.onUpdate();
-		}*/
-		super.onUpdate();
+	    EntityLivingBase thrower = this.getShooter();
+        if(this.getPreShootTick()<=this.dataManager.get(shootTime))
+        {
+            //this.livingTicks++;
+            this.updatePreShootTick();
+            if(this.getPreShootTick()==15 && this.target!=null) {
+                this.setRotationTo(this.target.posX, this.target.posY, this.target.posZ, 1.2f);
+            }
+        }
+        if(this.getPreShootTick()>this.dataManager.get(shootTime))
+        {
+            this.iddle=false;
+            if(!world.isRemote) 
+            {
+                if(thrower == null || thrower.isDead) 
+                {
+                    setDead();
+                    return;
+                }
+            }
+            super.onUpdate();
+        }
 	}
+	
+	private int getPreShootTick()
+    {
+        return this.dataManager.get(preShootTick);
+    }
+	
+	private void updatePreShootTick()
+    {
+        this.dataManager.set(preShootTick, this.getPreShootTick()+1);
+    }
+    
+    /*@Override
+    public int livingTicks()
+    {
+        return Math.max(this.getPreShootTick(), this.livingTicks);
+    }*/
 
 	@Override
 	protected void onImpact(RayTraceResult result) {
 		result.entityHit.attackEntityFrom(CustomDamageSource.magicBeam(this, this.getShooter()), ConfigHandler.magicBeam*(1+0.25f*this.strengthMod));
 	}
+	
+	@Override
+    protected void writeEntityToNBT(NBTTagCompound compound) {
+        super.writeEntityToNBT(compound);
+        compound.setInteger("PreShoot", this.getPreShootTick());
+    }
+
+    @Override
+    protected void readEntityFromNBT(NBTTagCompound compound) {
+        super.readEntityFromNBT(compound);
+        this.dataManager.set(preShootTick, compound.getInteger("PreShoot"));
+    }
 }
