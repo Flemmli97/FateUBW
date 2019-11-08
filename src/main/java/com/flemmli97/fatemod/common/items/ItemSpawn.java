@@ -47,8 +47,6 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemSpawn extends Item{
 	
@@ -65,16 +63,16 @@ public class ItemSpawn extends Item{
 		tooltip.add(TextFormatting.GOLD + I18n.format("item.spawn.tooltip"));
 	}
 
-    @SideOnly(Side.CLIENT)
-	@Override
+	@SuppressWarnings("deprecation")
+    @Override
 	public String getItemStackDisplayName(ItemStack stack)
     {
-        String s = ("" + I18n.format(this.getUnlocalizedName() + ".name")).trim();
+        String s = net.minecraft.util.text.translation.I18n.translateToLocal(this.getUnlocalizedName() + ".name").trim();
 		ResourceLocation entityName = getEntityIdFromItem(stack);
 
         if (entityName != null)
         {
-            s = s + " " + I18n.format("entity." + entityName.getResourcePath()  + ".name");
+            s = s + " " + net.minecraft.util.text.translation.I18n.translateToLocal("entity." + entityName.getResourcePath()  + ".name");
         }
         return s;
     }
@@ -289,7 +287,7 @@ public class ItemSpawn extends Item{
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems)
     {
-    	if(tab==this.getCreativeTab())
+    	if(this.isInCreativeTab(tab))
     	{
 	        for (EntityList.EntityEggInfo eggEntity  : SpawnEntityCustomList.entityEggs.values())
 	        {            
