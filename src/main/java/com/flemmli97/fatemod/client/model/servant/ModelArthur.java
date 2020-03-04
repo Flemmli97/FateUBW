@@ -1,18 +1,28 @@
 package com.flemmli97.fatemod.client.model.servant;
 
-import com.flemmli97.fatemod.client.render.servant.RenderArthur;
 import com.flemmli97.fatemod.common.entity.servant.EntityArthur;
+import com.flemmli97.fatemod.common.lib.LibReference;
+import com.flemmli97.tenshilib.client.model.Animation;
 import com.flemmli97.tenshilib.client.model.ModelUtils;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.ResourceLocation;
 
 public class ModelArthur extends ModelServant {
 	
+    //18, attack at 15
+    public Animation swing_1;
+    //21, attack at 17
+    public Animation excalibur;
+
+    
 	public ModelArthur() 
 	{
 		super();
+		this.swing_1 = new Animation(this, new ResourceLocation(LibReference.MODID, "models/entity/animation/swing_1.json"));
+	    this.excalibur = new Animation(this, new ResourceLocation(LibReference.MODID, "models/entity/animation/excalibur.json"));
 	}
 
 	@Override
@@ -56,9 +66,9 @@ public class ModelArthur extends ModelServant {
 	    	if(anim!=null)
 	    	{
 	    		if(anim.getID().equals("swing_1"))
-	    			RenderArthur.swing_1.animate(anim.getTick(), partialTicks);
+	    			this.swing_1.animate(anim.getTick(), partialTicks);
 	    		if(anim.getID().equals("excalibur"))
-	    			RenderArthur.excalibur.animate(anim.getTick(), partialTicks);
+	    			this.excalibur.animate(anim.getTick(), partialTicks);
 	    	}
 		}
 		this.syncOverlay();		

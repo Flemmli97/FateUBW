@@ -1,17 +1,23 @@
 package com.flemmli97.fatemod.client.model.servant;
 
-import com.flemmli97.fatemod.client.render.servant.RenderGilles;
 import com.flemmli97.fatemod.common.entity.servant.EntityGilles;
+import com.flemmli97.fatemod.common.lib.LibReference;
+import com.flemmli97.tenshilib.client.model.Animation;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.ResourceLocation;
 
 public class ModelGilles extends ModelServant{
 	
+    //38, attack at 25
+    public Animation casting;
+
 	public ModelGilles()
 	{
 		super();
+		this.casting = new Animation(this, new ResourceLocation(LibReference.MODID, "models/entity/animation/gilles_cast.json"));
 	}
 
 	@Override
@@ -32,7 +38,7 @@ public class ModelGilles extends ModelServant{
 	    	if(anim!=null)
 	    	{
 	    		if(anim.getID().equals("ranged"))
-	    			RenderGilles.casting.animate(anim.getTick(), partialTicks);
+	    			this.casting.animate(anim.getTick(), partialTicks);
 	    	}
 		}
 		this.syncOverlay();

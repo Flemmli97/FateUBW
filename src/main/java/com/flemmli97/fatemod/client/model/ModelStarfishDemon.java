@@ -1,15 +1,16 @@
 package com.flemmli97.fatemod.client.model;
 
-import com.flemmli97.fatemod.client.render.RenderStarfish;
 import com.flemmli97.fatemod.common.entity.EntityLesserMonster;
+import com.flemmli97.fatemod.common.lib.LibReference;
+import com.flemmli97.tenshilib.client.model.Animation;
 import com.flemmli97.tenshilib.client.model.IResetModel;
 import com.flemmli97.tenshilib.client.model.ModelRendererPlus;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * Starfish Demons - Black_Saturn
@@ -78,6 +79,13 @@ public class ModelStarfishDemon extends ModelBase implements IResetModel{
     public ModelRendererPlus TentacleP3S6;
     public ModelRendererPlus Tentaclepapulae_34;
     public ModelRendererPlus Tentaclepapulae_35;
+
+    //20
+    public Animation idle;
+    //31
+    public Animation walk;
+    //length 20, attack at 15
+    public Animation attack;
 
     public ModelStarfishDemon() {
         this.textureWidth = 64;
@@ -326,6 +334,10 @@ public class ModelStarfishDemon extends ModelBase implements IResetModel{
         this.MouthBottom.addChild(this.MouthSide2);
         this.TentacleP3S3.addChild(this.Tentaclepapulae_17);
         this.TentacleP2S6.addChild(this.TentacleP3S6);
+        
+        this.idle = new Animation(this, new ResourceLocation(LibReference.MODID, "models/entity/animation/starfish_standing_idle.json"));
+        this.walk = new Animation(this, new ResourceLocation(LibReference.MODID, "models/entity/animation/starfish_standing_walk.json"));
+        this.attack = new Animation(this, new ResourceLocation(LibReference.MODID, "models/entity/animation/starfish_standing_attack.json"));
     }
 
     @Override
@@ -343,28 +355,17 @@ public class ModelStarfishDemon extends ModelBase implements IResetModel{
     	if(anim!=null)
     	{
     		if(anim.getID().equals("attack"))
-    			RenderStarfish.attack.animate(anim.getTick(), partialTicks);
+    			this.attack.animate(anim.getTick(), partialTicks);
     		if(anim.getID().equals("walk"))
-        		RenderStarfish.walk.animate(anim.getTick(), partialTicks);
+        		this.walk.animate(anim.getTick(), partialTicks);
     	}
     	else
-    		RenderStarfish.idle.animate(((int)ageInTicks), partialTicks);
+    		this.idle.animate(((int)ageInTicks), partialTicks);
     }
 
 	@Override
 	public void resetModel() {
 		this.MouthBottom.reset();
-		this.resetChildModel(this.MouthBottom);
-	}
-	
-	private void resetChildModel(ModelRenderer model)
-	{
-		if(model.childModels!=null)
-			for(ModelRenderer child : model.childModels)
-			{
-				if(child instanceof ModelRendererPlus)
-					((ModelRendererPlus)child).reset();
-				this.resetChildModel(child);
-			}
+		this.resetChild(this.MouthBottom);
 	}
 }

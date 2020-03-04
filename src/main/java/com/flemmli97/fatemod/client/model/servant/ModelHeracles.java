@@ -1,19 +1,17 @@
 package com.flemmli97.fatemod.client.model.servant;
 
-import java.lang.reflect.Field;
-import java.util.List;
-
-import com.flemmli97.fatemod.client.render.servant.RenderHeracles;
 import com.flemmli97.fatemod.common.entity.servant.EntityHeracles;
+import com.flemmli97.fatemod.common.lib.LibReference;
+import com.flemmli97.tenshilib.client.model.Animation;
 import com.flemmli97.tenshilib.client.model.ModelRendererPlus;
 import com.flemmli97.tenshilib.client.model.ModelUtils;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
-import com.google.common.collect.Lists;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumHandSide;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
 /**
@@ -21,9 +19,7 @@ import net.minecraft.util.math.MathHelper;
  * Created using Tabula 4.1.1
  */
 public class ModelHeracles extends ModelServant {
-	
-	private List<ModelRendererPlus> parts = Lists.newArrayList();
-	
+		
     public ModelRendererPlus upperTorso;
     public ModelRendererPlus lowerTorso;
     public ModelRendererPlus chestMuscle1;
@@ -107,6 +103,8 @@ public class ModelHeracles extends ModelServant {
     public ModelRendererPlus hair6;
     public ModelRendererPlus hair7;
     
+    public Animation swing_1;
+
     public ModelHeracles() {
         this.textureWidth = 76;
         this.textureHeight = 76;
@@ -473,14 +471,7 @@ public class ModelHeracles extends ModelServant {
         this.leftFootUp.addChild(this.leftFoot);
         this.leftLowerArm.addChild(this.leftWrist);
         
-        for(Field f : ModelHeracles.class.getDeclaredFields())
-        	if(f.getType().equals(ModelRendererPlus.class))
-				try 
-        		{
-					this.parts.add((ModelRendererPlus) f.get(this));
-				} catch (IllegalArgumentException | IllegalAccessException e) {
-					e.printStackTrace();
-				}
+        this.swing_1 = new Animation(this, new ResourceLocation(LibReference.MODID, "models/entity/animation/heracles_swing_1.json"));
     }
 
     @Override
@@ -509,7 +500,7 @@ public class ModelHeracles extends ModelServant {
 	    	if(anim!=null)
 	    	{
 	    		if(anim.getID().equals("swing_1"))
-	    			RenderHeracles.swing_1.animate(anim.getTick(), partialTicks);
+	    			this.swing_1.animate(anim.getTick(), partialTicks);
 	    	}
 		}
 		this.syncOverlay();	
@@ -608,7 +599,8 @@ public class ModelHeracles extends ModelServant {
     @Override
 	public void resetModel()
 	{
-    	this.parts.forEach(model->model.reset());
+        this.upperTorso.reset();
+        this.resetChild(this.upperTorso);
 	}
 
     /**

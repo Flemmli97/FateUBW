@@ -1,16 +1,21 @@
 package com.flemmli97.fatemod.client.model.servant;
 
-import com.flemmli97.fatemod.client.render.servant.RenderCuchulainn;
 import com.flemmli97.fatemod.common.entity.servant.EntityCuchulainn;
+import com.flemmli97.fatemod.common.lib.LibReference;
+import com.flemmli97.tenshilib.client.model.Animation;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.ResourceLocation;
 
 public class ModelCuchulainn extends ModelServant{
 	
+    public Animation gae_bolg;
+
 	public ModelCuchulainn() {
 		super();
+		this.gae_bolg = new Animation(this, new ResourceLocation(LibReference.MODID, "models/entity/animation/gaebolg.json"));
 	}
 
 	@Override
@@ -33,7 +38,7 @@ public class ModelCuchulainn extends ModelServant{
 	    	if(anim!=null)
 	    	{
 	    		if(anim.getID().equals("gae_bolg"))
-	    			RenderCuchulainn.gae_bolg.animate(anim.getTick(), partialTicks);
+	    			this.gae_bolg.animate(anim.getTick(), partialTicks);
 	    	}
 		}
 		this.syncOverlay();	
