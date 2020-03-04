@@ -19,7 +19,7 @@ public class ParticleFade extends ParticleSimpleTexture{
 	public ParticleFade(World world, double xCoord, double yCoord, double zCoord, double xSpeed,
 			double ySpeed, double zSpeed) {
 		super(world, xCoord, yCoord, zCoord, xSpeed, ySpeed, zSpeed);
-		this.particleScale*=0.5;
+		this.particleScale*=0.05;
 		this.setRBGColorF(68/255f, 121/255f, 206/255f);
 		this.texID=world.rand.nextInt(3);
 	}
@@ -40,7 +40,7 @@ public class ParticleFade extends ParticleSimpleTexture{
 		@Override
 		public Particle createParticle(World world, double xCoord, double yCoord, double zCoord,
 				double xSpeed, double ySpeed, double zSpeed, Object... modifier) {
-			return new ParticleFade(world, xCoord, yCoord, zCoord, zSpeed, zSpeed, zSpeed);
+			return new ParticleFade(world, xCoord, yCoord, zCoord, xSpeed, ySpeed, zSpeed);
 		}
 	}
 }

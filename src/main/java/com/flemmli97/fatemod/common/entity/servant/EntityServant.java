@@ -7,6 +7,7 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import com.flemmli97.fatemod.Fate;
+import com.flemmli97.fatemod.common.entity.IServantMinion;
 import com.flemmli97.fatemod.common.entity.servant.ai.EntityAIFollowMaster;
 import com.flemmli97.fatemod.common.entity.servant.ai.EntityAIRetaliate;
 import com.flemmli97.fatemod.common.handler.ConfigHandler;
@@ -15,10 +16,10 @@ import com.flemmli97.fatemod.common.handler.capabilities.PlayerCapProvider;
 import com.flemmli97.fatemod.common.init.ModRender;
 import com.flemmli97.fatemod.common.utils.ServantProperties;
 import com.flemmli97.fatemod.common.utils.ServantUtils;
-import com.flemmli97.tenshilib.client.particles.ParticleHandler;
 import com.flemmli97.tenshilib.common.TextHelper;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import com.flemmli97.tenshilib.common.entity.IAnimated;
+import com.flemmli97.tenshilib.common.world.Particles;
 import com.google.common.collect.Lists;
 
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -526,7 +527,7 @@ public abstract class EntityServant extends EntityCreature implements IAnimated{
 		++this.deathTicks;
 		this.died=true;
 		for(int i = 0; i < ((int)((7/(float)this.maxDeathTick())*this.deathTicks-1)); i++)
-			ParticleHandler.spawnParticle(ModRender.particleFade, this.world, this.posX + (this.rand.nextDouble() - 0.5D) * (this.width+3),
+			Particles.spawnParticle(ModRender.particleFade, this.world, this.posX + (this.rand.nextDouble() - 0.5D) * (this.width+3),
     		this.posY + this.rand.nextDouble() * (this.height+1.5), 
     		this.posZ + (this.rand.nextDouble() - 0.5D) * (this.width+3), 
     		this.rand.nextGaussian() * 0.02D, 
@@ -641,7 +642,7 @@ public abstract class EntityServant extends EntityCreature implements IAnimated{
 		}
 		else
 		{
-			if(!(damageSource.getTrueSource() instanceof EntityServant))
+			if(!(damageSource.getTrueSource() instanceof EntityServant || damageSource.getTrueSource() instanceof IServantMinion))
 				damage*=0.5;
 			
 			if(damageSource.isProjectile() && !damageSource.isUnblockable() && this.projectileBlockChance(damageSource, damage))

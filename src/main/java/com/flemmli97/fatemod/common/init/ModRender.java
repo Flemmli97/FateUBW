@@ -54,7 +54,7 @@ import com.flemmli97.fatemod.common.entity.servant.EntityMedea;
 import com.flemmli97.fatemod.common.entity.servant.EntityMedusa;
 import com.flemmli97.fatemod.common.entity.servant.EntitySasaki;
 import com.flemmli97.fatemod.common.lib.LibReference;
-import com.flemmli97.tenshilib.client.particles.ParticleHandler;
+import com.flemmli97.tenshilib.client.particles.ParticleRegistries;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -119,6 +119,6 @@ public final class ModRender {
 
 	public static final void registerParticles()
 	{
-		ParticleHandler.ParticleRegistries.registerParticle(particleFade, new ParticleFade.Factory());
+		ParticleRegistries.registerParticle(particleFade, new ParticleFade.Factory());
 	}
 }
