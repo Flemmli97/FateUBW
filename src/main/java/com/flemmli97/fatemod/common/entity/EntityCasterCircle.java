@@ -60,9 +60,10 @@ public class EntityCasterCircle extends Entity{
 		if(this.world.isRemote && this.livingTick%5==0)
 		{
 			if(this.circlePoints==null)
-				this.circlePoints=MathUtils.pointsOfCircle(this.dataManager.get(range), 10);
+				this.circlePoints=MathUtils.pointsOfCircle(this.dataManager.get(range), 7);
 			for(float[] f : this.circlePoints)
-				this.world.spawnParticle(EnumParticleTypes.SPELL_WITCH, this.posX+f[0], this.posY+0.2, this.posZ+f[1], 0, 0.1, 0);
+				for(int i = 0; i < 3; i++)
+					this.world.spawnParticle(EnumParticleTypes.SPELL_WITCH, this.posX+f[0], this.posY+0.2, this.posZ+f[1], 0, 0.12, 0);
 		}
 		if(!this.world.isRemote)
 			if(this.livingTick>ConfigHandler.medeaCircleSpan || this.getOwner()==null || this.getOwner().isDead())
