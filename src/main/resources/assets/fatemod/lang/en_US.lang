@@ -95,6 +95,7 @@ chat.command.patrol=Your servant now protects this area
 chat.command.kill=You killed your servant
 chat.command.spellsuccess=You buffed your servant using a command spell
 chat.command.spellfail=You don't have any command spells anymore
+chat.medea.circle.spawn=Medea created a magic circle
 
 death.attack.excalibur=%1$s was vaporized by %2$s with excalibur
 death.attack.babylon=%1$s was impaled by %2$s with the gate of babylon
