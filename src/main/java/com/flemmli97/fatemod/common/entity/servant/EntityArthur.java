@@ -87,7 +87,7 @@ public class EntityArthur extends EntityServant{
 			}
 			if(!this.isPotionActive(Potion.getPotionFromResourceLocation("minecraft:regeneration")))
 			{
-				this.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:regeneration"), 40, 1, false, false));
+				this.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:regeneration"), 50, 1, false, false));
 			}			
 		}
 		super.onLivingUpdate();

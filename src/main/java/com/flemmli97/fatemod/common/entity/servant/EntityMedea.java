@@ -99,7 +99,7 @@ public class EntityMedea extends EntityServant implements IRanged{
 	{
 		this.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:resistance"), 1, 2, true, false));
 		if(!this.isPotionActive(Potion.getPotionFromResourceLocation("minecraft:regeneration")))
-			this.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:regeneration"), 4, 1, true, false));
+			this.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:regeneration"), 50, 1, true, false));
 		this.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:strength"), 1, 2, true, false));
 	}
 	
