@@ -103,16 +103,16 @@ public class EntityHassan extends EntityServant {
 	}
 
 	@Override
-	protected void updateAITasks() {
-		if(commandBehaviour == 3)
+	public void updateAI(int behaviour) {
+	    super.updateAI(behaviour);
+		if(behaviour == 3)
 		{
 			this.tasks.addTask(1, attackAI);
 		}
-		else if(commandBehaviour == 4)
+		else if(behaviour == 4)
 		{
 			this.tasks.removeTask(attackAI);
 		}
-		super.updateAITasks();
 	}
 	
 	@Override

@@ -1,7 +1,6 @@
 package com.flemmli97.fatemod.common.entity.servant;
 
 import com.flemmli97.fatemod.common.entity.EntityLesserMonster;
-import com.flemmli97.fatemod.common.entity.EntityMonster;
 import com.flemmli97.fatemod.common.entity.servant.ai.EntityAIGilles;
 import com.flemmli97.fatemod.common.handler.ConfigHandler;
 import com.flemmli97.fatemod.common.init.ModItems;

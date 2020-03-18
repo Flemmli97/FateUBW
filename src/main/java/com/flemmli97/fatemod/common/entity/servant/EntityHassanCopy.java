@@ -42,7 +42,7 @@ public class EntityHassanCopy extends EntityServant implements IServantMinion{
 	            return true;
 	        }
 		}};
-	public EntityAIAnimatedAttack attackAI = new EntityAIAnimatedAttack(this,false, 1, 1);
+	public EntityAIAnimatedAttack<EntityHassanCopy> attackAI = new EntityAIAnimatedAttack<EntityHassanCopy>(this,false, 1, 1);
 		
 	public EntityHassanCopy(World world) {
 		this(world, null);

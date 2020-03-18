@@ -11,12 +11,9 @@ import com.flemmli97.fatemod.network.PacketHandler;
 import com.flemmli97.tenshilib.common.entity.EntityUtil;
 
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.Vec3d;
 
 public class PlayerCap implements IPlayer{
 	

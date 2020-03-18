@@ -11,7 +11,6 @@ import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.monster.EntityIronGolem;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -28,8 +27,8 @@ public class EntityGordiusWheel extends EntityCreature implements IServantMinion
 	//static AxisAlignedBB wheelBox = new AxisAlignedBB(0, 0, 0, 2.5, 1.5, 3.25);
 	//static AxisAlignedBB bullBox = new AxisAlignedBB(0, 0, 0, 2.25, 1.5, 1.75);
 	static AxisAlignedBB full = new AxisAlignedBB(0, 0, 0, 2.5, 1.5, 5);
-    protected static final DataParameter<Boolean> CHARGING = EntityDataManager.<Boolean>createKey(EntityIronGolem.class, DataSerializers.BOOLEAN);
-    protected static final DataParameter<Boolean> START = EntityDataManager.<Boolean>createKey(EntityIronGolem.class, DataSerializers.BOOLEAN);
+    protected static final DataParameter<Boolean> CHARGING = EntityDataManager.<Boolean>createKey(EntityGordiusWheel.class, DataSerializers.BOOLEAN);
+    protected static final DataParameter<Boolean> START = EntityDataManager.<Boolean>createKey(EntityGordiusWheel.class, DataSerializers.BOOLEAN);
 
 	public EntityGordiusWheel(World world) {
 		super(world);
