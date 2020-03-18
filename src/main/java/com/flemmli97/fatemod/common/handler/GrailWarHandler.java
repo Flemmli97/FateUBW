@@ -23,6 +23,7 @@ import com.flemmli97.tenshilib.common.entity.EntityUtil;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -52,8 +53,11 @@ public class GrailWarHandler extends WorldSavedData{
 	private static final String identifier = "GrailWarTracker";
 
 	private Map<UUID, String> players = Maps.newLinkedHashMap();
-	private Map<UUID,ResourceLocation> servants = Maps.newLinkedHashMap();
-	private Map<UUID,EnumServantType> servantClass = Maps.newLinkedHashMap();
+	private Map<UUID,ResourceLocation> activeServants = Maps.newLinkedHashMap();
+	
+	private Set<ResourceLocation> servants = Sets.newHashSet();
+	private Set<EnumServantType> servantClasses = Sets.newHashSet();
+	
 	private State state = State.NOTHING;
 
 	private int joinTicker, winningDelay, timeToNextServant, spawnedServants;
@@ -86,7 +90,7 @@ public class GrailWarHandler extends WorldSavedData{
 		if(!player.world.isRemote)
 		{
 			UUID uuid=player.getUniqueID();
-			if(!this.players.containsKey(uuid) && this.servants.size() <ConfigHandler.maxPlayer)
+			if(!this.players.containsKey(uuid) && this.spawnedServants <ConfigHandler.maxPlayer)
 			{
 				EntityServant servant = player.getCapability(PlayerCapProvider.PlayerCap, null).getServant(player);
 				if(this.addServant(servant))
@@ -139,7 +143,7 @@ public class GrailWarHandler extends WorldSavedData{
 	{
 		if(this.state==State.RUN)
 		{
-			if(this.servants.size() == 1 && this.spawnedServants>=ConfigHandler.maxPlayer && this.players.size()==1)
+			if(this.activeServants.size() == 1 && this.spawnedServants>=ConfigHandler.maxPlayer && this.players.size()==1)
 			{
 				this.winningDelay=ConfigHandler.rewardDelay;
 				this.state=State.FINISH;
@@ -177,8 +181,7 @@ public class GrailWarHandler extends WorldSavedData{
 	
 	public void removeServant(EntityServant servant)
 	{
-		boolean flag=this.servants.remove(servant.getUniqueID())!=null;
-		this.servantClass.remove(servant.getUniqueID());
+		boolean flag=this.activeServants.remove(servant.getUniqueID())!=null;
 		if(flag)
 		{
 			if(!servant.world.isRemote)
@@ -205,10 +208,11 @@ public class GrailWarHandler extends WorldSavedData{
 	
 	public boolean addServant(EntityServant servant)
 	{
-		if(!this.servants.containsKey(servant.getUniqueID()))
+		if(!this.activeServants.containsKey(servant.getUniqueID()))
 		{
-			this.servants.put(servant.getUniqueID(), EntityList.getKey(servant));
-			this.servantClass.put(servant.getUniqueID(), servant.getServantType());
+			this.activeServants.put(servant.getUniqueID(), EntityList.getKey(servant));
+			this.servants.add(EntityList.getKey(servant));
+			this.servantClasses.add(servant.getServantType());
 			this.markDirty();
 			this.spawnedServants++;
 			return true;
@@ -344,13 +348,14 @@ public class GrailWarHandler extends WorldSavedData{
 			this.winningDelay=0;
 			this.timeToNextServant=0;
 			this.state=State.NOTHING;
-			this.servants.forEach((uuid,res)->{
+			this.activeServants.forEach((uuid,res)->{
 				EntityServant servant = EntityUtil.findFromUUID(EntityServant.class, world, uuid);
 				if(servant!=null)
 					servant.attackEntityFrom(DamageSource.OUT_OF_WORLD, Integer.MAX_VALUE);
 			});
+			this.activeServants.clear();
 			this.servants.clear();
-			this.servantClass.clear();
+			this.servantClasses.clear();
 			this.spawnedServants=0;
 			world.getMinecraftServer().getPlayerList().sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.grailwar.end"), TextFormatting.RED));
 			PacketHandler.sendToAll(new MessageWarTracker(world));
@@ -363,7 +368,7 @@ public class GrailWarHandler extends WorldSavedData{
 		if(!ConfigHandler.allowDuplicateServant)
 		{
 			List<ResourceLocation> noDups = Lists.newArrayList();
-			for(ResourceLocation res : this.servants.values())
+			for(ResourceLocation res : this.servants)
 			{
 				if(!noDups.contains(res))
 					noDups.add(res);
@@ -373,7 +378,7 @@ public class GrailWarHandler extends WorldSavedData{
 		if(!ConfigHandler.allowDuplicateClass)
 		{
 			List<EnumServantType> noDups = Lists.newArrayList();
-			for(EnumServantType type : this.servantClass.values())
+			for(EnumServantType type : this.servantClasses)
 			{
 				if(!noDups.contains(type))
 					noDups.add(type);
@@ -386,9 +391,9 @@ public class GrailWarHandler extends WorldSavedData{
 	public boolean canSpawnServant(EntityServant entity)
 	{
 		if(!ConfigHandler.allowDuplicateServant)
-			return !this.servants.containsValue(EntityList.getKey(entity));
+			return !this.servants.contains(EntityList.getKey(entity));
 		if(!ConfigHandler.allowDuplicateClass)
-			return !this.servantClass.containsValue(entity.getServantType());
+			return !this.servantClasses.contains(entity.getServantType());
 		return true;
 	}
 	
@@ -397,11 +402,11 @@ public class GrailWarHandler extends WorldSavedData{
 		if(this.canSpawnOtherServants())
 		{
 			EnumServantType type = EnumServantType.values()[world.rand.nextInt(EnumServantType.values().length-1)];
-			if(ConfigHandler.allowDuplicateClass || !this.servantClass.containsValue(type))
+			if(ConfigHandler.allowDuplicateClass || !this.servantClasses.contains(type))
 			{
 				List<ResourceLocation> list = Lists.newArrayList(ModEntities.getAllServant(type));
 				ResourceLocation res = list.get(world.rand.nextInt(list.size()));
-				if(ConfigHandler.allowDuplicateServant || !this.servants.containsValue(res))
+				if(ConfigHandler.allowDuplicateServant || !this.servants.contains(res))
 				{
 					Entity e = EntityList.createEntityByIDFromName(res, world);
 					if(e instanceof EntityServant)
@@ -418,12 +423,14 @@ public class GrailWarHandler extends WorldSavedData{
 	public void readFromNBT(NBTTagCompound nbt) {
 		NBTTagCompound tag = nbt.getCompoundTag("Players");
 		tag.getKeySet().forEach(s->this.players.put(UUID.fromString(s), tag.getString(s)));
-		NBTTagCompound tag2 = nbt.getCompoundTag("Servants");
-		tag2.getKeySet().forEach(s->this.servants.put(UUID.fromString(s), new ResourceLocation(tag2.getString(s))));
-		NBTTagCompound tag3 = nbt.getCompoundTag("ServantClasses");
-		tag3.getKeySet().forEach(s->this.servantClass.put(UUID.fromString(s), EnumServantType.valueOf(tag3.getString(s))));
-		NBTTagList list = nbt.getTagList("ToRemove", Constants.NBT.TAG_STRING);
-		list.forEach(s->this.shedulePlayerRemoval.add(UUID.fromString(((NBTTagString)s).getString())));
+		NBTTagCompound tag2 = nbt.getCompoundTag("ActiveServants");
+		tag2.getKeySet().forEach(s->this.activeServants.put(UUID.fromString(s), new ResourceLocation(tag2.getString(s))));
+		NBTTagList list = nbt.getTagList("Servants", Constants.NBT.TAG_STRING);
+		list.forEach(s->this.servants.add(new ResourceLocation(((NBTTagString)s).getString())));
+		NBTTagList list2 = nbt.getTagList("ServantClasses", Constants.NBT.TAG_STRING);
+		list2.forEach(s->this.servantClasses.add(EnumServantType.valueOf(((NBTTagString)s).getString())));
+		NBTTagList list3 = nbt.getTagList("ToRemove", Constants.NBT.TAG_STRING);
+		list3.forEach(s->this.shedulePlayerRemoval.add(UUID.fromString(((NBTTagString)s).getString())));
 		this.joinTicker = nbt.getInteger("Ticker");
 		this.winningDelay = nbt.getInteger("WinDelay");
 		this.timeToNextServant= nbt.getInteger("SpawnTick");
@@ -437,14 +444,17 @@ public class GrailWarHandler extends WorldSavedData{
 		this.players.forEach((uuid,name)->tag.setString(uuid.toString(), name));
 		compound.setTag("Players", tag);
 		NBTTagCompound tag2 = new NBTTagCompound();
-		this.servants.forEach((uuid,res)->tag.setString(uuid.toString(), res.toString()));
-		compound.setTag("Servants", tag2);
-		NBTTagCompound tag3 = new NBTTagCompound();
-		this.servantClass.forEach((uuid,clss)->tag.setString(uuid.toString(), clss.toString()));
-		compound.setTag("ServantClasses", tag3);
+		this.activeServants.forEach((uuid,res)->tag2.setString(uuid.toString(), res.toString()));
+		compound.setTag("ActiveServants", tag2);
 		NBTTagList list = new NBTTagList();
-		this.shedulePlayerRemoval.forEach(uuid->list.appendTag(new NBTTagString(uuid.toString())));
-		compound.setTag("ToRemove", list);
+		this.servants.forEach(res->list.appendTag(new NBTTagString(res.toString())));
+		compound.setTag("Servants", list);
+		NBTTagList list2 = new NBTTagList();
+		this.servantClasses.forEach(e->list2.appendTag(new NBTTagString(e.toString())));
+		compound.setTag("ServantClasses", list2);
+		NBTTagList list3 = new NBTTagList();
+		this.shedulePlayerRemoval.forEach(uuid->list3.appendTag(new NBTTagString(uuid.toString())));
+		compound.setTag("ToRemove", list3);
 		compound.setInteger("Ticker", this.joinTicker);
 		compound.setInteger("WinDelay", this.winningDelay);
 		compound.setInteger("SpawnTick", this.timeToNextServant);
