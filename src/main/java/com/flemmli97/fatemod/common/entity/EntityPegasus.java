@@ -1,6 +1,8 @@
 package com.flemmli97.fatemod.common.entity;
 
 import com.flemmli97.fatemod.common.handler.ConfigHandler;
+import com.flemmli97.tenshilib.common.entity.AnimatedAction;
+import com.flemmli97.tenshilib.common.entity.IAnimated;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
@@ -9,27 +11,22 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityMoveHelper;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
-public class EntityPegasus extends EntityAnimal implements IServantMinion{
+public class EntityPegasus extends EntityAnimal implements IServantMinion, IAnimated{
 
-	public class PegasusMoveHelper extends EntityMoveHelper {
+    private AnimatedAction currentAnim;
 
-		public PegasusMoveHelper(EntityLiving entitylivingIn) {
-			super(entitylivingIn);
-			// TODO Auto-generated constructor stub
-		}
-
-	}
-
+    private static final AnimatedAction prepCharge = new AnimatedAction(20, 19, "prep_charge");
+    
+    private static final AnimatedAction[] anims = new AnimatedAction[] {};
 	public EntityPegasus(World world) {
 		super(world);
 		this.stepHeight=1.0F;
 		this.setSize(1.5F, 1.5F);
-        this.moveHelper = new EntityPegasus.PegasusMoveHelper(this);
+        this.moveHelper = new FlyingMoveHelper(this);
 	}
 
 	@Override
@@ -50,7 +47,7 @@ public class EntityPegasus extends EntityAnimal implements IServantMinion{
 
 	@Override
 	public boolean attackEntityFrom(DamageSource source, float amount) {
-			return super.attackEntityFrom(source, amount);
+		return super.attackEntityFrom(source, amount);
 	}
 
 	@Override
@@ -83,26 +80,8 @@ public class EntityPegasus extends EntityAnimal implements IServantMinion{
             this.renderYawOffset = entityliving.renderYawOffset;
         }
     }
-
-	/*@Override
-	public void moveEntityWithHeading(float strafe, float forward) {
-		// TODO Auto-generated method stub
-		super.moveEntityWithHeading(strafe, forward);
-	}*/
-
-	@Override
-	protected SoundEvent getHurtSound(DamageSource source) {
-		// TODO Auto-generated method stub
-		return super.getHurtSound(source);
-	}
-
-	@Override
-	protected SoundEvent getDeathSound() {
-		// TODO Auto-generated method stub
-		return super.getDeathSound();
-	}
 	
-	static class FlyingMoveHelper extends EntityMoveHelper
+	private static class FlyingMoveHelper extends EntityMoveHelper
 	{
 		EntityPegasus pegasus;
 		private int courseChangeCooldown;
@@ -165,4 +144,25 @@ public class EntityPegasus extends EntityAnimal implements IServantMinion{
 	public EntityAgeable createChild(EntityAgeable ageable) {
 		return null;
 	}
+	
+	public void prepCharge() {
+	    if(this.getAnimation()==null)
+	        this.setAnimation(prepCharge);
+	}
+
+    @Override
+    public AnimatedAction getAnimation() {
+        return this.currentAnim;
+    }
+
+    @Override
+    public void setAnimation(AnimatedAction anim) {
+        this.currentAnim=anim==null?null:anim.create();
+        IAnimated.sentToClient(this);
+    }
+
+    @Override
+    public AnimatedAction[] getAnimations() {
+        return anims;
+    }
 }

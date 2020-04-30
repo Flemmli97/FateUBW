@@ -184,6 +184,8 @@ public class EntityAIAnimatedAttack<T extends EntityServant> extends EntityAIBas
 	        		this.attackingEntity.motionX=0;
 	        		this.attackingEntity.motionZ=0;
 	        		this.attackingEntity.getNavigator().clearPath();
+	        		this.attackingEntity.setMoveForward(0);
+	        		this.attackingEntity.setMoveStrafing(0);
         		}
         	}
         	if(anim!=null && this.attackingEntity.canUse(anim, AttackType.RANGED))
