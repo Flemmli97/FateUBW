@@ -2,7 +2,7 @@ package com.flemmli97.fatemod.client.model;
 
 import com.flemmli97.fatemod.common.entity.EntityLesserMonster;
 import com.flemmli97.fatemod.common.lib.LibReference;
-import com.flemmli97.tenshilib.client.model.Animation;
+import com.flemmli97.tenshilib.client.model.TabulaAnimation;
 import com.flemmli97.tenshilib.client.model.IResetModel;
 import com.flemmli97.tenshilib.client.model.ModelRendererPlus;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
@@ -81,11 +81,11 @@ public class ModelStarfishDemon extends ModelBase implements IResetModel{
     public ModelRendererPlus Tentaclepapulae_35;
 
     //20
-    public Animation idle;
+    public TabulaAnimation idle;
     //31
-    public Animation walk;
+    public TabulaAnimation walk;
     //length 20, attack at 15
-    public Animation attack;
+    public TabulaAnimation attack;
 
     public ModelStarfishDemon() {
         this.textureWidth = 64;
@@ -335,9 +335,9 @@ public class ModelStarfishDemon extends ModelBase implements IResetModel{
         this.TentacleP3S3.addChild(this.Tentaclepapulae_17);
         this.TentacleP2S6.addChild(this.TentacleP3S6);
         
-        this.idle = new Animation(this, new ResourceLocation(LibReference.MODID, "models/entity/animation/starfish_standing_idle.json"));
-        this.walk = new Animation(this, new ResourceLocation(LibReference.MODID, "models/entity/animation/starfish_standing_walk.json"));
-        this.attack = new Animation(this, new ResourceLocation(LibReference.MODID, "models/entity/animation/starfish_standing_attack.json"));
+        this.idle = new TabulaAnimation(this, new ResourceLocation(LibReference.MODID, "models/entity/animation/starfish_standing_idle.json"));
+        this.walk = new TabulaAnimation(this, new ResourceLocation(LibReference.MODID, "models/entity/animation/starfish_standing_walk.json"));
+        this.attack = new TabulaAnimation(this, new ResourceLocation(LibReference.MODID, "models/entity/animation/starfish_standing_attack.json"));
     }
 
     @Override

@@ -2,7 +2,7 @@ package com.flemmli97.fatemod.client.model.servant;
 
 import com.flemmli97.fatemod.common.entity.servant.EntityHeracles;
 import com.flemmli97.fatemod.common.lib.LibReference;
-import com.flemmli97.tenshilib.client.model.Animation;
+import com.flemmli97.tenshilib.client.model.TabulaAnimation;
 import com.flemmli97.tenshilib.client.model.ModelRendererPlus;
 import com.flemmli97.tenshilib.client.model.ModelUtils;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
@@ -103,7 +103,7 @@ public class ModelHeracles extends ModelServant {
     public ModelRendererPlus hair6;
     public ModelRendererPlus hair7;
     
-    public Animation swing_1;
+    public TabulaAnimation swing_1;
 
     public ModelHeracles() {
         this.textureWidth = 76;
@@ -471,7 +471,7 @@ public class ModelHeracles extends ModelServant {
         this.leftFootUp.addChild(this.leftFoot);
         this.leftLowerArm.addChild(this.leftWrist);
         
-        this.swing_1 = new Animation(this, new ResourceLocation(LibReference.MODID, "models/entity/animation/heracles_swing_1.json"));
+        this.swing_1 = new TabulaAnimation(this, new ResourceLocation(LibReference.MODID, "models/entity/animation/heracles_swing_1.json"));
     }
 
     @Override

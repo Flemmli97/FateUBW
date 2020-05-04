@@ -1,17 +1,5 @@
 package com.flemmli97.fatemod.common.handler;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.BiConsumer;
-
-import org.apache.commons.io.IOUtils;
-
 import com.flemmli97.fatemod.common.handler.capabilities.PlayerCapProvider;
 import com.flemmli97.fatemod.common.lib.LibReference;
 import com.flemmli97.fatemod.proxy.CommonProxy;
@@ -25,7 +13,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-
 import hellfirepvp.astralsorcery.common.data.research.PlayerProgress;
 import hellfirepvp.astralsorcery.common.data.research.ResearchManager;
 import net.minecraft.entity.item.EntityItem;
@@ -35,6 +22,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.storage.loot.RandomValueRange;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
+import org.apache.commons.io.IOUtils;
+
+import java.io.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.BiConsumer;
 
 public class GrailReward {
 
@@ -64,6 +58,8 @@ public class GrailReward {
 		if(lootConf==null)
 			lootConf = new JsonConfig<JsonObject>(conf, JsonObject.class, null).setGson(GSON);
 		JsonObject obj = lootConf.getElement();
+		if(obj == null)
+			return;
 		obj.entrySet().forEach((entry)->{
 			if(entry.getValue() instanceof JsonArray)
 			{
@@ -188,6 +184,6 @@ public class GrailReward {
 		ASTRALSORCERY,
 		BOTANIA,
 		THAUMCRAFT,
-		BLOODMAGIC;
+		BLOODMAGIC
 	}
 }

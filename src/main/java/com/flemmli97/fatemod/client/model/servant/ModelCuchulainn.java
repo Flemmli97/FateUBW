@@ -2,7 +2,7 @@ package com.flemmli97.fatemod.client.model.servant;
 
 import com.flemmli97.fatemod.common.entity.servant.EntityCuchulainn;
 import com.flemmli97.fatemod.common.lib.LibReference;
-import com.flemmli97.tenshilib.client.model.Animation;
+import com.flemmli97.tenshilib.client.model.TabulaAnimation;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 
 import net.minecraft.client.Minecraft;
@@ -11,11 +11,11 @@ import net.minecraft.util.ResourceLocation;
 
 public class ModelCuchulainn extends ModelServant{
 	
-    public Animation gae_bolg;
+    public TabulaAnimation gae_bolg;
 
 	public ModelCuchulainn() {
 		super();
-		this.gae_bolg = new Animation(this, new ResourceLocation(LibReference.MODID, "models/entity/animation/gaebolg.json"));
+		this.gae_bolg = new TabulaAnimation(this, new ResourceLocation(LibReference.MODID, "models/entity/animation/gaebolg.json"));
 	}
 
 	@Override
