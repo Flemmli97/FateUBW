@@ -37,12 +37,12 @@ public class EntityHassan extends EntityServant {
 	
 	public EntityHassan(World world) {
 		super(world, EnumServantType.ASSASSIN, "Delusional Illusion", new ItemStack[] {new ItemStack(ModItems.dagger)});
-        this.tasks.addTask(1, attackAI);
-	    this.targetTasks.removeTask(targetServant);
+        this.tasks.addTask(1, this.attackAI);
+	    this.targetTasks.removeTask(this.targetServant);
 	    this.targetServant = new EntityAINearestAttackableTarget<EntityServant>(this, EntityServant.class, 10, true, true, 
 	    		(living)->living != null && !ServantUtils.inSameTeam(living, EntityHassan.this) && !EntityHassan.this.copieUUID.contains(living.getCachedUniqueIdString()));
 
-	    this.targetTasks.addTask(0, targetServant);
+	    this.targetTasks.addTask(0, this.targetServant);
 	}
 	
 	@Override
@@ -107,11 +107,11 @@ public class EntityHassan extends EntityServant {
 	    super.updateAI(behaviour);
 		if(behaviour == 3)
 		{
-			this.tasks.addTask(1, attackAI);
+			this.tasks.addTask(1, this.attackAI);
 		}
 		else if(behaviour == 4)
 		{
-			this.tasks.removeTask(attackAI);
+			this.tasks.removeTask(this.attackAI);
 		}
 	}
 	
@@ -132,7 +132,7 @@ public class EntityHassan extends EntityServant {
 			this.copieUUID.clear();
 			for(int i = 0; i < maxCopies; i++)
 			{
-				EntityHassanCopy hassan = new EntityHassanCopy(world, this);
+				EntityHassanCopy hassan = new EntityHassanCopy(this.world, this);
 				hassan.setLocationAndAngles(this.posX, this.posY,this.posZ, MathHelper.wrapDegrees(this.world.rand.nextFloat() * 360.0F), 0.0F);
 				hassan.setAttackTarget(this.getAttackTarget());
 				hassan.onInitialSpawn(this.world.getDifficultyForLocation(this.getPosition()), null);

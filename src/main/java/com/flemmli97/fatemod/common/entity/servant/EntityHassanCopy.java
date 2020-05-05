@@ -52,7 +52,7 @@ public class EntityHassanCopy extends EntityServant implements IServantMinion{
 		this.setOriginal(original);
 	    this.tasks.addTask(1, this.followOriginal);
 	    this.updateAttributes();
-	    this.tasks.addTask(1, attackAI);
+	    this.tasks.addTask(1, this.attackAI);
 		this.removeTargetAI();
 		this.experienceValue = 0;
 		this.revealServant();
@@ -60,9 +60,9 @@ public class EntityHassanCopy extends EntityServant implements IServantMinion{
 	
 	private void removeTargetAI()
 	{
-		this.targetTasks.removeTask(targetServant);
-	    this.targetTasks.removeTask(targetPlayer);
-	    this.targetTasks.removeTask(targetHurt);
+		this.targetTasks.removeTask(this.targetServant);
+	    this.targetTasks.removeTask(this.targetPlayer);
+	    this.targetTasks.removeTask(this.targetHurt);
 	}
 	
 	public void setOriginal(EntityHassan original)

@@ -19,17 +19,17 @@ public class MessageGui  implements IMessage{
 	/** 1=ServantInfo, 2=GrailWarTracker*/
 	public MessageGui(int i)
 	{
-		message = i;
+        this.message = i;
 	}
 	
 	@Override
 	public void fromBytes(ByteBuf buf) {
-		message = buf.readInt();
+        this.message = buf.readInt();
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf) {
-		buf.writeInt(message);
+		buf.writeInt(this.message);
 	}
 	
 	public static class Handler implements IMessageHandler<MessageGui, IMessage> 

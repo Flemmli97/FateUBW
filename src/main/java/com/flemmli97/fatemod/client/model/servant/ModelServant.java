@@ -74,22 +74,22 @@ public class ModelServant extends ModelBase implements IResetModel{
 		this.servantLeftArmJoint = new ModelRendererPlus (this, 0, 0);
 		this.servantLeftArmJoint.addBox(0, 0, 0, 0, 0, 0);
 		this.servantLeftArmJoint.setDefaultRotPoint(3.0F, 4.0F, 0);
-		this.servantLeftArmUp.addChild(servantLeftArmJoint);
+		this.servantLeftArmUp.addChild(this.servantLeftArmJoint);
 		this.servantLeftArmOverlayJoint = new ModelRendererPlus (this, 0, 0);
 		this.servantLeftArmOverlayJoint.addBox(0, 0, 0, 0, 0, 0);
 		this.servantLeftArmOverlayJoint.setDefaultRotPoint(3.0F, 4.0F, 0);
-		this.servantLeftArmUpOverlay.addChild(servantLeftArmOverlayJoint);
+		this.servantLeftArmUpOverlay.addChild(this.servantLeftArmOverlayJoint);
 		
 		this.servantLeftArmDown = new ModelRendererPlus(this, 32, 54);
 		this.servantLeftArmDown.mirror=true;
 		this.servantLeftArmDown.addBox(-4.0F, 0, -2.0F, 4, 6, 4, 0);
 		this.servantLeftArmDown.setDefaultRotPoint(0, 0, 0);
-		this.servantLeftArmJoint.addChild(servantLeftArmDown);
+		this.servantLeftArmJoint.addChild(this.servantLeftArmDown);
 		this.servantLeftArmDownOverlay = new ModelRendererPlus(this, 48, 54);
 		this.servantLeftArmDownOverlay.mirror=true;
 		this.servantLeftArmDownOverlay.addBox(-4.0F, 0, -2.0F, 4, 6, 4, 0.25F);
 		this.servantLeftArmDownOverlay.setDefaultRotPoint(0, 0, 0);
-		this.servantLeftArmOverlayJoint.addChild(servantLeftArmDownOverlay);
+		this.servantLeftArmOverlayJoint.addChild(this.servantLeftArmDownOverlay);
 		
         this.servantRightArmUp = new ModelRendererPlus(this, 40, 16);
         this.servantRightArmUp.addBox(-3.0F, -2.0F, -2.0F, 4, 6, 4, 0);
@@ -101,20 +101,20 @@ public class ModelServant extends ModelBase implements IResetModel{
         this.servantRightArmJoint = new ModelRendererPlus(this, 0, 0);
         this.servantRightArmJoint.addBox(0, 0, 0, 0, 0, 0);		
         this.servantRightArmJoint.setDefaultRotPoint(-3.0F, 4.0F, 0);
-        this.servantRightArmUp.addChild(servantRightArmJoint);
+        this.servantRightArmUp.addChild(this.servantRightArmJoint);
         this.servantRightArmOverlayJoint = new ModelRendererPlus(this, 0, 0);
         this.servantRightArmOverlayJoint.addBox(0, 0, 0, 0, 0, 0);
         this.servantRightArmOverlayJoint.setDefaultRotPoint(-3.0F, 4.0F, 0);
-        this.servantRightArmUpOverlay.addChild(servantRightArmOverlayJoint);
+        this.servantRightArmUpOverlay.addChild(this.servantRightArmOverlayJoint);
         
         this.servantRightArmDown = new ModelRendererPlus(this, 32, 54);
         this.servantRightArmDown.addBox(0, 0, -2.0F, 4, 6, 4, 0);
         this.servantRightArmDown.setDefaultRotPoint(0, 0, 0);
-        this.servantRightArmJoint.addChild(servantRightArmDown);
+        this.servantRightArmJoint.addChild(this.servantRightArmDown);
         this.servantRightArmDownOverlay = new ModelRendererPlus(this, 48, 54);
         this.servantRightArmDownOverlay.addBox(0, 0, -2.0F, 4, 6, 4, 0.25F);
         this.servantRightArmDownOverlay.setDefaultRotPoint(0, 0, 0);
-        this.servantRightArmOverlayJoint.addChild(servantRightArmDownOverlay);
+        this.servantRightArmOverlayJoint.addChild(this.servantRightArmDownOverlay);
         
         this.servantLeftLegUp = new ModelRendererPlus(this, 0, 16);
         this.servantLeftLegUp.mirror=true;
@@ -129,12 +129,12 @@ public class ModelServant extends ModelBase implements IResetModel{
         this.servantLeftLegDown.mirror=true;
         this.servantLeftLegDown.addBox(-2.0F, 0, 0, 4, 6, 4, 0);
         this.servantLeftLegDown.setDefaultRotPoint(0, 6.0F, -2.0F);
-        this.servantLeftLegUp.addChild(servantLeftLegDown);
+        this.servantLeftLegUp.addChild(this.servantLeftLegDown);
         this.servantLeftLegDownOverlay = new ModelRendererPlus(this, 0, 54);
         this.servantLeftLegDownOverlay.mirror=true;
         this.servantLeftLegDownOverlay.addBox(-2.0F, 0, 0, 4, 6, 4, 0.25F);
         this.servantLeftLegDownOverlay.setDefaultRotPoint(0, 6.0F, -2.0F);
-        this.servantLeftLegUpOverlay.addChild(servantLeftLegDownOverlay);
+        this.servantLeftLegUpOverlay.addChild(this.servantLeftLegDownOverlay);
 
         this.servantRightLegUp = new ModelRendererPlus(this, 0, 16);
         this.servantRightLegUp.addBox(-2.0F, 0, -2.0F, 4, 6, 4, 0);
@@ -146,23 +146,23 @@ public class ModelServant extends ModelBase implements IResetModel{
         this.servantRightLegDown = new ModelRendererPlus(this, 16, 54);
         this.servantRightLegDown.addBox(-2.0F, 0, 0, 4, 6, 4, 0);
         this.servantRightLegDown.setDefaultRotPoint(0, 6.0F, -2.0F);
-        this.servantRightLegUp.addChild(servantRightLegDown);
+        this.servantRightLegUp.addChild(this.servantRightLegDown);
         this.servantRightLegDownOverlay = new ModelRendererPlus(this, 0, 54);
         this.servantRightLegDownOverlay.addBox(-2.0F, 0, 0, 4, 6, 4, 0.25F);
         this.servantRightLegDownOverlay.setDefaultRotPoint(0, 6.0F, -2.0F);
-        this.servantRightLegUpOverlay.addChild(servantRightLegDownOverlay);
+        this.servantRightLegUpOverlay.addChild(this.servantRightLegDownOverlay);
         
-        this.servantBody.addChild(servantHead);
-        this.servantBody.addChild(servantRightArmUp);
-        this.servantBody.addChild(servantLeftArmUp);
-        this.servantBody.addChild(servantRightLegUp);
-        this.servantBody.addChild(servantLeftLegUp);
+        this.servantBody.addChild(this.servantHead);
+        this.servantBody.addChild(this.servantRightArmUp);
+        this.servantBody.addChild(this.servantLeftArmUp);
+        this.servantBody.addChild(this.servantRightLegUp);
+        this.servantBody.addChild(this.servantLeftLegUp);
 		
-        this.servantBodyOverlay.addChild(servantHeadOverlay);
-        this.servantBodyOverlay.addChild(servantRightArmUpOverlay);
-        this.servantBodyOverlay.addChild(servantLeftArmUpOverlay);
-        this.servantBodyOverlay.addChild(servantRightLegUpOverlay);
-        this.servantBodyOverlay.addChild(servantLeftLegUpOverlay);
+        this.servantBodyOverlay.addChild(this.servantHeadOverlay);
+        this.servantBodyOverlay.addChild(this.servantRightArmUpOverlay);
+        this.servantBodyOverlay.addChild(this.servantLeftArmUpOverlay);
+        this.servantBodyOverlay.addChild(this.servantRightLegUpOverlay);
+        this.servantBodyOverlay.addChild(this.servantLeftLegUpOverlay);
 	}
 	
 	@Override
@@ -180,7 +180,7 @@ public class ModelServant extends ModelBase implements IResetModel{
 	public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale, Entity entity)
     {
 		this.setRotationAnglesPre(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);
-        syncOverlay();
+        this.syncOverlay();
 	}
 	
 	public void setRotationAnglesPre(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale, Entity entity) {
@@ -261,24 +261,24 @@ public class ModelServant extends ModelBase implements IResetModel{
 	
 	public void syncOverlay()
 	{
-		copyModelAngles(servantLeftLegUp, servantLeftLegUpOverlay);
-		copyModelAngles(servantRightLegUp, servantRightLegUpOverlay);
+		copyModelAngles(this.servantLeftLegUp, this.servantLeftLegUpOverlay);
+		copyModelAngles(this.servantRightLegUp, this.servantRightLegUpOverlay);
 		
-		copyModelAngles(servantLeftArmUp, servantLeftArmUpOverlay);
-		copyModelAngles(servantRightArmUp, servantRightArmUpOverlay);
+		copyModelAngles(this.servantLeftArmUp, this.servantLeftArmUpOverlay);
+		copyModelAngles(this.servantRightArmUp, this.servantRightArmUpOverlay);
 		
-		copyModelAngles(servantRightArmJoint, servantRightArmOverlayJoint);
-		copyModelAngles(servantLeftArmJoint, servantLeftArmOverlayJoint);
+		copyModelAngles(this.servantRightArmJoint, this.servantRightArmOverlayJoint);
+		copyModelAngles(this.servantLeftArmJoint, this.servantLeftArmOverlayJoint);
 		
-		copyModelAngles(servantRightArmDown, servantRightArmDownOverlay);
-		copyModelAngles(servantLeftArmDown, servantLeftArmDownOverlay);
+		copyModelAngles(this.servantRightArmDown, this.servantRightArmDownOverlay);
+		copyModelAngles(this.servantLeftArmDown, this.servantLeftArmDownOverlay);
 		
-		copyModelAngles(servantLeftLegDown, servantLeftLegDownOverlay);
-		copyModelAngles(servantRightLegDown, servantRightLegDownOverlay);
+		copyModelAngles(this.servantLeftLegDown, this.servantLeftLegDownOverlay);
+		copyModelAngles(this.servantRightLegDown, this.servantRightLegDownOverlay);
 		
-		copyModelAngles(servantHead, servantHeadOverlay);
+		copyModelAngles(this.servantHead, this.servantHeadOverlay);
 		
-		copyModelAngles(servantBody, servantBodyOverlay);
+		copyModelAngles(this.servantBody, this.servantBodyOverlay);
 	}
 	
 	@Override
@@ -300,7 +300,7 @@ public class ModelServant extends ModelBase implements IResetModel{
         this.servantLeftLegDown.reset();
         this.servantRightLegUp.reset();
         this.servantRightLegDown.reset();
-		syncOverlay();
+        this.syncOverlay();
 	}
 	
 	public void postRenderArm(float scale, EnumHandSide side)

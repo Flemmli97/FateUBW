@@ -23,12 +23,12 @@ public class MessageMana  implements IMessage{
 	
 	@Override
 	public void fromBytes(ByteBuf buf) {
-		manaValue = buf.readInt();
+        this.manaValue = buf.readInt();
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf) {
-		buf.writeInt(manaValue);		
+		buf.writeInt(this.manaValue);
 	}
 	
 	public static class Handler implements IMessageHandler<MessageMana, IMessage> {

@@ -24,7 +24,7 @@ public class EntityAIEmiya extends EntityAIAnimatedAttack<EntityEmiya>{
 		EntityLivingBase var1 = this.attackingEntity.getAttackTarget();
         this.attackingEntity.getLookHelper().setLookPositionWithEntity(var1, 30.0F, 30.0F);
         AnimatedAction anim = this.attackingEntity.getAnimation();
-		if(anim==null && ((attackingEntity.canUseNP() && attackingEntity.getOwner() == null && attackingEntity.getMana()>=attackingEntity.props().hogouMana()) || attackingEntity.forcedNP))
+		if(anim==null && ((this.attackingEntity.canUseNP() && this.attackingEntity.getOwner() == null && this.attackingEntity.getMana()>= this.attackingEntity.props().hogouMana()) || this.attackingEntity.forcedNP))
 		{
         	anim = this.attackingEntity.getRandomAttack(AttackType.NP);
         	this.attackingEntity.setAnimation(anim);		
@@ -42,9 +42,9 @@ public class EntityAIEmiya extends EntityAIAnimatedAttack<EntityEmiya>{
 
         	if(anim.canAttack())
         	{
-        		if(!attackingEntity.forcedNP)
-        			this.attackingEntity.useMana(attackingEntity.props().hogouMana());
-        		attackingEntity.attackWithNP();
+        		if(!this.attackingEntity.forcedNP)
+        			this.attackingEntity.useMana(this.attackingEntity.props().hogouMana());
+                this.attackingEntity.attackWithNP();
         		this.attackingEntity.forcedNP = false;
         		//Switch items back
 	        	if(!this.main.isEmpty()||!this.off.isEmpty())

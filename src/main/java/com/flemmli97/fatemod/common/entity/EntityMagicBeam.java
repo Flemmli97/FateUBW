@@ -64,11 +64,11 @@ public class EntityMagicBeam extends EntityBeam{
         if(this.getPreShootTick()>this.dataManager.get(shootTime))
         {
             this.iddle=false;
-            if(!world.isRemote) 
+            if(!this.world.isRemote)
             {
                 if(thrower == null || thrower.isDead) 
                 {
-                    setDead();
+                    this.setDead();
                     return;
                 }
             }

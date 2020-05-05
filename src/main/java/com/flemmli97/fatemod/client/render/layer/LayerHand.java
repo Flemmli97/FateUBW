@@ -68,8 +68,8 @@ public class LayerHand extends LayerHeldItem
 	                this.renderHeldItem(servant, itemstack, ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND, EnumHandSide.LEFT);
 	                if(servant instanceof EntityLancelot)
 	                {
-	                	renderCorruptedEffect(servant, itemstack1, ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND, false);
-	                	renderCorruptedEffect(servant, itemstack, ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND, true);
+                        this.renderCorruptedEffect(servant, itemstack1, ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND, false);
+                        this.renderCorruptedEffect(servant, itemstack, ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND, true);
 	                }
 	                GlStateManager.popMatrix();
 	            }

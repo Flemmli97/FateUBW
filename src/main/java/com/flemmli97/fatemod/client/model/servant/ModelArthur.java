@@ -36,28 +36,28 @@ public class ModelArthur extends ModelServant {
 		
 		if(arthur.isStaying())
 		{
-			servantRightArmUp.rotateAngleX = ModelUtils.degToRad(-28.70F);
-			servantLeftArmUp.rotateAngleX = ModelUtils.degToRad(-65.0F);
-			
-			servantRightArmUp.rotateAngleY = ModelUtils.degToRad(-15.0F);
-			servantLeftArmUp.rotateAngleY = ModelUtils.degToRad(35.0F);
-			
-			servantRightArmJoint.rotateAngleX = ModelUtils.degToRad(28.7F);
-			servantLeftArmJoint.rotateAngleX = ModelUtils.degToRad(65.0F);
-			
-			servantRightArmDown.rotateAngleX= ModelUtils.degToRad(-90.0F);
-			servantLeftArmDown.rotateAngleX= ModelUtils.degToRad(-90.0F);
-			
-			servantRightArmDown.rotateAngleY= ModelUtils.degToRad(-18.26F);	
-			servantLeftArmDown.rotateAngleY= ModelUtils.degToRad(26.09F);
-			
-			servantLeftArmDown.rotateAngleZ = ModelUtils.degToRad(-10.43F);
-			
-			servantLeftLegUp.rotateAngleX = ModelUtils.degToRad(6.0F);
-			servantLeftLegUp.rotateAngleY = ModelUtils.degToRad(-5.0F);
-			
-			servantRightLegUp.rotateAngleX = ModelUtils.degToRad(-14);
-			servantRightLegDown.rotateAngleX= ModelUtils.degToRad(14);
+            this.servantRightArmUp.rotateAngleX = ModelUtils.degToRad(-28.70F);
+            this.servantLeftArmUp.rotateAngleX = ModelUtils.degToRad(-65.0F);
+
+            this.servantRightArmUp.rotateAngleY = ModelUtils.degToRad(-15.0F);
+            this.servantLeftArmUp.rotateAngleY = ModelUtils.degToRad(35.0F);
+
+            this.servantRightArmJoint.rotateAngleX = ModelUtils.degToRad(28.7F);
+            this.servantLeftArmJoint.rotateAngleX = ModelUtils.degToRad(65.0F);
+
+            this.servantRightArmDown.rotateAngleX= ModelUtils.degToRad(-90.0F);
+            this.servantLeftArmDown.rotateAngleX= ModelUtils.degToRad(-90.0F);
+
+            this.servantRightArmDown.rotateAngleY= ModelUtils.degToRad(-18.26F);
+            this.servantLeftArmDown.rotateAngleY= ModelUtils.degToRad(26.09F);
+
+            this.servantLeftArmDown.rotateAngleZ = ModelUtils.degToRad(-10.43F);
+
+            this.servantLeftLegUp.rotateAngleX = ModelUtils.degToRad(6.0F);
+            this.servantLeftLegUp.rotateAngleY = ModelUtils.degToRad(-5.0F);
+
+            this.servantRightLegUp.rotateAngleX = ModelUtils.degToRad(-14);
+            this.servantRightLegDown.rotateAngleX= ModelUtils.degToRad(14);
 		}
 		else
 		{

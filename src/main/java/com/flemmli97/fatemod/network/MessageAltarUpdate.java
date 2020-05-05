@@ -25,7 +25,7 @@ public class MessageAltarUpdate  implements IMessage{
 		this.x = tilePos.getX();
 		this.y = tilePos.getY();
 		this.z = tilePos.getZ();
-		message = summoning;
+        this.message = summoning;
 	}
 	
 	@Override

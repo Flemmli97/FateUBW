@@ -39,7 +39,7 @@ public class EntityMedea extends EntityServant implements IRanged{
 	
 	public EntityMedea(World world) {
 		super(world, EnumServantType.CASTER, "Rule Breaker", new ItemStack[] {new ItemStack(ModItems.staff)});
-		this.tasks.addTask(1, attackAI);
+		this.tasks.addTask(1, this.attackAI);
 	}
 	
 	@Override
@@ -63,13 +63,13 @@ public class EntityMedea extends EntityServant implements IRanged{
 	@Override
 	public void updateAI(int behaviour) {
 		super.updateAI(behaviour);
-		if(commandBehaviour == 3)
+		if(this.commandBehaviour == 3)
 		{
-			this.tasks.addTask(1, attackAI);
+			this.tasks.addTask(1, this.attackAI);
 		}
-		else if(commandBehaviour == 4)
+		else if(this.commandBehaviour == 4)
 		{
-			this.tasks.removeTask(attackAI);
+			this.tasks.removeTask(this.attackAI);
 		}
 	}
 	
@@ -88,10 +88,10 @@ public class EntityMedea extends EntityServant implements IRanged{
 		super.onLivingUpdate();
 		if(!this.world.isRemote)
 		{
-			for(EntityCasterCircle e : this.world.getEntitiesWithinAABB(EntityCasterCircle.class, this.getEntityBoundingBox().grow(ConfigHandler.medeaCircleRange), circlePred))
+			for(EntityCasterCircle e : this.world.getEntitiesWithinAABB(EntityCasterCircle.class, this.getEntityBoundingBox().grow(ConfigHandler.medeaCircleRange), this.circlePred))
 				if(e.getDistanceSq(this.posX, e.posY, this.posZ)<=ConfigHandler.medeaCircleRange*ConfigHandler.medeaCircleRange)
 					this.buff();
-			this.circleDelay=Math.max(--circleDelay, 0);
+			this.circleDelay=Math.max(--this.circleDelay, 0);
 		}
 	}
 	

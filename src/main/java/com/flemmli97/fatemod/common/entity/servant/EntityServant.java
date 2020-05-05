@@ -270,36 +270,36 @@ public abstract class EntityServant extends EntityCreature implements IAnimated{
 	//=====Mana stuff
 	
 	public boolean useMana(float amount) {
-		if(servantMana < amount) {
+		if(this.servantMana < amount) {
 			return false;
 		}		
 		else
 		{
-			servantMana -= amount;
-			antiRegen = 30;
+			this.servantMana -= amount;
+			this.antiRegen = 30;
 			return true;
 		}
 	}
 	
 	private void regenMana()
     {
-		if(canUseNP)
+		if(this.canUseNP)
 		{
-			if(antiRegen == 0)
+			if(this.antiRegen == 0)
 			{
-				if(servantMana < 100)
+				if(this.servantMana < 100)
 				{
-					++counter;
-					if(counter == 20)
+					++this.counter;
+					if(this.counter == 20)
 					{
 						this.servantMana += 1;
-						counter = 0;
+						this.counter = 0;
 					}
 				}
 			}
 			else
 			{
-				antiRegen--;
+				this.antiRegen--;
 			}
 		}
     }
@@ -395,49 +395,49 @@ public abstract class EntityServant extends EntityCreature implements IAnimated{
 	 */
 	public void updateAI(int behaviour) {
 		this.commandBehaviour=behaviour;
-		if(commandBehaviour == 0)
+		if(this.commandBehaviour == 0)
 		{
-			this.targetTasks.removeTask(targetMob);
-			this.targetTasks.addTask(0, targetHurt);
-			this.targetTasks.addTask(1, targetServant);
+			this.targetTasks.removeTask(this.targetMob);
+			this.targetTasks.addTask(0, this.targetHurt);
+			this.targetTasks.addTask(1, this.targetServant);
 		}
-		else if(commandBehaviour == 1)
+		else if(this.commandBehaviour == 1)
 		{
-			this.targetTasks.addTask(0, targetHurt);
-			this.targetTasks.addTask(1, targetServant);
-			this.targetTasks.addTask(3, targetMob);
+			this.targetTasks.addTask(0, this.targetHurt);
+			this.targetTasks.addTask(1, this.targetServant);
+			this.targetTasks.addTask(3, this.targetMob);
 		}
-		else if(commandBehaviour == 2)
+		else if(this.commandBehaviour == 2)
 		{
-			this.targetTasks.addTask(0, targetHurt);
-			this.targetTasks.removeTask(targetServant);
-			this.targetTasks.removeTask(targetMob);
+			this.targetTasks.addTask(0, this.targetHurt);
+			this.targetTasks.removeTask(this.targetServant);
+			this.targetTasks.removeTask(this.targetMob);
 		}
-		else if(commandBehaviour == 3)
+		else if(this.commandBehaviour == 3)
 		{
-			this.targetTasks.addTask(0, targetHurt);
-			this.targetTasks.addTask(1, targetServant);
-			this.tasks.addTask(0, follow);
+			this.targetTasks.addTask(0, this.targetHurt);
+			this.targetTasks.addTask(1, this.targetServant);
+			this.tasks.addTask(0, this.follow);
 			this.tasks.addTask(2, this.wander);
 			this.setStaying(false);
 			this.detachHome();
 		}
-		else if(commandBehaviour == 4)
+		else if(this.commandBehaviour == 4)
 		{
-			this.targetTasks.removeTask(targetHurt);
-			this.targetTasks.removeTask(targetServant);
-			this.targetTasks.removeTask(targetMob);
-			this.tasks.removeTask(follow);
+			this.targetTasks.removeTask(this.targetHurt);
+			this.targetTasks.removeTask(this.targetServant);
+			this.targetTasks.removeTask(this.targetMob);
+			this.tasks.removeTask(this.follow);
 			this.tasks.removeTask(this.wander);
 			this.setStaying(true);
 			this.getNavigator().clearPath();
 			this.setAttackTarget(null);
 			this.detachHome();
 		}
-		else if(commandBehaviour == 5)
+		else if(this.commandBehaviour == 5)
 		{
 			this.setStaying(false);
-			this.tasks.removeTask(follow);
+			this.tasks.removeTask(this.follow);
 			this.tasks.addTask(2, this.wander);
 			this.setHomePosAndDistance(this.getOwner().getPosition(), 8);
 		}
@@ -535,7 +535,7 @@ public abstract class EntityServant extends EntityCreature implements IAnimated{
     		this.rand.nextGaussian() * 0.02D);
 		if(!this.world.isRemote)
 		{
-			if(deathTicks == 1)
+			if(this.deathTicks == 1)
 			{	
 				//if(this.getLastDamageSource()!=DamageSource.OUT_OF_WORLD)
 					this.world.getMinecraftServer().getPlayerList().sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.servant.death"), TextFormatting.RED));			
@@ -571,10 +571,10 @@ public abstract class EntityServant extends EntityCreature implements IAnimated{
 	protected void dropLoot(boolean wasRecentlyHit, int lootingModifier, DamageSource source) {
 		for(int i = 0; i < this.drops.length; i++)
 		{
-			int chance = rand.nextInt(100)-lootingModifier*20;
+			int chance = this.rand.nextInt(100)-lootingModifier*20;
 			if(chance < this.prop.dropChance())
 			{
-				this.entityDropItem(drops[i], 1);
+				this.entityDropItem(this.drops[i], 1);
 			}
 		}
 	}

@@ -93,20 +93,20 @@ public final class TileAltar extends TileEntity implements ITickable{
 		{
 			if(player!=null && !player.capabilities.isCreativeMode)
 			{
-				player.inventory.addItemStackToInventory(inventoryCharm);
+				player.inventory.addItemStackToInventory(this.inventoryCharm);
 			}
-			inventoryCharm=ItemStack.EMPTY;		
+            this.inventoryCharm =ItemStack.EMPTY;
 		}
-		for(int x = 0; x<invCatalyst.size(); x++)
+		for(int x = 0; x< this.invCatalyst.size(); x++)
 		{
-			ItemStack inv = invCatalyst.get(x);
+			ItemStack inv = this.invCatalyst.get(x);
 			if(!inv.isEmpty())
 			{
 				if(player != null && !player.capabilities.isCreativeMode)
 				{
 					player.inventory.addItemStackToInventory(inv);
 				}
-				invCatalyst.set(x, ItemStack.EMPTY);
+                this.invCatalyst.set(x, ItemStack.EMPTY);
 				break;
 			}
 		}
@@ -146,7 +146,7 @@ public final class TileAltar extends TileEntity implements ITickable{
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		super.writeToNBT(compound);
 		if(!this.inventoryCharm.isEmpty())
-			compound.setTag("Charm", inventoryCharm.writeToNBT(new NBTTagCompound()));
+			compound.setTag("Charm", this.inventoryCharm.writeToNBT(new NBTTagCompound()));
         ItemStackHelper.saveAllItems(compound, this.invCatalyst);
         compound.setBoolean("complete", this.isComplete);
         return compound;
@@ -174,7 +174,7 @@ public final class TileAltar extends TileEntity implements ITickable{
 			{
 				if(this.summoningTick==1)
 				{
-					this.world.playSound(null, pos, SoundEvents.BLOCK_PORTAL_TRAVEL, SoundCategory.AMBIENT, 0.4F, 1F);
+					this.world.playSound(null, this.pos, SoundEvents.BLOCK_PORTAL_TRAVEL, SoundCategory.AMBIENT, 0.4F, 1F);
 				}
 				if(this.summoningTick>150)
 				{

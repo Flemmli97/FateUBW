@@ -104,10 +104,10 @@ public class EntityArcherArrow extends EntityArrow implements IEntityAdditionalS
 			int x = buf.readInt();
 			if(x!=0)
 			{
-				Entity shooter = world.getEntityByID(x);
+				Entity shooter = this.world.getEntityByID(x);
 				if (shooter instanceof EntityLivingBase) 
 				{
-					shootingEntity = (EntityLivingBase) shooter;
+                    this.shootingEntity = (EntityLivingBase) shooter;
 				}
 			}
 		}

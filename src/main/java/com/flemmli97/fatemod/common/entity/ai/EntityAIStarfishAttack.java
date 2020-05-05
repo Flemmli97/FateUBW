@@ -42,7 +42,7 @@ public class EntityAIStarfishAttack extends EntityAIBase{
         {
             return false;
         }
-        else if(var1.isEntityInvulnerable(DamageSource.causeMobDamage(attackingEntity)))
+        else if(var1.isEntityInvulnerable(DamageSource.causeMobDamage(this.attackingEntity)))
         {
         	return false;
         }

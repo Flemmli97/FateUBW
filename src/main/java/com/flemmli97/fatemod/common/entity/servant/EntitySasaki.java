@@ -20,7 +20,7 @@ public class EntitySasaki extends EntityServant {
 
 	public EntitySasaki(World world) {
 		super(world, EnumServantType.ASSASSIN, "Tsubame Gaeshi", new ItemStack[] {new ItemStack(ModItems.katana)});
-        this.tasks.addTask(1, attackAI);
+        this.tasks.addTask(1, this.attackAI);
 	}
 	
 	@Override
@@ -44,13 +44,13 @@ public class EntitySasaki extends EntityServant {
 	@Override
 	public void updateAI(int behaviour) {
 		super.updateAI(behaviour);
-		if(commandBehaviour == 3)
+		if(this.commandBehaviour == 3)
 		{
-			this.tasks.addTask(1, attackAI);
+			this.tasks.addTask(1, this.attackAI);
 		}
-		else if(commandBehaviour == 4)
+		else if(this.commandBehaviour == 4)
 		{
-			this.tasks.removeTask(attackAI);
+			this.tasks.removeTask(this.attackAI);
 		}
 	}
 	

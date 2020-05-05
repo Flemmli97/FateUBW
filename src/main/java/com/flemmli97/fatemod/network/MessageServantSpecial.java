@@ -25,12 +25,12 @@ public class MessageServantSpecial implements IMessage{
 	
 	@Override
 	public void fromBytes(ByteBuf buf) {
-		specialID = ByteBufUtils.readUTF8String(buf);
+        this.specialID = ByteBufUtils.readUTF8String(buf);
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf) {
-		ByteBufUtils.writeUTF8String(buf, specialID);
+		ByteBufUtils.writeUTF8String(buf, this.specialID);
 	}
 	
 	public static class Handler implements IMessageHandler<MessageServantSpecial, IMessage> {

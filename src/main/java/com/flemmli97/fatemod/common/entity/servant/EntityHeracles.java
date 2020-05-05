@@ -28,7 +28,7 @@ public class EntityHeracles extends EntityServant {
 	public EntityHeracles(World world) {
 		super(world, EnumServantType.BERSERKER, "God Hand", new ItemStack[] {new ItemStack(ModItems.heraclesAxe)});
 		this.setSize(0.8F, 2.4F);
-        this.tasks.addTask(1, attackAI);
+        this.tasks.addTask(1, this.attackAI);
 	}
 	
 	@Override
@@ -57,24 +57,24 @@ public class EntityHeracles extends EntityServant {
 	@Override
 	public void updateAI(int behaviour) {
 		super.updateAI(behaviour);
-		if(commandBehaviour == 3)
+		if(this.commandBehaviour == 3)
 		{
-			this.tasks.addTask(1, attackAI);
+			this.tasks.addTask(1, this.attackAI);
 		}
-		else if(commandBehaviour == 4)
+		else if(this.commandBehaviour == 4)
 		{
-			this.tasks.removeTask(attackAI);
+			this.tasks.removeTask(this.attackAI);
 		}
 	}
 	
 	public void setDeathNumber(int death)
 	{
-		dataManager.set(deathCount, death);
+		this.dataManager.set(deathCount, death);
 	}
 	
 	public int getDeaths()
 	{
-		return dataManager.get(deathCount);
+		return this.dataManager.get(deathCount);
 	}
 	
 	@Override
@@ -86,12 +86,12 @@ public class EntityHeracles extends EntityServant {
 	
 	@Override
 	public void onLivingUpdate() {
-		if(getDeaths()>4 && getDeaths()<=8)
+		if(this.getDeaths()>4 && this.getDeaths()<=8)
 		{
 			this.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:strength"), 1, 1, false, false));
 
 		}
-		else if(getDeaths()>8)
+		else if(this.getDeaths()>8)
 		{
 			this.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:strength"), 1, 2, false, false));
 		}
@@ -100,23 +100,23 @@ public class EntityHeracles extends EntityServant {
 
 	@Override
 	protected void onDeathUpdate() {
-		if(this.getLastDamageSource()==DamageSource.OUT_OF_WORLD || voidDeath)
+		if(this.getLastDamageSource()==DamageSource.OUT_OF_WORLD || this.voidDeath)
 		{
 			this.voidDeath = true;
 			super.onDeathUpdate();
 		}
-		else if(!voidDeath)
+		else if(!this.voidDeath)
 		{
-			if(getDeaths() < 12 )
+			if(this.getDeaths() < 12 )
 			{
-				deathTicks++;
-				if(deathTicks == 40 && !world.isRemote)
+				this.deathTicks++;
+				if(this.deathTicks == 40 && !this.world.isRemote)
 				{
 					this.setDeathNumber(this.getDeaths()+1);
-					double heal = 1-getDeaths()*0.08;
+					double heal = 1- this.getDeaths()*0.08;
 					this.setHealth((float) (heal*this.getMaxHealth()));
 					this.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:resistance"), 200, 3, false, false));
-					deathTicks = 0;
+					this.deathTicks = 0;
 					this.revealServant();
 				}
 			}
@@ -130,7 +130,7 @@ public class EntityHeracles extends EntityServant {
 	@Override
 	public void writeEntityToNBT(NBTTagCompound tag) {
 		super.writeEntityToNBT(tag);
-		tag.setInteger("Deaths", getDeaths());
+		tag.setInteger("Deaths", this.getDeaths());
 		tag.setBoolean("DeathType", this.voidDeath);
 	}
 

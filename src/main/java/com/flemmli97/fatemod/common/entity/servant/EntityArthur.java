@@ -28,7 +28,7 @@ public class EntityArthur extends EntityServant{
 	public EntityArthur(World world)
 	{
 		super(world, EnumServantType.SABER, "Excalibur", new ItemStack[] {new ItemStack(ModItems.excalibur)});
-        this.tasks.addTask(1, attackAI);
+        this.tasks.addTask(1, this.attackAI);
 	}
 
 	@Override
@@ -52,13 +52,13 @@ public class EntityArthur extends EntityServant{
 	@Override
 	public void updateAI(int behaviour) {
 		super.updateAI(behaviour);
-		if(commandBehaviour == 3)
+		if(this.commandBehaviour == 3)
 		{
-			this.tasks.addTask(1, attackAI);
+			this.tasks.addTask(1, this.attackAI);
 		}
-		else if(commandBehaviour == 4)
+		else if(this.commandBehaviour == 4)
 		{
-			this.tasks.removeTask(attackAI);
+			this.tasks.removeTask(this.attackAI);
 		}
 	}
 	
@@ -83,7 +83,7 @@ public class EntityArthur extends EntityServant{
 				{
 					this.world.getMinecraftServer().getPlayerList().sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.servant.avalon"), TextFormatting.GOLD));
 				}
-				critHealth = true;
+                this.critHealth = true;
 			}
 			if(!this.isPotionActive(Potion.getPotionFromResourceLocation("minecraft:regeneration")))
 			{

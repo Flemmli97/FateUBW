@@ -43,9 +43,9 @@ public class PlayerCap implements IPlayer{
     
 	@Override
     public boolean useMana(EntityPlayer player, int amount) {
-		boolean flag = currentMana>amount;
+		boolean flag = this.currentMana >amount;
 		if(flag)
-			currentMana -= amount;
+            this.currentMana -= amount;
 		if(player instanceof EntityPlayerMP)
 		{
 			PacketHandler.sendTo(new MessageMana(this), (EntityPlayerMP) player);
@@ -83,9 +83,9 @@ public class PlayerCap implements IPlayer{
 	
 	@Override
 	public String getServantName() {
-		if(servant!=null)
+		if(this.servant !=null)
 		{
-			return I18n.format(servant.getName());
+			return I18n.format(this.servant.getName());
 		}
 		return "No servant";
 	}

@@ -50,7 +50,7 @@ public class EntityAIAnimatedAttack<T extends EntityServant> extends EntityAIBas
         {
             return false;
         }
-        else if(var1.isEntityInvulnerable(DamageSource.causeMobDamage(attackingEntity)))
+        else if(var1.isEntityInvulnerable(DamageSource.causeMobDamage(this.attackingEntity)))
         {
         	return false;
         }
@@ -221,7 +221,7 @@ public class EntityAIAnimatedAttack<T extends EntityServant> extends EntityAIBas
 	        {
         		this.evade = false;
 	        }
-	        if(!canSee && followTicker>0 || canSee && !this.evade && distanceToTarget > 81.0D)
+	        if(!canSee && this.followTicker >0 || canSee && !this.evade && distanceToTarget > 81.0D)
 	        {
 	    		this.attackingEntity.getNavigator().tryMoveToEntityLiving(target, this.speedTowardsTarget);
 	        }

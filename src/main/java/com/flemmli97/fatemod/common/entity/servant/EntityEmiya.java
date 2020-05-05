@@ -29,7 +29,7 @@ public class EntityEmiya extends EntityServant implements IRanged{
 	
 	public EntityEmiya(World world) {
 		super(world, EnumServantType.ARCHER, "Calad Bolg II", new ItemStack[] {new ItemStack(ModItems.archbow), new ItemStack(ModItems.bakuya), new ItemStack(ModItems.kanshou)});
-		this.tasks.addTask(1, attackMelee);
+		this.tasks.addTask(1, this.attackMelee);
 	}	
 	
 	@Override
@@ -73,18 +73,18 @@ public class EntityEmiya extends EntityServant implements IRanged{
     }
 	
 	private void setAttackAI() {
-		this.tasks.removeTask(attackMelee);
-		this.tasks.removeTask(attackRanged);
+		this.tasks.removeTask(this.attackMelee);
+		this.tasks.removeTask(this.attackRanged);
         ItemStack itemstack = this.getHeldItemMainhand();
 
 		if(itemstack!=null && itemstack.getItem() == ModItems.archbow)
 		{
-			this.tasks.addTask(1, attackRanged);
+			this.tasks.addTask(1, this.attackRanged);
 			this.doRangedAttack=true;
 		}
 		else
 		{
-			this.tasks.addTask(1, attackMelee);
+			this.tasks.addTask(1, this.attackMelee);
 			this.doRangedAttack=false;
 		}
 	}
@@ -92,21 +92,21 @@ public class EntityEmiya extends EntityServant implements IRanged{
 	@Override
 	public void updateAI(int behaviour) {
 		super.updateAI(behaviour);
-		if(commandBehaviour == 3)
+		if(this.commandBehaviour == 3)
 		{
 			this.setAttackAI();
 		}
-		else if(commandBehaviour == 4)
+		else if(this.commandBehaviour == 4)
 		{
-			this.tasks.removeTask(attackMelee);
-			this.tasks.removeTask(attackRanged);
+			this.tasks.removeTask(this.attackMelee);
+			this.tasks.removeTask(this.attackRanged);
 		}
 	}
 
 	@Override
 	public void attackWithRangedAttack(EntityLivingBase target) {
 		EntityArcherArrow arrow = new EntityArcherArrow(this.world, this);
-		if(!world.isRemote)
+		if(!this.world.isRemote)
 		{
 			double d0 = target.posX - this.posX;
 			double d1 = target.getEntityBoundingBox().minY + (double)(target.height / 3.0F) - arrow.posY;

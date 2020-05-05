@@ -21,7 +21,7 @@ public class EntityIskander extends EntityServant {
 
 	public EntityIskander(World world) {
 		super(world, EnumServantType.RIDER, "Gordius Wheel", new ItemStack[] {new ItemStack(ModItems.kupriots)});
-		this.tasks.addTask(1, attackAI);
+		this.tasks.addTask(1, this.attackAI);
 		this.canUseNP=true;
 	}
 	
@@ -60,13 +60,13 @@ public class EntityIskander extends EntityServant {
 	@Override
 	public void updateAI(int behaviour) {
 		super.updateAI(behaviour);
-		if(commandBehaviour == 3)
+		if(this.commandBehaviour == 3)
 		{
-			this.tasks.addTask(1, attackAI);
+			this.tasks.addTask(1, this.attackAI);
 		}
-		else if(commandBehaviour == 4)
+		else if(this.commandBehaviour == 4)
 		{
-			this.tasks.removeTask(attackAI);
+			this.tasks.removeTask(this.attackAI);
 		}
 	}
 	

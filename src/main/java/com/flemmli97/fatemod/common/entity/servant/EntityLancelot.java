@@ -31,7 +31,7 @@ public class EntityLancelot extends EntityServant {
 
 	public EntityLancelot(World world) {
 		super(world, EnumServantType.BERSERKER, "Knight of Owner", new ItemStack[] {new ItemStack(ModItems.arondight)});
-        this.tasks.addTask(1, attackAI);
+        this.tasks.addTask(1, this.attackAI);
 	}
 
 	@Override
@@ -48,13 +48,13 @@ public class EntityLancelot extends EntityServant {
 	@Override
 	public void updateAI(int behaviour) {
 		super.updateAI(behaviour);
-		if(commandBehaviour == 3)
+		if(this.commandBehaviour == 3)
 		{
-			this.tasks.addTask(1, attackAI);
+			this.tasks.addTask(1, this.attackAI);
 		}
-		else if(commandBehaviour == 4)
+		else if(this.commandBehaviour == 4)
 		{
-			this.tasks.removeTask(attackAI);
+			this.tasks.removeTask(this.attackAI);
 		}
 	}
 	
@@ -116,7 +116,7 @@ public class EntityLancelot extends EntityServant {
 		old.removeTag("VFAABB");
 		if(old.hasKey("Shooter", Constants.NBT.TAG_STRING))
 			old.setString("Shooter", this.cachedUniqueIdString);
-		Entity e = EntityList.createEntityFromNBT(old, world);
+		Entity e = EntityList.createEntityFromNBT(old, this.world);
 		IProjectile proj = (IProjectile)e;
 		if(proj!=null)
 		{
@@ -139,16 +139,16 @@ public class EntityLancelot extends EntityServant {
 				EnumParticleTypes.SMOKE_LARGE,
         		this.posX + (this.rand.nextDouble() - 0.5D) * (double)this.width,
         		this.posY + this.rand.nextDouble() * (double)this.height, 
-        		this.posZ + (this.rand.nextDouble() - 0.5D) * (double)this.width, 
-        		rand.nextGaussian() * 0.02D, 
-        		rand.nextGaussian() * 0.02D,
-        		rand.nextGaussian() * 0.02D, 1);
+        		this.posZ + (this.rand.nextDouble() - 0.5D) * (double)this.width,
+					this.rand.nextGaussian() * 0.02D,
+					this.rand.nextGaussian() * 0.02D,
+					this.rand.nextGaussian() * 0.02D, 1);
 			}	
 		if (!this.world.isRemote && this.canPickWeapon() && !this.isDead() && this.world.getGameRules().getBoolean("mobGriefing"))
         {
             for (EntityItem entityitem : this.world.getEntitiesWithinAABB(EntityItem.class, this.getEntityBoundingBox().expand(1.0D, 0.0D, 1.0D)))
             {
-                if (!entityitem.isDead && !entityitem.cannotPickup() && checkItemToWield(entityitem.getItem()) && ItemUtil.isItemBetter(this.getHeldItemMainhand(), entityitem.getItem()))
+                if (!entityitem.isDead && !entityitem.cannotPickup() && this.checkItemToWield(entityitem.getItem()) && ItemUtil.isItemBetter(this.getHeldItemMainhand(), entityitem.getItem()))
                 {
                     this.updateEquipmentIfNeeded(entityitem);
                     this.revealServant();

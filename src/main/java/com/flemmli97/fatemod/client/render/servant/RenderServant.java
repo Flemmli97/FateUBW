@@ -77,17 +77,17 @@ public abstract class RenderServant<T extends EntityServant> extends RenderLivin
 	protected void preRenderCallback(T servant, float partialTickTime) {
     	ItemStack stackMain = servant.getHeldItemMainhand();
     	ItemStack stackOff = servant.getHeldItemOffhand();
-		modelServantMain.heldItemMain = 0;
-		modelServantMain.heldItemOff = 0;
+        this.modelServantMain.heldItemMain = 0;
+        this.modelServantMain.heldItemOff = 0;
 		this.defaultModel.heldItemMain=1;
 		this.defaultModel.heldItemOff=0;
     	if(!stackMain.isEmpty())
     	{
-    		modelServantMain.heldItemMain = 1;
+            this.modelServantMain.heldItemMain = 1;
     	}
     	if(!stackOff.isEmpty())
     	{
-    		modelServantMain.heldItemOff = 1;
+            this.modelServantMain.heldItemOff = 1;
     	}
     	if(!showIdentity(servant))
     		this.mainModel=this.defaultModel;

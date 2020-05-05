@@ -34,10 +34,10 @@ public class ModelCaladBolg extends ModelBase {
         this.handle = new ModelRenderer(this, 19, 8);
         this.handle.setRotationPoint(0F, 0F, 0F);
         this.handle.addBox(-0.5F, -0.5F, 26.0F, 2, 2, 3, 0.0F);
-        this.point.addChild(blade1);
-        this.point.addChild(blade2);
-        this.point.addChild(guard);
-        this.point.addChild(handle);
+        this.point.addChild(this.blade1);
+        this.point.addChild(this.blade2);
+        this.point.addChild(this.guard);
+        this.point.addChild(this.handle);
     }
 
     @Override

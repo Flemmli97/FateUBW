@@ -26,7 +26,7 @@ public class EntityGilgamesh extends EntityServant implements IRanged{
 	
 	public EntityGilgamesh(World world) {
 		super(world, EnumServantType.ARCHER, "Enuma Elish", new ItemStack[] {new ItemStack(ModItems.enumaelish)/*babylon=*/});
-        this.tasks.addTask(1, attackRanged);
+        this.tasks.addTask(1, this.attackRanged);
         this.revealServant();
 	}
 	
@@ -54,14 +54,14 @@ public class EntityGilgamesh extends EntityServant implements IRanged{
 	@Override
 	public void updateAI(int behaviour) {
 		super.updateAI(behaviour);
-		if(commandBehaviour == 3)
+		if(this.commandBehaviour == 3)
 		{
 			this.updateAI();
 		}
-		else if(commandBehaviour == 4)
+		else if(this.commandBehaviour == 4)
 		{
-			this.tasks.removeTask(attackRanged);
-			this.tasks.removeTask(attackMelee);
+			this.tasks.removeTask(this.attackRanged);
+			this.tasks.removeTask(this.attackMelee);
 		}
 	}
 	
@@ -80,21 +80,21 @@ public class EntityGilgamesh extends EntityServant implements IRanged{
 	private void updateAI() {
 		if(this.getHeldItemMainhand().getItem()==ModItems.enumaelish)
 		{
-			this.tasks.removeTask(attackRanged);
-			this.tasks.addTask(1, attackMelee);
+			this.tasks.removeTask(this.attackRanged);
+			this.tasks.addTask(1, this.attackMelee);
 			this.doRangedAttack=false;
 		}
 		else
 		{
-			this.tasks.removeTask(attackMelee);
-			this.tasks.addTask(1, attackRanged);
+			this.tasks.removeTask(this.attackMelee);
+			this.tasks.addTask(1, this.attackRanged);
 			this.doRangedAttack=true;
 		}
 	}
 	
 	public void attackWithNP(double[] pos)
     {
-        EntityEnumaElish ea = new EntityEnumaElish(world, this);
+        EntityEnumaElish ea = new EntityEnumaElish(this.world, this);
         if(pos!=null)
             ea.setRotationTo(pos[0], pos[1], pos[2], 0);
         this.world.spawnEntity(ea);
@@ -121,7 +121,7 @@ public class EntityGilgamesh extends EntityServant implements IRanged{
 		for(int x = 0; x < amount; x++)
 		{
 			EntityBabylonWeapon weapon = new EntityBabylonWeapon(this.world, this, target);
-			if(!world.isRemote)
+			if(!this.world.isRemote)
 			{
 				weapon.setEntityProperties();
 			}
@@ -133,7 +133,7 @@ public class EntityGilgamesh extends EntityServant implements IRanged{
 		for(int x = 0; x < amount; x++)
 		{
 			EntityBabylonWeapon weapon = new EntityBabylonWeapon(this.world, this, target);
-			if(!world.isRemote)
+			if(!this.world.isRemote)
 			{
 				weapon.setEntityProperties();
 			}

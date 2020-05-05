@@ -49,7 +49,7 @@ public class EntityLesserMonster extends EntityCreature implements IServantMinio
 	public EntityLesserMonster(World worldIn, EntityLivingBase owner) {
 		this(worldIn);
 		BlockPos pos = RayTraceUtils.randomPosAround(worldIn, this, owner.getPosition(), 9, true, this.getRNG());
-		this.setLocationAndAngles(pos.getX()+0.5, pos.getY()+1, pos.getZ()+0.5, MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F);
+		this.setLocationAndAngles(pos.getX()+0.5, pos.getY()+1, pos.getZ()+0.5, MathHelper.wrapDegrees(this.world.rand.nextFloat() * 360.0F), 0.0F);
 		this.owner=owner;
 		this.ownerUUID=owner.getUniqueID();
 	}

@@ -172,7 +172,7 @@ public class ConfigHandler {
 		public PotionEffectsConfig addEffect(Potion potion, int duration, int amplifier)
 		{
 			if(potion!=null)
-				potions.put(potion, Pair.of(duration, amplifier));
+                this.potions.put(potion, Pair.of(duration, amplifier));
 			return this;
 		}
 		
@@ -190,9 +190,9 @@ public class ConfigHandler {
 
 		@Override
 		public String[] writeToString() {
-			String[] s = new String[potions.size()];
+			String[] s = new String[this.potions.size()];
 			int i = 0;
-			for(Entry<Potion, Pair<Integer, Integer>> entry : potions.entrySet())
+			for(Entry<Potion, Pair<Integer, Integer>> entry : this.potions.entrySet())
 			{
 				Pair<Integer, Integer> p = entry.getValue();
 				s[i]=ForgeRegistries.POTIONS.getKey(entry.getKey()).toString()+","+ p.getLeft()+","+ p.getRight();
@@ -208,9 +208,9 @@ public class ConfigHandler {
 		
 		public PotionEffect[] potions()
 		{
-			PotionEffect[] effects = new PotionEffect[potions.size()];
+			PotionEffect[] effects = new PotionEffect[this.potions.size()];
 			int i = 0;
-			for(Entry<Potion, Pair<Integer, Integer>> entry : potions.entrySet())
+			for(Entry<Potion, Pair<Integer, Integer>> entry : this.potions.entrySet())
 			{
 				Pair<Integer, Integer> p = entry.getValue();
 				effects[i]=new PotionEffect(entry.getKey(), p.getLeft(), p.getRight());

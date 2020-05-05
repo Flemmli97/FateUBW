@@ -35,9 +35,9 @@ public class CommandGui extends GuiScreen {
 	private Pages currentPage = Pages.MENU;
 	private int trucePage = 0;
 	private Random rand = new Random();
-	private int command1 = rand.nextInt(3);
-	private int command2 = rand.nextInt(3);
-	private int command3 = rand.nextInt(3);
+	private int command1 = this.rand.nextInt(3);
+	private int command2 = this.rand.nextInt(3);
+	private int command3 = this.rand.nextInt(3);
 	private GuiPlayerButton[] playerButton;
 
 	private final static ResourceLocation guiBackGround = new ResourceLocation(LibReference.MODID, "textures/gui/command_gui_1.png");
@@ -62,7 +62,7 @@ public class CommandGui extends GuiScreen {
 		this.drawDefaultBackground();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         
-		if(currentPage!=Pages.TRUCE)
+		if(this.currentPage !=Pages.TRUCE)
 		{
 			this.mc.getTextureManager().bindTexture(guiBackGround);
 			this.drawTexturedModalRect(this.width/2 -100, this.height / 2 - 100, 0, 0, 201, 210);
@@ -92,7 +92,7 @@ public class CommandGui extends GuiScreen {
 	
 	private void drawCommand(int amount)
 	{
-		int[] command = new int[] {command1, command2, command3};
+		int[] command = new int[] {this.command1, this.command2, this.command3};
 		for(int i = 0; i < amount; i++)
 		{
 			switch(command[i])
@@ -122,41 +122,41 @@ public class CommandGui extends GuiScreen {
 	public void initGui() {
 		this.buttonList.clear();
 		this.labelList.clear();
-		if(currentPage == Pages.MENU)
+		if(this.currentPage == Pages.MENU)
 		{
-			this.buttonList.add(attack = new GuiButton(0, this.width / 2+10 , this.height / 2 - 82, 80, 20, "Attack"));
-			this.buttonList.add(move = new GuiButton(0, this.width / 2+10 , this.height / 2 - 52, 80, 20, "Movement"));
-			this.buttonList.add(truce = new GuiButton(0, this.width / 2+10 , this.height / 2 - 22, 80, 20, "Truce"));
-			this.buttonList.add(kill = new GuiButton(0, this.width / 2+10 , this.height / 2 + 8, 80, 20, "Kill Servant"));
+			this.buttonList.add(this.attack = new GuiButton(0, this.width / 2+10 , this.height / 2 - 82, 80, 20, "Attack"));
+			this.buttonList.add(this.move = new GuiButton(0, this.width / 2+10 , this.height / 2 - 52, 80, 20, "Movement"));
+			this.buttonList.add(this.truce = new GuiButton(0, this.width / 2+10 , this.height / 2 - 22, 80, 20, "Truce"));
+			this.buttonList.add(this.kill = new GuiButton(0, this.width / 2+10 , this.height / 2 + 8, 80, 20, "Kill Servant"));
 			if(this.guiPlayer.getCapability(PlayerCapProvider.PlayerCap, null).getServant(this.guiPlayer)!=null)
 			{
 				if(this.guiPlayer.getCapability(PlayerCapProvider.PlayerCap, null).getServant(this.guiPlayer).specialCommands()!=null)
-					this.buttonList.add(special = new GuiButton(0, this.width / 2+10 , this.height / 2 + 38, 80, 20, "Special"));
+					this.buttonList.add(this.special = new GuiButton(0, this.width / 2+10 , this.height / 2 + 38, 80, 20, "Special"));
 			}
 		}
-		else if (currentPage == Pages.ATTACK)
+		else if (this.currentPage == Pages.ATTACK)
 		{
-			this.buttonList.add(back = new GuiButton(0, this.width / 2+10 , this.height / 2 - 82, 80, 20, "Back"));
-			this.buttonList.add(aggressive = new GuiButton(0, this.width / 2+10 , this.height / 2 - 52, 80, 20, "Aggressive"));
-			this.buttonList.add(normal = new GuiButton(0, this.width / 2+10, this.height / 2 - 22, 80, 20, "Normal"));
-			this.buttonList.add(defensive = new GuiButton(0, this.width / 2+10 , this.height / 2 + 8, 80, 20, "Defensive"));
+			this.buttonList.add(this.back = new GuiButton(0, this.width / 2+10 , this.height / 2 - 82, 80, 20, "Back"));
+			this.buttonList.add(this.aggressive = new GuiButton(0, this.width / 2+10 , this.height / 2 - 52, 80, 20, "Aggressive"));
+			this.buttonList.add(this.normal = new GuiButton(0, this.width / 2+10, this.height / 2 - 22, 80, 20, "Normal"));
+			this.buttonList.add(this.defensive = new GuiButton(0, this.width / 2+10 , this.height / 2 + 8, 80, 20, "Defensive"));
 		}
-		else if (currentPage == Pages.MOVEMENT)
+		else if (this.currentPage == Pages.MOVEMENT)
 		{
-			this.buttonList.add(back = new GuiButton(0, this.width / 2+10, this.height / 2 -82, 80, 20, "Back"));
-			this.buttonList.add(follow = new GuiButton(0, this.width / 2+10 , this.height / 2 -52, 80, 20, "Follow"));
-			this.buttonList.add(stay = new GuiButton(0, this.width / 2+10 , this.height / 2 - 22, 80, 20, "Stay"));
-			this.buttonList.add(protect = new GuiButton(0, this.width / 2+10 , this.height / 2 + 8, 80, 20, "Protect"));
-			this.buttonList.add(call = new GuiButton(0, this.width / 2+10 , this.height / 2 + 38, 80, 20, "Call"));
+			this.buttonList.add(this.back = new GuiButton(0, this.width / 2+10, this.height / 2 -82, 80, 20, "Back"));
+			this.buttonList.add(this.follow = new GuiButton(0, this.width / 2+10 , this.height / 2 -52, 80, 20, "Follow"));
+			this.buttonList.add(this.stay = new GuiButton(0, this.width / 2+10 , this.height / 2 - 22, 80, 20, "Stay"));
+			this.buttonList.add(this.protect = new GuiButton(0, this.width / 2+10 , this.height / 2 + 8, 80, 20, "Protect"));
+			this.buttonList.add(this.call = new GuiButton(0, this.width / 2+10 , this.height / 2 + 38, 80, 20, "Call"));
 		}
-		else if(currentPage == Pages.SPECIAL)
+		else if(this.currentPage == Pages.SPECIAL)
 		{
-			this.buttonList.add(back = new GuiButton(0, this.width / 2+10, this.height / 2 -82, 80, 20, "Back"));
+			this.buttonList.add(this.back = new GuiButton(0, this.width / 2+10, this.height / 2 -82, 80, 20, "Back"));
 			EntityServant servant = this.guiPlayer.getCapability(PlayerCapProvider.PlayerCap, null).getServant(this.guiPlayer);
 			for(int i = 0; i < servant.specialCommands().length; i++)
 				this.buttonList.add(new ButtonSpecial(0, this.width / 2+10 , this.height / 2 -52, 80, 20, servant.specialCommands()[i]));
 		}
-		else if (currentPage == Pages.TRUCE)
+		else if (this.currentPage == Pages.TRUCE)
 		{
 			Set<Entry<UUID, String>> players = GrailWarHandler.get(this.mc.world).players();
 			if(GrailWarHandler.get(this.mc.world).containsPlayer(this.guiPlayer))
@@ -289,20 +289,20 @@ public class CommandGui extends GuiScreen {
 			GuiPlayerButton theButton = (GuiPlayerButton) button;
 			if(!theButton.selected)
 			{
-				request.enabled=theButton.getState()==State.NONE;
-				accept.enabled=theButton.getState()==State.PENDING;
-				remove.enabled=theButton.getState()==State.TRUCE;
+                this.request.enabled=theButton.getState()==State.NONE;
+                this.accept.enabled=theButton.getState()==State.PENDING;
+                this.remove.enabled=theButton.getState()==State.TRUCE;
 				theButton.selected=!(theButton.getState()==State.REQUESTED);
 				switch(theButton.getState())
 				{
 				case NONE:
-					request.setSavedString(theButton.getUUID());
+                    this.request.setSavedString(theButton.getUUID());
 					break;
 				case PENDING:
-					accept.setSavedString(theButton.getUUID());
+                    this.accept.setSavedString(theButton.getUUID());
 					break;
 				case TRUCE:
-					remove.setSavedString(theButton.getUUID());
+                    this.remove.setSavedString(theButton.getUUID());
 					break;
 				default:
 					break;	
@@ -310,12 +310,12 @@ public class CommandGui extends GuiScreen {
 			}
 			else
 			{
-				request.enabled=false;
-				accept.enabled=false;
-				remove.enabled=false;
-				request.setSavedString("");
-				accept.setSavedString("");
-				remove.setSavedString("");
+                this.request.enabled=false;
+                this.accept.enabled=false;
+                this.remove.enabled=false;
+                this.request.setSavedString("");
+                this.accept.setSavedString("");
+                this.remove.setSavedString("");
 				theButton.selected=false;
 			}
 		}
@@ -385,12 +385,12 @@ public class CommandGui extends GuiScreen {
 			button.refreshState();
 			button.selected=false;
 		}
-		request.enabled=false;
-		accept.enabled=false;
-		remove.enabled=false;
-		request.setSavedString("");
-		accept.setSavedString("");
-		remove.setSavedString("");
+        this.request.enabled=false;
+        this.accept.enabled=false;
+        this.remove.enabled=false;
+        this.request.setSavedString("");
+        this.accept.setSavedString("");
+        this.remove.setSavedString("");
 	}
 	
 	@Override

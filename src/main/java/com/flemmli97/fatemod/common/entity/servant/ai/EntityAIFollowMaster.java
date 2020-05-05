@@ -95,7 +95,7 @@ public class EntityAIFollowMaster extends EntityAIBase
     {
         this.follow = null;
         this.pathfinder.clearPath();
-        this.servant.setPathPriority(PathNodeType.WATER, avoidWater);
+        this.servant.setPathPriority(PathNodeType.WATER, this.avoidWater);
     }
 
     /**

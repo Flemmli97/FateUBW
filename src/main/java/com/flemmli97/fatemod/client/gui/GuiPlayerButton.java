@@ -55,9 +55,9 @@ public class GuiPlayerButton extends GuiButton{
             this.mouseDragged(mc, mouseX, mouseY);
             int j = 14737632;
 
-            if (packedFGColour != 0)
+            if (this.packedFGColour != 0)
             {
-                j = packedFGColour;
+                j = this.packedFGColour;
             }
             else
             if (!this.enabled)

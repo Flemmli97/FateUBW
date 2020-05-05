@@ -20,7 +20,7 @@ public class EntityAISasaki extends EntityAIAnimatedAttack<EntitySasaki>{
 		EntityLivingBase target = this.attackingEntity.getAttackTarget();
         this.attackingEntity.getLookHelper().setLookPositionWithEntity(target, 30.0F, 30.0F);
         AnimatedAction anim = this.attackingEntity.getAnimation();
-		if(anim==null && ((attackingEntity.canUseNP() && attackingEntity.getOwner() == null && attackingEntity.getMana()>=attackingEntity.props().hogouMana()) || attackingEntity.forcedNP))
+		if(anim==null && ((this.attackingEntity.canUseNP() && this.attackingEntity.getOwner() == null && this.attackingEntity.getMana()>= this.attackingEntity.props().hogouMana()) || this.attackingEntity.forcedNP))
 		{
         	anim = this.attackingEntity.getRandomAttack(AttackType.NP);
         	this.attackingEntity.setAnimation(anim);		
@@ -31,12 +31,12 @@ public class EntityAISasaki extends EntityAIAnimatedAttack<EntitySasaki>{
 			this.attackingEntity.getNavigator().tryMoveToEntityLiving(target, 1);
         	if(this.attackingEntity.canAttackNP() && distanceToTarget<(2.5*2.5))
         	{
-        		target.attackEntityFrom(CustomDamageSource.hiKen(attackingEntity), 10+this.damageAdd[this.attackCount]);
+        		target.attackEntityFrom(CustomDamageSource.hiKen(this.attackingEntity), 10+this.damageAdd[this.attackCount]);
 				this.attackCount++;
 				if(this.attackCount>2)
 				{
-        			if(!attackingEntity.forcedNP)
-        				this.attackingEntity.useMana(attackingEntity.props().hogouMana());
+        			if(!this.attackingEntity.forcedNP)
+        				this.attackingEntity.useMana(this.attackingEntity.props().hogouMana());
 					this.attackCount=0;
         			this.attackingEntity.forcedNP = false;
         			this.attackCooldown=10;

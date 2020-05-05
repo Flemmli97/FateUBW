@@ -414,7 +414,7 @@ public class GrailWarHandler extends WorldSavedData{
 				}
 			}
 			else 
-				return tryGetServant(world);
+				return this.tryGetServant(world);
 		}
 		return null;
 	}

@@ -21,8 +21,8 @@ public class MessageWarTracker  implements IMessage{
 	
 	public MessageWarTracker(World world)
 	{
-		GrailWarHandler.get(world).writeToNBT(grailWarTracker);
-		TruceMapHandler.get(world).writeToNBT(truceMap);
+		GrailWarHandler.get(world).writeToNBT(this.grailWarTracker);
+		TruceMapHandler.get(world).writeToNBT(this.truceMap);
 	}
 	
 	@Override
@@ -35,8 +35,8 @@ public class MessageWarTracker  implements IMessage{
 	@Override
 	public void toBytes(ByteBuf buf) {
 		NBTTagCompound compound = new NBTTagCompound();
-		compound.setTag("GrailWarTracker", grailWarTracker);
-		compound.setTag("TruceMap", truceMap);
+		compound.setTag("GrailWarTracker", this.grailWarTracker);
+		compound.setTag("TruceMap", this.truceMap);
 		ByteBufUtils.writeTag(buf, compound);
 	}
 	

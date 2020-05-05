@@ -27,8 +27,8 @@ public class WorldGen implements IWorldGenerator {
 	public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator,
 			IChunkProvider chunkProvider) {
 		if (world.provider.getDimension() == 0) {
-	    	this.runGenerator(gem_ore, world, random, chunkX, chunkZ, ConfigHandler.gemSpawnRate, 1, 40);
-	    	this.runGenerator(servant_charm, world, random, chunkX, chunkZ, ConfigHandler.charmSpawnRate, 1, 30);
+	    	this.runGenerator(this.gem_ore, world, random, chunkX, chunkZ, ConfigHandler.gemSpawnRate, 1, 40);
+	    	this.runGenerator(this.servant_charm, world, random, chunkX, chunkZ, ConfigHandler.charmSpawnRate, 1, 30);
 	    }		
 	}
 	

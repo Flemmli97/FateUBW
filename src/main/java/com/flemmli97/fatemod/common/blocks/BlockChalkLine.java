@@ -44,7 +44,7 @@ public class BlockChalkLine extends Block implements ITileEntityProvider{
         this.blockSoundType = SoundType.STONE;
         this.setResistance(100.0F);
         this.setHardness(0.1F);
-        this.setDefaultState(getDefaultState().withProperty(FACING, EnumFacing.NORTH).withProperty(POSITIONMULTI, EnumPositionChalk.MIDDLE));
+        this.setDefaultState(this.getDefaultState().withProperty(FACING, EnumFacing.NORTH).withProperty(POSITIONMULTI, EnumPositionChalk.MIDDLE));
         this.setRegistryName(new ResourceLocation(LibReference.MODID, "chalk_line"));
 		this.setUnlocalizedName(this.getRegistryName().toString());
 	}	

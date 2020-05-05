@@ -39,7 +39,7 @@ public class EntityAIRetaliate extends EntityAITarget {
 	
 	protected boolean checkTarget(EntityLivingBase livingBase)
 	{
-		EntityServant servant = (EntityServant) taskOwner;
+		EntityServant servant = (EntityServant) this.taskOwner;
 		if(servant.getOwner()!=null)
 		{	
 			if(servant.getOwner() == livingBase)

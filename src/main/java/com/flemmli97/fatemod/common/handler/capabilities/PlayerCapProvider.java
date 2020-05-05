@@ -19,7 +19,7 @@ public class PlayerCapProvider implements ICapabilitySerializable<NBTBase>{
 	@Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing)
     {
-        return hasCapability(capability,facing) ? PlayerCap.<T> cast(this.instance) : null;
+        return this.hasCapability(capability,facing) ? PlayerCap.<T> cast(this.instance) : null;
     }
 
     @Override
