@@ -1,0 +1,21 @@
+modLoader="javafml"
+loaderVersion="[28,)"
+license="All rights reserved"
+issueTrackerURL="https://github.com/Flemmli97/FateUBW/issues"
+displayURL="https://github.com/Flemmli97/FateUBW"
+# logoFile=""
+credits=""
+authors="Flemmli97, BlackSaturn"
+[[mods]] 
+  modId="fatemod"
+  version="${file.jarVersion}"
+  displayName="FateUBW"
+  # updateJSONURL=""
+  authors="Flemmli97"
+  description='''The Holy Grail War! Brought to minecraft'''
+[[dependency.tenshilib]]
+  modId="minecraft"
+  mandatory=true
+  versionRange="[1.16.3]"
+  ordering="NONE"
+  side="BOTH"
