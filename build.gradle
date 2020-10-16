@@ -108,6 +108,10 @@ repositories {
         name = "Yarn MCP Mappings"
         url "https://maven.tterrag.com/"
     }
+    maven {
+        name = "TenshiLib"
+        url "https://gitlab.com/api/v4/projects/21830712/packages/maven"
+    }
 }
 
 dependencies {
@@ -117,7 +121,6 @@ dependencies {
     minecraft 'net.minecraftforge:forge:'+"${mcversion}-${forge_version}"
 
     compile fg.deobf("tenshilib:TenshiLib:${tenshilib_version}")
-    //compile fg.deobf("curse.maven:tenshilib:3067125")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
