@@ -9,10 +9,10 @@ import net.minecraftforge.common.util.LazyOptional;
 
 public class PlayerCapProvider implements ICapabilitySerializable<INBT> {
 
-	@CapabilityInject(IPlayer.class)
+    @CapabilityInject(IPlayer.class)
     public static final Capability<IPlayer> PlayerCap = null;
     private final IPlayer instance = PlayerCap.getDefaultInstance();
-    private final LazyOptional<IPlayer> optional = LazyOptional.of(()->this.instance);
+    private final LazyOptional<IPlayer> optional = LazyOptional.of(() -> this.instance);
 
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {

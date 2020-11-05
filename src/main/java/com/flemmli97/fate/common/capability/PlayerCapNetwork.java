@@ -7,13 +7,13 @@ import net.minecraftforge.common.capabilities.Capability;
 
 public class PlayerCapNetwork implements Capability.IStorage<IPlayer> {
 
-	@Override
-	public INBT writeNBT(Capability<IPlayer> capability, IPlayer instance, Direction side) {
-		return instance.writeToNBT(new CompoundNBT());
-	}
+    @Override
+    public INBT writeNBT(Capability<IPlayer> capability, IPlayer instance, Direction side) {
+        return instance.writeToNBT(new CompoundNBT());
+    }
 
-	@Override
-	public void readNBT(Capability<IPlayer> capability, IPlayer instance, Direction side, INBT nbt) {
-		instance.readFromNBT((CompoundNBT) nbt);
-	}
+    @Override
+    public void readNBT(Capability<IPlayer> capability, IPlayer instance, Direction side, INBT nbt) {
+        instance.readFromNBT((CompoundNBT) nbt);
+    }
 }

@@ -12,13 +12,12 @@ public enum EnumServantType {
     NOTASSIGNED("undef");
 
     private String name;
-    EnumServantType(String s)
-    {
-        this.name=s;
+
+    EnumServantType(String s) {
+        this.name = s;
     }
 
-    public String getLowercase()
-    {
+    public String getLowercase() {
         return this.name;
     }
 }

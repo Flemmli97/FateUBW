@@ -17,9 +17,10 @@ public class TruceHandler extends WorldSavedData {
     private Map<UUID, Set<UUID>> truceMap = Maps.newHashMap();
     private Map<UUID, Set<UUID>> pendingRequests = Maps.newHashMap();
 
-    public TruceHandler(){
+    public TruceHandler() {
         this(identifier);
     }
+
     private TruceHandler(String identifier) {
         super(identifier);
     }
@@ -28,35 +29,35 @@ public class TruceHandler extends WorldSavedData {
         return world.getServer().getOverworld().getSavedData().getOrCreate(TruceHandler::new, identifier);
     }
 
-    public boolean sendRequest(PlayerEntity from, UUID to){
+    public boolean sendRequest(PlayerEntity from, UUID to) {
         return false;
     }
 
-    public boolean hasRequestFrom(UUID from, UUID to){
+    public boolean hasRequestFrom(UUID from, UUID to) {
         return false;
     }
 
-    public Set<UUID> pending(PlayerEntity player){
+    public Set<UUID> pending(PlayerEntity player) {
         return null;
     }
 
-    public void accept(PlayerEntity player, UUID request){
+    public void accept(PlayerEntity player, UUID request) {
 
     }
 
-    public Set<UUID> get(UUID player){
+    public Set<UUID> get(UUID player) {
         return null;
     }
 
-    public void disband(PlayerEntity player, UUID uuid){
+    public void disband(PlayerEntity player, UUID uuid) {
 
     }
 
-    public void disbandAll(PlayerEntity player){
+    public void disbandAll(PlayerEntity player) {
 
     }
 
-    public void reset(){
+    public void reset() {
 
     }
 

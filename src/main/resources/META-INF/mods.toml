@@ -13,7 +13,7 @@ authors="Flemmli97, BlackSaturn"
   # updateJSONURL=""
   authors="Flemmli97"
   description='''The Holy Grail War! Brought to minecraft'''
-[[dependency.tenshilib]]
+[[dependency.fatemod]]
   modId="minecraft"
   mandatory=true
   versionRange="[1.16.3]"
