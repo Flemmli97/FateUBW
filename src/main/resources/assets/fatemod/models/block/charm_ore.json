@@ -1,0 +1,6 @@
+{
+    "parent": "fatemod:block/ore",
+    "textures": {
+	"ore": "fatemod:blocks/charm_ore"
+    }
+}

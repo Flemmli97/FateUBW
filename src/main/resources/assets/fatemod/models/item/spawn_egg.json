@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "fatemod:items/spawn_egg",
+    "layer1": "fatemod:items/spawn_egg_overlay"
+  }
+}

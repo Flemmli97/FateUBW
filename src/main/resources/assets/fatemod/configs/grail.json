@@ -1,0 +1,51 @@
+{
+    "xp": [
+        {
+            "type": "XP",
+            "min": 500,
+            "max": 1000
+        },
+        {
+            "type": "ITEM",
+            "min": 16,
+            "max": 64,
+            "item": "minecraft:xp_bottle"
+        }
+    ],
+    "riches": [
+        {
+            "type": "XP",
+            "min": 50,
+            "max": 99
+        },
+        {
+            "type": "ITEM",
+            "min": 10,
+            "max": 18,
+            "item": "minecraft:diamond"
+        },
+        {
+            "type": "ITEM",
+            "min": 14,
+            "max": 32,
+            "item": "minecraft:gold_ingot"
+        },
+        {
+            "type": "ITEM",
+            "min": 32,
+            "max": 48,
+            "item": "minecraft:iron_ingot"
+        },
+        {
+            "type": "ITEM",
+            "min": 8,
+            "max": 16,
+            "item": "minecraft:emerald"
+        }
+    ],
+    "servant": [
+        {
+            "type": "SERVANT"
+        }
+    ]
+}

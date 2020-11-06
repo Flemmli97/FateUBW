@@ -1,0 +1,62 @@
+{
+  "name": "babylon",
+  "identifier": "5*- am@)H]-LkU+r^7K8",
+  "loops": false,
+  "sets": {
+    "YX^ZWg\"T&]Xr^Vg5u_1m": [
+      {
+        "posChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotChange": [
+          -15.65,
+          2.61,
+          23.48
+        ],
+        "scaleChange": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityChange": 0.0,
+        "posOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scaleOffset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "opacityOffset": 0.0,
+        "name": "NewComponent",
+        "length": 5,
+        "startKey": 0,
+        "hidden": false,
+        "identifier": "z_}#dGF>'bU&vNK`m,/v"
+      }
+    ]
+  },
+  "identifierMap": {
+    "servantBody": "DPiw;,ZMQP__k~Qt\\H\"Y",
+    "servantHead": "tIv,_nq[vIqT1Ka>SZ~S",
+    "servantLeftArmUp": "eZpeOvv~,q3dEXNP@x6+",
+    "servantLeftArmJoint": "Y4O(A9sCTpNR2\\v)MHlJ",
+    "servantLeftArmDown": "[)\"c0U}I&/e loG3vJvA",
+    "servantLeftLegUp": "o\"u4e5w$RfpX#P BolrK",
+    "servantLeftLegDown": "=h^O>mln(#qJhur['>aV",
+    "servantRightLegUp": "T>6E;7^Vxg<pk5Y*RcTX",
+    "servantRightLegDown": "N*F)8\\6Y'V<2\\NnH&CyV",
+    "servantRightArmUp": "YX^ZWg\"T&]Xr^Vg5u_1m",
+    "servantRightArmJoint": ".5!?Lrm-9oay6}.1}c^+",
+    "servantRightArmDown": "zvC9'k]GdZrA_x{pOJZ<"
+  }
+}
