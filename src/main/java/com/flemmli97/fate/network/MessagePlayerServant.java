@@ -1,4 +1,4 @@
-package com.flemmli97.fate.network;
+/*package com.flemmli97.fate.network;
 
 import com.flemmli97.fatemod.Fate;
 import com.flemmli97.fatemod.common.entity.servant.EntityServant;
@@ -190,3 +190,4 @@ public class MessagePlayerServant  implements IMessage{
         }
     }
 }
+*/

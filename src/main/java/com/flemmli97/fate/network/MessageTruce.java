@@ -1,4 +1,4 @@
-package com.flemmli97.fate.network;
+/*package com.flemmli97.fate.network;
 
 import java.util.UUID;
 
@@ -24,7 +24,12 @@ public class MessageTruce implements IMessage{
 	 * @param type 0 = send request, 1 = accept request, 2 = dissolve truce
 	 * @param uuid
 	 */
-	public MessageTruce(int type, String uuid)
+/*
+import com.flemmli97.fate.Fate;
+
+import java.util.UUID;
+
+public MessageTruce(int type, String uuid)
 	{
 		this.type = type;
 		this.uuid=uuid;
@@ -64,3 +69,4 @@ public class MessageTruce implements IMessage{
         }
     }
 }
+*/

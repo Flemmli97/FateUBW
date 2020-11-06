@@ -1,4 +1,4 @@
-package com.flemmli97.fate.network;
+/*package com.flemmli97.fate.network;
 
 import com.flemmli97.fatemod.Fate;
 import com.flemmli97.fatemod.common.handler.capabilities.IPlayer;
@@ -49,3 +49,4 @@ public class MessageMana  implements IMessage{
         }
     }
 }
+*/

@@ -1,4 +1,4 @@
-package com.flemmli97.fate.network;
+/*package com.flemmli97.fate.network;
 
 import java.util.function.Predicate;
 
@@ -53,4 +53,4 @@ public class MessageHolyGrail  implements IMessage{
             return null;
         }
     }
-}
+}*/

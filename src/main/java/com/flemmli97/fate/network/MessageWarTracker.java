@@ -1,4 +1,4 @@
-package com.flemmli97.fate.network;
+/*package com.flemmli97.fate.network;
 
 import com.flemmli97.fatemod.Fate;
 import com.flemmli97.fatemod.common.handler.GrailWarHandler;
@@ -56,4 +56,4 @@ public class MessageWarTracker  implements IMessage{
             return null;
         }
     }
-}
+}*/

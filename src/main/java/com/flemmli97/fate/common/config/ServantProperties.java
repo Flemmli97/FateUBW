@@ -8,7 +8,7 @@ public class ServantProperties {
     private float block;
     private int mana;
 
-    public ServantProperties(double health, double strength, double armor, double projProt, double magic, double moveSpeed, float block, int hogouMana) {
+    public ServantProperties(double health, double strength, double armor, float block, double projProt, double magic, float moveSpeed, int hogouMana) {
         this.health = health;
         this.strength = strength;
         this.armor = armor;

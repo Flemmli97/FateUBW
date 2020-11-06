@@ -1,4 +1,4 @@
-package com.flemmli97.fate.network;
+/*package com.flemmli97.fate.network;
 
 import com.flemmli97.fatemod.Fate;
 import com.flemmli97.fatemod.common.handler.capabilities.IPlayer;
@@ -17,7 +17,14 @@ public class MessageGui  implements IMessage{
 	public MessageGui(){}
 	
 	/** 1=ServantInfo, 2=GrailWarTracker*/
-	public MessageGui(int i)
+/*
+import com.flemmli97.fate.Fate;
+import com.flemmli97.fate.common.capability.IPlayer;
+import com.flemmli97.fate.common.capability.PlayerCapProvider;
+import com.flemmli97.fate.network.MessageServantSync;
+import com.flemmli97.fate.network.MessageWarTracker;
+
+public MessageGui(int i)
 	{
         this.message = i;
 	}
@@ -52,4 +59,4 @@ public class MessageGui  implements IMessage{
             return null;
         }
     }
-}
+}*/

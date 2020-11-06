@@ -2,7 +2,6 @@ package com.flemmli97.fate.common.capability;
 
 import com.flemmli97.fate.common.entity.servant.EntityServant;
 import com.flemmli97.tenshilib.common.entity.EntityUtil;
-import com.flemmli97.tenshilib.common.network.PacketHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -31,7 +30,7 @@ public class PlayerCap implements IPlayer {
     public void setMana(PlayerEntity player, int mana) {
         this.currentMana = mana;
         if (player instanceof ServerPlayerEntity)
-            PacketHandler.sendTo(new MessageMana(this), (ServerPlayerEntity) player);
+            ;//PacketHandler.sendTo(new MessageMana(this), (ServerPlayerEntity) player);
     }
 
     @Override
@@ -45,7 +44,7 @@ public class PlayerCap implements IPlayer {
         if (flag)
             this.currentMana -= amount;
         if (player instanceof ServerPlayerEntity)
-            PacketHandler.sendTo(new MessageMana(this), (ServerPlayerEntity) player);
+            ;//PacketHandler.sendTo(new MessageMana(this), (ServerPlayerEntity) player);
         return flag;
     }
 
@@ -64,7 +63,7 @@ public class PlayerCap implements IPlayer {
         else
             this.servantUUID = null;
         if (player instanceof ServerPlayerEntity)
-            PacketHandler.sendTo(new MessageServantSync(servant), (ServerPlayerEntity) player);
+            ;//PacketHandler.sendTo(new MessageServantSync(servant), (ServerPlayerEntity) player);
     }
 
     @Override
@@ -115,7 +114,7 @@ public class PlayerCap implements IPlayer {
         if (flag)
             this.commandSeals--;
         if (player instanceof ServerPlayerEntity)
-            PacketHandler.sendTo(new MessageCommandSeals(this), (ServerPlayerEntity) player);
+            ;//PacketHandler.sendTo(new MessageCommandSeals(this), (ServerPlayerEntity) player);
         return flag;
     }
 
@@ -123,7 +122,7 @@ public class PlayerCap implements IPlayer {
     public void setCommandSeals(PlayerEntity player, int amount) {
         this.commandSeals = Math.min(amount, 3);
         if (player instanceof ServerPlayerEntity)
-            PacketHandler.sendTo(new MessageCommandSeals(this), (ServerPlayerEntity) player);
+            ;//PacketHandler.sendTo(new MessageCommandSeals(this), (ServerPlayerEntity) player);
     }
 
     @Override

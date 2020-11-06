@@ -212,7 +212,7 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated 
     }
 
     public static AttributeModifierMap.MutableAttribute createMobAttributes() {
-        return MonsterEntity.createMobAttributes().add(FateAttributes.MAGIC_RESISTANCE).add(FateAttributes.PROJECTILE_BLOCKCHANCE).add(FateAttributes.PROJECTILE_RESISTANCE);
+        return MonsterEntity.createHostileAttributes().add(FateAttributes.MAGIC_RESISTANCE).add(FateAttributes.PROJECTILE_BLOCKCHANCE).add(FateAttributes.PROJECTILE_RESISTANCE);
     }
 
     private void updateAttributes() {

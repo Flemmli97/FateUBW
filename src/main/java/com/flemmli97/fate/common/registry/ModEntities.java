@@ -16,7 +16,8 @@ import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraft.util.SharedConstants;
+import net.minecraft.util.registry.Registry;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
@@ -27,20 +28,16 @@ import java.util.Map;
 public class ModEntities {
 
     //Trying out deferred register with configs
-    private static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, Fate.MODID);
+    public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, Fate.MODID);
     private static final Map<ResourceLocation, EnumServantType> servants = Maps.newHashMap();
 
-    public static RegistryObject<EntityType<EntityArthur>> arthur = regServant(EnumServantType.SABER, EntityType.Builder.create(EntityArthur::new, EntityClassification.MISC),
-            LibEntities.arthur, new ServantProperties(300, 10, 17, 0.4F, 12, 10, 0.3f, 100));
+    public static RegistryObject<EntityType<EntityArthur>> arthur = regServant(EnumServantType.SABER, EntityType.Builder.create(EntityArthur::new, EntityClassification.MONSTER),
+            LibEntities.arthur, new ServantProperties(300, 10, 17, 0.4f, 12, 10, 0.3f, 100));
     public static RegistryObject<EntityType<EntityCuchulainn>> cuchulainn = regServant(EnumServantType.LANCER, EntityType.Builder.create(EntityCuchulainn::new, EntityClassification.MISC),
             LibEntities.cuchulainn, new ServantProperties(275, 7.5, 10, 0, 14, 6, 0.35f, 75));
 
     public static final RegistryObject<EntityType<EntityExcalibur>> excalibur = reg(EntityType.Builder.create(EntityExcalibur::new, EntityClassification.MISC), LibEntities.excalibur);
     public static final RegistryObject<EntityType<EntityGaeBolg>> gaebolg = reg(EntityType.Builder.create(EntityGaeBolg::new, EntityClassification.MISC), LibEntities.gae_bolg);
-
-    public static void register() {
-        ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
-    }
 
     private static <V extends EntityServant> RegistryObject<EntityType<V>> regServant(EnumServantType type, EntityType.Builder<V> entity, ResourceLocation name, ServantProperties defaultVals) {
         servants.put(name, type);
@@ -49,14 +46,15 @@ public class ModEntities {
     }
 
     private static <V extends Entity> RegistryObject<EntityType<V>> reg(EntityType.Builder<V> v, ResourceLocation name) {
-        return ENTITIES.register(name.getPath(), ()->v.build(name.getPath()));
+        return ENTITIES.register(name.getPath(), () -> v.build(name.getPath()));
     }
 
     public static EnumServantType get(ResourceLocation type) {
         return servants.getOrDefault(type, EnumServantType.NOTASSIGNED);
     }
 
-    public static void registerAttributes(){
+    public static void registerAttributes() {
         GlobalEntityTypeAttributes.put(arthur.get(), EntityServant.createMobAttributes().build());
+        GlobalEntityTypeAttributes.put(cuchulainn.get(), EntityServant.createMobAttributes().build());
     }
 }

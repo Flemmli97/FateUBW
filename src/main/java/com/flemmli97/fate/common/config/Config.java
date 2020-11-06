@@ -69,7 +69,7 @@ public class Config {
             attributes.clear();
             for (Map.Entry<String, ServantConfSpec> e : ConfigSpecs.commonConf.attributes.entrySet())
                 attributes.put(e.getKey(), new ServantProperties(e.getValue()));
-            lancelotReflectChance = ConfigSpecs.commonConf.lancelotReflectChance.get().floatValue();
+            lancelotReflectChance = 0;//ConfigSpecs.commonConf.lancelotReflectChance.get().floatValue();
             //Minions
             gillesMinionDuration = ConfigSpecs.commonConf.gillesMinionDuration.get();
             gillesMinionAmount = ConfigSpecs.commonConf.gillesMinionAmount.get();

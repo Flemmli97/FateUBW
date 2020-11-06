@@ -3,7 +3,6 @@ package com.flemmli97.fate.common.entity.servant;
 import com.flemmli97.fate.common.entity.EntityExcalibur;
 import com.flemmli97.fate.common.entity.servant.ai.ArthurAttackGoal;
 import com.flemmli97.fate.common.registry.ModItems;
-import com.flemmli97.fate.common.utils.EnumServantType;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import net.minecraft.entity.EntityType;
 import net.minecraft.inventory.EquipmentSlotType;

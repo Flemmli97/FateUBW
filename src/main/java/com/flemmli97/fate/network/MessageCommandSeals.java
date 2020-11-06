@@ -1,46 +1,39 @@
 package com.flemmli97.fate.network;
 
-import com.flemmli97.fatemod.Fate;
-import com.flemmli97.fatemod.common.handler.capabilities.IPlayer;
-import com.flemmli97.fatemod.common.handler.capabilities.PlayerCapProvider;
+import com.flemmli97.fate.common.capability.IPlayer;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import java.util.function.Supplier;
 
-public class MessageCommandSeals implements IMessage{
-	
-	public int commandSeals;
-	
-	public MessageCommandSeals(){}
-	
-	public MessageCommandSeals(IPlayer playerCap)
-	{
-		this.commandSeals = playerCap.getCommandSeals();
-	}
-	
-	@Override
-	public void fromBytes(ByteBuf buf) {
-		this.commandSeals = buf.readInt();
-	}
+public class MessageCommandSeals {
 
-	@Override
-	public void toBytes(ByteBuf buf) {
-		buf.writeInt(this.commandSeals);		
-	}
-	
-	public static class Handler implements IMessageHandler<MessageCommandSeals, IMessage> {
+    private final int commandSeals;
 
-        @Override
-        public IMessage onMessage(MessageCommandSeals msg, MessageContext ctx) {
-    		EntityPlayer player =  Fate.proxy.getPlayerEntity(ctx);
-		if(player!=null)
-		{
-			player.getCapability(PlayerCapProvider.PlayerCap, null).setCommandSeals(player, msg.commandSeals);
-		}	
-            return null;
-        }
+    private MessageCommandSeals(int seals) {
+        this.commandSeals = seals;
+    }
+
+    public MessageCommandSeals(IPlayer playerCap) {
+        this.commandSeals = playerCap.getCommandSeals();
+    }
+
+    public static MessageCommandSeals read(PacketBuffer buf) {
+        return new MessageCommandSeals(buf.readInt());
+    }
+
+    public static void write(MessageCommandSeals pkt, PacketBuffer buf) {
+        buf.writeInt(pkt.commandSeals);
+    }
+
+    public static void handle(MessageCommandSeals pkt, Supplier<NetworkEvent.Context> ctx) {
+        ctx.get().enqueueWork(() -> {
+			/*PlayerEntity player =  Fate.proxy.getPlayerEntity(ctx);
+			if(player!=null)
+			{
+				player.getCapability(PlayerCapProvider.PlayerCap, null).setCommandSeals(player, msg.commandSeals);
+			}*/
+        });
+        ctx.get().setPacketHandled(true);
     }
 }

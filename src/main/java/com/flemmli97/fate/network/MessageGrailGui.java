@@ -1,4 +1,4 @@
-package com.flemmli97.fate.network;
+/*package com.flemmli97.fate.network;
 
 import java.util.Set;
 
@@ -44,4 +44,4 @@ public class MessageGrailGui  implements IMessage{
             return null;
         }
     }
-}
+}*/

@@ -18,6 +18,9 @@ public class PacketHandler {
 
     public static void register() {
         int id = 0;
+        dispatcher.registerMessage(id++, MessageAltarUpdate.class, MessageAltarUpdate::write, MessageAltarUpdate::read, MessageAltarUpdate::handle);
+        dispatcher.registerMessage(id++, MessageCommandSeals.class, MessageCommandSeals::write, MessageCommandSeals::read, MessageCommandSeals::handle);
+
     }
 
     public static <T> void sendToClient(T message, ServerPlayerEntity player) {
