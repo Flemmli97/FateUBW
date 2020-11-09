@@ -33,8 +33,8 @@ public class RenderGaeBolg extends RenderProjectileItem<EntityGaeBolg> {
     }
 
     @Override
-    public RenderType getRenderType(EntityGaeBolg entity) {
-        return RenderType.WEAPON;
+    public Type getRenderType(EntityGaeBolg entity) {
+        return Type.WEAPON;
     }
 
 }

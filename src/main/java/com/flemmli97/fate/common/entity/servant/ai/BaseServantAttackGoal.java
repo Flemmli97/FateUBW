@@ -23,12 +23,13 @@ public class BaseServantAttackGoal<T extends EntityServant> extends AnimatedAtta
 
     @Override
     public boolean canChooseAttack(AnimatedAction anim) {
-        return this.distanceToTargetSq < this.attackRange || this.attacker.canUse(this.next, EntityServant.AttackType.NP);
+        return this.distanceToTargetSq < this.attackRange || this.attacker.canUse(anim, EntityServant.AttackType.NP);
     }
 
     @Override
     public void handleAttack(AnimatedAction anim) {
         this.attacker.getNavigator().clearPath();
+        this.attacker.getLookController().setLookPositionWithEntity(this.target, 30.0F, 30.0F);
         if (this.distanceToTargetSq <= attackRange * 3 && anim.canAttack()) {
             this.attacker.attackEntityAsMob(target);
         }
@@ -46,7 +47,7 @@ public class BaseServantAttackGoal<T extends EntityServant> extends AnimatedAtta
 
     @Override
     public int coolDown(AnimatedAction animatedAction) {
-        return 20;
+        return this.attacker.attackCooldown(animatedAction);
     }
 
     @Override

@@ -19,6 +19,8 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
+import javax.annotation.Nullable;
+
 public abstract class ServantRenderer<T extends EntityServant, M extends EntityModel<T> & IHasArm & IHasHead> extends LivingRenderer<T, M> {
 
     private static final ResourceLocation DEFAULT_RES_LOC = new ResourceLocation("textures/entity/steve.png");
@@ -112,8 +114,26 @@ public abstract class ServantRenderer<T extends EntityServant, M extends EntityM
         }
 
         matrixStack.pop();
-        super.render(entity, yaw, partialTicks, matrixStack, buffer, light);
+        this.nameTag(entity, yaw, partialTicks, matrixStack, buffer, light);
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Post<T, M>(entity, this, partialTicks, matrixStack, buffer, light));
+    }
+
+    private void nameTag(T entity, float yaw, float partialTicks, MatrixStack stack, IRenderTypeBuffer buffer, int light){
+        net.minecraftforge.client.event.RenderNameplateEvent renderNameplateEvent = new net.minecraftforge.client.event.RenderNameplateEvent(entity, entity.getDisplayName(), this, stack, buffer, light, partialTicks);
+        net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(renderNameplateEvent);
+        if (renderNameplateEvent.getResult() != net.minecraftforge.eventbus.api.Event.Result.DENY && (renderNameplateEvent.getResult() == net.minecraftforge.eventbus.api.Event.Result.ALLOW || this.canRenderName(entity))) {
+            this.renderLabelIfPresent(entity, renderNameplateEvent.getContent(), stack, buffer, light);
+        }
+    }
+
+    @Override
+    protected boolean canRenderName(T entity) {
+        return super.canRenderName(entity) && (entity.getAlwaysRenderNameTagForRender() || entity.hasCustomName() && entity == this.renderManager.pointedEntity);
+    }
+
+    @Override
+    protected void setupTransforms(T p_225621_1_, MatrixStack p_225621_2_, float p_225621_3_, float p_225621_4_, float p_225621_5_) {
+        super.setupTransforms(p_225621_1_, p_225621_2_, p_225621_3_, p_225621_4_, p_225621_5_);
     }
 
     @Override
@@ -122,7 +142,7 @@ public abstract class ServantRenderer<T extends EntityServant, M extends EntityM
     }
 
     public static boolean showIdentity(EntityServant servant) {
-        return servant.showServant() || Minecraft.getInstance().player.equals(servant.getOwner());
+        return servant.isDead() || servant.showServant() || Minecraft.getInstance().player.equals(servant.getOwner());
     }
 
     public abstract ResourceLocation servantTexture(T servant);

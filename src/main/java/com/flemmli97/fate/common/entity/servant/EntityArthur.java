@@ -28,6 +28,8 @@ public class EntityArthur extends EntityServant {
 
     public EntityArthur(EntityType<? extends EntityArthur> entityType, World world) {
         super(entityType, world, "arthur.hogou");
+        if(world != null && !world.isRemote)
+            this.goalSelector.addGoal(1, this.attackAI);
     }
 
     @Override

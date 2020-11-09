@@ -158,14 +158,14 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated 
     }
 
     @Override
-    public ITextComponent getName() {
-        if (this.world.isRemote)
+    public ITextComponent getDefaultName() {
+        if (this.world.isRemote && !this.showServant())
             return new StringTextComponent("UNKNOWN");
-        return super.getName();
+        return super.getDefaultName();
     }
 
     public ITextComponent getRealName() {
-        return super.getName();
+        return super.getDefaultName();
     }
 
     public boolean attacksFromMount() {
@@ -418,21 +418,18 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated 
         return this.deathTime;
     }
 
-    /**
-     * Since onDeathUpdate doesnt kill it immediatly
-     */
-    public boolean isDead() {
-        return this.died;
-    }
-
     @Override
     public boolean canDespawn(double d) {
         return false;
     }
 
     @Override
+    public boolean isAlive() {
+        return !this.died && super.isAlive();
+    }
+
+    @Override
     protected void onDeathUpdate() {
-        ++this.deathTime;
         this.died = true;
 		/*for(int i = 0; i < ((int)((7/(float)this.maxDeathTick())*this.deathTicks-1)); i++)
 			Particles.spawnParticle(ModRender.particleFade, this.world, this.posX + (this.rand.nextDouble() - 0.5D) * (this.width+3),
@@ -442,6 +439,7 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated 
     		this.rand.nextGaussian() * 0.02D,
     		this.rand.nextGaussian() * 0.02D);*/
         if (!this.world.isRemote) {
+            ++this.deathTime;
             if (this.deathTime == 1) {
                 //if(this.getLastDamageSource()!=DamageSource.OUT_OF_WORLD)
                 this.world.getServer().getPlayerList().broadcastChatMessage(new TranslationTextComponent("chat.servant.death").formatted(TextFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);

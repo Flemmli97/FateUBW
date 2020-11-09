@@ -12,6 +12,10 @@ import com.flemmli97.fate.common.entity.EntityGaeBolg;
 import com.flemmli97.fate.common.entity.EntityLesserMonster;
 import com.flemmli97.fate.common.entity.servant.EntityArthur;
 import com.flemmli97.fate.common.entity.servant.EntityCuchulainn;
+import com.flemmli97.fate.common.entity.servant.EntityDiarmuid;
+import com.flemmli97.fate.common.entity.servant.EntityEmiya;
+import com.flemmli97.fate.common.entity.servant.EntityGilgamesh;
+import com.flemmli97.fate.common.entity.servant.EntityGilles;
 import com.flemmli97.fate.common.entity.servant.EntityServant;
 import com.flemmli97.fate.common.lib.LibEntities;
 import com.flemmli97.fate.common.utils.EnumServantType;
@@ -20,6 +24,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
+import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SharedConstants;
 import net.minecraft.util.registry.Registry;
@@ -37,17 +42,25 @@ public class ModEntities {
     private static final Map<ResourceLocation, EnumServantType> servants = Maps.newHashMap();
 
     public static RegistryObject<EntityType<EntityArthur>> arthur = regServant(EnumServantType.SABER, EntityType.Builder.create(EntityArthur::new, EntityClassification.MISC),
-            LibEntities.arthur, new ServantProperties(300, 10, 17, 0.4f, 12, 10, 0.3f, 100));
+            LibEntities.arthur, new ServantProperties(300, 10, 17, 0.4f, 12, 10, 0.3, 100));
     public static RegistryObject<EntityType<EntityCuchulainn>> cuchulainn = regServant(EnumServantType.LANCER, EntityType.Builder.create(EntityCuchulainn::new, EntityClassification.MISC),
-            LibEntities.cuchulainn, new ServantProperties(275, 7.5, 10, 0, 14, 6, 0.35f, 75));
+            LibEntities.cuchulainn, new ServantProperties(275, 7.5, 10, 0, 14, 6, 0.35, 75));
+    public static RegistryObject<EntityType<EntityDiarmuid>> diarmuid = regServant(EnumServantType.LANCER, EntityType.Builder.create(EntityDiarmuid::new, EntityClassification.MISC),
+            LibEntities.diarmuid, new ServantProperties(310, 8.5, 12, 0, 13, 7, 0.35, 80));
+    public static RegistryObject<EntityType<EntityEmiya>> emiya = regServant(EnumServantType.ARCHER, EntityType.Builder.create(EntityEmiya::new, EntityClassification.MISC),
+            LibEntities.emiya, new ServantProperties(250, 7.5, 8, 0, 15.5, 7, 0.33, 66));
+    public static RegistryObject<EntityType<EntityGilgamesh>> gilgamesh = regServant(EnumServantType.ARCHER, EntityType.Builder.create(EntityGilgamesh::new, EntityClassification.MISC),
+            LibEntities.gilgamesh, new ServantProperties(250, 10, 9, 0, 12.5, 5, 0.3, 100));
+    public static RegistryObject<EntityType<EntityGilles>> gilles = regServant(EnumServantType.CASTER, EntityType.Builder.create(EntityGilles::new, EntityClassification.MISC),
+            LibEntities.gilles, new ServantProperties(350, 5.5, 7, 0, 5, 14, 0.3, 80));
 
     public static final RegistryObject<EntityType<EntityExcalibur>> excalibur = reg(EntityType.Builder.<EntityExcalibur>create(EntityExcalibur::new, EntityClassification.MISC).size(0.25F, 0.25F), LibEntities.excalibur);
-    public static final RegistryObject<EntityType<EntityEnumaElish>> ea = reg(EntityType.Builder.<EntityEnumaElish>create(EntityEnumaElish::new, EntityClassification.MISC).size(0.25F, 0.25F), LibEntities.ea);
     public static final RegistryObject<EntityType<EntityGaeBolg>> gaebolg = reg(EntityType.Builder.<EntityGaeBolg>create(EntityGaeBolg::new, EntityClassification.MISC).size(0.25F, 0.25F), LibEntities.gae_bolg);
     public static final RegistryObject<EntityType<EntityArcherArrow>> archerArrow = reg(EntityType.Builder.<EntityArcherArrow>create(EntityArcherArrow::new, EntityClassification.MISC).size(0.25F, 0.25F), LibEntities.archer_arrow);
-    public static final RegistryObject<EntityType<EntityBabylonWeapon>> babylon = reg(EntityType.Builder.<EntityBabylonWeapon>create(EntityBabylonWeapon::new, EntityClassification.MISC).size(0.25F, 0.25F), LibEntities.babylon);
     public static final RegistryObject<EntityType<EntityCaladBolg>> caladbolg = reg(EntityType.Builder.<EntityCaladBolg>create(EntityCaladBolg::new, EntityClassification.MISC).size(0.25F, 0.25F), LibEntities.caladbolg);
-    public static final RegistryObject<EntityType<EntityLesserMonster>> lesserMonster = reg(EntityType.Builder.<EntityLesserMonster>create(EntityLesserMonster::new, EntityClassification.MONSTER).size(0.25F, 0.25F), LibEntities.monster_small);
+    public static final RegistryObject<EntityType<EntityBabylonWeapon>> babylon = reg(EntityType.Builder.<EntityBabylonWeapon>create(EntityBabylonWeapon::new, EntityClassification.MISC).size(0.25F, 0.25F), LibEntities.babylon);
+    public static final RegistryObject<EntityType<EntityEnumaElish>> ea = reg(EntityType.Builder.<EntityEnumaElish>create(EntityEnumaElish::new, EntityClassification.MISC).size(0.25F, 0.25F), LibEntities.ea);
+    public static final RegistryObject<EntityType<EntityLesserMonster>> lesserMonster = reg(EntityType.Builder.<EntityLesserMonster>create(EntityLesserMonster::new, EntityClassification.MONSTER).maxTrackingRange(8), LibEntities.monster_small);
 
     private static <V extends EntityServant> RegistryObject<EntityType<V>> regServant(EnumServantType type, EntityType.Builder<V> entity, ResourceLocation name, ServantProperties defaultVals) {
         servants.put(name, type);
@@ -66,5 +79,12 @@ public class ModEntities {
     public static void registerAttributes() {
         GlobalEntityTypeAttributes.put(arthur.get(), EntityServant.createMobAttributes().build());
         GlobalEntityTypeAttributes.put(cuchulainn.get(), EntityServant.createMobAttributes().build());
+        GlobalEntityTypeAttributes.put(diarmuid.get(), EntityServant.createMobAttributes().build());
+        GlobalEntityTypeAttributes.put(emiya.get(), EntityServant.createMobAttributes().build());
+        GlobalEntityTypeAttributes.put(gilgamesh.get(), EntityServant.createMobAttributes().build());
+        GlobalEntityTypeAttributes.put(gilles.get(), EntityServant.createMobAttributes().build());
+
+        GlobalEntityTypeAttributes.put(lesserMonster.get(), MonsterEntity.createHostileAttributes().build());
+
     }
 }

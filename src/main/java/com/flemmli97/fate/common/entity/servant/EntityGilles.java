@@ -23,7 +23,8 @@ public class EntityGilles extends EntityServant{
 
 	public EntityGilles(EntityType<? extends EntityGilles> entityType, World world) {
 		super(entityType, world, "Prelati's Spellbook");
-		this.goalSelector.addGoal(1, this.attackAI);
+		if(world != null && !world.isRemote)
+			this.goalSelector.addGoal(1, this.attackAI);
 	}
 	
 	@Override

@@ -23,7 +23,8 @@ public class EntityDiarmuid extends EntityServant {
 
 	public EntityDiarmuid(EntityType<? extends EntityDiarmuid> entityType, World world) {
 		super(entityType, world, "");
-		this.goalSelector.addGoal(1, this.attackAI);
+		if(world != null && !world.isRemote)
+			this.goalSelector.addGoal(1, this.attackAI);
 	}
 
 	@Override

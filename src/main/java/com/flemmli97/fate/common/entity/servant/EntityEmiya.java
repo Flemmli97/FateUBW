@@ -18,7 +18,7 @@ import net.minecraft.world.World;
 
 public class EntityEmiya extends EntityServant {
 
-	public final EmiyaAttackGoal attackGoal = new EmiyaAttackGoal(this);
+	public final EmiyaAttackGoal attackAI = new EmiyaAttackGoal(this, 10);
 
 	private static final AnimatedAction rangedAttack = new AnimatedAction(30, 10, "ranged");
 	private static final AnimatedAction npAttack = new AnimatedAction(20, 0, "np");
@@ -26,7 +26,8 @@ public class EntityEmiya extends EntityServant {
 
 	public EntityEmiya(EntityType<? extends EntityEmiya> entityType, World world) {
 		super(entityType, world, "Calad Bolg II");
-		this.goalSelector.addGoal(1, this.attackGoal);
+		if(world != null && !world.isRemote)
+			this.goalSelector.addGoal(1, this.attackAI);
 	}
 
 	@Override
@@ -68,9 +69,9 @@ public class EntityEmiya extends EntityServant {
 	public void updateAI(int behaviour) {
 		super.updateAI(behaviour);
 		if (this.commandBehaviour == 3) {
-			this.goalSelector.addGoal(1, this.attackGoal);
+			this.goalSelector.addGoal(1, this.attackAI);
 		} else if (this.commandBehaviour == 4) {
-			this.goalSelector.removeGoal(this.attackGoal);
+			this.goalSelector.removeGoal(this.attackAI);
 		}
 	}
 

@@ -30,6 +30,8 @@ public class EntityCuchulainn extends EntityServant {
 
     public EntityCuchulainn(EntityType<? extends EntityServant> entityType, World world) {
         super(entityType, world, "cuchulainn.hogou");
+        if(world != null && !world.isRemote)
+            this.goalSelector.addGoal(1, this.attackAI);
     }
 
     @Override

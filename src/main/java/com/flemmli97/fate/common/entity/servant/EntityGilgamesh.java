@@ -8,6 +8,7 @@ import com.flemmli97.fate.common.utils.EnumServantType;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.monster.SkeletonEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -16,7 +17,7 @@ import net.minecraft.world.World;
 
 public class EntityGilgamesh extends EntityServant {
 
-	public final GilgameshAttackGoal attackRanged = new GilgameshAttackGoal(this);
+	public final GilgameshAttackGoal attackAI = new GilgameshAttackGoal(this, 12);
 
 	private static final AnimatedAction rangedAttack = new AnimatedAction(40, 10, "babylon1");
 	private static final AnimatedAction rangedAttack2 = new AnimatedAction(40, 10, "babylon2");
@@ -25,16 +26,22 @@ public class EntityGilgamesh extends EntityServant {
 
 	public EntityGilgamesh(EntityType<? extends EntityGilgamesh> entityType, World world) {
 		super(entityType, world, "Enuma Elish");
-		this.goalSelector.addGoal(1, this.attackRanged);
 		this.revealServant();
+		if (world != null && !world.isRemote)
+			this.goalSelector.addGoal(1, this.attackAI);
+	}
+
+	@Override
+	public boolean showServant() {
+		return true;
 	}
 
 	@Override
 	public boolean canUse(AnimatedAction anim, AttackType type) {
 		if (type == AttackType.RANGED)
-			return anim.getID().equals("babylon1") || anim.getID().equals("babylon2");
+			return anim.getID().equals(rangedAttack.getID()) || anim.getID().equals(rangedAttack2.getID());
 		else if (type == AttackType.NP)
-			return anim.getID().equals("np");
+			return anim.getID().equals(npAttack.getID());
 		return anim.getID().equals("vanilla");
 	}
 
@@ -52,9 +59,9 @@ public class EntityGilgamesh extends EntityServant {
 	public void updateAI(int behaviour) {
 		super.updateAI(behaviour);
 		if (this.commandBehaviour == 3) {
-			this.goalSelector.addGoal(1, this.attackRanged);
+			this.goalSelector.addGoal(1, this.attackAI);
 		} else if (this.commandBehaviour == 4) {
-			this.goalSelector.removeGoal(this.attackRanged);
+			this.goalSelector.removeGoal(this.attackAI);
 		}
 	}
 
@@ -73,6 +80,10 @@ public class EntityGilgamesh extends EntityServant {
 			ea.setRotationTo(pos[0], pos[1], pos[2], 0);
 		this.world.addEntity(ea);
 		this.revealServant();
+	}
+
+	public void switchToNPWeapon(boolean unSwitch) {
+
 	}
 
 	@Override

@@ -9,9 +9,12 @@ import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 public class EmiyaAttackGoal  extends BaseServantAttackGoal<EntityEmiya> {
 
     private boolean doRanged;
+    private final float shootRangeSq;
+    private boolean iddleFlag, clockwise;
 
-    public EmiyaAttackGoal(EntityEmiya entity) {
+    public EmiyaAttackGoal(EntityEmiya entity, float shootRange) {
         super(entity, 1);
+        this.shootRangeSq = shootRange * shootRange;
     }
 
     @Override
@@ -26,6 +29,7 @@ public class EmiyaAttackGoal  extends BaseServantAttackGoal<EntityEmiya> {
     @Override
     public void handleAttack(AnimatedAction anim) {
         if (this.attacker.canUse(anim, EntityServant.AttackType.NP)) {
+            this.attacker.getLookController().setLookPositionWithEntity(this.target, 30.0F, 30.0F);
             if (anim.canAttack()) {
                 if (!this.attacker.forcedNP)
                     this.attacker.useMana(this.attacker.props().hogouMana());
@@ -34,7 +38,9 @@ public class EmiyaAttackGoal  extends BaseServantAttackGoal<EntityEmiya> {
                 this.attacker.switchToNPWeapon(true);
             }
         } else if (this.doRanged) {
-
+            this.attacker.getLookController().setLookPositionWithEntity(this.target, 30.0F, 30.0F);
+            if (anim.canAttack() && this.distanceToTargetSq <= this.shootRangeSq)
+                this.attacker.attackWithRangedAttack(this.target);
         } else {
             super.handleAttack(anim);
         }
@@ -42,6 +48,7 @@ public class EmiyaAttackGoal  extends BaseServantAttackGoal<EntityEmiya> {
 
     @Override
     public void handlePreAttack() {
+        this.iddleFlag = false;
         if (this.attacker.canUse(this.next, EntityServant.AttackType.NP))
             this.attacker.switchToNPWeapon(false);
         super.handlePreAttack();
@@ -50,7 +57,7 @@ public class EmiyaAttackGoal  extends BaseServantAttackGoal<EntityEmiya> {
     @Override
     public void handleIddle() {
         if (this.doRanged) {
-
+            this.circleAroundTargetFacing(8, this.clockwise, 0.8f);
         } else
             super.handleIddle();
     }
