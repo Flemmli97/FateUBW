@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[28,)"
+loaderVersion="[34,)"
 license="All rights reserved"
 issueTrackerURL="https://github.com/Flemmli97/FateUBW/issues"
 displayURL="https://github.com/Flemmli97/FateUBW"
@@ -16,6 +16,12 @@ authors="Flemmli97, BlackSaturn"
 [[dependency.fatemod]]
   modId="minecraft"
   mandatory=true
-  versionRange="[1.16.3]"
+  versionRange="[1.16.3,)"
   ordering="NONE"
+  side="BOTH"
+[[dependencies.fatemod]]
+  modId="tenshilib"
+  mandatory=true
+  versionRange="[1.3.1,)"
+  ordering="AFTER"
   side="BOTH"

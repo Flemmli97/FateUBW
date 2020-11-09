@@ -4,6 +4,7 @@ import com.flemmli97.fate.client.ClientRegister;
 import com.flemmli97.fate.common.config.Config;
 import com.flemmli97.fate.common.config.ConfigSpecs;
 import com.flemmli97.fate.common.registry.ModEntities;
+import com.flemmli97.fate.common.utils.CachedWeaponList;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -42,6 +43,7 @@ public class Fate {
     @SubscribeEvent
     public static void setup(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> ModEntities.registerAttributes());
+        CachedWeaponList.init();
     }
 
     @SubscribeEvent

@@ -36,11 +36,6 @@ public class EntityArthur extends EntityServant {
     }
 
     @Override
-    public int attackCooldown(AnimatedAction anim) {
-        return 0;
-    }
-
-    @Override
     public boolean canUse(AnimatedAction anim, AttackType type) {
         if (type == AttackType.NP)
             return anim.getID().equals(npAttack.getID());

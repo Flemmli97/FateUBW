@@ -6,23 +6,22 @@ import com.flemmli97.fate.common.utils.CustomDamageSource;
 import com.flemmli97.tenshilib.common.entity.EntityBeam;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.play.server.SSpawnObjectPacket;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
 
-public class EntityExcalibur extends EntityBeam {
+public class EntityEnumaElish extends EntityBeam {
 
-    public static final float radius = 2f;
-    public static final float range = 16;
-
-    public EntityExcalibur(EntityType<? extends EntityExcalibur> type, World world) {
-        super(type, world);
+	public static final float radius = 1.5f;
+	public static final float range = 24;
+	
+    public EntityEnumaElish(EntityType<? extends EntityEnumaElish> type, World worldIn)
+    {
+        super(type, worldIn);
     }
 
-    public EntityExcalibur(World world, LivingEntity shooter) {
-        super(ModEntities.excalibur.get(), world, shooter);
+    public EntityEnumaElish(World world, LivingEntity shooter)
+    {
+        super(ModEntities.ea.get(), world, shooter);
     }
 
     @Override
@@ -42,6 +41,6 @@ public class EntityExcalibur extends EntityBeam {
 
     @Override
     public void onImpact(EntityRayTraceResult result) {
-        result.getEntity().attackEntityFrom(CustomDamageSource.excalibur(this, this.getShooter()), Config.Common.excaliburDamage);
+        result.getEntity().attackEntityFrom(CustomDamageSource.excalibur(this, this.getShooter()), Config.Common.eaDamage);
     }
 }

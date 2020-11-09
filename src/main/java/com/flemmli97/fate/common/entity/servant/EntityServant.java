@@ -13,7 +13,9 @@ import com.flemmli97.fate.common.utils.Utils;
 import com.flemmli97.tenshilib.api.entity.IAnimated;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import com.google.common.collect.Lists;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.CreatureEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.LivingEntity;
@@ -32,6 +34,7 @@ import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.monster.MonsterEntity;
+import net.minecraft.entity.monster.SkeletonEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -46,6 +49,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -114,6 +118,16 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated 
     public EntityServant(EntityType<? extends EntityServant> entityType, World world, String hogou) {
         super(entityType, world);
         this.experienceValue = 35;
+        this.prop = Config.Common.attributes.getOrDefault(entityType.getRegistryName().toString(), ServantProperties.def);
+        if(world!=null && !world.isRemote) {
+            this.goals();
+            this.updateAttributes();
+        }
+        this.servantType = ModEntities.get(entityType.getRegistryName());
+        this.hogou = hogou;
+    }
+
+    protected void goals() {
         this.goalSelector.addGoal(0, this.follow);
         this.goalSelector.addGoal(1, this.restrictArea);
         this.goalSelector.addGoal(2, this.wander);
@@ -124,10 +138,6 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated 
         this.targetSelector.addGoal(0, this.targetHurt);
         this.targetSelector.addGoal(1, this.targetServant);
         this.targetSelector.addGoal(2, this.targetPlayer);
-        this.prop = Config.Common.attributes.getOrDefault(entityType.getRegistryName().toString(), ServantProperties.def);
-        this.updateAttributes();
-        this.servantType = ModEntities.get(entityType.getRegistryName());
-        this.hogou = hogou;
     }
 
     //=========Servant specifig data
@@ -193,7 +203,9 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated 
     /**
      * Cooldown between each attack. (The time after an attack has fully finished)
      */
-    public abstract int attackCooldown(AnimatedAction anim);
+    public int attackCooldown(AnimatedAction anim){
+        return 0;
+    }
 
     //=====Init
 
@@ -535,6 +547,43 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated 
 
     protected boolean preAttackEntityFrom(DamageSource damageSource, float par2) {
         return super.attackEntityFrom(damageSource, par2);
+    }
+
+    @Override
+    public boolean attackEntityAsMob(Entity entity) {
+        float f = (float) this.getAttributeValue(Attributes.GENERIC_ATTACK_DAMAGE);
+        float f1 = (float) this.getAttributeValue(Attributes.GENERIC_ATTACK_KNOCKBACK);
+        if (entity instanceof LivingEntity) {
+            f += EnchantmentHelper.getModifierForCreature(this.getHeldItemMainhand(), ((LivingEntity) entity).getCreatureAttribute());
+            f1 += (float) EnchantmentHelper.getKnockbackModifier(this);
+        }
+
+        int i = EnchantmentHelper.getFireAspectModifier(this);
+        if (i > 0) {
+            entity.setFire(i * 4);
+        }
+        f *= this.damageModifier(entity);
+        boolean flag = entity.attackEntityFrom(DamageSource.causeMobDamage(this), f);
+        if (flag) {
+            if (f1 > 0.0F && entity instanceof LivingEntity) {
+                ((LivingEntity) entity).takeKnockback(f1 * 0.5F, (double) MathHelper.sin(this.rotationYaw * ((float) Math.PI / 180F)), (double) (-MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F))));
+                this.setMotion(this.getMotion().mul(0.6D, 1.0D, 0.6D));
+            }
+
+            /*if (entity instanceof PlayerEntity) {
+                PlayerEntity playerentity = (PlayerEntity)entity;
+                this.disablePlayerShield(playerentity, this.getHeldItemMainhand(), playerentity.isHandActive() ? playerentity.getActiveItemStack() : ItemStack.EMPTY);
+            }*/
+
+            this.applyEnchantments(this, entity);
+            this.setLastAttackedEntity(entity);
+        }
+
+        return flag;
+    }
+
+    public float damageModifier(Entity target){
+        return 1;
     }
 
     public void onKillOrder(PlayerEntity player, boolean success) {

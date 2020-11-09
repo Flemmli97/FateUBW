@@ -18,7 +18,7 @@ public class CuchulainnAttackGoal extends BaseServantAttackGoal<EntityCuchulainn
                 this.attacker.setMotion(Vector3d.ZERO);
                 if (!this.attacker.forcedNP)
                     this.attacker.useMana(this.attacker.props().hogouMana());
-                this.attacker.attackWithNP();
+                this.attacker.attackWithNP(this.target);
                 this.attacker.forcedNP = false;
             }
         } else {

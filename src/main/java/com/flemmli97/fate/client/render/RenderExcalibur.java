@@ -5,7 +5,6 @@ import com.flemmli97.fate.common.entity.EntityExcalibur;
 import com.flemmli97.tenshilib.client.render.RenderBeam;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class RenderExcalibur extends RenderBeam<EntityExcalibur> {
 
@@ -21,24 +20,12 @@ public class RenderExcalibur extends RenderBeam<EntityExcalibur> {
     }
 
     @Override
-    public Pair<ResourceLocation, Float> startTexture(EntityExcalibur entity) {
+    public ResourcePair startTexture(EntityExcalibur entity) {
         return null;
     }
 
     @Override
-    public Pair<ResourceLocation, Float> endTexture(EntityExcalibur entity) {
+    public ResourcePair endTexture(EntityExcalibur entity) {
         return null;
-    }
-
-    @Override
-    public double segmentLength() {
-        return 0;
-    }
-
-    @Override
-    public int animationFrames(BeamPart part) {
-        //if(part==BeamPart.MIDDLE)
-        //  return 1;
-        return 1;
     }
 }

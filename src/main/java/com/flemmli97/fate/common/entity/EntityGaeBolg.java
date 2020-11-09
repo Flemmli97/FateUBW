@@ -55,11 +55,6 @@ public class EntityGaeBolg extends EntityProjectile {
     }
 
     @Override
-    public IPacket<?> createSpawnPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
-
-    @Override
     public void remove() {
         if (!this.world.isRemote) {
             if (this.getShooter() instanceof PlayerEntity) {

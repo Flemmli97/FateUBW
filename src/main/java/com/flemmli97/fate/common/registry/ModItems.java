@@ -18,6 +18,14 @@ public class ModItems {
     public static Item excalibur;
     public static Item gaebolg;
 
+    public static Item gaedearg;
+    public static Item gaebuidhe;
+    public static Item kanshou;
+    public static Item bakuya;
+    public static Item archbow;
+    public static Item enumaelish;
+    public static Item grimoire;
+
     @SubscribeEvent
     public static void register(RegistryEvent.Register<Item> event) {
         event.getRegistry().registerAll(

@@ -24,7 +24,7 @@ public class CustomDamageSource {
         return (new IndirectEntityDamageSource("caladBolg", source, sourceEntity)).setDamageBypassesArmor().setMagicDamage();
     }
 
-    public static DamageSource archerNormal(Entity source, LivingEntity sourceEntity) {
+    public static DamageSource archerNormal(Entity source, Entity sourceEntity) {
         return (new IndirectEntityDamageSource("arrow", source, sourceEntity)).setProjectile();
     }
 

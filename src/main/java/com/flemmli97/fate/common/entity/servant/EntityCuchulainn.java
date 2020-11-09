@@ -94,8 +94,7 @@ public class EntityCuchulainn extends EntityServant {
         super.livingTick();
     }
 
-    public void attackWithNP() {
-        LivingEntity target = this.getAttackTarget();
+    public void attackWithNP(LivingEntity target) {
         if (target != null) {
             EntityGaeBolg gaeBolg = new EntityGaeBolg(this.world, this);
             gaeBolg.shootAtPosition(target.getX(), target.getY() + target.getEyeHeight(), target.getZ(), 1.5F, 0);
