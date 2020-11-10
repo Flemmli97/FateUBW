@@ -1,15 +1,21 @@
 package com.flemmli97.fate.client.model.servant;
 
+import com.flemmli97.fate.Fate;
 import com.flemmli97.fate.client.model.ModelServant;
 import com.flemmli97.fate.common.entity.servant.EntityArthur;
+import com.flemmli97.tenshilib.client.model.BlockBenchAnimations;
 import com.flemmli97.tenshilib.client.model.ModelUtils;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.ResourceLocation;
 
 public class ModelArthur extends ModelServant<EntityArthur> {
 
+    public final BlockBenchAnimations anim;
+
     public ModelArthur() {
         super();
+        this.anim = new BlockBenchAnimations(this, new ResourceLocation(Fate.MODID, "models/entity/animation/arthur.json"));
     }
 
     @Override
@@ -43,6 +49,7 @@ public class ModelArthur extends ModelServant<EntityArthur> {
             float partialTicks = Minecraft.getInstance().getRenderPartialTicks();
             AnimatedAction anim = arthur.getAnimation();
             if (anim != null) {
+                this.anim.doAnimation(anim.getID(), anim.getTick(), partialTicks);
 				/*if (anim.getID().equals("swing_1"))
 					this.swing_1.animate(anim.getTick(), partialTicks);
 				if (anim.getID().equals("excalibur"))

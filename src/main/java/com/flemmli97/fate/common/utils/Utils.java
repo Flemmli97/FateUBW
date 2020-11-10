@@ -49,29 +49,4 @@ public class Utils {
         UUID second = other.ownerUUID();
         return (first == null || other == null) ? false : TruceHandler.get(servant.world).get(first).contains(second);
     }
-
-    public static <T> T capGet(PlayerEntity player, Function<IPlayer, T> func, T or) {
-        Optional<IPlayer> cap = player.getCapability(PlayerCapProvider.PlayerCap).resolve();
-        if (cap.isPresent()) {
-            return func.apply(cap.get());
-        }
-        return or;
-    }
-
-    public static void capDo(PlayerEntity player, Consumer<IPlayer> cons) {
-        Optional<IPlayer> cap = player.getCapability(PlayerCapProvider.PlayerCap).resolve();
-        if (cap.isPresent()) {
-            cons.accept(cap.get());
-        }
-    }
-
-    public static <V extends ForgeRegistryEntry<?>> V setRegName(V v, String name) {
-        v.setRegistryName(new ResourceLocation(Fate.MODID, name));
-        return v;
-    }
-
-    public static <V extends ForgeRegistryEntry<?>> V setRegName(V v, ResourceLocation name) {
-        v.setRegistryName(name);
-        return v;
-    }
 }

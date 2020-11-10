@@ -1,5 +1,6 @@
 package com.flemmli97.fate.common.entity.servant;
 
+import com.flemmli97.fate.common.capability.PlayerCapProvider;
 import com.flemmli97.fate.common.config.Config;
 import com.flemmli97.fate.common.config.ServantProperties;
 import com.flemmli97.fate.common.entity.IServantMinion;
@@ -293,7 +294,7 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated 
     public void setOwner(PlayerEntity player) {
         if (player != null) {
             this.dataManager.set(ownerUUID, player.getUniqueID().toString());
-            Utils.capDo(player, (cap) -> cap.setServant(player, this));
+            player.getCapability(PlayerCapProvider.PlayerCap).ifPresent(cap -> cap.setServant(player, this));
         } else
             this.dataManager.set(ownerUUID, "");
         this.owner = player;

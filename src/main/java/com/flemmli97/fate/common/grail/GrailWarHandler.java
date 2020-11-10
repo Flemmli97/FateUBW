@@ -1,5 +1,6 @@
 package com.flemmli97.fate.common.grail;
 
+import com.flemmli97.fate.common.capability.PlayerCapProvider;
 import com.flemmli97.fate.common.config.Config;
 import com.flemmli97.fate.common.entity.servant.EntityServant;
 import com.flemmli97.fate.common.utils.EnumServantType;
@@ -58,7 +59,7 @@ public class GrailWarHandler extends WorldSavedData {
     public boolean join(ServerPlayerEntity player) {
         UUID uuid = player.getUniqueID();
         if (this.players.containsKey(uuid) && this.spawnedServants < Config.Common.maxPlayer) {
-            EntityServant servant = Utils.capGet(player, (cap) -> cap.getServant(player), null);
+            EntityServant servant = player.getCapability(PlayerCapProvider.PlayerCap).map(cap -> cap.getServant(player)).orElse(null);
             if (servant != null) {
                 if (this.addServant(servant)) {
                     this.players.put(uuid, player.getName().getString()); //<-----------------
@@ -82,7 +83,7 @@ public class GrailWarHandler extends WorldSavedData {
     public boolean removePlayer(ServerPlayerEntity player) {
         if (this.hasPlayer(player)) {
             this.players.remove(player.getUniqueID());
-            Utils.capDo(player, (cap) -> {
+            player.getCapability(PlayerCapProvider.PlayerCap).ifPresent(cap -> {
                 cap.setCommandSeals(player, 0);
                 cap.setServant(player, null);
             });

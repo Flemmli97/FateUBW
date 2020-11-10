@@ -22,25 +22,30 @@ public class ModelCaladBolg extends EntityModel<EntityCaladBolg> {
     public ModelCaladBolg() {
         this.textureWidth = 35;
         this.textureHeight = 34;
-        this.point = new ModelRenderer(this, 0, 0);
-        this.point.setRotationPoint(0.0F, 0F, 0.0F);
-        this.point.addCuboid(0.0F, 0.0F, 0.0F, 1, 1, 5, 0.0F);
-        this.blade1 = new ModelRenderer(this, 0, 6);
-        this.blade1.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.blade1.addCuboid(-1.0F, -1.0F, 5.0F, 3, 3, 7, 0.0F);
-        this.blade2 = new ModelRenderer(this, 0, 16);
-        this.blade2.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.blade2.addCuboid(-2.0F, -2.0F, 12.0F, 5, 5, 13, 0.0F);
-        this.guard = new ModelRenderer(this, 19, 0);
-        this.guard.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.guard.addCuboid(-3.0F, -3.0F, 25.0F, 7, 7, 1, 0.0F);
-        this.handle = new ModelRenderer(this, 19, 8);
-        this.handle.setRotationPoint(0F, 0F, 0F);
-        this.handle.addCuboid(-0.5F, -0.5F, 26.0F, 2, 2, 3, 0.0F);
-        this.point.addChild(this.blade1);
-        this.point.addChild(this.blade2);
-        this.point.addChild(this.guard);
-        this.point.addChild(this.handle);
+
+        point = new ModelRenderer(this);
+        point.setRotationPoint(0.0F, 19.5F, -13.0F);
+        point.setTextureOffset(0, 0).addCuboid(-0.5F, -0.5F, -5.0F, 1.0F, 1.0F, 5.0F, 0.0F, false);
+
+        blade1 = new ModelRenderer(this);
+        blade1.setRotationPoint(0.0F, 0.0F, 7.0F);
+        point.addChild(blade1);
+        blade1.setTextureOffset(0, 6).addCuboid(-1.5F, -1.5F, -7.0F, 3.0F, 3.0F, 7.0F, 0.0F, false);
+
+        blade2 = new ModelRenderer(this);
+        blade2.setRotationPoint(0.0F, 0.0F, 20.0F);
+        point.addChild(blade2);
+        blade2.setTextureOffset(0, 16).addCuboid(-2.5F, -2.5F, -13.0F, 5.0F, 5.0F, 13.0F, 0.0F, false);
+
+        guard = new ModelRenderer(this);
+        guard.setRotationPoint(0.0F, 0.0F, 21.0F);
+        point.addChild(guard);
+        guard.setTextureOffset(19, 0).addCuboid(-3.5F, -3.5F, -1.0F, 7.0F, 7.0F, 1.0F, 0.0F, false);
+
+        handle = new ModelRenderer(this);
+        handle.setRotationPoint(0.0F, 0.0F, 24.0F);
+        point.addChild(handle);
+        handle.setTextureOffset(19, 8).addCuboid(-1.0F, -1.0F, -3.0F, 2.0F, 2.0F, 3.0F, 0.0F, false);
     }
 
     @Override

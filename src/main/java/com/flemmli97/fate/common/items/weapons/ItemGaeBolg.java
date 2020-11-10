@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 public class ItemGaeBolg extends ClassSpear {
 
     public ItemGaeBolg(Item.Properties props) {
-        super(ItemTiers.gae_bolg, props, -1.5F, 4);
+        super(ItemTiers.gae_bolg, props, -1.5f, 4);
     }
 
     @Override
