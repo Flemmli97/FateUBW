@@ -3,22 +3,14 @@ package com.flemmli97.fate.client.render;
 import com.flemmli97.fate.Fate;
 import com.flemmli97.fate.common.entity.EntityBabylonWeapon;
 import com.flemmli97.tenshilib.client.render.RenderProjectileItem;
-import com.flemmli97.tenshilib.client.render.RenderProjectileModel;
 import com.flemmli97.tenshilib.client.render.RenderUtils;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Matrix3f;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraftforge.client.ForgeRenderTypes;
 
 public class RenderBabylon extends RenderProjectileItem<EntityBabylonWeapon> {
 

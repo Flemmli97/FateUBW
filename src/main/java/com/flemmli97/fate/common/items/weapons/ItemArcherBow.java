@@ -1,7 +1,6 @@
 package com.flemmli97.fate.common.items.weapons;
 
 import com.flemmli97.fate.Fate;
-import com.flemmli97.fate.common.capability.IPlayer;
 import com.flemmli97.fate.common.capability.PlayerCapProvider;
 import com.flemmli97.fate.common.entity.EntityCaladBolg;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -21,8 +20,6 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
 
-import java.util.function.Predicate;
-
 public class ItemArcherBow extends BowItem {
 
     public ItemArcherBow(Properties props) {
@@ -36,7 +33,7 @@ public class ItemArcherBow extends BowItem {
             if (player.isCreative())
                 this.setCharged(stack, true);
             else {
-                if (player.isCreative() || player.getCapability(PlayerCapProvider.PlayerCap).map(cap->cap.useMana(player, 80)).orElse(false)) {
+                if (player.isCreative() || player.getCapability(PlayerCapProvider.PlayerCap).map(cap -> cap.useMana(player, 80)).orElse(false)) {
                     this.setCharged(stack, true);
                 }
             }

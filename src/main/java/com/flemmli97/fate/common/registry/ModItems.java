@@ -11,7 +11,6 @@ import com.flemmli97.fate.common.lib.ItemTiers;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
-import net.minecraft.util.IItemProvider;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -39,12 +38,15 @@ public class ModItems {
     public static Item icon2;
     public static Item icon3;
 
-    public static final Supplier<Item> randomIcon = ()->{
+    public static final Supplier<Item> randomIcon = () -> {
         int i = new Random().nextInt(4);
-        switch (i){
-            case 0: return icon0;
-            case 1: return icon1;
-            case 2: return icon2;
+        switch (i) {
+            case 0:
+                return icon0;
+            case 1:
+                return icon1;
+            case 2:
+                return icon2;
         }
         return icon3;
     };
@@ -52,7 +54,7 @@ public class ModItems {
     @SubscribeEvent
     public static void register(RegistryEvent.Register<Item> event) {
         event.getRegistry().registerAll(
-                invisexcalibur = new SwordItem(ItemTiers.invis_excalibur, 0, -2.4f, new Item.Properties().group(Fate.TAB)){
+                invisexcalibur = new SwordItem(ItemTiers.invis_excalibur, 0, -2.4f, new Item.Properties().group(Fate.TAB)) {
                     @Override
                     public boolean hasEffect(ItemStack stack) {
                         return true;

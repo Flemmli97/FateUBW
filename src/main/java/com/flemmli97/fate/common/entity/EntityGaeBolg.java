@@ -11,14 +11,12 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.IPacket;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
 
 public class EntityGaeBolg extends EntityProjectile {
 
@@ -41,7 +39,7 @@ public class EntityGaeBolg extends EntityProjectile {
         if (res.getEntity() instanceof LivingEntity && (!(res.getEntity() instanceof PlayerEntity) || !((PlayerEntity) res.getEntity()).abilities.disableDamage)) {
             for (EffectInstance effect : Config.Common.gaeBolgEffect.potions()) {
                 //The no jump effect from jump boost doesnt seem to affect entities
-                if(effect.getPotion() != Effects.JUMP_BOOST || res.getEntity() instanceof PlayerEntity)
+                if (effect.getPotion() != Effects.JUMP_BOOST || res.getEntity() instanceof PlayerEntity)
                     ((LivingEntity) res.getEntity()).addPotionEffect(effect);
             }
         }

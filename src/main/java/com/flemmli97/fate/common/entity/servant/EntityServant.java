@@ -35,7 +35,6 @@ import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.monster.MonsterEntity;
-import net.minecraft.entity.monster.SkeletonEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -120,7 +119,7 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated 
         super(entityType, world);
         this.experienceValue = 35;
         this.prop = Config.Common.attributes.getOrDefault(entityType.getRegistryName().toString(), ServantProperties.def);
-        if(world!=null && !world.isRemote) {
+        if (world != null && !world.isRemote) {
             this.goals();
             this.updateAttributes();
         }
@@ -204,7 +203,7 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated 
     /**
      * Cooldown between each attack. (The time after an attack has fully finished)
      */
-    public int attackCooldown(AnimatedAction anim){
+    public int attackCooldown(AnimatedAction anim) {
         return 0;
     }
 
@@ -581,7 +580,7 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated 
         return flag;
     }
 
-    public float damageModifier(Entity target){
+    public float damageModifier(Entity target) {
         return 1;
     }
 

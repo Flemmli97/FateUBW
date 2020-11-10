@@ -12,37 +12,37 @@ import net.minecraft.world.World;
 
 public class EntityCaladBolg extends EntityProjectile {
 
-	public EntityCaladBolg(EntityType<? extends EntityCaladBolg> type, World worldIn) {
-		super(type, worldIn);
-	}
+    public EntityCaladBolg(EntityType<? extends EntityCaladBolg> type, World worldIn) {
+        super(type, worldIn);
+    }
 
-	public EntityCaladBolg(World world, LivingEntity shootingEntity) {
-		super(ModEntities.caladbolg.get(), world, shootingEntity);
-	}
+    public EntityCaladBolg(World world, LivingEntity shootingEntity) {
+        super(ModEntities.caladbolg.get(), world, shootingEntity);
+    }
 
-	public EntityCaladBolg(World worldIn, double x, double y, double z) {
-		super(ModEntities.caladbolg.get(), worldIn, x, y, z);
-	}
+    public EntityCaladBolg(World worldIn, double x, double y, double z) {
+        super(ModEntities.caladbolg.get(), worldIn, x, y, z);
+    }
 
-	@Override
-	public int livingTickMax() {
-		return 100;
-	}
+    @Override
+    public int livingTickMax() {
+        return 100;
+    }
 
-	@Override
-	protected float getGravityVelocity() {
-		return 0.001F;
-	}
+    @Override
+    protected float getGravityVelocity() {
+        return 0.001F;
+    }
 
-	@Override
-	protected boolean onEntityHit(EntityRayTraceResult result) {
-		result.getEntity().attackEntityFrom(CustomDamageSource.caladBolg(this, this.getShooter()), Config.Common.caladBolgDmg);
-		this.remove();
-		return true;
-	}
+    @Override
+    protected boolean onEntityHit(EntityRayTraceResult result) {
+        result.getEntity().attackEntityFrom(CustomDamageSource.caladBolg(this, this.getShooter()), Config.Common.caladBolgDmg);
+        this.remove();
+        return true;
+    }
 
-	@Override
-	protected void onBlockHit(BlockRayTraceResult blockRayTraceResult) {
-		this.remove();
-	}
+    @Override
+    protected void onBlockHit(BlockRayTraceResult blockRayTraceResult) {
+        this.remove();
+    }
 }

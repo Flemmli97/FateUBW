@@ -4,7 +4,6 @@ import com.flemmli97.fate.common.capability.PlayerCapProvider;
 import com.flemmli97.fate.common.config.Config;
 import com.flemmli97.fate.common.entity.servant.EntityServant;
 import com.flemmli97.fate.common.utils.EnumServantType;
-import com.flemmli97.fate.common.utils.Utils;
 import com.flemmli97.tenshilib.common.entity.EntityUtil;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;

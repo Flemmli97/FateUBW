@@ -6,11 +6,8 @@ import com.flemmli97.fate.common.utils.CustomDamageSource;
 import com.flemmli97.tenshilib.common.entity.EntityBeam;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.play.server.SSpawnObjectPacket;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
 
 public class EntityExcalibur extends EntityBeam {
 

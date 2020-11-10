@@ -11,16 +11,14 @@ import net.minecraft.world.World;
 
 public class EntityEnumaElish extends EntityBeam {
 
-	public static final float radius = 1.5f;
-	public static final float range = 24;
-	
-    public EntityEnumaElish(EntityType<? extends EntityEnumaElish> type, World worldIn)
-    {
+    public static final float radius = 1.5f;
+    public static final float range = 24;
+
+    public EntityEnumaElish(EntityType<? extends EntityEnumaElish> type, World worldIn) {
         super(type, worldIn);
     }
 
-    public EntityEnumaElish(World world, LivingEntity shooter)
-    {
+    public EntityEnumaElish(World world, LivingEntity shooter) {
         super(ModEntities.ea.get(), world, shooter);
     }
 

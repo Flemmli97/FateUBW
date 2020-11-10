@@ -1,20 +1,12 @@
 package com.flemmli97.fate.common.utils;
 
-import com.flemmli97.fate.Fate;
-import com.flemmli97.fate.common.capability.IPlayer;
-import com.flemmli97.fate.common.capability.PlayerCapProvider;
 import com.flemmli97.fate.common.entity.servant.EntityServant;
 import com.flemmli97.fate.common.grail.TruceHandler;
 import com.flemmli97.fate.common.registry.FateAttributes;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class Utils {
 

@@ -2,7 +2,6 @@ package com.flemmli97.fate.common.entity.servant.ai;
 
 import com.flemmli97.fate.common.entity.servant.EntityGilgamesh;
 import com.flemmli97.fate.common.entity.servant.EntityServant;
-import com.flemmli97.fate.common.registry.ModItems;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 
 public class GilgameshAttackGoal extends BaseServantAttackGoal<EntityGilgamesh> {
@@ -49,7 +48,7 @@ public class GilgameshAttackGoal extends BaseServantAttackGoal<EntityGilgamesh> 
 
     @Override
     public boolean canChooseAttack(AnimatedAction anim) {
-        if(this.attacker.canUse(anim, EntityServant.AttackType.RANGED))
+        if (this.attacker.canUse(anim, EntityServant.AttackType.RANGED))
             return this.distanceToTargetSq < this.shootRangeSq;
         return this.distanceToTargetSq < this.attackRange || this.attacker.canUse(anim, EntityServant.AttackType.NP);
     }
@@ -65,7 +64,7 @@ public class GilgameshAttackGoal extends BaseServantAttackGoal<EntityGilgamesh> 
     @Override
     public void handleIddle() {
         if (this.doRanged) {
-            if(this.distanceToTargetSq < 9)
+            if (this.distanceToTargetSq < 9)
                 this.randomPosAwayFrom(this.target, 8);
             else {
                 if (!this.iddleFlag) {

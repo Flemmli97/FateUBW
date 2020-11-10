@@ -14,7 +14,6 @@ import com.flemmli97.fate.client.render.servant.RenderEmiya;
 import com.flemmli97.fate.client.render.servant.RenderGilgamesh;
 import com.flemmli97.fate.client.render.servant.RenderGilles;
 import com.flemmli97.fate.common.registry.ModEntities;
-import net.minecraft.client.renderer.entity.ArrowRenderer;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 
 public class ClientRegister {

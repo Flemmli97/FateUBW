@@ -19,8 +19,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
-import javax.annotation.Nullable;
-
 public abstract class ServantRenderer<T extends EntityServant, M extends EntityModel<T> & IHasArm & IHasHead> extends LivingRenderer<T, M> {
 
     private static final ResourceLocation DEFAULT_RES_LOC = new ResourceLocation("textures/entity/steve.png");
@@ -118,7 +116,7 @@ public abstract class ServantRenderer<T extends EntityServant, M extends EntityM
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Post<T, M>(entity, this, partialTicks, matrixStack, buffer, light));
     }
 
-    private void nameTag(T entity, float yaw, float partialTicks, MatrixStack stack, IRenderTypeBuffer buffer, int light){
+    private void nameTag(T entity, float yaw, float partialTicks, MatrixStack stack, IRenderTypeBuffer buffer, int light) {
         net.minecraftforge.client.event.RenderNameplateEvent renderNameplateEvent = new net.minecraftforge.client.event.RenderNameplateEvent(entity, entity.getDisplayName(), this, stack, buffer, light, partialTicks);
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(renderNameplateEvent);
         if (renderNameplateEvent.getResult() != net.minecraftforge.eventbus.api.Event.Result.DENY && (renderNameplateEvent.getResult() == net.minecraftforge.eventbus.api.Event.Result.ALLOW || this.canRenderName(entity))) {

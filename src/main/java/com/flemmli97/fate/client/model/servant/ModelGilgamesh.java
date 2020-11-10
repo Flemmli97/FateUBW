@@ -1,7 +1,6 @@
 package com.flemmli97.fate.client.model.servant;
 
 import com.flemmli97.fate.client.model.ModelServant;
-import com.flemmli97.fate.common.entity.servant.EntityCuchulainn;
 import com.flemmli97.fate.common.entity.servant.EntityGilgamesh;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import net.minecraft.client.Minecraft;

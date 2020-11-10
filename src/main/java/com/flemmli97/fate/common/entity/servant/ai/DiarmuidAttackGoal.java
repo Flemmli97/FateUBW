@@ -4,7 +4,7 @@ import com.flemmli97.fate.common.entity.servant.EntityDiarmuid;
 import com.flemmli97.fate.common.entity.servant.EntityServant;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 
-public class DiarmuidAttackGoal extends BaseServantAttackGoal<EntityDiarmuid>{
+public class DiarmuidAttackGoal extends BaseServantAttackGoal<EntityDiarmuid> {
 
     public DiarmuidAttackGoal(EntityDiarmuid entity) {
         super(entity, 1.2f);

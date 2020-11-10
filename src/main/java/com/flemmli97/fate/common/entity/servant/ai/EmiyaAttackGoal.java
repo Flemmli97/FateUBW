@@ -1,12 +1,11 @@
 package com.flemmli97.fate.common.entity.servant.ai;
 
-import com.flemmli97.fate.common.entity.servant.EntityDiarmuid;
 import com.flemmli97.fate.common.entity.servant.EntityEmiya;
 import com.flemmli97.fate.common.entity.servant.EntityServant;
 import com.flemmli97.fate.common.registry.ModItems;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 
-public class EmiyaAttackGoal  extends BaseServantAttackGoal<EntityEmiya> {
+public class EmiyaAttackGoal extends BaseServantAttackGoal<EntityEmiya> {
 
     private boolean doRanged;
     private final float shootRangeSq;

@@ -1,7 +1,6 @@
 package com.flemmli97.fate.common.items.weapons;
 
 import com.flemmli97.fate.common.entity.EntityEnumaElish;
-import com.flemmli97.fate.common.entity.EntityExcalibur;
 import com.flemmli97.fate.common.lib.ItemTiers;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;

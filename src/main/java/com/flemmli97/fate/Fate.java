@@ -8,7 +8,6 @@ import com.flemmli97.fate.common.registry.ModItems;
 import com.flemmli97.fate.common.utils.CachedWeaponList;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -24,7 +23,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
-import java.util.Random;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 @Mod(value = Fate.MODID)
@@ -55,7 +53,7 @@ public class Fate {
 
     @SubscribeEvent
     public static void conf(ModConfig.ModConfigEvent event) {
-        if(event.getConfig().getSpec()==ConfigSpecs.commonSpec)
+        if (event.getConfig().getSpec() == ConfigSpecs.commonSpec)
             Config.Common.load();
     }
 
