@@ -2,23 +2,24 @@ package com.flemmli97.fate.client.model.servant;
 
 import com.flemmli97.fate.Fate;
 import com.flemmli97.fate.client.model.ModelServant;
-import com.flemmli97.fate.common.entity.servant.EntityGilgamesh;
+import com.flemmli97.fate.common.entity.servant.EntityCuchulainn;
+import com.flemmli97.fate.common.entity.servant.EntityLancelot;
 import com.flemmli97.tenshilib.client.model.BlockBenchAnimations;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 
-public class ModelGilgamesh extends ModelServant<EntityGilgamesh> {
+public class ModelLancelot extends ModelServant<EntityLancelot> {
 
     public final BlockBenchAnimations anim;
 
-    public ModelGilgamesh() {
+    public ModelLancelot() {
         super();
-        this.anim = new BlockBenchAnimations(this, new ResourceLocation(Fate.MODID, "models/entity/animation/gilgamesh.json"));
+        this.anim = new BlockBenchAnimations(this, new ResourceLocation(Fate.MODID, "models/entity/animation/lancelot.json"));
     }
 
     @Override
-    public void setAngles(EntityGilgamesh servant, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setAngles(EntityLancelot servant, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.setAnglesPre(servant, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 
         if (servant.isStaying()) {

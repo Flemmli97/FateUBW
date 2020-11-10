@@ -13,6 +13,7 @@ import com.flemmli97.fate.client.render.servant.RenderDiarmuid;
 import com.flemmli97.fate.client.render.servant.RenderEmiya;
 import com.flemmli97.fate.client.render.servant.RenderGilgamesh;
 import com.flemmli97.fate.client.render.servant.RenderGilles;
+import com.flemmli97.fate.client.render.servant.RenderLancelot;
 import com.flemmli97.fate.common.registry.ModEntities;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 
@@ -25,6 +26,7 @@ public class ClientRegister {
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.emiya.get(), RenderEmiya::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.gilgamesh.get(), RenderGilgamesh::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.gilles.get(), RenderGilles::new);
+        RenderingRegistry.registerEntityRenderingHandler(ModEntities.lancelot.get(), RenderLancelot::new);
 
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.excalibur.get(), RenderExcalibur::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.gaebolg.get(), RenderGaeBolg::new);
@@ -33,6 +35,5 @@ public class ClientRegister {
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.babylon.get(), RenderBabylon::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.ea.get(), RenderEA::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.lesserMonster.get(), RenderStarfish::new);
-
     }
 }

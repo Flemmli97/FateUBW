@@ -15,6 +15,7 @@ public interface IPlayer {
     boolean useMana(PlayerEntity player, int amount);
 
     //Servant
+
     EntityServant getServant(PlayerEntity player);
 
     void setServant(PlayerEntity player, EntityServant servant);
@@ -26,6 +27,7 @@ public interface IPlayer {
     void restoreServant(PlayerEntity player);
 
     //Command seals
+
     int getCommandSeals();
 
     boolean useCommandSeal(PlayerEntity player);

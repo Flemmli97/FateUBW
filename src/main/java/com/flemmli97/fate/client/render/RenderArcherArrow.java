@@ -15,7 +15,7 @@ public class RenderArcherArrow extends ArrowRenderer<EntityArcherArrow> {
     }
 
     @Override
-    public ResourceLocation getEntityTexture(EntityArcherArrow p_110775_1_) {
+    public ResourceLocation getEntityTexture(EntityArcherArrow arrow) {
         return LOCATION;
     }
 }

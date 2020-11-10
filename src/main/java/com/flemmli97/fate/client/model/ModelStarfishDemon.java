@@ -1,6 +1,8 @@
 package com.flemmli97.fate.client.model;
 
+import com.flemmli97.fate.Fate;
 import com.flemmli97.fate.common.entity.EntityLesserMonster;
+import com.flemmli97.tenshilib.client.model.BlockBenchAnimations;
 import com.flemmli97.tenshilib.client.model.IResetModel;
 import com.flemmli97.tenshilib.client.model.ModelRendererPlus;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
@@ -8,6 +10,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * Starfish Demons - Black_Saturn
@@ -76,6 +79,8 @@ public class ModelStarfishDemon<T extends EntityLesserMonster> extends EntityMod
     public ModelRendererPlus TentacleP3S6;
     public ModelRendererPlus Tentaclepapulae_34;
     public ModelRendererPlus Tentaclepapulae_35;
+
+    public final BlockBenchAnimations anim;
 
     /*//20
     public TabulaAnimation idle;
@@ -332,6 +337,7 @@ public class ModelStarfishDemon<T extends EntityLesserMonster> extends EntityMod
         this.TentacleP3S3.addChild(this.Tentaclepapulae_17);
         this.TentacleP2S6.addChild(this.TentacleP3S6);
 
+        this.anim = new BlockBenchAnimations(this, new ResourceLocation(Fate.MODID, "models/entity/animation/starfish.json"));
     }
 
     @Override
@@ -344,10 +350,10 @@ public class ModelStarfishDemon<T extends EntityLesserMonster> extends EntityMod
         this.resetModel();
         float partialTicks = Minecraft.getInstance().getRenderPartialTicks();
         AnimatedAction anim = monster.getAnimation();
-        if (anim != null) {
-
-        } else
-            ;
+        if (anim != null)
+            this.anim.doAnimation(anim.getID(), anim.getTick(), partialTicks);
+        else
+            this.anim.doAnimation("iddle", anim.getTick(), partialTicks);
     }
 
     @Override

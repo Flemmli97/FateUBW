@@ -26,12 +26,12 @@ public class ModItems {
     public static Item gaebolg;
     public static Item gaedearg;
     public static Item gaebuidhe;
-
     public static Item kanshou;
     public static Item bakuya;
     public static Item archbow;
     public static Item enumaelish;
     public static Item grimoire;
+    public static Item arondight;
 
     public static Item icon0;
     public static Item icon1;
@@ -54,7 +54,7 @@ public class ModItems {
     @SubscribeEvent
     public static void register(RegistryEvent.Register<Item> event) {
         event.getRegistry().registerAll(
-                invisexcalibur = new SwordItem(ItemTiers.invis_excalibur, 0, -2.4f, new Item.Properties().group(Fate.TAB)) {
+                invisexcalibur = new SwordItem(ItemTiers.invis_excalibur, 0, -2.4f, new Item.Properties()) {
                     @Override
                     public boolean hasEffect(ItemStack stack) {
                         return true;
@@ -69,6 +69,8 @@ public class ModItems {
                 archbow = new ItemArcherBow(new Item.Properties().group(Fate.TAB)).setRegistryName(Fate.MODID, "archer_bow"),
                 enumaelish = new ItemEA(new Item.Properties().group(Fate.TAB)).setRegistryName(Fate.MODID, "enuma_elish"),
                 grimoire = new ItemGrimoire(new Item.Properties().group(Fate.TAB)).setRegistryName(Fate.MODID, "prelati"),
+                arondight = new SwordItem(ItemTiers.arondight, 0, -2.4f, new Item.Properties().group(Fate.TAB)).setRegistryName(Fate.MODID, "arondight"),
+
                 icon0 = new Item(new Item.Properties()).setRegistryName(Fate.MODID, "icon_0"),
                 icon1 = new Item(new Item.Properties()).setRegistryName(Fate.MODID, "icon_1"),
                 icon2 = new Item(new Item.Properties()).setRegistryName(Fate.MODID, "icon_2"),

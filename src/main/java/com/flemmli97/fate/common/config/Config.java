@@ -53,15 +53,15 @@ public class Config {
             maxPlayer = ConfigSpecs.commonConf.maxPlayer.get();
             joinTime = ConfigSpecs.commonConf.joinTime.get();
             rewardDelay = ConfigSpecs.commonConf.rewardDelay.get();
-            //charmSpawnRate = ConfigSpecs.commonConf.charmSpawnRate.;
-            //gemSpawnRate = ConfigSpecs.commonConf.gemSpawnRate;
+            charmSpawnRate = ConfigSpecs.commonConf.charmSpawnRate.get();
+            gemSpawnRate = ConfigSpecs.commonConf.gemSpawnRate.get();
             allowDuplicateServant = ConfigSpecs.commonConf.allowDuplicateServant.get();
             allowDuplicateClass = ConfigSpecs.commonConf.allowDuplicateClass.get();
             fillMissingSlots = ConfigSpecs.commonConf.fillMissingSlots.get();
             maxServantCircle = ConfigSpecs.commonConf.maxServantCircle.get();
             servantMinSpawnDelay = ConfigSpecs.commonConf.servantMinSpawnDelay.get();
             servantMaxSpawnDelay = ConfigSpecs.commonConf.servantMaxSpawnDelay.get();
-            //punishTeleport = ConfigSpecs.commonConf.punishTeleport;
+            punishTeleport = ConfigSpecs.commonConf.punishTeleport.get();
             notifyWhiteList = ConfigSpecs.commonConf.notifyWhiteList.get();
             blackList = ConfigSpecs.commonConf.blackList.get();
             notifyAll = ConfigSpecs.commonConf.notifyAll.get();
@@ -69,7 +69,7 @@ public class Config {
             attributes.clear();
             for (Map.Entry<String, ServantConfSpec> e : ConfigSpecs.commonConf.attributes.entrySet())
                 attributes.put(e.getKey(), new ServantProperties(e.getValue()));
-            lancelotReflectChance = 0;//ConfigSpecs.commonConf.lancelotReflectChance.get().floatValue();
+            lancelotReflectChance = ConfigSpecs.commonConf.lancelotReflectChance.get().floatValue();
             //Minions
             gillesMinionDuration = ConfigSpecs.commonConf.gillesMinionDuration.get();
             gillesMinionAmount = ConfigSpecs.commonConf.gillesMinionAmount.get();

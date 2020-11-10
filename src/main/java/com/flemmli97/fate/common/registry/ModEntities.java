@@ -16,6 +16,7 @@ import com.flemmli97.fate.common.entity.servant.EntityDiarmuid;
 import com.flemmli97.fate.common.entity.servant.EntityEmiya;
 import com.flemmli97.fate.common.entity.servant.EntityGilgamesh;
 import com.flemmli97.fate.common.entity.servant.EntityGilles;
+import com.flemmli97.fate.common.entity.servant.EntityLancelot;
 import com.flemmli97.fate.common.entity.servant.EntityServant;
 import com.flemmli97.fate.common.lib.LibEntities;
 import com.flemmli97.fate.common.utils.EnumServantType;
@@ -50,6 +51,8 @@ public class ModEntities {
             LibEntities.gilgamesh, new ServantProperties(250, 10, 9, 0, 12.5, 5, 0.3, 100));
     public static RegistryObject<EntityType<EntityGilles>> gilles = regServant(EnumServantType.CASTER, EntityType.Builder.create(EntityGilles::new, EntityClassification.MISC),
             LibEntities.gilles, new ServantProperties(350, 5.5, 7, 0, 5, 14, 0.3, 80));
+    public static RegistryObject<EntityType<EntityLancelot>> lancelot = regServant(EnumServantType.BERSERKER, EntityType.Builder.create(EntityLancelot::new, EntityClassification.MISC),
+            LibEntities.lancelot, new ServantProperties(450, 9, 14, 0.4f, 19, 4, 0.2, 0));
 
     public static final RegistryObject<EntityType<EntityExcalibur>> excalibur = reg(EntityType.Builder.<EntityExcalibur>create(EntityExcalibur::new, EntityClassification.MISC).size(0.25F, 0.25F), LibEntities.excalibur);
     public static final RegistryObject<EntityType<EntityGaeBolg>> gaebolg = reg(EntityType.Builder.<EntityGaeBolg>create(EntityGaeBolg::new, EntityClassification.MISC).size(0.25F, 0.25F), LibEntities.gae_bolg);
@@ -80,6 +83,7 @@ public class ModEntities {
         GlobalEntityTypeAttributes.put(emiya.get(), EntityServant.createMobAttributes().build());
         GlobalEntityTypeAttributes.put(gilgamesh.get(), EntityServant.createMobAttributes().build());
         GlobalEntityTypeAttributes.put(gilles.get(), EntityServant.createMobAttributes().build());
+        GlobalEntityTypeAttributes.put(lancelot.get(), EntityServant.createMobAttributes().build());
 
         GlobalEntityTypeAttributes.put(lesserMonster.get(), MonsterEntity.createHostileAttributes().build());
 

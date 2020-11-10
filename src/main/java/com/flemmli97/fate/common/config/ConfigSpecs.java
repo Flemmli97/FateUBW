@@ -31,15 +31,15 @@ public class ConfigSpecs {
         public final ForgeConfigSpec.IntValue maxPlayer;
         public final ForgeConfigSpec.ConfigValue<Integer> joinTime;
         public final ForgeConfigSpec.ConfigValue<Integer> rewardDelay;
-        public int charmSpawnRate = 1;
-        public int gemSpawnRate = 10;
+        public final ForgeConfigSpec.ConfigValue<Integer> charmSpawnRate;
+        public final ForgeConfigSpec.ConfigValue<Integer> gemSpawnRate;
         public final ForgeConfigSpec.BooleanValue allowDuplicateServant;
         public final ForgeConfigSpec.BooleanValue allowDuplicateClass;
         public final ForgeConfigSpec.BooleanValue fillMissingSlots;
         public final ForgeConfigSpec.ConfigValue<Integer> maxServantCircle;
         public final ForgeConfigSpec.ConfigValue<Integer> servantMinSpawnDelay;
         public final ForgeConfigSpec.ConfigValue<Integer> servantMaxSpawnDelay;
-        public boolean punishTeleport = true;
+        public final ForgeConfigSpec.BooleanValue punishTeleport;
         public final ForgeConfigSpec.ConfigValue<List<String>> notifyWhiteList;
         public final ForgeConfigSpec.BooleanValue blackList;
         public final ForgeConfigSpec.BooleanValue notifyAll;
@@ -69,15 +69,15 @@ public class ConfigSpecs {
             maxPlayer = builder.comment("Maximum of player allowed in a grail war").defineInRange("Max Player", 1, 1, Integer.MAX_VALUE);
             joinTime = builder.comment("Time buffer in ticks to join a grail war after start").define("Join Time", 12000);
             rewardDelay = builder.comment("Delay after an ended grail war for getting the grail").define("Reward Delay", 2000);
-            //public int charmSpawnRate=1;
-            //public int gemSpawnRate=10;
+            charmSpawnRate = builder.comment("").define("Charm Gen Rate", 2000);
+            gemSpawnRate = builder.comment("").define("Gem Gen Rate", 2000);
             allowDuplicateServant = builder.comment("Allow the summoning of duplicate servants during a grail war").define("Allow Duplicate Servants", false);
             allowDuplicateClass = builder.comment("Allow the summoning of duplicate servant classes during a grail war").define("Allow Duplicate Classes", false);
             fillMissingSlots = builder.comment("Fill in missing players till max allowed with npc").define("Fill Empty Slots", true);
             maxServantCircle = builder.comment("Amount of masterless servant that can spawn each time. (Fill Empty Slots needs to be true)").define("Servant Amount", 1);
             servantMinSpawnDelay = builder.comment("Minimum time between each attempt to spawn masterless servants. (Fill Empty Slots needs to be true)").define("Servant Spawn Delay (Min)", 3000);
             servantMaxSpawnDelay = builder.comment("Maximum time between each attempt to spawn masterless servants. (Fill Empty Slots needs to be true)").define("Servant Spawn Delay (Max)", 6000);
-            //punishTeleport
+            punishTeleport = builder.comment("").define("Punish Teleport", true);
             notifyWhiteList = builder.comment("Servants that dont notify players when spawned (from filling missing slots)").define("Servant notification", Lists.newArrayList(LibEntities.hassan.toString()));
             blackList = builder.comment("Turn servant notification list into a blacklist").define("Notify Blacklist", true);
             notifyAll = builder.comment("Notify everyone if a servant spawns. Else only the player the servant spawned on will be notified").define("Notify Everyone", true);

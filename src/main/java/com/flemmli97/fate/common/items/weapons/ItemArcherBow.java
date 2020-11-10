@@ -2,6 +2,7 @@ package com.flemmli97.fate.common.items.weapons;
 
 import com.flemmli97.fate.Fate;
 import com.flemmli97.fate.common.capability.PlayerCapProvider;
+import com.flemmli97.fate.common.entity.EntityArcherArrow;
 import com.flemmli97.fate.common.entity.EntityCaladBolg;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
@@ -22,6 +23,7 @@ import net.minecraft.world.World;
 
 public class ItemArcherBow extends BowItem {
 
+    private final int arrowMana = 10, specialMana = 80;
     public ItemArcherBow(Properties props) {
         super(props);
     }
@@ -33,7 +35,7 @@ public class ItemArcherBow extends BowItem {
             if (player.isCreative())
                 this.setCharged(stack, true);
             else {
-                if (player.isCreative() || player.getCapability(PlayerCapProvider.PlayerCap).map(cap -> cap.useMana(player, 80)).orElse(false)) {
+                if (player.isCreative() || player.getCapability(PlayerCapProvider.PlayerCap).map(cap -> cap.useMana(player, this.specialMana)).orElse(false)) {
                     this.setCharged(stack, true);
                 }
             }
@@ -52,8 +54,7 @@ public class ItemArcherBow extends BowItem {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-        //IPlayer mana = player.getCapability(PlayerCapProvider.PlayerCap, null);
-        if (player.isCreative() || /*mana.getMana()>10 ||*/ this.charged(player.getHeldItem(hand))) {
+        if (player.isCreative() || this.charged(player.getHeldItem(hand)) || player.getCapability(PlayerCapProvider.PlayerCap).map(cap -> cap.getMana()>=this.arrowMana).orElse(false)) {
             player.setActiveHand(hand);
             return ActionResult.consume(player.getHeldItem(hand));
         } else {
@@ -81,65 +82,36 @@ public class ItemArcherBow extends BowItem {
 
     public void spawnNormalArrow(ItemStack stack, World world, LivingEntity entity, int timeLeft) {
         if (entity instanceof PlayerEntity) {
-            PlayerEntity playerentity = (PlayerEntity) entity;
-            //IPlayer mana = entityplayer.getCapability(PlayerCapProvider.PlayerCap, null);
-            boolean flag = playerentity.abilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantments.INFINITY, stack) > 0;
-            ItemStack itemstack = playerentity.findAmmo(stack);
-
+            PlayerEntity player = (PlayerEntity) entity;
+            boolean flag = player.abilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantments.INFINITY, stack) > 0
+                    || player.getCapability(PlayerCapProvider.PlayerCap).map(cap -> cap.useMana(player, this.arrowMana)).orElse(false);
             int i = this.getUseDuration(stack) - timeLeft;
-            i = net.minecraftforge.event.ForgeEventFactory.onArrowLoose(stack, world, playerentity, i, !itemstack.isEmpty() || flag);
-            if (i < 0) return;
 
-            if (!itemstack.isEmpty() || flag) {
-                if (itemstack.isEmpty()) {
-                    itemstack = new ItemStack(Items.ARROW);
-                }
-
+            if (flag) {
                 float f = getArrowVelocity(i);
-                if (!((double) f < 0.1D)) {
-                    boolean flag1 = playerentity.abilities.isCreativeMode || (itemstack.getItem() instanceof ArrowItem && ((ArrowItem) itemstack.getItem()).isInfinite(itemstack, stack, playerentity));
+                if (f >= 0.1D) {
                     if (!world.isRemote) {
-                        ArrowItem arrowitem = (ArrowItem) (itemstack.getItem() instanceof ArrowItem ? itemstack.getItem() : Items.ARROW);
-                        AbstractArrowEntity abstractarrowentity = arrowitem.createArrow(world, itemstack, playerentity);
-                        abstractarrowentity = customArrow(abstractarrowentity);
-                        abstractarrowentity.setProperties(playerentity, playerentity.rotationPitch, playerentity.rotationYaw, 0.0F, f * 3.0F, 1.0F);
-                        if (f == 1.0F) {
-                            abstractarrowentity.setIsCritical(true);
-                        }
+                        EntityArcherArrow arrow = new EntityArcherArrow(player.world, player);
+                        arrow.setProperties(player, player.rotationPitch, player.rotationYaw, 0.0F, f * 3.0F, 1.0F);
+                        if (f == 1.0F)
+                            arrow.setIsCritical(true);
 
                         int j = EnchantmentHelper.getEnchantmentLevel(Enchantments.POWER, stack);
-                        if (j > 0) {
-                            abstractarrowentity.setDamage(abstractarrowentity.getDamage() + (double) j * 0.5D + 0.5D);
-                        }
-
+                        if (j > 0)
+                            arrow.setDamage(arrow.getDamage() + j * 0.5D + 0.5D);
                         int k = EnchantmentHelper.getEnchantmentLevel(Enchantments.PUNCH, stack);
-                        if (k > 0) {
-                            abstractarrowentity.setKnockbackStrength(k);
-                        }
+                        if (k > 0)
+                            arrow.setKnockbackStrength(k);
+                        if (EnchantmentHelper.getEnchantmentLevel(Enchantments.FLAME, stack) > 0)
+                            arrow.setFire(100);
 
-                        if (EnchantmentHelper.getEnchantmentLevel(Enchantments.FLAME, stack) > 0) {
-                            abstractarrowentity.setFire(100);
-                        }
-
-                        stack.damageItem(1, playerentity, (p_220009_1_) -> {
-                            p_220009_1_.sendBreakAnimation(playerentity.getActiveHand());
-                        });
-                        if (flag1 || playerentity.abilities.isCreativeMode && (itemstack.getItem() == Items.SPECTRAL_ARROW || itemstack.getItem() == Items.TIPPED_ARROW)) {
-                            abstractarrowentity.pickupStatus = AbstractArrowEntity.PickupStatus.CREATIVE_ONLY;
-                        }
-
-                        world.addEntity(abstractarrowentity);
+                        stack.damageItem(1, player, (p) -> p.sendBreakAnimation(player.getActiveHand()));
+                        world.addEntity(arrow);
                     }
 
-                    world.playSound((PlayerEntity) null, playerentity.getX(), playerentity.getY(), playerentity.getZ(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.PLAYERS, 1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
-                    if (!flag1 && !playerentity.abilities.isCreativeMode) {
-                        itemstack.shrink(1);
-                        if (itemstack.isEmpty()) {
-                            playerentity.inventory.deleteStack(itemstack);
-                        }
-                    }
+                    world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.PLAYERS, 1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
 
-                    playerentity.addStat(Stats.ITEM_USED.get(this));
+                    player.addStat(Stats.ITEM_USED.get(this));
                 }
             }
         }

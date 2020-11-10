@@ -19,10 +19,10 @@ public class ModelArthur extends ModelServant<EntityArthur> {
     }
 
     @Override
-    public void setAngles(EntityArthur arthur, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        this.setAnglesPre(arthur, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+    public void setAngles(EntityArthur servant, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.setAnglesPre(servant, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 
-        if (arthur.isStaying()) {
+        if (servant.isStaying()) {
             this.servantRightArmUp.rotateAngleX = ModelUtils.degToRad(-28.70F);
             this.servantLeftArmUp.rotateAngleX = ModelUtils.degToRad(-65.0F);
 
@@ -47,14 +47,9 @@ public class ModelArthur extends ModelServant<EntityArthur> {
             this.servantRightLegDown.rotateAngleX = ModelUtils.degToRad(14);
         } else {
             float partialTicks = Minecraft.getInstance().getRenderPartialTicks();
-            AnimatedAction anim = arthur.getAnimation();
-            if (anim != null) {
+            AnimatedAction anim = servant.getAnimation();
+            if (anim != null)
                 this.anim.doAnimation(anim.getID(), anim.getTick(), partialTicks);
-				/*if (anim.getID().equals("swing_1"))
-					this.swing_1.animate(anim.getTick(), partialTicks);
-				if (anim.getID().equals("excalibur"))
-					this.excalibur.animate(anim.getTick(), partialTicks);*/
-            }
         }
         this.syncOverlay();
     }
