@@ -32,6 +32,12 @@ public class PlayerCap implements IPlayer {
         if (player instanceof ServerPlayerEntity)
             ;//PacketHandler.sendTo(new MessageMana(this), (ServerPlayerEntity) player);
     }
+    @Override
+    public void addMana(PlayerEntity player, int amount) {
+        this.currentMana = Math.min(this.currentMana+amount, 100);
+        if (player instanceof ServerPlayerEntity)
+            ;//PacketHandler.sendTo(new MessageMana(this), (ServerPlayerEntity) player);
+    }
 
     @Override
     public int getMana() {

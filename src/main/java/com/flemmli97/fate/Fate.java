@@ -3,6 +3,7 @@ package com.flemmli97.fate;
 import com.flemmli97.fate.client.ClientRegister;
 import com.flemmli97.fate.common.config.Config;
 import com.flemmli97.fate.common.config.ConfigSpecs;
+import com.flemmli97.fate.common.registry.ModBlocks;
 import com.flemmli97.fate.common.registry.ModEntities;
 import com.flemmli97.fate.common.registry.ModItems;
 import com.flemmli97.fate.common.utils.CachedWeaponList;
@@ -37,6 +38,8 @@ public class Fate {
         if (!file.exists())
             file.mkdir();
         ModEntities.ENTITIES.register(modBus);
+        ModBlocks.BLOCKS.register(modBus);
+        ModBlocks.TILES.register(modBus);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigSpecs.commonSpec, "fate/common.toml");
     }
 

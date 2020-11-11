@@ -9,6 +9,7 @@ import com.flemmli97.fate.common.entity.EntityCaladBolg;
 import com.flemmli97.fate.common.entity.EntityEnumaElish;
 import com.flemmli97.fate.common.entity.EntityExcalibur;
 import com.flemmli97.fate.common.entity.EntityGaeBolg;
+import com.flemmli97.fate.common.entity.EntityGem;
 import com.flemmli97.fate.common.entity.EntityLesserMonster;
 import com.flemmli97.fate.common.entity.servant.EntityArthur;
 import com.flemmli97.fate.common.entity.servant.EntityCuchulainn;
@@ -61,6 +62,7 @@ public class ModEntities {
     public static final RegistryObject<EntityType<EntityBabylonWeapon>> babylon = reg(EntityType.Builder.<EntityBabylonWeapon>create(EntityBabylonWeapon::new, EntityClassification.MISC).size(0.25F, 0.25F), LibEntities.babylon);
     public static final RegistryObject<EntityType<EntityEnumaElish>> ea = reg(EntityType.Builder.<EntityEnumaElish>create(EntityEnumaElish::new, EntityClassification.MISC).size(0.25F, 0.25F), LibEntities.ea);
     public static final RegistryObject<EntityType<EntityLesserMonster>> lesserMonster = reg(EntityType.Builder.<EntityLesserMonster>create(EntityLesserMonster::new, EntityClassification.MONSTER).maxTrackingRange(8), LibEntities.monster_small);
+    public static final RegistryObject<EntityType<EntityGem>> gem = reg(EntityType.Builder.<EntityGem>create(EntityGem::new, EntityClassification.MISC).size(0.25F, 0.25F), LibEntities.entity_gem);
 
     private static <V extends EntityServant> RegistryObject<EntityType<V>> regServant(EnumServantType type, EntityType.Builder<V> entity, ResourceLocation name, ServantProperties defaultVals) {
         servants.put(name, type);

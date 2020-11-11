@@ -12,6 +12,8 @@ public interface IPlayer {
 
     void setMana(PlayerEntity player, int f);
 
+    void addMana(PlayerEntity player, int amount);
+
     boolean useMana(PlayerEntity player, int amount);
 
     //Servant

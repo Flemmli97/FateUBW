@@ -6,6 +6,7 @@ import com.flemmli97.fate.client.render.RenderCaladbolg;
 import com.flemmli97.fate.client.render.RenderEA;
 import com.flemmli97.fate.client.render.RenderExcalibur;
 import com.flemmli97.fate.client.render.RenderGaeBolg;
+import com.flemmli97.fate.client.render.RenderGem;
 import com.flemmli97.fate.client.render.RenderStarfish;
 import com.flemmli97.fate.client.render.servant.RenderArthur;
 import com.flemmli97.fate.client.render.servant.RenderCuchulainn;
@@ -35,5 +36,6 @@ public class ClientRegister {
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.babylon.get(), RenderBabylon::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.ea.get(), RenderEA::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.lesserMonster.get(), RenderStarfish::new);
+        RenderingRegistry.registerEntityRenderingHandler(ModEntities.gem.get(), RenderGem::new);
     }
 }
