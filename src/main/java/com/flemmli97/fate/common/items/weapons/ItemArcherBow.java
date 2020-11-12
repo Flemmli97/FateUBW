@@ -8,11 +8,8 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.item.ArrowItem;
 import net.minecraft.item.BowItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.ActionResult;
@@ -24,6 +21,7 @@ import net.minecraft.world.World;
 public class ItemArcherBow extends BowItem {
 
     private final int arrowMana = 10, specialMana = 80;
+
     public ItemArcherBow(Properties props) {
         super(props);
     }
@@ -54,7 +52,7 @@ public class ItemArcherBow extends BowItem {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-        if (player.isCreative() || this.charged(player.getHeldItem(hand)) || player.getCapability(PlayerCapProvider.PlayerCap).map(cap -> cap.getMana()>=this.arrowMana).orElse(false)) {
+        if (player.isCreative() || this.charged(player.getHeldItem(hand)) || player.getCapability(PlayerCapProvider.PlayerCap).map(cap -> cap.getMana() >= this.arrowMana).orElse(false)) {
             player.setActiveHand(hand);
             return ActionResult.consume(player.getHeldItem(hand));
         } else {

@@ -4,6 +4,7 @@ import com.flemmli97.fate.common.config.Config;
 import com.flemmli97.fate.common.entity.EntityLesserMonster;
 import com.flemmli97.fate.common.entity.servant.ai.GilledAttackGoal;
 import com.flemmli97.fate.common.registry.ModItems;
+import com.flemmli97.fate.common.utils.EnumServantUpdate;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -50,13 +51,12 @@ public class EntityGilles extends EntityServant {
     }
 
     @Override
-    public void updateAI(int behaviour) {
+    public void updateAI(EnumServantUpdate behaviour) {
         super.updateAI(behaviour);
-        if (this.commandBehaviour == 3) {
-            this.goalSelector.addGoal(1, this.attackAI);
-        } else if (this.commandBehaviour == 4) {
+        if (this.commandBehaviour == EnumServantUpdate.STAY)
             this.goalSelector.removeGoal(this.attackAI);
-        }
+        else
+            this.goalSelector.addGoal(1, this.attackAI);
     }
 
     @Override

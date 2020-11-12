@@ -18,11 +18,12 @@ import com.flemmli97.fate.client.render.servant.RenderGilles;
 import com.flemmli97.fate.client.render.servant.RenderLancelot;
 import com.flemmli97.fate.common.registry.ModBlocks;
 import com.flemmli97.fate.common.registry.ModEntities;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 
-public class ClientRegister {
+public class ClientHandler {
 
     public static void registerRenderer() {
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.arthur.get(), RenderArthur::new);
@@ -43,5 +44,9 @@ public class ClientRegister {
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.gem.get(), RenderGem::new);
 
         ClientRegistry.bindTileEntityRenderer(ModBlocks.tileAltar.get(), RenderAltar::new);
+    }
+
+    public static PlayerEntity clientPlayer() {
+        return Minecraft.getInstance().player;
     }
 }

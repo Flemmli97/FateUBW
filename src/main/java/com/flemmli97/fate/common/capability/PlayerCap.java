@@ -1,12 +1,16 @@
 package com.flemmli97.fate.common.capability;
 
 import com.flemmli97.fate.common.entity.servant.EntityServant;
+import com.flemmli97.fate.network.PacketHandler;
+import com.flemmli97.fate.network.S2CCommandSeals;
+import com.flemmli97.fate.network.S2CMana;
+import com.flemmli97.fate.network.S2CServantSync;
 import com.flemmli97.tenshilib.common.entity.EntityUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -30,13 +34,14 @@ public class PlayerCap implements IPlayer {
     public void setMana(PlayerEntity player, int mana) {
         this.currentMana = mana;
         if (player instanceof ServerPlayerEntity)
-            ;//PacketHandler.sendTo(new MessageMana(this), (ServerPlayerEntity) player);
+            PacketHandler.sendToClient(new S2CMana(this), (ServerPlayerEntity) player);
     }
+
     @Override
     public void addMana(PlayerEntity player, int amount) {
-        this.currentMana = Math.min(this.currentMana+amount, 100);
+        this.currentMana = Math.min(this.currentMana + amount, 100);
         if (player instanceof ServerPlayerEntity)
-            ;//PacketHandler.sendTo(new MessageMana(this), (ServerPlayerEntity) player);
+            PacketHandler.sendToClient(new S2CMana(this), (ServerPlayerEntity) player);
     }
 
     @Override
@@ -50,7 +55,7 @@ public class PlayerCap implements IPlayer {
         if (flag)
             this.currentMana -= amount;
         if (player instanceof ServerPlayerEntity)
-            ;//PacketHandler.sendTo(new MessageMana(this), (ServerPlayerEntity) player);
+            PacketHandler.sendToClient(new S2CMana(this), (ServerPlayerEntity) player);
         return flag;
     }
 
@@ -69,7 +74,7 @@ public class PlayerCap implements IPlayer {
         else
             this.servantUUID = null;
         if (player instanceof ServerPlayerEntity)
-            ;//PacketHandler.sendTo(new MessageServantSync(servant), (ServerPlayerEntity) player);
+            PacketHandler.sendToClient(new S2CServantSync(servant), (ServerPlayerEntity) player);
     }
 
     @Override
@@ -77,7 +82,7 @@ public class PlayerCap implements IPlayer {
         if (this.servant != null) {
             return this.servant.getName();
         }
-        return new StringTextComponent("No servant");
+        return new TranslationTextComponent("fate.servant.none");
     }
 
     @Override
@@ -120,7 +125,7 @@ public class PlayerCap implements IPlayer {
         if (flag)
             this.commandSeals--;
         if (player instanceof ServerPlayerEntity)
-            ;//PacketHandler.sendTo(new MessageCommandSeals(this), (ServerPlayerEntity) player);
+            PacketHandler.sendToClient(new S2CCommandSeals(this), (ServerPlayerEntity) player);
         return flag;
     }
 
@@ -128,7 +133,7 @@ public class PlayerCap implements IPlayer {
     public void setCommandSeals(PlayerEntity player, int amount) {
         this.commandSeals = Math.min(amount, 3);
         if (player instanceof ServerPlayerEntity)
-            ;//PacketHandler.sendTo(new MessageCommandSeals(this), (ServerPlayerEntity) player);
+            PacketHandler.sendToClient(new S2CCommandSeals(this), (ServerPlayerEntity) player);
     }
 
     @Override

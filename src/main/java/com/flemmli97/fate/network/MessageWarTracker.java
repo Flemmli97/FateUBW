@@ -1,59 +1,57 @@
-/*package com.flemmli97.fate.network;
+package com.flemmli97.fate.network;
 
-import com.flemmli97.fatemod.Fate;
-import com.flemmli97.fatemod.common.handler.GrailWarHandler;
-import com.flemmli97.fatemod.common.handler.TruceMapHandler;
 
-import io.netty.buffer.ByteBuf;
-import net.minecraft.nbt.NBTTagCompound;
+import com.flemmli97.fate.client.ClientHandler;
+import com.flemmli97.fate.common.grail.GrailWarHandler;
+import com.flemmli97.fate.common.grail.TruceHandler;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class MessageWarTracker  implements IMessage{
+import java.util.function.Supplier;
 
-	public NBTTagCompound grailWarTracker = new NBTTagCompound();
-	public NBTTagCompound truceMap = new NBTTagCompound();
+public class MessageWarTracker {
 
-	public MessageWarTracker(){}
-	
-	public MessageWarTracker(World world)
-	{
-		GrailWarHandler.get(world).writeToNBT(this.grailWarTracker);
-		TruceMapHandler.get(world).writeToNBT(this.truceMap);
-	}
-	
-	@Override
-	public void fromBytes(ByteBuf buf) {
-		NBTTagCompound compound = ByteBufUtils.readTag(buf);
-		this.grailWarTracker=compound.getCompoundTag("GrailWarTracker");
-		this.truceMap=compound.getCompoundTag("TruceMap");
-	}
+    private final CompoundNBT grailWarTracker;
+    private final CompoundNBT truceMap;
 
-	@Override
-	public void toBytes(ByteBuf buf) {
-		NBTTagCompound compound = new NBTTagCompound();
-		compound.setTag("GrailWarTracker", this.grailWarTracker);
-		compound.setTag("TruceMap", this.truceMap);
-		ByteBufUtils.writeTag(buf, compound);
-	}
-	
-	public static class Handler implements IMessageHandler<MessageWarTracker, IMessage> {
-
-        @Override
-        public IMessage onMessage(MessageWarTracker msg, MessageContext ctx) {
-        	World world = Fate.proxy.getPlayerEntity(ctx).world;
-
-			GrailWarHandler tracker = GrailWarHandler.get(world);
-				tracker.reset(world);
-				tracker.readFromNBT(msg.grailWarTracker);
-			TruceMapHandler truce = TruceMapHandler.get(world);
-				truce.reset();
-				truce.readFromNBT(msg.truceMap);
-			Fate.proxy.updateGuiTruce();
-            return null;
-        }
+    private MessageWarTracker(CompoundNBT war, CompoundNBT truce) {
+        this.grailWarTracker = war;
+        this.truceMap = truce;
     }
-}*/
+
+    public MessageWarTracker(World world) {
+        this.grailWarTracker = GrailWarHandler.get(world).write(new CompoundNBT());
+        this.truceMap = TruceHandler.get(world).write(new CompoundNBT());
+    }
+
+    public static MessageWarTracker read(PacketBuffer buf) {
+        return new MessageWarTracker(buf.readCompoundTag(), buf.readCompoundTag());
+    }
+
+    public static void write(MessageWarTracker pkt, PacketBuffer buf) {
+        buf.writeCompoundTag(pkt.grailWarTracker);
+        buf.writeCompoundTag(pkt.truceMap);
+    }
+
+    public static void handle(MessageWarTracker pkt, Supplier<NetworkEvent.Context> ctx) {
+        ctx.get().enqueueWork(() -> {
+            PlayerEntity player = DistExecutor.safeCallWhenOn(Dist.CLIENT, () -> ClientHandler::clientPlayer);
+            if (player == null)
+                return;
+            World world = player.world;
+            GrailWarHandler tracker = GrailWarHandler.get(world);
+            tracker.reset(world);
+            tracker.read(pkt.grailWarTracker);
+            TruceHandler truce = TruceHandler.get(world);
+            truce.reset();
+            truce.read(pkt.truceMap);
+            //Fate.proxy.updateGuiTruce();
+        });
+        ctx.get().setPacketHandled(true);
+    }
+}

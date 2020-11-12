@@ -68,6 +68,6 @@ public class TruceHandler extends WorldSavedData {
 
     @Override
     public CompoundNBT write(CompoundNBT p_189551_1_) {
-        return null;
+        return p_189551_1_;
     }
 }

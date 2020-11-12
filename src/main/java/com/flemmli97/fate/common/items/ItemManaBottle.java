@@ -1,12 +1,10 @@
 package com.flemmli97.fate.common.items;
 
-import com.flemmli97.fate.common.capability.IPlayer;
 import com.flemmli97.fate.common.capability.PlayerCapProvider;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.PotionItem;
 import net.minecraft.item.UseAction;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -23,7 +21,7 @@ public class ItemManaBottle extends Item {
         PlayerEntity player = entity instanceof PlayerEntity ? (PlayerEntity) entity : null;
         if (!world.isRemote && player != null)
             player.getCapability(PlayerCapProvider.PlayerCap).ifPresent(cap -> cap.addMana(player, 50));
-        if(player == null || !player.isCreative())
+        if (player == null || !player.isCreative())
             stack.shrink(1);
         return stack;
     }

@@ -1,13 +1,12 @@
 package com.flemmli97.fate.common.blocks.tile;
 
-import com.flemmli97.fate.common.capability.PlayerCapProvider;
 import com.flemmli97.fate.common.items.ItemServantCharm;
 import com.flemmli97.fate.common.registry.ModBlocks;
 import com.flemmli97.fate.common.registry.ModItems;
 import com.flemmli97.fate.common.utils.EnumServantType;
 import com.flemmli97.fate.common.utils.SummonUtils;
-import com.flemmli97.fate.network.MessageAltarUpdate;
 import com.flemmli97.fate.network.PacketHandler;
+import com.flemmli97.fate.network.S2CAltarUpdate;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -33,7 +32,6 @@ public class TileAltar extends TileEntity implements ITickableTileEntity {
     public TileAltar() {
         super(ModBlocks.tileAltar.get());
     }
-
 
     public ItemStack getCharm() {
         return this.inventoryCharm;
@@ -141,14 +139,7 @@ public class TileAltar extends TileEntity implements ITickableTileEntity {
     public void setSummoning(PlayerEntity player) {
         this.isSummoning = true;
         this.player = player;
-        PacketHandler.sendToAll(new MessageAltarUpdate(this.getPos(), true));
-    }
-
-    /**
-     * client side only for packet
-     */
-    public void updateSummoning(boolean flag) {
-        this.isSummoning = flag;
+        PacketHandler.sendToAll(new S2CAltarUpdate(this.getPos(), true));
     }
 
     @Override
@@ -169,19 +160,26 @@ public class TileAltar extends TileEntity implements ITickableTileEntity {
         return this.isSummoning;
     }
 
-    public int getSummoningTick(){
+    public int getSummoningTick() {
         return this.summoningTick;
     }
 
-    public int ticker(){
+    public int ticker() {
         return this.tick;
     }
 
-    public void clientTick(){
+    /**
+     * client side only for packet
+     */
+    public void updateSummoning(boolean flag) {
+        this.isSummoning = flag;
+    }
+
+    public void clientTick() {
         this.tick++;
-        if(this.tick > 360)
+        if (this.tick > 360)
             this.tick = 0;
-        if(this.isSummoning)
+        if (this.isSummoning)
             this.summoningTick++;
     }
 }

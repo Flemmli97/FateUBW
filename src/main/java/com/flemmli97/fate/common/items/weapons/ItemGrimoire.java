@@ -1,14 +1,11 @@
 package com.flemmli97.fate.common.items.weapons;
 
 import com.flemmli97.fate.common.capability.PlayerCapProvider;
-import com.flemmli97.fate.common.entity.EntityEnumaElish;
 import com.flemmli97.fate.common.entity.EntityLesserMonster;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.TextFormatting;
@@ -43,9 +40,9 @@ public class ItemGrimoire extends Item {
         return ActionResult.pass(player.getHeldItem(hand));
     }
 
-    private void spawn(PlayerEntity player, EntityLesserMonster monster, ItemStack stack){
+    private void spawn(PlayerEntity player, EntityLesserMonster monster, ItemStack stack) {
         player.world.addEntity(monster);
-        if(player.getLastAttackedEntity() != null)
+        if (player.getLastAttackedEntity() != null)
             monster.setAttackTarget(player.getLastAttackedEntity());
         player.getCooldownTracker().setCooldown(stack.getItem(), 50);
     }

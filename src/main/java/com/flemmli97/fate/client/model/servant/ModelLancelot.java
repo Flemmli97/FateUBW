@@ -2,7 +2,6 @@ package com.flemmli97.fate.client.model.servant;
 
 import com.flemmli97.fate.Fate;
 import com.flemmli97.fate.client.model.ModelServant;
-import com.flemmli97.fate.common.entity.servant.EntityCuchulainn;
 import com.flemmli97.fate.common.entity.servant.EntityLancelot;
 import com.flemmli97.tenshilib.client.model.BlockBenchAnimations;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;

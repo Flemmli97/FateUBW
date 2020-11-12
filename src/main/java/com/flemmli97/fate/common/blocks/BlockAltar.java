@@ -179,11 +179,6 @@ public class BlockAltar extends ContainerBlock {
     public ActionResultType onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult res) {
         TileAltar altar = (TileAltar) world.getTileEntity(pos);
         ItemStack stack = player.getHeldItemMainhand();
-        Optional<IPlayer> opt = player.getCapability(PlayerCapProvider.PlayerCap).resolve();
-        if (!opt.isPresent())
-            return ActionResultType.PASS;
-        IPlayer cap = opt.get();
-        GrailWarHandler tracker = GrailWarHandler.get(world);
         if (!SummonUtils.checkStructure(world, pos, player.getHorizontalFacing())) {
             altar.setComplete(false);
         }
@@ -195,6 +190,11 @@ public class BlockAltar extends ContainerBlock {
             else if (!altar.addItem(player, stack)) {
                 if (stack.getItem() == ModItems.crystalCluster) {
                     if (!world.isRemote) {
+                        Optional<IPlayer> opt = player.getCapability(PlayerCapProvider.PlayerCap).resolve();
+                        GrailWarHandler tracker = GrailWarHandler.get(world);
+                        if (!opt.isPresent())
+                            return ActionResultType.PASS;
+                        IPlayer cap = opt.get();
                         if (cap.getServant(player) == null) {
                             if (altar.isComplete()) {
                                 if (!altar.isSummoning())

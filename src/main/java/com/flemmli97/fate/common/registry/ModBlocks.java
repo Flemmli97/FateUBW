@@ -6,10 +6,7 @@ import com.flemmli97.fate.common.blocks.tile.TileAltar;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.EntityType;
-import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -21,6 +18,6 @@ public class ModBlocks {
 
     public static final RegistryObject<BlockAltar> altar = BLOCKS.register("altar", () -> new BlockAltar(AbstractBlock.Properties.create(Material.ROCK).hardnessAndResistance(5, 30)));
 
-    public static RegistryObject<TileEntityType<TileAltar>> tileAltar = TILES.register("altar_tile", ()->TileEntityType.Builder.create(TileAltar::new, altar.get()).build(null));
+    public static RegistryObject<TileEntityType<TileAltar>> tileAltar = TILES.register("altar_tile", () -> TileEntityType.Builder.create(TileAltar::new, altar.get()).build(null));
 
 }

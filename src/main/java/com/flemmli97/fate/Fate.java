@@ -1,6 +1,6 @@
 package com.flemmli97.fate;
 
-import com.flemmli97.fate.client.ClientRegister;
+import com.flemmli97.fate.client.ClientHandler;
 import com.flemmli97.fate.common.config.Config;
 import com.flemmli97.fate.common.config.ConfigSpecs;
 import com.flemmli97.fate.common.registry.ModBlocks;
@@ -51,7 +51,7 @@ public class Fate {
 
     @SubscribeEvent
     public static void client(FMLClientSetupEvent event) {
-        ClientRegister.registerRenderer();
+        ClientHandler.registerRenderer();
     }
 
     @SubscribeEvent

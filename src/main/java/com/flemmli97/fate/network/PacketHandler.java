@@ -18,8 +18,13 @@ public class PacketHandler {
 
     public static void register() {
         int id = 0;
-        dispatcher.registerMessage(id++, MessageAltarUpdate.class, MessageAltarUpdate::write, MessageAltarUpdate::read, MessageAltarUpdate::handle);
-        dispatcher.registerMessage(id++, MessageCommandSeals.class, MessageCommandSeals::write, MessageCommandSeals::read, MessageCommandSeals::handle);
+        dispatcher.registerMessage(id++, S2CAltarUpdate.class, S2CAltarUpdate::write, S2CAltarUpdate::read, S2CAltarUpdate::handle);
+        dispatcher.registerMessage(id++, S2CCommandSeals.class, S2CCommandSeals::write, S2CCommandSeals::read, S2CCommandSeals::handle);
+        dispatcher.registerMessage(id++, C2SMessageGui.class, C2SMessageGui::write, C2SMessageGui::read, C2SMessageGui::handle);
+        dispatcher.registerMessage(id++, S2CMana.class, S2CMana::write, S2CMana::read, S2CMana::handle);
+        dispatcher.registerMessage(id++, C2SServantCommand.class, C2SServantCommand::write, C2SServantCommand::read, C2SServantCommand::handle);
+        dispatcher.registerMessage(id++, C2SServantSpecial.class, C2SServantSpecial::write, C2SServantSpecial::read, C2SServantSpecial::handle);
+        dispatcher.registerMessage(id++, S2CServantSync.class, S2CServantSync::write, S2CServantSync::read, S2CServantSync::handle);
 
     }
 

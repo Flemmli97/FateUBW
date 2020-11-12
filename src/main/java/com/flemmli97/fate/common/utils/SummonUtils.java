@@ -1,11 +1,9 @@
 package com.flemmli97.fate.common.utils;
 
 import com.flemmli97.fate.common.blocks.tile.TileAltar;
-import com.flemmli97.fate.common.capability.IPlayer;
 import com.flemmli97.fate.common.entity.servant.EntityServant;
 import com.flemmli97.fate.common.grail.GrailWarHandler;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;

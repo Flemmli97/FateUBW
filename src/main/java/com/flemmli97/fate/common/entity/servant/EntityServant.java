@@ -10,9 +10,11 @@ import com.flemmli97.fate.common.grail.GrailWarHandler;
 import com.flemmli97.fate.common.registry.FateAttributes;
 import com.flemmli97.fate.common.registry.ModEntities;
 import com.flemmli97.fate.common.utils.EnumServantType;
+import com.flemmli97.fate.common.utils.EnumServantUpdate;
 import com.flemmli97.fate.common.utils.Utils;
 import com.flemmli97.tenshilib.api.entity.IAnimated;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
+import com.flemmli97.tenshilib.common.utils.NBTUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.CreatureEntity;
@@ -81,7 +83,7 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated 
     /**
      * 0 = normal, 1 = aggressive, 2 = defensive, 3 = follow, 4 = stay, 5 = guard an area
      */
-    protected int commandBehaviour;
+    protected EnumServantUpdate commandBehaviour;
 
     private AnimatedAction currentAnim;
 
@@ -308,7 +310,7 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated 
         tag.putBoolean("CanUseNP", this.canUseNP);
         tag.putInt("Death", this.deathTime);
         tag.putBoolean("IsDead", this.died);
-        tag.putInt("Command", this.commandBehaviour);
+        tag.putString("Command", this.commandBehaviour.toString());
         tag.putInt("Mana", this.servantMana);
         tag.putBoolean("HealthMessage", this.critHealth);
         tag.putBoolean("Revealed", this.showServant());
@@ -322,7 +324,7 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated 
         this.canUseNP = tag.getBoolean("CanUseNP");
         this.deathTime = tag.getInt("Death");
         this.died = tag.getBoolean("IsDead");
-        this.updateAI(tag.getInt("Command"));
+        this.updateAI(NBTUtils.get(EnumServantUpdate.class, tag, "Command", EnumServantUpdate.NORMAL));
         this.servantMana = tag.getInt("Mana");
         this.critHealth = tag.getBoolean("HealthMessage");
         this.dataManager.set(showServant, tag.getBoolean("Revealed"));
@@ -334,42 +336,49 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated 
     /**
      * @param behaviour 0 = normal, 1 = aggressive, 2 = defensive, 3 = follow, 4 = stay, 5 = guard an area
      */
-    public void updateAI(int behaviour) {
+    public void updateAI(EnumServantUpdate behaviour) {
         this.commandBehaviour = behaviour;
-        if (this.commandBehaviour == 0) {
-            this.targetSelector.removeGoal(this.targetMob);
-            this.targetSelector.addGoal(0, this.targetHurt);
-            this.targetSelector.addGoal(1, this.targetServant);
-        } else if (this.commandBehaviour == 1) {
-            this.targetSelector.addGoal(0, this.targetHurt);
-            this.targetSelector.addGoal(1, this.targetServant);
-            this.targetSelector.addGoal(3, this.targetMob);
-        } else if (this.commandBehaviour == 2) {
-            this.targetSelector.addGoal(0, this.targetHurt);
-            this.targetSelector.removeGoal(this.targetServant);
-            this.targetSelector.removeGoal(this.targetMob);
-        } else if (this.commandBehaviour == 3) {
-            this.targetSelector.addGoal(0, this.targetHurt);
-            this.targetSelector.addGoal(1, this.targetServant);
-            this.goalSelector.addGoal(0, this.follow);
-            this.goalSelector.addGoal(2, this.wander);
-            this.setStaying(false);
-            this.detachHome();
-        } else if (this.commandBehaviour == 4) {
-            this.targetSelector.removeGoal(this.targetHurt);
-            this.targetSelector.removeGoal(this.targetServant);
-            this.targetSelector.removeGoal(this.targetMob);
-            this.goalSelector.removeGoal(this.follow);
-            this.goalSelector.removeGoal(this.wander);
-            this.setStaying(true);
-            this.getNavigator().clearPath();
-            this.setAttackTarget(null);
-            this.detachHome();
-        } else if (this.commandBehaviour == 5) {
-            this.setStaying(false);
-            this.goalSelector.removeGoal(this.follow);
-            this.goalSelector.addGoal(2, this.wander);
-            this.setHomePosAndDistance(this.getOwner().getBlockPos(), 8);
+        switch (behaviour) {
+            case NORMAL:
+                this.targetSelector.removeGoal(this.targetMob);
+                this.targetSelector.addGoal(0, this.targetHurt);
+                this.targetSelector.addGoal(1, this.targetServant);
+                break;
+            case AGGRESSIVE:
+                this.targetSelector.addGoal(0, this.targetHurt);
+                this.targetSelector.addGoal(1, this.targetServant);
+                this.targetSelector.addGoal(3, this.targetMob);
+                break;
+            case DEFENSIVE:
+                this.targetSelector.addGoal(0, this.targetHurt);
+                this.targetSelector.removeGoal(this.targetServant);
+                this.targetSelector.removeGoal(this.targetMob);
+                break;
+            case FOLLOW:
+                this.targetSelector.addGoal(0, this.targetHurt);
+                this.targetSelector.addGoal(1, this.targetServant);
+                this.goalSelector.addGoal(0, this.follow);
+                this.goalSelector.addGoal(2, this.wander);
+                this.setStaying(false);
+                this.detachHome();
+                break;
+            case STAY:
+                this.targetSelector.removeGoal(this.targetHurt);
+                this.targetSelector.removeGoal(this.targetServant);
+                this.targetSelector.removeGoal(this.targetMob);
+                this.goalSelector.removeGoal(this.follow);
+                this.goalSelector.removeGoal(this.wander);
+                this.setStaying(true);
+                this.getNavigator().clearPath();
+                this.setAttackTarget(null);
+                this.detachHome();
+                break;
+            case GUARD:
+                this.setStaying(false);
+                this.goalSelector.removeGoal(this.follow);
+                this.goalSelector.addGoal(2, this.wander);
+                this.setHomePosAndDistance(this.getOwner().getBlockPos(), 8);
+                break;
         }
     }
 

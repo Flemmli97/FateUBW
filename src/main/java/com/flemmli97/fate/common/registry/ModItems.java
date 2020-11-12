@@ -23,7 +23,6 @@ import net.minecraftforge.fml.common.Mod;
 
 import java.util.List;
 import java.util.Random;
-import java.util.ServiceConfigurationError;
 import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(modid = Fate.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -126,8 +125,8 @@ public class ModItems {
         );
     }
 
-    private static Item registercharm(ItemServantCharm item){
-        item.setRegistryName(Fate.MODID, "servant_medallion_"+item.type.getLowercase());
+    private static Item registercharm(ItemServantCharm item) {
+        item.setRegistryName(Fate.MODID, "servant_medallion_" + item.type.getLowercase());
         charms.add(item);
         return item;
     }
