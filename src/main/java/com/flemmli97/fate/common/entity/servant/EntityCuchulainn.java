@@ -37,7 +37,7 @@ public class EntityCuchulainn extends EntityServant {
 
     @Override
     protected void setEquipmentBasedOnDifficulty(DifficultyInstance difficulty) {
-        this.setItemStackToSlot(EquipmentSlotType.MAINHAND, new ItemStack(ModItems.invisexcalibur));
+        this.setItemStackToSlot(EquipmentSlotType.MAINHAND, new ItemStack(ModItems.gaebolg.get()));
     }
 
     @Override
@@ -83,8 +83,8 @@ public class EntityCuchulainn extends EntityServant {
     public void livingTick() {
         if (!this.world.isRemote) {
             this.gaeBolgThrowTick = Math.max(0, --this.gaeBolgThrowTick);
-            if (this.gaeBolgThrowTick == 1 && this.getHeldItemMainhand().getItem() != ModItems.gaebolg)
-                this.setHeldItem(Hand.MAIN_HAND, new ItemStack(ModItems.gaebolg));
+            if (this.gaeBolgThrowTick == 1 && this.getHeldItemMainhand().getItem() != ModItems.gaebolg.get())
+                this.setHeldItem(Hand.MAIN_HAND, new ItemStack(ModItems.gaebolg.get()));
             if (this.getHealth() < 0.25 * this.getMaxHealth() && this.getHealth() > 0) {
                 if (this.critHealth == false) {
                     this.world.getServer().getPlayerList().broadcastChatMessage(new TranslationTextComponent("chat.servant.cuchulainn").formatted(TextFormatting.GOLD), ChatType.SYSTEM, Util.NIL_UUID);
@@ -108,7 +108,7 @@ public class EntityCuchulainn extends EntityServant {
     }
 
     public void retrieveGaeBolg() {
-        this.setHeldItem(Hand.MAIN_HAND, new ItemStack(ModItems.gaebolg));
+        this.setHeldItem(Hand.MAIN_HAND, new ItemStack(ModItems.gaebolg.get()));
         this.gaeBolgThrowTick = 0;
     }
 

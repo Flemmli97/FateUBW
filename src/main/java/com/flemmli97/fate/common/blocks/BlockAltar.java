@@ -4,13 +4,17 @@ import com.flemmli97.fate.common.blocks.tile.TileAltar;
 import com.flemmli97.fate.common.capability.IPlayer;
 import com.flemmli97.fate.common.capability.PlayerCapProvider;
 import com.flemmli97.fate.common.grail.GrailWarHandler;
+import com.flemmli97.fate.common.items.ItemServantCharm;
+import com.flemmli97.fate.common.registry.AdvancementRegister;
 import com.flemmli97.fate.common.registry.ModItems;
 import com.flemmli97.fate.common.utils.SummonUtils;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ContainerBlock;
 import net.minecraft.block.HorizontalBlock;
+import net.minecraft.command.impl.AdvancementCommand;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -21,6 +25,7 @@ import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.Util;
@@ -34,6 +39,8 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.feature.structure.FortressStructure;
+import net.minecraft.world.server.ServerWorld;
 
 import java.util.Optional;
 import java.util.Random;
@@ -90,6 +97,7 @@ public class BlockAltar extends ContainerBlock {
 
     public BlockAltar(Properties props) {
         super(props);
+        this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.NORTH));
     }
 
     @Override
@@ -178,46 +186,45 @@ public class BlockAltar extends ContainerBlock {
     @Override
     public ActionResultType onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult res) {
         TileAltar altar = (TileAltar) world.getTileEntity(pos);
-        ItemStack stack = player.getHeldItemMainhand();
+        ItemStack stack = player.getHeldItem(hand);
+        if (world.isRemote) {
+            if (player.isSneaking() || stack.getItem() == ModItems.chalk.get() || stack.getItem() == ModItems.crystalCluster.get() || stack.getItem() instanceof ItemServantCharm)
+                return ActionResultType.SUCCESS;
+            return ActionResultType.PASS;
+        }
         if (!SummonUtils.checkStructure(world, pos, player.getHorizontalFacing())) {
             altar.setComplete(false);
         }
         if (player.isSneaking()) {
-            altar.removeItem(player);
-        } else {
-            if (stack.getItem() == ModItems.chalk && !altar.isComplete())
-                SummonUtils.placeSummoningStructure(world, pos, altar, state.get(FACING).getOpposite());
-            else if (!altar.addItem(player, stack)) {
-                if (stack.getItem() == ModItems.crystalCluster) {
-                    if (!world.isRemote) {
-                        Optional<IPlayer> opt = player.getCapability(PlayerCapProvider.PlayerCap).resolve();
-                        GrailWarHandler tracker = GrailWarHandler.get(world);
-                        if (!opt.isPresent())
-                            return ActionResultType.PASS;
-                        IPlayer cap = opt.get();
-                        if (cap.getServant(player) == null) {
-                            if (altar.isComplete()) {
-                                if (!altar.isSummoning())
-                                    if (tracker.canJoin((ServerPlayerEntity) player) && tracker.canSpawnMoreServants()) {
-                                        if (!player.isCreative()) {
-                                            stack.shrink(1);
-                                        }
-                                        altar.setSummoning(player);
-                                        cap.setCommandSeals(player, 3);
-                                        //AdvancementRegister.grailWarTrigger.trigger((EntityPlayerMP) player, true);
-                                    } else {
-                                        player.sendMessage(new TranslationTextComponent("chat.altar.fail").formatted(TextFormatting.DARK_RED), Util.NIL_UUID);
-                                    }
-                            } else {
-                                altar.setComplete(false);
-                                player.sendMessage(new TranslationTextComponent("chat.altar.incomplete").formatted(TextFormatting.DARK_RED), Util.NIL_UUID);
-                            }
+            if (altar.removeItem(player))
+                return ActionResultType.SUCCESS;
+        } else if (stack.getItem() == ModItems.chalk.get() && !altar.isComplete()) {
+            SummonUtils.placeSummoningStructure((ServerWorld) world, pos, altar, state.get(FACING).getOpposite());
+            return ActionResultType.SUCCESS;
+        } else if (!altar.addItem(player, stack) && stack.getItem() == ModItems.crystalCluster.get()) {
+            Optional<IPlayer> opt = player.getCapability(PlayerCapProvider.PlayerCap).resolve();
+            if (!opt.isPresent())
+                return ActionResultType.PASS;
+            GrailWarHandler tracker = GrailWarHandler.get(world);
+            IPlayer cap = opt.get();
+            if (cap.getServant(player) == null) {
+                if (altar.isComplete()) {
+                    if (!altar.isSummoning()) {
+                        if (tracker.canJoin((ServerPlayerEntity) player) && tracker.canSpawnMoreServants()) {
+                            if (!player.isCreative())
+                                stack.shrink(1);
+                            altar.setSummoning(player);
+                            cap.setCommandSeals(player, 3);
+                            AdvancementRegister.grailWarTrigger.trigger((ServerPlayerEntity) player, true);
                         } else {
-                            player.sendMessage(new TranslationTextComponent("chat.altar.existing").formatted(TextFormatting.DARK_RED), Util.NIL_UUID);
-
+                            player.sendMessage(new TranslationTextComponent("chat.altar.fail").formatted(TextFormatting.DARK_RED), Util.NIL_UUID);
                         }
                     }
+                } else {
+                    player.sendMessage(new TranslationTextComponent("chat.altar.incomplete").formatted(TextFormatting.DARK_RED), Util.NIL_UUID);
                 }
+            } else {
+                player.sendMessage(new TranslationTextComponent("chat.altar.existing").formatted(TextFormatting.DARK_RED), Util.NIL_UUID);
             }
         }
         return ActionResultType.PASS;

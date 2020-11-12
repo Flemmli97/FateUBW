@@ -2,7 +2,11 @@ package com.flemmli97.fate.network;
 
 import com.flemmli97.fate.Fate;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.IPacket;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -25,11 +29,14 @@ public class PacketHandler {
         dispatcher.registerMessage(id++, C2SServantCommand.class, C2SServantCommand::write, C2SServantCommand::read, C2SServantCommand::handle);
         dispatcher.registerMessage(id++, C2SServantSpecial.class, C2SServantSpecial::write, C2SServantSpecial::read, C2SServantSpecial::handle);
         dispatcher.registerMessage(id++, S2CServantSync.class, S2CServantSync::write, S2CServantSync::read, S2CServantSync::handle);
-
     }
 
     public static <T> void sendToClient(T message, ServerPlayerEntity player) {
         dispatcher.sendTo(message, player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+    }
+
+    public static void vanillaChunkPkt(IPacket<?> pkt, ServerWorld world, BlockPos pos){
+        PacketDistributor.TRACKING_CHUNK.with(()->world.getChunkAt(pos)).send(pkt);
     }
 
     public static <T> void sendToServer(T message) {

@@ -41,7 +41,7 @@ public class Config {
         public static float caladBolgDmg;
         public static float magicBeam;
         public static float gaeBolgDmg;
-        public static PotionEffectsConfig gaeBolgEffect = new PotionEffectsConfig();
+        public static final PotionEffectsConfig gaeBolgEffect = new PotionEffectsConfig();
         public static double gordiusHealth;
         public static float gordiusDmg;
         public static double pegasusHealth;
@@ -68,7 +68,7 @@ public class Config {
 
             attributes.clear();
             for (Map.Entry<String, ServantConfSpec> e : ConfigSpecs.commonConf.attributes.entrySet())
-                attributes.put(e.getKey(), new ServantProperties(e.getValue()));
+                attributes.computeIfPresent(e.getKey(), (key, val) -> val.read(e.getValue()));
             lancelotReflectChance = ConfigSpecs.commonConf.lancelotReflectChance.get().floatValue();
             //Minions
             gillesMinionDuration = ConfigSpecs.commonConf.gillesMinionDuration.get();

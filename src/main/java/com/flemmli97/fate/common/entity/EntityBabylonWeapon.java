@@ -203,6 +203,5 @@ public class EntityBabylonWeapon extends EntityProjectile {
         } else {
             this.setProjectileAreaPosition(range);
         }
-
     }
 }

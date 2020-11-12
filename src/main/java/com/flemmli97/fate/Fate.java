@@ -1,16 +1,23 @@
 package com.flemmli97.fate;
 
 import com.flemmli97.fate.client.ClientHandler;
+import com.flemmli97.fate.common.capability.IPlayer;
+import com.flemmli97.fate.common.capability.PlayerCap;
+import com.flemmli97.fate.common.capability.PlayerCapNetwork;
 import com.flemmli97.fate.common.config.Config;
 import com.flemmli97.fate.common.config.ConfigSpecs;
+import com.flemmli97.fate.common.registry.AdvancementRegister;
 import com.flemmli97.fate.common.registry.ModBlocks;
 import com.flemmli97.fate.common.registry.ModEntities;
 import com.flemmli97.fate.common.registry.ModItems;
 import com.flemmli97.fate.common.utils.CachedWeaponList;
+import com.flemmli97.fate.network.PacketHandler;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -37,16 +44,22 @@ public class Fate {
         File file = FMLPaths.CONFIGDIR.get().resolve("fate").toFile();
         if (!file.exists())
             file.mkdir();
-        ModEntities.ENTITIES.register(modBus);
+        ModItems.ITEMS.register(modBus);
         ModBlocks.BLOCKS.register(modBus);
         ModBlocks.TILES.register(modBus);
+        ModEntities.ENTITIES.register(modBus);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigSpecs.commonSpec, "fate/common.toml");
     }
 
     @SubscribeEvent
     public static void setup(FMLCommonSetupEvent event) {
-        event.enqueueWork(() -> ModEntities.registerAttributes());
+        event.enqueueWork(() -> {
+            ModEntities.registerAttributes();
+            AdvancementRegister.init();
+        });
         CachedWeaponList.init();
+        PacketHandler.register();
+        CapabilityManager.INSTANCE.register(IPlayer.class, new PlayerCapNetwork(), () -> new PlayerCap());
     }
 
     @SubscribeEvent

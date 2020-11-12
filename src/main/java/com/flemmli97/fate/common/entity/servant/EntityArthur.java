@@ -35,7 +35,7 @@ public class EntityArthur extends EntityServant {
 
     @Override
     protected void setEquipmentBasedOnDifficulty(DifficultyInstance difficulty) {
-        this.setItemStackToSlot(EquipmentSlotType.MAINHAND, new ItemStack(ModItems.invisexcalibur));
+        this.setItemStackToSlot(EquipmentSlotType.MAINHAND, new ItemStack(ModItems.invisexcalibur.get()));
     }
 
     @Override
@@ -64,7 +64,7 @@ public class EntityArthur extends EntityServant {
         super.damageEntity(damageSrc, damageAmount);
         if (!this.canUseNP && !this.isDead() && this.getHealth() < 0.5 * this.getMaxHealth()) {
             this.canUseNP = true;
-            this.setItemStackToSlot(EquipmentSlotType.MAINHAND, new ItemStack(ModItems.excalibur));
+            this.setItemStackToSlot(EquipmentSlotType.MAINHAND, new ItemStack(ModItems.excalibur.get()));
         }
     }
 

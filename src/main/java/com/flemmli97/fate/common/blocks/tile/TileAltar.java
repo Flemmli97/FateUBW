@@ -20,6 +20,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.world.server.ServerWorld;
 
 public class TileAltar extends TileEntity implements ITickableTileEntity {
 
@@ -50,7 +51,6 @@ public class TileAltar extends TileEntity implements ITickableTileEntity {
     }
 
     public boolean addItem(PlayerEntity player, ItemStack stack) {
-        boolean flag = false;
         if (stack.getItem() instanceof ItemServantCharm && ((ItemServantCharm) stack.getItem()).type != EnumServantType.NOTASSIGNED) {
             if (this.inventoryCharm.isEmpty()) {
                 ItemStack stackToAdd = stack.copy();
@@ -59,9 +59,12 @@ public class TileAltar extends TileEntity implements ITickableTileEntity {
                 if (player != null && !player.isCreative()) {
                     stack.shrink(1);
                 }
-                flag = true;
+                this.markDirty();
+                if (!this.world.isRemote)
+                    PacketHandler.vanillaChunkPkt(this.getUpdatePacket(), (ServerWorld) this.getWorld(), this.getPos());
+                return true;
             }
-        } else if (stack.getItem() == ModItems.crystalCluster) {
+        } else if (stack.getItem() == ModItems.crystalCluster.get()) {
             ItemStack add = stack.copy();
             add.setCount(1);
             for (int x = 0; x < this.invCatalyst.size(); x++) {
@@ -70,21 +73,26 @@ public class TileAltar extends TileEntity implements ITickableTileEntity {
                     if (player != null && !player.isCreative()) {
                         stack.shrink(1);
                     }
-                    flag = true;
-                    break;
+                    this.markDirty();
+                    if (!this.world.isRemote)
+                        PacketHandler.vanillaChunkPkt(this.getUpdatePacket(), (ServerWorld) this.getWorld(), this.getPos());
+                    return true;
                 }
             }
         }
-        this.markDirty();
-        return flag;
+        return false;
     }
 
-    public void removeItem(PlayerEntity player) {
+    public boolean removeItem(PlayerEntity player) {
         if (!this.inventoryCharm.isEmpty()) {
             if (player != null && !player.isCreative()) {
                 player.inventory.addItemStackToInventory(this.inventoryCharm);
             }
             this.inventoryCharm = ItemStack.EMPTY;
+            this.markDirty();
+            if (!this.world.isRemote)
+                PacketHandler.vanillaChunkPkt(this.getUpdatePacket(), (ServerWorld) this.getWorld(), this.getPos());
+            return true;
         }
         for (int x = 0; x < this.invCatalyst.size(); x++) {
             ItemStack inv = this.invCatalyst.get(x);
@@ -93,10 +101,13 @@ public class TileAltar extends TileEntity implements ITickableTileEntity {
                     player.inventory.addItemStackToInventory(inv);
                 }
                 this.invCatalyst.set(x, ItemStack.EMPTY);
-                break;
+                this.markDirty();
+                if (!this.world.isRemote)
+                    PacketHandler.vanillaChunkPkt(this.getUpdatePacket(), (ServerWorld) this.getWorld(), this.getPos());
+                return true;
             }
         }
-        this.markDirty();
+        return false;
     }
 
     @Override
@@ -150,7 +161,7 @@ public class TileAltar extends TileEntity implements ITickableTileEntity {
                 this.world.playSound(null, this.pos, SoundEvents.BLOCK_PORTAL_TRAVEL, SoundCategory.AMBIENT, 0.4F, 1F);
             }
             if (this.summoningTick > 150) {
-                SummonUtils.summonRandomServant(this.inventoryCharm, (ServerPlayerEntity) this.player, this.pos, this.world);
+                SummonUtils.summonRandomServant(this.inventoryCharm, (ServerPlayerEntity) this.player, this.pos, (ServerWorld) this.world);
                 SummonUtils.removeSummoningStructure(this.world, this.getPos());
             }
         }

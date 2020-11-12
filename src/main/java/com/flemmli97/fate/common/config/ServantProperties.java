@@ -19,7 +19,7 @@ public class ServantProperties {
         this.mana = hogouMana;
     }
 
-    public ServantProperties(ServantConfSpec spec) {
+    public ServantProperties read(ServantConfSpec spec) {
         this.health = spec.health.get();
         this.strength = spec.strength.get();
         this.armor = spec.armor.get();
@@ -28,6 +28,7 @@ public class ServantProperties {
         this.magic = spec.magic.get();
         this.move = spec.move.get();
         this.mana = spec.mana.get();
+        return this;
     }
 
     public double health() {

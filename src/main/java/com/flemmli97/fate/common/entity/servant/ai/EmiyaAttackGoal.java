@@ -63,7 +63,7 @@ public class EmiyaAttackGoal extends BaseServantAttackGoal<EntityEmiya> {
 
     @Override
     public void setupValues() {
-        this.doRanged = this.attacker.getHeldItemMainhand().getItem() == ModItems.archbow;
+        this.doRanged = this.attacker.getHeldItemMainhand().getItem() == ModItems.archbow.get();
         super.setupValues();
     }
 }

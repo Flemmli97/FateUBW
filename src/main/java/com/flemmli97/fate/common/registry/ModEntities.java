@@ -21,6 +21,7 @@ import com.flemmli97.fate.common.entity.servant.EntityLancelot;
 import com.flemmli97.fate.common.entity.servant.EntityServant;
 import com.flemmli97.fate.common.lib.LibEntities;
 import com.flemmli97.fate.common.utils.EnumServantType;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
@@ -32,13 +33,18 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 
 public class ModEntities {
 
     //Trying out deferred register with configs
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, Fate.MODID);
-    private static final Map<ResourceLocation, EnumServantType> servants = Maps.newHashMap();
+    private static final Map<ResourceLocation, EnumServantType> servantTypeMap = Maps.newHashMap();
+
+    //This is generic hell
+    private static final EnumMap<EnumServantType, List<RegistryObject<?>>> typeServantsMap = new EnumMap<>(EnumServantType.class);
 
     public static RegistryObject<EntityType<EntityArthur>> arthur = regServant(EnumServantType.SABER, EntityType.Builder.create(EntityArthur::new, EntityClassification.MISC),
             LibEntities.arthur, new ServantProperties(300, 10, 17, 0.4f, 12, 10, 0.3, 100));
@@ -64,10 +70,15 @@ public class ModEntities {
     public static final RegistryObject<EntityType<EntityLesserMonster>> lesserMonster = reg(EntityType.Builder.<EntityLesserMonster>create(EntityLesserMonster::new, EntityClassification.MONSTER).maxTrackingRange(8), LibEntities.monster_small);
     public static final RegistryObject<EntityType<EntityGem>> gem = reg(EntityType.Builder.<EntityGem>create(EntityGem::new, EntityClassification.MISC).size(0.25F, 0.25F), LibEntities.entity_gem);
 
-    private static <V extends EntityServant> RegistryObject<EntityType<V>> regServant(EnumServantType type, EntityType.Builder<V> entity, ResourceLocation name, ServantProperties defaultVals) {
-        servants.put(name, type);
+    public static <V extends EntityServant> RegistryObject<EntityType<V>> regServant(EnumServantType type, EntityType.Builder<V> entity, ResourceLocation name, ServantProperties defaultVals) {
+        RegistryObject<EntityType<V>> reg = reg(entity.maxTrackingRange(10), name);
+        servantTypeMap.put(name, type);
+        typeServantsMap.merge(type, Lists.newArrayList(reg), (old, val)->{
+            old.add(reg);
+            return old;
+        });
         Config.Common.attributes.put(name.toString(), defaultVals);
-        return reg(entity.maxTrackingRange(10), name);
+        return reg;
     }
 
     private static <V extends Entity> RegistryObject<EntityType<V>> reg(EntityType.Builder<V> v, ResourceLocation name) {
@@ -75,7 +86,13 @@ public class ModEntities {
     }
 
     public static EnumServantType get(ResourceLocation type) {
-        return servants.getOrDefault(type, EnumServantType.NOTASSIGNED);
+        return servantTypeMap.getOrDefault(type, EnumServantType.NOTASSIGNED);
+    }
+
+    public static <V extends EntityServant> List<RegistryObject<EntityType<V>>> getFromType(EnumServantType type){
+        List<RegistryObject<EntityType<V>>> list = Lists.newArrayList();
+        typeServantsMap.get(type).forEach(r->list.add((RegistryObject<EntityType<V>>) r));
+        return list;
     }
 
     public static void registerAttributes() {

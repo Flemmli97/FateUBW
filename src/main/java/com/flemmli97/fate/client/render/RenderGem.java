@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 
 public class RenderGem extends RenderProjectileItem<EntityGem> {
 
-    private final ItemStack gem = new ItemStack(ModItems.crystalCluster);
+    private final ItemStack gem = new ItemStack(ModItems.crystalCluster.get());
 
     public RenderGem(EntityRendererManager manager) {
         super(manager);

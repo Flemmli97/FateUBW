@@ -30,7 +30,7 @@ public class EntityGilles extends EntityServant {
 
     @Override
     protected void setEquipmentBasedOnDifficulty(DifficultyInstance difficulty) {
-        this.setItemStackToSlot(EquipmentSlotType.MAINHAND, new ItemStack(ModItems.grimoire));
+        this.setItemStackToSlot(EquipmentSlotType.MAINHAND, new ItemStack(ModItems.grimoire.get()));
     }
 
     @Override

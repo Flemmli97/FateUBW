@@ -30,8 +30,8 @@ public class EntityDiarmuid extends EntityServant {
 
     @Override
     protected void setEquipmentBasedOnDifficulty(DifficultyInstance difficulty) {
-        this.setItemStackToSlot(EquipmentSlotType.MAINHAND, new ItemStack(ModItems.gaedearg));
-        this.setItemStackToSlot(EquipmentSlotType.OFFHAND, new ItemStack(ModItems.gaebuidhe));
+        this.setItemStackToSlot(EquipmentSlotType.MAINHAND, new ItemStack(ModItems.gaedearg.get()));
+        this.setItemStackToSlot(EquipmentSlotType.OFFHAND, new ItemStack(ModItems.gaebuidhe.get()));
     }
 
     @Override

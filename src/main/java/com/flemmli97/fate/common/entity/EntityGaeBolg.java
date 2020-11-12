@@ -58,7 +58,7 @@ public class EntityGaeBolg extends EntityProjectile {
             if (this.getShooter() instanceof PlayerEntity) {
                 PlayerEntity player = (PlayerEntity) this.getShooter();
                 if (!player.isCreative()) {
-                    ItemEntity gaeBolg = new ItemEntity(this.world, this.getShooter().getX(), this.getShooter().getY(), this.getShooter().getZ(), new ItemStack(ModItems.gaebolg));
+                    ItemEntity gaeBolg = new ItemEntity(this.world, this.getShooter().getX(), this.getShooter().getY(), this.getShooter().getZ(), new ItemStack(ModItems.gaebolg.get()));
                     gaeBolg.setPickupDelay(0);
                     player.world.addEntity(gaeBolg);
                     player.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 0.8f, 1);

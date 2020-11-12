@@ -11,21 +11,21 @@ public class PlayerCapProvider implements ICapabilitySerializable<INBT> {
 
     @CapabilityInject(IPlayer.class)
     public static final Capability<IPlayer> PlayerCap = null;
-    private final IPlayer instance = PlayerCap.getDefaultInstance();
-    private final LazyOptional<IPlayer> optional = LazyOptional.of(() -> this.instance);
+
+    private final LazyOptional<IPlayer> instance = LazyOptional.of(PlayerCap::getDefaultInstance);
 
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-        return PlayerCap.orEmpty(cap, optional);
+        return PlayerCap.orEmpty(cap, this.instance);
     }
 
     @Override
     public INBT serializeNBT() {
-        return PlayerCap.getStorage().writeNBT(PlayerCap, this.instance, null);
+        return PlayerCap.getStorage().writeNBT(PlayerCap, this.instance.orElseThrow(()->new NullPointerException("Something went wrong serializing capabilities")), null);
     }
 
     @Override
     public void deserializeNBT(INBT nbt) {
-        PlayerCap.getStorage().readNBT(PlayerCap, this.instance, null, nbt);
+        PlayerCap.getStorage().readNBT(PlayerCap, this.instance.orElseThrow(()->new NullPointerException("Something went wrong deserializing capabilities")), null, nbt);
     }
 }

@@ -68,7 +68,7 @@ public class EntityGilgamesh extends EntityServant {
         super.damageEntity(damageSrc, damageAmount);
         if (!this.canUseNP && !this.isDead() && this.getHealth() < 0.5 * this.getMaxHealth()) {
             this.canUseNP = true;
-            this.setItemStackToSlot(EquipmentSlotType.MAINHAND, new ItemStack(ModItems.enumaelish));
+            this.setItemStackToSlot(EquipmentSlotType.MAINHAND, new ItemStack(ModItems.enumaelish.get()));
         }
     }
 

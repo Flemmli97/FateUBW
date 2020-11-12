@@ -2,7 +2,7 @@ package com.flemmli97.fate.common.utils;
 
 import net.minecraft.util.IStringSerializable;
 
-public enum EnumPositionChalk implements IStringSerializable {
+public enum EnumPositionChalk {
 
     /**
      * R = row, C = column, orientation is north starting from top left
@@ -47,14 +47,13 @@ public enum EnumPositionChalk implements IStringSerializable {
         return this.metaData;
     }
 
-    public static EnumPositionChalk fromMeta(int meta) {
+    public static EnumPositionChalk fromPos(int meta) {
         if (meta < 0 || meta >= EnumPositionChalk.values().length)
             meta = 0;
         return EnumPositionChalk.values()[meta];
     }
 
-    @Override
-    public String getString() {
+    public String getID() {
         return this.name;
     }
 }

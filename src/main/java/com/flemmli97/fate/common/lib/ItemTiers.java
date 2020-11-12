@@ -5,17 +5,17 @@ import net.minecraft.item.crafting.Ingredient;
 
 public class ItemTiers {
 
-    public static final TierImpl excalibur = new TierImpl(1000, 0, 8, 0, 10, null);
-    public static final TierImpl invis_excalibur = new TierImpl(1000, 0, 4, 0, 10, null);
-    public static final TierImpl ea = new TierImpl(1100, 0, 7.5f, 0, 8, null);
-    public static final TierImpl arondight = new TierImpl(1300, 0, 8, 0, 7, null);
+    public static final TierImpl excalibur = new TierImpl(1000, 0, 8, 0, 10, Ingredient.EMPTY);
+    public static final TierImpl invis_excalibur = new TierImpl(1000, 0, 4, 0, 10, Ingredient.EMPTY);
+    public static final TierImpl ea = new TierImpl(1100, 0, 7.5f, 0, 8, Ingredient.EMPTY);
+    public static final TierImpl arondight = new TierImpl(1300, 0, 8, 0, 7, Ingredient.EMPTY);
 
-    public static final TierImpl gae_bolg = new TierImpl(900, 0, 6.5f, 0, 14, null);
-    public static final TierImpl gae_buidhe = new TierImpl(900, 0, 5f, 0, 14, null);
-    public static final TierImpl gae_dearg = new TierImpl(900, 0, 5.5f, 0, 14, null);
+    public static final TierImpl gae_bolg = new TierImpl(900, 0, 6.5f, 0, 14, Ingredient.EMPTY);
+    public static final TierImpl gae_buidhe = new TierImpl(900, 0, 5f, 0, 14, Ingredient.EMPTY);
+    public static final TierImpl gae_dearg = new TierImpl(900, 0, 5.5f, 0, 14, Ingredient.EMPTY);
 
-    public static final TierImpl kanshou = new TierImpl(650, 0, 5, 0, 16, null);
-    public static final TierImpl bakuya = new TierImpl(650, 0, 5f, 0, 16, null);
+    public static final TierImpl kanshou = new TierImpl(650, 0, 5, 0, 16, Ingredient.EMPTY);
+    public static final TierImpl bakuya = new TierImpl(650, 0, 5f, 0, 16, Ingredient.EMPTY);
 
     public static class TierImpl implements IItemTier {
 

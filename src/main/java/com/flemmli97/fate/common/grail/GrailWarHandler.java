@@ -181,7 +181,7 @@ public class GrailWarHandler extends WorldSavedData {
     }
 
     public boolean canSpawnMoreServants() {
-        return false;
+        return true;
     }
 
     public boolean canSpawnServant(EntityServant servant) {

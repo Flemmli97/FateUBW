@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 
 public class RenderGaeBolg extends RenderProjectileItem<EntityGaeBolg> {
 
-    private final ItemStack stack = new ItemStack(ModItems.gaebolg);
+    private final ItemStack stack = new ItemStack(ModItems.gaebolg.get());
 
     public RenderGaeBolg(EntityRendererManager renderManagerIn) {
         super(renderManagerIn);

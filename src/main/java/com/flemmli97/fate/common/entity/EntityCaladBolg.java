@@ -20,10 +20,6 @@ public class EntityCaladBolg extends EntityProjectile {
         super(ModEntities.caladbolg.get(), world, shootingEntity);
     }
 
-    public EntityCaladBolg(World worldIn, double x, double y, double z) {
-        super(ModEntities.caladbolg.get(), worldIn, x, y, z);
-    }
-
     @Override
     public int livingTickMax() {
         return 100;
