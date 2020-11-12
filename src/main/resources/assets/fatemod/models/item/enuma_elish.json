@@ -2,7 +2,7 @@
 	"credit": "Made with Blockbench, a free, modern block model editor by JannisX11",
 	"textures": {
 		"0": "fatemod:items/ea/blade1",
-		"1": "blocks/gold_block",
+		"1": "block/gold_block",
 		"2": "fatemod:items/ea/blade2",
 		"3": "fatemod:items/ea/blade3",
 		"4": "fatemod:items/ea/guard1",

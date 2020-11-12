@@ -1,9 +1,8 @@
 {
     "variants": {
-	"inventory": {"model": "fatemod:altar"},
-	"facing=north": {"model": "fatemod:altar"},
-	"facing=east": {"model": "fatemod:altar","y":90},
-    	"facing=south": {"model": "fatemod:altar","y":180},
-    	"facing=west": {"model": "fatemod:altar","y":270}
+	"facing=north": {"model": "fatemod:block/altar"},
+	"facing=east": {"model": "fatemod:block/altar","y":90},
+    	"facing=south": {"model": "fatemod:block/altar","y":180},
+    	"facing=west": {"model": "fatemod:block/altar","y":270}
     }
 }

@@ -1,5 +1,6 @@
 package com.flemmli97.fate.client;
 
+import com.flemmli97.fate.client.render.RenderAltar;
 import com.flemmli97.fate.client.render.RenderArcherArrow;
 import com.flemmli97.fate.client.render.RenderBabylon;
 import com.flemmli97.fate.client.render.RenderCaladbolg;
@@ -15,7 +16,10 @@ import com.flemmli97.fate.client.render.servant.RenderEmiya;
 import com.flemmli97.fate.client.render.servant.RenderGilgamesh;
 import com.flemmli97.fate.client.render.servant.RenderGilles;
 import com.flemmli97.fate.client.render.servant.RenderLancelot;
+import com.flemmli97.fate.common.registry.ModBlocks;
 import com.flemmli97.fate.common.registry.ModEntities;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 
 public class ClientRegister {
@@ -37,5 +41,7 @@ public class ClientRegister {
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.ea.get(), RenderEA::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.lesserMonster.get(), RenderStarfish::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.gem.get(), RenderGem::new);
+
+        ClientRegistry.bindTileEntityRenderer(ModBlocks.tileAltar.get(), RenderAltar::new);
     }
 }

@@ -23,7 +23,7 @@ public class EntityGem extends EntityProjectile {
     protected boolean onEntityHit(EntityRayTraceResult entityRayTraceResult) {
         this.world.createExplosion(this, this.getX(), this.getY(), this.getZ(), 2.0F, Explosion.Mode.NONE);
         this.remove();
-        return false;
+        return true;
     }
 
     @Override

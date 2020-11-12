@@ -27,7 +27,7 @@ public class TileAltar extends TileEntity implements ITickableTileEntity {
     private boolean isComplete, isSummoning;
     private ItemStack inventoryCharm = ItemStack.EMPTY;
     private NonNullList<ItemStack> invCatalyst = NonNullList.withSize(8, ItemStack.EMPTY);
-    private int summoningTick;
+    private int summoningTick, tick;
     private PlayerEntity player;
 
     public TileAltar() {
@@ -153,21 +153,35 @@ public class TileAltar extends TileEntity implements ITickableTileEntity {
 
     @Override
     public void tick() {
-        if (this.isSummoning) {
+        if (this.isSummoning && !this.world.isRemote) {
             this.summoningTick++;
-            if (!this.world.isRemote) {
-                if (this.summoningTick == 1) {
-                    this.world.playSound(null, this.pos, SoundEvents.BLOCK_PORTAL_TRAVEL, SoundCategory.AMBIENT, 0.4F, 1F);
-                }
-                if (this.summoningTick > 150) {
-                    SummonUtils.summonRandomServant(this.inventoryCharm, (ServerPlayerEntity) this.player, this.pos, this.world);
-                    SummonUtils.removeSummoningStructure(this.world, this.getPos());
-                }
+            if (this.summoningTick == 1) {
+                this.world.playSound(null, this.pos, SoundEvents.BLOCK_PORTAL_TRAVEL, SoundCategory.AMBIENT, 0.4F, 1F);
+            }
+            if (this.summoningTick > 150) {
+                SummonUtils.summonRandomServant(this.inventoryCharm, (ServerPlayerEntity) this.player, this.pos, this.world);
+                SummonUtils.removeSummoningStructure(this.world, this.getPos());
             }
         }
     }
 
     public boolean isSummoning() {
         return this.isSummoning;
+    }
+
+    public int getSummoningTick(){
+        return this.summoningTick;
+    }
+
+    public int ticker(){
+        return this.tick;
+    }
+
+    public void clientTick(){
+        this.tick++;
+        if(this.tick > 360)
+            this.tick = 0;
+        if(this.isSummoning)
+            this.summoningTick++;
     }
 }

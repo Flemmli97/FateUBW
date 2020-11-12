@@ -14,14 +14,12 @@ import net.minecraft.block.HorizontalBlock;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryHelper;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
@@ -53,7 +51,7 @@ public class BlockAltar extends ContainerBlock {
             Block.makeCuboidShape(0.5, 0, 0.5, 2.5, 11, 2.5),
             Block.makeCuboidShape(0, 3, 0, 16, 12, 16)
     ).reduce((v1, v2) -> VoxelShapes.combineAndSimplify(v1, v2, IBooleanFunction.OR)).orElse(VoxelShapes.empty());
-    private static final VoxelShape north = VoxelShapes.combineAndSimplify(tableShape, Stream.of(
+    private static final VoxelShape south = VoxelShapes.combineAndSimplify(tableShape, Stream.of(
             Block.makeCuboidShape(7, 12, 1, 9, 15, 3),
             Block.makeCuboidShape(6.5, 11.5, 2.5, 7.5, 12.5, 3.5),
             Block.makeCuboidShape(13.5, 11.5, 2.5, 14.5, 12.5, 3.5),
@@ -62,7 +60,7 @@ public class BlockAltar extends ContainerBlock {
             Block.makeCuboidShape(2.5, 11.5, 3.5, 3.5, 12.5, 4.5),
             Block.makeCuboidShape(2, 11.5, 2, 4, 14.5, 4)
     ).reduce((v1, v2) -> VoxelShapes.combineAndSimplify(v1, v2, IBooleanFunction.OR)).orElse(VoxelShapes.empty()), IBooleanFunction.OR);
-    private static final VoxelShape west = VoxelShapes.combineAndSimplify(tableShape, Stream.of(
+    private static final VoxelShape east = VoxelShapes.combineAndSimplify(tableShape, Stream.of(
             Block.makeCuboidShape(1, 12, 7, 3, 15, 9),
             Block.makeCuboidShape(2.5, 11.5, 8.5, 3.5, 12.5, 9.5),
             Block.makeCuboidShape(2.5, 11.5, 1.5, 3.5, 12.5, 2.5),
@@ -71,7 +69,7 @@ public class BlockAltar extends ContainerBlock {
             Block.makeCuboidShape(3.5, 11.5, 12.5, 4.5, 12.5, 13.5),
             Block.makeCuboidShape(2, 11.5, 12, 4, 14.5, 14)
     ).reduce((v1, v2) -> VoxelShapes.combineAndSimplify(v1, v2, IBooleanFunction.OR)).orElse(VoxelShapes.empty()), IBooleanFunction.OR);
-    private static final VoxelShape east = VoxelShapes.combineAndSimplify(tableShape, Stream.of(
+    private static final VoxelShape west = VoxelShapes.combineAndSimplify(tableShape, Stream.of(
             Block.makeCuboidShape(13, 12, 7, 15, 15, 9),
             Block.makeCuboidShape(12.5, 11.5, 6.5, 13.5, 12.5, 7.5),
             Block.makeCuboidShape(12.5, 11.5, 13.5, 13.5, 12.5, 14.5),
@@ -80,7 +78,7 @@ public class BlockAltar extends ContainerBlock {
             Block.makeCuboidShape(11.5, 11.5, 2.5, 12.5, 12.5, 3.5),
             Block.makeCuboidShape(12, 11.5, 2, 14, 14.5, 4)
     ).reduce((v1, v2) -> VoxelShapes.combineAndSimplify(v1, v2, IBooleanFunction.OR)).orElse(VoxelShapes.empty()), IBooleanFunction.OR);
-    private static final VoxelShape south = VoxelShapes.combineAndSimplify(tableShape, Stream.of(
+    private static final VoxelShape north = VoxelShapes.combineAndSimplify(tableShape, Stream.of(
             Block.makeCuboidShape(7, 12, 13, 9, 15, 15),
             Block.makeCuboidShape(8.5, 11.5, 12.5, 9.5, 12.5, 13.5),
             Block.makeCuboidShape(1.5, 11.5, 12.5, 2.5, 12.5, 13.5),
@@ -111,6 +109,11 @@ public class BlockAltar extends ContainerBlock {
             default:
                 return north;
         }
+    }
+
+    @Override
+    public BlockState getStateForPlacement(BlockItemUseContext context) {
+        return this.getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite());
     }
 
     @Override
