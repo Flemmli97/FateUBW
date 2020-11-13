@@ -16,10 +16,22 @@ import com.flemmli97.fate.client.render.servant.RenderEmiya;
 import com.flemmli97.fate.client.render.servant.RenderGilgamesh;
 import com.flemmli97.fate.client.render.servant.RenderGilles;
 import com.flemmli97.fate.client.render.servant.RenderLancelot;
+import com.flemmli97.fate.common.blocks.BlockChalkLine;
 import com.flemmli97.fate.common.registry.ModBlocks;
 import com.flemmli97.fate.common.registry.ModEntities;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.RedstoneWireBlock;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraft.entity.item.minecart.MinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.model.ItemLayerModel;
+import net.minecraftforge.client.model.MultiLayerModel;
+import net.minecraftforge.client.model.generators.ItemModelBuilder;
+import net.minecraftforge.client.model.pipeline.ForgeBlockModelRenderer;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 
@@ -44,6 +56,11 @@ public class ClientHandler {
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.gem.get(), RenderGem::new);
 
         ClientRegistry.bindTileEntityRenderer(ModBlocks.tileAltar.get(), RenderAltar::new);
+
+        RenderTypeLookup.setRenderLayer(ModBlocks.crystalOre.get(), type->true);
+        RenderTypeLookup.setRenderLayer(ModBlocks.charmOre.get(), type->true);
+        for(RegistryObject<BlockChalkLine> e : ModBlocks.chalks.values())
+            RenderTypeLookup.setRenderLayer(e.get(), RenderType.getCutout());
     }
 
     public static PlayerEntity clientPlayer() {

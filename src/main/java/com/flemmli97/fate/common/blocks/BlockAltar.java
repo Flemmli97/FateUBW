@@ -204,7 +204,7 @@ public class BlockAltar extends ContainerBlock {
         } else if (!altar.addItem(player, stack) && stack.getItem() == ModItems.crystalCluster.get()) {
             Optional<IPlayer> opt = player.getCapability(PlayerCapProvider.PlayerCap).resolve();
             if (!opt.isPresent())
-                return ActionResultType.PASS;
+                return ActionResultType.FAIL;
             GrailWarHandler tracker = GrailWarHandler.get(world);
             IPlayer cap = opt.get();
             if (cap.getServant(player) == null) {
@@ -227,7 +227,7 @@ public class BlockAltar extends ContainerBlock {
                 player.sendMessage(new TranslationTextComponent("chat.altar.existing").formatted(TextFormatting.DARK_RED), Util.NIL_UUID);
             }
         }
-        return ActionResultType.PASS;
+        return ActionResultType.FAIL;
     }
 
     @Override

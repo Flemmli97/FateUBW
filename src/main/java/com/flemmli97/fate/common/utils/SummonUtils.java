@@ -7,6 +7,9 @@ import com.flemmli97.fate.common.grail.GrailWarHandler;
 import com.flemmli97.fate.common.items.ItemServantCharm;
 import com.flemmli97.fate.common.registry.ModBlocks;
 import com.flemmli97.fate.common.registry.ModEntities;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -26,58 +29,41 @@ import java.util.List;
 public class SummonUtils {
 
     public static void placeSummoningStructure(ServerWorld world, BlockPos pos, TileAltar tile, Direction facing) {
-        int testBlocks = 0;
-        for (int x = -3; x <= 3; x++)
-            for (int z = -3; z <= 3; z++) {
+        for (int x = -2; x <= 2; x++)
+            for (int z = -2; z <= 2; z++) {
                 if (x != 0 || z != 0) {
                     BlockPos posNew = pos.add(x, 0, z);
-                    if (world.getBlockState(posNew).getBlock() instanceof BlockChalkLine)
-                        testBlocks++;
+                    if (!(world.getBlockState(posNew).getBlock() instanceof BlockChalkLine))
+                        return;
                 }
             }
-        if (testBlocks == 24) {
-            for (int x = -2; x <= 2; x++)
-                for (int z = -2; z <= 2; z++) {
-                    if (x != 0 || z != 0) {
-                        BlockPos newPos = new BlockPos(pos.getX() + x, pos.getY(), pos.getZ() + z);
-                        world.setBlockState(newPos, ModBlocks.chalks.get(getChalkPos(x, z, facing)).get().getDefaultState().with(BlockChalkLine.FACING, facing));
-                        world.spawnParticle(ParticleTypes.CLOUD, newPos.getX() + 0.5, newPos.getY(), newPos.getZ() + 0.5, 1, 0, 0.2, 0, 0);
-                    }
+        for (int x = -2; x <= 2; x++)
+            for (int z = -2; z <= 2; z++) {
+                if (x != 0 || z != 0) {
+                    BlockPos newPos = new BlockPos(pos.getX() + x, pos.getY(), pos.getZ() + z);
+                    world.setBlockState(newPos, ModBlocks.chalks.get(getChalkPos(x, z, facing)).get().getDefaultState().with(BlockChalkLine.FACING, facing));
+                    world.spawnParticle(ParticleTypes.CLOUD, newPos.getX() + 0.5, newPos.getY(), newPos.getZ() + 0.5, 1, 0, 0.2, 0, 0);
                 }
-            tile.setComplete(true);
-        }
+            }
+        tile.setComplete(true);
     }
 
     public static boolean checkStructure(World world, BlockPos pos, Direction facing) {
-        return true;
-        /*int rightBlock = 0;
-        for(int x=-2;x<=2;x++)
-            for(int z=-2; z<=2;z++)
-                for(int y=0;y<2;y++)
-                {
-                    if(x!=0 || z!=0 || y !=0)
-                    {
-                        BlockPos newPos = new BlockPos(pos.getX()+x, pos.getY()+y, pos.getZ()+z);
-                        Block state = world.getBlockState(newPos).getBlock();
-                        if(y==0)
-                        {
-                            IBlockState chalkState = world.getBlockState(newPos).getActualState(world, newPos);
-                            if(chalkState.getBlock() == ModBlocks.chalkLine && chalkState.getValue(BlockChalkLine.POSITIONMULTI) == this.getChalkPos(x, z, chalkState.getValue(BlockChalkLine.FACING)))
-                                rightBlock++;
-                        }
-                        else if(y==1 && state == Blocks.AIR)
-                        {
-                            rightBlock++;
-                        }
-                        if(rightBlock==49)
-                        {
-                            return true;
+        for (int x = -2; x <= 2; x++)
+            for (int z = -2; z <= 2; z++)
+                for (int y = 0; y < 2; y++) {
+                    if (x != 0 || z != 0 || y != 0) {
+                        BlockPos newPos = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
+                        BlockState state = world.getBlockState(newPos);
+                        if (y == 0 && (!(state.getBlock() instanceof BlockChalkLine) || ((BlockChalkLine) state.getBlock()).pos != getChalkPos(x, z, state.get(BlockChalkLine.FACING))))
+                            return false;
+                        else if (y == 1 && state.getBlock() != Blocks.AIR) {
+                            return false;
                         }
                     }
                 }
-        return false;*/
+        return true;
     }
-
 
     private static EnumPositionChalk getChalkPos(int x, int z, Direction facing) {
         //default to north
@@ -100,11 +86,11 @@ public class SummonUtils {
     }
 
     public static void removeSummoningStructure(World world, BlockPos pos) {
-        for (int x = -3; x <= 3; x++)
-            for (int z = -3; z <= 3; z++) {
+        for (int x = -2; x <= 2; x++)
+            for (int z = -2; z <= 2; z++) {
                 if (x != 0 || z != 0) {
                     BlockPos posNew = pos.add(x, 0, z);
-                    if (world.getBlockState(pos).getBlock() instanceof BlockChalkLine)
+                    if (world.getBlockState(posNew).getBlock() instanceof BlockChalkLine)
                         world.destroyBlock(posNew, false);
                 }
             }

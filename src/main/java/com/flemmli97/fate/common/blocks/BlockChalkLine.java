@@ -2,6 +2,7 @@ package com.flemmli97.fate.common.blocks;
 
 import com.flemmli97.fate.common.utils.EnumPositionChalk;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CarpetBlock;

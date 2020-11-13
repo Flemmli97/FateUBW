@@ -89,6 +89,7 @@ public class ModEntities {
         return servantTypeMap.getOrDefault(type, EnumServantType.NOTASSIGNED);
     }
 
+    @SuppressWarnings("unchecked")
     public static <V extends EntityServant> List<RegistryObject<EntityType<V>>> getFromType(EnumServantType type){
         List<RegistryObject<EntityType<V>>> list = Lists.newArrayList();
         typeServantsMap.get(type).forEach(r->list.add((RegistryObject<EntityType<V>>) r));

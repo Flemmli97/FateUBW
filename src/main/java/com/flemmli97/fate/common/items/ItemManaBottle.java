@@ -41,4 +41,9 @@ public class ItemManaBottle extends Item {
     public int getUseDuration(ItemStack stack) {
         return 32;
     }
+
+    @Override
+    public boolean hasEffect(ItemStack stack) {
+        return true;
+    }
 }
