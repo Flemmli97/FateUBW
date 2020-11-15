@@ -25,8 +25,8 @@ public class Config {
         public static int servantMinSpawnDelay;
         public static int servantMaxSpawnDelay;
         public static boolean punishTeleport;
-        public static List<String> notifyWhiteList;
-        public static boolean blackList;
+        public static List<String> notifyBlackList;
+        public static boolean whiteList;
         public static boolean notifyAll;
 
         public static final Map<String, ServantProperties> attributes = Maps.newHashMap();
@@ -62,8 +62,8 @@ public class Config {
             servantMinSpawnDelay = ConfigSpecs.commonConf.servantMinSpawnDelay.get();
             servantMaxSpawnDelay = ConfigSpecs.commonConf.servantMaxSpawnDelay.get();
             punishTeleport = ConfigSpecs.commonConf.punishTeleport.get();
-            notifyWhiteList = ConfigSpecs.commonConf.notifyWhiteList.get();
-            blackList = ConfigSpecs.commonConf.blackList.get();
+            notifyBlackList = ConfigSpecs.commonConf.notifyBlackList.get();
+            whiteList = ConfigSpecs.commonConf.whiteList.get();
             notifyAll = ConfigSpecs.commonConf.notifyAll.get();
 
             attributes.clear();

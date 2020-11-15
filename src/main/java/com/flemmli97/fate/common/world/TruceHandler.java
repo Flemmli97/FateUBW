@@ -1,9 +1,11 @@
-package com.flemmli97.fate.common.grail;
+package com.flemmli97.fate.common.world;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.WorldSavedData;
 
 import java.util.Map;
@@ -25,7 +27,7 @@ public class TruceHandler extends WorldSavedData {
         super(identifier);
     }
 
-    public static TruceHandler get(World world) {
+    public static TruceHandler get(ServerWorld world) {
         return world.getServer().getOverworld().getSavedData().getOrCreate(TruceHandler::new, identifier);
     }
 
@@ -46,7 +48,7 @@ public class TruceHandler extends WorldSavedData {
     }
 
     public Set<UUID> get(UUID player) {
-        return null;
+        return truceMap.getOrDefault(player, Sets.newHashSet());
     }
 
     public void disband(PlayerEntity player, UUID uuid) {

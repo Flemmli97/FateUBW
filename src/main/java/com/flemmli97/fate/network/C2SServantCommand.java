@@ -4,7 +4,7 @@ import com.flemmli97.fate.common.capability.IPlayer;
 import com.flemmli97.fate.common.capability.PlayerCapProvider;
 import com.flemmli97.fate.common.config.Config;
 import com.flemmli97.fate.common.entity.servant.EntityServant;
-import com.flemmli97.fate.common.grail.GrailWarHandler;
+import com.flemmli97.fate.common.world.GrailWarHandler;
 import com.flemmli97.fate.common.utils.EnumServantUpdate;
 import com.flemmli97.fate.common.utils.Utils;
 import com.flemmli97.tenshilib.common.utils.RayTraceUtils;
@@ -18,6 +18,7 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -91,7 +92,7 @@ public class C2SServantCommand {
                     servant.onKillOrder(player, cap.useCommandSeal(player));
                     break;
                 case FORFEIT:
-                    GrailWarHandler track = GrailWarHandler.get(player.world);
+                    GrailWarHandler track = GrailWarHandler.get(player.getServerWorld());
                     if (track.hasPlayer(player)) {
                         track.removePlayer(player);
                         servant.onForfeit(player);

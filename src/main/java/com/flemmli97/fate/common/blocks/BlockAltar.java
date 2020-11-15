@@ -3,18 +3,16 @@ package com.flemmli97.fate.common.blocks;
 import com.flemmli97.fate.common.blocks.tile.TileAltar;
 import com.flemmli97.fate.common.capability.IPlayer;
 import com.flemmli97.fate.common.capability.PlayerCapProvider;
-import com.flemmli97.fate.common.grail.GrailWarHandler;
+import com.flemmli97.fate.common.world.GrailWarHandler;
 import com.flemmli97.fate.common.items.ItemServantCharm;
 import com.flemmli97.fate.common.registry.AdvancementRegister;
 import com.flemmli97.fate.common.registry.ModItems;
 import com.flemmli97.fate.common.utils.SummonUtils;
-import net.minecraft.advancements.Advancement;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ContainerBlock;
 import net.minecraft.block.HorizontalBlock;
-import net.minecraft.command.impl.AdvancementCommand;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -39,7 +37,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.structure.FortressStructure;
 import net.minecraft.world.server.ServerWorld;
 
 import java.util.Optional;
@@ -205,7 +202,7 @@ public class BlockAltar extends ContainerBlock {
             Optional<IPlayer> opt = player.getCapability(PlayerCapProvider.PlayerCap).resolve();
             if (!opt.isPresent())
                 return ActionResultType.FAIL;
-            GrailWarHandler tracker = GrailWarHandler.get(world);
+            GrailWarHandler tracker = GrailWarHandler.get((ServerWorld) world);
             IPlayer cap = opt.get();
             if (cap.getServant(player) == null) {
                 if (altar.isComplete()) {

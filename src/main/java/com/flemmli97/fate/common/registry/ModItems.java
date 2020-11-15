@@ -3,6 +3,7 @@ package com.flemmli97.fate.common.registry;
 import com.flemmli97.fate.Fate;
 import com.flemmli97.fate.common.items.ItemChalk;
 import com.flemmli97.fate.common.items.ItemCrystal;
+import com.flemmli97.fate.common.items.ItemHolyGrail;
 import com.flemmli97.fate.common.items.ItemManaBottle;
 import com.flemmli97.fate.common.items.ItemServantCharm;
 import com.flemmli97.fate.common.items.weapons.ClassSpear;
@@ -68,6 +69,7 @@ public class ModItems {
     public static final RegistryObject<Item> crystalCluster = ITEMS.register("gem_cluster", () -> new ItemCrystal(new Item.Properties().group(Fate.TAB)));
     public static final RegistryObject<Item> chalk = ITEMS.register("chalk", () -> new ItemChalk(new Item.Properties().group(Fate.TAB)));
     public static final RegistryObject<Item> manaBottle = ITEMS.register("mana_bottle", () -> new ItemManaBottle(new Item.Properties().group(Fate.TAB)));
+    public static final RegistryObject<Item> grail = ITEMS.register("holy_grail", () -> new ItemHolyGrail(new Item.Properties().group(Fate.TAB)));
 
     public static final RegistryObject<Item> icon0 = ITEMS.register("icon_0", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> icon1 = ITEMS.register("icon_1", () -> new Item(new Item.Properties()));

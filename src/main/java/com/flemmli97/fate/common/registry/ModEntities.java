@@ -21,6 +21,7 @@ import com.flemmli97.fate.common.entity.servant.EntityLancelot;
 import com.flemmli97.fate.common.entity.servant.EntityServant;
 import com.flemmli97.fate.common.lib.LibEntities;
 import com.flemmli97.fate.common.utils.EnumServantType;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.entity.Entity;
@@ -33,6 +34,7 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.Collection;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -89,10 +91,14 @@ public class ModEntities {
         return servantTypeMap.getOrDefault(type, EnumServantType.NOTASSIGNED);
     }
 
+    public static Collection<ResourceLocation> registeredServants(){
+        return servantTypeMap.keySet();
+    }
+
     @SuppressWarnings("unchecked")
     public static <V extends EntityServant> List<RegistryObject<EntityType<V>>> getFromType(EnumServantType type){
         List<RegistryObject<EntityType<V>>> list = Lists.newArrayList();
-        typeServantsMap.get(type).forEach(r->list.add((RegistryObject<EntityType<V>>) r));
+        typeServantsMap.getOrDefault(type, Lists.newArrayList()).forEach(r->list.add((RegistryObject<EntityType<V>>) r));
         return list;
     }
 

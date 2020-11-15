@@ -6,7 +6,7 @@ import com.flemmli97.fate.common.config.ServantProperties;
 import com.flemmli97.fate.common.entity.IServantMinion;
 import com.flemmli97.fate.common.entity.servant.ai.FollowMasterGoal;
 import com.flemmli97.fate.common.entity.servant.ai.RetaliateGoal;
-import com.flemmli97.fate.common.grail.GrailWarHandler;
+import com.flemmli97.fate.common.world.GrailWarHandler;
 import com.flemmli97.fate.common.registry.FateAttributes;
 import com.flemmli97.fate.common.registry.ModEntities;
 import com.flemmli97.fate.common.utils.EnumServantType;
@@ -62,6 +62,7 @@ import net.minecraft.world.GameRules;
 import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerChunkProvider;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.server.TicketType;
 
 import java.util.List;
@@ -76,14 +77,14 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated 
     private boolean died = false;
     protected int combatTick;
     protected boolean canUseNP, critHealth;
-    protected boolean disableChunkload = true;
+    protected boolean disableChunkload = true, chunkTracked;
     /*private int , attackTimer, , ;*/
     public boolean forcedNP;
 
     /**
      * 0 = normal, 1 = aggressive, 2 = defensive, 3 = follow, 4 = stay, 5 = guard an area
      */
-    protected EnumServantUpdate commandBehaviour;
+    protected EnumServantUpdate commandBehaviour = EnumServantUpdate.NORMAL;
 
     private AnimatedAction currentAnim;
 
@@ -103,8 +104,8 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated 
     private final Predicate<LivingEntity> targetPred = (target) -> {
         if (target instanceof EntityServant)
             return !Utils.inSameTeam(EntityServant.this, (EntityServant) target);
-        if (target instanceof PlayerEntity)
-            return target != EntityServant.this.getOwner() && !Utils.inSameTeam((PlayerEntity) target, EntityServant.this);
+        if (target instanceof ServerPlayerEntity)
+            return target != EntityServant.this.getOwner() && !Utils.inSameTeam((ServerPlayerEntity) target, EntityServant.this);
         return target instanceof IMob;
     };
 
@@ -392,9 +393,15 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated 
             this.regenMana();
             this.combatTick = Math.max(0, --this.combatTick);
             if (!this.disableChunkload) {
+                if(!this.chunkTracked) {
+                    GrailWarHandler.get((ServerWorld) this.world).track(this);
+                    this.chunkTracked = true;
+                }
                 ChunkPos pos = new ChunkPos(this.chunkCoordX, this.chunkCoordZ);
                 ((ServerChunkProvider) this.world.getChunkProvider()).registerTicket(TicketType.UNKNOWN, pos, 1, pos);
             }
+            else
+                this.chunkTracked = false;
             if (this.getOwner() != null && !this.tracked.contains(this.getOwner()))
                 this.updateDataManager((ServerPlayerEntity) this.getOwner());
             if (this.getAttackTarget() != null && this.getAttackTarget().getRidingEntity() instanceof LivingEntity)
@@ -453,7 +460,7 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated 
                 //if(this.getLastDamageSource()!=DamageSource.OUT_OF_WORLD)
                 this.world.getServer().getPlayerList().broadcastChatMessage(new TranslationTextComponent("chat.servant.death").formatted(TextFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
                 this.playSound(SoundEvents.ENTITY_WITHER_SPAWN, 1.0F, 1.0F);
-                GrailWarHandler.get(this.world).removeServant(this);
+                GrailWarHandler.get((ServerWorld) this.world).removeServant(this);
                 this.disableChunkload = true;
             }
 
@@ -476,6 +483,12 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated 
         return 200;
     }
 
+    @Override
+    public void remove(boolean keepData) {
+        super.remove(keepData);
+        if(!this.world.isRemote)
+            GrailWarHandler.get((ServerWorld) this.world).untrack(this);
+    }
 	/*@Override
 	protected void dropLoot(boolean wasRecentlyHit, int lootingModifier, DamageSource source) {
 		for (int i = 0; i < this.drops.length; i++) {

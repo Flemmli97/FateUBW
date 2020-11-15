@@ -29,6 +29,7 @@ public class PacketHandler {
         dispatcher.registerMessage(id++, C2SServantCommand.class, C2SServantCommand::write, C2SServantCommand::read, C2SServantCommand::handle);
         dispatcher.registerMessage(id++, C2SServantSpecial.class, C2SServantSpecial::write, C2SServantSpecial::read, C2SServantSpecial::handle);
         dispatcher.registerMessage(id++, S2CServantSync.class, S2CServantSync::write, S2CServantSync::read, S2CServantSync::handle);
+        dispatcher.registerMessage(id++, MessageWarTracker.class, MessageWarTracker::write, MessageWarTracker::read, MessageWarTracker::handle);
     }
 
     public static <T> void sendToClient(T message, ServerPlayerEntity player) {

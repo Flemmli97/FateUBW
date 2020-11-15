@@ -3,11 +3,10 @@ package com.flemmli97.fate.common.utils;
 import com.flemmli97.fate.common.blocks.BlockChalkLine;
 import com.flemmli97.fate.common.blocks.tile.TileAltar;
 import com.flemmli97.fate.common.entity.servant.EntityServant;
-import com.flemmli97.fate.common.grail.GrailWarHandler;
+import com.flemmli97.fate.common.world.GrailWarHandler;
 import com.flemmli97.fate.common.items.ItemServantCharm;
 import com.flemmli97.fate.common.registry.ModBlocks;
 import com.flemmli97.fate.common.registry.ModEntities;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
@@ -119,5 +118,17 @@ public class SummonUtils {
             summonServant(entity, player, world, pos);
         else
             summonRandomServant(stack, player, pos, world);
+    }
+
+    public static EntityServant randomServant(ServerWorld world){
+        EnumServantType type = EnumServantType.values()[world.rand.nextInt(EnumServantType.values().length - 1)];
+        List<RegistryObject<EntityType<EntityServant>>> entities = ModEntities.getFromType(type);
+        if (entities.size() == 0)
+            return null;
+        EntityServant entity = entities.get(world.rand.nextInt(entities.size())).get().create(world);
+        if (GrailWarHandler.get(world).canSpawnServant(entity))
+            return entity;
+        else
+            return randomServant(world);
     }
 }

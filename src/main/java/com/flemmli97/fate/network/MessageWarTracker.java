@@ -2,12 +2,13 @@ package com.flemmli97.fate.network;
 
 
 import com.flemmli97.fate.client.ClientHandler;
-import com.flemmli97.fate.common.grail.GrailWarHandler;
-import com.flemmli97.fate.common.grail.TruceHandler;
+import com.flemmli97.fate.common.world.GrailWarHandler;
+import com.flemmli97.fate.common.world.TruceHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -24,7 +25,7 @@ public class MessageWarTracker {
         this.truceMap = truce;
     }
 
-    public MessageWarTracker(World world) {
+    public MessageWarTracker(ServerWorld world) {
         this.grailWarTracker = GrailWarHandler.get(world).write(new CompoundNBT());
         this.truceMap = TruceHandler.get(world).write(new CompoundNBT());
     }
@@ -44,12 +45,12 @@ public class MessageWarTracker {
             if (player == null)
                 return;
             World world = player.world;
-            GrailWarHandler tracker = GrailWarHandler.get(world);
+            /*GrailWarHandler tracker = GrailWarHandler.get(world);
             tracker.reset(world);
             tracker.read(pkt.grailWarTracker);
             TruceHandler truce = TruceHandler.get(world);
             truce.reset();
-            truce.read(pkt.truceMap);
+            truce.read(pkt.truceMap);*/
             //Fate.proxy.updateGuiTruce();
         });
         ctx.get().setPacketHandled(true);

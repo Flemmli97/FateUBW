@@ -1,14 +1,11 @@
 package com.flemmli97.fate.common.commands;
 
-import com.flemmli97.fate.common.grail.GrailWarHandler;
+import com.flemmli97.fate.common.world.GrailWarHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.tree.CommandNode;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraft.command.impl.SummonCommand;
 import net.minecraft.world.server.ServerWorld;
 
 public class CommandHandler {

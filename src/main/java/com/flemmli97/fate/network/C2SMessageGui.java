@@ -36,7 +36,7 @@ public class C2SMessageGui {
                 if (cap.getServant(player) != null)
                     PacketHandler.sendToClient(new S2CServantSync(cap.getServant(player)), player);
             } else
-                PacketHandler.sendToClient(new MessageWarTracker(player.world), player);
+                PacketHandler.sendToClient(new MessageWarTracker(player.getServerWorld()), player);
         });
         ctx.get().setPacketHandled(true);
     }

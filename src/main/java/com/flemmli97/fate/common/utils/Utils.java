@@ -1,9 +1,11 @@
 package com.flemmli97.fate.common.utils;
 
 import com.flemmli97.fate.common.entity.servant.EntityServant;
-import com.flemmli97.fate.common.grail.TruceHandler;
+import com.flemmli97.fate.common.world.TruceHandler;
 import com.flemmli97.fate.common.registry.FateAttributes;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.world.server.ServerWorld;
 
 import java.util.List;
 import java.util.UUID;
@@ -27,18 +29,18 @@ public class Utils {
         return damage * reduceAmount;
     }
 
-    public static boolean inSameTeam(PlayerEntity player, PlayerEntity other) {
-        return TruceHandler.get(player.world).get(player.getUniqueID()).contains(other.getUniqueID());
+    public static boolean inSameTeam(ServerPlayerEntity player, PlayerEntity other) {
+        return TruceHandler.get(player.getServerWorld()).get(player.getUniqueID()).contains(other.getUniqueID());
     }
 
-    public static boolean inSameTeam(PlayerEntity player, EntityServant servant) {
+    public static boolean inSameTeam(ServerPlayerEntity player, EntityServant servant) {
         UUID other = servant.ownerUUID();
-        return other == null ? false : TruceHandler.get(player.world).get(player.getUniqueID()).contains(other);
+        return other == null ? false : TruceHandler.get(player.getServerWorld()).get(player.getUniqueID()).contains(other);
     }
 
     public static boolean inSameTeam(EntityServant servant, EntityServant other) {
         UUID first = servant.ownerUUID();
         UUID second = other.ownerUUID();
-        return (first == null || other == null) ? false : TruceHandler.get(servant.world).get(first).contains(second);
+        return (first == null || other == null) ? false : TruceHandler.get((ServerWorld) servant.world).get(first).contains(second);
     }
 }

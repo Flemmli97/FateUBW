@@ -40,8 +40,8 @@ public class ConfigSpecs {
         public final ForgeConfigSpec.ConfigValue<Integer> servantMinSpawnDelay;
         public final ForgeConfigSpec.ConfigValue<Integer> servantMaxSpawnDelay;
         public final ForgeConfigSpec.BooleanValue punishTeleport;
-        public final ForgeConfigSpec.ConfigValue<List<String>> notifyWhiteList;
-        public final ForgeConfigSpec.BooleanValue blackList;
+        public final ForgeConfigSpec.ConfigValue<List<String>> notifyBlackList;
+        public final ForgeConfigSpec.BooleanValue whiteList;
         public final ForgeConfigSpec.BooleanValue notifyAll;
         //Servants
         public final Map<String, ServantConfSpec> attributes = Maps.newHashMap();
@@ -66,7 +66,7 @@ public class ConfigSpecs {
         public Common(ForgeConfigSpec.Builder builder) {
             builder.push("general");
             this.minPlayer = builder.comment("Minimum of player count required to start a grail war").defineInRange("Min Player", 1, 1, Integer.MAX_VALUE);
-            this.maxPlayer = builder.comment("Maximum of player allowed in a grail war").defineInRange("Max Player", 1, 1, Integer.MAX_VALUE);
+            this.maxPlayer = builder.comment("Maximum of player allowed in a grail war").defineInRange("Max Player", 7, 1, Integer.MAX_VALUE);
             this.joinTime = builder.comment("Time buffer in ticks to join a grail war after start").define("Join Time", 12000);
             this.rewardDelay = builder.comment("Delay after an ended grail war for getting the grail").define("Reward Delay", 2000);
             this.charmSpawnRate = builder.comment("").define("Charm Gen Rate", 2000);
@@ -78,8 +78,8 @@ public class ConfigSpecs {
             this.servantMinSpawnDelay = builder.comment("Minimum time between each attempt to spawn masterless servants. (Fill Empty Slots needs to be true)").define("Servant Spawn Delay (Min)", 3000);
             this.servantMaxSpawnDelay = builder.comment("Maximum time between each attempt to spawn masterless servants. (Fill Empty Slots needs to be true)").define("Servant Spawn Delay (Max)", 6000);
             this.punishTeleport = builder.comment("").define("Punish Teleport", true);
-            this.notifyWhiteList = builder.comment("Servants that dont notify players when spawned (from filling missing slots)").define("Servant notification", Lists.newArrayList(LibEntities.hassan.toString()));
-            this.blackList = builder.comment("Turn servant notification list into a blacklist").define("Notify Blacklist", true);
+            this.notifyBlackList = builder.comment("Servants that dont notify players when spawned (from filling missing slots)").define("Servant notification", Lists.newArrayList(LibEntities.hassan.toString()));
+            this.whiteList = builder.comment("Turn servant notification list into a whitelist").define("Notify Whitelist", true);
             this.notifyAll = builder.comment("Notify everyone if a servant spawns. Else only the player the servant spawned on will be notified").define("Notify Everyone", true);
             builder.pop();
 
