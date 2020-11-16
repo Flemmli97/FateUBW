@@ -1,5 +1,7 @@
 package com.flemmli97.fate.common.utils;
 
+import com.flemmli97.fate.common.capability.IPlayer;
+import com.flemmli97.fate.common.capability.PlayerCapProvider;
 import com.flemmli97.fate.common.entity.servant.EntityServant;
 import com.flemmli97.fate.common.world.TruceHandler;
 import com.flemmli97.fate.common.registry.FateAttributes;
@@ -8,6 +10,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.server.ServerWorld;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class Utils {
@@ -42,5 +45,12 @@ public class Utils {
         UUID first = servant.ownerUUID();
         UUID second = other.ownerUUID();
         return (first == null || other == null) ? false : TruceHandler.get((ServerWorld) servant.world).get(first).contains(second);
+    }
+
+    public static EntityServant getServant(PlayerEntity player) {
+        Optional<IPlayer> cap = player.getCapability(PlayerCapProvider.PlayerCap).resolve();
+        if(cap.isPresent())
+            return cap.get().getServant(player);
+        return null;
     }
 }

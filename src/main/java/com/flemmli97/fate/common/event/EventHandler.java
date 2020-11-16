@@ -1,19 +1,27 @@
 package com.flemmli97.fate.common.event;
 
 import com.flemmli97.fate.Fate;
+import com.flemmli97.fate.common.capability.IPlayer;
 import com.flemmli97.fate.common.capability.PlayerCapProvider;
 import com.flemmli97.fate.common.commands.CommandHandler;
 import com.flemmli97.fate.common.world.GrailWarHandler;
+import com.flemmli97.fate.network.PacketHandler;
+import com.flemmli97.fate.network.S2CMana;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
+import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid = Fate.MODID)
 public class EventHandler {
@@ -31,29 +39,26 @@ public class EventHandler {
         CommandHandler.reg(event.getDispatcher());
     }
 
-    /*
-     @SubscribeEvent
-    public void joinWorld(EntityJoinWorldEvent event)
-    {
-        if (event.getEntity() instanceof EntityPlayer && !event.getEntity().world.isRemote)
-        {
-        	EntityPlayerMP player = (EntityPlayerMP) event.getEntity();
-        	GrailWarHandler handler =GrailWarHandler.get(player.world);
-        	if(handler.shouldSeverConnection(player))
-        	{
-        		handler.removePlayer(player);
-        	}
-			PacketHandler.sendTo(new MessageMana(player.getCapability(PlayerCapProvider.PlayerCap, null)), (EntityPlayerMP) player);
-			for(UUID uuid : TruceMapHandler.get(player.world).getRequests(player))
+    @SubscribeEvent
+    public static void joinWorld(EntityJoinWorldEvent event) {
+        if (event.getEntity() instanceof ServerPlayerEntity) {
+            ServerPlayerEntity player = (ServerPlayerEntity) event.getEntity();
+            GrailWarHandler handler = GrailWarHandler.get(player.getServerWorld());
+            if (handler.removeConnection(player))
+                handler.removePlayer(player);
+            IPlayer cap = player.getCapability(PlayerCapProvider.PlayerCap).orElse(null);
+            if (cap != null)
+                PacketHandler.sendToClient(new S2CMana(cap), player);
+			/*for(UUID uuid : TruceMapHandler.get(player.world).getRequests(player))
 			{
 				String name = GrailWarHandler.get(player.world).getPlayerNameFromUUID(uuid);
 				player.sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.truce.pending", name), TextFormatting.GOLD));
 			}
 			if(player.getCapability(PlayerCapProvider.PlayerCap, null).getServant(player)!=null)
-				this.trackEntity(player, player.getCapability(PlayerCapProvider.PlayerCap, null).getServant(player));
+				this.trackEntity(player, player.getCapability(PlayerCapProvider.PlayerCap, null).getServant(player));*/
         }
     }
-     */
+
 
     @SubscribeEvent
     public static void updateGrailWar(TickEvent.WorldTickEvent event) {

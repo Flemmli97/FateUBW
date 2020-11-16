@@ -11,6 +11,7 @@ public enum EnumServantUpdate {
     NP,
     KILL,
     FORFEIT,
+    BOOST,
     TELEPORT,
     TARGET
 }

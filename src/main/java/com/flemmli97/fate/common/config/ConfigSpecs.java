@@ -43,6 +43,8 @@ public class ConfigSpecs {
         public final ForgeConfigSpec.ConfigValue<List<String>> notifyBlackList;
         public final ForgeConfigSpec.BooleanValue whiteList;
         public final ForgeConfigSpec.BooleanValue notifyAll;
+        public final ForgeConfigSpec.ConfigValue<List<String>> npBoostEffect;
+
         //Servants
         public final Map<String, ServantConfSpec> attributes = Maps.newHashMap();
         public ForgeConfigSpec.ConfigValue<Double> lancelotReflectChance;
@@ -81,6 +83,8 @@ public class ConfigSpecs {
             this.notifyBlackList = builder.comment("Servants that dont notify players when spawned (from filling missing slots)").define("Servant notification", Lists.newArrayList(LibEntities.hassan.toString()));
             this.whiteList = builder.comment("Turn servant notification list into a whitelist").define("Notify Whitelist", true);
             this.notifyAll = builder.comment("Notify everyone if a servant spawns. Else only the player the servant spawned on will be notified").define("Notify Everyone", true);
+            this.npBoostEffect = builder.comment("Potions applied when boostin servants using a command seal. Usage: " + PotionEffectsConfig.usage()).define("NP Effects",
+                    Lists.newArrayList("minecraft:resistance,6000,2", "minecraft:regeneration,6000,1", "minecraft:strength,6000,2", "minecraft:speed,6000,2"));
             builder.pop();
 
             builder.push("servants");

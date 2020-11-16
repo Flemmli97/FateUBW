@@ -12,8 +12,10 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
+import net.minecraft.potion.Potion;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.text.TextFormatting;
@@ -107,6 +109,14 @@ public class C2SServantCommand {
                                 others.setAttackTarget(player);
                                 others.addPotionEffect(new EffectInstance(Effects.SPEED, 600, 1));
                             }
+                    break;
+                case BOOST:
+                    if (cap.useCommandSeal(player)) {
+                        for (EffectInstance effect : Config.Common.npBoostEffect.potions())
+                            servant.addPotionEffect(effect);
+                        player.sendMessage(new TranslationTextComponent("chat.command.spell.success").formatted(TextFormatting.RED), Util.NIL_UUID);
+                    } else
+                        player.sendMessage(new TranslationTextComponent("chat.command.spell.fail").formatted(TextFormatting.RED), Util.NIL_UUID);
                     break;
                 case TARGET:
                     EntityRayTraceResult res = RayTraceUtils.calculateEntityFromLook(player, 16, LivingEntity.class);

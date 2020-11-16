@@ -15,31 +15,31 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class MessageWarTracker {
+public class S2CWarData {
 
     private final CompoundNBT grailWarTracker;
     private final CompoundNBT truceMap;
 
-    private MessageWarTracker(CompoundNBT war, CompoundNBT truce) {
+    private S2CWarData(CompoundNBT war, CompoundNBT truce) {
         this.grailWarTracker = war;
         this.truceMap = truce;
     }
 
-    public MessageWarTracker(ServerWorld world) {
+    public S2CWarData(ServerWorld world) {
         this.grailWarTracker = GrailWarHandler.get(world).write(new CompoundNBT());
         this.truceMap = TruceHandler.get(world).write(new CompoundNBT());
     }
 
-    public static MessageWarTracker read(PacketBuffer buf) {
-        return new MessageWarTracker(buf.readCompoundTag(), buf.readCompoundTag());
+    public static S2CWarData read(PacketBuffer buf) {
+        return new S2CWarData(buf.readCompoundTag(), buf.readCompoundTag());
     }
 
-    public static void write(MessageWarTracker pkt, PacketBuffer buf) {
+    public static void write(S2CWarData pkt, PacketBuffer buf) {
         buf.writeCompoundTag(pkt.grailWarTracker);
         buf.writeCompoundTag(pkt.truceMap);
     }
 
-    public static void handle(MessageWarTracker pkt, Supplier<NetworkEvent.Context> ctx) {
+    public static void handle(S2CWarData pkt, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             PlayerEntity player = DistExecutor.safeCallWhenOn(Dist.CLIENT, () -> ClientHandler::clientPlayer);
             if (player == null)

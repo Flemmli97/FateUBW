@@ -29,20 +29,29 @@ public class C2SMessageGui {
             ServerPlayerEntity player = ctx.get().getSender();
             if (player == null)
                 return;
-            if (pkt.message == Type.SERVANT) {
+            if(pkt.message == Type.ALL){
+                IPlayer cap = player.getCapability(PlayerCapProvider.PlayerCap).orElse(null);
+                if (cap == null)
+                    return;
+                if (cap.getServant(player) != null)
+                    PacketHandler.sendToClient(new S2CServantSync(cap.getServant(player)), player);
+                PacketHandler.sendToClient(new S2CWarData(player.getServerWorld()), player);
+            }
+            else if (pkt.message == Type.SERVANT) {
                 IPlayer cap = player.getCapability(PlayerCapProvider.PlayerCap).orElse(null);
                 if (cap == null)
                     return;
                 if (cap.getServant(player) != null)
                     PacketHandler.sendToClient(new S2CServantSync(cap.getServant(player)), player);
             } else
-                PacketHandler.sendToClient(new MessageWarTracker(player.getServerWorld()), player);
+                PacketHandler.sendToClient(new S2CWarData(player.getServerWorld()), player);
         });
         ctx.get().setPacketHandled(true);
     }
 
     public enum Type {
         SERVANT,
-        GRAIL
+        GRAIL,
+        ALL
     }
 }

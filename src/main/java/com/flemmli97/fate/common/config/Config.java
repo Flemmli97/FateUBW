@@ -28,6 +28,7 @@ public class Config {
         public static List<String> notifyBlackList;
         public static boolean whiteList;
         public static boolean notifyAll;
+        public static final PotionEffectsConfig npBoostEffect = new PotionEffectsConfig();
 
         public static final Map<String, ServantProperties> attributes = Maps.newHashMap();
         public static float lancelotReflectChance;
@@ -65,6 +66,7 @@ public class Config {
             notifyBlackList = ConfigSpecs.commonConf.notifyBlackList.get();
             whiteList = ConfigSpecs.commonConf.whiteList.get();
             notifyAll = ConfigSpecs.commonConf.notifyAll.get();
+            npBoostEffect.readFromString(ConfigSpecs.commonConf.npBoostEffect.get());
 
             attributes.clear();
             for (Map.Entry<String, ServantConfSpec> e : ConfigSpecs.commonConf.attributes.entrySet())

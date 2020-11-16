@@ -1,5 +1,7 @@
 package com.flemmli97.fate.client;
 
+import com.flemmli97.fate.client.gui.CommandGui;
+import com.flemmli97.fate.client.gui.ManaBar;
 import com.flemmli97.fate.client.render.RenderAltar;
 import com.flemmli97.fate.client.render.RenderArcherArrow;
 import com.flemmli97.fate.client.render.RenderBabylon;
@@ -24,6 +26,7 @@ import net.minecraft.block.RedstoneWireBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.item.minecart.MinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -34,8 +37,15 @@ import net.minecraftforge.client.model.pipeline.ForgeBlockModelRenderer;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import org.lwjgl.glfw.GLFW;
 
 public class ClientHandler {
+
+    public static ManaBar manaBar;
+    public static KeyBinding gui;
+    public static KeyBinding special;
+    public static KeyBinding boost;
+    public static KeyBinding target;
 
     public static void registerRenderer() {
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.arthur.get(), RenderArthur::new);
@@ -61,9 +71,19 @@ public class ClientHandler {
         RenderTypeLookup.setRenderLayer(ModBlocks.charmOre.get(), type->true);
         for(RegistryObject<BlockChalkLine> e : ModBlocks.chalks.values())
             RenderTypeLookup.setRenderLayer(e.get(), RenderType.getCutout());
+        manaBar = new ManaBar(Minecraft.getInstance());
+
+        ClientRegistry.registerKeyBinding(gui = new KeyBinding("fate.key.gui", GLFW.GLFW_KEY_H, "fate.keycategory"));
+        ClientRegistry.registerKeyBinding(special = new KeyBinding("fate.key.np", GLFW.GLFW_KEY_J, "fate.keycategory"));
+        ClientRegistry.registerKeyBinding(boost = new KeyBinding("fate.key.boost", GLFW.GLFW_KEY_N, "fate.keycategory"));
+        ClientRegistry.registerKeyBinding(target = new KeyBinding("fate.key.target", GLFW.GLFW_KEY_B, "fate.keycategory"));
     }
 
     public static PlayerEntity clientPlayer() {
         return Minecraft.getInstance().player;
+    }
+
+    public static void displayCommandGui(){
+        Minecraft.getInstance().displayGuiScreen(new CommandGui());
     }
 }

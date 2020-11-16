@@ -8,13 +8,12 @@ import com.flemmli97.fate.common.registry.ModEntities;
 import com.flemmli97.fate.common.registry.ModItems;
 import com.flemmli97.fate.common.utils.EnumServantType;
 import com.flemmli97.fate.common.utils.SummonUtils;
-import com.flemmli97.fate.network.MessageWarTracker;
+import com.flemmli97.fate.common.utils.Utils;
+import com.flemmli97.fate.network.S2CWarData;
 import com.flemmli97.fate.network.PacketHandler;
 import com.flemmli97.tenshilib.common.entity.EntityUtil;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
@@ -35,7 +34,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.server.ServerWorld;
@@ -44,10 +42,8 @@ import net.minecraft.world.spawner.WorldEntitySpawner;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.eventbus.api.Event;
-import org.spongepowered.asm.mixin.injection.Constant;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -85,7 +81,7 @@ public class GrailWarHandler extends WorldSavedData {
     public boolean join(ServerPlayerEntity player) {
         UUID uuid = player.getUniqueID();
         if (this.canJoin(player)) {
-            EntityServant servant = player.getCapability(PlayerCapProvider.PlayerCap).map(cap -> cap.getServant(player)).orElse(null);
+            EntityServant servant = Utils.getServant(player);
             if (servant != null) {
                 if (this.addServant(servant)) {
                     this.players.add(uuid); //<-----------------
@@ -251,7 +247,7 @@ public class GrailWarHandler extends WorldSavedData {
             this.servantClasses.clear();
             this.spawnedServants = 0;
             world.getServer().getPlayerList().broadcastChatMessage(new TranslationTextComponent("chat.grailwar.end").formatted(TextFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
-            PacketHandler.sendToAll(new MessageWarTracker(world));
+            PacketHandler.sendToAll(new S2CWarData(world));
         }
         this.markDirty();
     }
