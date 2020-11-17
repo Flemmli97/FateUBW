@@ -1,10 +1,12 @@
 package com.flemmli97.fate.network;
 
-
 import com.flemmli97.fate.client.ClientHandler;
 import com.flemmli97.fate.common.world.GrailWarHandler;
 import com.flemmli97.fate.common.world.TruceHandler;
+import com.google.common.collect.Sets;
+import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
@@ -13,30 +15,34 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.network.NetworkEvent;
 
+import java.util.Set;
 import java.util.function.Supplier;
 
 public class S2CWarData {
 
-    private final CompoundNBT grailWarTracker;
-    private final CompoundNBT truceMap;
+    private final Set<GameProfile> grailWarPlayers;
 
-    private S2CWarData(CompoundNBT war, CompoundNBT truce) {
-        this.grailWarTracker = war;
-        this.truceMap = truce;
+    private S2CWarData(Set<GameProfile> war) {
+        this.grailWarPlayers = war;
     }
 
     public S2CWarData(ServerWorld world) {
-        this.grailWarTracker = GrailWarHandler.get(world).write(new CompoundNBT());
-        this.truceMap = TruceHandler.get(world).write(new CompoundNBT());
-    }
+        this.grailWarPlayers = Sets.newHashSet();
+        GrailWarHandler.get(world).players().forEach(uuid->this.grailWarPlayers.add(world.getServer().getPlayerProfileCache().getProfileByUUID(uuid))); }
 
     public static S2CWarData read(PacketBuffer buf) {
-        return new S2CWarData(buf.readCompoundTag(), buf.readCompoundTag());
+        Set<GameProfile> grailWarPlayers = Sets.newHashSet();
+        for(int i = 0; i < buf.readInt(); i++)
+            grailWarPlayers.add(new GameProfile(buf.readUniqueId(), buf.readString()));
+        return new S2CWarData(grailWarPlayers);
     }
 
     public static void write(S2CWarData pkt, PacketBuffer buf) {
-        buf.writeCompoundTag(pkt.grailWarTracker);
-        buf.writeCompoundTag(pkt.truceMap);
+        buf.writeInt(pkt.grailWarPlayers.size());
+        pkt.grailWarPlayers.forEach(prof->{
+            buf.writeUniqueId(prof.getId());
+            buf.writeString(prof.getName());
+        });
     }
 
     public static void handle(S2CWarData pkt, Supplier<NetworkEvent.Context> ctx) {
@@ -44,14 +50,8 @@ public class S2CWarData {
             PlayerEntity player = DistExecutor.safeCallWhenOn(Dist.CLIENT, () -> ClientHandler::clientPlayer);
             if (player == null)
                 return;
-            World world = player.world;
-            /*GrailWarHandler tracker = GrailWarHandler.get(world);
-            tracker.reset(world);
-            tracker.read(pkt.grailWarTracker);
-            TruceHandler truce = TruceHandler.get(world);
-            truce.reset();
-            truce.read(pkt.truceMap);*/
-            //Fate.proxy.updateGuiTruce();
+            if(pkt.grailWarPlayers.contains(player.getUniqueID()))
+                ClientHandler.grailData(pkt.grailWarPlayers);
         });
         ctx.get().setPacketHandled(true);
     }

@@ -1,6 +1,7 @@
 package com.flemmli97.fate.client;
 
 import com.flemmli97.fate.client.gui.CommandGui;
+import com.flemmli97.fate.client.gui.GuiHolyGrail;
 import com.flemmli97.fate.client.gui.ManaBar;
 import com.flemmli97.fate.client.render.RenderAltar;
 import com.flemmli97.fate.client.render.RenderArcherArrow;
@@ -21,6 +22,10 @@ import com.flemmli97.fate.client.render.servant.RenderLancelot;
 import com.flemmli97.fate.common.blocks.BlockChalkLine;
 import com.flemmli97.fate.common.registry.ModBlocks;
 import com.flemmli97.fate.common.registry.ModEntities;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.SetMultimap;
+import com.mojang.authlib.GameProfile;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.RedstoneWireBlock;
 import net.minecraft.client.Minecraft;
@@ -39,6 +44,12 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+
 public class ClientHandler {
 
     public static ManaBar manaBar;
@@ -46,6 +57,11 @@ public class ClientHandler {
     public static KeyBinding special;
     public static KeyBinding boost;
     public static KeyBinding target;
+    public static List<GameProfile> grailPlayers = ImmutableList.of();
+    public static Set<GameProfile> pending = ImmutableSet.of();
+    public static Set<GameProfile> requests = ImmutableSet.of();
+    public static Set<GameProfile> truce = ImmutableSet.of();
+    private static final Comparator<GameProfile> sortName = Comparator.comparing(GameProfile::getName);
 
     public static void registerRenderer() {
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.arthur.get(), RenderArthur::new);
@@ -85,5 +101,19 @@ public class ClientHandler {
 
     public static void displayCommandGui(){
         Minecraft.getInstance().displayGuiScreen(new CommandGui());
+    }
+
+    public static void openGrailGui(Set<String> rewards){
+        Minecraft.getInstance().displayGuiScreen(new GuiHolyGrail(rewards));
+    }
+
+    public static void grailData(Set<GameProfile> set){
+        grailPlayers = ImmutableList.copyOf(set.stream().sorted(sortName).filter(prof->prof.getId().equals(Minecraft.getInstance().player.getUniqueID())).iterator());
+    }
+
+    public static void truceData(Set<GameProfile> t, Set<GameProfile> p, Set<GameProfile> r){
+        truce = ImmutableSet.copyOf(t.stream().sorted(sortName).iterator());
+        pending = ImmutableSet.copyOf(p.stream().sorted(sortName).iterator());
+        requests = ImmutableSet.copyOf(r.stream().sorted(sortName).iterator());
     }
 }

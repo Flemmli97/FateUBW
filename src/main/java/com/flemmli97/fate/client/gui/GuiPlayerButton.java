@@ -1,34 +1,36 @@
-/*package com.flemmli97.fate.client.gui;
+package com.flemmli97.fate.client.gui;
 
 import com.flemmli97.fate.Fate;
-import com.flemmli97.fate.common.world.TruceHandler;
+import com.flemmli97.fate.client.ClientHandler;
+import com.mojang.authlib.GameProfile;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.widget.button.AbstractButton;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 
 import java.util.UUID;
 
-public class GuiPlayerButton extends AbstractButton {
+public class GuiPlayerButton extends Button {
 
 	public boolean selected;
-	private String uuid;
+	private GameProfile prof;
 	protected static final ResourceLocation guiStuff = new ResourceLocation(Fate.MODID, "textures/gui/player_button.png");
 	private State state;
-	public GuiPlayerButton(int x, int y, String buttonText, String uuid, State state) {
-		super(x, y, 89, 20, new StringTextComponent(buttonText));
-		this.uuid=uuid;
-		this.state=state;
+	public GuiPlayerButton(int x, int y, GameProfile prof, Button.IPressable press) {
+		super(x, y, 89, 20, new StringTextComponent(prof.getName()), press);
+		this.prof =prof;
+		this.state=State.getState(this.prof);
 	}
 	
 	@Override
-    public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks)
+    public void renderButton(MatrixStack stack, int mouseX, int mouseY, float partialTicks)
     {
         if (this.visible)
         {
+        	Minecraft mc = Minecraft.getInstance();
             FontRenderer fontrenderer = mc.fontRenderer;
             mc.getTextureManager().bindTexture(guiStuff);
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -72,9 +74,9 @@ public class GuiPlayerButton extends AbstractButton {
         }
     }
 	
-	public String getUUID()
+	public UUID getUUID()
 	{
-		return this.uuid;
+		return this.prof.getId();
 	}
 	
 	public State getState()
@@ -84,26 +86,25 @@ public class GuiPlayerButton extends AbstractButton {
 	
 	public void refreshState()
 	{
-		this.state=State.getState(Minecraft.getMinecraft().player, UUID.fromString(this.uuid));
+		this.state=State.getState(this.prof);
 	}
-	
-	public static enum State
+
+    public enum State
 	{
 		NONE,
 		PENDING,
 		REQUESTED,
 		TRUCE;
 		
-		public static State getState(PlayerEntity player, UUID uuid)
+		public static State getState(GameProfile prof)
 		{
-			TruceHandler truces = TruceHandler.get(player.world);
-			if(truces.getRequests(player).contains(uuid))
+			if(ClientHandler.pending.contains(prof))
 				return PENDING;
-			if(truces.hasRequest(uuid, player))
+			if(ClientHandler.requests.contains(prof))
 				return REQUESTED;
-			if(truces.playerTruces(player).contains(uuid))
+			if(ClientHandler.truce.contains(prof))
 				return TRUCE;
 			return NONE;
 		}
 	}
-}*/
+}

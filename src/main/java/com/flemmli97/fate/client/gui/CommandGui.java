@@ -1,28 +1,27 @@
 package com.flemmli97.fate.client.gui;
 
 import com.flemmli97.fate.Fate;
+import com.flemmli97.fate.client.ClientHandler;
 import com.flemmli97.fate.common.capability.IPlayer;
 import com.flemmli97.fate.common.capability.PlayerCapProvider;
 import com.flemmli97.fate.common.entity.servant.EntityServant;
 import com.flemmli97.fate.common.utils.EnumServantUpdate;
 import com.flemmli97.fate.common.utils.Utils;
-import com.flemmli97.fate.common.world.GrailWarHandler;
 import com.flemmli97.fate.network.C2SMessageGui;
 import com.flemmli97.fate.network.C2SServantCommand;
+import com.flemmli97.fate.network.C2STruceMessage;
 import com.flemmli97.fate.network.PacketHandler;
+import com.mojang.authlib.GameProfile;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
-import java.io.IOException;
-import java.util.Optional;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -34,7 +33,7 @@ public class CommandGui extends Screen {
 	private int command1 = this.rand.nextInt(3);
 	private int command2 = this.rand.nextInt(3);
 	private int command3 = this.rand.nextInt(3);
-	//private GuiPlayerButton[] playerButton;
+	private GuiStringButton<UUID> request, accept, remove;
 
 	private final static ResourceLocation guiBackGround = new ResourceLocation(Fate.MODID, "textures/gui/command_gui_1.png");
 	private final static ResourceLocation guiTruce = new ResourceLocation(Fate.MODID, "textures/gui/command_gui_2.png");
@@ -140,11 +139,7 @@ public class CommandGui extends Screen {
 			}
 		} else if (this.currentPage == Pages.ATTACK) {
 			this.addButton(new Button(this.width / 2 + 10, this.height / 2 - 82, 80, 20
-					, new TranslationTextComponent("fate.gui.command.back"), b -> {
-				this.currentPage = Pages.MENU;
-				this.trucePage = 0;
-				this.init(this.client, this.width, this.height);
-			}));
+					, new TranslationTextComponent("fate.gui.command.back"), this::backButton));
 			this.addButton(new Button(this.width / 2 + 10, this.height / 2 - 52, 80, 20
 					, new TranslationTextComponent("fate.gui.command.aggressive"), b -> {
 				PacketHandler.sendToServer(new C2SServantCommand(EnumServantUpdate.AGGRESSIVE));
@@ -159,11 +154,7 @@ public class CommandGui extends Screen {
 			}));
 		} else if (this.currentPage == Pages.MOVEMENT) {
 			this.addButton(new Button(this.width / 2 + 10, this.height / 2 - 82, 80, 20
-					, new TranslationTextComponent("fate.gui.command.back"), b -> {
-				this.currentPage = Pages.MENU;
-				this.trucePage = 0;
-				this.init(this.client, this.width, this.height);
-			}));
+					, new TranslationTextComponent("fate.gui.command.back"), this::backButton));
 			this.addButton(new Button(this.width / 2 + 10, this.height / 2 - 52, 80, 20
 					, new TranslationTextComponent("fate.gui.command.follow"), b -> {
 				PacketHandler.sendToServer(new C2SServantCommand(EnumServantUpdate.FOLLOW));
@@ -182,192 +173,95 @@ public class CommandGui extends Screen {
 			}));
 		} else if (this.currentPage == Pages.SPECIAL) {
 			this.addButton(new Button(this.width / 2 + 10, this.height / 2 - 82, 80, 20
-					, new TranslationTextComponent("fate.gui.command.back"), b -> {
-				this.currentPage = Pages.MENU;
-				this.trucePage = 0;
-				this.init(this.client, this.width, this.height);
-			}));
+					, new TranslationTextComponent("fate.gui.command.back"), this::backButton));
 			EntityServant servant = Utils.getServant(this.getMinecraft().player);
 			if (servant != null)
 				for (int i = 0; i < servant.specialCommands().length; i++)
 					this.addButton(new ButtonSpecial(this.width / 2 + 10, this.height / 2 - 52, 80, 20, servant.specialCommands()[i]));
 		} else if (this.currentPage == Pages.TRUCE) {
-			/*Set<Entry<UUID, String>> players = GrailWarHandler.get(this.mc.world).players();
-			if(GrailWarHandler.get(this.mc.world).containsPlayer(player))
-			{
-				this.playerButton = new GuiPlayerButton[players.size()-1];
-				int i = 0;
-				for(Entry<UUID, String> entry : players)
-				{					
-					if(!entry.getKey().equals(player.getUniqueID()))
-					{
-						this.playerButton[i] = 
-								new GuiPlayerButton(i,this.width / 2+4, this.height / 2 -82+(i%7)*20, entry.getValue(), entry.getKey().toString(), State.getState(player, entry.getKey()));
-						++i;
-						
-					}
-				}
-				for(int j = 0; j < 7; j++)
-				{
-					int index = this.trucePage*7+j;
-					if(index<this.playerButton.length)
-					{
-						this.addButton(this.playerButton[index]);
-					}
+			List<GameProfile> players = ClientHandler.grailPlayers;
+			for (int i = 0; i < 7; i++) {
+				int index = this.trucePage * 7 + i;
+				if (index < players.size()) {
+					this.addButton(new GuiPlayerButton(this.width / 2 + 4, this.height / 2 - 82 + (index % 7) * 20, players.get(index), button -> {
+						GuiPlayerButton gp = (GuiPlayerButton) button;
+						if (!gp.selected) {
+							this.request.active = gp.getState() == GuiPlayerButton.State.NONE;
+							this.accept.active = gp.getState() == GuiPlayerButton.State.PENDING;
+							this.remove.active = gp.getState() == GuiPlayerButton.State.TRUCE;
+							gp.selected = !(gp.getState() == GuiPlayerButton.State.REQUESTED);
+							switch (gp.getState()) {
+								case NONE:
+									this.request.setVal(gp.getUUID());
+									break;
+								case PENDING:
+									this.accept.setVal(gp.getUUID());
+									break;
+								case TRUCE:
+									this.remove.setVal(gp.getUUID());
+									break;
+								default:
+									break;
+							}
+						} else {
+							this.request.active = false;
+							this.accept.active = false;
+							this.remove.active = false;
+							this.request.setVal(null);
+							this.accept.setVal(null);
+							this.remove.setVal(null);
+							gp.selected = false;
+						}
+					}));
 				}
 			}
-			this.addButton(this.next=new ButtonTrucePage(0,this.width / 2+48,this.height / 2+62,true));
-			this.addButton(this.prev=new ButtonTrucePage(0,this.width / 2+4,this.height / 2+62,false));
+			this.addButton(new Button(this.width / 2 + 48, this.height / 2 + 62, 44, 20, new StringTextComponent(">"), button -> {
+				if (this.trucePage < ClientHandler.grailPlayers.size() / 7) {
+					++this.trucePage;
+					this.init(this.client, this.width, this.height);
+				}
+			}));
+			this.addButton(new Button(this.width / 2 + 4, this.height / 2 + 62, 44, 20, new StringTextComponent("<"), button -> {
+				if (this.trucePage > 0) {
+					--this.trucePage;
+					this.init(this.client, this.width, this.height);
+				}
+			}));
 
-			this.addButton(this.back = new Button(this.width / 2-90, this.height / 2 -5, 80, 20, "Back"));
-			this.addButton(this.request = new GuiStringButton(0, this.width / 2-90 , this.height / 2 +25, 80, 20, "Request Truce"));
-			this.addButton(this.accept = new GuiStringButton(0, this.width / 2-90 , this.height / 2 +45, 80, 20, "Accept"));
-			this.addButton(this.remove = new GuiStringButton(0, this.width / 2-90 , this.height / 2 +65, 80, 20, "Remove"));
-			this.request.enabled=false;
-			this.accept.enabled=false;
-			this.remove.enabled=false;*/
+			this.addButton(new Button(this.width / 2 - 90, this.height / 2 - 5, 80, 20
+					, new TranslationTextComponent("fate.gui.command.back"), this::backButton));
+			this.addButton(this.request = new GuiStringButton<>(this.width / 2 - 90, this.height / 2 + 25, 80, 20, "fate.gui.truce.request", button -> {
+				GuiStringButton<UUID> req = (GuiStringButton<UUID>) button;
+				if (req.getVal() != null) {
+					PacketHandler.sendToServer(new C2STruceMessage(C2STruceMessage.Type.SEND, req.getVal()));
+					this.init(this.client, this.width, this.height);
+				}
+			}));
+			this.addButton(this.accept = new GuiStringButton(this.width / 2 - 90, this.height / 2 + 45, 80, 20, "fate.gui.truce.accept", button -> {
+				GuiStringButton<UUID> req = (GuiStringButton<UUID>) button;
+				if (req.getVal() != null) {
+					PacketHandler.sendToServer(new C2STruceMessage(C2STruceMessage.Type.ACCEPT, req.getVal()));
+					this.init(this.client, this.width, this.height);
+				}
+			}));
+			this.addButton(this.remove = new GuiStringButton(this.width / 2 - 90, this.height / 2 + 65, 80, 20, "fate.gui.truce.remove", button -> {
+				GuiStringButton<UUID> req = (GuiStringButton<UUID>) button;
+				if (req.getVal() != null) {
+					PacketHandler.sendToServer(new C2STruceMessage(C2STruceMessage.Type.DENY, req.getVal()));
+					this.init(this.client, this.width, this.height);
+				}
+			}));
+			this.request.active = false;
+			this.accept.active = false;
+			this.remove.active = false;
 		}
 	}
 
-	/*
-	@Override
-	protected void actionPerformed(GuiButton button) {
-		if (button == this.attack) {
-			this.currentPage = Pages.ATTACK;
-			this.initGui();
-		}
-		if (button == this.move) {
-			this.currentPage = Pages.MOVEMENT;
-			this.initGui();
-		}
-		if (button == this.truce) {
-			this.currentPage = Pages.TRUCE;
-			this.initGui();
-		}
-		if (button == this.special) {
-			this.currentPage = Pages.SPECIAL;
-			this.initGui();
-		}
-		if (button == this.kill) {
-			PacketHandler.sendToServer(new MessagePlayerServant(7));
-			PacketHandler.sendToServer(new MessageGui(2));
-		}
-		else if (button == this.forfeit)
-		{
-			PacketHandler.sendToServer(new MessagePlayerServant(8));
-		}
-		if (button == this.aggressive) {
-			PacketHandler.sendToServer(new MessagePlayerServant(1));
-		}
-		if (button == this.normal) {
-			PacketHandler.sendToServer(new MessagePlayerServant(0));
-		}
-		if (button == this.defensive) {
-			PacketHandler.sendToServer(new MessagePlayerServant(2));
-		}
-		if (button == this.useNP) {
-			PacketHandler.sendToServer(new MessagePlayerServant(3));
-		}
-		if (button == this.follow) {
-			PacketHandler.sendToServer(new MessagePlayerServant(4));
-		}
-		if (button == this.stay) {
-			PacketHandler.sendToServer(new MessagePlayerServant(5));
-		}
-		if (button == this.protect) {
-			PacketHandler.sendToServer(new MessagePlayerServant(6));
-		} else if (button == this.call) {
-			PacketHandler.sendToServer(new MessagePlayerServant(9));
-		}
-		if (button == this.request) {
-			GuiStringButton req = (GuiStringButton) button;
-			if (!req.getSavedString().isEmpty()) {
-				PacketHandler.sendToServer(new MessageTruce(0, req.getSavedString()));
-				this.initGui();
-			}
-		}
-		if (button == this.accept) {
-			GuiStringButton req = (GuiStringButton) button;
-			if (!req.getSavedString().isEmpty()) {
-				PacketHandler.sendToServer(new MessageTruce(1, req.getSavedString()));
-				this.initGui();
-			}
-		}
-		if (button == this.remove) {
-			GuiStringButton req = (GuiStringButton) button;
-			if (!req.getSavedString().isEmpty()) {
-				PacketHandler.sendToServer(new MessageTruce(2, req.getSavedString()));
-				this.initGui();
-			}
-		}
-		if (button instanceof GuiPlayerButton) {
-			GuiPlayerButton theButton = (GuiPlayerButton) button;
-			if (!theButton.selected) {
-				this.request.enabled = theButton.getState() == State.NONE;
-				this.accept.enabled = theButton.getState() == State.PENDING;
-				this.remove.enabled = theButton.getState() == State.TRUCE;
-				theButton.selected = !(theButton.getState() == State.REQUESTED);
-				switch (theButton.getState()) {
-					case NONE:
-						this.request.setSavedString(theButton.getUUID());
-						break;
-					case PENDING:
-						this.accept.setSavedString(theButton.getUUID());
-						break;
-					case TRUCE:
-						this.remove.setSavedString(theButton.getUUID());
-						break;
-					default:
-						break;
-				}
-			} else {
-				this.request.enabled = false;
-				this.accept.enabled = false;
-				this.remove.enabled = false;
-				this.request.setSavedString("");
-				this.accept.setSavedString("");
-				this.remove.setSavedString("");
-				theButton.selected = false;
-			}
-		}
-		if (button instanceof ButtonSpecial) {
-			((ButtonSpecial) button).onPressed();
-		}
-		if (button == this.next) {
-			if (this.playerButton != null && this.trucePage < this.playerButton.length / 7) {
-				++this.trucePage;
-				this.initGui();
-			}
-		}
-		if (button == this.prev) {
-			if (this.trucePage > 0) {
-				--this.trucePage;
-				this.initGui();
-			}
-		}
-		if (button == this.back) {
-			this.currentPage = Pages.MENU;
-			this.trucePage = 0;
-			this.initGui();
-		}
-	}	*/
-
-	/*public void updatePlayerButtons()
-	{
-		if(this.playerButton==null)
-			return;
-		for(GuiPlayerButton button : this.playerButton)
-		{
-			button.refreshState();
-			button.selected=false;
-		}
-        this.request.enabled=false;
-        this.accept.enabled=false;
-        this.remove.enabled=false;
-        this.request.setSavedString("");
-        this.accept.setSavedString("");
-        this.remove.setSavedString("");
-	}*/
+	private void backButton(Button button) {
+		this.currentPage = Pages.MENU;
+		this.trucePage = 0;
+		this.init(this.client, this.width, this.height);
+	}
 
 	private enum Pages {
 		MENU,
