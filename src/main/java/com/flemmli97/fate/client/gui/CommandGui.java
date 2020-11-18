@@ -33,7 +33,7 @@ public class CommandGui extends Screen {
 	private int command1 = this.rand.nextInt(3);
 	private int command2 = this.rand.nextInt(3);
 	private int command3 = this.rand.nextInt(3);
-	private GuiStringButton<UUID> request, accept, remove;
+	private ButtonValue<UUID> request, accept, remove;
 
 	private final static ResourceLocation guiBackGround = new ResourceLocation(Fate.MODID, "textures/gui/command_gui_1.png");
 	private final static ResourceLocation guiTruce = new ResourceLocation(Fate.MODID, "textures/gui/command_gui_2.png");
@@ -183,13 +183,13 @@ public class CommandGui extends Screen {
 			for (int i = 0; i < 7; i++) {
 				int index = this.trucePage * 7 + i;
 				if (index < players.size()) {
-					this.addButton(new GuiPlayerButton(this.width / 2 + 4, this.height / 2 - 82 + (index % 7) * 20, players.get(index), button -> {
-						GuiPlayerButton gp = (GuiPlayerButton) button;
+					this.addButton(new ButtonGameProfile(this.width / 2 + 4, this.height / 2 - 82 + (index % 7) * 20, players.get(index), button -> {
+						ButtonGameProfile gp = (ButtonGameProfile) button;
 						if (!gp.selected) {
-							this.request.active = gp.getState() == GuiPlayerButton.State.NONE;
-							this.accept.active = gp.getState() == GuiPlayerButton.State.PENDING;
-							this.remove.active = gp.getState() == GuiPlayerButton.State.TRUCE;
-							gp.selected = !(gp.getState() == GuiPlayerButton.State.REQUESTED);
+							this.request.active = gp.getState() == ButtonGameProfile.State.NONE;
+							this.accept.active = gp.getState() == ButtonGameProfile.State.PENDING;
+							this.remove.active = gp.getState() == ButtonGameProfile.State.TRUCE;
+							gp.selected = !(gp.getState() == ButtonGameProfile.State.REQUESTED);
 							switch (gp.getState()) {
 								case NONE:
 									this.request.setVal(gp.getUUID());
@@ -230,22 +230,22 @@ public class CommandGui extends Screen {
 
 			this.addButton(new Button(this.width / 2 - 90, this.height / 2 - 5, 80, 20
 					, new TranslationTextComponent("fate.gui.command.back"), this::backButton));
-			this.addButton(this.request = new GuiStringButton<>(this.width / 2 - 90, this.height / 2 + 25, 80, 20, "fate.gui.truce.request", button -> {
-				GuiStringButton<UUID> req = (GuiStringButton<UUID>) button;
+			this.addButton(this.request = new ButtonValue<>(this.width / 2 - 90, this.height / 2 + 25, 80, 20, "fate.gui.truce.request", button -> {
+				ButtonValue<UUID> req = (ButtonValue<UUID>) button;
 				if (req.getVal() != null) {
 					PacketHandler.sendToServer(new C2STruceMessage(C2STruceMessage.Type.SEND, req.getVal()));
 					this.init(this.client, this.width, this.height);
 				}
 			}));
-			this.addButton(this.accept = new GuiStringButton(this.width / 2 - 90, this.height / 2 + 45, 80, 20, "fate.gui.truce.accept", button -> {
-				GuiStringButton<UUID> req = (GuiStringButton<UUID>) button;
+			this.addButton(this.accept = new ButtonValue(this.width / 2 - 90, this.height / 2 + 45, 80, 20, "fate.gui.truce.accept", button -> {
+				ButtonValue<UUID> req = (ButtonValue<UUID>) button;
 				if (req.getVal() != null) {
 					PacketHandler.sendToServer(new C2STruceMessage(C2STruceMessage.Type.ACCEPT, req.getVal()));
 					this.init(this.client, this.width, this.height);
 				}
 			}));
-			this.addButton(this.remove = new GuiStringButton(this.width / 2 - 90, this.height / 2 + 65, 80, 20, "fate.gui.truce.remove", button -> {
-				GuiStringButton<UUID> req = (GuiStringButton<UUID>) button;
+			this.addButton(this.remove = new ButtonValue(this.width / 2 - 90, this.height / 2 + 65, 80, 20, "fate.gui.truce.remove", button -> {
+				ButtonValue<UUID> req = (ButtonValue<UUID>) button;
 				if (req.getVal() != null) {
 					PacketHandler.sendToServer(new C2STruceMessage(C2STruceMessage.Type.DENY, req.getVal()));
 					this.init(this.client, this.width, this.height);
