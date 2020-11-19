@@ -28,7 +28,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(modid = Fate.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class Event {
+public class DataEvent {
 
     @SubscribeEvent
     public static void data(GatherDataEvent event){

@@ -33,7 +33,7 @@ public class EntityLesserMonster extends CreatureEntity implements IServantMinio
     public static final AnimatedAction walk = new AnimatedAction(31, 0, "walk");
     public static final AnimatedAction attack = new AnimatedAction(20, 15, "attack");
     private static final AnimatedAction[] anims = new AnimatedAction[]{walk, attack};
-    public NearestAttackableTargetGoal<LivingEntity> target = new NearestAttackableTargetGoal<LivingEntity>(this, LivingEntity.class, 10, true, true,
+    public NearestAttackableTargetGoal<LivingEntity> target = new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, true,
             (living) -> EntityLesserMonster.this.canAttackTarget(living));
 
     public EntityLesserMonster(EntityType<? extends EntityLesserMonster> type, World world) {
@@ -74,15 +74,15 @@ public class EntityLesserMonster extends CreatureEntity implements IServantMinio
             this.livingTicks++;
             if (this.livingTicks > Config.Common.gillesMinionDuration)
                 this.remove();
-            if (this.currentAnim == null && (this.getMotion().x != 0 || this.getMotion().z != 0))
-                this.setAnimation(walk);
+            //if (this.currentAnim == null && (this.getMotion().x != 0 || this.getMotion().z != 0))
+            //    this.setAnimation(walk);
             if (this.getOwner() != null && this.getOwner().getRevengeTarget() != null && this.getAttackTarget() == null)
                 this.setAttackTarget(this.getOwner().getRevengeTarget());
         }
         this.tickAnimation();
     }
 
-    @Override
+    /*@Override
     public void tickAnimation() {
         if (this.getAnimation() != null && this.getAnimation().tick()) {
             if (this.getAnimation().getID().equals("walk") && (this.getMotion().x != 0 || this.getMotion().z != 0))
@@ -90,7 +90,7 @@ public class EntityLesserMonster extends CreatureEntity implements IServantMinio
             else
                 this.setAnimation(null);
         }
-    }
+    }*/
 
     public LivingEntity getOwner() {
         if (this.owner == null && this.ownerUUID != null) {
@@ -100,7 +100,7 @@ public class EntityLesserMonster extends CreatureEntity implements IServantMinio
     }
 
     protected boolean canAttackTarget(LivingEntity e) {
-        if (this.getClass().equals(e.getClass()) || e.getUniqueID().equals(this.ownerUUID))
+        if (e.getUniqueID().equals(this.ownerUUID))
             return false;
         if ((this.getOwner() instanceof EntityServant && ((EntityServant) this.getOwner()).getOwner() != null && ((EntityServant) this.getOwner()).getOwner().getUniqueID().equals(e.getUniqueID())))
             return false;

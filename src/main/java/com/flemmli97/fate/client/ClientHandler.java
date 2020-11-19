@@ -31,6 +31,7 @@ import net.minecraft.block.RedstoneWireBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraft.client.renderer.entity.ZombieRenderer;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.item.minecart.MinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;

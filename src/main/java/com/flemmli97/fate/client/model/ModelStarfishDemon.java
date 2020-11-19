@@ -352,8 +352,8 @@ public class ModelStarfishDemon<T extends EntityLesserMonster> extends EntityMod
         AnimatedAction anim = monster.getAnimation();
         if (anim != null)
             this.anim.doAnimation(anim.getID(), anim.getTick(), partialTicks);
-        else
-            this.anim.doAnimation("iddle", anim.getTick(), partialTicks);
+        //else
+        //    this.anim.doAnimation("iddle", anim.getTick(), partialTicks);
     }
 
     @Override

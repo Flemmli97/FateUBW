@@ -37,6 +37,7 @@ import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.monster.MonsterEntity;
+import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -113,7 +114,7 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated 
     public NearestAttackableTargetGoal<PlayerEntity> targetPlayer = new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 0, true, true, targetPred);
     public NearestAttackableTargetGoal<MobEntity> targetMob = new NearestAttackableTargetGoal<MobEntity>(this, MobEntity.class, 10, true, true, targetPred);
 
-    public FollowMasterGoal follow = new FollowMasterGoal(this, 15.0D, 16.0F, 3.0F);
+    public FollowMasterGoal follow = new FollowMasterGoal(this, 16.0D, 9.0F, 3.0F);
     public RetaliateGoal targetHurt = new RetaliateGoal(this);
     public MoveTowardsRestrictionGoal restrictArea = new MoveTowardsRestrictionGoal(this, 1.0D);
     public RandomWalkingGoal wander = new RandomWalkingGoal(this, 1.0D);
@@ -121,6 +122,8 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated 
     public EntityServant(EntityType<? extends EntityServant> entityType, World world, String hogou) {
         super(entityType, world);
         this.experienceValue = 35;
+        System.out.println(Config.Common.attributes);
+        System.out.println(entityType.getRegistryName());
         this.prop = Config.Common.attributes.getOrDefault(entityType.getRegistryName().toString(), ServantProperties.def);
         if (world != null && !world.isRemote) {
             this.goals();
@@ -131,13 +134,13 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated 
     }
 
     protected void goals() {
-        this.goalSelector.addGoal(0, this.follow);
-        this.goalSelector.addGoal(1, this.restrictArea);
-        this.goalSelector.addGoal(2, this.wander);
-        this.goalSelector.addGoal(3, new SwimGoal(this));
-        this.goalSelector.addGoal(4, new LookRandomlyGoal(this));
-        this.goalSelector.addGoal(5, new LookAtGoal(this, PlayerEntity.class, 8.0F));
-        this.goalSelector.addGoal(6, new OpenDoorGoal(this, true));
+        this.goalSelector.addGoal(1, this.follow);
+        this.goalSelector.addGoal(2, this.restrictArea);
+        this.goalSelector.addGoal(3, this.wander);
+        this.goalSelector.addGoal(4, new SwimGoal(this));
+        this.goalSelector.addGoal(5, new LookRandomlyGoal(this));
+        this.goalSelector.addGoal(6, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+        this.goalSelector.addGoal(7, new OpenDoorGoal(this, true));
         this.targetSelector.addGoal(0, this.targetHurt);
         this.targetSelector.addGoal(1, this.targetServant);
         this.targetSelector.addGoal(2, this.targetPlayer);
@@ -358,8 +361,8 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated 
             case FOLLOW:
                 this.targetSelector.addGoal(0, this.targetHurt);
                 this.targetSelector.addGoal(1, this.targetServant);
-                this.goalSelector.addGoal(0, this.follow);
-                this.goalSelector.addGoal(2, this.wander);
+                this.goalSelector.addGoal(1, this.follow);
+                this.goalSelector.addGoal(3, this.wander);
                 this.setStaying(false);
                 this.detachHome();
                 break;
@@ -377,7 +380,7 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated 
             case GUARD:
                 this.setStaying(false);
                 this.goalSelector.removeGoal(this.follow);
-                this.goalSelector.addGoal(2, this.wander);
+                this.goalSelector.addGoal(3, this.wander);
                 this.setHomePosAndDistance(this.getOwner().getBlockPos(), 8);
                 break;
         }

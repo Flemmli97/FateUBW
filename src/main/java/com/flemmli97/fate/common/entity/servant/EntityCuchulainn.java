@@ -32,7 +32,7 @@ public class EntityCuchulainn extends EntityServant {
     public EntityCuchulainn(EntityType<? extends EntityServant> entityType, World world) {
         super(entityType, world, "cuchulainn.hogou");
         if (world != null && !world.isRemote)
-            this.goalSelector.addGoal(1, this.attackAI);
+            this.goalSelector.addGoal(0, this.attackAI);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class EntityCuchulainn extends EntityServant {
         if (this.commandBehaviour == EnumServantUpdate.STAY)
             this.goalSelector.removeGoal(this.attackAI);
         else
-            this.goalSelector.addGoal(1, this.attackAI);
+            this.goalSelector.addGoal(0, this.attackAI);
     }
 
     @Override

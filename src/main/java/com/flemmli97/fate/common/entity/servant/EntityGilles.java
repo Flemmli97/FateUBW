@@ -2,7 +2,7 @@ package com.flemmli97.fate.common.entity.servant;
 
 import com.flemmli97.fate.common.config.Config;
 import com.flemmli97.fate.common.entity.EntityLesserMonster;
-import com.flemmli97.fate.common.entity.servant.ai.GilledAttackGoal;
+import com.flemmli97.fate.common.entity.servant.ai.GillesAttackGoal;
 import com.flemmli97.fate.common.registry.ModItems;
 import com.flemmli97.fate.common.utils.EnumServantUpdate;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
@@ -16,7 +16,7 @@ import net.minecraft.world.World;
 
 public class EntityGilles extends EntityServant {
 
-    public final GilledAttackGoal attackAI = new GilledAttackGoal(this);
+    public final GillesAttackGoal attackAI = new GillesAttackGoal(this, 16);
 
     private static final AnimatedAction rangedAttack = new AnimatedAction(38, 25, "ranged");
     private static final AnimatedAction npAttack = new AnimatedAction(20, 0, "np");
@@ -25,7 +25,7 @@ public class EntityGilles extends EntityServant {
     public EntityGilles(EntityType<? extends EntityGilles> entityType, World world) {
         super(entityType, world, "Prelati's Spellbook");
         if (world != null && !world.isRemote)
-            this.goalSelector.addGoal(1, this.attackAI);
+            this.goalSelector.addGoal(0, this.attackAI);
     }
 
     @Override
@@ -36,8 +36,8 @@ public class EntityGilles extends EntityServant {
     @Override
     public boolean canUse(AnimatedAction anim, AttackType type) {
         if (type == AttackType.NP)
-            return anim.getID().equals("np");
-        return anim.getID().equals("ranged");
+            return anim.getID().equals(npAttack.getID());
+        return anim.getID().equals(rangedAttack.getID());
     }
 
     @Override
@@ -56,7 +56,7 @@ public class EntityGilles extends EntityServant {
         if (this.commandBehaviour == EnumServantUpdate.STAY)
             this.goalSelector.removeGoal(this.attackAI);
         else
-            this.goalSelector.addGoal(1, this.attackAI);
+            this.goalSelector.addGoal(0, this.attackAI);
     }
 
     @Override

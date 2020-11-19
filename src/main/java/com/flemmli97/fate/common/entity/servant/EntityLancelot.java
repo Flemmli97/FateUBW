@@ -32,7 +32,7 @@ public class EntityLancelot extends EntityServant {
     public EntityLancelot(EntityType<? extends EntityLancelot> entityType, World world) {
         super(entityType, world, "lancelot.hogou");
         if (world != null && !world.isRemote)
-            this.goalSelector.addGoal(1, this.attackAI);
+            this.goalSelector.addGoal(0, this.attackAI);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class EntityLancelot extends EntityServant {
         if (this.commandBehaviour == EnumServantUpdate.STAY)
             this.goalSelector.removeGoal(this.attackAI);
         else
-            this.goalSelector.addGoal(1, this.attackAI);
+            this.goalSelector.addGoal(0, this.attackAI);
     }
 
     @Override

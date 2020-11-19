@@ -74,6 +74,7 @@ public class Fate {
     }
 
     public static final ItemGroup TAB = new ItemGroup("fate") {
+        @Override
         @OnlyIn(Dist.CLIENT)
         public ItemStack createIcon() {
             return new ItemStack(ModItems.randomIcon.get());

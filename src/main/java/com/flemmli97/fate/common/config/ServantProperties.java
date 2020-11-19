@@ -2,7 +2,7 @@ package com.flemmli97.fate.common.config;
 
 public class ServantProperties {
 
-    public static final ServantProperties def = new ServantProperties(20, 1, 0, 0, 0, 0.2, 0, 0);
+    public static final ServantProperties def = new ServantProperties(20, 1, 0, 0, 0, 0.2, 0.7, 0);
 
     private double health, strength, armor, proj, magic, move;
     private float block;
@@ -19,16 +19,9 @@ public class ServantProperties {
         this.mana = hogouMana;
     }
 
-    public ServantProperties read(ServantConfSpec spec) {
-        this.health = spec.health.get();
-        this.strength = spec.strength.get();
-        this.armor = spec.armor.get();
-        this.block = spec.block.get().floatValue();
-        this.proj = spec.proj.get();
-        this.magic = spec.magic.get();
-        this.move = spec.move.get();
-        this.mana = spec.mana.get();
-        return this;
+    public static ServantProperties read(ServantConfSpec spec) {
+        return new ServantProperties(spec.health.get(), spec.strength.get(), spec.armor.get(), spec.block.get().floatValue()
+                , spec.proj.get(), spec.magic.get(), spec.move.get(), spec.mana.get());
     }
 
     public double health() {

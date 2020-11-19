@@ -35,7 +35,7 @@ public class EventHandler {
     }
 
     @SubscribeEvent
-    public static void serverStart(RegisterCommandsEvent event) {
+    public static void command(RegisterCommandsEvent event) {
         CommandHandler.reg(event.getDispatcher());
     }
 

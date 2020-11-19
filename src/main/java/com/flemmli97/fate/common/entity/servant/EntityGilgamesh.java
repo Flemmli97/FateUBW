@@ -27,7 +27,7 @@ public class EntityGilgamesh extends EntityServant {
         super(entityType, world, "Enuma Elish");
         this.revealServant();
         if (world != null && !world.isRemote)
-            this.goalSelector.addGoal(1, this.attackAI);
+            this.goalSelector.addGoal(0, this.attackAI);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class EntityGilgamesh extends EntityServant {
         if (this.commandBehaviour == EnumServantUpdate.STAY)
             this.goalSelector.removeGoal(this.attackAI);
         else
-            this.goalSelector.addGoal(1, this.attackAI);
+            this.goalSelector.addGoal(0, this.attackAI);
     }
 
     @Override
