@@ -20,7 +20,9 @@ import com.flemmli97.fate.client.render.servant.RenderEmiya;
 import com.flemmli97.fate.client.render.servant.RenderGilgamesh;
 import com.flemmli97.fate.client.render.servant.RenderGilles;
 import com.flemmli97.fate.client.render.servant.RenderHassan;
+import com.flemmli97.fate.client.render.servant.RenderIskander;
 import com.flemmli97.fate.client.render.servant.RenderLancelot;
+import com.flemmli97.fate.client.render.servant.RenderMedea;
 import com.flemmli97.fate.common.blocks.BlockChalkLine;
 import com.flemmli97.fate.common.registry.ModBlocks;
 import com.flemmli97.fate.common.registry.ModEntities;
@@ -63,6 +65,8 @@ public class ClientHandler {
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.gilles.get(), RenderGilles::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.lancelot.get(), RenderLancelot::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.hassan.get(), RenderHassan::new);
+        RenderingRegistry.registerEntityRenderingHandler(ModEntities.iskander.get(), RenderIskander::new);
+        RenderingRegistry.registerEntityRenderingHandler(ModEntities.medea.get(), RenderMedea::new);
 
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.excalibur.get(), RenderExcalibur::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.gaebolg.get(), RenderGaeBolg::new);
