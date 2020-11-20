@@ -86,7 +86,7 @@ public class ItemArcherBow extends BowItem {
             int i = this.getUseDuration(stack) - timeLeft;
 
             if (flag) {
-                float f = getArrowVelocity(i)*1.2f;
+                float f = getArrowVelocity(i) * 1.2f;
                 if (f >= 0.1D) {
                     if (!world.isRemote) {
                         EntityArcherArrow arrow = new EntityArcherArrow(player.world, player);

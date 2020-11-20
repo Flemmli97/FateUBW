@@ -26,7 +26,7 @@ public class FollowMasterGoal<T extends CreatureEntity & IOwnable> extends Goal 
     private final Predicate<T> additionalPred;
 
     public FollowMasterGoal(T goalOwner, double teleport, float minDistance, float maxDistance) {
-        this(goalOwner, teleport, minDistance, maxDistance, s->false);
+        this(goalOwner, teleport, minDistance, maxDistance, s -> false);
     }
 
     public FollowMasterGoal(T goalOwner, double teleport, float minDistance, float maxDistance, Predicate<T> more) {

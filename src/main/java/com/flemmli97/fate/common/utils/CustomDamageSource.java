@@ -1,5 +1,6 @@
 package com.flemmli97.fate.common.utils;
 
+import com.flemmli97.fate.common.entity.EntityGordiusWheel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.DamageSource;
@@ -36,7 +37,7 @@ public class CustomDamageSource {
         return (new EntityDamageSource("tsubame", sourceEntity)).setDamageBypassesArmor();
     }
 
-    /*public static DamageSource gordiusTrample(EntityGordiusWheel source, LivingEntity sourceEntity) {
+    public static DamageSource gordiusTrample(EntityGordiusWheel source, LivingEntity sourceEntity) {
         return (new IndirectEntityDamageSource("gordius", source, sourceEntity));
-    }*/
+    }
 }

@@ -3,8 +3,8 @@ package com.flemmli97.fate.common.utils;
 import com.flemmli97.fate.common.capability.IPlayer;
 import com.flemmli97.fate.common.capability.PlayerCapProvider;
 import com.flemmli97.fate.common.entity.servant.EntityServant;
-import com.flemmli97.fate.common.world.TruceHandler;
 import com.flemmli97.fate.common.registry.FateAttributes;
+import com.flemmli97.fate.common.world.TruceHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.server.ServerWorld;
@@ -49,7 +49,7 @@ public class Utils {
 
     public static EntityServant getServant(PlayerEntity player) {
         Optional<IPlayer> cap = player.getCapability(PlayerCapProvider.PlayerCap).resolve();
-        if(cap.isPresent())
+        if (cap.isPresent())
             return cap.get().getServant(player);
         return null;
     }

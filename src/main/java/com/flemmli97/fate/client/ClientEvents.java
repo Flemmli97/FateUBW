@@ -1,17 +1,12 @@
 package com.flemmli97.fate.client;
 
 import com.flemmli97.fate.Fate;
-import com.flemmli97.fate.client.gui.ManaBar;
 import com.flemmli97.fate.common.utils.EnumServantUpdate;
 import com.flemmli97.fate.network.C2SServantCommand;
 import com.flemmli97.fate.network.PacketHandler;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 

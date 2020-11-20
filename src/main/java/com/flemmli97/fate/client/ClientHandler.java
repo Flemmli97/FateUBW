@@ -76,9 +76,9 @@ public class ClientHandler {
 
         ClientRegistry.bindTileEntityRenderer(ModBlocks.tileAltar.get(), RenderAltar::new);
 
-        RenderTypeLookup.setRenderLayer(ModBlocks.crystalOre.get(), type->true);
-        RenderTypeLookup.setRenderLayer(ModBlocks.charmOre.get(), type->true);
-        for(RegistryObject<BlockChalkLine> e : ModBlocks.chalks.values())
+        RenderTypeLookup.setRenderLayer(ModBlocks.crystalOre.get(), type -> true);
+        RenderTypeLookup.setRenderLayer(ModBlocks.charmOre.get(), type -> true);
+        for (RegistryObject<BlockChalkLine> e : ModBlocks.chalks.values())
             RenderTypeLookup.setRenderLayer(e.get(), RenderType.getCutout());
         manaBar = new ManaBar(Minecraft.getInstance());
 
@@ -92,19 +92,19 @@ public class ClientHandler {
         return Minecraft.getInstance().player;
     }
 
-    public static void displayCommandGui(){
+    public static void displayCommandGui() {
         Minecraft.getInstance().displayGuiScreen(new CommandGui());
     }
 
-    public static void openGrailGui(Set<String> rewards){
+    public static void openGrailGui(Set<String> rewards) {
         Minecraft.getInstance().displayGuiScreen(new GuiHolyGrail(rewards));
     }
 
-    public static void grailData(Set<GameProfile> set){
-        grailPlayers = ImmutableList.copyOf(set.stream().sorted(sortName).filter(prof->prof.getId().equals(Minecraft.getInstance().player.getUniqueID())).iterator());
+    public static void grailData(Set<GameProfile> set) {
+        grailPlayers = ImmutableList.copyOf(set.stream().sorted(sortName).filter(prof -> prof.getId().equals(Minecraft.getInstance().player.getUniqueID())).iterator());
     }
 
-    public static void truceData(Set<GameProfile> t, Set<GameProfile> p, Set<GameProfile> r){
+    public static void truceData(Set<GameProfile> t, Set<GameProfile> p, Set<GameProfile> r) {
         truce = ImmutableSet.copyOf(t.stream().sorted(sortName).iterator());
         pending = ImmutableSet.copyOf(p.stream().sorted(sortName).iterator());
         requests = ImmutableSet.copyOf(r.stream().sorted(sortName).iterator());

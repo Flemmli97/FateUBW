@@ -2,9 +2,7 @@ package com.flemmli97.fate.common.world;
 
 import com.flemmli97.fate.common.capability.PlayerCapProvider;
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Maps;
 import com.google.common.collect.SetMultimap;
-import com.google.common.collect.Sets;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -14,12 +12,10 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -66,7 +62,7 @@ public class TruceHandler extends WorldSavedData {
     }
 
     public Set<UUID> outgoingRequests(PlayerEntity player) {
-        return this.pendingRequests.asMap().entrySet().stream().filter(e->e.getValue().contains(player.getUniqueID()))
+        return this.pendingRequests.asMap().entrySet().stream().filter(e -> e.getValue().contains(player.getUniqueID()))
                 .map(Map.Entry::getKey).collect(Collectors.toSet());
     }
 

@@ -83,7 +83,7 @@ public class EntityGilles extends EntityServant {
             if (this.world.getEntitiesWithinAABB(EntityLesserMonster.class, this.getBoundingBox().grow(16)).size() < Config.Common.gillesMinionAmount) {
                 EntityLesserMonster minion = new EntityLesserMonster(this.world, this);
                 BlockPos pos = RayTraceUtils.randomPosAround(world, minion, this.getBlockPos(), 9, true, this.getRNG());
-                if(pos != null) {
+                if (pos != null) {
                     minion.setLocationAndAngles(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5, MathHelper.wrapDegrees(this.world.rand.nextFloat() * 360.0F), 0.0F);
                     this.world.addEntity(minion);
                     minion.setAttackTarget(this.getAttackTarget());

@@ -7,7 +7,7 @@ public class AdvancementRegister {
 
     public static GrailWarTrigger grailWarTrigger;
 
-    public static void init(){
+    public static void init() {
         grailWarTrigger = CriteriaTriggers.register(new GrailWarTrigger());
     }
 }

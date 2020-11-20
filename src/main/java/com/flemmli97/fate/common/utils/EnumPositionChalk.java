@@ -1,7 +1,5 @@
 package com.flemmli97.fate.common.utils;
 
-import net.minecraft.util.IStringSerializable;
-
 public enum EnumPositionChalk {
 
     /**

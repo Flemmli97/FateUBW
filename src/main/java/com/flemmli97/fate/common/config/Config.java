@@ -49,7 +49,7 @@ public class Config {
         public static float gordiusDmg;
         public static double pegasusHealth;
         public static int medeaCircleSpan;
-        public static double medeaCircleRange;
+        public static float medeaCircleRange;
         public static ServantProperties hassanCopyProps = new ServantProperties(50, 5, 6.5, 0, 12, 2, 0.34, 0);
 
         public static void load() {
@@ -91,7 +91,7 @@ public class Config {
             gordiusDmg = ConfigSpecs.commonConf.gordiusDmg.get().floatValue();
             pegasusHealth = ConfigSpecs.commonConf.pegasusHealth.get();
             medeaCircleSpan = ConfigSpecs.commonConf.medeaCircleSpan.get();
-            medeaCircleRange = ConfigSpecs.commonConf.medeaCircleRange.get();
+            medeaCircleRange = ConfigSpecs.commonConf.medeaCircleRange.get().floatValue();
             hassanCopyProps = ServantProperties.read(ConfigSpecs.commonConf.hassanCopyProps);
         }
     }

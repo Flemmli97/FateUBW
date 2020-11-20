@@ -2,18 +2,26 @@ package com.flemmli97.fate.common.entity;
 
 import com.flemmli97.fate.common.config.Config;
 import com.flemmli97.fate.common.entity.ai.AnimatedMeleeGoal;
+import com.flemmli97.fate.common.entity.ai.TargetOwnerEnemyGoal;
 import com.flemmli97.fate.common.entity.servant.EntityHassan;
 import com.flemmli97.fate.common.entity.servant.EntityServant;
 import com.flemmli97.fate.common.entity.servant.ai.FollowMasterGoal;
 import com.flemmli97.fate.common.registry.FateAttributes;
+import com.flemmli97.fate.common.registry.ModEntities;
+import com.flemmli97.fate.common.registry.ModItems;
 import com.flemmli97.tenshilib.api.entity.IAnimated;
 import com.flemmli97.tenshilib.api.entity.IOwnable;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import com.flemmli97.tenshilib.common.entity.EntityUtil;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
@@ -21,11 +29,13 @@ import net.minecraft.util.Util;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
 
 import java.util.UUID;
 
-public class EntityHassanCopy extends CreatureEntity implements IAnimated, IOwnable<EntityHassan> {
+public class EntityHassanCopy extends CreatureEntity implements IAnimated, IOwnable<EntityHassan>, IServantMinion {
 
     private UUID ownerUUID;
     private EntityHassan owner;
@@ -43,8 +53,20 @@ public class EntityHassanCopy extends CreatureEntity implements IAnimated, IOwna
     }
 
     public EntityHassanCopy(World world, EntityHassan entityHassan) {
-        this(null, world);
+        this(ModEntities.hassanCopy.get(), world);
         this.setOriginal(entityHassan);
+    }
+
+    @Override
+    protected void setEquipmentBasedOnDifficulty(DifficultyInstance difficulty) {
+        this.setItemStackToSlot(EquipmentSlotType.MAINHAND, new ItemStack(ModItems.assassinDagger.get()));
+    }
+
+    @Override
+    public ILivingEntityData onInitialSpawn(IServerWorld world, DifficultyInstance difficulty, SpawnReason reason, ILivingEntityData data, CompoundNBT nbt) {
+        super.onInitialSpawn(world, difficulty, reason, data, nbt);
+        this.setEquipmentBasedOnDifficulty(difficulty);
+        return data;
     }
 
     public void setOriginal(EntityHassan entityHassan) {
@@ -57,6 +79,7 @@ public class EntityHassanCopy extends CreatureEntity implements IAnimated, IOwna
         this.goalSelector.addGoal(0, new AnimatedMeleeGoal<>(this, m -> AnimatedAction.vanillaAttack));
         this.goalSelector.addGoal(1, new FollowMasterGoal<>(this, 16.0D, 9.0F, 3.0F));
         this.goalSelector.addGoal(3, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
+        this.targetSelector.addGoal(0, new TargetOwnerEnemyGoal<>(this));
     }
 
     private void updateAttributes() {
@@ -108,7 +131,7 @@ public class EntityHassanCopy extends CreatureEntity implements IAnimated, IOwna
     @Override
     public boolean attackEntityFrom(DamageSource damageSource, float damage) {
         if (damageSource == DamageSource.OUT_OF_WORLD) {
-            return this.attackEntityFrom(damageSource, damage);
+            return super.attackEntityFrom(damageSource, damage);
         } else {
             if (!(damageSource.getTrueSource() instanceof EntityServant || damageSource.getTrueSource() instanceof IServantMinion))
                 damage *= 0.5;
@@ -119,7 +142,7 @@ public class EntityHassanCopy extends CreatureEntity implements IAnimated, IOwna
                     damageSource.getImmediateSource().remove();
                 return false;
             }
-            return this.attackEntityFrom(damageSource, Math.min(50, damage));
+            return super.attackEntityFrom(damageSource, Math.min(50, damage));
         }
     }
 

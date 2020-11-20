@@ -97,7 +97,7 @@ public class ConfigSpecs {
                 this.attributes.put(e.getKey(), new ServantConfSpec(builder, e.getValue()));
                 if (e.getKey().equals(LibEntities.lancelot.toString()))
                     this.lancelotReflectChance = builder.comment("Chance for lancelot to reflect a blocked projectile").define("Projectile Reflect Chance", 0.3);
-                if(e.getKey().equals(LibEntities.hassan.toString()))
+                if (e.getKey().equals(LibEntities.hassan.toString()))
                     this.hassanCopies = builder.comment("Amount of copies hassan can call").define("Hassan Copies", 5);
                 builder.pop();
             }

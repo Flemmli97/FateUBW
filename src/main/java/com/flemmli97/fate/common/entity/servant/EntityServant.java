@@ -225,7 +225,8 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated,
     }
 
     @Override
-    public ILivingEntityData onInitialSpawn(IServerWorld world, DifficultyInstance difficulty, SpawnReason reason, ILivingEntityData data, CompoundNBT p_213386_5_) {
+    public ILivingEntityData onInitialSpawn(IServerWorld world, DifficultyInstance difficulty, SpawnReason reason, ILivingEntityData data, CompoundNBT nbt) {
+        super.onInitialSpawn(world, difficulty, reason, data, nbt);
         this.setEquipmentBasedOnDifficulty(difficulty);
         return data;
     }
@@ -311,7 +312,7 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated,
     @Override
     public void writeAdditional(CompoundNBT tag) {
         super.writeAdditional(tag);
-        if(this.hasOwner())
+        if (this.hasOwner())
             tag.putUniqueId("Owner", this.dataManager.get(ownerUUID).get());
         tag.putBoolean("CanUseNP", this.canUseNP);
         tag.putInt("Death", this.deathTime);
@@ -326,7 +327,7 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated,
     @Override
     public void readAdditional(CompoundNBT tag) {
         super.readAdditional(tag);
-        if(tag.contains("Owner"))
+        if (tag.contains("Owner"))
             this.dataManager.set(ownerUUID, Optional.of(tag.getUniqueId("Owner")));
         this.canUseNP = tag.getBoolean("CanUseNP");
         this.deathTime = tag.getInt("Death");
@@ -399,14 +400,13 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated,
             this.regenMana();
             this.combatTick = Math.max(0, --this.combatTick);
             if (!this.disableChunkload) {
-                if(!this.chunkTracked) {
+                if (!this.chunkTracked) {
                     GrailWarHandler.get((ServerWorld) this.world).track(this);
                     this.chunkTracked = true;
                 }
                 ChunkPos pos = new ChunkPos(this.chunkCoordX, this.chunkCoordZ);
                 ((ServerChunkProvider) this.world.getChunkProvider()).registerTicket(TicketType.UNKNOWN, pos, 1, pos);
-            }
-            else
+            } else
                 this.chunkTracked = false;
             if (this.getOwner() != null && !this.tracked.contains(this.getOwner()))
                 this.updateDataManager((ServerPlayerEntity) this.getOwner());
@@ -492,7 +492,7 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated,
     @Override
     public void remove(boolean keepData) {
         super.remove(keepData);
-        if(!this.world.isRemote)
+        if (!this.world.isRemote)
             GrailWarHandler.get((ServerWorld) this.world).untrack(this);
     }
 	/*@Override

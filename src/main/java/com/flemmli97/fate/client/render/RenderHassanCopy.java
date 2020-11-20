@@ -1,7 +1,7 @@
 package com.flemmli97.fate.client.render;
 
 import com.flemmli97.fate.Fate;
-import com.flemmli97.fate.client.model.servant.ModelHassanCopy;
+import com.flemmli97.fate.client.model.ModelHassanCopy;
 import com.flemmli97.fate.common.entity.EntityHassanCopy;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.LivingRenderer;

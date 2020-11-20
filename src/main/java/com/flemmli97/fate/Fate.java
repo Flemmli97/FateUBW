@@ -12,7 +12,6 @@ import com.flemmli97.fate.common.registry.ModEntities;
 import com.flemmli97.fate.common.registry.ModItems;
 import com.flemmli97.fate.common.utils.CachedWeaponList;
 import com.flemmli97.fate.network.PacketHandler;
-import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;

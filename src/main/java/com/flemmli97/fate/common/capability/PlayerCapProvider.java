@@ -21,11 +21,11 @@ public class PlayerCapProvider implements ICapabilitySerializable<INBT> {
 
     @Override
     public INBT serializeNBT() {
-        return PlayerCap.getStorage().writeNBT(PlayerCap, this.instance.orElseThrow(()->new NullPointerException("Something went wrong serializing capabilities")), null);
+        return PlayerCap.getStorage().writeNBT(PlayerCap, this.instance.orElseThrow(() -> new NullPointerException("Something went wrong serializing capabilities")), null);
     }
 
     @Override
     public void deserializeNBT(INBT nbt) {
-        PlayerCap.getStorage().readNBT(PlayerCap, this.instance.orElseThrow(()->new NullPointerException("Something went wrong deserializing capabilities")), null, nbt);
+        PlayerCap.getStorage().readNBT(PlayerCap, this.instance.orElseThrow(() -> new NullPointerException("Something went wrong deserializing capabilities")), null, nbt);
     }
 }

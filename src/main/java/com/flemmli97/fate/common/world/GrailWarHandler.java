@@ -9,8 +9,8 @@ import com.flemmli97.fate.common.registry.ModItems;
 import com.flemmli97.fate.common.utils.EnumServantType;
 import com.flemmli97.fate.common.utils.SummonUtils;
 import com.flemmli97.fate.common.utils.Utils;
-import com.flemmli97.fate.network.S2CWarData;
 import com.flemmli97.fate.network.PacketHandler;
+import com.flemmli97.fate.network.S2CWarData;
 import com.flemmli97.tenshilib.common.entity.EntityUtil;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -131,10 +131,9 @@ public class GrailWarHandler extends WorldSavedData {
                     if (player instanceof ServerPlayerEntity) {
                         AdvancementRegister.grailWarTrigger.trigger((ServerPlayerEntity) player, false);
                         name = player.getGameProfile().getName();
-                    }
-                    else{
+                    } else {
                         GameProfile prof = player.getServer().getPlayerProfileCache().getProfileByUUID(uuid);
-                        name = prof !=null?prof.getName():"MISSINGNO";
+                        name = prof != null ? prof.getName() : "MISSINGNO";
                     }
                     world.getServer().getPlayerList().broadcastChatMessage(new TranslationTextComponent("chat.grailwar.win", name).formatted(TextFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
                 }
@@ -284,7 +283,7 @@ public class GrailWarHandler extends WorldSavedData {
             int x = player.getBlockPos().getX() + world.rand.nextInt(64) + 48;
             int z = player.getBlockPos().getZ() + world.rand.nextInt(64) + 48;
             Chunk chunk = world.getChunk(x >> 4, z >> 4);
-            int y = chunk.getTopBlockY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, x, z)+1;
+            int y = chunk.getTopBlockY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, x, z) + 1;
             EntityServant servant = SummonUtils.randomServant(world);
             if (servant != null) {
                 servant.setLocationAndAngles(x, y, z, world.rand.nextFloat() * 360.0F, 0);
@@ -308,8 +307,8 @@ public class GrailWarHandler extends WorldSavedData {
         }
     }
 
-    private boolean notify(ResourceLocation loc){
-        return Config.Common.whiteList?Config.Common.notifyBlackList.contains(loc):!Config.Common.notifyBlackList.contains(loc);
+    private boolean notify(ResourceLocation loc) {
+        return Config.Common.whiteList ? Config.Common.notifyBlackList.contains(loc) : !Config.Common.notifyBlackList.contains(loc);
     }
 
     public void untrack(EntityServant servant) {

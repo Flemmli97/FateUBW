@@ -10,9 +10,9 @@ import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 public class DataEvent {
 
     @SubscribeEvent
-    public static void data(GatherDataEvent event){
+    public static void data(GatherDataEvent event) {
         DataGenerator data = event.getGenerator();
-        if(event.includeClient()) {
+        if (event.includeClient()) {
             data.addProvider(new BlockStates(data, event.getExistingFileHelper()));
             data.addProvider(new ItemModels(data, event.getExistingFileHelper()));
             data.addProvider(new Lang(data));

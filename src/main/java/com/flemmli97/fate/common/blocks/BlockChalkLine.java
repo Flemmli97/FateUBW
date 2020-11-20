@@ -2,10 +2,8 @@ package com.flemmli97.fate.common.blocks;
 
 import com.flemmli97.fate.common.utils.EnumPositionChalk;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.CarpetBlock;
 import net.minecraft.block.HorizontalBlock;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
@@ -45,7 +43,7 @@ public class BlockChalkLine extends Block {
     public BlockState updatePostPlacement(BlockState state, Direction direction, BlockState stateNew, IWorld world, BlockPos pos, BlockPos posNew) {
         return !state.isValidPosition(world, pos) ? Blocks.AIR.getDefaultState() : super.updatePostPlacement(state, direction, stateNew, world, pos, posNew);
     }
-    
+
     @Override
     public boolean isValidPosition(BlockState state, IWorldReader reader, BlockPos pos) {
         return !reader.isAirBlock(pos.down());

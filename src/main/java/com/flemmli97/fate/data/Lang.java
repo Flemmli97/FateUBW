@@ -13,7 +13,7 @@ public class Lang extends LanguageProvider {
 
     @Override
     protected void addTranslations() {
-        for(SpawnEgg egg : SpawnEgg.getEggs())
-            this.add(egg, "%s"+" Spawn Egg");
+        for (SpawnEgg egg : SpawnEgg.getEggs())
+            this.add(egg, "%s" + " Spawn Egg");
     }
 }

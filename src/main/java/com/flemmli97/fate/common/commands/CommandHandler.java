@@ -10,9 +10,9 @@ import net.minecraft.world.server.ServerWorld;
 
 public class CommandHandler {
 
-    public static void reg(CommandDispatcher<CommandSource> dispatcher){
+    public static void reg(CommandDispatcher<CommandSource> dispatcher) {
         dispatcher.register(Commands.literal("fate")
-                .then(Commands.literal("reset").requires(src->src.hasPermissionLevel(2)).executes(CommandHandler::resetWar))
+                .then(Commands.literal("reset").requires(src -> src.hasPermissionLevel(2)).executes(CommandHandler::resetWar))
         );
     }
 

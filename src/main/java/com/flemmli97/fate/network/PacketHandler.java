@@ -37,8 +37,8 @@ public class PacketHandler {
         dispatcher.sendTo(message, player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
     }
 
-    public static void vanillaChunkPkt(IPacket<?> pkt, ServerWorld world, BlockPos pos){
-        PacketDistributor.TRACKING_CHUNK.with(()->world.getChunkAt(pos)).send(pkt);
+    public static void vanillaChunkPkt(IPacket<?> pkt, ServerWorld world, BlockPos pos) {
+        PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos)).send(pkt);
     }
 
     public static <T> void sendToServer(T message) {

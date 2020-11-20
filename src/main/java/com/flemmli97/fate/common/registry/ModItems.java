@@ -13,9 +13,12 @@ import com.flemmli97.fate.common.items.weapons.ItemEA;
 import com.flemmli97.fate.common.items.weapons.ItemExcalibur;
 import com.flemmli97.fate.common.items.weapons.ItemGaeBolg;
 import com.flemmli97.fate.common.items.weapons.ItemGrimoire;
+import com.flemmli97.fate.common.items.weapons.ItemKatana;
+import com.flemmli97.fate.common.items.weapons.ItemStaff;
 import com.flemmli97.fate.common.lib.ItemTiers;
 import com.flemmli97.fate.common.utils.EnumServantType;
 import com.google.common.collect.Lists;
+import net.minecraft.item.AxeItem;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -49,7 +52,13 @@ public class ModItems {
     public static final RegistryObject<Item> enumaelish = ITEMS.register("enuma_elish", () -> new ItemEA(new Item.Properties().group(Fate.TAB)));
     public static final RegistryObject<Item> grimoire = ITEMS.register("prelati", () -> new ItemGrimoire(new Item.Properties().group(Fate.TAB)));
     public static final RegistryObject<Item> arondight = ITEMS.register("arondight", () -> new SwordItem(ItemTiers.arondight, 0, -2.4f, new Item.Properties().group(Fate.TAB)));
-    public static final RegistryObject<Item> dagger = ITEMS.register("dagger", () -> new ItemDagger(ItemTiers.dagger, 0, -1.8f, new Item.Properties().group(Fate.TAB)));
+    public static final RegistryObject<Item> medusaDagger = ITEMS.register("dagger", () -> new ItemDagger(ItemTiers.dagger, 0, -2.0f, new Item.Properties().group(Fate.TAB)));
+    public static final RegistryObject<Item> kupriots = ITEMS.register("kupriots", () -> new SwordItem(ItemTiers.kupriots, 0, -2.4f, new Item.Properties().group(Fate.TAB)));
+    public static final RegistryObject<Item> assassinDagger = ITEMS.register("assassin_dagger", () -> new ItemDagger(ItemTiers.assassinDagger, 0, -1.8f, new Item.Properties().group(Fate.TAB)));
+    public static final RegistryObject<Item> staff = ITEMS.register("staff", () -> new ItemStaff(new Item.Properties().group(Fate.TAB)));
+    public static final RegistryObject<Item> heraclesAxe = ITEMS.register("staff", () -> new AxeItem(ItemTiers.heraclesAxe, 0, -2.9f, new Item.Properties().group(Fate.TAB)));
+    public static final RegistryObject<Item> ruleBreaker = ITEMS.register("rule_breaker", () -> new SwordItem(ItemTiers.ruleBreaker, 0, -2.4f, new Item.Properties().group(Fate.TAB)));
+    public static final RegistryObject<Item> katana = ITEMS.register("katana", () -> new ItemKatana(ItemTiers.katana, 0, -2.6f, new Item.Properties().group(Fate.TAB)));
 
     public static final RegistryObject<Item> charmNone = registercharm(EnumServantType.NOTASSIGNED);
     public static final RegistryObject<Item> charmSaber = registercharm(EnumServantType.SABER);

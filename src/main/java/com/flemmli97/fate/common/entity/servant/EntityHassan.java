@@ -9,7 +9,6 @@ import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -34,7 +33,7 @@ import java.util.UUID;
 public class EntityHassan extends EntityServant {
 
     public final HassanAttackGoal attackAI = new HassanAttackGoal(this);
-    private static final AnimatedAction npAttack = new AnimatedAction(20, 0, "np");
+    private static final AnimatedAction npAttack = new AnimatedAction(20, 1, "np");
     private static final AnimatedAction[] anims = new AnimatedAction[]{AnimatedAction.vanillaAttack, npAttack};
 
     private Set<UUID> copies = Sets.newHashSet();
@@ -47,7 +46,7 @@ public class EntityHassan extends EntityServant {
 
     @Override
     protected void setEquipmentBasedOnDifficulty(DifficultyInstance difficulty) {
-        this.setItemStackToSlot(EquipmentSlotType.MAINHAND, new ItemStack(ModItems.dagger.get()));
+        this.setItemStackToSlot(EquipmentSlotType.MAINHAND, new ItemStack(ModItems.assassinDagger.get()));
     }
 
     @Override
@@ -88,7 +87,7 @@ public class EntityHassan extends EntityServant {
         return false;
     }
 
-    private List<EntityHassanCopy> gatherCopies() {
+    public List<EntityHassanCopy> gatherCopies() {
         ArrayList<EntityHassanCopy> list = Lists.newArrayList();
         for (EntityHassanCopy e : this.world.getEntitiesWithinAABB(EntityHassanCopy.class, this.getBoundingBox().grow(32))) {
             if (this.copies.contains(e.getUniqueID())) {
@@ -97,15 +96,6 @@ public class EntityHassan extends EntityServant {
             }
         }
         return list;
-    }
-
-    @Override
-    public void setAttackTarget(LivingEntity target) {
-        this.gatherCopies().forEach(hassan->{
-            if (hassan != null && hassan.isAlive())
-                hassan.setAttackTarget(target);
-        });
-        super.setAttackTarget(target);
     }
 
     @Override
@@ -122,7 +112,6 @@ public class EntityHassan extends EntityServant {
             for (int i = 0; i < Config.Common.hassanCopies; i++) {
                 EntityHassanCopy hassan = new EntityHassanCopy(this.world, this);
                 hassan.setLocationAndAngles(this.getX(), this.getY(), this.getZ(), MathHelper.wrapDegrees(this.world.rand.nextFloat() * 360.0F), 0.0F);
-                hassan.setAttackTarget(this.getAttackTarget());
                 hassan.onInitialSpawn((IServerWorld) this.world, this.world.getDifficultyForLocation(this.getBlockPos()), SpawnReason.MOB_SUMMONED, null, null);
                 this.world.addEntity(hassan);
                 this.addCopy(hassan);
@@ -139,7 +128,7 @@ public class EntityHassan extends EntityServant {
     public void writeAdditional(CompoundNBT tag) {
         super.writeAdditional(tag);
         ListNBT copies = new ListNBT();
-        this.copies.forEach(hassan->copies.add(NBTUtil.fromUuid(hassan)));
+        this.copies.forEach(hassan -> copies.add(NBTUtil.fromUuid(hassan)));
         tag.put("Copies", copies);
     }
 
@@ -147,6 +136,5 @@ public class EntityHassan extends EntityServant {
     public void readAdditional(CompoundNBT tag) {
         super.readAdditional(tag);
         tag.getList("Copies", Constants.NBT.TAG_INT_ARRAY).forEach(nbt -> this.copies.add(NBTUtil.readUniqueId(nbt)));
-        this.gatherCopies();
     }
 }

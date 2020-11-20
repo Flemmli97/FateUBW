@@ -4,8 +4,6 @@ import com.flemmli97.fate.common.entity.servant.EntityServant;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.ChunkPos;
@@ -26,13 +24,13 @@ public class ServantTracker {
         this.servants.add(entity);
     }
 
-    public void remove(EntityServant entity){
+    public void remove(EntityServant entity) {
         this.servants.remove(entity);
     }
 
     public void onLoad(ServerWorld world) {
-        if(pos != null) {
-            this.pos.forEach((c,r) -> {
+        if (pos != null) {
+            this.pos.forEach((c, r) -> {
                 if (world.getRegistryKey().equals(r))
                     world.getChunkProvider().registerTicket(TicketType.UNKNOWN, c, 1, c);
                 else {
@@ -44,17 +42,17 @@ public class ServantTracker {
         }
     }
 
-    public CompoundNBT onSave(CompoundNBT nbt){
+    public CompoundNBT onSave(CompoundNBT nbt) {
         CompoundNBT tag = new CompoundNBT();
-        this.servants.forEach(servant->tag.putString("L:"+ChunkPos.asLong(servant.chunkCoordX, servant.chunkCoordZ),
+        this.servants.forEach(servant -> tag.putString("L:" + ChunkPos.asLong(servant.chunkCoordX, servant.chunkCoordZ),
                 servant.world.getRegistryKey().getValue().toString()));
         nbt.put("ToLoadChunks", tag);
         return nbt;
     }
 
-    public void load(CompoundNBT nbt){
+    public void load(CompoundNBT nbt) {
         this.pos = Maps.newHashMap();
         CompoundNBT tag = nbt.getCompound("ToLoadChunks");
-        tag.keySet().forEach(cl-> this.pos.put(new ChunkPos(Long.parseLong(cl.substring(2))), RegistryKey.of(Registry.DIMENSION, new ResourceLocation(tag.getString(cl)))));
+        tag.keySet().forEach(cl -> this.pos.put(new ChunkPos(Long.parseLong(cl.substring(2))), RegistryKey.of(Registry.DIMENSION, new ResourceLocation(tag.getString(cl)))));
     }
 }
