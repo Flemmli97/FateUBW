@@ -6,11 +6,14 @@ import com.flemmli97.fate.common.entity.servant.ai.GillesAttackGoal;
 import com.flemmli97.fate.common.registry.ModItems;
 import com.flemmli97.fate.common.utils.EnumServantUpdate;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
+import com.flemmli97.tenshilib.common.utils.RayTraceUtils;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
@@ -47,7 +50,7 @@ public class EntityGilles extends EntityServant {
 
     @Override
     public int attackCooldown(AnimatedAction anim) {
-        return 60;
+        return 90;
     }
 
     @Override
@@ -79,9 +82,13 @@ public class EntityGilles extends EntityServant {
         if (!this.world.isRemote) {
             if (this.world.getEntitiesWithinAABB(EntityLesserMonster.class, this.getBoundingBox().grow(16)).size() < Config.Common.gillesMinionAmount) {
                 EntityLesserMonster minion = new EntityLesserMonster(this.world, this);
-                this.world.addEntity(minion);
-                minion.setAttackTarget(this.getAttackTarget());
-                this.revealServant();
+                BlockPos pos = RayTraceUtils.randomPosAround(world, minion, this.getBlockPos(), 9, true, this.getRNG());
+                if(pos != null) {
+                    minion.setLocationAndAngles(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5, MathHelper.wrapDegrees(this.world.rand.nextFloat() * 360.0F), 0.0F);
+                    this.world.addEntity(minion);
+                    minion.setAttackTarget(this.getAttackTarget());
+                    this.revealServant();
+                }
             }
         }
     }

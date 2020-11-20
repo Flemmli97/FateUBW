@@ -6,14 +6,16 @@ import com.flemmli97.fate.common.config.ServantProperties;
 import com.flemmli97.fate.common.entity.IServantMinion;
 import com.flemmli97.fate.common.entity.servant.ai.FollowMasterGoal;
 import com.flemmli97.fate.common.entity.servant.ai.RetaliateGoal;
-import com.flemmli97.fate.common.world.GrailWarHandler;
 import com.flemmli97.fate.common.registry.FateAttributes;
 import com.flemmli97.fate.common.registry.ModEntities;
 import com.flemmli97.fate.common.utils.EnumServantType;
 import com.flemmli97.fate.common.utils.EnumServantUpdate;
 import com.flemmli97.fate.common.utils.Utils;
+import com.flemmli97.fate.common.world.GrailWarHandler;
 import com.flemmli97.tenshilib.api.entity.IAnimated;
+import com.flemmli97.tenshilib.api.entity.IOwnable;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
+import com.flemmli97.tenshilib.common.entity.ai.MoveControllerPlus;
 import com.flemmli97.tenshilib.common.utils.NBTUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -32,12 +34,11 @@ import net.minecraft.entity.ai.goal.LookRandomlyGoal;
 import net.minecraft.entity.ai.goal.MoveTowardsRestrictionGoal;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.ai.goal.OpenDoorGoal;
-import net.minecraft.entity.ai.goal.RandomWalkingGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
+import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
 import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.monster.MonsterEntity;
-import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -67,11 +68,12 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.server.TicketType;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-public abstract class EntityServant extends CreatureEntity implements IAnimated {
+public abstract class EntityServant extends CreatureEntity implements IAnimated, IOwnable<PlayerEntity> {
 
     //Mana
     private int servantMana, antiRegen, counter;
@@ -98,7 +100,7 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated 
 
     protected static final DataParameter<Boolean> showServant = EntityDataManager.createKey(EntityServant.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<Boolean> stationary = EntityDataManager.createKey(EntityServant.class, DataSerializers.BOOLEAN);
-    protected static final DataParameter<String> ownerUUID = EntityDataManager.createKey(EntityServant.class, DataSerializers.STRING);
+    protected static final DataParameter<Optional<UUID>> ownerUUID = EntityDataManager.createKey(EntityServant.class, DataSerializers.OPTIONAL_UNIQUE_ID);
 
     private ServantProperties prop;
 
@@ -114,16 +116,15 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated 
     public NearestAttackableTargetGoal<PlayerEntity> targetPlayer = new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 0, true, true, targetPred);
     public NearestAttackableTargetGoal<MobEntity> targetMob = new NearestAttackableTargetGoal<MobEntity>(this, MobEntity.class, 10, true, true, targetPred);
 
-    public FollowMasterGoal follow = new FollowMasterGoal(this, 16.0D, 9.0F, 3.0F);
+    public FollowMasterGoal<EntityServant> follow = new FollowMasterGoal<>(this, 16.0D, 9.0F, 3.0F, s -> s.isStaying());
     public RetaliateGoal targetHurt = new RetaliateGoal(this);
     public MoveTowardsRestrictionGoal restrictArea = new MoveTowardsRestrictionGoal(this, 1.0D);
-    public RandomWalkingGoal wander = new RandomWalkingGoal(this, 1.0D);
+    public WaterAvoidingRandomWalkingGoal wander = new WaterAvoidingRandomWalkingGoal(this, 1.0D);
 
     public EntityServant(EntityType<? extends EntityServant> entityType, World world, String hogou) {
         super(entityType, world);
+        this.moveController = new MoveControllerPlus(this);
         this.experienceValue = 35;
-        System.out.println(Config.Common.attributes);
-        System.out.println(entityType.getRegistryName());
         this.prop = Config.Common.attributes.getOrDefault(entityType.getRegistryName().toString(), ServantProperties.def);
         if (world != null && !world.isRemote) {
             this.goals();
@@ -146,7 +147,7 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated 
         this.targetSelector.addGoal(2, this.targetPlayer);
     }
 
-    //=========Servant specifig data
+    //=========Servant specific data
     public ServantProperties props() {
         return this.prop;
     }
@@ -220,7 +221,7 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated 
         super.registerData();
         this.dataManager.register(stationary, false);
         this.dataManager.register(showServant, false);
-        this.dataManager.register(ownerUUID, "");
+        this.dataManager.register(ownerUUID, Optional.empty());
     }
 
     @Override
@@ -278,39 +279,40 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated 
      *
      * @return
      */
+    @Override
     public PlayerEntity getOwner() {
         if (this.owner != null && this.owner.isAlive())
             return this.owner;
         if (this.hasOwner())
-            this.owner = this.world.getPlayerByUuid(UUID.fromString(this.dataManager.get(ownerUUID)));
+            this.owner = this.world.getPlayerByUuid(this.dataManager.get(ownerUUID).get());
         return this.owner;
     }
 
     public boolean hasOwner() {
-        return !this.dataManager.get(ownerUUID).isEmpty();
+        return this.dataManager.get(ownerUUID).isPresent();
     }
 
+    @Override
     public UUID ownerUUID() {
-        if (this.hasOwner())
-            return UUID.fromString(this.dataManager.get(ownerUUID));
-        return null;
+        return this.dataManager.get(ownerUUID).orElse(null);
     }
 
     public void setOwner(PlayerEntity player) {
         if (player != null) {
-            this.dataManager.set(ownerUUID, player.getUniqueID().toString());
+            this.dataManager.set(ownerUUID, Optional.of(player.getUniqueID()));
             player.getCapability(PlayerCapProvider.PlayerCap).ifPresent(cap -> cap.setServant(player, this));
         } else
-            this.dataManager.set(ownerUUID, "");
+            this.dataManager.set(ownerUUID, Optional.empty());
         this.owner = player;
-        this.disableChunkload = this.dataManager.get(ownerUUID).isEmpty();
+        this.disableChunkload = !this.hasOwner();
     }
 
     //=====NBT
     @Override
     public void writeAdditional(CompoundNBT tag) {
         super.writeAdditional(tag);
-        tag.putString("Owner", this.dataManager.get(ownerUUID));
+        if(this.hasOwner())
+            tag.putUniqueId("Owner", this.dataManager.get(ownerUUID).get());
         tag.putBoolean("CanUseNP", this.canUseNP);
         tag.putInt("Death", this.deathTime);
         tag.putBoolean("IsDead", this.died);
@@ -324,7 +326,8 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated 
     @Override
     public void readAdditional(CompoundNBT tag) {
         super.readAdditional(tag);
-        this.dataManager.set(ownerUUID, tag.getString("Owner"));
+        if(tag.contains("Owner"))
+            this.dataManager.set(ownerUUID, Optional.of(tag.getUniqueId("Owner")));
         this.canUseNP = tag.getBoolean("CanUseNP");
         this.deathTime = tag.getInt("Death");
         this.died = tag.getBoolean("IsDead");
@@ -589,7 +592,7 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated 
         boolean flag = entity.attackEntityFrom(DamageSource.causeMobDamage(this), f);
         if (flag) {
             if (f1 > 0.0F && entity instanceof LivingEntity) {
-                ((LivingEntity) entity).takeKnockback(f1 * 0.5F, (double) MathHelper.sin(this.rotationYaw * ((float) Math.PI / 180F)), (double) (-MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F))));
+                ((LivingEntity) entity).takeKnockback(f1 * 0.5F, MathHelper.sin(this.rotationYaw * ((float) Math.PI / 180F)), (double) (-MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F))));
                 this.setMotion(this.getMotion().mul(0.6D, 1.0D, 0.6D));
             }
 

@@ -10,6 +10,7 @@ import com.flemmli97.fate.common.entity.EntityEnumaElish;
 import com.flemmli97.fate.common.entity.EntityExcalibur;
 import com.flemmli97.fate.common.entity.EntityGaeBolg;
 import com.flemmli97.fate.common.entity.EntityGem;
+import com.flemmli97.fate.common.entity.EntityHassanCopy;
 import com.flemmli97.fate.common.entity.EntityLesserMonster;
 import com.flemmli97.fate.common.entity.servant.EntityArthur;
 import com.flemmli97.fate.common.entity.servant.EntityCuchulainn;
@@ -17,11 +18,12 @@ import com.flemmli97.fate.common.entity.servant.EntityDiarmuid;
 import com.flemmli97.fate.common.entity.servant.EntityEmiya;
 import com.flemmli97.fate.common.entity.servant.EntityGilgamesh;
 import com.flemmli97.fate.common.entity.servant.EntityGilles;
+import com.flemmli97.fate.common.entity.servant.EntityHassan;
 import com.flemmli97.fate.common.entity.servant.EntityLancelot;
 import com.flemmli97.fate.common.entity.servant.EntityServant;
+import com.flemmli97.fate.common.items.FateEgg;
 import com.flemmli97.fate.common.lib.LibEntities;
 import com.flemmli97.fate.common.utils.EnumServantType;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.entity.Entity;
@@ -29,6 +31,7 @@ import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.entity.monster.MonsterEntity;
+import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
@@ -49,19 +52,21 @@ public class ModEntities {
     private static final EnumMap<EnumServantType, List<RegistryObject<?>>> typeServantsMap = new EnumMap<>(EnumServantType.class);
 
     public static RegistryObject<EntityType<EntityArthur>> arthur = regServant(EnumServantType.SABER, EntityType.Builder.create(EntityArthur::new, EntityClassification.MISC),
-            LibEntities.arthur, new ServantProperties(300, 10, 17, 0.4f, 12, 10, 0.3, 100));
+            LibEntities.arthur, 0x048dd0, 0xecee37, new ServantProperties(300, 10, 17, 0.4f, 12, 10, 0.3, 100));
     public static RegistryObject<EntityType<EntityCuchulainn>> cuchulainn = regServant(EnumServantType.LANCER, EntityType.Builder.create(EntityCuchulainn::new, EntityClassification.MISC),
-            LibEntities.cuchulainn, new ServantProperties(275, 7.5, 10, 0, 14, 6, 0.35, 75));
+            LibEntities.cuchulainn, 0x0038ff, 0xb6c0c1, new ServantProperties(275, 7.5, 10, 0, 14, 6, 0.35, 75));
     public static RegistryObject<EntityType<EntityDiarmuid>> diarmuid = regServant(EnumServantType.LANCER, EntityType.Builder.create(EntityDiarmuid::new, EntityClassification.MISC),
-            LibEntities.diarmuid, new ServantProperties(310, 8.5, 12, 0, 13, 7, 0.35, 80));
+            LibEntities.diarmuid, 0x000000, 0x2a079a, new ServantProperties(310, 8.5, 12, 0, 13, 7, 0.35, 80));
     public static RegistryObject<EntityType<EntityEmiya>> emiya = regServant(EnumServantType.ARCHER, EntityType.Builder.create(EntityEmiya::new, EntityClassification.MISC),
-            LibEntities.emiya, new ServantProperties(250, 7.5, 8, 0, 15.5, 7, 0.33, 66));
+            LibEntities.emiya, 0x9f0707, 0x000000, new ServantProperties(250, 7.5, 8, 0, 15.5, 7, 0.33, 66));
     public static RegistryObject<EntityType<EntityGilgamesh>> gilgamesh = regServant(EnumServantType.ARCHER, EntityType.Builder.create(EntityGilgamesh::new, EntityClassification.MISC),
-            LibEntities.gilgamesh, new ServantProperties(250, 10, 9, 0, 12.5, 5, 0.3, 100));
+            LibEntities.gilgamesh, 0xfff400, 0xffdb00, new ServantProperties(250, 10, 9, 0, 12.5, 5, 0.3, 100));
     public static RegistryObject<EntityType<EntityGilles>> gilles = regServant(EnumServantType.CASTER, EntityType.Builder.create(EntityGilles::new, EntityClassification.MISC),
-            LibEntities.gilles, new ServantProperties(350, 5.5, 7, 0, 5, 14, 0.3, 80));
+            LibEntities.gilles, 0x100460, 0x600453, new ServantProperties(350, 5.5, 7, 0, 5, 14, 0.3, 80));
     public static RegistryObject<EntityType<EntityLancelot>> lancelot = regServant(EnumServantType.BERSERKER, EntityType.Builder.create(EntityLancelot::new, EntityClassification.MISC),
-            LibEntities.lancelot, new ServantProperties(450, 9, 14, 0.4f, 19, 4, 0.2, 0));
+            LibEntities.lancelot, 0x071a33, 0x1d4f94, new ServantProperties(450, 9, 14, 0.4f, 19, 4, 0.2, 0));
+    public static RegistryObject<EntityType<EntityHassan>> hassan = regServant(EnumServantType.ASSASSIN, EntityType.Builder.create(EntityHassan::new, EntityClassification.MISC),
+            LibEntities.hassan, 0x000, 0x3a393a, new ServantProperties(200, 6, 8.5, 0, 17, 4, 0.34, 15));
 
     public static final RegistryObject<EntityType<EntityExcalibur>> excalibur = reg(EntityType.Builder.<EntityExcalibur>create(EntityExcalibur::new, EntityClassification.MISC).size(0.25F, 0.25F), LibEntities.excalibur);
     public static final RegistryObject<EntityType<EntityGaeBolg>> gaebolg = reg(EntityType.Builder.<EntityGaeBolg>create(EntityGaeBolg::new, EntityClassification.MISC).size(0.25F, 0.25F), LibEntities.gae_bolg);
@@ -71,14 +76,16 @@ public class ModEntities {
     public static final RegistryObject<EntityType<EntityEnumaElish>> ea = reg(EntityType.Builder.<EntityEnumaElish>create(EntityEnumaElish::new, EntityClassification.MISC).size(0.25F, 0.25F), LibEntities.ea);
     public static final RegistryObject<EntityType<EntityLesserMonster>> lesserMonster = reg(EntityType.Builder.<EntityLesserMonster>create(EntityLesserMonster::new, EntityClassification.MONSTER).maxTrackingRange(8), LibEntities.monster_small);
     public static final RegistryObject<EntityType<EntityGem>> gem = reg(EntityType.Builder.<EntityGem>create(EntityGem::new, EntityClassification.MISC).size(0.25F, 0.25F), LibEntities.entity_gem);
+    public static final RegistryObject<EntityType<EntityHassanCopy>> hassanCopy = reg(EntityType.Builder.create(EntityHassanCopy::new, EntityClassification.MISC), LibEntities.hassan_copy);
 
-    public static <V extends EntityServant> RegistryObject<EntityType<V>> regServant(EnumServantType type, EntityType.Builder<V> entity, ResourceLocation name, ServantProperties defaultVals) {
+    public static <V extends EntityServant> RegistryObject<EntityType<V>> regServant(EnumServantType type, EntityType.Builder<V> entity, ResourceLocation name, int primary, int secondary, ServantProperties defaultVals) {
         RegistryObject<EntityType<V>> reg = reg(entity.maxTrackingRange(10), name);
         servantTypeMap.put(name, type);
         typeServantsMap.merge(type, Lists.newArrayList(reg), (old, val)->{
             old.add(reg);
             return old;
         });
+        ModItems.ITEMS.register(name.getPath()+"_spawn_egg", ()->new FateEgg(reg, primary, secondary, new Item.Properties().group(Fate.TAB)));
         Config.Common.attributes.put(name.toString(), defaultVals);
         return reg;
     }
@@ -110,8 +117,9 @@ public class ModEntities {
         GlobalEntityTypeAttributes.put(gilgamesh.get(), EntityServant.createMobAttributes().build());
         GlobalEntityTypeAttributes.put(gilles.get(), EntityServant.createMobAttributes().build());
         GlobalEntityTypeAttributes.put(lancelot.get(), EntityServant.createMobAttributes().build());
+        GlobalEntityTypeAttributes.put(hassan.get(), EntityServant.createMobAttributes().build());
 
         GlobalEntityTypeAttributes.put(lesserMonster.get(), MonsterEntity.createHostileAttributes().build());
-
+        GlobalEntityTypeAttributes.put(hassanCopy.get(), EntityServant.createMobAttributes().build());
     }
 }

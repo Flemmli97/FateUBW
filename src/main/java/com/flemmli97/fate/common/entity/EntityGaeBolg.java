@@ -35,7 +35,7 @@ public class EntityGaeBolg extends EntityProjectile {
 
     @Override
     protected boolean onEntityHit(EntityRayTraceResult res) {
-        res.getEntity().attackEntityFrom(CustomDamageSource.gaeBolg(this, this.getShooter()), Config.Common.gaeBolgDmg);
+        res.getEntity().attackEntityFrom(CustomDamageSource.gaeBolg(this, this.getOwner()), Config.Common.gaeBolgDmg);
         if (res.getEntity() instanceof LivingEntity && (!(res.getEntity() instanceof PlayerEntity) || !((PlayerEntity) res.getEntity()).abilities.disableDamage)) {
             for (EffectInstance effect : Config.Common.gaeBolgEffect.potions()) {
                 //The no jump effect from jump boost doesnt seem to affect entities
@@ -55,16 +55,16 @@ public class EntityGaeBolg extends EntityProjectile {
     @Override
     public void remove() {
         if (!this.world.isRemote) {
-            if (this.getShooter() instanceof PlayerEntity) {
-                PlayerEntity player = (PlayerEntity) this.getShooter();
+            if (this.getOwner() instanceof PlayerEntity) {
+                PlayerEntity player = (PlayerEntity) this.getOwner();
                 if (!player.isCreative()) {
-                    ItemEntity gaeBolg = new ItemEntity(this.world, this.getShooter().getX(), this.getShooter().getY(), this.getShooter().getZ(), new ItemStack(ModItems.gaebolg.get()));
+                    ItemEntity gaeBolg = new ItemEntity(this.world, this.getOwner().getX(), this.getOwner().getY(), this.getOwner().getZ(), new ItemStack(ModItems.gaebolg.get()));
                     gaeBolg.setPickupDelay(0);
                     player.world.addEntity(gaeBolg);
                     player.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 0.8f, 1);
                 }
-            } else if (this.getShooter() instanceof EntityCuchulainn) {
-                ((EntityCuchulainn) this.getShooter()).retrieveGaeBolg();
+            } else if (this.getOwner() instanceof EntityCuchulainn) {
+                ((EntityCuchulainn) this.getOwner()).retrieveGaeBolg();
             }
         }
         super.remove();

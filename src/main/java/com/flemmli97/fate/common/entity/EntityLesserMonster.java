@@ -1,13 +1,12 @@
 package com.flemmli97.fate.common.entity;
 
 import com.flemmli97.fate.common.config.Config;
-import com.flemmli97.fate.common.entity.ai.StarfishAttackGoal;
-import com.flemmli97.fate.common.entity.servant.EntityServant;
+import com.flemmli97.fate.common.entity.ai.AnimatedMeleeGoal;
 import com.flemmli97.fate.common.registry.ModEntities;
 import com.flemmli97.tenshilib.api.entity.IAnimated;
+import com.flemmli97.tenshilib.api.entity.IOwnable;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import com.flemmli97.tenshilib.common.entity.EntityUtil;
-import com.flemmli97.tenshilib.common.utils.RayTraceUtils;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -18,13 +17,11 @@ import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 import java.util.UUID;
 
-public class EntityLesserMonster extends CreatureEntity implements IServantMinion, IAnimated {
+public class EntityLesserMonster extends CreatureEntity implements IServantMinion, IAnimated, IOwnable<LivingEntity> {
 
     private UUID ownerUUID;
     private LivingEntity owner;
@@ -46,8 +43,6 @@ public class EntityLesserMonster extends CreatureEntity implements IServantMinio
 
     public EntityLesserMonster(World world, LivingEntity owner) {
         this(ModEntities.lesserMonster.get(), world);
-        BlockPos pos = RayTraceUtils.randomPosAround(world, this, owner.getBlockPos(), 9, true, this.getRNG());
-        this.setLocationAndAngles(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5, MathHelper.wrapDegrees(this.world.rand.nextFloat() * 360.0F), 0.0F);
         this.owner = owner;
         this.ownerUUID = owner.getUniqueID();
     }
@@ -60,7 +55,7 @@ public class EntityLesserMonster extends CreatureEntity implements IServantMinio
     }
 
     protected void goals() {
-        this.goalSelector.addGoal(2, new StarfishAttackGoal(this));
+        this.goalSelector.addGoal(2, new AnimatedMeleeGoal(this, m->attack));
         this.goalSelector.addGoal(3, new SwimGoal(this));
         this.goalSelector.addGoal(4, new LookRandomlyGoal(this));
         this.goalSelector.addGoal(5, new LookAtGoal(this, PlayerEntity.class, 8.0F));
@@ -92,6 +87,7 @@ public class EntityLesserMonster extends CreatureEntity implements IServantMinio
         }
     }*/
 
+    @Override
     public LivingEntity getOwner() {
         if (this.owner == null && this.ownerUUID != null) {
             this.owner = EntityUtil.findFromUUID(LivingEntity.class, this.world, this.ownerUUID);
@@ -99,10 +95,15 @@ public class EntityLesserMonster extends CreatureEntity implements IServantMinio
         return this.owner;
     }
 
+    @Override
+    public UUID ownerUUID() {
+        return this.ownerUUID;
+    }
+
     protected boolean canAttackTarget(LivingEntity e) {
         if (e.getUniqueID().equals(this.ownerUUID))
             return false;
-        if ((this.getOwner() instanceof EntityServant && ((EntityServant) this.getOwner()).getOwner() != null && ((EntityServant) this.getOwner()).getOwner().getUniqueID().equals(e.getUniqueID())))
+        if(this.ownerUUID() != null && e instanceof IOwnable && this.ownerUUID().equals(((IOwnable)e).ownerUUID()))
             return false;
         return true;
     }

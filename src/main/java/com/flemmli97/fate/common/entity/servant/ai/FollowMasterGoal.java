@@ -1,6 +1,7 @@
 package com.flemmli97.fate.common.entity.servant.ai;
 
-import com.flemmli97.fate.common.entity.servant.EntityServant;
+import com.flemmli97.tenshilib.api.entity.IOwnable;
+import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.pathfinding.PathNodeType;
@@ -8,38 +9,45 @@ import net.minecraft.pathfinding.WalkNodeProcessor;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.EnumSet;
+import java.util.function.Predicate;
 
 /**
  * Copy of FollowOwnerGoal cause thats only for Tameable
  */
-public class FollowMasterGoal extends Goal {
+public class FollowMasterGoal<T extends CreatureEntity & IOwnable> extends Goal {
 
-    public final EntityServant servant;
+    public final T goalOwner;
     private LivingEntity follow;
     private double minTPDist;
     private int followDelay;
     public final float maxDist;
     public final float minDist;
     private float oldWaterCost;
+    private final Predicate<T> additionalPred;
 
-    public FollowMasterGoal(EntityServant servant, double teleport, float minDistance, float maxDistance) {
-        this.servant = servant;
+    public FollowMasterGoal(T goalOwner, double teleport, float minDistance, float maxDistance) {
+        this(goalOwner, teleport, minDistance, maxDistance, s->false);
+    }
+
+    public FollowMasterGoal(T goalOwner, double teleport, float minDistance, float maxDistance, Predicate<T> more) {
+        this.goalOwner = goalOwner;
         this.minTPDist = teleport * teleport;
         this.minDist = minDistance;
         this.maxDist = maxDistance;
         this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE));
+        this.additionalPred = more;
     }
 
     @Override
     public boolean shouldExecute() {
-        LivingEntity livingentity = this.servant.getOwner();
+        LivingEntity livingentity = this.goalOwner.getOwner();
         if (livingentity == null) {
             return false;
         } else if (livingentity.isSpectator()) {
             return false;
-        } else if (this.servant.isStaying()) {
+        } else if (this.additionalPred.test(this.goalOwner)) {
             return false;
-        } else if (this.servant.getDistanceSq(livingentity) < (this.minDist * this.minDist)) {
+        } else if (this.goalOwner.getDistanceSq(livingentity) < (this.minDist * this.minDist)) {
             return false;
         } else {
             this.follow = livingentity;
@@ -49,39 +57,39 @@ public class FollowMasterGoal extends Goal {
 
     @Override
     public boolean shouldContinueExecuting() {
-        if (this.servant.getNavigator().noPath()) {
+        if (this.goalOwner.getNavigator().noPath()) {
             return false;
-        } else if (this.servant.isStaying()) {
+        } else if (this.additionalPred.test(this.goalOwner)) {
             return false;
         } else {
-            return !(this.servant.getDistanceSq(this.follow) <= (this.maxDist * this.maxDist));
+            return !(this.goalOwner.getDistanceSq(this.follow) <= (this.maxDist * this.maxDist));
         }
     }
 
     @Override
     public void startExecuting() {
         this.followDelay = 0;
-        this.oldWaterCost = this.servant.getPathPriority(PathNodeType.WATER);
-        this.servant.setPathPriority(PathNodeType.WATER, 0.0F);
+        this.oldWaterCost = this.goalOwner.getPathPriority(PathNodeType.WATER);
+        this.goalOwner.setPathPriority(PathNodeType.WATER, 0.0F);
     }
 
     @Override
     public void resetTask() {
         this.follow = null;
-        this.servant.getNavigator().clearPath();
-        this.servant.setPathPriority(PathNodeType.WATER, this.oldWaterCost);
+        this.goalOwner.getNavigator().clearPath();
+        this.goalOwner.setPathPriority(PathNodeType.WATER, this.oldWaterCost);
     }
 
     @Override
     public void tick() {
-        this.servant.getLookController().setLookPositionWithEntity(this.follow, 10.0F, this.servant.getVerticalFaceSpeed());
+        this.goalOwner.getLookController().setLookPositionWithEntity(this.follow, 10.0F, this.goalOwner.getVerticalFaceSpeed());
         if (--this.followDelay <= 0) {
             this.followDelay = 10;
-            if (!this.servant.getLeashed() && !this.servant.isPassenger()) {
-                if (this.servant.getDistanceSq(this.follow) >= minTPDist) {
+            if (!this.goalOwner.getLeashed() && !this.goalOwner.isPassenger()) {
+                if (this.goalOwner.getDistanceSq(this.follow) >= minTPDist) {
                     this.tryTeleport();
                 } else {
-                    this.servant.getNavigator().tryMoveToEntityLiving(this.follow, 1);
+                    this.goalOwner.getNavigator().tryMoveToEntityLiving(this.follow, 1);
                 }
 
             }
@@ -110,23 +118,23 @@ public class FollowMasterGoal extends Goal {
         } else if (!this.canTeleportTo(new BlockPos(x, y, z))) {
             return false;
         } else {
-            this.servant.setLocationAndAngles(x + 0.5D, y, z + 0.5D, this.servant.rotationYaw, this.servant.rotationPitch);
-            this.servant.getNavigator().clearPath();
+            this.goalOwner.setLocationAndAngles(x + 0.5D, y, z + 0.5D, this.goalOwner.rotationYaw, this.goalOwner.rotationPitch);
+            this.goalOwner.getNavigator().clearPath();
             return true;
         }
     }
 
     private boolean canTeleportTo(BlockPos pos) {
-        PathNodeType pathnodetype = WalkNodeProcessor.getLandNodeType(this.servant.world, pos.mutableCopy());
+        PathNodeType pathnodetype = WalkNodeProcessor.getLandNodeType(this.goalOwner.world, pos.mutableCopy());
         if (pathnodetype != PathNodeType.WALKABLE) {
             return false;
         } else {
-            BlockPos blockpos = pos.subtract(this.servant.getBlockPos());
-            return this.servant.world.isSpaceEmpty(this.servant, this.servant.getBoundingBox().offset(blockpos));
+            BlockPos blockpos = pos.subtract(this.goalOwner.getBlockPos());
+            return this.goalOwner.world.isSpaceEmpty(this.goalOwner, this.goalOwner.getBoundingBox().offset(blockpos));
         }
     }
 
     private int getRandomInt(int min, int max) {
-        return this.servant.getRNG().nextInt(max - min + 1) + min;
+        return this.goalOwner.getRNG().nextInt(max - min + 1) + min;
     }
 }

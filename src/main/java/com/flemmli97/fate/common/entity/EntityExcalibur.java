@@ -39,6 +39,6 @@ public class EntityExcalibur extends EntityBeam {
 
     @Override
     public void onImpact(EntityRayTraceResult result) {
-        result.getEntity().attackEntityFrom(CustomDamageSource.excalibur(this, this.getShooter()), Config.Common.excaliburDamage);
+        result.getEntity().attackEntityFrom(CustomDamageSource.excalibur(this, this.getOwner()), Config.Common.excaliburDamage);
     }
 }

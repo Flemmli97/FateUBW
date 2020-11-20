@@ -32,7 +32,7 @@ public class EntityCaladBolg extends EntityProjectile {
 
     @Override
     protected boolean onEntityHit(EntityRayTraceResult result) {
-        result.getEntity().attackEntityFrom(CustomDamageSource.caladBolg(this, this.getShooter()), Config.Common.caladBolgDmg);
+        result.getEntity().attackEntityFrom(CustomDamageSource.caladBolg(this, this.getOwner()), Config.Common.caladBolgDmg);
         this.remove();
         return true;
     }

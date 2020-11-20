@@ -1,20 +1,25 @@
 package com.flemmli97.fate.common.entity.ai;
 
-import com.flemmli97.fate.common.entity.EntityLesserMonster;
+import com.flemmli97.tenshilib.api.entity.IAnimated;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import com.flemmli97.tenshilib.common.entity.ai.AnimatedAttackGoal;
+import net.minecraft.entity.CreatureEntity;
 
-public class StarfishAttackGoal extends AnimatedAttackGoal<EntityLesserMonster> {
+import java.util.function.Function;
+
+public class AnimatedMeleeGoal<T extends CreatureEntity & IAnimated> extends AnimatedAttackGoal<T> {
 
     protected double attackRange;
+    private final Function<T, AnimatedAction> randomAttack;
 
-    public StarfishAttackGoal(EntityLesserMonster entity) {
+    public AnimatedMeleeGoal(T entity, Function<T, AnimatedAction> randomAttack) {
         super(entity);
+        this.randomAttack = randomAttack;
     }
 
     @Override
     public AnimatedAction randomAttack() {
-        return EntityLesserMonster.attack;
+        return this.randomAttack.apply(this.attacker);
     }
 
     @Override

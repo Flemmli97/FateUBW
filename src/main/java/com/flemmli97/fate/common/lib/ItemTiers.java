@@ -9,6 +9,7 @@ public class ItemTiers {
     public static final TierImpl invis_excalibur = new TierImpl(1000, 0, 4, 0, 10, Ingredient.EMPTY);
     public static final TierImpl ea = new TierImpl(1100, 0, 7.5f, 0, 8, Ingredient.EMPTY);
     public static final TierImpl arondight = new TierImpl(1300, 0, 8, 0, 7, Ingredient.EMPTY);
+    public static final TierImpl dagger = new TierImpl(950, 0, 5, 0, 11, Ingredient.EMPTY);
 
     public static final TierImpl gae_bolg = new TierImpl(900, 0, 6.5f, 0, 14, Ingredient.EMPTY);
     public static final TierImpl gae_buidhe = new TierImpl(900, 0, 5f, 0, 14, Ingredient.EMPTY);

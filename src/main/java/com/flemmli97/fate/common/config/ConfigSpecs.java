@@ -48,6 +48,8 @@ public class ConfigSpecs {
         //Servants
         public final Map<String, ServantConfSpec> attributes = Maps.newHashMap();
         public ForgeConfigSpec.ConfigValue<Double> lancelotReflectChance;
+        public ForgeConfigSpec.ConfigValue<Integer> hassanCopies;
+
         //Minions
         public final ForgeConfigSpec.ConfigValue<Integer> gillesMinionDuration;
         public final ForgeConfigSpec.ConfigValue<Integer> gillesMinionAmount;
@@ -64,6 +66,7 @@ public class ConfigSpecs {
         public final ForgeConfigSpec.ConfigValue<Double> pegasusHealth;
         public final ForgeConfigSpec.ConfigValue<Integer> medeaCircleSpan;
         public final ForgeConfigSpec.ConfigValue<Double> medeaCircleRange;
+        public final ServantConfSpec hassanCopyProps;
 
         public Common(ForgeConfigSpec.Builder builder) {
             builder.push("general");
@@ -94,6 +97,8 @@ public class ConfigSpecs {
                 this.attributes.put(e.getKey(), new ServantConfSpec(builder, e.getValue()));
                 if (e.getKey().equals(LibEntities.lancelot.toString()))
                     this.lancelotReflectChance = builder.comment("Chance for lancelot to reflect a blocked projectile").define("Projectile Reflect Chance", 0.3);
+                if(e.getKey().equals(LibEntities.hassan.toString()))
+                    this.hassanCopies = builder.comment("Amount of copies hassan can call").define("Hassan Copies", 5);
                 builder.pop();
             }
             builder.pop();
@@ -115,6 +120,9 @@ public class ConfigSpecs {
             this.pegasusHealth = builder.comment("Health of Pegasus").define("Pegasus Health", 50D);
             this.medeaCircleSpan = builder.comment("Time in ticks for medeas magic circle").define("Magic Circle Duration", 12000);
             this.medeaCircleRange = builder.comment("Range of medeas magic circle").define("Magic Circle Range", 32D);
+            builder.push("hassanCopy");
+            this.hassanCopyProps = new ServantConfSpec(builder, Config.Common.hassanCopyProps);
+            builder.pop();
             builder.pop();
         }
     }

@@ -1,6 +1,5 @@
 package com.flemmli97.fate.client.model;
 
-import com.flemmli97.fate.common.entity.servant.EntityServant;
 import com.flemmli97.tenshilib.client.model.IResetModel;
 import com.flemmli97.tenshilib.client.model.ModelRendererPlus;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -10,10 +9,11 @@ import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.IHasArm;
 import net.minecraft.client.renderer.entity.model.IHasHead;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.entity.CreatureEntity;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.math.MathHelper;
 
-public class ModelServant<T extends EntityServant> extends EntityModel<T> implements IResetModel, IHasArm, IHasHead {
+public class ModelServant<T extends CreatureEntity> extends EntityModel<T> implements IResetModel, IHasArm, IHasHead {
 
     public ModelRendererPlus servantHead;
     public ModelRendererPlus servantHeadOverlay;

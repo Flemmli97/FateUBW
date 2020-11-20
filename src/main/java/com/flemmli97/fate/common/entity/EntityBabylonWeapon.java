@@ -74,7 +74,7 @@ public class EntityBabylonWeapon extends EntityProjectile {
 
     @Override
     public void tick() {
-        LivingEntity thrower = this.getShooter();
+        LivingEntity thrower = this.getOwner();
         if (this.getPreShootTick() <= this.dataManager.get(shootTime)) {
             this.livingTicks++;
             this.updatePreShootTick();
@@ -85,7 +85,8 @@ public class EntityBabylonWeapon extends EntityProjectile {
                     RayTraceResult hit = RayTraceUtils.entityRayTrace(thrower, 64, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, false, null);
                     this.shootAtPosition(hit.getHitVec().x, hit.getHitVec().y, hit.getHitVec().z, 0.5F, 0.5F);
                 } else if (this.target != null) {
-                    this.shootAtPosition(this.target.getX(), this.target.getY() + this.target.getHeight() / 2, this.target.getZ(), 0.5F, 4);
+                    Vector3d targetMot = this.target.getMotion();
+                    this.shootAtPosition(this.target.getX() + targetMot.x, this.target.getY() + this.target.getHeight() / 2 + targetMot.y, this.target.getZ() + targetMot.z, 0.5F, 4);
                 }
             }
         } else if (this.getPreShootTick() > this.dataManager.get(shootTime)) {
@@ -127,7 +128,7 @@ public class EntityBabylonWeapon extends EntityProjectile {
 
     @Override
     protected boolean onEntityHit(EntityRayTraceResult result) {
-        result.getEntity().attackEntityFrom(CustomDamageSource.babylon(this, this.getShooter()), (float) this.dmg * 1.5F);
+        result.getEntity().attackEntityFrom(CustomDamageSource.babylon(this, this.getOwner()), (float) this.dmg * 1.5F);
         this.remove();
         return true;
     }
@@ -172,7 +173,7 @@ public class EntityBabylonWeapon extends EntityProjectile {
      */
     public void setProjectileAreaPosition(int range) {
         Random rand = new Random();
-        LivingEntity thrower = this.getShooter();
+        LivingEntity thrower = this.getOwner();
         Vector3d pos = thrower.getPositionVec();
         Vector3d look = thrower.getLookVec();
         Vector3d vert = new Vector3d(0, 1, 0);

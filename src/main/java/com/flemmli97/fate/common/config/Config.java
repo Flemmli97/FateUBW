@@ -32,6 +32,8 @@ public class Config {
 
         public static final Map<String, ServantProperties> attributes = Maps.newHashMap();
         public static float lancelotReflectChance;
+        public static int hassanCopies;
+
         //Minions
         public static int gillesMinionDuration;
         public static int gillesMinionAmount;
@@ -48,6 +50,7 @@ public class Config {
         public static double pegasusHealth;
         public static int medeaCircleSpan;
         public static double medeaCircleRange;
+        public static ServantProperties hassanCopyProps = new ServantProperties(50, 5, 6.5, 0, 12, 2, 0.34, 0);
 
         public static void load() {
             minPlayer = ConfigSpecs.commonConf.minPlayer.get();
@@ -72,6 +75,7 @@ public class Config {
             for (Map.Entry<String, ServantConfSpec> e : ConfigSpecs.commonConf.attributes.entrySet())
                 attributes.put(e.getKey(), ServantProperties.read(e.getValue()));
             lancelotReflectChance = ConfigSpecs.commonConf.lancelotReflectChance.get().floatValue();
+            hassanCopies = ConfigSpecs.commonConf.hassanCopies.get();
             //Minions
             gillesMinionDuration = ConfigSpecs.commonConf.gillesMinionDuration.get();
             gillesMinionAmount = ConfigSpecs.commonConf.gillesMinionAmount.get();
@@ -88,6 +92,7 @@ public class Config {
             pegasusHealth = ConfigSpecs.commonConf.pegasusHealth.get();
             medeaCircleSpan = ConfigSpecs.commonConf.medeaCircleSpan.get();
             medeaCircleRange = ConfigSpecs.commonConf.medeaCircleRange.get();
+            hassanCopyProps = ServantProperties.read(ConfigSpecs.commonConf.hassanCopyProps);
         }
     }
 }

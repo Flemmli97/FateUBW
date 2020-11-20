@@ -8,6 +8,7 @@ import com.flemmli97.fate.common.items.ItemManaBottle;
 import com.flemmli97.fate.common.items.ItemServantCharm;
 import com.flemmli97.fate.common.items.weapons.ClassSpear;
 import com.flemmli97.fate.common.items.weapons.ItemArcherBow;
+import com.flemmli97.fate.common.items.weapons.ItemDagger;
 import com.flemmli97.fate.common.items.weapons.ItemEA;
 import com.flemmli97.fate.common.items.weapons.ItemExcalibur;
 import com.flemmli97.fate.common.items.weapons.ItemGaeBolg;
@@ -15,15 +16,11 @@ import com.flemmli97.fate.common.items.weapons.ItemGrimoire;
 import com.flemmli97.fate.common.lib.ItemTiers;
 import com.flemmli97.fate.common.utils.EnumServantType;
 import com.google.common.collect.Lists;
-import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.RegistryObject;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -52,6 +49,7 @@ public class ModItems {
     public static final RegistryObject<Item> enumaelish = ITEMS.register("enuma_elish", () -> new ItemEA(new Item.Properties().group(Fate.TAB)));
     public static final RegistryObject<Item> grimoire = ITEMS.register("prelati", () -> new ItemGrimoire(new Item.Properties().group(Fate.TAB)));
     public static final RegistryObject<Item> arondight = ITEMS.register("arondight", () -> new SwordItem(ItemTiers.arondight, 0, -2.4f, new Item.Properties().group(Fate.TAB)));
+    public static final RegistryObject<Item> dagger = ITEMS.register("dagger", () -> new ItemDagger(ItemTiers.dagger, 0, -1.8f, new Item.Properties().group(Fate.TAB)));
 
     public static final RegistryObject<Item> charmNone = registercharm(EnumServantType.NOTASSIGNED);
     public static final RegistryObject<Item> charmSaber = registercharm(EnumServantType.SABER);
