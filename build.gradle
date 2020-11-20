@@ -124,6 +124,7 @@ dependencies {
     minecraft 'net.minecraftforge:forge:'+"${mcversion}-${forge_version}"
 
     compile fg.deobf("tenshilib:TenshiLib:${tenshilib_version}")
+    runtimeOnly fg.deobf("curse.maven:hwyla:3033593")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
