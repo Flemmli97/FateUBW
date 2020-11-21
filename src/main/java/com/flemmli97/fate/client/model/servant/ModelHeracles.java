@@ -1,20 +1,14 @@
 package com.flemmli97.fate.client.model.servant;
 
-import com.flemmli97.fate.Fate;
 import com.flemmli97.fate.client.model.ModelServant;
 import com.flemmli97.fate.common.entity.servant.EntityHeracles;
-import com.flemmli97.tenshilib.client.model.BlockBenchAnimations;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.ResourceLocation;
 
 public class ModelHeracles extends ModelServant<EntityHeracles> {
 
-    public final BlockBenchAnimations anim;
-
     public ModelHeracles() {
-        super();
-        this.anim = new BlockBenchAnimations(this, new ResourceLocation(Fate.MODID, "models/entity/animation/heracles.json"));
+        super("heracles");
     }
 
     @Override

@@ -1,21 +1,15 @@
 package com.flemmli97.fate.client.model.servant;
 
-import com.flemmli97.fate.Fate;
 import com.flemmli97.fate.client.model.ModelServant;
 import com.flemmli97.fate.common.entity.servant.EntityArthur;
-import com.flemmli97.tenshilib.client.model.BlockBenchAnimations;
 import com.flemmli97.tenshilib.client.model.ModelUtils;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.ResourceLocation;
 
 public class ModelArthur extends ModelServant<EntityArthur> {
 
-    public final BlockBenchAnimations anim;
-
     public ModelArthur() {
-        super();
-        this.anim = new BlockBenchAnimations(this, new ResourceLocation(Fate.MODID, "models/entity/animation/arthur.json"));
+        super("arthur");
     }
 
     @Override
