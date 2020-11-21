@@ -1,19 +1,25 @@
 package com.flemmli97.fate.client.model;
 
+import com.flemmli97.fate.Fate;
+import com.flemmli97.fate.common.entity.servant.EntityServant;
+import com.flemmli97.tenshilib.api.entity.IAnimated;
+import com.flemmli97.tenshilib.client.model.BlockBenchAnimations;
 import com.flemmli97.tenshilib.client.model.IResetModel;
 import com.flemmli97.tenshilib.client.model.ModelRendererPlus;
+import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.IHasArm;
 import net.minecraft.client.renderer.entity.model.IHasHead;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.CreatureEntity;
 import net.minecraft.util.HandSide;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
-public class ModelServant<T extends CreatureEntity> extends EntityModel<T> implements IResetModel, IHasArm, IHasHead {
+public class ModelServant<T extends EntityServant & IAnimated> extends EntityModel<T> implements IResetModel, IHasArm, IHasHead {
 
     public ModelRendererPlus servantHead;
     public ModelRendererPlus servantHeadOverlay;
@@ -46,7 +52,9 @@ public class ModelServant<T extends CreatureEntity> extends EntityModel<T> imple
 
     public int heldItemMain, heldItemOff;
 
-    public ModelServant() {
+    public final BlockBenchAnimations anim;
+
+    public ModelServant(String animFileName) {
         super(RenderType::getEntityTranslucent);
         this.textureWidth = 64;
         this.textureHeight = 64;
@@ -166,6 +174,8 @@ public class ModelServant<T extends CreatureEntity> extends EntityModel<T> imple
         this.servantBodyOverlay.addChild(this.servantLeftArmUpOverlay);
         this.servantBodyOverlay.addChild(this.servantRightLegUpOverlay);
         this.servantBodyOverlay.addChild(this.servantLeftLegUpOverlay);
+
+        this.anim = new BlockBenchAnimations(this, new ResourceLocation(Fate.MODID, "models/entity/animation/"+animFileName+".json"));
     }
 
     @Override
@@ -177,6 +187,14 @@ public class ModelServant<T extends CreatureEntity> extends EntityModel<T> imple
     @Override
     public void setAngles(T servant, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.setAnglesPre(servant, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+        float partialTicks = Minecraft.getInstance().getRenderPartialTicks();
+        if (servant.isStaying()) {
+            this.anim.doAnimation("stay", servant.ticksExisted, partialTicks);
+        } else {
+            AnimatedAction anim = servant.getAnimation();
+            if (anim != null)
+                this.anim.doAnimation(anim.getID(), anim.getTick(), partialTicks);
+        }
         this.syncOverlay();
     }
 
