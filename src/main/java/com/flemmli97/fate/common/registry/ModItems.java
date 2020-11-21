@@ -56,7 +56,7 @@ public class ModItems {
     public static final RegistryObject<Item> kupriots = ITEMS.register("kupriots", () -> new SwordItem(ItemTiers.kupriots, 0, -2.4f, new Item.Properties().group(Fate.TAB)));
     public static final RegistryObject<Item> assassinDagger = ITEMS.register("assassin_dagger", () -> new ItemDagger(ItemTiers.assassinDagger, 0, -1.8f, new Item.Properties().group(Fate.TAB)));
     public static final RegistryObject<Item> staff = ITEMS.register("staff", () -> new ItemStaff(new Item.Properties().group(Fate.TAB)));
-    public static final RegistryObject<Item> heraclesAxe = ITEMS.register("staff", () -> new AxeItem(ItemTiers.heraclesAxe, 0, -2.9f, new Item.Properties().group(Fate.TAB)));
+    public static final RegistryObject<Item> heraclesAxe = ITEMS.register("heracles_axe", () -> new AxeItem(ItemTiers.heraclesAxe, 0, -2.9f, new Item.Properties().group(Fate.TAB)));
     public static final RegistryObject<Item> ruleBreaker = ITEMS.register("rule_breaker", () -> new SwordItem(ItemTiers.ruleBreaker, 0, -2.4f, new Item.Properties().group(Fate.TAB)));
     public static final RegistryObject<Item> katana = ITEMS.register("katana", () -> new ItemKatana(ItemTiers.katana, 0, -2.6f, new Item.Properties().group(Fate.TAB)));
 

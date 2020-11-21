@@ -18,7 +18,7 @@
   "item.fatemod.chalk": "Drawing Chalk",
   "item.fatemod.prelati": "Prelatis Spellbook",
   "item.fatemod.assassin_dagger": "Dagger",
-  "item.fatemod.isk_sword": "Kypriots",
+  "item.fatemod.kypriots": "Kupriots",
 
   "item.fatemod.gem_shard_fire": "Red Gem Shard",
   "item.fatemod.gem_shard_water": "Blue Gem Shard",
@@ -37,13 +37,19 @@
   "item.fatemod.holy_grail": "The Holy Grail",
   "item.fatemod.mana_bottle": "Mana Bottle",
 
+  "item.fatemod.alexander_spawn_egg": "%s Spawn Egg",
   "item.fatemod.arthur_spawn_egg": "%s Spawn Egg",
   "item.fatemod.cuchulainn_spawn_egg": "%s Spawn Egg",
   "item.fatemod.diarmuid_spawn_egg": "%s Spawn Egg",
   "item.fatemod.emiya_spawn_egg": "%s Spawn Egg",
   "item.fatemod.gilgamesh_spawn_egg": "%s Spawn Egg",
   "item.fatemod.gilles_spawn_egg": "%s Spawn Egg",
+  "item.fatemod.hassan_spawn_egg": "%s Spawn Egg",
+  "item.fatemod.heracles_spawn_egg": "%s Spawn Egg",
   "item.fatemod.lancelot_spawn_egg": "%s Spawn Egg",
+  "item.fatemod.medea_spawn_egg": "%s Spawn Egg",
+  "item.fatemod.medusa_spawn_egg": "%s Spawn Egg",
+  "item.fatemod.sasaki_spawn_egg": "%s Spawn Egg",
 
   "item.spawn.tooltip": "Rename to \"Summon\" to spawn as your servant",
 

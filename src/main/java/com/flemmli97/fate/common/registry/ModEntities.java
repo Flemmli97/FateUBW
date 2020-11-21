@@ -22,9 +22,12 @@ import com.flemmli97.fate.common.entity.servant.EntityEmiya;
 import com.flemmli97.fate.common.entity.servant.EntityGilgamesh;
 import com.flemmli97.fate.common.entity.servant.EntityGilles;
 import com.flemmli97.fate.common.entity.servant.EntityHassan;
+import com.flemmli97.fate.common.entity.servant.EntityHeracles;
 import com.flemmli97.fate.common.entity.servant.EntityIskander;
 import com.flemmli97.fate.common.entity.servant.EntityLancelot;
 import com.flemmli97.fate.common.entity.servant.EntityMedea;
+import com.flemmli97.fate.common.entity.servant.EntityMedusa;
+import com.flemmli97.fate.common.entity.servant.EntitySasaki;
 import com.flemmli97.fate.common.entity.servant.EntityServant;
 import com.flemmli97.fate.common.items.FateEgg;
 import com.flemmli97.fate.common.lib.LibEntities;
@@ -76,6 +79,12 @@ public class ModEntities {
             LibEntities.alexander, 0xd40000, 0x8d0101, new ServantProperties(400, 5.5, 10, 0, 9, 9.5, 0.3, 100));
     public static RegistryObject<EntityType<EntityMedea>> medea = regServant(EnumServantType.CASTER, EntityType.Builder.create(EntityMedea::new, EntityClassification.MISC),
             LibEntities.medea, 0x6f086b, 0x4a8be5, new ServantProperties(350, 9.5, 5, 0, 4, 17.5, 0.2, 100));
+    public static RegistryObject<EntityType<EntityHeracles>> heracles = regServant(EnumServantType.BERSERKER, EntityType.Builder.create(EntityHeracles::new, EntityClassification.MISC),
+            LibEntities.heracles, 0x3c1d06, 0x5e3c22, new ServantProperties(75, 7.5, 10, 0, 17, 9.5, 0.2, 0));
+    public static RegistryObject<EntityType<EntitySasaki>> sasaki = regServant(EnumServantType.ASSASSIN, EntityType.Builder.create(EntitySasaki::new, EntityClassification.MISC),
+            LibEntities.sasaki, 0x4e04c3, 0xa77cec, new ServantProperties(350, 9.5, 9, 0, 8, 8.5, 0.3, 50));
+    public static RegistryObject<EntityType<EntityMedusa>> medusa = regServant(EnumServantType.RIDER, EntityType.Builder.create(EntityMedusa::new, EntityClassification.MISC),
+            LibEntities.medusa, 0x000000, 0xf234ea, new ServantProperties(250, 4.5, 11, 0, 7, 10, 0.3, 80));
 
     public static final RegistryObject<EntityType<EntityExcalibur>> excalibur = reg(EntityType.Builder.<EntityExcalibur>create(EntityExcalibur::new, EntityClassification.MISC).size(0.25F, 0.25F), LibEntities.excalibur);
     public static final RegistryObject<EntityType<EntityGaeBolg>> gaebolg = reg(EntityType.Builder.<EntityGaeBolg>create(EntityGaeBolg::new, EntityClassification.MISC).size(0.25F, 0.25F), LibEntities.gae_bolg);
@@ -132,6 +141,8 @@ public class ModEntities {
         GlobalEntityTypeAttributes.put(hassan.get(), EntityServant.createMobAttributes().build());
         GlobalEntityTypeAttributes.put(iskander.get(), EntityServant.createMobAttributes().build());
         GlobalEntityTypeAttributes.put(medea.get(), EntityServant.createMobAttributes().build());
+        GlobalEntityTypeAttributes.put(heracles.get(), EntityServant.createMobAttributes().build());
+        GlobalEntityTypeAttributes.put(sasaki.get(), EntityServant.createMobAttributes().build());
 
         GlobalEntityTypeAttributes.put(lesserMonster.get(), MonsterEntity.createHostileAttributes().build());
         GlobalEntityTypeAttributes.put(hassanCopy.get(), EntityServant.createMobAttributes().build());

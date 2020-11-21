@@ -20,9 +20,12 @@ import com.flemmli97.fate.client.render.servant.RenderEmiya;
 import com.flemmli97.fate.client.render.servant.RenderGilgamesh;
 import com.flemmli97.fate.client.render.servant.RenderGilles;
 import com.flemmli97.fate.client.render.servant.RenderHassan;
+import com.flemmli97.fate.client.render.servant.RenderHeracles;
 import com.flemmli97.fate.client.render.servant.RenderIskander;
 import com.flemmli97.fate.client.render.servant.RenderLancelot;
 import com.flemmli97.fate.client.render.servant.RenderMedea;
+import com.flemmli97.fate.client.render.servant.RenderMedusa;
+import com.flemmli97.fate.client.render.servant.RenderSasaki;
 import com.flemmli97.fate.common.blocks.BlockChalkLine;
 import com.flemmli97.fate.common.registry.ModBlocks;
 import com.flemmli97.fate.common.registry.ModEntities;
@@ -67,6 +70,9 @@ public class ClientHandler {
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.hassan.get(), RenderHassan::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.iskander.get(), RenderIskander::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.medea.get(), RenderMedea::new);
+        RenderingRegistry.registerEntityRenderingHandler(ModEntities.medusa.get(), RenderMedusa::new);
+        RenderingRegistry.registerEntityRenderingHandler(ModEntities.heracles.get(), RenderHeracles::new);
+        RenderingRegistry.registerEntityRenderingHandler(ModEntities.sasaki.get(), RenderSasaki::new);
 
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.excalibur.get(), RenderExcalibur::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.gaebolg.get(), RenderGaeBolg::new);

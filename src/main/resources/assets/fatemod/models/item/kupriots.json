@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/handheld",
   "textures": {
-    "layer0": "fatemod:items/isk_sword"
+    "layer0": "fatemod:items/kupriots"
   }
 }
