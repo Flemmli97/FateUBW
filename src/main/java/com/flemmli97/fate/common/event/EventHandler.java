@@ -51,7 +51,7 @@ public class EventHandler {
             IPlayer cap = player.getCapability(PlayerCapProvider.PlayerCap).orElse(null);
             if (cap != null)
                 PacketHandler.sendToClient(new S2CMana(cap), player);
-            TruceHandler.get(player.getServerWorld()).pending(player).forEach(uuid->{
+            TruceHandler.get(player.getServerWorld()).pending(player).forEach(uuid -> {
                 GameProfile prof = player.getServer().getPlayerProfileCache().getProfileByUUID(uuid);
                 if (prof != null)
                     player.sendMessage(new TranslationTextComponent("chat.truce.pending", prof.getName()).formatted(TextFormatting.GOLD), Util.NIL_UUID);

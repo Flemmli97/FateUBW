@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "fatemod:gem_shard_earth",
+    "fatemod:gem_shard_water",
+    "fatemod:gem_shard_void",
+    "fatemod:gem_shard_fire",
+    "fatemod:gem_shard_wind"
+  ]
+}

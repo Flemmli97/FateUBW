@@ -53,11 +53,11 @@ public class Loottables extends ForgeLootTableProvider {
         return loot;
     }
 
-    static class EntityLoot implements Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>{
+    static class EntityLoot implements Consumer<BiConsumer<ResourceLocation, LootTable.Builder>> {
 
         private final Map<ResourceLocation, LootTable.Builder> lootTables = Maps.newHashMap();
 
-        private void init(){
+        private void init() {
             this.registerLootTable(ModEntities.arthur.get(), this.getDefault(ModItems.excalibur.get()));
             this.registerLootTable(ModEntities.cuchulainn.get(), this.getDefault(ModItems.gaebolg.get()));
             this.registerLootTable(ModEntities.diarmuid.get(), this.getDefault(ModItems.gaebuidhe.get(), ModItems.gaedearg.get()));
@@ -73,18 +73,18 @@ public class Loottables extends ForgeLootTableProvider {
             this.registerLootTable(ModEntities.sasaki.get(), this.getDefault(ModItems.katana.get()));
         }
 
-        private LootTable.Builder getDefault(IItemProvider... items){
+        private LootTable.Builder getDefault(IItemProvider... items) {
             LootPool.Builder build = LootPool.builder().rolls(ConstantRange.of(1));
             LootPool.builder().rolls(ConstantRange.of(1));
-            for(IItemProvider item : items)
+            for (IItemProvider item : items)
                 build.addEntry(ItemLootEntry.builder(item))
-                    .acceptFunction(SetCount.builder(RandomValueRange.of(0.0F, 0.1F)))
-                    .acceptFunction(LootingEnchantBonus.builder(RandomValueRange.of(0.0F, 0.05F)).func_216072_a(1));
+                        .acceptFunction(SetCount.builder(RandomValueRange.of(0.0F, 0.1F)))
+                        .acceptFunction(LootingEnchantBonus.builder(RandomValueRange.of(0.0F, 0.05F)).func_216072_a(1));
             return LootTable.builder().addLootPool(build);
         }
 
         protected void registerLootTable(EntityType<?> type, LootTable.Builder builder) {
-           this.lootTables.put(type.getLootTable(), builder);
+            this.lootTables.put(type.getLootTable(), builder);
         }
 
         @Override
@@ -94,7 +94,7 @@ public class Loottables extends ForgeLootTableProvider {
         }
     }
 
-    static class BlockLoot extends BlockLootTables{
+    static class BlockLoot extends BlockLootTables {
 
         private final Map<ResourceLocation, LootTable.Builder> loots = Maps.newHashMap();
 
@@ -102,21 +102,22 @@ public class Loottables extends ForgeLootTableProvider {
 
         @Override
         public void accept(BiConsumer<ResourceLocation, LootTable.Builder> cons) {
+            this.registerDropSelfLootTable(ModBlocks.altar.get());
             this.registerLootTable(ModBlocks.charmOre.get(), drop -> droppingWithSilkTouch(drop, ModItems.charmNone.get()));
             ResourceLocation crystal = new ResourceLocation(Fate.MODID, "blocks/crystals");
-            this.registerLootTable(crystal, createLootPool(5,ModItems.crystalEarth.get(), ModItems.crystalWind.get(), ModItems.crystalWater.get(), ModItems.crystalVoid.get(), ModItems.crystalFire.get()));
+            this.registerLootTable(crystal, createLootPool(5, ModItems.crystalEarth.get(), ModItems.crystalWind.get(), ModItems.crystalWater.get(), ModItems.crystalVoid.get(), ModItems.crystalFire.get()));
             this.registerLootTable(ModBlocks.crystalOre.get(), drop -> droppingWithSilkTouch(drop, TableLootEntry.builder(crystal)));
             this.loots.forEach(cons::accept);
         }
 
         protected static LootTable.Builder createLootPool(int weight, IItemProvider... items) {
             LootPool.Builder build = LootPool.builder().rolls(ConstantRange.of(1));
-            for(IItemProvider item : items)
+            for (IItemProvider item : items)
                 build.addEntry(ore(weight, item));
             return LootTable.builder().addLootPool(build);
         }
 
-        private static StandaloneLootEntry.Builder<?> ore(int weight, IItemProvider item){
+        private static StandaloneLootEntry.Builder<?> ore(int weight, IItemProvider item) {
             return ItemLootEntry.builder(item).acceptFunction(SetCount.builder(RandomValueRange.of(1.0F, 3.0F))).acceptFunction(ApplyBonus.oreDrops(Enchantments.FORTUNE)).weight(weight);
         }
 

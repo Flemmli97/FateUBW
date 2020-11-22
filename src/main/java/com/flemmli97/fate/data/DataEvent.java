@@ -17,8 +17,12 @@ public class DataEvent {
             data.addProvider(new ItemModels(data, event.getExistingFileHelper()));
             data.addProvider(new Lang(data));
         }
-        if(event.includeServer()){
+        if (event.includeServer()) {
             data.addProvider(new Loottables(data));
+            BlockTagGen blocks = new BlockTagGen(data, event.getExistingFileHelper());
+            data.addProvider(blocks);
+            data.addProvider(new ItemTagGen(data, blocks, event.getExistingFileHelper()));
+            data.addProvider(new RecipesGen(data));
         }
     }
 

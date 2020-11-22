@@ -8,6 +8,7 @@ import com.flemmli97.fate.common.blocks.tile.TileAltar;
 import com.flemmli97.fate.common.utils.EnumPositionChalk;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.fml.RegistryObject;
@@ -31,7 +32,7 @@ public class ModBlocks {
     public static EnumMap<EnumPositionChalk, RegistryObject<BlockChalkLine>> registerChalk() {
         EnumMap<EnumPositionChalk, RegistryObject<BlockChalkLine>> map = new EnumMap<>(EnumPositionChalk.class);
         for (EnumPositionChalk e : EnumPositionChalk.values())
-            map.put(e, BLOCKS.register("chalk_line_" + e.getID(), () -> new BlockChalkLine(e, AbstractBlock.Properties.create(Material.MISCELLANEOUS).nonOpaque().hardnessAndResistance(0.1f, 100))));
+            map.put(e, BLOCKS.register("chalk_line_" + e.getID(), () -> new BlockChalkLine(e, AbstractBlock.Properties.create(Material.MISCELLANEOUS).sound(SoundType.CLOTH).nonOpaque().hardnessAndResistance(0.1f, 100))));
         return map;
     }
 }

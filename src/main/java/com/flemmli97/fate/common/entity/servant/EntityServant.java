@@ -229,7 +229,7 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated,
     public ILivingEntityData onInitialSpawn(IServerWorld world, DifficultyInstance difficulty, SpawnReason reason, ILivingEntityData data, CompoundNBT nbt) {
         super.onInitialSpawn(world, difficulty, reason, data, nbt);
         this.setEquipmentBasedOnDifficulty(difficulty);
-        for(EquipmentSlotType type : EquipmentSlotType.values())
+        for (EquipmentSlotType type : EquipmentSlotType.values())
             this.setDropChance(type, 0);
         return data;
     }

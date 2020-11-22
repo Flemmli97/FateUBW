@@ -86,8 +86,9 @@ public class ClientHandler {
 
         ClientRegistry.bindTileEntityRenderer(ModBlocks.tileAltar.get(), RenderAltar::new);
 
-        RenderTypeLookup.setRenderLayer(ModBlocks.crystalOre.get(), type -> true);
-        RenderTypeLookup.setRenderLayer(ModBlocks.charmOre.get(), type -> true);
+        RenderTypeLookup.setRenderLayer(ModBlocks.altar.get(), RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.crystalOre.get(), RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.charmOre.get(), RenderType.getCutout());
         for (RegistryObject<BlockChalkLine> e : ModBlocks.chalks.values())
             RenderTypeLookup.setRenderLayer(e.get(), RenderType.getCutout());
         manaBar = new ManaBar(Minecraft.getInstance());

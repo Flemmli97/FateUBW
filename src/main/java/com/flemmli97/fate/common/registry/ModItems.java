@@ -78,7 +78,7 @@ public class ModItems {
     public static final RegistryObject<Item> crystalWater = ITEMS.register("gem_shard_water", () -> new Item(new Item.Properties().group(Fate.TAB)));
     public static final RegistryObject<Item> crystalVoid = ITEMS.register("gem_shard_void", () -> new Item(new Item.Properties().group(Fate.TAB)));
     public static final RegistryObject<Item> crystalCluster = ITEMS.register("gem_cluster", () -> new ItemCrystal(new Item.Properties().group(Fate.TAB)));
-    public static final RegistryObject<Item> chalk = ITEMS.register("chalk", () -> new ItemChalk(new Item.Properties().group(Fate.TAB)));
+    public static final RegistryObject<Item> chalk = ITEMS.register("chalk", () -> new ItemChalk(new Item.Properties().group(Fate.TAB).defaultMaxDamage(32)));
     public static final RegistryObject<Item> manaBottle = ITEMS.register("mana_bottle", () -> new ItemManaBottle(new Item.Properties().group(Fate.TAB)));
     public static final RegistryObject<Item> grail = ITEMS.register("holy_grail", () -> new ItemHolyGrail(new Item.Properties().group(Fate.TAB)));
 

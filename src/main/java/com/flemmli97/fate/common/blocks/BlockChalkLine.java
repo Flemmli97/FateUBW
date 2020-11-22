@@ -46,6 +46,7 @@ public class BlockChalkLine extends Block {
 
     @Override
     public boolean isValidPosition(BlockState state, IWorldReader reader, BlockPos pos) {
-        return !reader.isAirBlock(pos.down()) && !(reader.getBlockState(pos).getBlock() instanceof BlockChalkLine) && !(reader.getBlockState(pos).getBlock() instanceof BlockAltar);
+        BlockState down = reader.getBlockState(pos.down());
+        return !reader.isAirBlock(pos.down()) && !(down.getBlock() instanceof BlockChalkLine) && !(down.getBlock() instanceof BlockAltar);
     }
 }

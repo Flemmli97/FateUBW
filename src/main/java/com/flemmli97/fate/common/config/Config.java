@@ -11,7 +11,7 @@ public class Config {
         public static int manaX;
         public static int manaY;
 
-        public static void load(){
+        public static void load() {
             manaX = ConfigSpecs.clientConf.manaBarX.get();
             manaY = ConfigSpecs.clientConf.manaBarY.get();
         }

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "fatemod:gem_shard_fire"
+    },
+    {
+      "item": "fatemod:gem_shard_void"
+    },
+    {
+      "item": "fatemod:gem_shard_water"
+    },
+    {
+      "item": "fatemod:gem_shard_wind"
+    },
+    {
+      "item": "fatemod:gem_shard_earth"
+    }
+  ],
+  "result": {
+    "item": "fatemod:gem_cluster"
+  }
+}
