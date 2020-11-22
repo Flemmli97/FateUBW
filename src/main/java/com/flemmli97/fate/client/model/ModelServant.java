@@ -83,11 +83,9 @@ public class ModelServant<T extends EntityServant & IAnimated> extends EntityMod
         this.servantLeftArmUpOverlay.setDefaultRotPoint(5.0F, 2.0F, 0);
 
         this.servantLeftArmJoint = new ModelRendererPlus(this, 0, 0);
-        this.servantLeftArmJoint.addCuboid(0, 0, 0, 0, 0, 0);
         this.servantLeftArmJoint.setDefaultRotPoint(3.0F, 4.0F, 0);
         this.servantLeftArmUp.addChild(this.servantLeftArmJoint);
         this.servantLeftArmOverlayJoint = new ModelRendererPlus(this, 0, 0);
-        this.servantLeftArmOverlayJoint.addCuboid(0, 0, 0, 0, 0, 0);
         this.servantLeftArmOverlayJoint.setDefaultRotPoint(3.0F, 4.0F, 0);
         this.servantLeftArmUpOverlay.addChild(this.servantLeftArmOverlayJoint);
 
@@ -108,13 +106,11 @@ public class ModelServant<T extends EntityServant & IAnimated> extends EntityMod
         this.servantRightArmUpOverlay = new ModelRendererPlus(this, 40, 32);
         this.servantRightArmUpOverlay.addCuboid(-3.0F, -2.0F, -2.0F, 4, 6, 4, 0.25F);
         this.servantRightArmUpOverlay.setDefaultRotPoint(-5.0F, 2.0F, 0);
-//-5, 2, 0;   -3, 4, 0;   3, -4, 0;
+
         this.servantRightArmJoint = new ModelRendererPlus(this, 0, 0);
-        this.servantRightArmJoint.addCuboid(0, 0, 0, 0, 0, 0);
         this.servantRightArmJoint.setDefaultRotPoint(-3.0F, 4.0F, 0);
         this.servantRightArmUp.addChild(this.servantRightArmJoint);
         this.servantRightArmOverlayJoint = new ModelRendererPlus(this, 0, 0);
-        this.servantRightArmOverlayJoint.addCuboid(0, 0, 0, 0, 0, 0);
         this.servantRightArmOverlayJoint.setDefaultRotPoint(-3.0F, 4.0F, 0);
         this.servantRightArmUpOverlay.addChild(this.servantRightArmOverlayJoint);
 
