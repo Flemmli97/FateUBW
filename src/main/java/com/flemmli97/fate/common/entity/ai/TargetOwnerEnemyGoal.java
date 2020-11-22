@@ -27,8 +27,8 @@ public class TargetOwnerEnemyGoal<T extends CreatureEntity & IOwnable> extends T
         if (livingentity == null) {
             return false;
         } else {
-            LivingEntity target = livingentity instanceof MobEntity ? ((MobEntity)livingentity).getAttackTarget() : livingentity.getLastAttackedEntity();
-            if(target != null && !target.equals(this.attackTarget)) {
+            LivingEntity target = livingentity instanceof MobEntity ? ((MobEntity) livingentity).getAttackTarget() : livingentity.getLastAttackedEntity();
+            if (target != null && !target.equals(this.attackTarget)) {
                 this.attackTarget = target;
             }
             return this.isSuitableTarget(this.attackTarget, EntityPredicate.DEFAULT);

@@ -8,7 +8,13 @@ import java.util.Map;
 public class Config {
 
     public static class Client {
+        public static int manaX;
+        public static int manaY;
 
+        public static void load(){
+            manaX = ConfigSpecs.clientConf.manaBarX.get();
+            manaY = ConfigSpecs.clientConf.manaBarY.get();
+        }
     }
 
     public static class Common {

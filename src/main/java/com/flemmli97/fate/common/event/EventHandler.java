@@ -5,12 +5,17 @@ import com.flemmli97.fate.common.capability.IPlayer;
 import com.flemmli97.fate.common.capability.PlayerCapProvider;
 import com.flemmli97.fate.common.commands.CommandHandler;
 import com.flemmli97.fate.common.world.GrailWarHandler;
+import com.flemmli97.fate.common.world.TruceHandler;
 import com.flemmli97.fate.network.PacketHandler;
 import com.flemmli97.fate.network.S2CMana;
+import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Util;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -46,16 +51,15 @@ public class EventHandler {
             IPlayer cap = player.getCapability(PlayerCapProvider.PlayerCap).orElse(null);
             if (cap != null)
                 PacketHandler.sendToClient(new S2CMana(cap), player);
-			/*for(UUID uuid : TruceMapHandler.get(player.world).getRequests(player))
-			{
-				String name = GrailWarHandler.get(player.world).getPlayerNameFromUUID(uuid);
-				player.sendMessage(TextHelper.setColor(new TextComponentTranslation("chat.truce.pending", name), TextFormatting.GOLD));
-			}
-			if(player.getCapability(PlayerCapProvider.PlayerCap, null).getServant(player)!=null)
+            TruceHandler.get(player.getServerWorld()).pending(player).forEach(uuid->{
+                GameProfile prof = player.getServer().getPlayerProfileCache().getProfileByUUID(uuid);
+                if (prof != null)
+                    player.sendMessage(new TranslationTextComponent("chat.truce.pending", prof.getName()).formatted(TextFormatting.GOLD), Util.NIL_UUID);
+            });
+			/*if(player.getCapability(PlayerCapProvider.PlayerCap, null).getServant(player)!=null)
 				this.trackEntity(player, player.getCapability(PlayerCapProvider.PlayerCap, null).getServant(player));*/
         }
     }
-
 
     @SubscribeEvent
     public static void updateGrailWar(TickEvent.WorldTickEvent event) {

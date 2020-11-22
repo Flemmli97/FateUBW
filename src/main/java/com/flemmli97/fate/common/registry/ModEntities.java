@@ -52,7 +52,6 @@ import java.util.Map;
 
 public class ModEntities {
 
-    //Trying out deferred register with configs
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, Fate.MODID);
     private static final Map<ResourceLocation, EnumServantType> servantTypeMap = Maps.newHashMap();
 
@@ -61,30 +60,36 @@ public class ModEntities {
 
     public static RegistryObject<EntityType<EntityArthur>> arthur = regServant(EnumServantType.SABER, EntityType.Builder.create(EntityArthur::new, EntityClassification.MISC),
             LibEntities.arthur, 0x048dd0, 0xecee37, new ServantProperties(300, 10, 17, 0.4f, 12, 10, 0.3, 100));
+
     public static RegistryObject<EntityType<EntityCuchulainn>> cuchulainn = regServant(EnumServantType.LANCER, EntityType.Builder.create(EntityCuchulainn::new, EntityClassification.MISC),
             LibEntities.cuchulainn, 0x0038ff, 0xb6c0c1, new ServantProperties(275, 7.5, 10, 0, 14, 6, 0.35, 75));
     public static RegistryObject<EntityType<EntityDiarmuid>> diarmuid = regServant(EnumServantType.LANCER, EntityType.Builder.create(EntityDiarmuid::new, EntityClassification.MISC),
             LibEntities.diarmuid, 0x000000, 0x2a079a, new ServantProperties(310, 8.5, 12, 0, 13, 7, 0.35, 80));
+
     public static RegistryObject<EntityType<EntityEmiya>> emiya = regServant(EnumServantType.ARCHER, EntityType.Builder.create(EntityEmiya::new, EntityClassification.MISC),
             LibEntities.emiya, 0x9f0707, 0x000000, new ServantProperties(250, 7.5, 8, 0, 15.5, 7, 0.33, 66));
     public static RegistryObject<EntityType<EntityGilgamesh>> gilgamesh = regServant(EnumServantType.ARCHER, EntityType.Builder.create(EntityGilgamesh::new, EntityClassification.MISC),
             LibEntities.gilgamesh, 0xfff400, 0xffdb00, new ServantProperties(250, 10, 9, 0, 12.5, 5, 0.3, 100));
-    public static RegistryObject<EntityType<EntityGilles>> gilles = regServant(EnumServantType.CASTER, EntityType.Builder.create(EntityGilles::new, EntityClassification.MISC),
-            LibEntities.gilles, 0x100460, 0x600453, new ServantProperties(350, 5.5, 7, 0, 5, 14, 0.3, 80));
-    public static RegistryObject<EntityType<EntityLancelot>> lancelot = regServant(EnumServantType.BERSERKER, EntityType.Builder.create(EntityLancelot::new, EntityClassification.MISC),
-            LibEntities.lancelot, 0x071a33, 0x1d4f94, new ServantProperties(450, 9, 14, 0.4f, 19, 4, 0.2, 0));
-    public static RegistryObject<EntityType<EntityHassan>> hassan = regServant(EnumServantType.ASSASSIN, EntityType.Builder.create(EntityHassan::new, EntityClassification.MISC),
-            LibEntities.hassan, 0x000000, 0x3a393a, new ServantProperties(200, 6, 8.5, 0, 17, 4, 0.34, 15));
-    public static RegistryObject<EntityType<EntityIskander>> iskander = regServant(EnumServantType.RIDER, EntityType.Builder.create(EntityIskander::new, EntityClassification.MISC),
-            LibEntities.alexander, 0xd40000, 0x8d0101, new ServantProperties(400, 5.5, 10, 0, 9, 9.5, 0.3, 100));
+
     public static RegistryObject<EntityType<EntityMedea>> medea = regServant(EnumServantType.CASTER, EntityType.Builder.create(EntityMedea::new, EntityClassification.MISC),
             LibEntities.medea, 0x6f086b, 0x4a8be5, new ServantProperties(350, 9.5, 5, 0, 4, 17.5, 0.2, 100));
+    public static RegistryObject<EntityType<EntityGilles>> gilles = regServant(EnumServantType.CASTER, EntityType.Builder.create(EntityGilles::new, EntityClassification.MISC),
+            LibEntities.gilles, 0x100460, 0x600453, new ServantProperties(350, 5.5, 7, 0, 5, 14, 0.3, 80));
+
     public static RegistryObject<EntityType<EntityHeracles>> heracles = regServant(EnumServantType.BERSERKER, EntityType.Builder.create(EntityHeracles::new, EntityClassification.MISC),
             LibEntities.heracles, 0x3c1d06, 0x5e3c22, new ServantProperties(75, 7.5, 10, 0, 17, 9.5, 0.2, 0));
-    public static RegistryObject<EntityType<EntitySasaki>> sasaki = regServant(EnumServantType.ASSASSIN, EntityType.Builder.create(EntitySasaki::new, EntityClassification.MISC),
-            LibEntities.sasaki, 0x4e04c3, 0xa77cec, new ServantProperties(350, 9.5, 9, 0, 8, 8.5, 0.3, 50));
+    public static RegistryObject<EntityType<EntityLancelot>> lancelot = regServant(EnumServantType.BERSERKER, EntityType.Builder.create(EntityLancelot::new, EntityClassification.MISC),
+            LibEntities.lancelot, 0x071a33, 0x1d4f94, new ServantProperties(450, 9, 14, 0.4f, 19, 4, 0.2, 0));
+
+    public static RegistryObject<EntityType<EntityIskander>> iskander = regServant(EnumServantType.RIDER, EntityType.Builder.create(EntityIskander::new, EntityClassification.MISC),
+            LibEntities.alexander, 0xd40000, 0x8d0101, new ServantProperties(400, 5.5, 10, 0, 9, 9.5, 0.3, 100));
     public static RegistryObject<EntityType<EntityMedusa>> medusa = regServant(EnumServantType.RIDER, EntityType.Builder.create(EntityMedusa::new, EntityClassification.MISC),
             LibEntities.medusa, 0x000000, 0xf234ea, new ServantProperties(250, 4.5, 11, 0, 7, 10, 0.3, 80));
+
+    public static RegistryObject<EntityType<EntityHassan>> hassan = regServant(EnumServantType.ASSASSIN, EntityType.Builder.create(EntityHassan::new, EntityClassification.MISC),
+            LibEntities.hassan, 0x000000, 0x3a393a, new ServantProperties(200, 6, 8.5, 0, 17, 4, 0.34, 15));
+    public static RegistryObject<EntityType<EntitySasaki>> sasaki = regServant(EnumServantType.ASSASSIN, EntityType.Builder.create(EntitySasaki::new, EntityClassification.MISC),
+            LibEntities.sasaki, 0x4e04c3, 0xa77cec, new ServantProperties(350, 9.5, 9, 0, 8, 8.5, 0.3, 50));
 
     public static final RegistryObject<EntityType<EntityExcalibur>> excalibur = reg(EntityType.Builder.<EntityExcalibur>create(EntityExcalibur::new, EntityClassification.MISC).size(0.25F, 0.25F), LibEntities.excalibur);
     public static final RegistryObject<EntityType<EntityGaeBolg>> gaebolg = reg(EntityType.Builder.<EntityGaeBolg>create(EntityGaeBolg::new, EntityClassification.MISC).size(0.25F, 0.25F), LibEntities.gae_bolg);
@@ -92,12 +97,13 @@ public class ModEntities {
     public static final RegistryObject<EntityType<EntityCaladBolg>> caladbolg = reg(EntityType.Builder.<EntityCaladBolg>create(EntityCaladBolg::new, EntityClassification.MISC).size(0.25F, 0.25F), LibEntities.caladbolg);
     public static final RegistryObject<EntityType<EntityBabylonWeapon>> babylon = reg(EntityType.Builder.<EntityBabylonWeapon>create(EntityBabylonWeapon::new, EntityClassification.MISC).size(0.25F, 0.25F), LibEntities.babylon);
     public static final RegistryObject<EntityType<EntityEnumaElish>> ea = reg(EntityType.Builder.<EntityEnumaElish>create(EntityEnumaElish::new, EntityClassification.MISC).size(0.25F, 0.25F), LibEntities.ea);
-    public static final RegistryObject<EntityType<EntityLesserMonster>> lesserMonster = reg(EntityType.Builder.<EntityLesserMonster>create(EntityLesserMonster::new, EntityClassification.MONSTER).maxTrackingRange(8), LibEntities.monster_small);
-    public static final RegistryObject<EntityType<EntityGem>> gem = reg(EntityType.Builder.<EntityGem>create(EntityGem::new, EntityClassification.MISC).size(0.25F, 0.25F), LibEntities.entity_gem);
-    public static final RegistryObject<EntityType<EntityHassanCopy>> hassanCopy = reg(EntityType.Builder.create(EntityHassanCopy::new, EntityClassification.MISC), LibEntities.hassan_copy);
-    public static final RegistryObject<EntityType<EntityGordiusWheel>> gordiusWheel = reg(EntityType.Builder.create(EntityGordiusWheel::new, EntityClassification.MISC), LibEntities.gordius);
-    public static final RegistryObject<EntityType<EntityCasterCircle>> medeaCircle = reg(EntityType.Builder.create(EntityCasterCircle::new, EntityClassification.MISC), LibEntities.medea_circle);
     public static final RegistryObject<EntityType<EntityMagicBeam>> magicBeam = reg(EntityType.Builder.create(EntityMagicBeam::new, EntityClassification.MISC), LibEntities.magic_beam);
+    public static final RegistryObject<EntityType<EntityCasterCircle>> medeaCircle = reg(EntityType.Builder.create(EntityCasterCircle::new, EntityClassification.MISC), LibEntities.medea_circle);
+    public static final RegistryObject<EntityType<EntityLesserMonster>> lesserMonster = reg(EntityType.Builder.<EntityLesserMonster>create(EntityLesserMonster::new, EntityClassification.MONSTER).maxTrackingRange(8), LibEntities.monster_small);
+    public static final RegistryObject<EntityType<EntityGordiusWheel>> gordiusWheel = reg(EntityType.Builder.create(EntityGordiusWheel::new, EntityClassification.MISC), LibEntities.gordius);
+    public static final RegistryObject<EntityType<EntityHassanCopy>> hassanCopy = reg(EntityType.Builder.create(EntityHassanCopy::new, EntityClassification.MISC), LibEntities.hassan_copy);
+
+    public static final RegistryObject<EntityType<EntityGem>> gem = reg(EntityType.Builder.<EntityGem>create(EntityGem::new, EntityClassification.MISC).size(0.25F, 0.25F), LibEntities.entity_gem);
 
     public static <V extends EntityServant> RegistryObject<EntityType<V>> regServant(EnumServantType type, EntityType.Builder<V> entity, ResourceLocation name, int primary, int secondary, ServantProperties defaultVals) {
         RegistryObject<EntityType<V>> reg = reg(entity.maxTrackingRange(10), name);
@@ -132,18 +138,24 @@ public class ModEntities {
 
     public static void registerAttributes() {
         GlobalEntityTypeAttributes.put(arthur.get(), EntityServant.createMobAttributes().build());
+
         GlobalEntityTypeAttributes.put(cuchulainn.get(), EntityServant.createMobAttributes().build());
         GlobalEntityTypeAttributes.put(diarmuid.get(), EntityServant.createMobAttributes().build());
+
         GlobalEntityTypeAttributes.put(emiya.get(), EntityServant.createMobAttributes().build());
         GlobalEntityTypeAttributes.put(gilgamesh.get(), EntityServant.createMobAttributes().build());
+
         GlobalEntityTypeAttributes.put(gilles.get(), EntityServant.createMobAttributes().build());
-        GlobalEntityTypeAttributes.put(lancelot.get(), EntityServant.createMobAttributes().build());
-        GlobalEntityTypeAttributes.put(hassan.get(), EntityServant.createMobAttributes().build());
-        GlobalEntityTypeAttributes.put(iskander.get(), EntityServant.createMobAttributes().build());
         GlobalEntityTypeAttributes.put(medea.get(), EntityServant.createMobAttributes().build());
+
         GlobalEntityTypeAttributes.put(heracles.get(), EntityServant.createMobAttributes().build());
-        GlobalEntityTypeAttributes.put(sasaki.get(), EntityServant.createMobAttributes().build());
+        GlobalEntityTypeAttributes.put(lancelot.get(), EntityServant.createMobAttributes().build());
+
         GlobalEntityTypeAttributes.put(medusa.get(), EntityServant.createMobAttributes().build());
+        GlobalEntityTypeAttributes.put(iskander.get(), EntityServant.createMobAttributes().build());
+
+        GlobalEntityTypeAttributes.put(hassan.get(), EntityServant.createMobAttributes().build());
+        GlobalEntityTypeAttributes.put(sasaki.get(), EntityServant.createMobAttributes().build());
 
         GlobalEntityTypeAttributes.put(lesserMonster.get(), MonsterEntity.createHostileAttributes().build());
         GlobalEntityTypeAttributes.put(hassanCopy.get(), EntityServant.createMobAttributes().build());

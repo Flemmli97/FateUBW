@@ -70,6 +70,8 @@ public class Fate {
     public static void conf(ModConfig.ModConfigEvent event) {
         if (event.getConfig().getSpec() == ConfigSpecs.commonSpec)
             Config.Common.load();
+        if (event.getConfig().getSpec() == ConfigSpecs.clientSpec)
+            Config.Client.load();
     }
 
     public static final ItemGroup TAB = new ItemGroup("fate") {

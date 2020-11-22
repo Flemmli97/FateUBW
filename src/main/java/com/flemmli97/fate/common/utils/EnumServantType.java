@@ -3,11 +3,11 @@ package com.flemmli97.fate.common.utils;
 public enum EnumServantType {
 
     SABER("saber"),
-    ARCHER("archer"),
     LANCER("lancer"),
-    RIDER("rider"),
-    BERSERKER("berserker"),
+    ARCHER("archer"),
     CASTER("caster"),
+    BERSERKER("berserker"),
+    RIDER("rider"),
     ASSASSIN("assassin"),
     NOTASSIGNED("undef");
 

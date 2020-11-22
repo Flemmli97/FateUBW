@@ -218,33 +218,24 @@ public class ModelHassanCopy extends EntityModel<EntityHassanCopy> implements IR
             this.servantLeftLegUp.rotateAngleY = -((float) Math.PI / 10F);
         }
 
-        if (this.heldItemOff == 1) {
+        if (this.heldItemOff == 1)
             this.servantLeftArmUp.rotateAngleX = this.servantLeftArmUp.rotateAngleX * 0.5F - ((float) Math.PI / 10F);
-        }
-        if (this.heldItemMain == 1) {
+        if (this.heldItemMain == 1)
             this.servantRightArmUp.rotateAngleX = this.servantRightArmUp.rotateAngleX * 0.5F - ((float) Math.PI / 10F);
-        }
 
         this.servantRightArmUp.rotateAngleY = 0;
         this.servantLeftArmUp.rotateAngleY = 0;
-        float var8;
-        float var9;
-
         if (this.swingProgress > -9990) {
-            var8 = this.swingProgress;
-            this.servantBody.rotateAngleY = MathHelper.sin(MathHelper.sqrt(var8) * (float) Math.PI * 2.0F) * 0.2F;
-            this.servantRightArmUp.rotationPointZ = MathHelper.sin(this.servantBody.rotateAngleY) * 5.0F;
-            this.servantRightArmUp.rotationPointX = -MathHelper.cos(this.servantBody.rotateAngleY) * 5.0F;
-            this.servantLeftArmUp.rotationPointZ = -MathHelper.sin(this.servantBody.rotateAngleY) * 5.0F;
-            this.servantLeftArmUp.rotationPointX = MathHelper.cos(this.servantBody.rotateAngleY) * 5.0F;
+            float swingProgress = this.swingProgress;
+            this.servantBody.rotateAngleY = MathHelper.sin(MathHelper.sqrt(swingProgress) * (float) Math.PI * 2.0F) * 0.2F;
             this.servantRightArmUp.rotateAngleY += this.servantBody.rotateAngleY;
             this.servantLeftArmUp.rotateAngleY += this.servantBody.rotateAngleY;
             this.servantLeftArmUp.rotateAngleX += this.servantBody.rotateAngleY;
-            var8 = 1.0F - this.swingProgress;
-            var8 *= var8;
-            var8 *= var8;
-            var8 = 1.0F - var8;
-            var9 = MathHelper.sin(var8 * (float) Math.PI);
+            swingProgress = 1.0F - this.swingProgress;
+            swingProgress *= swingProgress;
+            swingProgress *= swingProgress;
+            swingProgress = 1.0F - swingProgress;
+            float var9 = MathHelper.sin(swingProgress * (float) Math.PI);
             float var10 = MathHelper.sin(this.swingProgress * (float) Math.PI) * -(this.servantHead.rotateAngleX - 0.7F) * 0.75F;
             this.servantRightArmUp.rotateAngleX = (float) ((double) this.servantRightArmUp.rotateAngleX - ((double) var9 * 1.2D + (double) var10));
             this.servantRightArmUp.rotateAngleY += this.servantBody.rotateAngleY * 2.0F;
@@ -252,12 +243,6 @@ public class ModelHassanCopy extends EntityModel<EntityHassanCopy> implements IR
         }
 
         this.servantBody.rotateAngleX = 0;
-        this.servantRightLegUp.rotationPointZ = 0.1F;
-        this.servantLeftLegUp.rotationPointZ = 0.1F;
-        this.servantRightLegUp.rotationPointY = 12.0F;
-        this.servantLeftLegUp.rotationPointY = 12.0F;
-        this.servantHead.rotationPointY = 0;
-        this.servantHeadOverlay.rotationPointY = 0;
 
         this.servantRightArmUp.rotateAngleZ += MathHelper.cos(ageInTicks * 0.09F) * 0.05F + 0.05F;
         this.servantLeftArmUp.rotateAngleZ -= MathHelper.cos(ageInTicks * 0.09F) * 0.05F + 0.05F;
@@ -308,7 +293,7 @@ public class ModelHassanCopy extends EntityModel<EntityHassanCopy> implements IR
 
     @Override
     public void postTransform(boolean leftSide, MatrixStack stack) {
-        stack.translate(-0.125, 0.125,-6/16d);
+        stack.translate(-0.125, 0.125, -6 / 16d);
     }
 
     @Override

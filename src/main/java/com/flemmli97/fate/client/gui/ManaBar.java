@@ -2,6 +2,7 @@ package com.flemmli97.fate.client.gui;
 
 import com.flemmli97.fate.Fate;
 import com.flemmli97.fate.common.capability.PlayerCapProvider;
+import com.flemmli97.fate.common.config.Config;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
@@ -21,8 +22,8 @@ public class ManaBar extends AbstractGui {
 
     public void renderBar(MatrixStack stack) {
         int mana = this.mc.player.getCapability(PlayerCapProvider.PlayerCap).map(cap -> cap.getMana()).orElse(0);
-        int xPos = 2;
-        int yPos = 2;
+        int xPos = Config.Client.manaX;
+        int yPos = Config.Client.manaY;
 
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 

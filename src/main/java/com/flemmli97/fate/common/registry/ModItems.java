@@ -50,23 +50,27 @@ public class ModItems {
     public static final RegistryObject<Item> bakuya = ITEMS.register("bakuya", () -> new SwordItem(ItemTiers.bakuya, 0, -2f, new Item.Properties().group(Fate.TAB)));
     public static final RegistryObject<Item> archbow = ITEMS.register("archer_bow", () -> new ItemArcherBow(new Item.Properties().group(Fate.TAB)));
     public static final RegistryObject<Item> enumaelish = ITEMS.register("enuma_elish", () -> new ItemEA(new Item.Properties().group(Fate.TAB)));
-    public static final RegistryObject<Item> grimoire = ITEMS.register("prelati", () -> new ItemGrimoire(new Item.Properties().group(Fate.TAB)));
-    public static final RegistryObject<Item> arondight = ITEMS.register("arondight", () -> new SwordItem(ItemTiers.arondight, 0, -2.4f, new Item.Properties().group(Fate.TAB)));
-    public static final RegistryObject<Item> medusaDagger = ITEMS.register("dagger", () -> new ItemDagger(ItemTiers.dagger, 0, -2.0f, new Item.Properties().group(Fate.TAB)));
-    public static final RegistryObject<Item> kupriots = ITEMS.register("kupriots", () -> new SwordItem(ItemTiers.kupriots, 0, -2.4f, new Item.Properties().group(Fate.TAB)));
-    public static final RegistryObject<Item> assassinDagger = ITEMS.register("assassin_dagger", () -> new ItemDagger(ItemTiers.assassinDagger, 0, -1.8f, new Item.Properties().group(Fate.TAB)));
     public static final RegistryObject<Item> staff = ITEMS.register("staff", () -> new ItemStaff(new Item.Properties().group(Fate.TAB)));
-    public static final RegistryObject<Item> heraclesAxe = ITEMS.register("heracles_axe", () -> new AxeItem(ItemTiers.heraclesAxe, 0, -2.9f, new Item.Properties().group(Fate.TAB)));
     public static final RegistryObject<Item> ruleBreaker = ITEMS.register("rule_breaker", () -> new SwordItem(ItemTiers.ruleBreaker, 0, -2.4f, new Item.Properties().group(Fate.TAB)));
+    public static final RegistryObject<Item> grimoire = ITEMS.register("prelati", () -> new ItemGrimoire(new Item.Properties().group(Fate.TAB)));
+    public static final RegistryObject<Item> heraclesAxe = ITEMS.register("heracles_axe", () -> new AxeItem(ItemTiers.heraclesAxe, 0, -2.9f, new Item.Properties().group(Fate.TAB)));
+    public static final RegistryObject<Item> arondight = ITEMS.register("arondight", () -> new SwordItem(ItemTiers.arondight, 0, -2.4f, new Item.Properties().group(Fate.TAB)));
+    public static final RegistryObject<Item> kupriots = ITEMS.register("kupriots", () -> new SwordItem(ItemTiers.kupriots, 0, -2.4f, new Item.Properties().group(Fate.TAB)));
+    public static final RegistryObject<Item> medusaDagger = ITEMS.register("dagger", () -> new ItemDagger(ItemTiers.dagger, 0, -2.0f, new Item.Properties().group(Fate.TAB)));
+    public static final RegistryObject<Item> assassinDagger = ITEMS.register("assassin_dagger", () -> new ItemDagger(ItemTiers.assassinDagger, 0, -1.8f, new Item.Properties().group(Fate.TAB)));
     public static final RegistryObject<Item> katana = ITEMS.register("katana", () -> new ItemKatana(ItemTiers.katana, 0, -2.6f, new Item.Properties().group(Fate.TAB)));
+
+    public static final RegistryObject<Item> altar = ITEMS.register("altar", () -> new BlockItem(ModBlocks.altar.get(), new Item.Properties().group(Fate.TAB)));
+    public static final RegistryObject<Item> crystalOre = ITEMS.register("crystal_ore", () -> new BlockItem(ModBlocks.crystalOre.get(), new Item.Properties().group(Fate.TAB)));
+    public static final RegistryObject<Item> charmOre = ITEMS.register("charm_ore", () -> new BlockItem(ModBlocks.charmOre.get(), new Item.Properties().group(Fate.TAB)));
 
     public static final RegistryObject<Item> charmNone = registercharm(EnumServantType.NOTASSIGNED);
     public static final RegistryObject<Item> charmSaber = registercharm(EnumServantType.SABER);
     public static final RegistryObject<Item> charmArcher = registercharm(EnumServantType.ARCHER);
     public static final RegistryObject<Item> charmLancer = registercharm(EnumServantType.LANCER);
-    public static final RegistryObject<Item> charmRider = registercharm(EnumServantType.RIDER);
-    public static final RegistryObject<Item> charmBerserker = registercharm(EnumServantType.BERSERKER);
     public static final RegistryObject<Item> charmCaster = registercharm(EnumServantType.CASTER);
+    public static final RegistryObject<Item> charmBerserker = registercharm(EnumServantType.BERSERKER);
+    public static final RegistryObject<Item> charmRider = registercharm(EnumServantType.RIDER);
     public static final RegistryObject<Item> charmAssassin = registercharm(EnumServantType.ASSASSIN);
     public static final RegistryObject<Item> crystalFire = ITEMS.register("gem_shard_fire", () -> new Item(new Item.Properties().group(Fate.TAB)));
     public static final RegistryObject<Item> crystalWind = ITEMS.register("gem_shard_wind", () -> new Item(new Item.Properties().group(Fate.TAB)));
@@ -82,10 +86,6 @@ public class ModItems {
     public static final RegistryObject<Item> icon1 = ITEMS.register("icon_1", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> icon2 = ITEMS.register("icon_2", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> icon3 = ITEMS.register("icon_3", () -> new Item(new Item.Properties()));
-
-    public static final RegistryObject<Item> altar = ITEMS.register("altar", () -> new BlockItem(ModBlocks.altar.get(), new Item.Properties().group(Fate.TAB)));
-    public static final RegistryObject<Item> crystalOre = ITEMS.register("crystal_ore", () -> new BlockItem(ModBlocks.crystalOre.get(), new Item.Properties().group(Fate.TAB)));
-    public static final RegistryObject<Item> charmOre = ITEMS.register("charm_ore", () -> new BlockItem(ModBlocks.charmOre.get(), new Item.Properties().group(Fate.TAB)));
 
     public static final Supplier<Item> randomIcon = () -> {
         int i = new Random().nextInt(4);

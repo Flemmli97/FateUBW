@@ -256,7 +256,7 @@ public class ModelStarfishDemon<T extends EntityLesserMonster> extends EntityMod
         AnimatedAction anim = monster.getAnimation();
         if (anim != null)
             this.anim.doAnimation(anim.getID(), anim.getTick(), partialTicks);
-        else if(monster.getMotion().x != 0 || monster.getMotion().z != 0)
+        else if (monster.getMotion().x != 0 || monster.getMotion().z != 0)
             this.anim.doAnimation("walk", monster.ticksExisted, partialTicks);
         else
             this.anim.doAnimation("iddle", monster.ticksExisted, partialTicks);

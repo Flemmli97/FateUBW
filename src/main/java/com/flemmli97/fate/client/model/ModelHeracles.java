@@ -475,7 +475,8 @@ public class ModelHeracles extends ModelServant<EntityHeracles> {
         this.rightElbowBonee.setDefaultRotPoint(-2.0F, -4.0F, 0.0F);
         this.rightLowerArm.addChild(this.rightElbowBonee);
         this.setRotationAngle(this.rightElbowBonee, 0.0F, 0.0F, -0.2485F);
-        this.rightElbowBonee.setTextureOffset(10, 0).addCuboid(-0.5F, -2.0F, -1.0F, 1.0F, 4.0F, 2.0F, 0.0F, true);}
+        this.rightElbowBonee.setTextureOffset(10, 0).addCuboid(-0.5F, -2.0F, -1.0F, 1.0F, 4.0F, 2.0F, 0.0F, true);
+    }
 
     @Override
     public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
@@ -485,13 +486,12 @@ public class ModelHeracles extends ModelServant<EntityHeracles> {
 
     @Override
     public void setAnglesPre(EntityHeracles servant, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        if(!this.show) {
+        if (!this.show) {
             this.servantBody.showModel = true;
             this.servantBodyOverlay.showModel = true;
             this.upperTorso.showModel = false;
             super.setAnglesPre(servant, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-        }
-        else{
+        } else {
             this.servantBody.showModel = false;
             this.servantBodyOverlay.showModel = false;
             this.upperTorso.showModel = true;
@@ -518,29 +518,24 @@ public class ModelHeracles extends ModelServant<EntityHeracles> {
                 this.leftUpperThigh.rotateAngleY = -((float) Math.PI / 10F);
             }
 
-            if (this.heldItemOff == 1) {
+            if (this.heldItemOff == 1)
                 this.leftArmUp.rotateAngleX = this.leftArmUp.rotateAngleX * 0.5F - ((float) Math.PI / 10F);
-            }
-            if (this.heldItemMain == 1) {
+            if (this.heldItemMain == 1)
                 this.rightArmUp.rotateAngleX = this.rightArmUp.rotateAngleX * 0.5F - ((float) Math.PI / 10F);
-            }
 
             this.rightArmUp.rotateAngleY = 0;
             this.leftArmUp.rotateAngleY = 0;
-            float var8;
-            float var9;
-
             if (this.swingProgress > -9990) {
-                var8 = this.swingProgress;
-                this.upperTorso.rotateAngleY = MathHelper.sin(MathHelper.sqrt(var8) * (float) Math.PI * 2.0F) * 0.2F;
+                float swingProgress = this.swingProgress;
+                this.upperTorso.rotateAngleY = MathHelper.sin(MathHelper.sqrt(swingProgress) * (float) Math.PI * 2.0F) * 0.2F;
                 this.rightArmUp.rotateAngleY += this.upperTorso.rotateAngleY;
                 this.leftArmUp.rotateAngleY += this.upperTorso.rotateAngleY;
                 this.leftArmUp.rotateAngleX += this.upperTorso.rotateAngleY;
-                var8 = 1.0F - this.swingProgress;
-                var8 *= var8;
-                var8 *= var8;
-                var8 = 1.0F - var8;
-                var9 = MathHelper.sin(var8 * (float) Math.PI);
+                swingProgress = 1.0F - this.swingProgress;
+                swingProgress *= swingProgress;
+                swingProgress *= swingProgress;
+                swingProgress = 1.0F - swingProgress;
+                float var9 = MathHelper.sin(swingProgress * (float) Math.PI);
                 float var10 = MathHelper.sin(this.swingProgress * (float) Math.PI) * -(this.head.rotateAngleX - 0.7F) * 0.75F;
                 this.rightArmUp.rotateAngleX = (float) ((double) this.rightArmUp.rotateAngleX - ((double) var9 * 1.2D + (double) var10));
                 this.rightArmUp.rotateAngleY += this.upperTorso.rotateAngleY * 2.0F;
@@ -558,34 +553,31 @@ public class ModelHeracles extends ModelServant<EntityHeracles> {
 
     @Override
     public void resetModel() {
-        if(this.show) {
+        if (this.show) {
             this.upperTorso.reset();
             this.resetChild(this.upperTorso);
-        }
-        else {
+        } else {
             super.resetModel();
         }
     }
 
     @Override
     public void transform(HandSide side, MatrixStack stack) {
-        if(this.show){
+        if (this.show) {
             if (side == HandSide.LEFT) {
                 this.rotate(stack, this.upperTorso, this.leftArmUp, this.leftBiceps, this.leftBicepsJoint, this.leftElbow, this.leftLowerArm, this.leftWrist);
             } else {
                 this.rotate(stack, this.upperTorso, this.rightArmUp, this.rightBiceps, this.rightBicepsJoint, this.rightElbow, this.rightLowerArm, this.rightWrist);
             }
-        }
-        else
+        } else
             super.transform(side, stack);
     }
 
     @Override
     public void postTransform(boolean leftSide, MatrixStack stack) {
-        if(this.show){
-            stack.translate(0, 0,-2/16d);
-        }
-        else
+        if (this.show) {
+            stack.translate(0, 0, -2 / 16d);
+        } else
             super.postTransform(leftSide, stack);
     }
 
@@ -595,6 +587,6 @@ public class ModelHeracles extends ModelServant<EntityHeracles> {
     }
 
     public void setRotationAngle(ModelRendererPlus modelRenderer, float x, float y, float z) {
-        modelRenderer.setDefaultRotAngle(x,y,z);
+        modelRenderer.setDefaultRotAngle(x, y, z);
     }
 }

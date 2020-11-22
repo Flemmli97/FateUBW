@@ -41,6 +41,7 @@ import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
@@ -228,6 +229,8 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated,
     public ILivingEntityData onInitialSpawn(IServerWorld world, DifficultyInstance difficulty, SpawnReason reason, ILivingEntityData data, CompoundNBT nbt) {
         super.onInitialSpawn(world, difficulty, reason, data, nbt);
         this.setEquipmentBasedOnDifficulty(difficulty);
+        for(EquipmentSlotType type : EquipmentSlotType.values())
+            this.setDropChance(type, 0);
         return data;
     }
 

@@ -173,7 +173,7 @@ public class ModelServant<T extends EntityServant & IAnimated> extends EntityMod
         this.servantBodyOverlay.addChild(this.servantRightLegUpOverlay);
         this.servantBodyOverlay.addChild(this.servantLeftLegUpOverlay);
 
-        this.anim = new BlockBenchAnimations(this, new ResourceLocation(Fate.MODID, "models/entity/animation/"+animFileName+".json"));
+        this.anim = new BlockBenchAnimations(this, new ResourceLocation(Fate.MODID, "models/entity/animation/" + animFileName + ".json"));
     }
 
     @Override
@@ -185,7 +185,7 @@ public class ModelServant<T extends EntityServant & IAnimated> extends EntityMod
     @Override
     public void setAngles(T servant, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float servantHeadPitch) {
         this.setAnglesPre(servant, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, servantHeadPitch);
-        if(this.show) {
+        if (this.show) {
             float partialTicks = Minecraft.getInstance().getRenderPartialTicks();
             if (servant.isStaying()) {
                 this.anim.doAnimation("stay", servant.ticksExisted, partialTicks);
@@ -223,29 +223,24 @@ public class ModelServant<T extends EntityServant & IAnimated> extends EntityMod
             this.servantLeftLegUp.rotateAngleY = -((float) Math.PI / 10F);
         }
 
-        if (this.heldItemOff == 1) {
+        if (this.heldItemOff == 1)
             this.servantLeftArmUp.rotateAngleX = this.servantLeftArmUp.rotateAngleX * 0.5F - ((float) Math.PI / 10F);
-        }
-        if (this.heldItemMain == 1) {
+        if (this.heldItemMain == 1)
             this.servantRightArmUp.rotateAngleX = this.servantRightArmUp.rotateAngleX * 0.5F - ((float) Math.PI / 10F);
-        }
 
         this.servantRightArmUp.rotateAngleY = 0;
         this.servantLeftArmUp.rotateAngleY = 0;
-        float var8;
-        float var9;
-
         if (this.swingProgress > -9990) {
-            var8 = this.swingProgress;
-            this.servantBody.rotateAngleY = MathHelper.sin(MathHelper.sqrt(var8) * (float) Math.PI * 2.0F) * 0.2F;
+            float swingProgress = this.swingProgress;
+            this.servantBody.rotateAngleY = MathHelper.sin(MathHelper.sqrt(swingProgress) * (float) Math.PI * 2.0F) * 0.2F;
             this.servantRightArmUp.rotateAngleY += this.servantBody.rotateAngleY;
             this.servantLeftArmUp.rotateAngleY += this.servantBody.rotateAngleY;
             this.servantLeftArmUp.rotateAngleX += this.servantBody.rotateAngleY;
-            var8 = 1.0F - this.swingProgress;
-            var8 *= var8;
-            var8 *= var8;
-            var8 = 1.0F - var8;
-            var9 = MathHelper.sin(var8 * (float) Math.PI);
+            swingProgress = 1.0F - this.swingProgress;
+            swingProgress *= swingProgress;
+            swingProgress *= swingProgress;
+            swingProgress = 1.0F - swingProgress;
+            float var9 = MathHelper.sin(swingProgress * (float) Math.PI);
             float var10 = MathHelper.sin(this.swingProgress * (float) Math.PI) * -(this.servantHead.rotateAngleX - 0.7F) * 0.75F;
             this.servantRightArmUp.rotateAngleX = (float) ((double) this.servantRightArmUp.rotateAngleX - ((double) var9 * 1.2D + (double) var10));
             this.servantRightArmUp.rotateAngleY += this.servantBody.rotateAngleY * 2.0F;
@@ -299,7 +294,7 @@ public class ModelServant<T extends EntityServant & IAnimated> extends EntityMod
 
     @Override
     public void postTransform(boolean leftSide, MatrixStack stack) {
-        stack.translate(leftSide?0.125:-0.125, 0.125,-6/16d);
+        stack.translate(leftSide ? 0.125 : -0.125, 0.125, -6 / 16d);
     }
 
     @Override
@@ -310,12 +305,12 @@ public class ModelServant<T extends EntityServant & IAnimated> extends EntityMod
     @Override
     public void update(T obj) {
         this.show = ServantRenderer.showIdentity(obj);
-        this.heldItemMain = this.show || !obj.getHeldItemMainhand().isEmpty()?1:0;
-        this.heldItemOff = this.show || obj.getHeldItemOffhand().isEmpty()?0:1;
+        this.heldItemMain = this.show || !obj.getHeldItemMainhand().isEmpty() ? 1 : 0;
+        this.heldItemOff = this.show || obj.getHeldItemOffhand().isEmpty() ? 0 : 1;
     }
 
-    protected void rotate(MatrixStack stack, ModelRenderer... models){
-        for(ModelRenderer render : models)
+    protected void rotate(MatrixStack stack, ModelRenderer... models) {
+        for (ModelRenderer render : models)
             render.rotate(stack);
     }
 }
