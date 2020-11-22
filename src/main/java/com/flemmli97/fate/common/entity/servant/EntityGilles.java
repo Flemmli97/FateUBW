@@ -21,7 +21,7 @@ public class EntityGilles extends EntityServant {
 
     public final GillesAttackGoal attackAI = new GillesAttackGoal(this, 16);
 
-    private static final AnimatedAction rangedAttack = new AnimatedAction(38, 25, "ranged");
+    private static final AnimatedAction rangedAttack = new AnimatedAction(38, 25, "cast");
     private static final AnimatedAction npAttack = new AnimatedAction(20, 0, "np");
     private static final AnimatedAction[] anims = new AnimatedAction[]{rangedAttack, npAttack};
 

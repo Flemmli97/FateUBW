@@ -143,6 +143,7 @@ public class ModEntities {
         GlobalEntityTypeAttributes.put(medea.get(), EntityServant.createMobAttributes().build());
         GlobalEntityTypeAttributes.put(heracles.get(), EntityServant.createMobAttributes().build());
         GlobalEntityTypeAttributes.put(sasaki.get(), EntityServant.createMobAttributes().build());
+        GlobalEntityTypeAttributes.put(medusa.get(), EntityServant.createMobAttributes().build());
 
         GlobalEntityTypeAttributes.put(lesserMonster.get(), MonsterEntity.createHostileAttributes().build());
         GlobalEntityTypeAttributes.put(hassanCopy.get(), EntityServant.createMobAttributes().build());

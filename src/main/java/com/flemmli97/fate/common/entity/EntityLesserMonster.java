@@ -2,6 +2,7 @@ package com.flemmli97.fate.common.entity;
 
 import com.flemmli97.fate.common.config.Config;
 import com.flemmli97.fate.common.entity.ai.AnimatedMeleeGoal;
+import com.flemmli97.fate.common.entity.ai.TargetOwnerEnemyGoal;
 import com.flemmli97.fate.common.registry.ModEntities;
 import com.flemmli97.tenshilib.api.entity.IAnimated;
 import com.flemmli97.tenshilib.api.entity.IOwnable;
@@ -30,8 +31,6 @@ public class EntityLesserMonster extends CreatureEntity implements IServantMinio
     public static final AnimatedAction walk = new AnimatedAction(31, 0, "walk");
     public static final AnimatedAction attack = new AnimatedAction(20, 15, "attack");
     private static final AnimatedAction[] anims = new AnimatedAction[]{walk, attack};
-    public NearestAttackableTargetGoal<LivingEntity> target = new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, true,
-            (living) -> EntityLesserMonster.this.canAttackTarget(living));
 
     public EntityLesserMonster(EntityType<? extends EntityLesserMonster> type, World world) {
         super(type, world);
@@ -59,7 +58,10 @@ public class EntityLesserMonster extends CreatureEntity implements IServantMinio
         this.goalSelector.addGoal(3, new SwimGoal(this));
         this.goalSelector.addGoal(4, new LookRandomlyGoal(this));
         this.goalSelector.addGoal(5, new LookAtGoal(this, PlayerEntity.class, 8.0F));
-        this.targetSelector.addGoal(0, this.target);
+        this.targetSelector.addGoal(0, new TargetOwnerEnemyGoal<>(this));
+        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, true,
+                (living) -> EntityLesserMonster.this.canAttackTarget(living)));
+
     }
 
     @Override
@@ -69,10 +71,6 @@ public class EntityLesserMonster extends CreatureEntity implements IServantMinio
             this.livingTicks++;
             if (this.livingTicks > Config.Common.gillesMinionDuration)
                 this.remove();
-            //if (this.currentAnim == null && (this.getMotion().x != 0 || this.getMotion().z != 0))
-            //    this.setAnimation(walk);
-            if (this.getOwner() != null && this.getOwner().getRevengeTarget() != null && this.getAttackTarget() == null)
-                this.setAttackTarget(this.getOwner().getRevengeTarget());
         }
         this.tickAnimation();
     }

@@ -3,6 +3,7 @@ package com.flemmli97.fate.client.model;
 import com.flemmli97.fate.Fate;
 import com.flemmli97.fate.common.entity.EntityHassanCopy;
 import com.flemmli97.tenshilib.client.model.BlockBenchAnimations;
+import com.flemmli97.tenshilib.client.model.IItemArmModel;
 import com.flemmli97.tenshilib.client.model.IResetModel;
 import com.flemmli97.tenshilib.client.model.ModelRendererPlus;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
@@ -11,14 +12,13 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.client.renderer.entity.model.IHasArm;
 import net.minecraft.client.renderer.entity.model.IHasHead;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
-public class ModelHassanCopy extends EntityModel<EntityHassanCopy> implements IResetModel, IHasArm, IHasHead {
+public class ModelHassanCopy extends EntityModel<EntityHassanCopy> implements IResetModel, IItemArmModel, IHasHead {
 
     public ModelRendererPlus servantHead;
     public ModelRendererPlus servantHeadOverlay;
@@ -288,27 +288,13 @@ public class ModelHassanCopy extends EntityModel<EntityHassanCopy> implements IR
 
     @Override
     public void resetModel() {
-        //Rotation point reset
-        this.servantHead.reset();
         this.servantBody.reset();
-
-        this.servantLeftArmUp.reset();
-        this.servantLeftArmJoint.reset();
-        this.servantLeftArmDown.reset();
-
-        this.servantRightArmUp.reset();
-        this.servantRightArmJoint.reset();
-        this.servantRightArmDown.reset();
-
-        this.servantLeftLegUp.reset();
-        this.servantLeftLegDown.reset();
-        this.servantRightLegUp.reset();
-        this.servantRightLegDown.reset();
+        this.resetChild(this.servantBody);
         this.syncOverlay();
     }
 
     @Override
-    public void setArmAngle(HandSide side, MatrixStack stack) {
+    public void transform(HandSide side, MatrixStack stack) {
         if (side == HandSide.LEFT) {
             this.servantLeftArmUp.rotate(stack);
             this.servantLeftArmJoint.rotate(stack);
@@ -318,6 +304,11 @@ public class ModelHassanCopy extends EntityModel<EntityHassanCopy> implements IR
             this.servantRightArmJoint.rotate(stack);
             this.servantRightArmDown.rotate(stack);
         }
+    }
+
+    @Override
+    public void postTransform(boolean leftSide, MatrixStack stack) {
+        stack.translate(-0.125, 0.125,-6/16d);
     }
 
     @Override

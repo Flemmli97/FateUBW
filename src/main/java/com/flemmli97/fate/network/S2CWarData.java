@@ -29,7 +29,8 @@ public class S2CWarData {
 
     public static S2CWarData read(PacketBuffer buf) {
         Set<GameProfile> grailWarPlayers = Sets.newHashSet();
-        for (int i = 0; i < buf.readInt(); i++)
+        int size = buf.readInt();
+        for (int i = 0; i < size; i++)
             grailWarPlayers.add(new GameProfile(buf.readUniqueId(), buf.readString()));
         return new S2CWarData(grailWarPlayers);
     }

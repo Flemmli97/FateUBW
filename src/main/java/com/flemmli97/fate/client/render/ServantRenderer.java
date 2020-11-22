@@ -1,6 +1,8 @@
 package com.flemmli97.fate.client.render;
 
+import com.flemmli97.fate.client.model.IPreRenderUpdate;
 import com.flemmli97.fate.common.entity.servant.EntityServant;
+import com.flemmli97.tenshilib.client.model.IItemArmModel;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
@@ -11,7 +13,6 @@ import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.layers.HeadLayer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.client.renderer.entity.model.IHasArm;
 import net.minecraft.client.renderer.entity.model.IHasHead;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Pose;
@@ -19,7 +20,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
-public abstract class ServantRenderer<T extends EntityServant, M extends EntityModel<T> & IHasArm & IHasHead> extends LivingRenderer<T, M> {
+public abstract class ServantRenderer<T extends EntityServant, M extends EntityModel<T> & IItemArmModel & IHasHead & IPreRenderUpdate<T>> extends LivingRenderer<T, M> {
 
     private static final ResourceLocation DEFAULT_RES_LOC = new ResourceLocation("textures/entity/steve.png");
 
@@ -31,6 +32,7 @@ public abstract class ServantRenderer<T extends EntityServant, M extends EntityM
 
     @Override
     public void render(T entity, float yaw, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light) {
+        this.entityModel.update(entity);
         if (net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Pre<T, M>(entity, this, partialTicks, matrixStack, buffer, light)))
             return;
         matrixStack.push();
@@ -144,5 +146,4 @@ public abstract class ServantRenderer<T extends EntityServant, M extends EntityM
     }
 
     public abstract ResourceLocation servantTexture(T servant);
-
 }
