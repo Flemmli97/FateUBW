@@ -49,11 +49,40 @@ public class BlockAltar extends ContainerBlock {
     private static final double pixel = 0.0625;
 
     private static final VoxelShape tableShape = Stream.of(
-            Block.makeCuboidShape(13.5, 0, 13.5, 15.5, 11, 15.5),
-            Block.makeCuboidShape(0.5, 0, 13.5, 2.5, 11, 15.5),
             Block.makeCuboidShape(13.5, 0, 0.5, 15.5, 11, 2.5),
             Block.makeCuboidShape(0.5, 0, 0.5, 2.5, 11, 2.5),
-            Block.makeCuboidShape(0, 3, 0, 16, 12, 16)
+            Block.makeCuboidShape(0.5, 9, 0.5, 15.5, 12, 15.5),
+            Block.makeCuboidShape(13.5, 0, 13.5, 15.5, 11, 15.5),
+            Block.makeCuboidShape(0.5, 0, 13.5, 2.5, 11, 15.5),
+            Block.makeCuboidShape(0, 11.9, 0, 16, 12, 16),
+            Block.makeCuboidShape(15.9, 5, 4, 16, 6, 5),
+            Block.makeCuboidShape(15.9, 4, 3, 16, 6, 4),
+            Block.makeCuboidShape(15.9, 3, 0, 16, 6, 3),
+            Block.makeCuboidShape(15.9, 3, 13, 16, 6, 16),
+            Block.makeCuboidShape(15.9, 4, 12, 16, 6, 13),
+            Block.makeCuboidShape(15.9, 5, 11, 16, 6, 12),
+            Block.makeCuboidShape(0, 3, 0, 0.1, 6, 3),
+            Block.makeCuboidShape(0, 4, 3, 0.1, 6, 4),
+            Block.makeCuboidShape(0, 5, 4, 0.1, 6, 5),
+            Block.makeCuboidShape(0, 5, 11, 0.1, 6, 12),
+            Block.makeCuboidShape(0, 4, 12, 0.1, 6, 13),
+            Block.makeCuboidShape(0, 3, 13, 0.1, 6, 16),
+            Block.makeCuboidShape(0, 3, 15.9, 3, 6, 16),
+            Block.makeCuboidShape(3, 4, 15.9, 4, 6, 16),
+            Block.makeCuboidShape(4, 5, 15.9, 5, 6, 16),
+            Block.makeCuboidShape(13, 3, 15.9, 16, 6, 16),
+            Block.makeCuboidShape(12, 4, 15.9, 13, 6, 16),
+            Block.makeCuboidShape(11, 5, 15.9, 12, 6, 16),
+            Block.makeCuboidShape(13, 3, 0, 16, 6, 0.1),
+            Block.makeCuboidShape(12, 4, 0, 13, 6, 0.1),
+            Block.makeCuboidShape(11, 5, 0, 12, 6, 0.1),
+            Block.makeCuboidShape(4, 5, 0, 5, 6, 0.1),
+            Block.makeCuboidShape(0, 3, 0, 3, 6, 0.1),
+            Block.makeCuboidShape(3, 4, 0, 4, 6, 0.1),
+            Block.makeCuboidShape(0, 6, 0, 0.1, 12, 16),
+            Block.makeCuboidShape(15.9, 6, 0, 16, 12, 16),
+            Block.makeCuboidShape(0, 6, 0, 16, 12, 0.1),
+            Block.makeCuboidShape(0, 6, 15.9, 16, 12, 16)
     ).reduce((v1, v2) -> VoxelShapes.combineAndSimplify(v1, v2, IBooleanFunction.OR)).orElse(VoxelShapes.empty());
     private static final VoxelShape south = VoxelShapes.combineAndSimplify(tableShape, Stream.of(
             Block.makeCuboidShape(7, 12, 1, 9, 15, 3),
