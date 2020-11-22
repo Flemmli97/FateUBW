@@ -1,6 +1,7 @@
 package com.flemmli97.fate.client.model;
 
 import com.flemmli97.fate.Fate;
+import com.flemmli97.fate.client.render.ServantRenderer;
 import com.flemmli97.fate.common.entity.servant.EntityServant;
 import com.flemmli97.tenshilib.api.entity.IAnimated;
 import com.flemmli97.tenshilib.client.model.BlockBenchAnimations;
@@ -51,6 +52,7 @@ public class ModelServant<T extends EntityServant & IAnimated> extends EntityMod
     public ModelRendererPlus servantLeftLegDownOverlay;
 
     public int heldItemMain, heldItemOff;
+    protected boolean show;
 
     public final BlockBenchAnimations anim;
 
@@ -181,23 +183,25 @@ public class ModelServant<T extends EntityServant & IAnimated> extends EntityMod
     }
 
     @Override
-    public void setAngles(T servant, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        this.setAnglesPre(servant, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-        float partialTicks = Minecraft.getInstance().getRenderPartialTicks();
-        if (servant.isStaying()) {
-            this.anim.doAnimation("stay", servant.ticksExisted, partialTicks);
-        } else {
-            AnimatedAction anim = servant.getAnimation();
-            if (anim != null)
-                this.anim.doAnimation(anim.getID(), anim.getTick(), partialTicks);
+    public void setAngles(T servant, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float servantHeadPitch) {
+        this.setAnglesPre(servant, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, servantHeadPitch);
+        if(this.show) {
+            float partialTicks = Minecraft.getInstance().getRenderPartialTicks();
+            if (servant.isStaying()) {
+                this.anim.doAnimation("stay", servant.ticksExisted, partialTicks);
+            } else {
+                AnimatedAction anim = servant.getAnimation();
+                if (anim != null)
+                    this.anim.doAnimation(anim.getID(), anim.getTick(), partialTicks);
+            }
         }
         this.syncOverlay();
     }
 
-    public void setAnglesPre(T servant, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setAnglesPre(T servant, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float servantHeadPitch) {
         this.resetModel();
         this.servantHead.rotateAngleY = netHeadYaw / (180F / (float) Math.PI);
-        this.servantHead.rotateAngleX = headPitch / (180F / (float) Math.PI);
+        this.servantHead.rotateAngleX = servantHeadPitch / (180F / (float) Math.PI);
         this.servantHeadOverlay.rotateAngleY = this.servantHead.rotateAngleY;
         this.servantHeadOverlay.rotateAngleX = this.servantHead.rotateAngleX;
 
@@ -234,10 +238,6 @@ public class ModelServant<T extends EntityServant & IAnimated> extends EntityMod
         if (this.swingProgress > -9990) {
             var8 = this.swingProgress;
             this.servantBody.rotateAngleY = MathHelper.sin(MathHelper.sqrt(var8) * (float) Math.PI * 2.0F) * 0.2F;
-            this.servantRightArmUp.rotationPointZ = MathHelper.sin(this.servantBody.rotateAngleY) * 5.0F;
-            this.servantRightArmUp.rotationPointX = -MathHelper.cos(this.servantBody.rotateAngleY) * 5.0F;
-            this.servantLeftArmUp.rotationPointZ = -MathHelper.sin(this.servantBody.rotateAngleY) * 5.0F;
-            this.servantLeftArmUp.rotationPointX = MathHelper.cos(this.servantBody.rotateAngleY) * 5.0F;
             this.servantRightArmUp.rotateAngleY += this.servantBody.rotateAngleY;
             this.servantLeftArmUp.rotateAngleY += this.servantBody.rotateAngleY;
             this.servantLeftArmUp.rotateAngleX += this.servantBody.rotateAngleY;
@@ -253,12 +253,6 @@ public class ModelServant<T extends EntityServant & IAnimated> extends EntityMod
         }
 
         this.servantBody.rotateAngleX = 0;
-        this.servantRightLegUp.rotationPointZ = 0.1F;
-        this.servantLeftLegUp.rotationPointZ = 0.1F;
-        this.servantRightLegUp.rotationPointY = 12.0F;
-        this.servantLeftLegUp.rotationPointY = 12.0F;
-        this.servantHead.rotationPointY = 0;
-        this.servantHeadOverlay.rotationPointY = 0;
 
         this.servantRightArmUp.rotateAngleZ += MathHelper.cos(ageInTicks * 0.09F) * 0.05F + 0.05F;
         this.servantLeftArmUp.rotateAngleZ -= MathHelper.cos(ageInTicks * 0.09F) * 0.05F + 0.05F;
@@ -297,19 +291,15 @@ public class ModelServant<T extends EntityServant & IAnimated> extends EntityMod
     @Override
     public void transform(HandSide side, MatrixStack stack) {
         if (side == HandSide.LEFT) {
-            this.servantLeftArmUp.rotate(stack);
-            this.servantLeftArmJoint.rotate(stack);
-            this.servantLeftArmDown.rotate(stack);
+            this.rotate(stack, this.servantBody, this.servantLeftArmUp, this.servantLeftArmJoint, this.servantLeftArmDown);
         } else {
-            this.servantRightArmUp.rotate(stack);
-            this.servantRightArmJoint.rotate(stack);
-            this.servantRightArmDown.rotate(stack);
+            this.rotate(stack, this.servantBody, this.servantRightArmUp, this.servantRightArmJoint, this.servantRightArmDown);
         }
     }
 
     @Override
     public void postTransform(boolean leftSide, MatrixStack stack) {
-        stack.translate(-0.125, 0.125,-6/16d);
+        stack.translate(leftSide?0.125:-0.125, 0.125,-6/16d);
     }
 
     @Override
@@ -319,7 +309,13 @@ public class ModelServant<T extends EntityServant & IAnimated> extends EntityMod
 
     @Override
     public void update(T obj) {
-        this.heldItemMain = obj.getHeldItemMainhand().isEmpty()?0:1;
-        this.heldItemOff = obj.getHeldItemOffhand().isEmpty()?0:1;
+        this.show = ServantRenderer.showIdentity(obj);
+        this.heldItemMain = this.show || !obj.getHeldItemMainhand().isEmpty()?1:0;
+        this.heldItemOff = this.show || obj.getHeldItemOffhand().isEmpty()?0:1;
+    }
+
+    protected void rotate(MatrixStack stack, ModelRenderer... models){
+        for(ModelRenderer render : models)
+            render.rotate(stack);
     }
 }

@@ -1,6 +1,5 @@
-package com.flemmli97.fate.client.model.servant;
+package com.flemmli97.fate.client.model;
 
-import com.flemmli97.fate.client.model.ModelServant;
 import com.flemmli97.fate.common.entity.servant.EntityArthur;
 import com.flemmli97.tenshilib.client.model.ModelUtils;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;

@@ -18,7 +18,7 @@ public class LayerHand<T extends EntityServant, M extends EntityModel<T> & IItem
 
     @Override
     protected ItemStack heldItemLeft(T entity, boolean rightHanded) {
-        return ServantRenderer.showIdentity(entity) ? super.heldItemLeft(entity, rightHanded) : genericWeapon;
+        return ServantRenderer.showIdentity(entity) ? super.heldItemLeft(entity, rightHanded) : ItemStack.EMPTY;
     }
 
     @Override
