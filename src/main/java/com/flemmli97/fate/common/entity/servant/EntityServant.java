@@ -111,11 +111,11 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated,
         return target instanceof IMob;
     };
 
-    public NearestAttackableTargetGoal<EntityServant> targetServant = new NearestAttackableTargetGoal<>(this, EntityServant.class, 10, true, true, targetPred);
-    public NearestAttackableTargetGoal<PlayerEntity> targetPlayer = new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 0, true, true, targetPred);
-    public NearestAttackableTargetGoal<MobEntity> targetMob = new NearestAttackableTargetGoal<MobEntity>(this, MobEntity.class, 10, true, true, targetPred);
+    public NearestAttackableTargetGoal<EntityServant> targetServant = new NearestAttackableTargetGoal<>(this, EntityServant.class, 10, true, true, this.targetPred);
+    public NearestAttackableTargetGoal<PlayerEntity> targetPlayer = new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 0, true, true, this.targetPred);
+    public NearestAttackableTargetGoal<MobEntity> targetMob = new NearestAttackableTargetGoal<>(this, MobEntity.class, 10, true, true, this.targetPred);
 
-    public FollowMasterGoal<EntityServant> follow = new FollowMasterGoal<>(this, 16.0D, 9.0F, 3.0F, s -> s.isStaying());
+    public FollowMasterGoal<EntityServant> follow = new FollowMasterGoal<>(this, 16.0D, 9.0F, 3.0F, EntityServant::isStaying);
     public RetaliateGoal targetHurt = new RetaliateGoal(this);
     public MoveTowardsRestrictionGoal restrictArea = new MoveTowardsRestrictionGoal(this, 1.0D);
     public WaterAvoidingRandomWalkingGoal wander = new WaterAvoidingRandomWalkingGoal(this, 1.0D);
@@ -274,8 +274,6 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated,
 
     /**
      * Can return null despite having an owner if player is offline
-     *
-     * @return
      */
     @Override
     public PlayerEntity getOwner() {
@@ -589,7 +587,7 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated,
         boolean flag = entity.attackEntityFrom(DamageSource.causeMobDamage(this), f);
         if (flag) {
             if (f1 > 0.0F && entity instanceof LivingEntity) {
-                ((LivingEntity) entity).takeKnockback(f1 * 0.5F, MathHelper.sin(this.rotationYaw * ((float) Math.PI / 180F)), (double) (-MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F))));
+                ((LivingEntity) entity).takeKnockback(f1 * 0.5F, MathHelper.sin(this.rotationYaw * ((float) Math.PI / 180F)), -MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F)));
                 this.setMotion(this.getMotion().mul(0.6D, 1.0D, 0.6D));
             }
 
@@ -630,6 +628,6 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated,
     public enum AttackType {
         RANGED,
         MELEE,
-        NP;
+        NP
     }
 }

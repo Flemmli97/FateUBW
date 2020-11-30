@@ -71,7 +71,7 @@ public class EntityArthur extends EntityServant {
     @Override
     public void livingTick() {
         if (this.getHealth() < 0.25 * this.getMaxHealth() && this.getHealth() > 0) {
-            if (this.critHealth == false) {
+            if (!this.critHealth) {
                 if (!this.world.isRemote)
                     this.world.getServer().getPlayerList().broadcastChatMessage(new TranslationTextComponent("chat.servant.avalon").formatted(TextFormatting.GOLD), ChatType.SYSTEM, Util.NIL_UUID);
                 this.critHealth = true;

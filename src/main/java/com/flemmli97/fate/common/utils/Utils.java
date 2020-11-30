@@ -16,11 +16,9 @@ import java.util.UUID;
 public class Utils {
 
     public static boolean testNearbyEnemy(EntityServant servant) {
-        List<?> var1 = servant.world.getEntitiesWithinAABB(EntityServant.class, servant.getBoundingBox().expand((double) 32, 3.0D, (double) 32));
-        List<?> var2 = servant.world.getEntitiesWithinAABB(EntityServant.class, servant.getBoundingBox().expand((double) 15, 3.0D, (double) 15));
-        if (var1.size() > 1 && var2.size() < 2)
-            return true;
-        return false;
+        List<?> var1 = servant.world.getEntitiesWithinAABB(EntityServant.class, servant.getBoundingBox().expand(32, 3.0D, 32));
+        List<?> var2 = servant.world.getEntitiesWithinAABB(EntityServant.class, servant.getBoundingBox().expand(15, 3.0D, 15));
+        return var1.size() > 1 && var2.size() < 2;
     }
 
     public static float getDamageAfterMagicAbsorb(EntityServant servant, float damage) {
@@ -38,19 +36,17 @@ public class Utils {
 
     public static boolean inSameTeam(ServerPlayerEntity player, EntityServant servant) {
         UUID other = servant.ownerUUID();
-        return other == null ? false : TruceHandler.get(player.getServerWorld()).get(player.getUniqueID()).contains(other);
+        return other != null && TruceHandler.get(player.getServerWorld()).get(player.getUniqueID()).contains(other);
     }
 
     public static boolean inSameTeam(EntityServant servant, EntityServant other) {
         UUID first = servant.ownerUUID();
         UUID second = other.ownerUUID();
-        return (first == null || other == null) ? false : TruceHandler.get((ServerWorld) servant.world).get(first).contains(second);
+        return first != null && other != null && TruceHandler.get((ServerWorld) servant.world).get(first).contains(second);
     }
 
     public static EntityServant getServant(PlayerEntity player) {
         Optional<IPlayer> cap = player.getCapability(PlayerCapProvider.PlayerCap).resolve();
-        if (cap.isPresent())
-            return cap.get().getServant(player);
-        return null;
+        return cap.map(iPlayer -> iPlayer.getServant(player)).orElse(null);
     }
 }

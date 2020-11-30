@@ -28,14 +28,13 @@ public class DiarmuidAttackGoal extends BaseServantAttackGoal<EntityDiarmuid> {
     public void handleAttack(AnimatedAction anim) {
         if (this.attacker.canUse(anim, EntityServant.AttackType.NP)) {
             if (anim.canAttack()) {
-                if(this.distanceToTargetSq < this.attackRange) {
+                if (this.distanceToTargetSq < this.attackRange) {
                     if (!this.attacker.forcedNP)
                         this.attacker.useMana(this.attacker.props().hogouMana());
                     this.attacker.attackWithNP(this.target);
                     this.attacker.forcedNP = false;
                     this.retryNP = false;
-                }
-                else
+                } else
                     this.retryNP = true;
             }
         } else {

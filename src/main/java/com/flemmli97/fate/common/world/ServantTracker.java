@@ -29,7 +29,7 @@ public class ServantTracker {
     }
 
     public void onLoad(ServerWorld world) {
-        if (pos != null) {
+        if (this.pos != null) {
             this.pos.forEach((c, r) -> {
                 if (world.getRegistryKey().equals(r))
                     world.getChunkProvider().registerTicket(TicketType.UNKNOWN, c, 1, c);

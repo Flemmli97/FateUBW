@@ -14,7 +14,7 @@ import java.util.function.Predicate;
 /**
  * Copy of FollowOwnerGoal cause thats only for Tameable
  */
-public class FollowMasterGoal<T extends CreatureEntity & IOwnable> extends Goal {
+public class FollowMasterGoal<T extends CreatureEntity & IOwnable<?>> extends Goal {
 
     public final T goalOwner;
     private LivingEntity follow;
@@ -86,7 +86,7 @@ public class FollowMasterGoal<T extends CreatureEntity & IOwnable> extends Goal 
         if (--this.followDelay <= 0) {
             this.followDelay = 10;
             if (!this.goalOwner.getLeashed() && !this.goalOwner.isPassenger()) {
-                if (this.goalOwner.getDistanceSq(this.follow) >= minTPDist) {
+                if (this.goalOwner.getDistanceSq(this.follow) >= this.minTPDist) {
                     this.tryTeleport();
                 } else {
                     this.goalOwner.getNavigator().tryMoveToEntityLiving(this.follow, 1);

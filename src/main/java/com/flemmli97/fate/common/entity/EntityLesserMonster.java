@@ -54,13 +54,13 @@ public class EntityLesserMonster extends CreatureEntity implements IServantMinio
     }
 
     protected void goals() {
-        this.goalSelector.addGoal(2, new AnimatedMeleeGoal(this, m -> attack));
+        this.goalSelector.addGoal(2, new AnimatedMeleeGoal<>(this, m -> attack));
         this.goalSelector.addGoal(3, new SwimGoal(this));
         this.goalSelector.addGoal(4, new LookRandomlyGoal(this));
         this.goalSelector.addGoal(5, new LookAtGoal(this, PlayerEntity.class, 8.0F));
         this.targetSelector.addGoal(0, new TargetOwnerEnemyGoal<>(this));
         this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, true,
-                (living) -> EntityLesserMonster.this.canAttackTarget(living)));
+                EntityLesserMonster.this::canAttackTarget));
 
     }
 
@@ -101,9 +101,7 @@ public class EntityLesserMonster extends CreatureEntity implements IServantMinio
     protected boolean canAttackTarget(LivingEntity e) {
         if (e.getUniqueID().equals(this.ownerUUID))
             return false;
-        if (this.ownerUUID() != null && e instanceof IOwnable && this.ownerUUID().equals(((IOwnable) e).ownerUUID()))
-            return false;
-        return true;
+        return this.ownerUUID() == null || !(e instanceof IOwnable) || !this.ownerUUID().equals(((IOwnable) e).ownerUUID());
     }
 
     @Override

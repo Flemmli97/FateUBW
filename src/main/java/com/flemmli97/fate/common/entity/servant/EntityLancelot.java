@@ -83,7 +83,7 @@ public class EntityLancelot extends EntityServant {
                 damageSource.getImmediateSource().remove();
                 return true;
             }
-            return this.preAttackEntityFrom(damageSource, (float) Math.min(50, damage));
+            return this.preAttackEntityFrom(damageSource, Math.min(50, damage));
         }
     }
 

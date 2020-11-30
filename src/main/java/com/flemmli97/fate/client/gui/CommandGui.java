@@ -141,36 +141,22 @@ public class CommandGui extends Screen {
             this.addButton(new Button(this.width / 2 + 10, this.height / 2 - 82, 80, 20
                     , new TranslationTextComponent("fate.gui.command.back"), this::backButton));
             this.addButton(new Button(this.width / 2 + 10, this.height / 2 - 52, 80, 20
-                    , new TranslationTextComponent("fate.gui.command.aggressive"), b -> {
-                PacketHandler.sendToServer(new C2SServantCommand(EnumServantUpdate.AGGRESSIVE));
-            }));
+                    , new TranslationTextComponent("fate.gui.command.aggressive"), b -> PacketHandler.sendToServer(new C2SServantCommand(EnumServantUpdate.AGGRESSIVE))));
             this.addButton(new Button(this.width / 2 + 10, this.height / 2 - 22, 80, 20
-                    , new TranslationTextComponent("fate.gui.command.normal"), b -> {
-                PacketHandler.sendToServer(new C2SServantCommand(EnumServantUpdate.NORMAL));
-            }));
+                    , new TranslationTextComponent("fate.gui.command.normal"), b -> PacketHandler.sendToServer(new C2SServantCommand(EnumServantUpdate.NORMAL))));
             this.addButton(new Button(this.width / 2 + 10, this.height / 2 + 8, 80, 20
-                    , new TranslationTextComponent("fate.gui.command.defensive"), b -> {
-                PacketHandler.sendToServer(new C2SServantCommand(EnumServantUpdate.DEFENSIVE));
-            }));
+                    , new TranslationTextComponent("fate.gui.command.defensive"), b -> PacketHandler.sendToServer(new C2SServantCommand(EnumServantUpdate.DEFENSIVE))));
         } else if (this.currentPage == Pages.MOVEMENT) {
             this.addButton(new Button(this.width / 2 + 10, this.height / 2 - 82, 80, 20
                     , new TranslationTextComponent("fate.gui.command.back"), this::backButton));
             this.addButton(new Button(this.width / 2 + 10, this.height / 2 - 52, 80, 20
-                    , new TranslationTextComponent("fate.gui.command.follow"), b -> {
-                PacketHandler.sendToServer(new C2SServantCommand(EnumServantUpdate.FOLLOW));
-            }));
+                    , new TranslationTextComponent("fate.gui.command.follow"), b -> PacketHandler.sendToServer(new C2SServantCommand(EnumServantUpdate.FOLLOW))));
             this.addButton(new Button(this.width / 2 + 10, this.height / 2 - 22, 80, 20
-                    , new TranslationTextComponent("fate.gui.command.stay"), b -> {
-                PacketHandler.sendToServer(new C2SServantCommand(EnumServantUpdate.STAY));
-            }));
+                    , new TranslationTextComponent("fate.gui.command.stay"), b -> PacketHandler.sendToServer(new C2SServantCommand(EnumServantUpdate.STAY))));
             this.addButton(new Button(this.width / 2 + 10, this.height / 2 + 8, 80, 20
-                    , new TranslationTextComponent("fate.gui.command.protect"), b -> {
-                PacketHandler.sendToServer(new C2SServantCommand(EnumServantUpdate.GUARD));
-            }));
+                    , new TranslationTextComponent("fate.gui.command.protect"), b -> PacketHandler.sendToServer(new C2SServantCommand(EnumServantUpdate.GUARD))));
             this.addButton(new Button(this.width / 2 + 10, this.height / 2 + 38, 80, 20
-                    , new TranslationTextComponent("fate.gui.command.call"), b -> {
-                PacketHandler.sendToServer(new C2SServantCommand(EnumServantUpdate.TELEPORT));
-            }));
+                    , new TranslationTextComponent("fate.gui.command.call"), b -> PacketHandler.sendToServer(new C2SServantCommand(EnumServantUpdate.TELEPORT))));
         } else if (this.currentPage == Pages.SPECIAL) {
             this.addButton(new Button(this.width / 2 + 10, this.height / 2 - 82, 80, 20
                     , new TranslationTextComponent("fate.gui.command.back"), this::backButton));
@@ -237,7 +223,7 @@ public class CommandGui extends Screen {
                     this.init(this.client, this.width, this.height);
                 }
             }));
-            this.addButton(this.accept = new ButtonValue(this.width / 2 - 90, this.height / 2 + 45, 80, 20, "fate.gui.truce.accept", button -> {
+            this.addButton(this.accept = new ButtonValue<>(this.width / 2 - 90, this.height / 2 + 45, 80, 20, "fate.gui.truce.accept", button -> {
                 ButtonValue<UUID> req = (ButtonValue<UUID>) button;
                 if (req.getVal() != null) {
                     PacketHandler.sendToServer(new C2STruceMessage(C2STruceMessage.Type.ACCEPT, req.getVal()));
@@ -268,6 +254,6 @@ public class CommandGui extends Screen {
         MOVEMENT,
         ATTACK,
         SPECIAL,
-        TRUCE;
+        TRUCE
     }
 }

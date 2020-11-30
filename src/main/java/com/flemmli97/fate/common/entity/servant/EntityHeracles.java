@@ -23,7 +23,7 @@ public class EntityHeracles extends EntityServant {
 
     private static final AnimatedAction swing_1 = new AnimatedAction(20, 18, "swing_1");
     private static final AnimatedAction[] anims = new AnimatedAction[]{swing_1};
-    protected static final DataParameter<Integer> deathCount = EntityDataManager.<Integer>createKey(EntityHeracles.class, DataSerializers.VARINT);
+    protected static final DataParameter<Integer> deathCount = EntityDataManager.createKey(EntityHeracles.class, DataSerializers.VARINT);
     private boolean voidDeath;
 
     public EntityHeracles(EntityType<? extends EntityServant> entityType, World world) {

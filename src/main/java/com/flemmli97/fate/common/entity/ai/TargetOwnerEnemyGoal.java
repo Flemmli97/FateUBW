@@ -11,7 +11,7 @@ import net.minecraft.entity.ai.goal.TargetGoal;
 
 import java.util.EnumSet;
 
-public class TargetOwnerEnemyGoal<T extends CreatureEntity & IOwnable> extends TargetGoal {
+public class TargetOwnerEnemyGoal<T extends CreatureEntity & IOwnable<?>> extends TargetGoal {
     private final T tameable;
     private LivingEntity attackTarget;
 

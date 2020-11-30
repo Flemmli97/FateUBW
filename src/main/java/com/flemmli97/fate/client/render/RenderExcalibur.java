@@ -16,7 +16,7 @@ public class RenderExcalibur extends RenderBeam<EntityExcalibur> {
 
     @Override
     public ResourceLocation getEntityTexture(EntityExcalibur entity) {
-        return tex;
+        return this.tex;
     }
 
     @Override

@@ -71,7 +71,7 @@ public class EntityDiarmuid extends EntityServant {
     @Override
     public void livingTick() {
         if (this.getHealth() < 0.25 * this.getMaxHealth() && this.getHealth() > 0) {
-            if (this.critHealth == false) {
+            if (!this.critHealth) {
                 this.critHealth = true;
             }
         }

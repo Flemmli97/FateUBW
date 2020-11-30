@@ -17,7 +17,7 @@ public class RenderEA extends RenderBeam<EntityEnumaElish> {
 
     @Override
     public ResourceLocation getEntityTexture(EntityEnumaElish entity) {
-        return tex;
+        return this.tex;
     }
 
     @Override

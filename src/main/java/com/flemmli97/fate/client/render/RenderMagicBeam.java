@@ -20,8 +20,7 @@ public class RenderMagicBeam extends RenderBeam<EntityMagicBeam> {
     public void render(EntityMagicBeam projectile, float rotation, float partialTicks, MatrixStack stack, IRenderTypeBuffer buffer, int packedLight) {
         if (projectile.iddle) {
 
-        }
-        else
+        } else
             super.render(projectile, rotation, partialTicks, stack, buffer, packedLight);
     }
 

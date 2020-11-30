@@ -33,7 +33,7 @@ public abstract class ServantRenderer<T extends EntityServant, M extends EntityM
     @Override
     public void render(T entity, float yaw, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light) {
         this.entityModel.update(entity);
-        if (net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Pre<T, M>(entity, this, partialTicks, matrixStack, buffer, light)))
+        if (net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Pre<>(entity, this, partialTicks, matrixStack, buffer, light)))
             return;
         matrixStack.push();
         this.entityModel.swingProgress = this.getSwingProgress(entity, partialTicks);
@@ -115,7 +115,7 @@ public abstract class ServantRenderer<T extends EntityServant, M extends EntityM
 
         matrixStack.pop();
         this.nameTag(entity, yaw, partialTicks, matrixStack, buffer, light);
-        net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Post<T, M>(entity, this, partialTicks, matrixStack, buffer, light));
+        net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Post<>(entity, this, partialTicks, matrixStack, buffer, light));
     }
 
     private void nameTag(T entity, float yaw, float partialTicks, MatrixStack stack, IRenderTypeBuffer buffer, int light) {

@@ -84,7 +84,7 @@ public class EntityArcherArrow extends AbstractArrowEntity implements IEntityAdd
                 }
 
                 this.arrowHit(livingentity);
-                if (owner != null && livingentity != owner && livingentity instanceof PlayerEntity && owner instanceof ServerPlayerEntity && !this.isSilent()) {
+                if (livingentity != owner && livingentity instanceof PlayerEntity && owner instanceof ServerPlayerEntity && !this.isSilent()) {
                     ((ServerPlayerEntity) owner).connection.sendPacket(new SChangeGameStatePacket(SChangeGameStatePacket.PROJECTILE_HIT_PLAYER, 0.0F));
                 }
             }

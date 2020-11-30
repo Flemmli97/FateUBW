@@ -106,7 +106,7 @@ public class TruceHandler extends WorldSavedData {
     }
 
     public Set<UUID> get(UUID player) {
-        return truceMap.get(player);
+        return this.truceMap.get(player);
     }
 
     @Override

@@ -116,7 +116,7 @@ public class ItemArcherBow extends BowItem {
     }
 
     private boolean charged(ItemStack stack) {
-        return stack.hasTag() ? stack.getTag().getBoolean(Fate.MODID + ":Charged") : false;
+        return stack.hasTag() && stack.getTag().getBoolean(Fate.MODID + ":Charged");
     }
 
     private void setCharged(ItemStack stack, boolean flag) {

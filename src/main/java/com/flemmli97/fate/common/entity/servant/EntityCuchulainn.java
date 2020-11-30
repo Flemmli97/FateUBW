@@ -86,7 +86,7 @@ public class EntityCuchulainn extends EntityServant {
             if (this.gaeBolgThrowTick == 1 && this.getHeldItemMainhand().getItem() != ModItems.gaebolg.get())
                 this.setHeldItem(Hand.MAIN_HAND, new ItemStack(ModItems.gaebolg.get()));
             if (this.getHealth() < 0.25 * this.getMaxHealth() && this.getHealth() > 0) {
-                if (this.critHealth == false) {
+                if (!this.critHealth) {
                     this.world.getServer().getPlayerList().broadcastChatMessage(new TranslationTextComponent("chat.servant.cuchulainn").formatted(TextFormatting.GOLD), ChatType.SYSTEM, Util.NIL_UUID);
                     this.critHealth = true;
                 }

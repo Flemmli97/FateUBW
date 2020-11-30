@@ -17,6 +17,6 @@ public class RenderStarfish<T extends EntityLesserMonster> extends MobRenderer<T
 
     @Override
     public ResourceLocation getEntityTexture(T entity) {
-        return tex;
+        return this.tex;
     }
 }

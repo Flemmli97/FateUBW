@@ -1,6 +1,7 @@
 package com.flemmli97.fate.client.gui;
 
 import com.flemmli97.fate.Fate;
+import com.flemmli97.fate.common.capability.IPlayer;
 import com.flemmli97.fate.common.capability.PlayerCapProvider;
 import com.flemmli97.fate.common.config.Config;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -21,7 +22,7 @@ public class ManaBar extends AbstractGui {
     }
 
     public void renderBar(MatrixStack stack) {
-        int mana = this.mc.player.getCapability(PlayerCapProvider.PlayerCap).map(cap -> cap.getMana()).orElse(0);
+        int mana = this.mc.player.getCapability(PlayerCapProvider.PlayerCap).map(IPlayer::getMana).orElse(0);
         int xPos = Config.Client.manaX;
         int yPos = Config.Client.manaY;
 

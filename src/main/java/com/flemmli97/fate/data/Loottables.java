@@ -50,7 +50,7 @@ public class Loottables extends ForgeLootTableProvider {
 
     @Override
     protected List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>>, LootParameterSet>> getTables() {
-        return loot;
+        return this.loot;
     }
 
     static class EntityLoot implements Consumer<BiConsumer<ResourceLocation, LootTable.Builder>> {
@@ -90,7 +90,7 @@ public class Loottables extends ForgeLootTableProvider {
         @Override
         public void accept(BiConsumer<ResourceLocation, LootTable.Builder> cons) {
             this.init();
-            this.lootTables.forEach(cons::accept);
+            this.lootTables.forEach(cons);
         }
     }
 
@@ -107,7 +107,7 @@ public class Loottables extends ForgeLootTableProvider {
             ResourceLocation crystal = new ResourceLocation(Fate.MODID, "blocks/crystals");
             this.registerLootTable(crystal, createLootPool(5, ModItems.crystalEarth.get(), ModItems.crystalWind.get(), ModItems.crystalWater.get(), ModItems.crystalVoid.get(), ModItems.crystalFire.get()));
             this.registerLootTable(ModBlocks.crystalOre.get(), drop -> droppingWithSilkTouch(drop, TableLootEntry.builder(crystal)));
-            this.loots.forEach(cons::accept);
+            this.loots.forEach(cons);
         }
 
         protected static LootTable.Builder createLootPool(int weight, IItemProvider... items) {

@@ -58,7 +58,7 @@ public class Fate {
         });
         CachedWeaponList.init();
         PacketHandler.register();
-        CapabilityManager.INSTANCE.register(IPlayer.class, new PlayerCapNetwork(), () -> new PlayerCap());
+        CapabilityManager.INSTANCE.register(IPlayer.class, new PlayerCapNetwork(), PlayerCap::new);
     }
 
     @SubscribeEvent

@@ -886,31 +886,31 @@ public class ModelGordiusWheel extends EntityModel<EntityGordiusWheel> implement
     }
 
     @Override
-    public void setAngles(EntityGordiusWheel entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch){
+    public void setAngles(EntityGordiusWheel entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.resetModel();
-        this.frontAxel.rotateAngleX= MathHelper.cos(limbSwing*0.3F)*(float)Math.PI;
-        this.backAxel.rotateAngleX=MathHelper.cos(limbSwing*0.4f)*(float)Math.PI;
-        this.leftWheelWeaponMain.rotateAngleX=this.frontAxel.rotateAngleX;
-        this.rightWheelWeaponMain.rotateAngleX=-this.frontAxel.rotateAngleX;
-        this.footLeftFront.rotateAngleX=MathHelper.cos(limbSwing * 0.6662F) * limbSwingAmount;
-        this.footRightFront.rotateAngleX=MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI)* limbSwingAmount;
-        this.footLeftFront2.rotateAngleX=MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * limbSwingAmount;
-        this.footRightFront2.rotateAngleX=MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * limbSwingAmount;
-        this.footLeftRear.rotateAngleX=MathHelper.cos(limbSwing * 0.6662F) * limbSwingAmount;
-        this.footRightRear.rotateAngleX=MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * limbSwingAmount;
-        this.footLeftRear2.rotateAngleX=MathHelper.cos(limbSwing * 0.6662F) * limbSwingAmount;
-        this.footRightRear2.rotateAngleX=MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * limbSwingAmount;
+        this.frontAxel.rotateAngleX = MathHelper.cos(limbSwing * 0.3F) * (float) Math.PI;
+        this.backAxel.rotateAngleX = MathHelper.cos(limbSwing * 0.4f) * (float) Math.PI;
+        this.leftWheelWeaponMain.rotateAngleX = this.frontAxel.rotateAngleX;
+        this.rightWheelWeaponMain.rotateAngleX = -this.frontAxel.rotateAngleX;
+        this.footLeftFront.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * limbSwingAmount;
+        this.footRightFront.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * limbSwingAmount;
+        this.footLeftFront2.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * limbSwingAmount;
+        this.footRightFront2.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * limbSwingAmount;
+        this.footLeftRear.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * limbSwingAmount;
+        this.footRightRear.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * limbSwingAmount;
+        this.footLeftRear2.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * limbSwingAmount;
+        this.footRightRear2.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * limbSwingAmount;
     }
 
     @Override
-    public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha){
+    public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         this.bull1.render(matrixStack, buffer, packedLight, packedOverlay);
         this.bull2.render(matrixStack, buffer, packedLight, packedOverlay);
         this.centerBeam.render(matrixStack, buffer, packedLight, packedOverlay);
     }
 
     public void setRotationAngle(ModelRendererPlus model, float x, float y, float z) {
-        model.setDefaultRotAngle(x,y,z);
+        model.setDefaultRotAngle(x, y, z);
     }
 
     @Override

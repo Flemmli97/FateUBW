@@ -16,7 +16,7 @@ public class RenderGem extends RenderProjectileItem<EntityGem> {
 
     @Override
     public ItemStack getRenderItemStack(EntityGem entityGem) {
-        return gem;
+        return this.gem;
     }
 
     @Override

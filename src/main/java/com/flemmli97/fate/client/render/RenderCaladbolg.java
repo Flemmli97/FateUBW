@@ -18,7 +18,7 @@ public class RenderCaladbolg extends RenderProjectileModel<EntityCaladBolg> {
 
     @Override
     public ResourceLocation getEntityTexture(EntityCaladBolg entity) {
-        return tex;
+        return this.tex;
     }
 
     @Override

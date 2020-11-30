@@ -264,9 +264,7 @@ public class GrailWarHandler extends WorldSavedData {
     public boolean canSpawnServant(EntityServant servant) {
         if (!Config.Common.allowDuplicateServant && this.servants.contains(servant.getType().getRegistryName()))
             return false;
-        if (!Config.Common.allowDuplicateClass && this.servantClasses.contains(servant.getServantType()))
-            return false;
-        return true;
+        return Config.Common.allowDuplicateClass || !this.servantClasses.contains(servant.getServantType());
     }
 
     private void trySpawnNPCServant(ServerWorld world) {
@@ -308,7 +306,7 @@ public class GrailWarHandler extends WorldSavedData {
     }
 
     private boolean notify(ResourceLocation loc) {
-        return Config.Common.whiteList ? Config.Common.notifyBlackList.contains(loc) : !Config.Common.notifyBlackList.contains(loc);
+        return Config.Common.whiteList == Config.Common.notifyBlackList.contains(loc);
     }
 
     public void untrack(EntityServant servant) {
@@ -369,6 +367,6 @@ public class GrailWarHandler extends WorldSavedData {
         JOIN,
         RUN,
         FINISH,
-        NOTHING;
+        NOTHING
     }
 }

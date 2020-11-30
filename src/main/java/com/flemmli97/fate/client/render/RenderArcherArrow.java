@@ -16,6 +16,6 @@ public class RenderArcherArrow extends ArrowRenderer<EntityArcherArrow> {
 
     @Override
     public ResourceLocation getEntityTexture(EntityArcherArrow arrow) {
-        return LOCATION;
+        return this.LOCATION;
     }
 }

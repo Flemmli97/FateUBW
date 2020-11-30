@@ -23,8 +23,8 @@ public class ConfigSpecs {
         public final ForgeConfigSpec.ConfigValue<Integer> manaBarY;
 
         public Client(ForgeConfigSpec.Builder builder) {
-            manaBarX = builder.comment("X Position of the mana bar").define("Mana X", 2);
-            manaBarY = builder.comment("Y Position of the mana bar").define("Mana Y", 2);
+            this.manaBarX = builder.comment("X Position of the mana bar").define("Mana X", 2);
+            this.manaBarY = builder.comment("Y Position of the mana bar").define("Mana Y", 2);
         }
     }
 

@@ -17,6 +17,6 @@ public class RenderGordius extends MobRenderer<EntityGordiusWheel, ModelGordiusW
 
     @Override
     public ResourceLocation getEntityTexture(EntityGordiusWheel gordiusWheel) {
-        return tex;
+        return this.tex;
     }
 }
