@@ -21,7 +21,7 @@ public class EntityGilles extends EntityServant {
 
     public final GillesAttackGoal attackAI = new GillesAttackGoal(this, 16);
 
-    private static final AnimatedAction rangedAttack = new AnimatedAction(38, 25, "cast");
+    private static final AnimatedAction rangedAttack = new AnimatedAction(32, 25, "cast");
     private static final AnimatedAction npAttack = new AnimatedAction(20, 0, "np");
     private static final AnimatedAction[] anims = new AnimatedAction[]{rangedAttack, npAttack};
 
@@ -80,7 +80,7 @@ public class EntityGilles extends EntityServant {
 
     public void attackWithRangedAttack(LivingEntity target) {
         if (!this.world.isRemote) {
-            if (this.world.getEntitiesWithinAABB(EntityLesserMonster.class, this.getBoundingBox().grow(16)).size() < Config.Common.gillesMinionAmount) {
+            if (this.world.getEntitiesWithinAABB(EntityLesserMonster.class, this.getBoundingBox().grow(16), monster->monster.ownerUUID().equals(this.getUniqueID())).size() < Config.Common.gillesMinionAmount) {
                 EntityLesserMonster minion = new EntityLesserMonster(this.world, this);
                 BlockPos pos = RayTraceUtils.randomPosAround(world, minion, this.getBlockPos(), 9, true, this.getRNG());
                 if (pos != null) {

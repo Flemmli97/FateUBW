@@ -29,8 +29,8 @@ public class CuchulainnAttackGoal extends BaseServantAttackGoal<EntityCuchulainn
     @Override
     public void handlePreAttack() {
         if (this.attacker.canUse(this.next, EntityServant.AttackType.NP)) {
-            Vector3d back = this.attacker.getLookVec().scale(-1.2);
-            this.attacker.setVelocity(back.x, 1.1, back.z);
+            Vector3d back = this.attacker.getLookVec().scale(-1.1);
+            this.attacker.setVelocity(back.x, 1, back.z);
         }
         super.handlePreAttack();
     }

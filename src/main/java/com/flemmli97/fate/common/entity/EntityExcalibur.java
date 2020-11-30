@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 
 public class EntityExcalibur extends EntityBeam {
 
-    public static final float radius = 2f;
+    public static final float radius = 1.5f;
     public static final float range = 16;
 
     public EntityExcalibur(EntityType<? extends EntityExcalibur> type, World world) {

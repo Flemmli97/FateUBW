@@ -42,7 +42,6 @@ import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -97,7 +96,6 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated,
     private PlayerEntity owner;
 
     private String hogou;
-    private ItemStack[] drops;
 
     protected static final DataParameter<Boolean> showServant = EntityDataManager.createKey(EntityServant.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<Boolean> stationary = EntityDataManager.createKey(EntityServant.class, DataSerializers.BOOLEAN);
@@ -159,10 +157,6 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated,
 
     public EnumServantType getServantType() {
         return this.servantType;
-    }
-
-    public ItemStack[] drops() {
-        return this.drops;
     }
 
     @Override

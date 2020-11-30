@@ -8,10 +8,12 @@ import com.flemmli97.fate.client.render.RenderArcherArrow;
 import com.flemmli97.fate.client.render.RenderBabylon;
 import com.flemmli97.fate.client.render.RenderCaladbolg;
 import com.flemmli97.fate.client.render.RenderEA;
+import com.flemmli97.fate.client.render.RenderEmpty;
 import com.flemmli97.fate.client.render.RenderExcalibur;
 import com.flemmli97.fate.client.render.RenderGaeBolg;
 import com.flemmli97.fate.client.render.RenderGem;
 import com.flemmli97.fate.client.render.RenderHassanCopy;
+import com.flemmli97.fate.client.render.RenderMagicBeam;
 import com.flemmli97.fate.client.render.RenderStarfish;
 import com.flemmli97.fate.client.render.servant.RenderArthur;
 import com.flemmli97.fate.client.render.servant.RenderCuchulainn;
@@ -65,13 +67,13 @@ public class ClientHandler {
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.diarmuid.get(), RenderDiarmuid::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.emiya.get(), RenderEmiya::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.gilgamesh.get(), RenderGilgamesh::new);
-        RenderingRegistry.registerEntityRenderingHandler(ModEntities.gilles.get(), RenderGilles::new);
-        RenderingRegistry.registerEntityRenderingHandler(ModEntities.lancelot.get(), RenderLancelot::new);
-        RenderingRegistry.registerEntityRenderingHandler(ModEntities.hassan.get(), RenderHassan::new);
-        RenderingRegistry.registerEntityRenderingHandler(ModEntities.iskander.get(), RenderIskander::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.medea.get(), RenderMedea::new);
-        RenderingRegistry.registerEntityRenderingHandler(ModEntities.medusa.get(), RenderMedusa::new);
+        RenderingRegistry.registerEntityRenderingHandler(ModEntities.gilles.get(), RenderGilles::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.heracles.get(), RenderHeracles::new);
+        RenderingRegistry.registerEntityRenderingHandler(ModEntities.lancelot.get(), RenderLancelot::new);
+        RenderingRegistry.registerEntityRenderingHandler(ModEntities.iskander.get(), RenderIskander::new);
+        RenderingRegistry.registerEntityRenderingHandler(ModEntities.medusa.get(), RenderMedusa::new);
+        RenderingRegistry.registerEntityRenderingHandler(ModEntities.hassan.get(), RenderHassan::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.sasaki.get(), RenderSasaki::new);
 
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.excalibur.get(), RenderExcalibur::new);
@@ -80,9 +82,13 @@ public class ClientHandler {
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.caladbolg.get(), RenderCaladbolg::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.babylon.get(), RenderBabylon::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.ea.get(), RenderEA::new);
+        RenderingRegistry.registerEntityRenderingHandler(ModEntities.magicBeam.get(), RenderMagicBeam::new);
+        RenderingRegistry.registerEntityRenderingHandler(ModEntities.medeaCircle.get(), RenderEmpty::new);
+
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.lesserMonster.get(), RenderStarfish::new);
-        RenderingRegistry.registerEntityRenderingHandler(ModEntities.gem.get(), RenderGem::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.hassanCopy.get(), RenderHassanCopy::new);
+
+        RenderingRegistry.registerEntityRenderingHandler(ModEntities.gem.get(), RenderGem::new);
 
         ClientRegistry.bindTileEntityRenderer(ModBlocks.tileAltar.get(), RenderAltar::new);
 

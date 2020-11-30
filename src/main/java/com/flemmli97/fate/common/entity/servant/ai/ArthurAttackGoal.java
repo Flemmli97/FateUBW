@@ -15,8 +15,9 @@ public class ArthurAttackGoal extends BaseServantAttackGoal<EntityArthur> {
     @Override
     public void handleAttack(AnimatedAction anim) {
         if (this.attacker.canUse(anim, EntityServant.AttackType.NP)) {
-            if (anim.getTick() == 7)
-                this.targetPos = new double[]{target.getX(), target.getY(), target.getZ()};
+            this.attacker.faceEntity(this.target, 0, 0);
+            if (anim.getTick() == 3)
+                this.targetPos = new double[]{target.getX(), target.getY()+target.getEyeHeight(), target.getZ()};
             if (anim.canAttack()) {
                 if (!this.attacker.forcedNP)
                     this.attacker.useMana(this.attacker.props().hogouMana());
