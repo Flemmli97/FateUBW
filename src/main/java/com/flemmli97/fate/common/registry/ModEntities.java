@@ -158,6 +158,7 @@ public class ModEntities {
         GlobalEntityTypeAttributes.put(sasaki.get(), EntityServant.createMobAttributes().build());
 
         GlobalEntityTypeAttributes.put(lesserMonster.get(), MonsterEntity.createHostileAttributes().build());
+        GlobalEntityTypeAttributes.put(gordiusWheel.get(), MonsterEntity.createHostileAttributes().build());
         GlobalEntityTypeAttributes.put(hassanCopy.get(), EntityServant.createMobAttributes().build());
     }
 }

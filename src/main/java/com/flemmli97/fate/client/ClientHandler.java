@@ -12,6 +12,7 @@ import com.flemmli97.fate.client.render.RenderEmpty;
 import com.flemmli97.fate.client.render.RenderExcalibur;
 import com.flemmli97.fate.client.render.RenderGaeBolg;
 import com.flemmli97.fate.client.render.RenderGem;
+import com.flemmli97.fate.client.render.RenderGordius;
 import com.flemmli97.fate.client.render.RenderHassanCopy;
 import com.flemmli97.fate.client.render.RenderMagicBeam;
 import com.flemmli97.fate.client.render.RenderStarfish;
@@ -84,7 +85,7 @@ public class ClientHandler {
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.ea.get(), RenderEA::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.magicBeam.get(), RenderMagicBeam::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.medeaCircle.get(), RenderEmpty::new);
-
+        RenderingRegistry.registerEntityRenderingHandler(ModEntities.gordiusWheel.get(), RenderGordius::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.lesserMonster.get(), RenderStarfish::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.hassanCopy.get(), RenderHassanCopy::new);
 

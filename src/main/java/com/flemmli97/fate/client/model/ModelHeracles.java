@@ -8,6 +8,10 @@ import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.math.MathHelper;
 
+/**
+ * Starfish Demons - Black_Saturn
+ * Created using Tabula 7.0.0
+ */
 public class ModelHeracles extends ModelServant<EntityHeracles> {
 
     public ModelRendererPlus upperTorso;

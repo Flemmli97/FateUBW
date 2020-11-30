@@ -6,6 +6,8 @@ import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 
 public class DiarmuidAttackGoal extends BaseServantAttackGoal<EntityDiarmuid> {
 
+    private boolean retryNP;
+
     public DiarmuidAttackGoal(EntityDiarmuid entity) {
         super(entity, 1.2f);
     }
@@ -16,13 +18,25 @@ public class DiarmuidAttackGoal extends BaseServantAttackGoal<EntityDiarmuid> {
     }
 
     @Override
+    public AnimatedAction randomAttack() {
+        if (this.retryNP || (this.attacker.canUseNP() && this.attacker.getOwner() == null && this.attacker.getMana() >= this.attacker.props().hogouMana()) || this.attacker.forcedNP)
+            return this.attacker.getRandomAttack(EntityServant.AttackType.NP);
+        return this.attacker.getRandomAttack(EntityServant.AttackType.MELEE);
+    }
+
+    @Override
     public void handleAttack(AnimatedAction anim) {
         if (this.attacker.canUse(anim, EntityServant.AttackType.NP)) {
-            if (anim.canAttack() && this.distanceToTargetSq < this.attackRange) {
-                if (!this.attacker.forcedNP)
-                    this.attacker.useMana(this.attacker.props().hogouMana());
-                this.attacker.attackWithNP(this.target);
-                this.attacker.forcedNP = false;
+            if (anim.canAttack()) {
+                if(this.distanceToTargetSq < this.attackRange) {
+                    if (!this.attacker.forcedNP)
+                        this.attacker.useMana(this.attacker.props().hogouMana());
+                    this.attacker.attackWithNP(this.target);
+                    this.attacker.forcedNP = false;
+                    this.retryNP = false;
+                }
+                else
+                    this.retryNP = true;
             }
         } else {
             super.handleAttack(anim);

@@ -46,13 +46,6 @@ public class ModelStarfishDemon<T extends EntityLesserMonster> extends EntityMod
 
     public final BlockBenchAnimations anim;
 
-    /*//20
-    public TabulaAnimation idle;
-    //31
-    public TabulaAnimation walk;
-    //length 20, attack at 15
-    public TabulaAnimation attack;*/
-
     public ModelStarfishDemon() {
         this.textureWidth = 64;
         this.textureHeight = 64;

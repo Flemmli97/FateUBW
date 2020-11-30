@@ -21,7 +21,8 @@ public class RenderMagicBeam extends RenderBeam<EntityMagicBeam> {
         if (projectile.iddle) {
 
         }
-        super.render(projectile, rotation, partialTicks, stack, buffer, packedLight);
+        else
+            super.render(projectile, rotation, partialTicks, stack, buffer, packedLight);
     }
 
     @Override
