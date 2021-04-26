@@ -116,7 +116,7 @@ public class C2SServantCommand {
                         player.sendMessage(new TranslationTextComponent("chat.command.spell.fail").formatted(TextFormatting.RED), Util.NIL_UUID);
                     break;
                 case TARGET:
-                    EntityRayTraceResult res = RayTraceUtils.calculateEntityFromLook(player, 16, LivingEntity.class);
+                    EntityRayTraceResult res = RayTraceUtils.calculateEntityFromLook(player, 16);
                     if (res != null && res.getEntity() instanceof LivingEntity) {
                         LivingEntity e = (LivingEntity) res.getEntity();
                         if (e instanceof EntityServant) {
