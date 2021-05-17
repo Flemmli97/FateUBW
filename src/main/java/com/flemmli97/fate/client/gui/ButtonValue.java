@@ -10,9 +10,13 @@ public class ButtonValue<T> extends Button {
     public boolean selected;
     private T val;
     protected static final ResourceLocation guiStuff = new ResourceLocation(Fate.MODID + "textures/gui/buttons.png");
+    private final Pressable<T> pressable;
 
-    public ButtonValue(int x, int y, int widthIn, int heightIn, String buttonText, Button.IPressable press) {
-        super(x, y, widthIn, heightIn, new TranslationTextComponent(buttonText), press);
+    @SuppressWarnings("unchecked")
+    public ButtonValue(int x, int y, int widthIn, int heightIn, String buttonText, Pressable<T> press) {
+        super(x, y, widthIn, heightIn, new TranslationTextComponent(buttonText), (button) -> {
+        });
+        this.pressable = press;
     }
 
     public ButtonValue<T> setVal(T val) {
@@ -22,5 +26,15 @@ public class ButtonValue<T> extends Button {
 
     public T getVal() {
         return this.val;
+    }
+
+    @Override
+    public void onPress() {
+        this.pressable.press(this);
+    }
+
+    public static interface Pressable<T> {
+
+        void press(ButtonValue<T> button);
     }
 }

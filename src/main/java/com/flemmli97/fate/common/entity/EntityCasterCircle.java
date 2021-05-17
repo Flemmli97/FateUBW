@@ -85,7 +85,7 @@ public class EntityCasterCircle extends Entity implements IOwnable<EntityMedea> 
     }
 
     @Override
-    public UUID ownerUUID() {
+    public UUID getOwnerUUID() {
         return this.ownerUUID;
     }
 

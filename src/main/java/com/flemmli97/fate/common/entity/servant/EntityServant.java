@@ -17,7 +17,6 @@ import com.flemmli97.tenshilib.api.entity.IOwnable;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import com.flemmli97.tenshilib.common.entity.ai.MoveControllerPlus;
 import com.flemmli97.tenshilib.common.utils.NBTUtils;
-import com.google.common.collect.Lists;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.Entity;
@@ -67,6 +66,7 @@ import net.minecraft.world.server.ServerChunkProvider;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.server.TicketType;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -289,7 +289,7 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated,
     }
 
     @Override
-    public UUID ownerUUID() {
+    public UUID getOwnerUUID() {
         return this.dataManager.get(ownerUUID).orElse(null);
     }
 
@@ -410,7 +410,7 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated,
         }
     }
 
-    private List<ServerPlayerEntity> tracked = Lists.newArrayList();
+    private List<ServerPlayerEntity> tracked = new ArrayList<>();
 
     @Override
     public void addTrackingPlayer(ServerPlayerEntity player) {

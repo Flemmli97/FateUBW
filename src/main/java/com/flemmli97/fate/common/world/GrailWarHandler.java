@@ -13,8 +13,6 @@ import com.flemmli97.fate.network.PacketHandler;
 import com.flemmli97.fate.network.S2CWarData;
 import com.flemmli97.tenshilib.common.entity.EntityUtil;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.entity.SpawnReason;
@@ -43,6 +41,8 @@ import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.eventbus.api.Event;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -51,18 +51,18 @@ public class GrailWarHandler extends WorldSavedData {
 
     private static final String identifier = "GrailWarTracker";
 
-    private Set<UUID> players = Sets.newHashSet();
+    private Set<UUID> players = new HashSet<>();
 
-    private Set<UUID> activeServants = Sets.newHashSet();
-    private Set<ResourceLocation> servants = Sets.newHashSet();
-    private Set<EnumServantType> servantClasses = Sets.newHashSet();
+    private Set<UUID> activeServants = new HashSet<>();
+    private Set<ResourceLocation> servants = new HashSet<>();
+    private Set<EnumServantType> servantClasses = new HashSet<>();
     private int spawnedServants;
 
     private State state = State.NOTHING;
 
     private int joinTicker, winningDelay, timeToNextServant;
 
-    private List<UUID> sheduledPlayerRemoval = Lists.newArrayList();
+    private List<UUID> sheduledPlayerRemoval = new ArrayList<>();
 
     private final ServantTracker chunkReload = new ServantTracker();
 
@@ -180,7 +180,7 @@ public class GrailWarHandler extends WorldSavedData {
                 servant.setOwner(null);
                 this.removePlayer((ServerPlayerEntity) player);
             } else if (servant.hasOwner())
-                this.sheduledPlayerRemoval.add(servant.ownerUUID());
+                this.sheduledPlayerRemoval.add(servant.getOwnerUUID());
             this.checkWinCondition((ServerWorld) servant.world, true);
             this.markDirty();
             return true;
@@ -268,7 +268,7 @@ public class GrailWarHandler extends WorldSavedData {
     }
 
     private void trySpawnNPCServant(ServerWorld world) {
-        List<PlayerEntity> players = Lists.newArrayList();
+        List<PlayerEntity> players = new ArrayList<>();
         world.getPlayers().forEach(player -> {
             if (this.players.contains(player.getUniqueID()))
                 players.add(player);

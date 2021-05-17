@@ -1,8 +1,6 @@
 package com.flemmli97.fate.common.world;
 
 import com.flemmli97.fate.common.entity.servant.EntityServant;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
@@ -12,12 +10,14 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.server.TicketType;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 public class ServantTracker {
 
-    private Set<EntityServant> servants = Sets.newHashSet();
+    private Set<EntityServant> servants = new HashSet<>();
     private Map<ChunkPos, RegistryKey<World>> pos;
 
     public void add(EntityServant entity) {
@@ -51,7 +51,7 @@ public class ServantTracker {
     }
 
     public void load(CompoundNBT nbt) {
-        this.pos = Maps.newHashMap();
+        this.pos = new HashMap<>();
         CompoundNBT tag = nbt.getCompound("ToLoadChunks");
         tag.keySet().forEach(cl -> this.pos.put(new ChunkPos(Long.parseLong(cl.substring(2))), RegistryKey.of(Registry.DIMENSION, new ResourceLocation(tag.getString(cl)))));
     }

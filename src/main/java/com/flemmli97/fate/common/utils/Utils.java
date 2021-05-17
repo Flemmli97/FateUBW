@@ -35,13 +35,13 @@ public class Utils {
     }
 
     public static boolean inSameTeam(ServerPlayerEntity player, EntityServant servant) {
-        UUID other = servant.ownerUUID();
+        UUID other = servant.getOwnerUUID();
         return other != null && TruceHandler.get(player.getServerWorld()).get(player.getUniqueID()).contains(other);
     }
 
     public static boolean inSameTeam(EntityServant servant, EntityServant other) {
-        UUID first = servant.ownerUUID();
-        UUID second = other.ownerUUID();
+        UUID first = servant.getOwnerUUID();
+        UUID second = other.getOwnerUUID();
         return first != null && other != null && TruceHandler.get((ServerWorld) servant.world).get(first).contains(second);
     }
 

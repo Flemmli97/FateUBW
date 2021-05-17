@@ -2,10 +2,10 @@ package com.flemmli97.fate.common.config;
 
 import com.flemmli97.fate.common.lib.LibEntities;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,7 +50,7 @@ public class ConfigSpecs {
         public final ForgeConfigSpec.ConfigValue<List<String>> npBoostEffect;
 
         //Servants
-        public final Map<String, ServantConfSpec> attributes = Maps.newHashMap();
+        public final Map<String, ServantConfSpec> attributes = new HashMap<>();
         public ForgeConfigSpec.ConfigValue<Double> lancelotReflectChance;
         public ForgeConfigSpec.ConfigValue<Integer> hassanCopies;
 

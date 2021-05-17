@@ -1,7 +1,6 @@
 package com.flemmli97.fate.common.config;
 
-import com.google.common.collect.Maps;
-
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +35,7 @@ public class Config {
         public static boolean notifyAll;
         public static final PotionEffectsConfig npBoostEffect = new PotionEffectsConfig();
 
-        public static final Map<String, ServantProperties> attributes = Maps.newHashMap();
+        public static final Map<String, ServantProperties> attributes = new HashMap<>();
         public static float lancelotReflectChance;
         public static int hassanCopies;
 

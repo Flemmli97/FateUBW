@@ -17,7 +17,6 @@ import com.flemmli97.fate.common.items.weapons.ItemKatana;
 import com.flemmli97.fate.common.items.weapons.ItemStaff;
 import com.flemmli97.fate.common.lib.ItemTiers;
 import com.flemmli97.fate.common.utils.EnumServantType;
-import com.google.common.collect.Lists;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -27,6 +26,7 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Supplier;
@@ -34,7 +34,7 @@ import java.util.function.Supplier;
 public class ModItems {
 
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Fate.MODID);
-    public static final List<RegistryObject<Item>> charms = Lists.newArrayList();
+    public static final List<RegistryObject<Item>> charms = new ArrayList<>();
 
     public static final RegistryObject<Item> invisexcalibur = ITEMS.register("invis_excalibur", () -> new SwordItem(ItemTiers.invis_excalibur, 0, -2.4f, new Item.Properties()) {
         @Override

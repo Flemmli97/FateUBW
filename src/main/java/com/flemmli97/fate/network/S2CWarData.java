@@ -2,7 +2,6 @@ package com.flemmli97.fate.network;
 
 import com.flemmli97.fate.client.ClientHandler;
 import com.flemmli97.fate.common.world.GrailWarHandler;
-import com.google.common.collect.Sets;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
@@ -11,6 +10,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.network.NetworkEvent;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -23,12 +23,12 @@ public class S2CWarData {
     }
 
     public S2CWarData(ServerWorld world) {
-        this.grailWarPlayers = Sets.newHashSet();
+        this.grailWarPlayers = new HashSet<>();
         GrailWarHandler.get(world).players().forEach(uuid -> this.grailWarPlayers.add(world.getServer().getPlayerProfileCache().getProfileByUUID(uuid)));
     }
 
     public static S2CWarData read(PacketBuffer buf) {
-        Set<GameProfile> grailWarPlayers = Sets.newHashSet();
+        Set<GameProfile> grailWarPlayers = new HashSet<>();
         int size = buf.readInt();
         for (int i = 0; i < size; i++)
             grailWarPlayers.add(new GameProfile(buf.readUniqueId(), buf.readString()));

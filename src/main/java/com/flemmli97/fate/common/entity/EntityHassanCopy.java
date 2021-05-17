@@ -94,14 +94,14 @@ public class EntityHassanCopy extends CreatureEntity implements IAnimated, IOwna
     }
 
     @Override
-    public UUID ownerUUID() {
+    public UUID getOwnerUUID() {
         return this.ownerUUID;
     }
 
     @Override
     public EntityHassan getOwner() {
-        if (this.owner == null && this.ownerUUID() != null)
-            this.owner = EntityUtil.findFromUUID(EntityHassan.class, this.world, this.ownerUUID());
+        if (this.owner == null && this.getOwnerUUID() != null)
+            this.owner = EntityUtil.findFromUUID(EntityHassan.class, this.world, this.getOwnerUUID());
         return this.owner;
     }
 

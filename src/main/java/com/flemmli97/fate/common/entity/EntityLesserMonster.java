@@ -94,14 +94,14 @@ public class EntityLesserMonster extends CreatureEntity implements IServantMinio
     }
 
     @Override
-    public UUID ownerUUID() {
+    public UUID getOwnerUUID() {
         return this.ownerUUID;
     }
 
     protected boolean canAttackTarget(LivingEntity e) {
         if (e.getUniqueID().equals(this.ownerUUID))
             return false;
-        return this.ownerUUID() == null || !(e instanceof IOwnable) || !this.ownerUUID().equals(((IOwnable) e).ownerUUID());
+        return this.getOwnerUUID() == null || !(e instanceof IOwnable) || !this.getOwnerUUID().equals(((IOwnable<?>) e).getOwnerUUID());
     }
 
     @Override

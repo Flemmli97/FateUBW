@@ -2,7 +2,6 @@ package com.flemmli97.fate.network;
 
 import com.flemmli97.fate.client.ClientHandler;
 import com.flemmli97.fate.common.world.TruceHandler;
-import com.google.common.collect.Sets;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -12,6 +11,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.network.NetworkEvent;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -28,18 +28,18 @@ public class S2CTruceData {
     }
 
     public S2CTruceData(ServerWorld world, ServerPlayerEntity player) {
-        this.truces = Sets.newHashSet();
-        this.pending = Sets.newHashSet();
-        this.requests = Sets.newHashSet();
+        this.truces = new HashSet<>();
+        this.pending = new HashSet<>();
+        this.requests = new HashSet<>();
         TruceHandler.get(world).get(player.getUniqueID()).forEach(uuid -> this.truces.add(world.getServer().getPlayerProfileCache().getProfileByUUID(uuid)));
         TruceHandler.get(world).pending(player).forEach(uuid -> this.pending.add(world.getServer().getPlayerProfileCache().getProfileByUUID(uuid)));
         TruceHandler.get(world).outgoingRequests(player).forEach(uuid -> this.requests.add(world.getServer().getPlayerProfileCache().getProfileByUUID(uuid)));
     }
 
     public static S2CTruceData read(PacketBuffer buf) {
-        Set<GameProfile> truces = Sets.newHashSet();
-        Set<GameProfile> pending = Sets.newHashSet();
-        Set<GameProfile> requests = Sets.newHashSet();
+        Set<GameProfile> truces = new HashSet<>();
+        Set<GameProfile> pending = new HashSet<>();
+        Set<GameProfile> requests = new HashSet<>();
         for (int i = 0; i < buf.readInt(); i++)
             truces.add(new GameProfile(buf.readUniqueId(), buf.readString()));
         for (int i = 0; i < buf.readInt(); i++)

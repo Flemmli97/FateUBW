@@ -6,8 +6,6 @@ import com.flemmli97.fate.common.entity.servant.ai.HassanAttackGoal;
 import com.flemmli97.fate.common.registry.ModItems;
 import com.flemmli97.fate.common.utils.EnumServantUpdate;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SpawnReason;
@@ -26,6 +24,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -36,7 +35,7 @@ public class EntityHassan extends EntityServant {
     private static final AnimatedAction npAttack = new AnimatedAction(20, 1, "np");
     private static final AnimatedAction[] anims = new AnimatedAction[]{AnimatedAction.vanillaAttack, npAttack};
 
-    private Set<UUID> copies = Sets.newHashSet();
+    private Set<UUID> copies = new HashSet<>();
 
     public EntityHassan(EntityType<? extends EntityHassan> entityType, World world) {
         super(entityType, world, "hassan.hogou");
@@ -88,7 +87,7 @@ public class EntityHassan extends EntityServant {
     }
 
     public List<EntityHassanCopy> gatherCopies() {
-        ArrayList<EntityHassanCopy> list = Lists.newArrayList();
+        ArrayList<EntityHassanCopy> list = new ArrayList<>();
         for (EntityHassanCopy e : this.world.getEntitiesWithinAABB(EntityHassanCopy.class, this.getBoundingBox().grow(32))) {
             if (this.copies.contains(e.getUniqueID())) {
                 e.setOriginal(this);

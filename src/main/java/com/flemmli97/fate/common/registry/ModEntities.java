@@ -33,7 +33,6 @@ import com.flemmli97.fate.common.items.FateEgg;
 import com.flemmli97.fate.common.lib.LibEntities;
 import com.flemmli97.fate.common.utils.EnumServantType;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
@@ -45,15 +44,17 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ModEntities {
 
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, Fate.MODID);
-    private static final Map<ResourceLocation, EnumServantType> servantTypeMap = Maps.newHashMap();
+    private static final Map<ResourceLocation, EnumServantType> servantTypeMap = new HashMap<>();
 
     //This is generic hell
     private static final EnumMap<EnumServantType, List<RegistryObject<?>>> typeServantsMap = new EnumMap<>(EnumServantType.class);
@@ -131,8 +132,8 @@ public class ModEntities {
 
     @SuppressWarnings("unchecked")
     public static <V extends EntityServant> List<RegistryObject<EntityType<V>>> getFromType(EnumServantType type) {
-        List<RegistryObject<EntityType<V>>> list = Lists.newArrayList();
-        typeServantsMap.getOrDefault(type, Lists.newArrayList()).forEach(r -> list.add((RegistryObject<EntityType<V>>) r));
+        List<RegistryObject<EntityType<V>>> list = new ArrayList<>();
+        typeServantsMap.getOrDefault(type, new ArrayList<>()).forEach(r -> list.add((RegistryObject<EntityType<V>>) r));
         return list;
     }
 

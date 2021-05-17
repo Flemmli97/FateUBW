@@ -217,23 +217,20 @@ public class CommandGui extends Screen {
             this.addButton(new Button(this.width / 2 - 90, this.height / 2 - 5, 80, 20
                     , new TranslationTextComponent("fate.gui.command.back"), this::backButton));
             this.addButton(this.request = new ButtonValue<>(this.width / 2 - 90, this.height / 2 + 25, 80, 20, "fate.gui.truce.request", button -> {
-                ButtonValue<UUID> req = (ButtonValue<UUID>) button;
-                if (req.getVal() != null) {
-                    PacketHandler.sendToServer(new C2STruceMessage(C2STruceMessage.Type.SEND, req.getVal()));
+                if (button.getVal() != null) {
+                    PacketHandler.sendToServer(new C2STruceMessage(C2STruceMessage.Type.SEND, button.getVal()));
                     this.init(this.client, this.width, this.height);
                 }
             }));
             this.addButton(this.accept = new ButtonValue<>(this.width / 2 - 90, this.height / 2 + 45, 80, 20, "fate.gui.truce.accept", button -> {
-                ButtonValue<UUID> req = (ButtonValue<UUID>) button;
-                if (req.getVal() != null) {
-                    PacketHandler.sendToServer(new C2STruceMessage(C2STruceMessage.Type.ACCEPT, req.getVal()));
+                if (button.getVal() != null) {
+                    PacketHandler.sendToServer(new C2STruceMessage(C2STruceMessage.Type.ACCEPT, button.getVal()));
                     this.init(this.client, this.width, this.height);
                 }
             }));
-            this.addButton(this.remove = new ButtonValue(this.width / 2 - 90, this.height / 2 + 65, 80, 20, "fate.gui.truce.remove", button -> {
-                ButtonValue<UUID> req = (ButtonValue<UUID>) button;
-                if (req.getVal() != null) {
-                    PacketHandler.sendToServer(new C2STruceMessage(C2STruceMessage.Type.DENY, req.getVal()));
+            this.addButton(this.remove = new ButtonValue<>(this.width / 2 - 90, this.height / 2 + 65, 80, 20, "fate.gui.truce.remove", button -> {
+                if (button.getVal() != null) {
+                    PacketHandler.sendToServer(new C2STruceMessage(C2STruceMessage.Type.DENY, button.getVal()));
                     this.init(this.client, this.width, this.height);
                 }
             }));

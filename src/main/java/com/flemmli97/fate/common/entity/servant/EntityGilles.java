@@ -80,7 +80,7 @@ public class EntityGilles extends EntityServant {
 
     public void attackWithRangedAttack(LivingEntity target) {
         if (!this.world.isRemote) {
-            if (this.world.getEntitiesWithinAABB(EntityLesserMonster.class, this.getBoundingBox().grow(16), monster -> monster.ownerUUID().equals(this.getUniqueID())).size() < Config.Common.gillesMinionAmount) {
+            if (this.world.getEntitiesWithinAABB(EntityLesserMonster.class, this.getBoundingBox().grow(16), monster -> monster.getOwnerUUID().equals(this.getUniqueID())).size() < Config.Common.gillesMinionAmount) {
                 EntityLesserMonster minion = new EntityLesserMonster(this.world, this);
                 BlockPos pos = RayTraceUtils.randomPosAround(this.world, minion, this.getBlockPos(), 9, true, this.getRNG());
                 if (pos != null) {

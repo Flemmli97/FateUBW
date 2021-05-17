@@ -2,19 +2,20 @@ package com.flemmli97.fate.common.config;
 
 import com.flemmli97.tenshilib.api.config.IConfigListValue;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class PotionEffectsConfig implements IConfigListValue<PotionEffectsConfig> {
     private Map<Effect, Pair<Integer, Integer>> potions;
-    private List<String> confVal = Lists.newArrayList();
+    private List<String> confVal = new ArrayList<>();
 
     @Override
     public PotionEffectsConfig readFromString(List<String> s) {
@@ -34,7 +35,7 @@ public class PotionEffectsConfig implements IConfigListValue<PotionEffectsConfig
 
     public EffectInstance[] potions() {
         if (this.potions == null) {
-            this.potions = Maps.newHashMap();
+            this.potions = new HashMap<>();
             for (String p : this.confVal) {
                 String[] sub = p.split(",");
                 if (sub.length != 3)
