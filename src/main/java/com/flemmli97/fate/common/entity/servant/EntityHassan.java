@@ -110,8 +110,8 @@ public class EntityHassan extends EntityServant {
             this.copies.clear();
             for (int i = 0; i < Config.Common.hassanCopies; i++) {
                 EntityHassanCopy hassan = new EntityHassanCopy(this.world, this);
-                hassan.setLocationAndAngles(this.getX(), this.getY(), this.getZ(), MathHelper.wrapDegrees(this.world.rand.nextFloat() * 360.0F), 0.0F);
-                hassan.onInitialSpawn((IServerWorld) this.world, this.world.getDifficultyForLocation(this.getBlockPos()), SpawnReason.MOB_SUMMONED, null, null);
+                hassan.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), MathHelper.wrapDegrees(this.world.rand.nextFloat() * 360.0F), 0.0F);
+                hassan.onInitialSpawn((IServerWorld) this.world, this.world.getDifficultyForLocation(this.getPosition()), SpawnReason.MOB_SUMMONED, null, null);
                 this.world.addEntity(hassan);
                 this.addCopy(hassan);
             }
@@ -127,7 +127,7 @@ public class EntityHassan extends EntityServant {
     public void writeAdditional(CompoundNBT tag) {
         super.writeAdditional(tag);
         ListNBT copies = new ListNBT();
-        this.copies.forEach(hassan -> copies.add(NBTUtil.fromUuid(hassan)));
+        this.copies.forEach(hassan -> copies.add(NBTUtil.func_240626_a_(hassan)));
         tag.put("Copies", copies);
     }
 

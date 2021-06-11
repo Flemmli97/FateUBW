@@ -4,7 +4,7 @@ import net.minecraft.item.Item;
 
 public class ItemStaff extends Item {
 
-    public ItemStaff(Properties p_i48487_1_) {
-        super(p_i48487_1_);
+    public ItemStaff(Properties properties) {
+        super(properties);
     }
 }

@@ -57,7 +57,7 @@ public class EntityLancelot extends EntityServant {
     @Override
     protected void damageEntity(DamageSource damageSrc, float damageAmount) {
         super.damageEntity(damageSrc, damageAmount);
-        if (!this.canUseNP && !this.isDead() && this.getHealth() < 0.5 * this.getMaxHealth()) {
+        if (!this.canUseNP && !this.getShouldBeDead() && this.getHealth() < 0.5 * this.getMaxHealth()) {
             this.canUseNP = true;
             this.setItemStackToSlot(EquipmentSlotType.MAINHAND, new ItemStack(ModItems.arondight.get()));
         }
@@ -77,9 +77,9 @@ public class EntityLancelot extends EntityServant {
             if (damageSource.isProjectile() && !damageSource.isUnblockable() && this.projectileBlockChance(damageSource, damage)) {
                 if (!this.world.isRemote && this.getRNG().nextFloat() < Config.Common.lancelotReflectChance && !(damageSource.getImmediateSource() instanceof LivingEntity)) {
                     this.reflectProjectile(damageSource.getImmediateSource());
-                    this.world.playSound(null, this.getBlockPos(), SoundEvents.BLOCK_ANVIL_PLACE, SoundCategory.NEUTRAL, 1, 1);
+                    this.world.playSound(null, this.getPosition(), SoundEvents.BLOCK_ANVIL_PLACE, SoundCategory.NEUTRAL, 1, 1);
                 } else
-                    this.world.playSound(null, this.getBlockPos(), SoundEvents.ITEM_SHIELD_BLOCK, SoundCategory.NEUTRAL, 1, 1);
+                    this.world.playSound(null, this.getPosition(), SoundEvents.ITEM_SHIELD_BLOCK, SoundCategory.NEUTRAL, 1, 1);
                 damageSource.getImmediateSource().remove();
                 return true;
             }
@@ -94,16 +94,16 @@ public class EntityLancelot extends EntityServant {
             for (int x = 0; x < 2; x++) {
                 this.world.addParticle(
                         ParticleTypes.LARGE_SMOKE,
-                        this.getX() + (this.rand.nextDouble() - 0.5D) * this.getWidth(),
-                        this.getY() + this.rand.nextDouble() * this.getHeight(),
-                        this.getZ() + (this.rand.nextDouble() - 0.5D) * this.getWidth(),
+                        this.getPosX() + (this.rand.nextDouble() - 0.5D) * this.getWidth(),
+                        this.getPosY() + this.rand.nextDouble() * this.getHeight(),
+                        this.getPosZ() + (this.rand.nextDouble() - 0.5D) * this.getWidth(),
                         this.rand.nextGaussian() * 0.02D,
                         this.rand.nextGaussian() * 0.02D,
                         this.rand.nextGaussian() * 0.02D);
             }
         if (!this.world.isRemote && this.canPickUpLoot() && this.isAlive() && !this.dead && net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.world, this)) {
             for (ItemEntity itementity : this.world.getEntitiesWithinAABB(ItemEntity.class, this.getBoundingBox().grow(1.0D, 0.0D, 1.0D))) {
-                if (this.canPickWeapon() && itementity.isAlive() && !itementity.getItem().isEmpty() && !itementity.cannotPickup() && this.canGather(itementity.getItem()) && this.checkItemToWield(itementity.getItem())
+                if (this.canPickWeapon() && itementity.isAlive() && !itementity.getItem().isEmpty() && !itementity.cannotPickup() && this.func_230293_i_(itementity.getItem()) && this.checkItemToWield(itementity.getItem())
                         && ItemUtils.isItemBetter(this.getHeldItemMainhand(), itementity.getItem())) {
                     this.updateEquipmentIfNeeded(itementity);
                     this.revealServant();
@@ -125,7 +125,7 @@ public class EntityLancelot extends EntityServant {
             e.read(old);
             if (this.getAttackTarget() != null) {
                 LivingEntity target = this.getAttackTarget();
-                Vector3d dir = new Vector3d(target.getX() - e.getX(), (target.getY() + target.getEyeHeight()) - e.getY(), target.getZ() - e.getZ());
+                Vector3d dir = new Vector3d(target.getPosX() - e.getPosX(), (target.getPosY() + target.getEyeHeight()) - e.getPosY(), target.getPosZ() - e.getPosZ());
                 this.shootProj(e, dir.x, dir.y, dir.z, 1, 1);
             } else {
                 this.shootProj(e, -e.getMotion().x, -e.getMotion().y, -e.getMotion().z, 1, 1);

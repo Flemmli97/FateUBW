@@ -86,19 +86,19 @@ public class EntityBabylonWeapon extends EntityProjectile {
                     this.shootAtPosition(hit.getHitVec().x, hit.getHitVec().y, hit.getHitVec().z, 0.5F, 0.5F);
                 } else if (this.target != null) {
                     Vector3d targetMot = this.target.getMotion();
-                    this.shootAtPosition(this.target.getX() + targetMot.x, this.target.getY() + this.target.getHeight() / 2 + targetMot.y, this.target.getZ() + targetMot.z, 0.5F, 4);
+                    this.shootAtPosition(this.target.getPosX() + targetMot.x, this.target.getPosY() + this.target.getHeight() / 2 + targetMot.y, this.target.getPosZ() + targetMot.z, 0.5F, 4);
                 }
             }
         } else if (this.getPreShootTick() > this.dataManager.get(shootTime)) {
             this.iddle = false;
             if (!this.world.isRemote) {
-                if (thrower == null || thrower.isDead()) {
+                if (thrower == null || thrower.getShouldBeDead()) {
                     this.remove();
                     return;
                 }
             }
             if (this.world.isRemote)
-                this.world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, this.particleState), this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+                this.world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, this.particleState), this.getPosX(), this.getPosY(), this.getPosZ(), 0, 0, 0);
             super.tick();
         }
     }

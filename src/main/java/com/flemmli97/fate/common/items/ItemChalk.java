@@ -42,6 +42,6 @@ public class ItemChalk extends Item {
     protected boolean canPlace(BlockItemUseContext ctx, BlockState state) {
         PlayerEntity playerentity = ctx.getPlayer();
         ISelectionContext iselectioncontext = playerentity == null ? ISelectionContext.dummy() : ISelectionContext.forEntity(playerentity);
-        return state.isValidPosition(ctx.getWorld(), ctx.getPos()) && ctx.getWorld().canPlace(state, ctx.getPos(), iselectioncontext);
+        return state.isValidPosition(ctx.getWorld(), ctx.getPos()) && ctx.getWorld().placedBlockCollides(state, ctx.getPos(), iselectioncontext);
     }
 }

@@ -30,7 +30,7 @@ public class GilgameshAttackGoal extends BaseServantAttackGoal<EntityGilgamesh> 
         if (this.attacker.canUse(anim, EntityServant.AttackType.NP)) {
             this.attacker.getLookController().setLookPositionWithEntity(this.target, 30.0F, 30.0F);
             if (anim.getTick() == 7)
-                this.targetPos = new double[]{this.target.getX(), this.target.getY(), this.target.getZ()};
+                this.targetPos = new double[]{this.target.getPosX(), this.target.getPosY(), this.target.getPosZ()};
             if (anim.canAttack()) {
                 if (!this.attacker.forcedNP)
                     this.attacker.useMana(this.attacker.props().hogouMana());

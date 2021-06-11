@@ -69,13 +69,13 @@ public class EntityIskander extends EntityServant {
         if (this.isPassenger() || this.world.isRemote)
             return false;
         EntityGordiusWheel wheel = ModEntities.gordiusWheel.get().create(this.world);
-        wheel.setPosition(this.getX(), this.getY(), this.getZ());
+        wheel.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
         this.world.addEntity(wheel);
         this.startRiding(wheel);
         //spawn lightning
         LightningBoltEntity lightningboltentity = EntityType.LIGHTNING_BOLT.create(this.world);
-        lightningboltentity.refreshPositionAfterTeleport(this.getX(), this.getY(), this.getZ());
-        lightningboltentity.setCosmetic(true);
+        lightningboltentity.moveForced(this.getPosX(), this.getPosY(), this.getPosZ());
+        lightningboltentity.setEffectOnly(true);
         this.world.addEntity(lightningboltentity);
         this.revealServant();
         return true;

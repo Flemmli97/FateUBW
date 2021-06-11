@@ -48,43 +48,43 @@ public class C2SServantCommand {
             switch (pkt.command) {
                 case NORMAL:
                     servant.updateAI(pkt.command);
-                    player.sendMessage(new TranslationTextComponent("chat.command.attackservant").formatted(TextFormatting.RED), Util.NIL_UUID);
+                    player.sendMessage(new TranslationTextComponent("chat.command.attackservant").mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
                     break;
                 case AGGRESSIVE:
                     servant.updateAI(pkt.command);
-                    player.sendMessage(new TranslationTextComponent("chat.command.attackall").formatted(TextFormatting.RED), Util.NIL_UUID);
+                    player.sendMessage(new TranslationTextComponent("chat.command.attackall").mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
                     break;
                 case DEFENSIVE:
                     servant.updateAI(pkt.command);
-                    player.sendMessage(new TranslationTextComponent("chat.command.defensive").formatted(TextFormatting.RED), Util.NIL_UUID);
+                    player.sendMessage(new TranslationTextComponent("chat.command.defensive").mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
                     break;
                 case FOLLOW:
                     servant.updateAI(pkt.command);
-                    player.sendMessage(new TranslationTextComponent("chat.command.follow").formatted(TextFormatting.RED), Util.NIL_UUID);
+                    player.sendMessage(new TranslationTextComponent("chat.command.follow").mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
                     break;
                 case STAY:
                     servant.updateAI(pkt.command);
-                    player.sendMessage(new TranslationTextComponent("chat.command.stay").formatted(TextFormatting.RED), Util.NIL_UUID);
+                    player.sendMessage(new TranslationTextComponent("chat.command.stay").mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
                     break;
                 case GUARD:
                     servant.updateAI(pkt.command);
-                    player.sendMessage(new TranslationTextComponent("chat.command.patrol").formatted(TextFormatting.RED), Util.NIL_UUID);
+                    player.sendMessage(new TranslationTextComponent("chat.command.patrol").mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
                     break;
                 case NP:
                     if (!servant.forcedNP) {
                         if (!player.isCreative()) {
                             if (cap.useMana(player, servant.props().hogouMana()) && cap.useCommandSeal(player)) {
-                                player.sendMessage(new TranslationTextComponent("chat.command.npsuccess").formatted(TextFormatting.RED), Util.NIL_UUID);
+                                player.sendMessage(new TranslationTextComponent("chat.command.npsuccess").mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
                                 servant.forcedNP = true;
                             } else {
-                                player.sendMessage(new TranslationTextComponent("chat.command.npfail").formatted(TextFormatting.RED), Util.NIL_UUID);
+                                player.sendMessage(new TranslationTextComponent("chat.command.npfail").mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
                             }
                         } else {
-                            player.sendMessage(new TranslationTextComponent("chat.command.npsuccess").formatted(TextFormatting.RED), Util.NIL_UUID);
+                            player.sendMessage(new TranslationTextComponent("chat.command.npsuccess").mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
                             servant.forcedNP = true;
                         }
                     } else {
-                        player.sendMessage(new TranslationTextComponent("chat.command.npprep").formatted(TextFormatting.RED), Util.NIL_UUID);
+                        player.sendMessage(new TranslationTextComponent("chat.command.npprep").mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
                     }
                     break;
                 case KILL:
@@ -98,7 +98,7 @@ public class C2SServantCommand {
                     }
                     break;
                 case TELEPORT:
-                    servant.attemptTeleport(player.getX(), player.getY(), player.getZ(), false);
+                    servant.attemptTeleport(player.getPosX(), player.getPosY(), player.getPosZ(), false);
                     servant.setAttackTarget(null);
                     if (Config.Common.punishTeleport)
                         for (EntityServant others : player.world.getEntitiesWithinAABB(EntityServant.class, player.getBoundingBox().grow(32)))
@@ -111,9 +111,9 @@ public class C2SServantCommand {
                     if (cap.useCommandSeal(player)) {
                         for (EffectInstance effect : Config.Common.npBoostEffect.potions())
                             servant.addPotionEffect(effect);
-                        player.sendMessage(new TranslationTextComponent("chat.command.spell.success").formatted(TextFormatting.RED), Util.NIL_UUID);
+                        player.sendMessage(new TranslationTextComponent("chat.command.spell.success").mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
                     } else
-                        player.sendMessage(new TranslationTextComponent("chat.command.spell.fail").formatted(TextFormatting.RED), Util.NIL_UUID);
+                        player.sendMessage(new TranslationTextComponent("chat.command.spell.fail").mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
                     break;
                 case TARGET:
                     EntityRayTraceResult res = RayTraceUtils.calculateEntityFromLook(player, 16);

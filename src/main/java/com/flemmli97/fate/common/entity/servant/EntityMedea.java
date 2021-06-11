@@ -67,7 +67,7 @@ public class EntityMedea extends EntityServant {
     @Override
     protected void damageEntity(DamageSource damageSrc, float damageAmount) {
         super.damageEntity(damageSrc, damageAmount);
-        if (!this.canUseNP && !this.isDead() && this.getHealth() < 0.5 * this.getMaxHealth()) {
+        if (!this.canUseNP && !this.getShouldBeDead() && this.getHealth() < 0.5 * this.getMaxHealth()) {
             this.canUseNP = true;
         }
     }
@@ -89,7 +89,7 @@ public class EntityMedea extends EntityServant {
         if (eff != null)
             strength = eff.getAmplifier();
         EntityMagicBeam beam = new EntityMagicBeam(this.world, this, target, strength);
-        beam.setRotationTo(target.getX(), target.getY(), target.getZ(), 0.8f);
+        beam.setRotationTo(target.getPosX(), target.getPosY(), target.getPosZ(), 0.8f);
 
 
         Vector3d look = this.getLookVec();
@@ -108,7 +108,7 @@ public class EntityMedea extends EntityServant {
             this.world.addEntity(new EntityCasterCircle(this.world, this, Config.Common.medeaCircleRange));
             this.circleDelay = Config.Common.medeaCircleSpan;
             if (this.getOwner() != null)
-                this.getOwner().sendMessage(new TranslationTextComponent("chat.medea.circle.spawn"), Util.NIL_UUID);
+                this.getOwner().sendMessage(new TranslationTextComponent("chat.medea.circle.spawn"), Util.DUMMY_UUID);
         }
     }
 

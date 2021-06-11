@@ -50,7 +50,7 @@ public class EntityMagicBeam extends EntityBeam {
             //this.livingTicks++;
             this.updatePreShootTick();
             if (this.getPreShootTick() == 15 && this.target != null) {
-                this.setRotationTo(this.target.getX(), this.target.getY(), this.target.getZ(), 1.2f);
+                this.setRotationTo(this.target.getPosX(), this.target.getPosY(), this.target.getPosZ(), 1.2f);
             }
         }
         if (this.getPreShootTick() > this.dataManager.get(shootTime)) {

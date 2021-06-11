@@ -17,7 +17,7 @@ public class ArthurAttackGoal extends BaseServantAttackGoal<EntityArthur> {
         if (this.attacker.canUse(anim, EntityServant.AttackType.NP)) {
             this.attacker.faceEntity(this.target, 0, 0);
             if (anim.getTick() == 3)
-                this.targetPos = new double[]{this.target.getX(), this.target.getY() + this.target.getEyeHeight(), this.target.getZ()};
+                this.targetPos = new double[]{this.target.getPosX(), this.target.getPosY() + this.target.getEyeHeight(), this.target.getPosZ()};
             if (anim.canAttack()) {
                 if (!this.attacker.forcedNP)
                     this.attacker.useMana(this.attacker.props().hogouMana());

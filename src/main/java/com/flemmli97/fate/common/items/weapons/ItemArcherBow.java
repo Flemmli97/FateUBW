@@ -54,9 +54,9 @@ public class ItemArcherBow extends BowItem {
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         if (player.isCreative() || this.charged(player.getHeldItem(hand)) || player.getCapability(PlayerCapProvider.PlayerCap).map(cap -> cap.getMana() >= this.arrowMana).orElse(false)) {
             player.setActiveHand(hand);
-            return ActionResult.consume(player.getHeldItem(hand));
+            return ActionResult.resultConsume(player.getHeldItem(hand));
         } else {
-            return ActionResult.fail(player.getHeldItem(hand));
+            return ActionResult.resultFail(player.getHeldItem(hand));
         }
     }
 
@@ -90,7 +90,7 @@ public class ItemArcherBow extends BowItem {
                 if (f >= 0.1D) {
                     if (!world.isRemote) {
                         EntityArcherArrow arrow = new EntityArcherArrow(player.world, player);
-                        arrow.setProperties(player, player.rotationPitch, player.rotationYaw, 0.0F, f * 3.0F, 1.0F);
+                        arrow.setDirectionAndMovement(player, player.rotationPitch, player.rotationYaw, 0.0F, f * 3.0F, 1.0F);
                         if (f == 1.0F)
                             arrow.setIsCritical(true);
 
@@ -107,7 +107,7 @@ public class ItemArcherBow extends BowItem {
                         world.addEntity(arrow);
                     }
 
-                    world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.PLAYERS, 1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
+                    world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.PLAYERS, 1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
 
                     player.addStat(Stats.ITEM_USED.get(this));
                 }

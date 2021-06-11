@@ -59,7 +59,7 @@ public class EntityEmiya extends EntityServant {
     @Override
     protected void damageEntity(DamageSource damageSrc, float damageAmount) {
         super.damageEntity(damageSrc, damageAmount);
-        if (!this.canUseNP && !this.isDead() && this.getHealth() < 0.5 * this.getMaxHealth()) {
+        if (!this.canUseNP && !this.getShouldBeDead() && this.getHealth() < 0.5 * this.getMaxHealth()) {
             this.canUseNP = true;
             this.setItemStackToSlot(EquipmentSlotType.MAINHAND, new ItemStack(ModItems.archbow.get()));
             this.setItemStackToSlot(EquipmentSlotType.OFFHAND, ItemStack.EMPTY);
@@ -84,9 +84,9 @@ public class EntityEmiya extends EntityServant {
     public void attackWithRangedAttack(LivingEntity target) {
         EntityArcherArrow arrow = new EntityArcherArrow(this.world, this);
         if (!this.world.isRemote) {
-            double d0 = target.getX() - this.getX();
-            double d1 = target.getBoundingBox().minY + (double) (target.getHeight() / 3.0F) - arrow.getY();
-            double d2 = target.getZ() - this.getZ();
+            double d0 = target.getPosX() - this.getPosX();
+            double d1 = target.getBoundingBox().minY + (double) (target.getHeight() / 3.0F) - arrow.getPosY();
+            double d2 = target.getPosZ() - this.getPosZ();
             double d3 = MathHelper.sqrt(d0 * d0 + d2 * d2);
             arrow.shoot(d0, d1 + d3 * 0.20000000298023224D, d2, 1.6F, 2);
             arrow.setDamage(arrow.getDamage() + 5.0);
@@ -99,7 +99,7 @@ public class EntityEmiya extends EntityServant {
     public void attackWithNP(LivingEntity target) {
         if (target != null) {
             EntityCaladBolg bolg = new EntityCaladBolg(this.world, this);
-            bolg.shootAtPosition(target.getX(), target.getY() + target.getEyeHeight(), target.getZ(), 2F, 0);
+            bolg.shootAtPosition(target.getPosX(), target.getPosY() + target.getEyeHeight(), target.getPosZ(), 2F, 0);
             this.world.addEntity(bolg);
             this.revealServant();
         }

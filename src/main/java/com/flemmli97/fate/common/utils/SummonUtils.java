@@ -101,7 +101,7 @@ public class SummonUtils {
     public static void summonServant(EntityServant servant, ServerPlayerEntity player, ServerWorld world, BlockPos pos) {
         servant.setOwner(player);
         servant.setLocationAndAngles(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5, MathHelper.wrapDegrees(world.rand.nextFloat() * 360.0F), 0.0F);
-        servant.onInitialSpawn(world, world.getDifficultyForLocation(servant.getBlockPos()), SpawnReason.TRIGGERED, null, null);
+        servant.onInitialSpawn(world, world.getDifficultyForLocation(servant.getPosition()), SpawnReason.TRIGGERED, null, null);
         world.addEntity(servant);
         GrailWarHandler.get(world).join(player);
     }

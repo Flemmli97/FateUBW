@@ -66,7 +66,7 @@ public class EntityGilgamesh extends EntityServant {
     @Override
     protected void damageEntity(DamageSource damageSrc, float damageAmount) {
         super.damageEntity(damageSrc, damageAmount);
-        if (!this.canUseNP && !this.isDead() && this.getHealth() < 0.5 * this.getMaxHealth()) {
+        if (!this.canUseNP && !this.getShouldBeDead() && this.getHealth() < 0.5 * this.getMaxHealth()) {
             this.canUseNP = true;
             this.setItemStackToSlot(EquipmentSlotType.MAINHAND, new ItemStack(ModItems.enumaelish.get()));
         }

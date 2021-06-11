@@ -27,18 +27,18 @@ public class ItemEA extends SwordItem {
 
             if (player.isCreative()) {
                 world.addEntity(ea);
-                return ActionResult.success(player.getHeldItem(hand));
+                return ActionResult.resultSuccess(player.getHeldItem(hand));
             } else {
                 if (player.getCapability(PlayerCapProvider.PlayerCap).map(mana -> mana.useMana(player, 30)).orElse(false)) {
                     world.addEntity(ea);
-                    player.sendMessage(new TranslationTextComponent("fate.mana.use").formatted(TextFormatting.AQUA), Util.NIL_UUID);
-                    return ActionResult.success(player.getHeldItem(hand));
+                    player.sendMessage(new TranslationTextComponent("fate.mana.use").mergeStyle(TextFormatting.AQUA), Util.DUMMY_UUID);
+                    return ActionResult.resultSuccess(player.getHeldItem(hand));
                 } else {
-                    player.sendMessage(new TranslationTextComponent("fate.mana.no").formatted(TextFormatting.AQUA), Util.NIL_UUID);
+                    player.sendMessage(new TranslationTextComponent("fate.mana.no").mergeStyle(TextFormatting.AQUA), Util.DUMMY_UUID);
                 }
             }
-            return ActionResult.pass(player.getHeldItem(hand));
+            return ActionResult.resultPass(player.getHeldItem(hand));
         }
-        return ActionResult.pass(player.getHeldItem(hand));
+        return ActionResult.resultPass(player.getHeldItem(hand));
     }
 }

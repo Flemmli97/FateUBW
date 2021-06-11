@@ -53,28 +53,28 @@ public class CommandGui extends Screen {
             return;
         if (this.currentPage != Pages.TRUCE) {
             this.getMinecraft().getTextureManager().bindTexture(guiBackGround);
-            this.drawTexture(stack, this.width / 2 - 100, this.height / 2 - 100, 0, 0, 201, 210);
+            this.blit(stack, this.width / 2 - 100, this.height / 2 - 100, 0, 0, 201, 210);
             this.drawCommand(stack, capSync.getCommandSeals());
 
-            this.getMinecraft().fontRenderer.draw(stack, "§4Name:", this.width / 2 - 90, this.height / 2 - 5, 1);
-            this.getMinecraft().fontRenderer.draw(stack, "§4Damage:", this.width / 2 - 90, this.height / 2 + 15, 1);
-            this.getMinecraft().fontRenderer.draw(stack, "§4Armor:", this.width / 2 - 90, this.height / 2 + 35, 1);
-            this.getMinecraft().fontRenderer.draw(stack, "§4Nobel Phantasm:", this.width / 2 - 90, this.height / 2 + 55, 1);
+            this.getMinecraft().fontRenderer.drawString(stack, "§4Name:", this.width / 2 - 90, this.height / 2 - 5, 1);
+            this.getMinecraft().fontRenderer.drawString(stack, "§4Damage:", this.width / 2 - 90, this.height / 2 + 15, 1);
+            this.getMinecraft().fontRenderer.drawString(stack, "§4Armor:", this.width / 2 - 90, this.height / 2 + 35, 1);
+            this.getMinecraft().fontRenderer.drawString(stack, "§4Nobel Phantasm:", this.width / 2 - 90, this.height / 2 + 55, 1);
             if (servant != null) {
-                this.getMinecraft().fontRenderer.draw(stack, servant.getRealName(), this.width / 2 - 90, this.height / 2 + 5, 1);
-                this.getMinecraft().fontRenderer.draw(stack, String.valueOf(servant.props().strength()), this.width / 2 - 90, this.height / 2 + 25, 1);
-                this.getMinecraft().fontRenderer.draw(stack, String.valueOf(servant.props().armor()), this.width / 2 - 90, this.height / 2 + 45, 1);
-                this.getMinecraft().fontRenderer.draw(stack, servant.nobelPhantasm(), this.width / 2 - 90, this.height / 2 + 65, 1);
+                this.getMinecraft().fontRenderer.drawText(stack, servant.getRealName(), this.width / 2 - 90, this.height / 2 + 5, 1);
+                this.getMinecraft().fontRenderer.drawString(stack, String.valueOf(servant.props().strength()), this.width / 2 - 90, this.height / 2 + 25, 1);
+                this.getMinecraft().fontRenderer.drawString(stack, String.valueOf(servant.props().armor()), this.width / 2 - 90, this.height / 2 + 45, 1);
+                this.getMinecraft().fontRenderer.drawString(stack, servant.nobelPhantasm(), this.width / 2 - 90, this.height / 2 + 65, 1);
             }
         } else {
             this.getMinecraft().getTextureManager().bindTexture(guiTruce);
-            this.drawTexture(stack, this.width / 2 - 100, this.height / 2 - 100, 0, 0, 201, 210);
+            this.blit(stack, this.width / 2 - 100, this.height / 2 - 100, 0, 0, 201, 210);
             this.drawCommand(stack, capSync.getCommandSeals());
         }
         if (servant != null) {
             float mouseXNew = (float) ((this.width - 200) / 2 + 51) - mouseX;
             float mouseYNew = (float) ((this.height - 180) / 2 + 75 - 50) - mouseY;
-            InventoryScreen.drawEntity(this.width / 2 - 50, this.height / 2 - 20, 29, mouseXNew, mouseYNew, servant);
+            InventoryScreen.drawEntityOnScreen(this.width / 2 - 50, this.height / 2 - 20, 29, mouseXNew, mouseYNew, servant);
         }
         super.render(stack, mouseX, mouseY, partialTicks);
     }
@@ -84,16 +84,16 @@ public class CommandGui extends Screen {
         for (int i = 0; i < amount; i++) {
             switch (command[i]) {
                 case 0:
-                    this.drawTexture(stack, this.width / 2 + 105, this.height / 2 - 100 + 35 * i, 226, 0, 30, 30);
+                    this.blit(stack, this.width / 2 + 105, this.height / 2 - 100 + 35 * i, 226, 0, 30, 30);
                     break;
                 case 1:
-                    this.drawTexture(stack, this.width / 2 + 105, this.height / 2 - 100 + 35 * i, 226, 32, 30, 30);
+                    this.blit(stack, this.width / 2 + 105, this.height / 2 - 100 + 35 * i, 226, 32, 30, 30);
                     break;
                 case 2:
-                    this.drawTexture(stack, this.width / 2 + 105, this.height / 2 - 100 + 35 * i, 226, 63, 30, 30);
+                    this.blit(stack, this.width / 2 + 105, this.height / 2 - 100 + 35 * i, 226, 63, 30, 30);
                     break;
                 case 3:
-                    this.drawTexture(stack, this.width / 2 + 105, this.height / 2 - 100 + 35 * i, 226, 94, 30, 30);
+                    this.blit(stack, this.width / 2 + 105, this.height / 2 - 100 + 35 * i, 226, 94, 30, 30);
                     break;
             }
         }
@@ -111,17 +111,17 @@ public class CommandGui extends Screen {
             this.addButton(new Button(this.width / 2 + 10, this.height / 2 - 82, 80, 20
                     , new TranslationTextComponent("fate.gui.command.attack"), b -> {
                 this.currentPage = Pages.ATTACK;
-                this.init(this.client, this.width, this.height);
+                this.init(this.minecraft, this.width, this.height);
             }));
             this.addButton(new Button(this.width / 2 + 10, this.height / 2 - 52, 80, 20
                     , new TranslationTextComponent("fate.gui.command.movement"), b -> {
                 this.currentPage = Pages.MOVEMENT;
-                this.init(this.client, this.width, this.height);
+                this.init(this.minecraft, this.width, this.height);
             }));
             this.addButton(new Button(this.width / 2 + 10, this.height / 2 - 22, 80, 20
                     , new TranslationTextComponent("fate.gui.command.truce"), b -> {
                 this.currentPage = Pages.TRUCE;
-                this.init(this.client, this.width, this.height);
+                this.init(this.minecraft, this.width, this.height);
             }));
             this.addButton(new Button(this.width / 2 + 10, this.height / 2 + 8, 80, 20
                     , new TranslationTextComponent("fate.gui.command.kill"), b -> {
@@ -134,7 +134,7 @@ public class CommandGui extends Screen {
                     this.addButton(new Button(this.width / 2 + 10, this.height / 2 + 38, 80, 20
                             , new TranslationTextComponent("fate.gui.command.special"), b -> {
                         this.currentPage = Pages.SPECIAL;
-                        this.init(this.client, this.width, this.height);
+                        this.init(this.minecraft, this.width, this.height);
                     }));
             }
         } else if (this.currentPage == Pages.ATTACK) {
@@ -204,13 +204,13 @@ public class CommandGui extends Screen {
             this.addButton(new Button(this.width / 2 + 48, this.height / 2 + 62, 44, 20, new StringTextComponent(">"), button -> {
                 if (this.trucePage < ClientHandler.grailPlayers.size() / 7) {
                     ++this.trucePage;
-                    this.init(this.client, this.width, this.height);
+                    this.init(this.minecraft, this.width, this.height);
                 }
             }));
             this.addButton(new Button(this.width / 2 + 4, this.height / 2 + 62, 44, 20, new StringTextComponent("<"), button -> {
                 if (this.trucePage > 0) {
                     --this.trucePage;
-                    this.init(this.client, this.width, this.height);
+                    this.init(this.minecraft, this.width, this.height);
                 }
             }));
 
@@ -219,19 +219,19 @@ public class CommandGui extends Screen {
             this.addButton(this.request = new ButtonValue<>(this.width / 2 - 90, this.height / 2 + 25, 80, 20, "fate.gui.truce.request", button -> {
                 if (button.getVal() != null) {
                     PacketHandler.sendToServer(new C2STruceMessage(C2STruceMessage.Type.SEND, button.getVal()));
-                    this.init(this.client, this.width, this.height);
+                    this.init(this.minecraft, this.width, this.height);
                 }
             }));
             this.addButton(this.accept = new ButtonValue<>(this.width / 2 - 90, this.height / 2 + 45, 80, 20, "fate.gui.truce.accept", button -> {
                 if (button.getVal() != null) {
                     PacketHandler.sendToServer(new C2STruceMessage(C2STruceMessage.Type.ACCEPT, button.getVal()));
-                    this.init(this.client, this.width, this.height);
+                    this.init(this.minecraft, this.width, this.height);
                 }
             }));
             this.addButton(this.remove = new ButtonValue<>(this.width / 2 - 90, this.height / 2 + 65, 80, 20, "fate.gui.truce.remove", button -> {
                 if (button.getVal() != null) {
                     PacketHandler.sendToServer(new C2STruceMessage(C2STruceMessage.Type.DENY, button.getVal()));
-                    this.init(this.client, this.width, this.height);
+                    this.init(this.minecraft, this.width, this.height);
                 }
             }));
             this.request.active = false;
@@ -243,7 +243,7 @@ public class CommandGui extends Screen {
     private void backButton(Button button) {
         this.currentPage = Pages.MENU;
         this.trucePage = 0;
-        this.init(this.client, this.width, this.height);
+        this.init(this.minecraft, this.width, this.height);
     }
 
     private enum Pages {

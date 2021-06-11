@@ -21,14 +21,14 @@ public class EntityGem extends EntityProjectile {
 
     @Override
     protected boolean onEntityHit(EntityRayTraceResult entityRayTraceResult) {
-        this.world.createExplosion(this, this.getX(), this.getY(), this.getZ(), 2.0F, Explosion.Mode.NONE);
+        this.world.createExplosion(this, this.getPosX(), this.getPosY(), this.getPosZ(), 2.0F, Explosion.Mode.NONE);
         this.remove();
         return true;
     }
 
     @Override
     protected void onBlockHit(BlockRayTraceResult blockRayTraceResult) {
-        this.world.createExplosion(this, this.getX(), this.getY(), this.getZ(), 2.0F, Explosion.Mode.NONE);
+        this.world.createExplosion(this, this.getPosX(), this.getPosY(), this.getPosZ(), 2.0F, Explosion.Mode.NONE);
         this.remove();
     }
 }

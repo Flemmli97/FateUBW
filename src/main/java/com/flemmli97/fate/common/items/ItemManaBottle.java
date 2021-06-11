@@ -29,7 +29,7 @@ public class ItemManaBottle extends Item {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         player.setActiveHand(hand);
-        return ActionResult.success(player.getHeldItem(hand));
+        return ActionResult.resultSuccess(player.getHeldItem(hand));
     }
 
     @Override

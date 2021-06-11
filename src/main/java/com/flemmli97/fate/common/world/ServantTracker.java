@@ -31,7 +31,7 @@ public class ServantTracker {
     public void onLoad(ServerWorld world) {
         if (this.pos != null) {
             this.pos.forEach((c, r) -> {
-                if (world.getRegistryKey().equals(r))
+                if (world.getDimensionKey().equals(r))
                     world.getChunkProvider().registerTicket(TicketType.UNKNOWN, c, 1, c);
                 else {
                     ServerWorld w = world.getServer().getWorld(r);
@@ -45,7 +45,7 @@ public class ServantTracker {
     public CompoundNBT onSave(CompoundNBT nbt) {
         CompoundNBT tag = new CompoundNBT();
         this.servants.forEach(servant -> tag.putString("L:" + ChunkPos.asLong(servant.chunkCoordX, servant.chunkCoordZ),
-                servant.world.getRegistryKey().getValue().toString()));
+                servant.world.getDimensionKey().getLocation().toString()));
         nbt.put("ToLoadChunks", tag);
         return nbt;
     }
@@ -53,6 +53,6 @@ public class ServantTracker {
     public void load(CompoundNBT nbt) {
         this.pos = new HashMap<>();
         CompoundNBT tag = nbt.getCompound("ToLoadChunks");
-        tag.keySet().forEach(cl -> this.pos.put(new ChunkPos(Long.parseLong(cl.substring(2))), RegistryKey.of(Registry.DIMENSION, new ResourceLocation(tag.getString(cl)))));
+        tag.keySet().forEach(cl -> this.pos.put(new ChunkPos(Long.parseLong(cl.substring(2))), RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(tag.getString(cl)))));
     }
 }

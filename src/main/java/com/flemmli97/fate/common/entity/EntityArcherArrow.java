@@ -39,8 +39,8 @@ public class EntityArcherArrow extends AbstractArrowEntity implements IEntityAdd
     }
 
     @Override
-    protected void onEntityHit(EntityRayTraceResult p_213868_1_) {
-        Entity entity = p_213868_1_.getEntity();
+    protected void onEntityHit(EntityRayTraceResult result) {
+        Entity entity = result.getEntity();
         float f = (float) this.getMotion().length();
         int i = MathHelper.ceil(MathHelper.clamp((double) f * this.getDamage() + 10, 0.0D, 2.147483647E9D));
 
@@ -49,7 +49,7 @@ public class EntityArcherArrow extends AbstractArrowEntity implements IEntityAdd
             i = (int) Math.min(j + (long) i, 2147483647L);
         }
 
-        Entity owner = this.getOwner();
+        Entity owner = this.getShooter();
         if (owner instanceof LivingEntity) {
             ((LivingEntity) owner).setLastAttackedEntity(entity);
         }
@@ -60,7 +60,7 @@ public class EntityArcherArrow extends AbstractArrowEntity implements IEntityAdd
             entity.setFire(5);
         }
 
-        if (entity.attackEntityFrom(CustomDamageSource.archerNormal(this, this.getOwner()), (float) i)) {
+        if (entity.attackEntityFrom(CustomDamageSource.archerNormal(this, this.getShooter()), (float) i)) {
             if (flag) {
                 return;
             }
@@ -85,14 +85,14 @@ public class EntityArcherArrow extends AbstractArrowEntity implements IEntityAdd
 
                 this.arrowHit(livingentity);
                 if (livingentity != owner && livingentity instanceof PlayerEntity && owner instanceof ServerPlayerEntity && !this.isSilent()) {
-                    ((ServerPlayerEntity) owner).connection.sendPacket(new SChangeGameStatePacket(SChangeGameStatePacket.PROJECTILE_HIT_PLAYER, 0.0F));
+                    ((ServerPlayerEntity) owner).connection.sendPacket(new SChangeGameStatePacket(SChangeGameStatePacket.HIT_PLAYER_ARROW, 0.0F));
                 }
             }
 
             this.playSound(SoundEvents.ENTITY_ARROW_HIT, 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
             this.remove();
         } else {
-            entity.setFireTicks(k);
+            entity.forceFireTicks(k);
             this.setMotion(this.getMotion().scale(-0.1D));
             this.rotationYaw += 180.0F;
             this.prevRotationYaw += 180.0F;
@@ -108,9 +108,9 @@ public class EntityArcherArrow extends AbstractArrowEntity implements IEntityAdd
 
     @Override
     public void writeSpawnData(PacketBuffer buf) {
-        buf.writeBoolean(this.getOwner() != null);
-        if (this.getOwner() != null) {
-            buf.writeInt(this.getOwner().getEntityId());
+        buf.writeBoolean(this.getShooter() != null);
+        if (this.getShooter() != null) {
+            buf.writeInt(this.getShooter().getEntityId());
         }
     }
 

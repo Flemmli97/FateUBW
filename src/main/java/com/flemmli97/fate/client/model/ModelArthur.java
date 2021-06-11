@@ -12,7 +12,7 @@ public class ModelArthur extends ModelServant<EntityArthur> {
     }
 
     @Override
-    public void setAngles(EntityArthur servant, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setRotationAngles(EntityArthur servant, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.setAnglesPre(servant, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 
         if (servant.isStaying()) {

@@ -122,13 +122,13 @@ public class TileAltar extends TileEntity implements ITickableTileEntity {
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        this.fromTag(this.getBlockState(), pkt.getNbtCompound());
+        this.read(this.getBlockState(), pkt.getNbtCompound());
         this.getWorld().notifyBlockUpdate(this.pos, this.getWorld().getBlockState(this.pos), this.getWorld().getBlockState(this.pos), 3);
     }
 
     @Override
-    public void fromTag(BlockState state, CompoundNBT compound) {
-        super.fromTag(state, compound);
+    public void read(BlockState state, CompoundNBT compound) {
+        super.read(state, compound);
         if (compound.contains("Charm")) {
             CompoundNBT tag = compound.getCompound("Charm");
             this.inventoryCharm = ItemStack.read(tag);

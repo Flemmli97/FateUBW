@@ -28,13 +28,13 @@ public class ButtonGameProfile extends Button {
     }
 
     @Override
-    public void renderButton(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
         if (this.visible) {
             Minecraft mc = Minecraft.getInstance();
             FontRenderer fontrenderer = mc.fontRenderer;
             mc.getTextureManager().bindTexture(guiStuff);
             //GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-            this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
+            this.isHovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
             int i = this.active ? 2 : this.getYImage(this.isHovered());
             int state = 0;
             switch (this.state) {
@@ -54,7 +54,7 @@ public class ButtonGameProfile extends Button {
             GlStateManager.enableBlend();
             RenderSystem.defaultBlendFunc();
             RenderSystem.enableDepthTest();
-            this.drawTexture(stack, this.x, this.y, 0, state * 40 + i * 20 - 20, this.width, this.height);
+            this.blit(stack, this.x, this.y, 0, state * 40 + i * 20 - 20, this.width, this.height);
             //this.drawTexturedModalRect(this.x + this.width / 2, this.y, 256 - this.width / 2, state*20+i * 20, this.width / 2, this.height);
             this.renderBg(stack, mc, mouseX, mouseY);
             int j = 14737632;
@@ -62,10 +62,10 @@ public class ButtonGameProfile extends Button {
                 j = this.packedFGColor;
             } else if (!this.active) {
                 j = 10526880;
-            } else if (this.hovered) {
+            } else if (this.isHovered) {
                 j = 16777120;
             }
-            drawCenteredText(stack, fontrenderer, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, j);
+            drawCenteredString(stack, fontrenderer, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, j);
         }
     }
 

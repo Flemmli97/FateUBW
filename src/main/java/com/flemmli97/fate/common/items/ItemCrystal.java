@@ -11,14 +11,14 @@ import net.minecraft.world.World;
 
 public class ItemCrystal extends Item {
 
-    public ItemCrystal(Properties p_i48487_1_) {
-        super(p_i48487_1_);
+    public ItemCrystal(Properties properties) {
+        super(properties);
     }
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         if (world.isRemote)
-            return ActionResult.success(player.getHeldItem(hand));
+            return ActionResult.resultSuccess(player.getHeldItem(hand));
         ItemStack stack = player.getHeldItem(hand);
         if (!player.isCreative())
             stack.shrink(1);
@@ -26,6 +26,6 @@ public class ItemCrystal extends Item {
         EntityGem gem = new EntityGem(world, player);
         gem.shoot(player, player.rotationPitch, player.rotationYaw, 0, 1.5F, 0);
         world.addEntity(gem);
-        return ActionResult.success(player.getHeldItem(hand));
+        return ActionResult.resultSuccess(player.getHeldItem(hand));
     }
 }

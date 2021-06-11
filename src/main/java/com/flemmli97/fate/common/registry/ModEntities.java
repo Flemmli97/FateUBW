@@ -100,14 +100,14 @@ public class ModEntities {
     public static final RegistryObject<EntityType<EntityEnumaElish>> ea = reg(EntityType.Builder.<EntityEnumaElish>create(EntityEnumaElish::new, EntityClassification.MISC).size(0.25F, 0.25F), LibEntities.ea);
     public static final RegistryObject<EntityType<EntityMagicBeam>> magicBeam = reg(EntityType.Builder.create(EntityMagicBeam::new, EntityClassification.MISC), LibEntities.magic_beam);
     public static final RegistryObject<EntityType<EntityCasterCircle>> medeaCircle = reg(EntityType.Builder.create(EntityCasterCircle::new, EntityClassification.MISC), LibEntities.medea_circle);
-    public static final RegistryObject<EntityType<EntityLesserMonster>> lesserMonster = reg(EntityType.Builder.<EntityLesserMonster>create(EntityLesserMonster::new, EntityClassification.MONSTER).maxTrackingRange(8), LibEntities.monster_small);
+    public static final RegistryObject<EntityType<EntityLesserMonster>> lesserMonster = reg(EntityType.Builder.<EntityLesserMonster>create(EntityLesserMonster::new, EntityClassification.MONSTER).trackingRange(8), LibEntities.monster_small);
     public static final RegistryObject<EntityType<EntityGordiusWheel>> gordiusWheel = reg(EntityType.Builder.create(EntityGordiusWheel::new, EntityClassification.MISC), LibEntities.gordius);
     public static final RegistryObject<EntityType<EntityHassanCopy>> hassanCopy = reg(EntityType.Builder.create(EntityHassanCopy::new, EntityClassification.MISC), LibEntities.hassan_copy);
 
     public static final RegistryObject<EntityType<EntityGem>> gem = reg(EntityType.Builder.<EntityGem>create(EntityGem::new, EntityClassification.MISC).size(0.25F, 0.25F), LibEntities.entity_gem);
 
     public static <V extends EntityServant> RegistryObject<EntityType<V>> regServant(EnumServantType type, EntityType.Builder<V> entity, ResourceLocation name, int primary, int secondary, ServantProperties defaultVals) {
-        RegistryObject<EntityType<V>> reg = reg(entity.maxTrackingRange(10), name);
+        RegistryObject<EntityType<V>> reg = reg(entity.trackingRange(10), name);
         servantTypeMap.put(name, type);
         typeServantsMap.merge(type, Lists.newArrayList(reg), (old, val) -> {
             old.add(reg);
@@ -138,28 +138,28 @@ public class ModEntities {
     }
 
     public static void registerAttributes() {
-        GlobalEntityTypeAttributes.put(arthur.get(), EntityServant.createMobAttributes().build());
+        GlobalEntityTypeAttributes.put(arthur.get(), EntityServant.createMobAttributes().create());
 
-        GlobalEntityTypeAttributes.put(cuchulainn.get(), EntityServant.createMobAttributes().build());
-        GlobalEntityTypeAttributes.put(diarmuid.get(), EntityServant.createMobAttributes().build());
+        GlobalEntityTypeAttributes.put(cuchulainn.get(), EntityServant.createMobAttributes().create());
+        GlobalEntityTypeAttributes.put(diarmuid.get(), EntityServant.createMobAttributes().create());
 
-        GlobalEntityTypeAttributes.put(emiya.get(), EntityServant.createMobAttributes().build());
-        GlobalEntityTypeAttributes.put(gilgamesh.get(), EntityServant.createMobAttributes().build());
+        GlobalEntityTypeAttributes.put(emiya.get(), EntityServant.createMobAttributes().create());
+        GlobalEntityTypeAttributes.put(gilgamesh.get(), EntityServant.createMobAttributes().create());
 
-        GlobalEntityTypeAttributes.put(gilles.get(), EntityServant.createMobAttributes().build());
-        GlobalEntityTypeAttributes.put(medea.get(), EntityServant.createMobAttributes().build());
+        GlobalEntityTypeAttributes.put(gilles.get(), EntityServant.createMobAttributes().create());
+        GlobalEntityTypeAttributes.put(medea.get(), EntityServant.createMobAttributes().create());
 
-        GlobalEntityTypeAttributes.put(heracles.get(), EntityServant.createMobAttributes().build());
-        GlobalEntityTypeAttributes.put(lancelot.get(), EntityServant.createMobAttributes().build());
+        GlobalEntityTypeAttributes.put(heracles.get(), EntityServant.createMobAttributes().create());
+        GlobalEntityTypeAttributes.put(lancelot.get(), EntityServant.createMobAttributes().create());
 
-        GlobalEntityTypeAttributes.put(medusa.get(), EntityServant.createMobAttributes().build());
-        GlobalEntityTypeAttributes.put(iskander.get(), EntityServant.createMobAttributes().build());
+        GlobalEntityTypeAttributes.put(medusa.get(), EntityServant.createMobAttributes().create());
+        GlobalEntityTypeAttributes.put(iskander.get(), EntityServant.createMobAttributes().create());
 
-        GlobalEntityTypeAttributes.put(hassan.get(), EntityServant.createMobAttributes().build());
-        GlobalEntityTypeAttributes.put(sasaki.get(), EntityServant.createMobAttributes().build());
+        GlobalEntityTypeAttributes.put(hassan.get(), EntityServant.createMobAttributes().create());
+        GlobalEntityTypeAttributes.put(sasaki.get(), EntityServant.createMobAttributes().create());
 
-        GlobalEntityTypeAttributes.put(lesserMonster.get(), MonsterEntity.createHostileAttributes().build());
-        GlobalEntityTypeAttributes.put(gordiusWheel.get(), MonsterEntity.createHostileAttributes().build());
-        GlobalEntityTypeAttributes.put(hassanCopy.get(), EntityServant.createMobAttributes().build());
+        GlobalEntityTypeAttributes.put(lesserMonster.get(), MonsterEntity.func_234295_eP_().create());
+        GlobalEntityTypeAttributes.put(gordiusWheel.get(), MonsterEntity.func_234295_eP_().create());
+        GlobalEntityTypeAttributes.put(hassanCopy.get(), EntityServant.createMobAttributes().create());
     }
 }

@@ -26,14 +26,14 @@ public class ItemServantCharm extends Item {
             if (!world.isRemote) {
                 if (!player.isCreative())
                     stack.shrink(1);
-                ItemEntity item = new ItemEntity(world, player.getX(), player.getY(), player.getZ(),
+                ItemEntity item = new ItemEntity(world, player.getPosX(), player.getPosY(), player.getPosZ(),
                         new ItemStack(ModItems.charms.get(world.rand.nextInt(ModItems.charms.size())).get()));
                 item.setPickupDelay(0);
                 world.addEntity(item);
             }
-            return ActionResult.success(stack);
+            return ActionResult.resultSuccess(stack);
 
         }
-        return ActionResult.pass(stack);
+        return ActionResult.resultPass(stack);
     }
 }

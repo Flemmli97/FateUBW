@@ -62,7 +62,7 @@ public class EntityArthur extends EntityServant {
     @Override
     protected void damageEntity(DamageSource damageSrc, float damageAmount) {
         super.damageEntity(damageSrc, damageAmount);
-        if (!this.canUseNP && !this.isDead() && this.getHealth() < 0.5 * this.getMaxHealth()) {
+        if (!this.canUseNP && !this.getShouldBeDead() && this.getHealth() < 0.5 * this.getMaxHealth()) {
             this.canUseNP = true;
             this.setItemStackToSlot(EquipmentSlotType.MAINHAND, new ItemStack(ModItems.excalibur.get()));
         }
@@ -73,7 +73,7 @@ public class EntityArthur extends EntityServant {
         if (this.getHealth() < 0.25 * this.getMaxHealth() && this.getHealth() > 0) {
             if (!this.critHealth) {
                 if (!this.world.isRemote)
-                    this.world.getServer().getPlayerList().broadcastChatMessage(new TranslationTextComponent("chat.servant.avalon").formatted(TextFormatting.GOLD), ChatType.SYSTEM, Util.NIL_UUID);
+                    this.world.getServer().getPlayerList().func_232641_a_(new TranslationTextComponent("chat.servant.avalon").mergeStyle(TextFormatting.GOLD), ChatType.SYSTEM, Util.DUMMY_UUID);
                 this.critHealth = true;
             }
             if (!this.isPotionActive(Effects.REGENERATION))

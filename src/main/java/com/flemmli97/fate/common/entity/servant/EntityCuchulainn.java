@@ -58,7 +58,7 @@ public class EntityCuchulainn extends EntityServant {
     }
 
     @Override
-    public boolean handleFallDamage(float distance, float damageMultiplier) {
+    public boolean onLivingFall(float distance, float damageMultiplier) {
         return false;
     }
 
@@ -74,7 +74,7 @@ public class EntityCuchulainn extends EntityServant {
     @Override
     protected void damageEntity(DamageSource damageSrc, float damageAmount) {
         super.damageEntity(damageSrc, damageAmount);
-        if (!this.canUseNP && !this.isDead() && this.getHealth() < 0.5 * this.getMaxHealth()) {
+        if (!this.canUseNP && !this.getShouldBeDead() && this.getHealth() < 0.5 * this.getMaxHealth()) {
             this.canUseNP = true;
         }
     }
@@ -87,7 +87,7 @@ public class EntityCuchulainn extends EntityServant {
                 this.setHeldItem(Hand.MAIN_HAND, new ItemStack(ModItems.gaebolg.get()));
             if (this.getHealth() < 0.25 * this.getMaxHealth() && this.getHealth() > 0) {
                 if (!this.critHealth) {
-                    this.world.getServer().getPlayerList().broadcastChatMessage(new TranslationTextComponent("chat.servant.cuchulainn").formatted(TextFormatting.GOLD), ChatType.SYSTEM, Util.NIL_UUID);
+                    this.world.getServer().getPlayerList().func_232641_a_(new TranslationTextComponent("chat.servant.cuchulainn").mergeStyle(TextFormatting.GOLD), ChatType.SYSTEM, Util.DUMMY_UUID);
                     this.critHealth = true;
                 }
                 this.addPotionEffect(new EffectInstance(Effects.SPEED, 1, 2, false, false));
@@ -99,7 +99,7 @@ public class EntityCuchulainn extends EntityServant {
     public void attackWithNP(LivingEntity target) {
         if (target != null) {
             EntityGaeBolg gaeBolg = new EntityGaeBolg(this.world, this);
-            gaeBolg.shootAtPosition(target.getX(), target.getY() + target.getEyeHeight(), target.getZ(), 1.5F, 0);
+            gaeBolg.shootAtPosition(target.getPosX(), target.getPosY() + target.getEyeHeight(), target.getPosZ(), 1.5F, 0);
             this.world.addEntity(gaeBolg);
             this.setHeldItem(Hand.MAIN_HAND, ItemStack.EMPTY);
             this.gaeBolgThrowTick = 100;

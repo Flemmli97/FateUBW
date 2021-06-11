@@ -16,11 +16,11 @@ public class ItemTagGen extends ItemTagsProvider {
 
     @Override
     protected void registerTags() {
-        this.getOrCreateTagBuilder(FateTags.crystals)
-                .add(ModItems.crystalEarth.get())
-                .add(ModItems.crystalWater.get())
-                .add(ModItems.crystalVoid.get())
-                .add(ModItems.crystalFire.get())
-                .add(ModItems.crystalWind.get());
+        this.getOrCreateBuilder(FateTags.crystals)
+                .addItemEntry(ModItems.crystalEarth.get())
+                .addItemEntry(ModItems.crystalWater.get())
+                .addItemEntry(ModItems.crystalVoid.get())
+                .addItemEntry(ModItems.crystalFire.get())
+                .addItemEntry(ModItems.crystalWind.get());
     }
 }

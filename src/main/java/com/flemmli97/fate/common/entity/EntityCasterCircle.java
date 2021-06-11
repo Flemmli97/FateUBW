@@ -28,13 +28,13 @@ public class EntityCasterCircle extends Entity implements IOwnable<EntityMedea> 
     protected static final DataParameter<Float> range = EntityDataManager.createKey(EntityCasterCircle.class, DataSerializers.FLOAT);
     private List<float[]> circlePoints;
 
-    public EntityCasterCircle(EntityType<?> p_i48580_1_, World p_i48580_2_) {
-        super(p_i48580_1_, p_i48580_2_);
+    public EntityCasterCircle(EntityType<?> entityTypeIn, World worldIn) {
+        super(entityTypeIn, worldIn);
     }
 
     public EntityCasterCircle(World world, EntityMedea owner, float r) {
         this(ModEntities.medeaCircle.get(), world);
-        this.setPosition(owner.getX(), owner.getY(), owner.getZ());
+        this.setPosition(owner.getPosX(), owner.getPosY(), owner.getPosZ());
         this.owner = owner;
         this.ownerUUID = owner.getUniqueID();
         this.dataManager.set(range, r);
@@ -49,13 +49,13 @@ public class EntityCasterCircle extends Entity implements IOwnable<EntityMedea> 
                 this.circlePoints = MathUtils.pointsOfCircle(this.dataManager.get(range), 7);
             for (float[] f : this.circlePoints)
                 for (int i = 0; i < 3; i++)
-                    this.world.addParticle(ParticleTypes.WITCH, this.getX() + f[0], this.getY() + 0.2, this.getZ() + f[1], 0, 0.12, 0);
+                    this.world.addParticle(ParticleTypes.WITCH, this.getPosX() + f[0], this.getPosY() + 0.2, this.getPosZ() + f[1], 0, 0.12, 0);
         }
         if (!this.world.isRemote) {
             float r = this.dataManager.get(range);
             if (this.getOwner() != null && this.getOwner().getPositionVec().squareDistanceTo(this.getPositionVec()) < r * r)
                 this.getOwner().buff();
-            if (this.livingTick > Config.Common.medeaCircleSpan || this.getOwner() == null || this.getOwner().isDead())
+            if (this.livingTick > Config.Common.medeaCircleSpan || this.getOwner() == null || this.getOwner().getShouldBeDead())
                 this.remove();
         }
     }

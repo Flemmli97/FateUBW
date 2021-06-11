@@ -98,7 +98,7 @@ public class FollowMasterGoal<T extends CreatureEntity & IOwnable<?>> extends Go
 
 
     private void tryTeleport() {
-        BlockPos blockpos = this.follow.getBlockPos();
+        BlockPos blockpos = this.follow.getPosition();
 
         for (int i = 0; i < 10; ++i) {
             int j = this.getRandomInt(-3, 3);
@@ -113,7 +113,7 @@ public class FollowMasterGoal<T extends CreatureEntity & IOwnable<?>> extends Go
     }
 
     private boolean tryTeleportTo(int x, int y, int z) {
-        if (Math.abs(x - this.follow.getX()) < 2.0D && Math.abs(z - this.follow.getZ()) < 2.0D) {
+        if (Math.abs(x - this.follow.getPosX()) < 2.0D && Math.abs(z - this.follow.getPosZ()) < 2.0D) {
             return false;
         } else if (!this.canTeleportTo(new BlockPos(x, y, z))) {
             return false;
@@ -125,12 +125,12 @@ public class FollowMasterGoal<T extends CreatureEntity & IOwnable<?>> extends Go
     }
 
     private boolean canTeleportTo(BlockPos pos) {
-        PathNodeType pathnodetype = WalkNodeProcessor.getLandNodeType(this.goalOwner.world, pos.mutableCopy());
+        PathNodeType pathnodetype = WalkNodeProcessor.getFloorNodeType(this.goalOwner.world, pos.toMutable());
         if (pathnodetype != PathNodeType.WALKABLE) {
             return false;
         } else {
-            BlockPos blockpos = pos.subtract(this.goalOwner.getBlockPos());
-            return this.goalOwner.world.isSpaceEmpty(this.goalOwner, this.goalOwner.getBoundingBox().offset(blockpos));
+            BlockPos blockpos = pos.subtract(this.goalOwner.getPosition());
+            return this.goalOwner.world.hasNoCollisions(this.goalOwner, this.goalOwner.getBoundingBox().offset(blockpos));
         }
     }
 

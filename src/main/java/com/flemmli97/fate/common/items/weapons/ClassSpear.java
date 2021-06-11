@@ -26,8 +26,8 @@ public class ClassSpear extends TieredItem implements IVanishable, IExtendedWeap
         super(tier, props);
         this.range = range;
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-        builder.put(Attributes.GENERIC_ATTACK_DAMAGE, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", tier.getAttackDamage(), AttributeModifier.Operation.ADDITION));
-        builder.put(Attributes.GENERIC_ATTACK_SPEED, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", speed, AttributeModifier.Operation.ADDITION));
+        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", tier.getAttackDamage(), AttributeModifier.Operation.ADDITION));
+        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", speed, AttributeModifier.Operation.ADDITION));
         this.attributeModifiers = builder.build();
     }
 

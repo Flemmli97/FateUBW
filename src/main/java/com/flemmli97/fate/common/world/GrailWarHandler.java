@@ -75,7 +75,7 @@ public class GrailWarHandler extends WorldSavedData {
     }
 
     public static GrailWarHandler get(ServerWorld world) {
-        return world.getServer().getOverworld().getSavedData().getOrCreate(GrailWarHandler::new, identifier);
+        return world.getServer().func_241755_D_().getSavedData().getOrCreate(GrailWarHandler::new, identifier);
     }
 
     public boolean join(ServerPlayerEntity player) {
@@ -87,7 +87,7 @@ public class GrailWarHandler extends WorldSavedData {
                     this.players.add(uuid); //<-----------------
                     if (this.state == State.NOTHING) {
                         this.joinTicker = Config.Common.joinTime;
-                        player.world.getServer().getPlayerList().broadcastChatMessage(new TranslationTextComponent("chat.grailwar.init", this.joinTicker / 20).formatted(TextFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
+                        player.world.getServer().getPlayerList().func_232641_a_(new TranslationTextComponent("chat.grailwar.init", this.joinTicker / 20).mergeStyle(TextFormatting.RED), ChatType.SYSTEM, Util.DUMMY_UUID);
                         this.state = State.JOIN;
                     }
                     this.markDirty();
@@ -113,7 +113,7 @@ public class GrailWarHandler extends WorldSavedData {
                 cap.setServant(player, null);
             });
             TruceHandler.get(player.getServerWorld()).disbandAll(player);
-            player.world.getServer().getPlayerList().broadcastChatMessage(new TranslationTextComponent("chat.grailwar.playerout", player.getName()).formatted(TextFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
+            player.world.getServer().getPlayerList().func_232641_a_(new TranslationTextComponent("chat.grailwar.playerout", player.getName()).mergeStyle(TextFormatting.RED), ChatType.SYSTEM, Util.DUMMY_UUID);
             this.markDirty();
             return true;
         }
@@ -135,7 +135,7 @@ public class GrailWarHandler extends WorldSavedData {
                         GameProfile prof = player.getServer().getPlayerProfileCache().getProfileByUUID(uuid);
                         name = prof != null ? prof.getName() : "MISSINGNO";
                     }
-                    world.getServer().getPlayerList().broadcastChatMessage(new TranslationTextComponent("chat.grailwar.win", name).formatted(TextFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
+                    world.getServer().getPlayerList().func_232641_a_(new TranslationTextComponent("chat.grailwar.win", name).mergeStyle(TextFormatting.RED), ChatType.SYSTEM, Util.DUMMY_UUID);
                 }
                 this.markDirty();
             } else if (this.players.size() == 0)
@@ -191,13 +191,13 @@ public class GrailWarHandler extends WorldSavedData {
     public void start(ServerWorld world) {
         this.state = State.RUN;
         if (this.players.size() >= Config.Common.minPlayer) {
-            world.getServer().getPlayerList().broadcastChatMessage(new TranslationTextComponent("chat.grailwar.start").formatted(TextFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
+            world.getServer().getPlayerList().func_232641_a_(new TranslationTextComponent("chat.grailwar.start").mergeStyle(TextFormatting.RED), ChatType.SYSTEM, Util.DUMMY_UUID);
         } else if (this.players.size() == 0)
             this.reset(world);
         else {
             this.joinTicker = Config.Common.joinTime;
             this.state = State.JOIN;
-            world.getServer().getPlayerList().broadcastChatMessage(new TranslationTextComponent("chat.grailwar.missingplayer").formatted(TextFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
+            world.getServer().getPlayerList().func_232641_a_(new TranslationTextComponent("chat.grailwar.missingplayer").mergeStyle(TextFormatting.RED), ChatType.SYSTEM, Util.DUMMY_UUID);
         }
         this.markDirty();
     }
@@ -215,7 +215,7 @@ public class GrailWarHandler extends WorldSavedData {
             if (--this.winningDelay <= 0) {
                 PlayerEntity player = this.winner(world);
                 if (player != null) {
-                    ItemEntity holyGrail = new ItemEntity(player.world, player.getX() + world.rand.nextInt(9) - 4, player.getY(), player.getZ() + world.rand.nextInt(9) - 4, new ItemStack(ModItems.grail.get()));
+                    ItemEntity holyGrail = new ItemEntity(player.world, player.getPosX() + world.rand.nextInt(9) - 4, player.getPosY(), player.getPosZ() + world.rand.nextInt(9) - 4, new ItemStack(ModItems.grail.get()));
                     holyGrail.lifespan = 6000;
                     holyGrail.setOwnerId(player.getUniqueID());
                     holyGrail.setInvulnerable(true);
@@ -245,7 +245,7 @@ public class GrailWarHandler extends WorldSavedData {
             this.servants.clear();
             this.servantClasses.clear();
             this.spawnedServants = 0;
-            world.getServer().getPlayerList().broadcastChatMessage(new TranslationTextComponent("chat.grailwar.end").formatted(TextFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
+            world.getServer().getPlayerList().func_232641_a_(new TranslationTextComponent("chat.grailwar.end").mergeStyle(TextFormatting.RED), ChatType.SYSTEM, Util.DUMMY_UUID);
             PacketHandler.sendToAll(new S2CWarData(world));
         }
         this.markDirty();
@@ -278,8 +278,8 @@ public class GrailWarHandler extends WorldSavedData {
             if (players.isEmpty())
                 return;
             PlayerEntity player = players.remove(world.rand.nextInt(players.size()));
-            int x = player.getBlockPos().getX() + world.rand.nextInt(64) + 48;
-            int z = player.getBlockPos().getZ() + world.rand.nextInt(64) + 48;
+            int x = player.getPosition().getX() + world.rand.nextInt(64) + 48;
+            int z = player.getPosition().getZ() + world.rand.nextInt(64) + 48;
             Chunk chunk = world.getChunk(x >> 4, z >> 4);
             int y = chunk.getTopBlockY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, x, z) + 1;
             EntityServant servant = SummonUtils.randomServant(world);
@@ -288,8 +288,8 @@ public class GrailWarHandler extends WorldSavedData {
                 EntitySpawnPlacementRegistry.PlacementType place = EntitySpawnPlacementRegistry.getPlacementType(servant.getType());
                 Event.Result canSpawn = net.minecraftforge.event.ForgeEventFactory.canEntitySpawn(servant, world, x, y, z, null, SpawnReason.TRIGGERED);
                 if (canSpawn == Event.Result.ALLOW ||
-                        (canSpawn == Event.Result.DEFAULT && (WorldEntitySpawner.canSpawnAtBody(place, world, servant.getBlockPos(), servant.getType()) && servant.isNotColliding(world)))) {
-                    servant.onInitialSpawn(world, world.getDifficultyForLocation(servant.getBlockPos()), SpawnReason.NATURAL, null, null);
+                        (canSpawn == Event.Result.DEFAULT && (WorldEntitySpawner.canSpawnAtBody(place, world, servant.getPosition(), servant.getType()) && servant.isNotColliding(world)))) {
+                    servant.onInitialSpawn(world, world.getDifficultyForLocation(servant.getPosition()), SpawnReason.NATURAL, null, null);
                     ChunkPos cpos = new ChunkPos(x >> 4, z >> 4);
                     world.getChunkProvider().registerTicket(TicketType.UNKNOWN, cpos, 9, cpos);
                     world.addEntity(servant);
@@ -297,9 +297,9 @@ public class GrailWarHandler extends WorldSavedData {
                     this.timeToNextServant = MathHelper.nextInt(world.rand, Config.Common.servantMinSpawnDelay, Config.Common.servantMaxSpawnDelay);
                     if (!this.notify(servant.getType().getRegistryName()))
                         if (Config.Common.notifyAll)
-                            world.getServer().getPlayerList().broadcastChatMessage(new TranslationTextComponent("chat.grailwar.spawn", player.getName()).formatted(TextFormatting.GOLD), ChatType.SYSTEM, Util.NIL_UUID);
+                            world.getServer().getPlayerList().func_232641_a_(new TranslationTextComponent("chat.grailwar.spawn", player.getName()).mergeStyle(TextFormatting.GOLD), ChatType.SYSTEM, Util.DUMMY_UUID);
                         else
-                            player.sendMessage(new TranslationTextComponent("chat.grailwar.spawn", player.getName()).formatted(TextFormatting.GOLD), Util.NIL_UUID);
+                            player.sendMessage(new TranslationTextComponent("chat.grailwar.spawn", player.getName()).mergeStyle(TextFormatting.GOLD), Util.DUMMY_UUID);
                 }
             }
         }
@@ -340,19 +340,19 @@ public class GrailWarHandler extends WorldSavedData {
     @Override
     public CompoundNBT write(CompoundNBT compound) {
         ListNBT tag = new ListNBT();
-        this.players.forEach(uuid -> tag.add(NBTUtil.fromUuid(uuid)));
+        this.players.forEach(uuid -> tag.add(NBTUtil.func_240626_a_(uuid)));
         compound.put("Players", tag);
         ListNBT tag2 = new ListNBT();
-        this.activeServants.forEach(uuid -> tag2.add(NBTUtil.fromUuid(uuid)));
+        this.activeServants.forEach(uuid -> tag2.add(NBTUtil.func_240626_a_(uuid)));
         compound.put("ActiveServants", tag2);
         ListNBT list = new ListNBT();
-        this.servants.forEach(res -> list.add(StringNBT.of(res.toString())));
+        this.servants.forEach(res -> list.add(StringNBT.valueOf(res.toString())));
         compound.put("Servants", list);
         ListNBT list2 = new ListNBT();
-        this.servantClasses.forEach(e -> list2.add(StringNBT.of(e.toString())));
+        this.servantClasses.forEach(e -> list2.add(StringNBT.valueOf(e.toString())));
         compound.put("ServantClasses", list2);
         ListNBT list3 = new ListNBT();
-        this.sheduledPlayerRemoval.forEach(uuid -> list3.add(NBTUtil.fromUuid(uuid)));
+        this.sheduledPlayerRemoval.forEach(uuid -> list3.add(NBTUtil.func_240626_a_(uuid)));
         compound.put("ToRemove", list3);
         compound.putInt("Ticker", this.joinTicker);
         compound.putInt("WinDelay", this.winningDelay);

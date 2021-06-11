@@ -41,12 +41,12 @@ public abstract class ServantRenderer<T extends EntityServant, M extends EntityM
         boolean shouldSit = entity.isPassenger() && (entity.getRidingEntity() != null && entity.getRidingEntity().shouldRiderSit());
         this.entityModel.isSitting = shouldSit;
         this.entityModel.isChild = entity.isChild();
-        float yawOffset = MathHelper.func_219805_h(partialTicks, entity.prevRenderYawOffset, entity.renderYawOffset);
-        float yawHead = MathHelper.func_219805_h(partialTicks, entity.prevRotationYawHead, entity.rotationYawHead);
+        float yawOffset = MathHelper.interpolateAngle(partialTicks, entity.prevRenderYawOffset, entity.renderYawOffset);
+        float yawHead = MathHelper.interpolateAngle(partialTicks, entity.prevRotationYawHead, entity.rotationYawHead);
         float yawHeadAct = yawHead - yawOffset;
         if (shouldSit && entity.getRidingEntity() instanceof LivingEntity) {
             LivingEntity livingentity = (LivingEntity) entity.getRidingEntity();
-            yawOffset = MathHelper.func_219805_h(partialTicks, livingentity.prevRenderYawOffset, livingentity.renderYawOffset);
+            yawOffset = MathHelper.interpolateAngle(partialTicks, livingentity.prevRenderYawOffset, livingentity.renderYawOffset);
             yawHeadAct = yawHead - yawOffset;
             float wrappedYaw = MathHelper.wrapDegrees(yawHeadAct);
             if (wrappedYaw < -85.0F) {
@@ -75,9 +75,9 @@ public abstract class ServantRenderer<T extends EntityServant, M extends EntityM
         }
 
         float f7 = this.handleRotationFloat(entity, partialTicks);
-        this.setupTransforms(entity, matrixStack, f7, yawOffset, partialTicks);
+        this.applyRotations(entity, matrixStack, f7, yawOffset, partialTicks);
         matrixStack.scale(-1.0F, -1.0F, 1.0F);
-        this.scale(entity, matrixStack, partialTicks);
+        this.preRenderCallback(entity, matrixStack, partialTicks);
         matrixStack.translate(0.0D, -1.501F, 0.0D);
         float limgSwingAmount = 0.0F;
         float maxLimbSwing = 0.0F;
@@ -94,16 +94,16 @@ public abstract class ServantRenderer<T extends EntityServant, M extends EntityM
         }
 
         this.entityModel.setLivingAnimations(entity, maxLimbSwing, limgSwingAmount, partialTicks);
-        this.entityModel.setAngles(entity, maxLimbSwing, limgSwingAmount, f7, yawHeadAct, pitch);
+        this.entityModel.setRotationAngles(entity, maxLimbSwing, limgSwingAmount, f7, yawHeadAct, pitch);
         Minecraft minecraft = Minecraft.getInstance();
         boolean visible = this.isVisible(entity);
-        boolean transparent = (!visible || entity.isDead()) && !entity.isInvisibleToPlayer(minecraft.player);
-        boolean outline = minecraft.hasOutline(entity);
-        RenderType rendertype = this.getRenderLayer(entity, visible, transparent, outline);
+        boolean transparent = (!visible || entity.getShouldBeDead()) && !entity.isInvisibleToPlayer(minecraft.player);
+        boolean outline = minecraft.isEntityGlowing(entity);
+        RenderType rendertype = this.func_230496_a_(entity, visible, transparent, outline);
         if (rendertype != null) {
             IVertexBuilder ivertexbuilder = buffer.getBuffer(rendertype);
-            int i = getOverlay(entity, this.getAnimationCounter(entity, partialTicks));
-            float alpha = entity.isDead() ? Math.max(0.1f, 1 - (entity.getDeathTick() / (float) entity.maxDeathTick())) : transparent ? 0.15f : 1;
+            int i = getPackedOverlay(entity, this.getOverlayProgress(entity, partialTicks));
+            float alpha = entity.getShouldBeDead() ? Math.max(0.1f, 1 - (entity.getDeathTick() / (float) entity.maxDeathTick())) : transparent ? 0.15f : 1;
             this.entityModel.render(matrixStack, ivertexbuilder, light, i, 1.0F, 1.0F, 1.0F, alpha);
         }
 
@@ -122,7 +122,7 @@ public abstract class ServantRenderer<T extends EntityServant, M extends EntityM
         net.minecraftforge.client.event.RenderNameplateEvent renderNameplateEvent = new net.minecraftforge.client.event.RenderNameplateEvent(entity, entity.getDisplayName(), this, stack, buffer, light, partialTicks);
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(renderNameplateEvent);
         if (renderNameplateEvent.getResult() != net.minecraftforge.eventbus.api.Event.Result.DENY && (renderNameplateEvent.getResult() == net.minecraftforge.eventbus.api.Event.Result.ALLOW || this.canRenderName(entity))) {
-            this.renderLabelIfPresent(entity, renderNameplateEvent.getContent(), stack, buffer, light);
+            this.renderName(entity, renderNameplateEvent.getContent(), stack, buffer, light);
         }
     }
 
@@ -132,8 +132,8 @@ public abstract class ServantRenderer<T extends EntityServant, M extends EntityM
     }
 
     @Override
-    protected void setupTransforms(T p_225621_1_, MatrixStack p_225621_2_, float p_225621_3_, float p_225621_4_, float p_225621_5_) {
-        super.setupTransforms(p_225621_1_, p_225621_2_, p_225621_3_, p_225621_4_, p_225621_5_);
+    protected void applyRotations(T entityLiving, MatrixStack matrixStackIn, float ageInTicks, float rotationYaw, float partialTicks) {
+        super.applyRotations(entityLiving, matrixStackIn, ageInTicks, rotationYaw, partialTicks);
     }
 
     @Override
@@ -142,7 +142,7 @@ public abstract class ServantRenderer<T extends EntityServant, M extends EntityM
     }
 
     public static boolean showIdentity(EntityServant servant) {
-        return servant.isDead() || servant.showServant() || Minecraft.getInstance().player.equals(servant.getOwner());
+        return servant.getShouldBeDead() || servant.showServant() || Minecraft.getInstance().player.equals(servant.getOwner());
     }
 
     public abstract ResourceLocation servantTexture(T servant);

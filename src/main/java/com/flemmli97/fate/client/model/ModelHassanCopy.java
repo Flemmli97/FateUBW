@@ -59,106 +59,106 @@ public class ModelHassanCopy extends EntityModel<EntityHassanCopy> implements IR
         this.textureHeight = 64;
 
         this.servantHead = new ModelRendererPlus(this, 0, 0);
-        this.servantHead.addCuboid(-4.0F, -8.0F, -4.0F, 8, 8, 8, 0);
+        this.servantHead.addBox(-4.0F, -8.0F, -4.0F, 8, 8, 8, 0);
         this.servantHead.setDefaultRotPoint(0, 0, 0);
         this.servantHeadOverlay = new ModelRendererPlus(this, 32, 0);
-        this.servantHeadOverlay.addCuboid(-4.0F, -8.0F, -4.0F, 8, 8, 8, 0.5F);
+        this.servantHeadOverlay.addBox(-4.0F, -8.0F, -4.0F, 8, 8, 8, 0.5F);
         this.servantHeadOverlay.setDefaultRotPoint(0, 0, 0);
 
         this.servantBody = new ModelRendererPlus(this, 16, 16);
-        this.servantBody.addCuboid(-4.0F, 0, -2.0F, 8, 12, 4, 0);
+        this.servantBody.addBox(-4.0F, 0, -2.0F, 8, 12, 4, 0);
         this.servantBody.setDefaultRotPoint(0, 0, 0);
         this.servantBodyOverlay = new ModelRendererPlus(this, 16, 32);
-        this.servantBodyOverlay.addCuboid(-4.0F, 0, -2.0F, 8, 12, 4, 0.25F);
+        this.servantBodyOverlay.addBox(-4.0F, 0, -2.0F, 8, 12, 4, 0.25F);
         this.servantBodyOverlay.setDefaultRotPoint(0, 0, 0);
 
         this.servantLeftArmUp = new ModelRendererPlus(this, 40, 16);
         this.servantLeftArmUp.mirror = true;
-        this.servantLeftArmUp.addCuboid(-1.0F, -2.0F, -2.0F, 4, 6, 4, 0);
+        this.servantLeftArmUp.addBox(-1.0F, -2.0F, -2.0F, 4, 6, 4, 0);
         this.servantLeftArmUp.setDefaultRotPoint(5.0F, 2.0F, 0);
         this.servantLeftArmUpOverlay = new ModelRendererPlus(this, 40, 32);
         this.servantLeftArmUpOverlay.mirror = true;
-        this.servantLeftArmUpOverlay.addCuboid(-1.0F, -2.0F, -2.0F, 4, 6, 4, 0.25F);
+        this.servantLeftArmUpOverlay.addBox(-1.0F, -2.0F, -2.0F, 4, 6, 4, 0.25F);
         this.servantLeftArmUpOverlay.setDefaultRotPoint(5.0F, 2.0F, 0);
 
         this.servantLeftArmJoint = new ModelRendererPlus(this, 0, 0);
-        this.servantLeftArmJoint.addCuboid(0, 0, 0, 0, 0, 0);
+        this.servantLeftArmJoint.addBox(0, 0, 0, 0, 0, 0);
         this.servantLeftArmJoint.setDefaultRotPoint(3.0F, 4.0F, 0);
         this.servantLeftArmUp.addChild(this.servantLeftArmJoint);
         this.servantLeftArmOverlayJoint = new ModelRendererPlus(this, 0, 0);
-        this.servantLeftArmOverlayJoint.addCuboid(0, 0, 0, 0, 0, 0);
+        this.servantLeftArmOverlayJoint.addBox(0, 0, 0, 0, 0, 0);
         this.servantLeftArmOverlayJoint.setDefaultRotPoint(3.0F, 4.0F, 0);
         this.servantLeftArmUpOverlay.addChild(this.servantLeftArmOverlayJoint);
 
         this.servantLeftArmDown = new ModelRendererPlus(this, 32, 54);
         this.servantLeftArmDown.mirror = true;
-        this.servantLeftArmDown.addCuboid(-4.0F, 0, -2.0F, 4, 6, 4, 0);
+        this.servantLeftArmDown.addBox(-4.0F, 0, -2.0F, 4, 6, 4, 0);
         this.servantLeftArmDown.setDefaultRotPoint(0, 0, 0);
         this.servantLeftArmJoint.addChild(this.servantLeftArmDown);
         this.servantLeftArmDownOverlay = new ModelRendererPlus(this, 48, 54);
         this.servantLeftArmDownOverlay.mirror = true;
-        this.servantLeftArmDownOverlay.addCuboid(-4.0F, 0, -2.0F, 4, 6, 4, 0.25F);
+        this.servantLeftArmDownOverlay.addBox(-4.0F, 0, -2.0F, 4, 6, 4, 0.25F);
         this.servantLeftArmDownOverlay.setDefaultRotPoint(0, 0, 0);
         this.servantLeftArmOverlayJoint.addChild(this.servantLeftArmDownOverlay);
 
         this.servantRightArmUp = new ModelRendererPlus(this, 40, 16);
-        this.servantRightArmUp.addCuboid(-3.0F, -2.0F, -2.0F, 4, 6, 4, 0);
+        this.servantRightArmUp.addBox(-3.0F, -2.0F, -2.0F, 4, 6, 4, 0);
         this.servantRightArmUp.setDefaultRotPoint(-5.0F, 2.0F, 0);
         this.servantRightArmUpOverlay = new ModelRendererPlus(this, 40, 32);
-        this.servantRightArmUpOverlay.addCuboid(-3.0F, -2.0F, -2.0F, 4, 6, 4, 0.25F);
+        this.servantRightArmUpOverlay.addBox(-3.0F, -2.0F, -2.0F, 4, 6, 4, 0.25F);
         this.servantRightArmUpOverlay.setDefaultRotPoint(-5.0F, 2.0F, 0);
 
         this.servantRightArmJoint = new ModelRendererPlus(this, 0, 0);
-        this.servantRightArmJoint.addCuboid(0, 0, 0, 0, 0, 0);
+        this.servantRightArmJoint.addBox(0, 0, 0, 0, 0, 0);
         this.servantRightArmJoint.setDefaultRotPoint(-3.0F, 4.0F, 0);
         this.servantRightArmUp.addChild(this.servantRightArmJoint);
         this.servantRightArmOverlayJoint = new ModelRendererPlus(this, 0, 0);
-        this.servantRightArmOverlayJoint.addCuboid(0, 0, 0, 0, 0, 0);
+        this.servantRightArmOverlayJoint.addBox(0, 0, 0, 0, 0, 0);
         this.servantRightArmOverlayJoint.setDefaultRotPoint(-3.0F, 4.0F, 0);
         this.servantRightArmUpOverlay.addChild(this.servantRightArmOverlayJoint);
 
         this.servantRightArmDown = new ModelRendererPlus(this, 32, 54);
-        this.servantRightArmDown.addCuboid(0, 0, -2.0F, 4, 6, 4, 0);
+        this.servantRightArmDown.addBox(0, 0, -2.0F, 4, 6, 4, 0);
         this.servantRightArmDown.setDefaultRotPoint(0, 0, 0);
         this.servantRightArmJoint.addChild(this.servantRightArmDown);
         this.servantRightArmDownOverlay = new ModelRendererPlus(this, 48, 54);
-        this.servantRightArmDownOverlay.addCuboid(0, 0, -2.0F, 4, 6, 4, 0.25F);
+        this.servantRightArmDownOverlay.addBox(0, 0, -2.0F, 4, 6, 4, 0.25F);
         this.servantRightArmDownOverlay.setDefaultRotPoint(0, 0, 0);
         this.servantRightArmOverlayJoint.addChild(this.servantRightArmDownOverlay);
 
         this.servantLeftLegUp = new ModelRendererPlus(this, 0, 16);
         this.servantLeftLegUp.mirror = true;
-        this.servantLeftLegUp.addCuboid(-2.0F, 0, -2.0F, 4, 6, 4, 0);
+        this.servantLeftLegUp.addBox(-2.0F, 0, -2.0F, 4, 6, 4, 0);
         this.servantLeftLegUp.setDefaultRotPoint(1.9F, 12.0F, 0);
         this.servantLeftLegUpOverlay = new ModelRendererPlus(this, 0, 32);
         this.servantLeftLegUpOverlay.mirror = true;
-        this.servantLeftLegUpOverlay.addCuboid(-2.0F, 0, -2.0F, 4, 6, 4, 0.25F);
+        this.servantLeftLegUpOverlay.addBox(-2.0F, 0, -2.0F, 4, 6, 4, 0.25F);
         this.servantLeftLegUpOverlay.setDefaultRotPoint(1.9F, 12.0F, 0);
 
         this.servantLeftLegDown = new ModelRendererPlus(this, 16, 54);
         this.servantLeftLegDown.mirror = true;
-        this.servantLeftLegDown.addCuboid(-2.0F, 0, 0, 4, 6, 4, 0);
+        this.servantLeftLegDown.addBox(-2.0F, 0, 0, 4, 6, 4, 0);
         this.servantLeftLegDown.setDefaultRotPoint(0, 6.0F, -2.0F);
         this.servantLeftLegUp.addChild(this.servantLeftLegDown);
         this.servantLeftLegDownOverlay = new ModelRendererPlus(this, 0, 54);
         this.servantLeftLegDownOverlay.mirror = true;
-        this.servantLeftLegDownOverlay.addCuboid(-2.0F, 0, 0, 4, 6, 4, 0.25F);
+        this.servantLeftLegDownOverlay.addBox(-2.0F, 0, 0, 4, 6, 4, 0.25F);
         this.servantLeftLegDownOverlay.setDefaultRotPoint(0, 6.0F, -2.0F);
         this.servantLeftLegUpOverlay.addChild(this.servantLeftLegDownOverlay);
 
         this.servantRightLegUp = new ModelRendererPlus(this, 0, 16);
-        this.servantRightLegUp.addCuboid(-2.0F, 0, -2.0F, 4, 6, 4, 0);
+        this.servantRightLegUp.addBox(-2.0F, 0, -2.0F, 4, 6, 4, 0);
         this.servantRightLegUp.setDefaultRotPoint(-1.9F, 12.0F, 0);
         this.servantRightLegUpOverlay = new ModelRendererPlus(this, 0, 32);
-        this.servantRightLegUpOverlay.addCuboid(-2.0F, 0, -2.0F, 4, 6, 4, 0.25F);
+        this.servantRightLegUpOverlay.addBox(-2.0F, 0, -2.0F, 4, 6, 4, 0.25F);
         this.servantRightLegUpOverlay.setRotationPoint(-1.9F, 12.0F, 0);
 
         this.servantRightLegDown = new ModelRendererPlus(this, 16, 54);
-        this.servantRightLegDown.addCuboid(-2.0F, 0, 0, 4, 6, 4, 0);
+        this.servantRightLegDown.addBox(-2.0F, 0, 0, 4, 6, 4, 0);
         this.servantRightLegDown.setDefaultRotPoint(0, 6.0F, -2.0F);
         this.servantRightLegUp.addChild(this.servantRightLegDown);
         this.servantRightLegDownOverlay = new ModelRendererPlus(this, 0, 54);
-        this.servantRightLegDownOverlay.addCuboid(-2.0F, 0, 0, 4, 6, 4, 0.25F);
+        this.servantRightLegDownOverlay.addBox(-2.0F, 0, 0, 4, 6, 4, 0.25F);
         this.servantRightLegDownOverlay.setDefaultRotPoint(0, 6.0F, -2.0F);
         this.servantRightLegUpOverlay.addChild(this.servantRightLegDownOverlay);
 
@@ -184,7 +184,7 @@ public class ModelHassanCopy extends EntityModel<EntityHassanCopy> implements IR
     }
 
     @Override
-    public void setAngles(EntityHassanCopy servant, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setRotationAngles(EntityHassanCopy servant, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.setAnglesPre(servant, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         float partialTicks = Minecraft.getInstance().getRenderPartialTicks();
         AnimatedAction anim = servant.getAnimation();
@@ -281,13 +281,13 @@ public class ModelHassanCopy extends EntityModel<EntityHassanCopy> implements IR
     @Override
     public void transform(HandSide side, MatrixStack stack) {
         if (side == HandSide.LEFT) {
-            this.servantLeftArmUp.rotate(stack);
-            this.servantLeftArmJoint.rotate(stack);
-            this.servantLeftArmDown.rotate(stack);
+            this.servantLeftArmUp.translateRotate(stack);
+            this.servantLeftArmJoint.translateRotate(stack);
+            this.servantLeftArmDown.translateRotate(stack);
         } else {
-            this.servantRightArmUp.rotate(stack);
-            this.servantRightArmJoint.rotate(stack);
-            this.servantRightArmDown.rotate(stack);
+            this.servantRightArmUp.translateRotate(stack);
+            this.servantRightArmJoint.translateRotate(stack);
+            this.servantRightArmDown.translateRotate(stack);
         }
     }
 
@@ -297,7 +297,7 @@ public class ModelHassanCopy extends EntityModel<EntityHassanCopy> implements IR
     }
 
     @Override
-    public ModelRenderer func_205072_a() {
+    public ModelRenderer getModelHead() {
         return this.servantHead;
     }
 }

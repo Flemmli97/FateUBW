@@ -50,7 +50,7 @@ public class EntityGordiusWheel extends CreatureEntity implements IServantMinion
     }
 
     @Override
-    public boolean handleFallDamage(float distance, float damageMultiplier) {
+    public boolean onLivingFall(float distance, float damageMultiplier) {
         return false;
     }
 
@@ -99,7 +99,7 @@ public class EntityGordiusWheel extends CreatureEntity implements IServantMinion
     public void updatePassenger(Entity passenger) {
         if (this.isPassenger(passenger)) {
             Vector3d offSet = this.getVectorForRotation(0, this.rotationYaw).scale(1.2);
-            passenger.setPosition(this.getX() - offSet.x, this.getY() + this.getMountedYOffset() + passenger.getYOffset(), this.getZ() - offSet.z);
+            passenger.setPosition(this.getPosX() - offSet.x, this.getPosY() + this.getMountedYOffset() + passenger.getYOffset(), this.getPosZ() - offSet.z);
         }
     }
 

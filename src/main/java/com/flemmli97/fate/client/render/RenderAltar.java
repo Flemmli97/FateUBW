@@ -28,9 +28,9 @@ public class RenderAltar extends TileEntityRenderer<TileAltar> {
         if (!stack.isEmpty()) {
             matrixStack.push();
             matrixStack.translate(0.5F, 1.125F, 0.5F);
-            matrixStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(ticker));
+            matrixStack.rotate(Vector3f.YP.rotationDegrees(ticker));
             matrixStack.translate(0, 0.06F * (float) Math.sin((ticker * Math.PI) / 180), 0);
-            Minecraft.getInstance().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.GROUND, 15728880, OverlayTexture.DEFAULT_UV, matrixStack, buffer);
+            Minecraft.getInstance().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.GROUND, 15728880, OverlayTexture.NO_OVERLAY, matrixStack, buffer);
             matrixStack.pop();
         }
         NonNullList<ItemStack> catalyst = altar.getCatalyst();
@@ -39,11 +39,11 @@ public class RenderAltar extends TileEntityRenderer<TileAltar> {
                 continue;
             matrixStack.push();
             matrixStack.translate(0.5F, 1.125F, 0.5F);
-            matrixStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(ticker + (float) (i * 45.0)));
+            matrixStack.rotate(Vector3f.YP.rotationDegrees(ticker + (float) (i * 45.0)));
             matrixStack.translate(0, 0.01F * (float) Math.sin((ticker * Math.PI) / 180), 0);
             matrixStack.translate(3.5F - (summoningTick * 0.007), summoningTick * 0.007, 0);
-            matrixStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(90));
-            Minecraft.getInstance().getItemRenderer().renderItem(catalyst.get(i), ItemCameraTransforms.TransformType.GROUND, 15728880, OverlayTexture.DEFAULT_UV, matrixStack, buffer);
+            matrixStack.rotate(Vector3f.YP.rotationDegrees(90));
+            Minecraft.getInstance().getItemRenderer().renderItem(catalyst.get(i), ItemCameraTransforms.TransformType.GROUND, 15728880, OverlayTexture.NO_OVERLAY, matrixStack, buffer);
             matrixStack.pop();
         }
     }

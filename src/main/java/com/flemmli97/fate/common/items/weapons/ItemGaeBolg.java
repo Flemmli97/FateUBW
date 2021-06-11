@@ -28,20 +28,20 @@ public class ItemGaeBolg extends ClassSpear {
 
             if (player.isCreative()) {
                 world.addEntity(gaeBolg);
-                return ActionResult.success(stack);
+                return ActionResult.resultSuccess(stack);
             } else {
                 if (player.getCapability(PlayerCapProvider.PlayerCap).map(mana -> mana.useMana(player, 15)).orElse(false)) {
                     world.addEntity(gaeBolg);
                     stack.shrink(1);
-                    player.sendMessage(new TranslationTextComponent("fate.mana.use").formatted(TextFormatting.AQUA), Util.NIL_UUID);
-                    return ActionResult.success(stack);
+                    player.sendMessage(new TranslationTextComponent("fate.mana.use").mergeStyle(TextFormatting.AQUA), Util.DUMMY_UUID);
+                    return ActionResult.resultSuccess(stack);
 
                 } else {
-                    player.sendMessage(new TranslationTextComponent("fate.mana.no").formatted(TextFormatting.AQUA), Util.NIL_UUID);
+                    player.sendMessage(new TranslationTextComponent("fate.mana.no").mergeStyle(TextFormatting.AQUA), Util.DUMMY_UUID);
                 }
             }
-            return ActionResult.pass(stack);
+            return ActionResult.resultPass(stack);
         }
-        return ActionResult.fail(stack);
+        return ActionResult.resultFail(stack);
     }
 }

@@ -11,7 +11,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 
 public class RetaliateGoal extends TargetGoal {
 
-    private static final EntityPredicate pred = (new EntityPredicate()).setLineOfSiteRequired().setUseInvisibilityCheck();
+    private static final EntityPredicate pred = (new EntityPredicate()).setIgnoresLineOfSight().setUseInvisibilityCheck();
 
     protected LivingEntity target;
 

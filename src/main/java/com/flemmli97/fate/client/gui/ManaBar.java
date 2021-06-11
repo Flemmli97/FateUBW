@@ -32,10 +32,10 @@ public class ManaBar extends AbstractGui {
 
         this.mc.getTextureManager().bindTexture(texturepath);
 
-        this.drawTexture(stack, xPos, yPos, 0, 0, 102, 5);
+        this.blit(stack, xPos, yPos, 0, 0, 102, 5);
 
         int manabarwidth = (int) ((mana / 100F) * 102);
 
-        this.drawTexture(stack, xPos, yPos, 0, 5, manabarwidth, 5);
+        this.blit(stack, xPos, yPos, 0, 5, manabarwidth, 5);
     }
 }

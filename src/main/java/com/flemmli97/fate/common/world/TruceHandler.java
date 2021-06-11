@@ -37,7 +37,7 @@ public class TruceHandler extends WorldSavedData {
     }
 
     public static TruceHandler get(ServerWorld world) {
-        return world.getServer().getOverworld().getSavedData().getOrCreate(TruceHandler::new, identifier);
+        return world.getServer().func_241755_D_().getSavedData().getOrCreate(TruceHandler::new, identifier);
     }
 
     public boolean sendRequest(ServerPlayerEntity from, UUID to) {
@@ -45,9 +45,9 @@ public class TruceHandler extends WorldSavedData {
             this.markDirty();
             PlayerEntity player = from.world.getPlayerByUuid(to);
             GameProfile rec = player != null ? player.getGameProfile() : from.getServer().getPlayerProfileCache().getProfileByUUID(to);
-            from.sendMessage(new TranslationTextComponent("chat.truce.send", rec.getName()).formatted(TextFormatting.GOLD), Util.NIL_UUID);
+            from.sendMessage(new TranslationTextComponent("chat.truce.send", rec.getName()).mergeStyle(TextFormatting.GOLD), Util.DUMMY_UUID);
             if (player != null)
-                player.sendMessage(new TranslationTextComponent("chat.truce.request", from.getName()).formatted(TextFormatting.GOLD), Util.NIL_UUID);
+                player.sendMessage(new TranslationTextComponent("chat.truce.request", from.getName()).mergeStyle(TextFormatting.GOLD), Util.DUMMY_UUID);
             return true;
         }
         return false;
@@ -73,13 +73,13 @@ public class TruceHandler extends WorldSavedData {
             this.truceMap.put(request, player.getUniqueID());
             PlayerEntity other = player.world.getPlayerByUuid(request);
             GameProfile rec = other != null ? player.getGameProfile() : player.getServer().getPlayerProfileCache().getProfileByUUID(request);
-            player.sendMessage(new TranslationTextComponent("chat.truce.accept", rec.getName()).formatted(TextFormatting.GOLD), Util.NIL_UUID);
+            player.sendMessage(new TranslationTextComponent("chat.truce.accept", rec.getName()).mergeStyle(TextFormatting.GOLD), Util.DUMMY_UUID);
             player.getCapability(PlayerCapProvider.PlayerCap).ifPresent(cap -> {
                 if (cap.getServant(player) != null)
                     cap.getServant(player).setAttackTarget(null);
             });
             if (other != null) {
-                other.sendMessage(new TranslationTextComponent("chat.truce.requestsuccess", player.getName(), TextFormatting.GOLD), Util.NIL_UUID);
+                other.sendMessage(new TranslationTextComponent("chat.truce.requestsuccess", player.getName(), TextFormatting.GOLD), Util.DUMMY_UUID);
                 other.getCapability(PlayerCapProvider.PlayerCap).ifPresent(cap -> {
                     if (cap.getServant(other) != null)
                         cap.getServant(other).setAttackTarget(null);
@@ -128,14 +128,14 @@ public class TruceHandler extends WorldSavedData {
         CompoundNBT requests = new CompoundNBT();
         this.pendingRequests.asMap().forEach((uuid, set) -> {
             ListNBT list = new ListNBT();
-            set.forEach(u -> list.add(NBTUtil.fromUuid(u)));
+            set.forEach(u -> list.add(NBTUtil.func_240626_a_(u)));
             requests.put(uuid.toString(), list);
         });
         compound.put("Requests", requests);
         CompoundNBT truce = new CompoundNBT();
         this.truceMap.asMap().forEach((uuid, set) -> {
             ListNBT list = new ListNBT();
-            set.forEach(u -> list.add(NBTUtil.fromUuid(u)));
+            set.forEach(u -> list.add(NBTUtil.func_240626_a_(u)));
             truce.put(uuid.toString(), list);
         });
         compound.put("Truce", truce);

@@ -160,14 +160,14 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated,
     }
 
     @Override
-    public ITextComponent getDefaultName() {
+    public ITextComponent getProfessionName() {
         if (this.world.isRemote && !this.showServant())
             return new StringTextComponent("UNKNOWN");
-        return super.getDefaultName();
+        return super.getProfessionName();
     }
 
     public ITextComponent getRealName() {
-        return super.getDefaultName();
+        return super.getProfessionName();
     }
 
     public boolean attacksFromMount() {
@@ -229,18 +229,18 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated,
     }
 
     public static AttributeModifierMap.MutableAttribute createMobAttributes() {
-        return MonsterEntity.createHostileAttributes().add(FateAttributes.MAGIC_RESISTANCE).add(FateAttributes.PROJECTILE_BLOCKCHANCE).add(FateAttributes.PROJECTILE_RESISTANCE);
+        return MonsterEntity.func_234295_eP_().createMutableAttribute(FateAttributes.MAGIC_RESISTANCE).createMutableAttribute(FateAttributes.PROJECTILE_BLOCKCHANCE).createMutableAttribute(FateAttributes.PROJECTILE_RESISTANCE);
     }
 
     private void updateAttributes() {
-        this.getAttribute(Attributes.GENERIC_MAX_HEALTH).setBaseValue(this.prop.health());
+        this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(this.prop.health());
         this.setHealth(this.getMaxHealth());
-        this.getAttribute(Attributes.GENERIC_ATTACK_DAMAGE).setBaseValue(this.prop.strength());
-        this.getAttribute(Attributes.GENERIC_ARMOR).setBaseValue(this.prop.armor());
+        this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(this.prop.strength());
+        this.getAttribute(Attributes.ARMOR).setBaseValue(this.prop.armor());
         this.getAttribute(FateAttributes.MAGIC_RESISTANCE).setBaseValue(this.prop.magicRes());
         this.getAttribute(FateAttributes.PROJECTILE_BLOCKCHANCE).setBaseValue(this.prop.projectileBlockChance());
         this.getAttribute(FateAttributes.PROJECTILE_RESISTANCE).setBaseValue(this.prop.projectileProt());
-        this.getAttribute(Attributes.GENERIC_MOVEMENT_SPEED).setBaseValue(this.prop.moveSpeed());//default 0.3
+        this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(this.prop.moveSpeed());//default 0.3
     }
 
     //=====Mana stuff
@@ -380,7 +380,7 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated,
                 this.setStaying(false);
                 this.goalSelector.removeGoal(this.follow);
                 this.goalSelector.addGoal(3, this.wander);
-                this.setHomePosAndDistance(this.getOwner().getBlockPos(), 8);
+                this.setHomePosAndDistance(this.getOwner().getPosition(), 8);
                 break;
         }
     }
@@ -422,7 +422,7 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated,
         if (entitydatamanager.isDirty()) {
             player.connection.sendPacket(new SEntityMetadataPacket(this.getEntityId(), entitydatamanager, false));
         }
-        Set<ModifiableAttributeInstance> set = this.getAttributes().getTracked();
+        Set<ModifiableAttributeInstance> set = this.getAttributeManager().getInstances();
         if (!set.isEmpty()) {
             player.connection.sendPacket(new SEntityPropertiesPacket(this.getEntityId(), set));
         }
@@ -459,7 +459,7 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated,
             ++this.deathTime;
             if (this.deathTime == 1) {
                 //if(this.getLastDamageSource()!=DamageSource.OUT_OF_WORLD)
-                this.world.getServer().getPlayerList().broadcastChatMessage(new TranslationTextComponent("chat.servant.death").formatted(TextFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
+                this.world.getServer().getPlayerList().func_232641_a_(new TranslationTextComponent("chat.servant.death").mergeStyle(TextFormatting.RED), ChatType.SYSTEM, Util.DUMMY_UUID);
                 this.playSound(SoundEvents.ENTITY_WITHER_SPAWN, 1.0F, 1.0F);
                 GrailWarHandler.get((ServerWorld) this.world).removeServant(this);
                 this.disableChunkload = true;
@@ -471,7 +471,7 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated,
                 while (exp > 0) {
                     splitExp = ExperienceOrbEntity.getXPSplit(exp);
                     exp -= splitExp;
-                    this.world.addEntity(new ExperienceOrbEntity(this.world, this.getX(), this.getY(), this.getZ(), splitExp));
+                    this.world.addEntity(new ExperienceOrbEntity(this.world, this.getPosX(), this.getPosY(), this.getPosZ(), splitExp));
                 }
             }
             if (this.deathTime == this.maxDeathTick()) {
@@ -557,7 +557,7 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated,
                 damage *= 0.5;
 
             if (damageSource.isProjectile() && !damageSource.isUnblockable() && this.projectileBlockChance(damageSource, damage)) {
-                this.world.playSound(null, this.getBlockPos(), SoundEvents.ITEM_SHIELD_BLOCK, SoundCategory.NEUTRAL, 1, 1);
+                this.world.playSound(null, this.getPosition(), SoundEvents.ITEM_SHIELD_BLOCK, SoundCategory.NEUTRAL, 1, 1);
                 if (damageSource.getImmediateSource() != null)
                     damageSource.getImmediateSource().remove();
                 return false;
@@ -572,8 +572,8 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated,
 
     @Override
     public boolean attackEntityAsMob(Entity entity) {
-        float f = (float) this.getAttributeValue(Attributes.GENERIC_ATTACK_DAMAGE);
-        float f1 = (float) this.getAttributeValue(Attributes.GENERIC_ATTACK_KNOCKBACK);
+        float f = (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE);
+        float f1 = (float) this.getAttributeValue(Attributes.ATTACK_KNOCKBACK);
         if (entity instanceof LivingEntity) {
             f += EnchantmentHelper.getModifierForCreature(this.getHeldItemMainhand(), ((LivingEntity) entity).getCreatureAttribute());
             f1 += (float) EnchantmentHelper.getKnockbackModifier(this);
@@ -587,7 +587,7 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated,
         boolean flag = entity.attackEntityFrom(DamageSource.causeMobDamage(this), f);
         if (flag) {
             if (f1 > 0.0F && entity instanceof LivingEntity) {
-                ((LivingEntity) entity).takeKnockback(f1 * 0.5F, MathHelper.sin(this.rotationYaw * ((float) Math.PI / 180F)), -MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F)));
+                ((LivingEntity) entity).applyKnockback(f1 * 0.5F, MathHelper.sin(this.rotationYaw * ((float) Math.PI / 180F)), -MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F)));
                 this.setMotion(this.getMotion().mul(0.6D, 1.0D, 0.6D));
             }
 
@@ -609,7 +609,7 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated,
 
     public void onKillOrder(PlayerEntity player, boolean success) {
         this.attackEntityFrom(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
-        player.sendMessage(new TranslationTextComponent("chat.command.kill").formatted(TextFormatting.RED), Util.NIL_UUID);
+        player.sendMessage(new TranslationTextComponent("chat.command.kill").mergeStyle(TextFormatting.RED), Util.DUMMY_UUID);
     }
 
     public void onForfeit(PlayerEntity player) {
@@ -621,8 +621,8 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated,
     }
 
     @Override
-    public void takeKnockback(float strength, double xRatio, double zRatio) {
-        super.takeKnockback(strength * 0.75F, xRatio, zRatio);
+    public void applyKnockback(float strength, double xRatio, double zRatio) {
+        super.applyKnockback(strength * 0.75F, xRatio, zRatio);
     }
 
     public enum AttackType {

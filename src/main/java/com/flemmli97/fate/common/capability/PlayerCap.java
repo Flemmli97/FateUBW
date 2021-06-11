@@ -17,7 +17,7 @@ import java.util.function.Predicate;
 
 public class PlayerCap implements IPlayer {
 
-    private static final Predicate<EntityServant> notDead = t -> !t.isDead();
+    private static final Predicate<EntityServant> notDead = t -> !t.getShouldBeDead();
 
     private int currentMana = 0;
     private EntityServant servant;

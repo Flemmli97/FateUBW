@@ -19,13 +19,13 @@ public class GrailWarTrigger extends AbstractCriterionTrigger<GrailWarTrigger.In
     }
 
     @Override
-    public GrailWarTrigger.Instance conditionsFromJson(JsonObject obj, EntityPredicate.AndPredicate and, ConditionArrayParser parser) {
+    public GrailWarTrigger.Instance deserializeTrigger(JsonObject obj, EntityPredicate.AndPredicate and, ConditionArrayParser parser) {
         boolean joining = obj.has("joining") && obj.get("joining").getAsBoolean();
         return new GrailWarTrigger.Instance(joining, and);
     }
 
     public void trigger(ServerPlayerEntity player, boolean joining) {
-        this.test(player, inst -> inst.test(joining));
+        this.triggerListeners(player, inst -> inst.test(joining));
     }
 
     public static class Instance extends CriterionInstance {

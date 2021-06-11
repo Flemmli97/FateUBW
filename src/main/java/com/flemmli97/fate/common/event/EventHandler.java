@@ -54,7 +54,7 @@ public class EventHandler {
             TruceHandler.get(player.getServerWorld()).pending(player).forEach(uuid -> {
                 GameProfile prof = player.getServer().getPlayerProfileCache().getProfileByUUID(uuid);
                 if (prof != null)
-                    player.sendMessage(new TranslationTextComponent("chat.truce.pending", prof.getName()).formatted(TextFormatting.GOLD), Util.NIL_UUID);
+                    player.sendMessage(new TranslationTextComponent("chat.truce.pending", prof.getName()).mergeStyle(TextFormatting.GOLD), Util.DUMMY_UUID);
             });
 			/*if(player.getCapability(PlayerCapProvider.PlayerCap, null).getServant(player)!=null)
 				this.trackEntity(player, player.getCapability(PlayerCapProvider.PlayerCap, null).getServant(player));*/
@@ -63,7 +63,7 @@ public class EventHandler {
 
     @SubscribeEvent
     public static void updateGrailWar(TickEvent.WorldTickEvent event) {
-        if (event.phase == TickEvent.Phase.END && !event.world.isRemote && event.world.getRegistryKey() == World.OVERWORLD) {
+        if (event.phase == TickEvent.Phase.END && !event.world.isRemote && event.world.getDimensionKey() == World.OVERWORLD) {
             GrailWarHandler.get((ServerWorld) event.world).tick((ServerWorld) event.world);
         }
     }

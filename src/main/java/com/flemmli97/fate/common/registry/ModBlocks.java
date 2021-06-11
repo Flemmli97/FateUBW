@@ -32,7 +32,7 @@ public class ModBlocks {
     public static EnumMap<EnumPositionChalk, RegistryObject<BlockChalkLine>> registerChalk() {
         EnumMap<EnumPositionChalk, RegistryObject<BlockChalkLine>> map = new EnumMap<>(EnumPositionChalk.class);
         for (EnumPositionChalk e : EnumPositionChalk.values())
-            map.put(e, BLOCKS.register("chalk_line_" + e.getID(), () -> new BlockChalkLine(e, AbstractBlock.Properties.create(Material.MISCELLANEOUS).sound(SoundType.CLOTH).nonOpaque().hardnessAndResistance(0.1f, 100))));
+            map.put(e, BLOCKS.register("chalk_line_" + e.getID(), () -> new BlockChalkLine(e, AbstractBlock.Properties.create(Material.MISCELLANEOUS).sound(SoundType.CLOTH).notSolid().hardnessAndResistance(0.1f, 100))));
         return map;
     }
 }

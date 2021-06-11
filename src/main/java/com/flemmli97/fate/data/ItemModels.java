@@ -16,6 +16,6 @@ public class ItemModels extends ItemModelProvider {
     @Override
     protected void registerModels() {
         for (SpawnEgg egg : SpawnEgg.getEggs())
-            this.withExistingParent(egg.getRegistryName().getPath(), ModelsResourceUtil.getMinecraftNamespacedItem("template_spawn_egg"));
+            this.withExistingParent(egg.getRegistryName().getPath(), ModelsResourceUtil.func_240224_b_("template_spawn_egg"));
     }
 }

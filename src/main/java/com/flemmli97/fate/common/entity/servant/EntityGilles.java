@@ -65,7 +65,7 @@ public class EntityGilles extends EntityServant {
     @Override
     protected void damageEntity(DamageSource damageSrc, float damageAmount) {
         super.damageEntity(damageSrc, damageAmount);
-        if (!this.canUseNP && !this.isDead() && this.getHealth() < 0.5 * this.getMaxHealth()) {
+        if (!this.canUseNP && !this.getShouldBeDead() && this.getHealth() < 0.5 * this.getMaxHealth()) {
             this.canUseNP = true;
         }
     }
@@ -82,7 +82,7 @@ public class EntityGilles extends EntityServant {
         if (!this.world.isRemote) {
             if (this.world.getEntitiesWithinAABB(EntityLesserMonster.class, this.getBoundingBox().grow(16), monster -> monster.getOwnerUUID().equals(this.getUniqueID())).size() < Config.Common.gillesMinionAmount) {
                 EntityLesserMonster minion = new EntityLesserMonster(this.world, this);
-                BlockPos pos = RayTraceUtils.randomPosAround(this.world, minion, this.getBlockPos(), 9, true, this.getRNG());
+                BlockPos pos = RayTraceUtils.randomPosAround(this.world, minion, this.getPosition(), 9, true, this.getRNG());
                 if (pos != null) {
                     minion.setLocationAndAngles(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5, MathHelper.wrapDegrees(this.world.rand.nextFloat() * 360.0F), 0.0F);
                     this.world.addEntity(minion);

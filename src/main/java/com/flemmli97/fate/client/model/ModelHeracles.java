@@ -93,393 +93,393 @@ public class ModelHeracles extends ModelServant<EntityHeracles> {
 
         this.upperTorso = new ModelRendererPlus(this);
         this.upperTorso.setDefaultRotPoint(0.0F, -1.6F, 0.0F);
-        this.upperTorso.setTextureOffset(23, 65).addCuboid(-6.0F, -2.5F, -3.0F, 12.0F, 5.0F, 6.0F, 0.0F, true);
-        this.upperTorso.setTextureOffset(0, 3).addCuboid(0.6F, -2.1F, -3.4F, 4.0F, 2.0F, 1.0F, 0.0F, true);
-        this.upperTorso.setTextureOffset(0, 3).addCuboid(-4.6F, -2.1F, -3.4F, 4.0F, 2.0F, 1.0F, 0.0F, true);
-        this.upperTorso.setTextureOffset(0, 3).addCuboid(0.1F, 0.1F, -3.4F, 4.0F, 2.0F, 1.0F, 0.0F, true);
-        this.upperTorso.setTextureOffset(0, 3).addCuboid(-4.1F, 0.1F, -3.4F, 4.0F, 2.0F, 1.0F, 0.0F, true);
+        this.upperTorso.setTextureOffset(23, 65).addBox(-6.0F, -2.5F, -3.0F, 12.0F, 5.0F, 6.0F, 0.0F, true);
+        this.upperTorso.setTextureOffset(0, 3).addBox(0.6F, -2.1F, -3.4F, 4.0F, 2.0F, 1.0F, 0.0F, true);
+        this.upperTorso.setTextureOffset(0, 3).addBox(-4.6F, -2.1F, -3.4F, 4.0F, 2.0F, 1.0F, 0.0F, true);
+        this.upperTorso.setTextureOffset(0, 3).addBox(0.1F, 0.1F, -3.4F, 4.0F, 2.0F, 1.0F, 0.0F, true);
+        this.upperTorso.setTextureOffset(0, 3).addBox(-4.1F, 0.1F, -3.4F, 4.0F, 2.0F, 1.0F, 0.0F, true);
 
         this.lowerTorso = new ModelRendererPlus(this);
         this.lowerTorso.setDefaultRotPoint(0.0F, 4.5F, 0.0F);
         this.upperTorso.addChild(this.lowerTorso);
-        this.lowerTorso.setTextureOffset(0, 6).addCuboid(-5.0F, -2.0F, -2.5F, 10.0F, 4.0F, 5.0F, 0.0F, true);
-        this.lowerTorso.setTextureOffset(0, 0).addCuboid(-2.1F, -1.7F, -2.8F, 2.0F, 1.0F, 1.0F, 0.0F, true);
-        this.lowerTorso.setTextureOffset(0, 0).addCuboid(0.1F, -1.7F, -2.8F, 2.0F, 1.0F, 1.0F, 0.0F, true);
-        this.lowerTorso.setTextureOffset(0, 0).addCuboid(0.1F, -0.6F, -2.8F, 2.0F, 1.0F, 1.0F, 0.0F, true);
-        this.lowerTorso.setTextureOffset(0, 0).addCuboid(0.1F, 0.5F, -2.8F, 2.0F, 1.0F, 1.0F, 0.0F, true);
-        this.lowerTorso.setTextureOffset(0, 0).addCuboid(-2.1F, -0.6F, -2.8F, 2.0F, 1.0F, 1.0F, 0.0F, true);
-        this.lowerTorso.setTextureOffset(0, 0).addCuboid(-2.1F, 0.5F, -2.8F, 2.0F, 1.0F, 1.0F, 0.0F, true);
+        this.lowerTorso.setTextureOffset(0, 6).addBox(-5.0F, -2.0F, -2.5F, 10.0F, 4.0F, 5.0F, 0.0F, true);
+        this.lowerTorso.setTextureOffset(0, 0).addBox(-2.1F, -1.7F, -2.8F, 2.0F, 1.0F, 1.0F, 0.0F, true);
+        this.lowerTorso.setTextureOffset(0, 0).addBox(0.1F, -1.7F, -2.8F, 2.0F, 1.0F, 1.0F, 0.0F, true);
+        this.lowerTorso.setTextureOffset(0, 0).addBox(0.1F, -0.6F, -2.8F, 2.0F, 1.0F, 1.0F, 0.0F, true);
+        this.lowerTorso.setTextureOffset(0, 0).addBox(0.1F, 0.5F, -2.8F, 2.0F, 1.0F, 1.0F, 0.0F, true);
+        this.lowerTorso.setTextureOffset(0, 0).addBox(-2.1F, -0.6F, -2.8F, 2.0F, 1.0F, 1.0F, 0.0F, true);
+        this.lowerTorso.setTextureOffset(0, 0).addBox(-2.1F, 0.5F, -2.8F, 2.0F, 1.0F, 1.0F, 0.0F, true);
 
         this.waist = new ModelRendererPlus(this);
         this.waist.setDefaultRotPoint(0.0F, 4.0F, 0.0F);
         this.lowerTorso.addChild(this.waist);
-        this.waist.setTextureOffset(0, 35).addCuboid(-4.5F, -2.0F, -2.0F, 9.0F, 4.0F, 4.0F, 0.0F, true);
+        this.waist.setTextureOffset(0, 35).addBox(-4.5F, -2.0F, -2.0F, 9.0F, 4.0F, 4.0F, 0.0F, true);
 
         this.rightUpperThigh = new ModelRendererPlus(this);
         this.rightUpperThigh.setDefaultRotPoint(3.0F, 3.8F, 0.0F);
         this.waist.addChild(this.rightUpperThigh);
         this.setRotationAngle(this.rightUpperThigh, 0.0F, -0.0456F, -0.0175F);
-        this.rightUpperThigh.setTextureOffset(0, 43).addCuboid(-1.5F, -2.5F, -1.5F, 3.0F, 4.0F, 3.0F, 0.0F, true);
+        this.rightUpperThigh.setTextureOffset(0, 43).addBox(-1.5F, -2.5F, -1.5F, 3.0F, 4.0F, 3.0F, 0.0F, true);
 
         this.rightKnee = new ModelRendererPlus(this);
         this.rightKnee.setDefaultRotPoint(0.0F, 3.0F, -0.4F);
         this.rightUpperThigh.addChild(this.rightKnee);
-        this.rightKnee.setTextureOffset(0, 50).addCuboid(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, 0.0F, true);
+        this.rightKnee.setTextureOffset(0, 50).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, 0.0F, true);
 
         this.rightLowerThigh = new ModelRendererPlus(this);
         this.rightLowerThigh.setDefaultRotPoint(0.0F, 3.9F, 0.7F);
         this.rightKnee.addChild(this.rightLowerThigh);
-        this.rightLowerThigh.setTextureOffset(0, 56).addCuboid(-1.5F, -2.5F, -1.5F, 3.0F, 5.0F, 3.0F, 0.0F, true);
+        this.rightLowerThigh.setTextureOffset(0, 56).addBox(-1.5F, -2.5F, -1.5F, 3.0F, 5.0F, 3.0F, 0.0F, true);
 
         this.rightAnkle = new ModelRendererPlus(this);
         this.rightAnkle.setDefaultRotPoint(0.0F, 4.0F, -0.4F);
         this.rightLowerThigh.addChild(this.rightAnkle);
-        this.rightAnkle.setTextureOffset(0, 64).addCuboid(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, 0.0F, true);
+        this.rightAnkle.setTextureOffset(0, 64).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, 0.0F, true);
 
         this.rightFoot = new ModelRendererPlus(this);
         this.rightFoot.setDefaultRotPoint(0.0F, 1.4F, -0.3F);
         this.rightAnkle.addChild(this.rightFoot);
-        this.rightFoot.setTextureOffset(0, 70).addCuboid(-2.0F, 0.0F, -2.5F, 4.0F, 1.0F, 5.0F, 0.0F, true);
+        this.rightFoot.setTextureOffset(0, 70).addBox(-2.0F, 0.0F, -2.5F, 4.0F, 1.0F, 5.0F, 0.0F, true);
 
         this.rightToe1 = new ModelRendererPlus(this);
         this.rightToe1.setDefaultRotPoint(1.5F, 0.0F, -1.0F);
         this.rightFoot.addChild(this.rightToe1);
         this.setRotationAngle(this.rightToe1, 0.0F, -0.5009F, 0.0F);
-        this.rightToe1.setTextureOffset(13, 66).addCuboid(-0.5F, 0.0F, -2.0F, 1.0F, 1.0F, 2.0F, 0.0F, true);
+        this.rightToe1.setTextureOffset(13, 66).addBox(-0.5F, 0.0F, -2.0F, 1.0F, 1.0F, 2.0F, 0.0F, true);
 
         this.rightToe2 = new ModelRendererPlus(this);
         this.rightToe2.setDefaultRotPoint(-1.5F, 0.0F, -1.3F);
         this.rightFoot.addChild(this.rightToe2);
         this.setRotationAngle(this.rightToe2, 0.0F, 0.5009F, 0.0F);
-        this.rightToe2.setTextureOffset(13, 66).addCuboid(-0.5F, 0.0F, -2.0F, 1.0F, 1.0F, 2.0F, 0.0F, true);
+        this.rightToe2.setTextureOffset(13, 66).addBox(-0.5F, 0.0F, -2.0F, 1.0F, 1.0F, 2.0F, 0.0F, true);
 
         this.rightToe3 = new ModelRendererPlus(this);
         this.rightToe3.setDefaultRotPoint(-1.1F, 0.0F, -1.5F);
         this.rightFoot.addChild(this.rightToe3);
-        this.rightToe3.setTextureOffset(13, 66).addCuboid(-0.5F, 0.0F, -2.0F, 1.0F, 1.0F, 2.0F, 0.0F, true);
+        this.rightToe3.setTextureOffset(13, 66).addBox(-0.5F, 0.0F, -2.0F, 1.0F, 1.0F, 2.0F, 0.0F, true);
 
         this.rightToe4 = new ModelRendererPlus(this);
         this.rightToe4.setDefaultRotPoint(0.0F, 0.0F, -1.5F);
         this.rightFoot.addChild(this.rightToe4);
-        this.rightToe4.setTextureOffset(13, 66).addCuboid(-0.5F, 0.0F, -2.0F, 1.0F, 1.0F, 2.0F, 0.0F, true);
+        this.rightToe4.setTextureOffset(13, 66).addBox(-0.5F, 0.0F, -2.0F, 1.0F, 1.0F, 2.0F, 0.0F, true);
 
         this.rightToe5 = new ModelRendererPlus(this);
         this.rightToe5.setDefaultRotPoint(1.1F, 0.0F, -1.5F);
         this.rightFoot.addChild(this.rightToe5);
-        this.rightToe5.setTextureOffset(13, 66).addCuboid(-0.5F, 0.0F, -2.0F, 1.0F, 1.0F, 2.0F, 0.0F, true);
+        this.rightToe5.setTextureOffset(13, 66).addBox(-0.5F, 0.0F, -2.0F, 1.0F, 1.0F, 2.0F, 0.0F, true);
 
         this.rFootShape1 = new ModelRendererPlus(this);
         this.rFootShape1.setDefaultRotPoint(0.0F, 0.0F, -1.9F);
         this.rightFoot.addChild(this.rFootShape1);
         this.setRotationAngle(this.rFootShape1, 0.7854F, 0.0F, 0.0F);
-        this.rFootShape1.setTextureOffset(0, 0).addCuboid(-1.5F, 0.0F, 0.0F, 3.0F, 1.0F, 1.0F, 0.0F, true);
+        this.rFootShape1.setTextureOffset(0, 0).addBox(-1.5F, 0.0F, 0.0F, 3.0F, 1.0F, 1.0F, 0.0F, true);
 
         this.rFootShape2 = new ModelRendererPlus(this);
         this.rFootShape2.setDefaultRotPoint(0.0F, 0.0F, 1.1F);
         this.rightFoot.addChild(this.rFootShape2);
         this.setRotationAngle(this.rFootShape2, 0.7854F, 0.0F, 0.0F);
-        this.rFootShape2.setTextureOffset(0, 0).addCuboid(-1.5F, 0.0F, 0.0F, 3.0F, 1.0F, 1.0F, 0.0F, true);
+        this.rFootShape2.setTextureOffset(0, 0).addBox(-1.5F, 0.0F, 0.0F, 3.0F, 1.0F, 1.0F, 0.0F, true);
 
         this.rightShin = new ModelRendererPlus(this);
         this.rightShin.setDefaultRotPoint(0.0F, 0.0F, -1.5F);
         this.rightLowerThigh.addChild(this.rightShin);
         this.setRotationAngle(this.rightShin, 0.0456F, 0.0F, 0.0F);
-        this.rightShin.setTextureOffset(18, 70).addCuboid(-0.5F, -2.5F, -0.5F, 1.0F, 5.0F, 1.0F, 0.0F, true);
+        this.rightShin.setTextureOffset(18, 70).addBox(-0.5F, -2.5F, -0.5F, 1.0F, 5.0F, 1.0F, 0.0F, true);
 
         this.leftUpperThigh = new ModelRendererPlus(this);
         this.leftUpperThigh.setDefaultRotPoint(-3.0F, 3.8F, 0.0F);
         this.waist.addChild(this.leftUpperThigh);
-        this.leftUpperThigh.setTextureOffset(0, 43).addCuboid(-1.5F, -2.5F, -1.5F, 3.0F, 4.0F, 3.0F, 0.0F, true);
+        this.leftUpperThigh.setTextureOffset(0, 43).addBox(-1.5F, -2.5F, -1.5F, 3.0F, 4.0F, 3.0F, 0.0F, true);
 
         this.leftKnee = new ModelRendererPlus(this);
         this.leftKnee.setDefaultRotPoint(0.0F, 3.0F, -0.4F);
         this.leftUpperThigh.addChild(this.leftKnee);
-        this.leftKnee.setTextureOffset(0, 50).addCuboid(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, 0.0F, true);
+        this.leftKnee.setTextureOffset(0, 50).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, 0.0F, true);
 
         this.leftLowerThigh = new ModelRendererPlus(this);
         this.leftLowerThigh.setDefaultRotPoint(0.0F, 3.9F, 0.7F);
         this.leftKnee.addChild(this.leftLowerThigh);
-        this.leftLowerThigh.setTextureOffset(0, 56).addCuboid(-1.5F, -2.5F, -1.5F, 3.0F, 5.0F, 3.0F, 0.0F, true);
+        this.leftLowerThigh.setTextureOffset(0, 56).addBox(-1.5F, -2.5F, -1.5F, 3.0F, 5.0F, 3.0F, 0.0F, true);
 
         this.leftAnkle = new ModelRendererPlus(this);
         this.leftAnkle.setDefaultRotPoint(0.0F, 4.0F, -0.4F);
         this.leftLowerThigh.addChild(this.leftAnkle);
-        this.leftAnkle.setTextureOffset(0, 64).addCuboid(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, 0.0F, true);
+        this.leftAnkle.setTextureOffset(0, 64).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, 0.0F, true);
 
         this.leftFoot = new ModelRendererPlus(this);
         this.leftFoot.setDefaultRotPoint(0.0F, 1.4F, -0.3F);
         this.leftAnkle.addChild(this.leftFoot);
-        this.leftFoot.setTextureOffset(0, 70).addCuboid(-2.0F, 0.0F, -2.5F, 4.0F, 1.0F, 5.0F, 0.0F, true);
+        this.leftFoot.setTextureOffset(0, 70).addBox(-2.0F, 0.0F, -2.5F, 4.0F, 1.0F, 5.0F, 0.0F, true);
 
         this.leftToe1 = new ModelRendererPlus(this);
         this.leftToe1.setDefaultRotPoint(-1.1F, 0.0F, -1.5F);
         this.leftFoot.addChild(this.leftToe1);
-        this.leftToe1.setTextureOffset(13, 66).addCuboid(-0.5F, 0.0F, -2.0F, 1.0F, 1.0F, 2.0F, 0.0F, true);
+        this.leftToe1.setTextureOffset(13, 66).addBox(-0.5F, 0.0F, -2.0F, 1.0F, 1.0F, 2.0F, 0.0F, true);
 
         this.leftToe2 = new ModelRendererPlus(this);
         this.leftToe2.setDefaultRotPoint(-1.5F, 0.0F, -1.0F);
         this.leftFoot.addChild(this.leftToe2);
         this.setRotationAngle(this.leftToe2, 0.0F, 0.5009F, 0.0F);
-        this.leftToe2.setTextureOffset(13, 66).addCuboid(-0.5F, 0.0F, -2.0F, 1.0F, 1.0F, 2.0F, 0.0F, true);
+        this.leftToe2.setTextureOffset(13, 66).addBox(-0.5F, 0.0F, -2.0F, 1.0F, 1.0F, 2.0F, 0.0F, true);
 
         this.leftToe3 = new ModelRendererPlus(this);
         this.leftToe3.setDefaultRotPoint(0.0F, 0.0F, -1.5F);
         this.leftFoot.addChild(this.leftToe3);
-        this.leftToe3.setTextureOffset(13, 66).addCuboid(-0.5F, 0.0F, -2.0F, 1.0F, 1.0F, 2.0F, 0.0F, true);
+        this.leftToe3.setTextureOffset(13, 66).addBox(-0.5F, 0.0F, -2.0F, 1.0F, 1.0F, 2.0F, 0.0F, true);
 
         this.leftToe4 = new ModelRendererPlus(this);
         this.leftToe4.setDefaultRotPoint(1.1F, 0.0F, -1.5F);
         this.leftFoot.addChild(this.leftToe4);
-        this.leftToe4.setTextureOffset(13, 66).addCuboid(-0.5F, 0.0F, -2.0F, 1.0F, 1.0F, 2.0F, 0.0F, true);
+        this.leftToe4.setTextureOffset(13, 66).addBox(-0.5F, 0.0F, -2.0F, 1.0F, 1.0F, 2.0F, 0.0F, true);
 
         this.leftToe5 = new ModelRendererPlus(this);
         this.leftToe5.setDefaultRotPoint(1.5F, 0.0F, -1.3F);
         this.leftFoot.addChild(this.leftToe5);
         this.setRotationAngle(this.leftToe5, 0.0F, -0.5009F, 0.0F);
-        this.leftToe5.setTextureOffset(13, 66).addCuboid(-0.5F, 0.0F, -2.0F, 1.0F, 1.0F, 2.0F, 0.0F, true);
+        this.leftToe5.setTextureOffset(13, 66).addBox(-0.5F, 0.0F, -2.0F, 1.0F, 1.0F, 2.0F, 0.0F, true);
 
         this.lFootShape1 = new ModelRendererPlus(this);
         this.lFootShape1.setDefaultRotPoint(0.0F, 0.0F, -1.9F);
         this.leftFoot.addChild(this.lFootShape1);
         this.setRotationAngle(this.lFootShape1, 0.7854F, 0.0F, 0.0F);
-        this.lFootShape1.setTextureOffset(0, 0).addCuboid(-1.5F, 0.0F, 0.0F, 3.0F, 1.0F, 1.0F, 0.0F, true);
+        this.lFootShape1.setTextureOffset(0, 0).addBox(-1.5F, 0.0F, 0.0F, 3.0F, 1.0F, 1.0F, 0.0F, true);
 
         this.lFootShape2 = new ModelRendererPlus(this);
         this.lFootShape2.setDefaultRotPoint(0.0F, 0.0F, 1.1F);
         this.leftFoot.addChild(this.lFootShape2);
         this.setRotationAngle(this.lFootShape2, 0.7854F, 0.0F, 0.0F);
-        this.lFootShape2.setTextureOffset(0, 0).addCuboid(-1.5F, 0.0F, 0.0F, 3.0F, 1.0F, 1.0F, 0.0F, true);
+        this.lFootShape2.setTextureOffset(0, 0).addBox(-1.5F, 0.0F, 0.0F, 3.0F, 1.0F, 1.0F, 0.0F, true);
 
         this.leftShin = new ModelRendererPlus(this);
         this.leftShin.setDefaultRotPoint(0.0F, 0.0F, -1.5F);
         this.leftLowerThigh.addChild(this.leftShin);
         this.setRotationAngle(this.leftShin, 0.0456F, 0.0F, 0.0F);
-        this.leftShin.setTextureOffset(18, 70).addCuboid(-0.5F, -2.5F, -0.5F, 1.0F, 5.0F, 1.0F, 0.0F, true);
+        this.leftShin.setTextureOffset(18, 70).addBox(-0.5F, -2.5F, -0.5F, 1.0F, 5.0F, 1.0F, 0.0F, true);
 
         this.outerSkirt = new ModelRendererPlus(this);
         this.outerSkirt.setDefaultRotPoint(0.0F, 4.5F, 0.0F);
         this.waist.addChild(this.outerSkirt);
-        this.outerSkirt.setTextureOffset(0, 21).addCuboid(-5.5F, -3.5F, -3.0F, 11.0F, 7.0F, 6.0F, 0.0F, true);
+        this.outerSkirt.setTextureOffset(0, 21).addBox(-5.5F, -3.5F, -3.0F, 11.0F, 7.0F, 6.0F, 0.0F, true);
 
         this.innerSkirt = new ModelRendererPlus(this);
         this.innerSkirt.setDefaultRotPoint(0.0F, 0.0F, -2.6F);
         this.outerSkirt.addChild(this.innerSkirt);
-        this.innerSkirt.setTextureOffset(0, 15).addCuboid(-5.0F, -3.0F, 0.0F, 10.0F, 6.0F, 0.0F, 0.0F, true);
+        this.innerSkirt.setTextureOffset(0, 15).addBox(-5.0F, -3.0F, 0.0F, 10.0F, 6.0F, 0.0F, 0.0F, true);
 
         this.neck = new ModelRendererPlus(this);
         this.neck.setDefaultRotPoint(0.0F, -3.0F, 0.0F);
         this.upperTorso.addChild(this.neck);
-        this.neck.setTextureOffset(26, 0).addCuboid(-1.0F, -0.5F, -1.0F, 2.0F, 1.0F, 2.0F, 0.0F, true);
+        this.neck.setTextureOffset(26, 0).addBox(-1.0F, -0.5F, -1.0F, 2.0F, 1.0F, 2.0F, 0.0F, true);
 
         this.head = new ModelRendererPlus(this);
         this.head.setDefaultRotPoint(0.0F, -4.5F, 0.0F);
         this.neck.addChild(this.head);
-        this.head.setTextureOffset(30, 0).addCuboid(-4.0F, -4.0F, -4.0F, 8.0F, 8.0F, 8.0F, 0.0F, true);
+        this.head.setTextureOffset(30, 0).addBox(-4.0F, -4.0F, -4.0F, 8.0F, 8.0F, 8.0F, 0.0F, true);
 
         this.nose = new ModelRendererPlus(this);
         this.nose.setDefaultRotPoint(0.0F, -0.2F, -3.5F);
         this.head.addChild(this.nose);
         this.setRotationAngle(this.nose, -0.4294F, 0.0F, 0.0F);
-        this.nose.setTextureOffset(16, 60).addCuboid(-0.5F, 0.0F, -0.5F, 1.0F, 2.0F, 1.0F, 0.0F, true);
+        this.nose.setTextureOffset(16, 60).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 2.0F, 1.0F, 0.0F, true);
 
         this.hair1 = new ModelRendererPlus(this);
         this.hair1.setDefaultRotPoint(0.0F, -1.5F, 2.0F);
         this.head.addChild(this.hair1);
-        this.hair1.setTextureOffset(34, 16).addCuboid(0.0F, -5.5F, -5.5F, 0.0F, 11.0F, 11.0F, 0.0F, true);
+        this.hair1.setTextureOffset(34, 16).addBox(0.0F, -5.5F, -5.5F, 0.0F, 11.0F, 11.0F, 0.0F, true);
 
         this.hair2 = new ModelRendererPlus(this);
         this.hair2.setDefaultRotPoint(-1.2F, -1.5F, 2.0F);
         this.head.addChild(this.hair2);
-        this.hair2.setTextureOffset(34, 5).addCuboid(0.0F, -5.5F, -5.5F, 0.0F, 11.0F, 11.0F, 0.0F, true);
+        this.hair2.setTextureOffset(34, 5).addBox(0.0F, -5.5F, -5.5F, 0.0F, 11.0F, 11.0F, 0.0F, true);
 
         this.hair3 = new ModelRendererPlus(this);
         this.hair3.setDefaultRotPoint(1.2F, -1.5F, 2.0F);
         this.head.addChild(this.hair3);
-        this.hair3.setTextureOffset(34, 5).addCuboid(0.0F, -5.5F, -5.5F, 0.0F, 11.0F, 11.0F, 0.0F, true);
+        this.hair3.setTextureOffset(34, 5).addBox(0.0F, -5.5F, -5.5F, 0.0F, 11.0F, 11.0F, 0.0F, true);
 
         this.hair4 = new ModelRendererPlus(this);
         this.hair4.setDefaultRotPoint(-2.4F, -1.5F, 2.0F);
         this.head.addChild(this.hair4);
-        this.hair4.setTextureOffset(34, 16).addCuboid(0.0F, -5.5F, -5.5F, 0.0F, 11.0F, 11.0F, 0.0F, true);
+        this.hair4.setTextureOffset(34, 16).addBox(0.0F, -5.5F, -5.5F, 0.0F, 11.0F, 11.0F, 0.0F, true);
 
         this.hair5 = new ModelRendererPlus(this);
         this.hair5.setDefaultRotPoint(2.4F, -1.5F, 2.0F);
         this.head.addChild(this.hair5);
-        this.hair5.setTextureOffset(34, 16).addCuboid(0.0F, -5.5F, -5.5F, 0.0F, 11.0F, 11.0F, 0.0F, true);
+        this.hair5.setTextureOffset(34, 16).addBox(0.0F, -5.5F, -5.5F, 0.0F, 11.0F, 11.0F, 0.0F, true);
 
         this.hair6 = new ModelRendererPlus(this);
         this.hair6.setDefaultRotPoint(4.0F, -1.5F, 2.0F);
         this.head.addChild(this.hair6);
         this.setRotationAngle(this.hair6, 0.0F, 0.2276F, 0.0F);
-        this.hair6.setTextureOffset(34, 5).addCuboid(0.0F, -5.5F, -5.5F, 0.0F, 11.0F, 11.0F, 0.0F, true);
+        this.hair6.setTextureOffset(34, 5).addBox(0.0F, -5.5F, -5.5F, 0.0F, 11.0F, 11.0F, 0.0F, true);
 
         this.hair7 = new ModelRendererPlus(this);
         this.hair7.setDefaultRotPoint(-4.0F, -1.5F, 2.0F);
         this.head.addChild(this.hair7);
         this.setRotationAngle(this.hair7, 0.0F, -0.2276F, 0.0F);
-        this.hair7.setTextureOffset(34, 5).addCuboid(0.0F, -5.5F, -5.5F, 0.0F, 11.0F, 11.0F, 0.0F, true);
+        this.hair7.setTextureOffset(34, 5).addBox(0.0F, -5.5F, -5.5F, 0.0F, 11.0F, 11.0F, 0.0F, true);
 
         this.leftArmUp = new ModelRendererPlus(this);
         this.leftArmUp.setDefaultRotPoint(6.0F, 0.0F, 0.0F);
         this.upperTorso.addChild(this.leftArmUp);
-        this.leftArmUp.setTextureOffset(12, 43).addCuboid(0.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, 0.0F, false);
+        this.leftArmUp.setTextureOffset(12, 43).addBox(0.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, 0.0F, false);
 
         this.leftShoulder = new ModelRendererPlus(this);
         this.leftShoulder.setDefaultRotPoint(2.4F, -2.0F, 0.0F);
         this.leftArmUp.addChild(this.leftShoulder);
         this.setRotationAngle(this.leftShoulder, 0.0F, 0.0F, 0.1571F);
-        this.leftShoulder.setTextureOffset(10, 51).addCuboid(-2.5F, -0.5F, -2.5F, 5.0F, 1.0F, 5.0F, 0.0F, true);
+        this.leftShoulder.setTextureOffset(10, 51).addBox(-2.5F, -0.5F, -2.5F, 5.0F, 1.0F, 5.0F, 0.0F, true);
 
         this.leftBiceps = new ModelRendererPlus(this);
         this.leftBiceps.setDefaultRotPoint(4.5F, 1.6F, 0.0F);
         this.leftArmUp.addChild(this.leftBiceps);
         this.setRotationAngle(this.leftBiceps, 0.0F, 0.0F, 0.8727F);
-        this.leftBiceps.setTextureOffset(26, 56).addCuboid(-2.5F, -2.0F, -2.5F, 5.0F, 4.0F, 5.0F, 0.0F, false);
+        this.leftBiceps.setTextureOffset(26, 56).addBox(-2.5F, -2.0F, -2.5F, 5.0F, 4.0F, 5.0F, 0.0F, false);
 
         this.leftBicepsJoint = new ModelRendererPlus(this);
         this.leftBicepsJoint.setDefaultRotPoint(2.0F, 2.0F, 0.0F);
         this.leftBiceps.addChild(this.leftBicepsJoint);
         this.setRotationAngle(this.leftBicepsJoint, 0.0F, 0.0F, -0.8727F);
-        this.leftBicepsJoint.setTextureOffset(0, 0).addCuboid(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, true);
+        this.leftBicepsJoint.setTextureOffset(0, 0).addBox(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, true);
 
         this.leftElbow = new ModelRendererPlus(this);
         this.leftElbow.setDefaultRotPoint(0.6F, 0.9F, 0.0F);
         this.leftBicepsJoint.addChild(this.leftElbow);
-        this.leftElbow.setTextureOffset(28, 48).addCuboid(-1.5F, -2.0F, -1.5F, 3.0F, 4.0F, 3.0F, 0.0F, false);
+        this.leftElbow.setTextureOffset(28, 48).addBox(-1.5F, -2.0F, -1.5F, 3.0F, 4.0F, 3.0F, 0.0F, false);
 
         this.leftLowerArm = new ModelRendererPlus(this);
         this.leftLowerArm.setDefaultRotPoint(0.2F, 4.0F, 0.0F);
         this.leftElbow.addChild(this.leftLowerArm);
-        this.leftLowerArm.setTextureOffset(26, 38).addCuboid(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, 0.0F, false);
+        this.leftLowerArm.setTextureOffset(26, 38).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, 0.0F, false);
 
         this.leftWrist = new ModelRendererPlus(this);
         this.leftWrist.setDefaultRotPoint(0.0F, 3.5F, 0.0F);
         this.leftLowerArm.addChild(this.leftWrist);
-        this.leftWrist.setTextureOffset(59, 69).addCuboid(-1.5F, -1.5F, -2.0F, 3.0F, 3.0F, 4.0F, 0.0F, false);
+        this.leftWrist.setTextureOffset(59, 69).addBox(-1.5F, -1.5F, -2.0F, 3.0F, 3.0F, 4.0F, 0.0F, false);
 
         this.leftHand = new ModelRendererPlus(this);
         this.leftHand.setDefaultRotPoint(1.0F, 2.5F, 0.0F);
         this.leftWrist.addChild(this.leftHand);
-        this.leftHand.setTextureOffset(16, 0).addCuboid(-0.5F, -1.0F, -2.0F, 1.0F, 2.0F, 4.0F, 0.0F, false);
+        this.leftHand.setTextureOffset(16, 0).addBox(-0.5F, -1.0F, -2.0F, 1.0F, 2.0F, 4.0F, 0.0F, false);
 
         this.leftFinger1 = new ModelRendererPlus(this);
         this.leftFinger1.setDefaultRotPoint(0.0F, 1.0F, -1.8F);
         this.leftHand.addChild(this.leftFinger1);
-        this.leftFinger1.setTextureOffset(0, 0).addCuboid(-2.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F, 0.0F, false);
+        this.leftFinger1.setTextureOffset(0, 0).addBox(-2.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F, 0.0F, false);
 
         this.leftFinger2 = new ModelRendererPlus(this);
         this.leftFinger2.setDefaultRotPoint(0.0F, 1.0F, -0.7F);
         this.leftHand.addChild(this.leftFinger2);
-        this.leftFinger2.setTextureOffset(0, 0).addCuboid(-2.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F, 0.0F, false);
+        this.leftFinger2.setTextureOffset(0, 0).addBox(-2.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F, 0.0F, false);
 
         this.leftFinger3 = new ModelRendererPlus(this);
         this.leftFinger3.setDefaultRotPoint(0.0F, 1.0F, 0.4F);
         this.leftHand.addChild(this.leftFinger3);
-        this.leftFinger3.setTextureOffset(0, 0).addCuboid(-2.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F, 0.0F, false);
+        this.leftFinger3.setTextureOffset(0, 0).addBox(-2.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F, 0.0F, false);
 
         this.leftFinger4 = new ModelRendererPlus(this);
         this.leftFinger4.setDefaultRotPoint(0.0F, 1.0F, 1.5F);
         this.leftHand.addChild(this.leftFinger4);
-        this.leftFinger4.setTextureOffset(0, 0).addCuboid(-2.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F, 0.0F, false);
+        this.leftFinger4.setTextureOffset(0, 0).addBox(-2.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F, 0.0F, false);
 
         this.leftThumbUp = new ModelRendererPlus(this);
         this.leftThumbUp.setDefaultRotPoint(-1.0F, 0.5F, -1.7F);
         this.leftWrist.addChild(this.leftThumbUp);
         this.setRotationAngle(this.leftThumbUp, -0.791F, 0.0F, 0.0F);
-        this.leftThumbUp.setTextureOffset(16, 60).addCuboid(-0.5F, 0.0F, -0.5F, 1.0F, 2.0F, 1.0F, 0.0F, true);
+        this.leftThumbUp.setTextureOffset(16, 60).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 2.0F, 1.0F, 0.0F, true);
 
         this.leftThumbDown = new ModelRendererPlus(this);
         this.leftThumbDown.setDefaultRotPoint(0.0F, 1.6F, -0.2F);
         this.leftThumbUp.addChild(this.leftThumbDown);
         this.setRotationAngle(this.leftThumbDown, 0.791F, 0.0F, 0.0F);
-        this.leftThumbDown.setTextureOffset(16, 60).addCuboid(-0.5F, 0.0F, -0.5F, 1.0F, 2.0F, 1.0F, 0.0F, true);
+        this.leftThumbDown.setTextureOffset(16, 60).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 2.0F, 1.0F, 0.0F, true);
 
         this.leftElbowBone = new ModelRendererPlus(this);
         this.leftElbowBone.setDefaultRotPoint(2.0F, -4.0F, 0.0F);
         this.leftLowerArm.addChild(this.leftElbowBone);
         this.setRotationAngle(this.leftElbowBone, 0.0F, 0.0F, 0.2485F);
-        this.leftElbowBone.setTextureOffset(10, 0).addCuboid(-0.5F, -2.0F, -1.0F, 1.0F, 4.0F, 2.0F, 0.0F, true);
+        this.leftElbowBone.setTextureOffset(10, 0).addBox(-0.5F, -2.0F, -1.0F, 1.0F, 4.0F, 2.0F, 0.0F, true);
 
         this.rightArmUp = new ModelRendererPlus(this);
         this.rightArmUp.setDefaultRotPoint(-6.0F, 0.0F, 0.0F);
         this.upperTorso.addChild(this.rightArmUp);
-        this.rightArmUp.setTextureOffset(12, 43).addCuboid(-4.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, 0.0F, false);
+        this.rightArmUp.setTextureOffset(12, 43).addBox(-4.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, 0.0F, false);
 
         this.rightShoulder = new ModelRendererPlus(this);
         this.rightShoulder.setDefaultRotPoint(-2.4F, -2.0F, 0.0F);
         this.rightArmUp.addChild(this.rightShoulder);
         this.setRotationAngle(this.rightShoulder, 0.0F, 0.0F, -0.1571F);
-        this.rightShoulder.setTextureOffset(10, 51).addCuboid(-2.5F, -0.5F, -2.5F, 5.0F, 1.0F, 5.0F, 0.0F, false);
+        this.rightShoulder.setTextureOffset(10, 51).addBox(-2.5F, -0.5F, -2.5F, 5.0F, 1.0F, 5.0F, 0.0F, false);
 
         this.rightBiceps = new ModelRendererPlus(this);
         this.rightBiceps.setDefaultRotPoint(-4.5F, 1.6F, 0.0F);
         this.rightArmUp.addChild(this.rightBiceps);
         this.setRotationAngle(this.rightBiceps, 0.0F, 0.0F, -0.8727F);
-        this.rightBiceps.setTextureOffset(26, 56).addCuboid(-2.5F, -2.0F, -2.5F, 5.0F, 4.0F, 5.0F, 0.0F, true);
+        this.rightBiceps.setTextureOffset(26, 56).addBox(-2.5F, -2.0F, -2.5F, 5.0F, 4.0F, 5.0F, 0.0F, true);
 
         this.rightBicepsJoint = new ModelRendererPlus(this);
         this.rightBicepsJoint.setDefaultRotPoint(-2.0F, 2.0F, 0.0F);
         this.rightBiceps.addChild(this.rightBicepsJoint);
         this.setRotationAngle(this.rightBicepsJoint, 0.0F, 0.0F, 0.8727F);
-        this.rightBicepsJoint.setTextureOffset(0, 0).addCuboid(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, true);
+        this.rightBicepsJoint.setTextureOffset(0, 0).addBox(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, true);
 
         this.rightElbow = new ModelRendererPlus(this);
         this.rightElbow.setDefaultRotPoint(-0.6F, 0.9F, 0.0F);
         this.rightBicepsJoint.addChild(this.rightElbow);
-        this.rightElbow.setTextureOffset(28, 48).addCuboid(-1.5F, -2.0F, -1.5F, 3.0F, 4.0F, 3.0F, 0.0F, true);
+        this.rightElbow.setTextureOffset(28, 48).addBox(-1.5F, -2.0F, -1.5F, 3.0F, 4.0F, 3.0F, 0.0F, true);
 
         this.rightLowerArm = new ModelRendererPlus(this);
         this.rightLowerArm.setDefaultRotPoint(-0.2F, 4.0F, 0.0F);
         this.rightElbow.addChild(this.rightLowerArm);
-        this.rightLowerArm.setTextureOffset(26, 38).addCuboid(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, 0.0F, true);
+        this.rightLowerArm.setTextureOffset(26, 38).addBox(-2.0F, -2.0F, -2.0F, 4.0F, 4.0F, 4.0F, 0.0F, true);
 
         this.rightWrist = new ModelRendererPlus(this);
         this.rightWrist.setDefaultRotPoint(0.0F, 3.5F, 0.0F);
         this.rightLowerArm.addChild(this.rightWrist);
-        this.rightWrist.setTextureOffset(59, 69).addCuboid(-1.5F, -1.5F, -2.0F, 3.0F, 3.0F, 4.0F, 0.0F, true);
+        this.rightWrist.setTextureOffset(59, 69).addBox(-1.5F, -1.5F, -2.0F, 3.0F, 3.0F, 4.0F, 0.0F, true);
 
         this.rightHand = new ModelRendererPlus(this);
         this.rightHand.setDefaultRotPoint(-1.0F, 2.5F, 0.0F);
         this.rightWrist.addChild(this.rightHand);
-        this.rightHand.setTextureOffset(16, 0).addCuboid(-0.5F, -1.0F, -2.0F, 1.0F, 2.0F, 4.0F, 0.0F, true);
+        this.rightHand.setTextureOffset(16, 0).addBox(-0.5F, -1.0F, -2.0F, 1.0F, 2.0F, 4.0F, 0.0F, true);
 
         this.rightFinger1 = new ModelRendererPlus(this);
         this.rightFinger1.setDefaultRotPoint(0.0F, 1.0F, -1.8F);
         this.rightHand.addChild(this.rightFinger1);
-        this.rightFinger1.setTextureOffset(0, 0).addCuboid(0.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F, 0.0F, true);
+        this.rightFinger1.setTextureOffset(0, 0).addBox(0.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F, 0.0F, true);
 
         this.rightFinger2 = new ModelRendererPlus(this);
         this.rightFinger2.setDefaultRotPoint(0.0F, 1.0F, -0.7F);
         this.rightHand.addChild(this.rightFinger2);
-        this.rightFinger2.setTextureOffset(0, 0).addCuboid(0.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F, 0.0F, true);
+        this.rightFinger2.setTextureOffset(0, 0).addBox(0.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F, 0.0F, true);
 
         this.rightFinger3 = new ModelRendererPlus(this);
         this.rightFinger3.setDefaultRotPoint(0.0F, 1.0F, 0.4F);
         this.rightHand.addChild(this.rightFinger3);
-        this.rightFinger3.setTextureOffset(0, 0).addCuboid(0.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F, 0.0F, true);
+        this.rightFinger3.setTextureOffset(0, 0).addBox(0.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F, 0.0F, true);
 
         this.rightFinger4 = new ModelRendererPlus(this);
         this.rightFinger4.setDefaultRotPoint(0.0F, 1.0F, 1.5F);
         this.rightHand.addChild(this.rightFinger4);
-        this.rightFinger4.setTextureOffset(0, 0).addCuboid(0.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F, 0.0F, true);
+        this.rightFinger4.setTextureOffset(0, 0).addBox(0.0F, -0.5F, -0.5F, 2.0F, 1.0F, 1.0F, 0.0F, true);
 
         this.rightThumbUp = new ModelRendererPlus(this);
         this.rightThumbUp.setDefaultRotPoint(1.0F, 0.5F, -1.7F);
         this.rightWrist.addChild(this.rightThumbUp);
         this.setRotationAngle(this.rightThumbUp, -0.791F, 0.0F, 0.0F);
-        this.rightThumbUp.setTextureOffset(16, 60).addCuboid(-0.5F, 0.0F, -0.5F, 1.0F, 2.0F, 1.0F, 0.0F, true);
+        this.rightThumbUp.setTextureOffset(16, 60).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 2.0F, 1.0F, 0.0F, true);
 
         this.rightThumbDown = new ModelRendererPlus(this);
         this.rightThumbDown.setDefaultRotPoint(0.0F, 1.6F, -0.2F);
         this.rightThumbUp.addChild(this.rightThumbDown);
         this.setRotationAngle(this.rightThumbDown, 0.791F, 0.0F, 0.0F);
-        this.rightThumbDown.setTextureOffset(16, 60).addCuboid(-0.5F, 0.0F, -0.5F, 1.0F, 2.0F, 1.0F, 0.0F, true);
+        this.rightThumbDown.setTextureOffset(16, 60).addBox(-0.5F, 0.0F, -0.5F, 1.0F, 2.0F, 1.0F, 0.0F, true);
 
         this.rightElbowBonee = new ModelRendererPlus(this);
         this.rightElbowBonee.setDefaultRotPoint(-2.0F, -4.0F, 0.0F);
         this.rightLowerArm.addChild(this.rightElbowBonee);
         this.setRotationAngle(this.rightElbowBonee, 0.0F, 0.0F, -0.2485F);
-        this.rightElbowBonee.setTextureOffset(10, 0).addCuboid(-0.5F, -2.0F, -1.0F, 1.0F, 4.0F, 2.0F, 0.0F, true);
+        this.rightElbowBonee.setTextureOffset(10, 0).addBox(-0.5F, -2.0F, -1.0F, 1.0F, 4.0F, 2.0F, 0.0F, true);
     }
 
     @Override
@@ -586,7 +586,7 @@ public class ModelHeracles extends ModelServant<EntityHeracles> {
     }
 
     @Override
-    public ModelRenderer func_205072_a() {
+    public ModelRenderer getModelHead() {
         return this.head;
     }
 

@@ -83,14 +83,14 @@ public class EntityHassanCopy extends CreatureEntity implements IAnimated, IOwna
     }
 
     private void updateAttributes() {
-        this.getAttribute(Attributes.GENERIC_MAX_HEALTH).setBaseValue(Config.Common.hassanCopyProps.health());
+        this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(Config.Common.hassanCopyProps.health());
         this.setHealth(this.getMaxHealth());
-        this.getAttribute(Attributes.GENERIC_ATTACK_DAMAGE).setBaseValue(Config.Common.hassanCopyProps.strength());
-        this.getAttribute(Attributes.GENERIC_ARMOR).setBaseValue(Config.Common.hassanCopyProps.armor());
+        this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(Config.Common.hassanCopyProps.strength());
+        this.getAttribute(Attributes.ARMOR).setBaseValue(Config.Common.hassanCopyProps.armor());
         this.getAttribute(FateAttributes.MAGIC_RESISTANCE).setBaseValue(Config.Common.hassanCopyProps.magicRes());
         this.getAttribute(FateAttributes.PROJECTILE_BLOCKCHANCE).setBaseValue(Config.Common.hassanCopyProps.projectileBlockChance());
         this.getAttribute(FateAttributes.PROJECTILE_RESISTANCE).setBaseValue(Config.Common.hassanCopyProps.projectileProt());
-        this.getAttribute(Attributes.GENERIC_MOVEMENT_SPEED).setBaseValue(Config.Common.hassanCopyProps.moveSpeed());//default 0.3
+        this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(Config.Common.hassanCopyProps.moveSpeed());//default 0.3
     }
 
     @Override
@@ -137,7 +137,7 @@ public class EntityHassanCopy extends CreatureEntity implements IAnimated, IOwna
                 damage *= 0.5;
 
             if (damageSource.isProjectile() && !damageSource.isUnblockable() && this.projectileBlockChance(damageSource, damage)) {
-                this.world.playSound(null, this.getBlockPos(), SoundEvents.ITEM_SHIELD_BLOCK, SoundCategory.NEUTRAL, 1, 1);
+                this.world.playSound(null, this.getPosition(), SoundEvents.ITEM_SHIELD_BLOCK, SoundCategory.NEUTRAL, 1, 1);
                 if (damageSource.getImmediateSource() != null)
                     damageSource.getImmediateSource().remove();
                 return false;
@@ -163,7 +163,7 @@ public class EntityHassanCopy extends CreatureEntity implements IAnimated, IOwna
             ++this.deathTime;
             if (this.deathTime == 1) {
                 //if(this.getLastDamageSource()!=DamageSource.OUT_OF_WORLD)
-                this.world.getServer().getPlayerList().broadcastChatMessage(new TranslationTextComponent("chat.servant.death").formatted(TextFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
+                this.world.getServer().getPlayerList().func_232641_a_(new TranslationTextComponent("chat.servant.death").mergeStyle(TextFormatting.RED), ChatType.SYSTEM, Util.DUMMY_UUID);
                 this.playSound(SoundEvents.ENTITY_WITHER_SPAWN, 1.0F, 1.0F);
             }
             if (this.deathTime == this.maxDeathTick()) {

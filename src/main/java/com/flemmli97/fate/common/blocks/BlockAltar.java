@@ -127,12 +127,12 @@ public class BlockAltar extends ContainerBlock {
     }
 
     @Override
-    public BlockRenderType getRenderType(BlockState p_149645_1_) {
+    public BlockRenderType getRenderType(BlockState state) {
         return BlockRenderType.MODEL;
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader p_220053_2_, BlockPos p_220053_3_, ISelectionContext p_220053_4_) {
+    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
         switch (state.get(FACING)) {
             case WEST:
                 return west;
@@ -151,8 +151,8 @@ public class BlockAltar extends ContainerBlock {
     }
 
     @Override
-    public void onReplaced(BlockState state, World world, BlockPos pos, BlockState oldState, boolean p_196243_5_) {
-        if (!state.isIn(oldState.getBlock())) {
+    public void onReplaced(BlockState state, World world, BlockPos pos, BlockState oldState, boolean isMoving) {
+        if (!state.matchesBlock(oldState.getBlock())) {
             TileEntity tileentity = world.getTileEntity(pos);
             if (tileentity instanceof TileAltar) {
                 TileAltar te = (TileAltar) tileentity;
@@ -170,7 +170,7 @@ public class BlockAltar extends ContainerBlock {
                 }
                 world.updateComparatorOutputLevel(pos, this);
             }
-            super.onReplaced(state, world, pos, oldState, p_196243_5_);
+            super.onReplaced(state, world, pos, oldState, isMoving);
         }
     }
 
@@ -210,7 +210,7 @@ public class BlockAltar extends ContainerBlock {
     }
 
     @Override
-    public ActionResultType onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult res) {
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult res) {
         TileAltar altar = (TileAltar) world.getTileEntity(pos);
         ItemStack stack = player.getHeldItem(hand);
         if (world.isRemote) {
@@ -243,14 +243,14 @@ public class BlockAltar extends ContainerBlock {
                             cap.setCommandSeals(player, 3);
                             AdvancementRegister.grailWarTrigger.trigger((ServerPlayerEntity) player, true);
                         } else {
-                            player.sendMessage(new TranslationTextComponent("chat.altar.fail").formatted(TextFormatting.DARK_RED), Util.NIL_UUID);
+                            player.sendMessage(new TranslationTextComponent("chat.altar.fail").mergeStyle(TextFormatting.DARK_RED), Util.DUMMY_UUID);
                         }
                     }
                 } else {
-                    player.sendMessage(new TranslationTextComponent("chat.altar.incomplete").formatted(TextFormatting.DARK_RED), Util.NIL_UUID);
+                    player.sendMessage(new TranslationTextComponent("chat.altar.incomplete").mergeStyle(TextFormatting.DARK_RED), Util.DUMMY_UUID);
                 }
             } else {
-                player.sendMessage(new TranslationTextComponent("chat.altar.existing").formatted(TextFormatting.DARK_RED), Util.NIL_UUID);
+                player.sendMessage(new TranslationTextComponent("chat.altar.existing").mergeStyle(TextFormatting.DARK_RED), Util.DUMMY_UUID);
             }
         }
         return ActionResultType.FAIL;
