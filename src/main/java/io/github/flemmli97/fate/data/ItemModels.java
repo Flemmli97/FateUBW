@@ -1,7 +1,7 @@
 package io.github.flemmli97.fate.data;
 
-import io.github.flemmli97.fate.Fate;
 import com.flemmli97.tenshilib.common.item.SpawnEgg;
+import io.github.flemmli97.fate.Fate;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.ModelsResourceUtil;
 import net.minecraftforge.client.model.generators.ItemModelProvider;

@@ -2,9 +2,9 @@
 
 import java.util.function.Predicate;
 
-import com.flemmli97.fatemod.Fate;
-import com.flemmli97.fatemod.common.handler.GrailReward;
-import com.flemmli97.fatemod.common.init.ModItems;
+import com.flemmli97.fateubw.Fate;
+import com.flemmli97.fateubw.common.handler.GrailReward;
+import com.flemmli97.fateubw.common.init.ModItems;
 import com.flemmli97.tenshilib.common.entity.EntityUtil;
 
 import io.netty.buffer.ByteBuf;

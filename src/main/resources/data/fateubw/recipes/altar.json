@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RTR",
+    "GDG",
+    "LGL"
+  ],
+  "key": {
+    "T": {
+      "item": "minecraft:torch"
+    },
+    "R": {
+      "item": "minecraft:red_wool"
+    },
+    "L": {
+      "tag": "forge:storage_blocks/lapis"
+    },
+    "G": {
+      "item": "fateubw:gem_cluster"
+    },
+    "D": {
+      "tag": "forge:storage_blocks/diamond"
+    }
+  },
+  "result": {
+    "item": "fateubw:altar"
+  }
+}

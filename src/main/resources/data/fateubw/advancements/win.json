@@ -1,0 +1,23 @@
+{
+    "display": {
+        "icon": {
+            "item": "fateubw:holy_grail"
+        },
+        "title": {
+            "translate": "advancements.fate.win.title"
+        },
+        "description": {
+            "translate": "advancements.fate.win.description"
+        },
+        "frame": "challenge"
+    },
+    "parent": "fateubw:summon",
+    "criteria": {
+        "join": {
+            "trigger": "fateubw:altar",
+            "conditions": {
+                "joining": "false"
+            }
+        }
+    }
+}

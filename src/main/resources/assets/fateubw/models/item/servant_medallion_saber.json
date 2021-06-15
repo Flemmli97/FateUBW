@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "fateubw:items/servant_medallion_saber"
+  }
+}

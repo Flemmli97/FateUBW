@@ -1,0 +1,22 @@
+{
+    "display": {
+        "icon": {
+            "item": "fateubw:altar"
+        },
+        "title": {
+            "translate": "advancements.fate.join.title"
+        },
+        "description": {
+            "translate": "advancements.fate.join.description"
+        }
+    },
+    "parent": "fateubw:root",
+    "criteria": {
+        "join": {
+            "trigger": "fateubw:altar",
+            "conditions": {
+                "joining": "true"
+            }
+        }
+    }
+}

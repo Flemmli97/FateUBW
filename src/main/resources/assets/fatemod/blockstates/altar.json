@@ -1,8 +1,0 @@
-{
-    "variants": {
-	"facing=north": {"model": "fatemod:block/altar"},
-	"facing=east": {"model": "fatemod:block/altar","y":90},
-    	"facing=south": {"model": "fatemod:block/altar","y":180},
-    	"facing=west": {"model": "fatemod:block/altar","y":270}
-    }
-}

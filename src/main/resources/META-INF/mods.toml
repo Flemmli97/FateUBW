@@ -7,19 +7,19 @@ displayURL="https://github.com/Flemmli97/FateUBW"
 credits=""
 authors="Flemmli97, BlackSaturn"
 [[mods]] 
-  modId="fatemod"
+  modId="fateubw"
   version="${file.jarVersion}"
   displayName="FateUBW"
   # updateJSONURL=""
   authors="Flemmli97"
   description='''The Holy Grail War! Brought to minecraft'''
-[[dependency.fatemod]]
+[[dependency.fateubw]]
   modId="minecraft"
   mandatory=true
   versionRange="[1.16.3,)"
   ordering="NONE"
   side="BOTH"
-[[dependencies.fatemod]]
+[[dependencies.fateubw]]
   modId="tenshilib"
   mandatory=true
   versionRange="[1.16.4-1.4.0,)"

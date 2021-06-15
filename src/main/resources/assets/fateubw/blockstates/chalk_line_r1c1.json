@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "fateubw:block/chalk_line_r1c1"
+    },
+    "facing=south": {
+      "model": "fateubw:block/chalk_line_r1c1",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "fateubw:block/chalk_line_r1c1",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "fateubw:block/chalk_line_r1c1",
+      "y": 90
+    }
+  }
+}

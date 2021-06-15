@@ -37,7 +37,7 @@ public class BlockStates extends BlockStateProvider {
     }
 
     private ModelFile chalkBase() {
-        return this.models().singleTexture("fatemod:block/chalk_base", this.mcLoc("block/thin_block"), "particle", new ResourceLocation(Fate.MODID, "blocks/chalk_line_none"))
+        return this.models().singleTexture("fateubw:block/chalk_base", this.mcLoc("block/thin_block"), "particle", new ResourceLocation(Fate.MODID, "blocks/chalk_line_none"))
                 .element().from(0, 0, 0).to(16, 0.5f, 16)
                 .face(Direction.UP).uvs(0, 0, 16, 16).texture("#tex").end()
                 .face(Direction.DOWN).uvs(0, 16, 16, 0).cullface(Direction.DOWN).texture("#tex").end()

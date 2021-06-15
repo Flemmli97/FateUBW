@@ -1,0 +1,13 @@
+{
+	"parameters": {
+	  "cycle": ["/", 2]
+	},
+	"clips": {
+	  "spin": ["apply", "fateubw:item/enuma_elish@spin", "#cycle" ]
+	},
+	"states": [
+	  "spin"
+	],
+	"transitions": {},
+	"start_state": "spin"
+  }

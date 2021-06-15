@@ -15,7 +15,7 @@ public class DataEvent {
         if (event.includeClient()) {
             data.addProvider(new BlockStates(data, event.getExistingFileHelper()));
             data.addProvider(new ItemModels(data, event.getExistingFileHelper()));
-            data.addProvider(new Lang(data));
+            data.addProvider(new Lang(data, event.getExistingFileHelper()));
         }
         if (event.includeServer()) {
             data.addProvider(new Loottables(data));

@@ -1,0 +1,6 @@
+{
+  "parent": "fateubw:block/ore",
+  "textures": {
+    "ore": "fateubw:blocks/crystal_ore"
+  }
+}

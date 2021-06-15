@@ -17,7 +17,7 @@ plugins {
     id 'com.matthewprenger.cursegradle' version '1.4.0'
 }
 apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'org.spongepowered.mixin'
+//apply plugin: 'org.spongepowered.mixin'
 
 import com.diluv.schoomp.Webhook
 import com.diluv.schoomp.message.Message
@@ -72,7 +72,7 @@ minecraft {
             workingDirectory project.file('run')
 
             // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.markers', 'REGISTRIES'
 
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
@@ -90,6 +90,10 @@ minecraft {
 
 sourceSets.main.resources {
     srcDir 'src/generated/resources'
+}
+
+processResources {
+    exclude '.cache'
 }
 
 repositories {
@@ -118,6 +122,7 @@ repositories {
 
 dependencies {
     minecraft 'net.minecraftforge:forge:' + "${mcversion}-${forge_version}"
+    annotationProcessor 'org.spongepowered:mixin:0.8.2:processor'
 
     compile fg.deobf(tenshilib_dep)
     runtimeOnly fg.deobf(hwyla_dep)

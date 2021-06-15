@@ -82,7 +82,7 @@ public class EntityBabylonWeapon extends EntityProjectile {
         if (this.getPreShootTick() == this.dataManager.get(shootTime)) {
             if (!this.world.isRemote) {
                 if (thrower instanceof PlayerEntity) {
-                    RayTraceResult hit = RayTraceUtils.entityRayTrace(thrower, 64, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, false, null);
+                    RayTraceResult hit = RayTraceUtils.entityRayTrace(thrower, 64, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, false, false, null);
                     this.shootAtPosition(hit.getHitVec().x, hit.getHitVec().y, hit.getHitVec().z, 0.5F, 0.5F);
                 } else if (this.target != null) {
                     Vector3d targetMot = this.target.getMotion();

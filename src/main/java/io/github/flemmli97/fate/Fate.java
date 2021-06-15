@@ -35,7 +35,7 @@ import java.io.File;
 @Mod(value = Fate.MODID)
 public class Fate {
 
-    public static final String MODID = "fatemod";
+    public static final String MODID = "fateubw";
     public static final Logger logger = LogManager.getLogger(Fate.MODID);
 
     public Fate() {

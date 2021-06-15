@@ -1,6 +1,0 @@
-{
-  "parent": "fatemod:block/chalk_base",
-  "textures": {
-    "tex": "fatemod:blocks/chalk_line_r4c4"
-  }
-}

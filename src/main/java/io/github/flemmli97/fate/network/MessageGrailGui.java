@@ -2,8 +2,8 @@
 
 import java.util.Set;
 
-import com.flemmli97.fatemod.Fate;
-import com.flemmli97.fatemod.common.handler.GrailReward;
+import com.flemmli97.fateubw.Fate;
+import com.flemmli97.fateubw.common.handler.GrailReward;
 import com.google.common.collect.Sets;
 
 import io.netty.buffer.ByteBuf;
