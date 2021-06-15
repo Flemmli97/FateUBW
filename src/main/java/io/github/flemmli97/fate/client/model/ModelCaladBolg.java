@@ -1,8 +1,8 @@
 package io.github.flemmli97.fate.client.model;
 
-import io.github.flemmli97.fate.common.entity.EntityCaladBolg;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import io.github.flemmli97.fate.common.entity.EntityCaladBolg;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 

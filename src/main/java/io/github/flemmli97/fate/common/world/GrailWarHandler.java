@@ -1,5 +1,8 @@
 package io.github.flemmli97.fate.common.world;
 
+import com.flemmli97.tenshilib.common.entity.EntityUtil;
+import com.google.common.collect.ImmutableSet;
+import com.mojang.authlib.GameProfile;
 import io.github.flemmli97.fate.common.capability.PlayerCapProvider;
 import io.github.flemmli97.fate.common.config.Config;
 import io.github.flemmli97.fate.common.entity.servant.EntityServant;
@@ -11,9 +14,6 @@ import io.github.flemmli97.fate.common.utils.SummonUtils;
 import io.github.flemmli97.fate.common.utils.Utils;
 import io.github.flemmli97.fate.network.PacketHandler;
 import io.github.flemmli97.fate.network.S2CWarData;
-import com.flemmli97.tenshilib.common.entity.EntityUtil;
-import com.google.common.collect.ImmutableSet;
-import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.item.ItemEntity;

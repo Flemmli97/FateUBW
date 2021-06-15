@@ -1,5 +1,10 @@
 package io.github.flemmli97.fate.common.entity.servant;
 
+import com.flemmli97.tenshilib.api.entity.IAnimated;
+import com.flemmli97.tenshilib.api.entity.IOwnable;
+import com.flemmli97.tenshilib.common.entity.AnimatedAction;
+import com.flemmli97.tenshilib.common.entity.ai.MoveControllerPlus;
+import com.flemmli97.tenshilib.common.utils.NBTUtils;
 import io.github.flemmli97.fate.common.capability.PlayerCapProvider;
 import io.github.flemmli97.fate.common.config.Config;
 import io.github.flemmli97.fate.common.config.ServantProperties;
@@ -12,11 +17,6 @@ import io.github.flemmli97.fate.common.utils.EnumServantType;
 import io.github.flemmli97.fate.common.utils.EnumServantUpdate;
 import io.github.flemmli97.fate.common.utils.Utils;
 import io.github.flemmli97.fate.common.world.GrailWarHandler;
-import com.flemmli97.tenshilib.api.entity.IAnimated;
-import com.flemmli97.tenshilib.api.entity.IOwnable;
-import com.flemmli97.tenshilib.common.entity.AnimatedAction;
-import com.flemmli97.tenshilib.common.entity.ai.MoveControllerPlus;
-import com.flemmli97.tenshilib.common.utils.NBTUtils;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.Entity;

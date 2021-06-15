@@ -1,10 +1,10 @@
 package io.github.flemmli97.fate.client.model;
 
-import io.github.flemmli97.fate.common.entity.EntityGordiusWheel;
 import com.flemmli97.tenshilib.client.model.IResetModel;
 import com.flemmli97.tenshilib.client.model.ModelRendererPlus;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import io.github.flemmli97.fate.common.entity.EntityGordiusWheel;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.util.math.MathHelper;
 

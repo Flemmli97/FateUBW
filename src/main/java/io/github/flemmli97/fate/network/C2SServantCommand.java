@@ -1,5 +1,6 @@
 package io.github.flemmli97.fate.network;
 
+import com.flemmli97.tenshilib.common.utils.RayTraceUtils;
 import io.github.flemmli97.fate.common.capability.IPlayer;
 import io.github.flemmli97.fate.common.capability.PlayerCapProvider;
 import io.github.flemmli97.fate.common.config.Config;
@@ -7,7 +8,6 @@ import io.github.flemmli97.fate.common.entity.servant.EntityServant;
 import io.github.flemmli97.fate.common.utils.EnumServantUpdate;
 import io.github.flemmli97.fate.common.utils.Utils;
 import io.github.flemmli97.fate.common.world.GrailWarHandler;
-import com.flemmli97.tenshilib.common.utils.RayTraceUtils;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;

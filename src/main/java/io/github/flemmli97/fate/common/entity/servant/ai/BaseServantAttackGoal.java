@@ -1,8 +1,8 @@
 package io.github.flemmli97.fate.common.entity.servant.ai;
 
-import io.github.flemmli97.fate.common.entity.servant.EntityServant;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import com.flemmli97.tenshilib.common.entity.ai.AnimatedAttackGoal;
+import io.github.flemmli97.fate.common.entity.servant.EntityServant;
 
 public class BaseServantAttackGoal<T extends EntityServant> extends AnimatedAttackGoal<T> {
 

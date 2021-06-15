@@ -1,8 +1,5 @@
 package io.github.flemmli97.fate.client.model;
 
-import io.github.flemmli97.fate.Fate;
-import io.github.flemmli97.fate.client.render.ServantRenderer;
-import io.github.flemmli97.fate.common.entity.servant.EntityServant;
 import com.flemmli97.tenshilib.api.entity.IAnimated;
 import com.flemmli97.tenshilib.client.model.BlockBenchAnimations;
 import com.flemmli97.tenshilib.client.model.IItemArmModel;
@@ -11,6 +8,9 @@ import com.flemmli97.tenshilib.client.model.ModelRendererPlus;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import io.github.flemmli97.fate.Fate;
+import io.github.flemmli97.fate.client.render.ServantRenderer;
+import io.github.flemmli97.fate.common.entity.servant.EntityServant;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.model.EntityModel;

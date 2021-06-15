@@ -1,5 +1,6 @@
 package io.github.flemmli97.fate.common.registry;
 
+import com.google.common.collect.Lists;
 import io.github.flemmli97.fate.Fate;
 import io.github.flemmli97.fate.common.config.Config;
 import io.github.flemmli97.fate.common.config.ServantProperties;
@@ -32,7 +33,6 @@ import io.github.flemmli97.fate.common.entity.servant.EntityServant;
 import io.github.flemmli97.fate.common.items.FateEgg;
 import io.github.flemmli97.fate.common.lib.LibEntities;
 import io.github.flemmli97.fate.common.utils.EnumServantType;
-import com.google.common.collect.Lists;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;

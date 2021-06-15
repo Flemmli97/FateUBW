@@ -1,7 +1,5 @@
 package io.github.flemmli97.fate.client.model;
 
-import io.github.flemmli97.fate.Fate;
-import io.github.flemmli97.fate.common.entity.EntityHassanCopy;
 import com.flemmli97.tenshilib.client.model.BlockBenchAnimations;
 import com.flemmli97.tenshilib.client.model.IItemArmModel;
 import com.flemmli97.tenshilib.client.model.IResetModel;
@@ -9,6 +7,8 @@ import com.flemmli97.tenshilib.client.model.ModelRendererPlus;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import io.github.flemmli97.fate.Fate;
+import io.github.flemmli97.fate.common.entity.EntityHassanCopy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.model.EntityModel;

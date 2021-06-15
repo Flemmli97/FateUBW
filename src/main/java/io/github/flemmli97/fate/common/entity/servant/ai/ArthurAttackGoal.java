@@ -1,8 +1,8 @@
 package io.github.flemmli97.fate.common.entity.servant.ai;
 
+import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import io.github.flemmli97.fate.common.entity.servant.EntityArthur;
 import io.github.flemmli97.fate.common.entity.servant.EntityServant;
-import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 
 public class ArthurAttackGoal extends BaseServantAttackGoal<EntityArthur> {
 

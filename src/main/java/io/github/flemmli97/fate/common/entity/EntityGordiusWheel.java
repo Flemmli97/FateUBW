@@ -1,9 +1,9 @@
 package io.github.flemmli97.fate.common.entity;
 
-import io.github.flemmli97.fate.common.config.Config;
-import io.github.flemmli97.fate.common.utils.CustomDamageSource;
 import com.flemmli97.tenshilib.api.entity.IAnimated;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
+import io.github.flemmli97.fate.common.config.Config;
+import io.github.flemmli97.fate.common.utils.CustomDamageSource;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;

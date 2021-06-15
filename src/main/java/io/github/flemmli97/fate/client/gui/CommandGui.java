@@ -1,5 +1,7 @@
 package io.github.flemmli97.fate.client.gui;
 
+import com.mojang.authlib.GameProfile;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import io.github.flemmli97.fate.Fate;
 import io.github.flemmli97.fate.client.ClientHandler;
 import io.github.flemmli97.fate.common.capability.IPlayer;
@@ -11,8 +13,6 @@ import io.github.flemmli97.fate.network.C2SMessageGui;
 import io.github.flemmli97.fate.network.C2SServantCommand;
 import io.github.flemmli97.fate.network.C2STruceMessage;
 import io.github.flemmli97.fate.network.PacketHandler;
-import com.mojang.authlib.GameProfile;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.client.gui.widget.button.Button;

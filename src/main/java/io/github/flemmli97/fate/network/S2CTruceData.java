@@ -1,8 +1,8 @@
 package io.github.flemmli97.fate.network;
 
+import com.mojang.authlib.GameProfile;
 import io.github.flemmli97.fate.client.ClientHandler;
 import io.github.flemmli97.fate.common.world.TruceHandler;
-import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;

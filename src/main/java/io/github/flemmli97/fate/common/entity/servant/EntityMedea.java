@@ -1,12 +1,12 @@
 package io.github.flemmli97.fate.common.entity.servant;
 
+import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import io.github.flemmli97.fate.common.config.Config;
 import io.github.flemmli97.fate.common.entity.EntityCasterCircle;
 import io.github.flemmli97.fate.common.entity.EntityMagicBeam;
 import io.github.flemmli97.fate.common.entity.servant.ai.MedeaAttackGoal;
 import io.github.flemmli97.fate.common.registry.ModItems;
 import io.github.flemmli97.fate.common.utils.EnumServantUpdate;
-import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;

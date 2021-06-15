@@ -1,8 +1,8 @@
 package io.github.flemmli97.fate.client.render;
 
+import com.flemmli97.tenshilib.client.render.RenderBeam;
 import io.github.flemmli97.fate.Fate;
 import io.github.flemmli97.fate.common.entity.EntityExcalibur;
-import com.flemmli97.tenshilib.client.render.RenderBeam;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
 

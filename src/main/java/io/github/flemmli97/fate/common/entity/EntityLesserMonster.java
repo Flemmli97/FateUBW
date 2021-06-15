@@ -1,13 +1,13 @@
 package io.github.flemmli97.fate.common.entity;
 
-import io.github.flemmli97.fate.common.config.Config;
-import io.github.flemmli97.fate.common.entity.ai.AnimatedMeleeGoal;
-import io.github.flemmli97.fate.common.entity.ai.TargetOwnerEnemyGoal;
-import io.github.flemmli97.fate.common.registry.ModEntities;
 import com.flemmli97.tenshilib.api.entity.IAnimated;
 import com.flemmli97.tenshilib.api.entity.IOwnable;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import com.flemmli97.tenshilib.common.entity.EntityUtil;
+import io.github.flemmli97.fate.common.config.Config;
+import io.github.flemmli97.fate.common.entity.ai.AnimatedMeleeGoal;
+import io.github.flemmli97.fate.common.entity.ai.TargetOwnerEnemyGoal;
+import io.github.flemmli97.fate.common.registry.ModEntities;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;

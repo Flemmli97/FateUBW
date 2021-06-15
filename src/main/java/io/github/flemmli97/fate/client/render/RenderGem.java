@@ -1,8 +1,8 @@
 package io.github.flemmli97.fate.client.render;
 
+import com.flemmli97.tenshilib.client.render.RenderProjectileItem;
 import io.github.flemmli97.fate.common.entity.EntityGem;
 import io.github.flemmli97.fate.common.registry.ModItems;
-import com.flemmli97.tenshilib.client.render.RenderProjectileItem;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.item.ItemStack;
 

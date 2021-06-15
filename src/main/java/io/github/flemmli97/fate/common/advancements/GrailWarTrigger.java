@@ -1,7 +1,7 @@
 package io.github.flemmli97.fate.common.advancements;
 
-import io.github.flemmli97.fate.Fate;
 import com.google.gson.JsonObject;
+import io.github.flemmli97.fate.Fate;
 import net.minecraft.advancements.criterion.AbstractCriterionTrigger;
 import net.minecraft.advancements.criterion.CriterionInstance;
 import net.minecraft.advancements.criterion.EntityPredicate;

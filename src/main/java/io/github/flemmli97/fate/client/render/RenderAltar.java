@@ -1,7 +1,7 @@
 package io.github.flemmli97.fate.client.render;
 
-import io.github.flemmli97.fate.common.blocks.tile.TileAltar;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import io.github.flemmli97.fate.common.blocks.tile.TileAltar;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;

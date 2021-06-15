@@ -1,11 +1,11 @@
 package io.github.flemmli97.fate.common.entity.servant;
 
+import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import io.github.flemmli97.fate.common.entity.EntityBabylonWeapon;
 import io.github.flemmli97.fate.common.entity.EntityEnumaElish;
 import io.github.flemmli97.fate.common.entity.servant.ai.GilgameshAttackGoal;
 import io.github.flemmli97.fate.common.registry.ModItems;
 import io.github.flemmli97.fate.common.utils.EnumServantUpdate;
-import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;

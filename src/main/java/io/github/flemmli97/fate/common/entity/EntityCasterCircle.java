@@ -1,11 +1,11 @@
 package io.github.flemmli97.fate.common.entity;
 
-import io.github.flemmli97.fate.common.config.Config;
-import io.github.flemmli97.fate.common.entity.servant.EntityMedea;
-import io.github.flemmli97.fate.common.registry.ModEntities;
 import com.flemmli97.tenshilib.api.entity.IOwnable;
 import com.flemmli97.tenshilib.common.entity.EntityUtil;
 import com.flemmli97.tenshilib.common.utils.MathUtils;
+import io.github.flemmli97.fate.common.config.Config;
+import io.github.flemmli97.fate.common.entity.servant.EntityMedea;
+import io.github.flemmli97.fate.common.registry.ModEntities;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.nbt.CompoundNBT;

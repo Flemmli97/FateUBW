@@ -1,11 +1,11 @@
 package io.github.flemmli97.fate.client.gui;
 
-import io.github.flemmli97.fate.Fate;
-import io.github.flemmli97.fate.client.ClientHandler;
 import com.mojang.authlib.GameProfile;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import io.github.flemmli97.fate.Fate;
+import io.github.flemmli97.fate.client.ClientHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.Button;

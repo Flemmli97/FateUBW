@@ -1,9 +1,9 @@
 package io.github.flemmli97.fate.client.model;
 
-import io.github.flemmli97.fate.common.entity.servant.EntityHeracles;
 import com.flemmli97.tenshilib.client.model.ModelRendererPlus;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import io.github.flemmli97.fate.common.entity.servant.EntityHeracles;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.math.MathHelper;

@@ -1,10 +1,10 @@
 package io.github.flemmli97.fate.client.render;
 
-import io.github.flemmli97.fate.Fate;
-import io.github.flemmli97.fate.common.entity.EntityBabylonWeapon;
 import com.flemmli97.tenshilib.client.render.RenderProjectileItem;
 import com.flemmli97.tenshilib.client.render.RenderUtils;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import io.github.flemmli97.fate.Fate;
+import io.github.flemmli97.fate.common.entity.EntityBabylonWeapon;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererManager;

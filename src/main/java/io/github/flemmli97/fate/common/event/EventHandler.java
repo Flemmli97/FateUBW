@@ -1,5 +1,6 @@
 package io.github.flemmli97.fate.common.event;
 
+import com.mojang.authlib.GameProfile;
 import io.github.flemmli97.fate.Fate;
 import io.github.flemmli97.fate.common.capability.IPlayer;
 import io.github.flemmli97.fate.common.capability.PlayerCapProvider;
@@ -8,7 +9,6 @@ import io.github.flemmli97.fate.common.world.GrailWarHandler;
 import io.github.flemmli97.fate.common.world.TruceHandler;
 import io.github.flemmli97.fate.network.PacketHandler;
 import io.github.flemmli97.fate.network.S2CMana;
-import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;

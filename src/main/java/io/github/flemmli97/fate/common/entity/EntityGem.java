@@ -1,7 +1,7 @@
 package io.github.flemmli97.fate.common.entity;
 
-import io.github.flemmli97.fate.common.registry.ModEntities;
 import com.flemmli97.tenshilib.common.entity.EntityProjectile;
+import io.github.flemmli97.fate.common.registry.ModEntities;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.BlockRayTraceResult;

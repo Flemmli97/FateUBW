@@ -1,11 +1,11 @@
 package io.github.flemmli97.fate.common.entity;
 
+import com.flemmli97.tenshilib.common.entity.EntityProjectile;
 import io.github.flemmli97.fate.common.config.Config;
 import io.github.flemmli97.fate.common.entity.servant.EntityCuchulainn;
 import io.github.flemmli97.fate.common.registry.ModEntities;
 import io.github.flemmli97.fate.common.registry.ModItems;
 import io.github.flemmli97.fate.common.utils.CustomDamageSource;
-import com.flemmli97.tenshilib.common.entity.EntityProjectile;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;

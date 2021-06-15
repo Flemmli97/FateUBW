@@ -1,10 +1,10 @@
 package io.github.flemmli97.fate.client.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import io.github.flemmli97.fate.Fate;
 import io.github.flemmli97.fate.common.capability.IPlayer;
 import io.github.flemmli97.fate.common.capability.PlayerCapProvider;
 import io.github.flemmli97.fate.common.config.Config;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.util.ResourceLocation;

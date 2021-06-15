@@ -1,9 +1,9 @@
 package io.github.flemmli97.fate.common.entity.servant;
 
+import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import io.github.flemmli97.fate.common.entity.servant.ai.HeraclesAttackGoal;
 import io.github.flemmli97.fate.common.registry.ModItems;
 import io.github.flemmli97.fate.common.utils.EnumServantUpdate;
-import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import net.minecraft.entity.EntityType;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;

@@ -1,9 +1,9 @@
 package io.github.flemmli97.fate.common.commands;
 
-import io.github.flemmli97.fate.common.world.GrailWarHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
+import io.github.flemmli97.fate.common.world.GrailWarHandler;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.world.server.ServerWorld;

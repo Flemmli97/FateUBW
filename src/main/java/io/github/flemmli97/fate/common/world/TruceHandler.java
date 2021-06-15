@@ -1,9 +1,9 @@
 package io.github.flemmli97.fate.common.world;
 
-import io.github.flemmli97.fate.common.capability.PlayerCapProvider;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 import com.mojang.authlib.GameProfile;
+import io.github.flemmli97.fate.common.capability.PlayerCapProvider;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;

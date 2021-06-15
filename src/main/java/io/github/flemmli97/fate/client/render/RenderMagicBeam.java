@@ -1,9 +1,9 @@
 package io.github.flemmli97.fate.client.render;
 
-import io.github.flemmli97.fate.Fate;
-import io.github.flemmli97.fate.common.entity.EntityMagicBeam;
 import com.flemmli97.tenshilib.client.render.RenderBeam;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import io.github.flemmli97.fate.Fate;
+import io.github.flemmli97.fate.common.entity.EntityMagicBeam;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;

@@ -1,7 +1,7 @@
 package io.github.flemmli97.fate.common.config;
 
-import io.github.flemmli97.fate.common.lib.LibEntities;
 import com.google.common.collect.Lists;
+import io.github.flemmli97.fate.common.lib.LibEntities;
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 

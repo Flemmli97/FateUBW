@@ -1,9 +1,9 @@
 package io.github.flemmli97.fate.common.items;
 
+import com.flemmli97.tenshilib.common.item.SpawnEgg;
 import io.github.flemmli97.fate.common.capability.PlayerCapProvider;
 import io.github.flemmli97.fate.common.entity.servant.EntityServant;
 import io.github.flemmli97.fate.common.world.GrailWarHandler;
-import com.flemmli97.tenshilib.common.item.SpawnEgg;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;

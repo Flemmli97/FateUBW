@@ -1,10 +1,10 @@
 package io.github.flemmli97.fate.client.render;
 
+import com.flemmli97.tenshilib.client.render.RenderProjectileModel;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import io.github.flemmli97.fate.Fate;
 import io.github.flemmli97.fate.client.model.ModelCaladBolg;
 import io.github.flemmli97.fate.common.entity.EntityCaladBolg;
-import com.flemmli97.tenshilib.client.render.RenderProjectileModel;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
 

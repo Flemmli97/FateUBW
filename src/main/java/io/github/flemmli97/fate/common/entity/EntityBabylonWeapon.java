@@ -1,12 +1,12 @@
 package io.github.flemmli97.fate.common.entity;
 
+import com.flemmli97.tenshilib.common.entity.EntityProjectile;
+import com.flemmli97.tenshilib.common.utils.ItemUtils;
+import com.flemmli97.tenshilib.common.utils.RayTraceUtils;
 import io.github.flemmli97.fate.common.config.Config;
 import io.github.flemmli97.fate.common.registry.ModEntities;
 import io.github.flemmli97.fate.common.utils.CachedWeaponList;
 import io.github.flemmli97.fate.common.utils.CustomDamageSource;
-import com.flemmli97.tenshilib.common.entity.EntityProjectile;
-import com.flemmli97.tenshilib.common.utils.ItemUtils;
-import com.flemmli97.tenshilib.common.utils.RayTraceUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
