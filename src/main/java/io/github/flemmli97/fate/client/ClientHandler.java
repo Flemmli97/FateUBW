@@ -1,5 +1,8 @@
 package io.github.flemmli97.fate.client;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.mojang.authlib.GameProfile;
 import io.github.flemmli97.fate.client.gui.CommandGui;
 import io.github.flemmli97.fate.client.gui.GuiHolyGrail;
 import io.github.flemmli97.fate.client.gui.ManaBar;
@@ -32,9 +35,6 @@ import io.github.flemmli97.fate.client.render.servant.RenderSasaki;
 import io.github.flemmli97.fate.common.blocks.BlockChalkLine;
 import io.github.flemmli97.fate.common.registry.ModBlocks;
 import io.github.flemmli97.fate.common.registry.ModEntities;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
@@ -60,6 +60,8 @@ public class ClientHandler {
     public static Set<GameProfile> pending = ImmutableSet.of();
     public static Set<GameProfile> requests = ImmutableSet.of();
     public static Set<GameProfile> truce = ImmutableSet.of();
+    public static int clientTick;
+
     private static final Comparator<GameProfile> sortName = Comparator.comparing(GameProfile::getName);
 
     public static void registerRenderer() {
@@ -108,6 +110,10 @@ public class ClientHandler {
 
     public static PlayerEntity clientPlayer() {
         return Minecraft.getInstance().player;
+    }
+
+    public static float getPartialTicks() {
+        return Minecraft.getInstance().isGamePaused() ? 0 : Minecraft.getInstance().getRenderPartialTicks();
     }
 
     public static void displayCommandGui() {

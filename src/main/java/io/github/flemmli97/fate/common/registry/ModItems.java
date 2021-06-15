@@ -1,6 +1,7 @@
 package io.github.flemmli97.fate.common.registry;
 
 import io.github.flemmli97.fate.Fate;
+import io.github.flemmli97.fate.client.render.RenderEAItem;
 import io.github.flemmli97.fate.common.items.ItemChalk;
 import io.github.flemmli97.fate.common.items.ItemCrystal;
 import io.github.flemmli97.fate.common.items.ItemHolyGrail;
@@ -49,7 +50,7 @@ public class ModItems {
     public static final RegistryObject<Item> kanshou = ITEMS.register("kanshou", () -> new SwordItem(ItemTiers.kanshou, 0, -2f, new Item.Properties().group(Fate.TAB)));
     public static final RegistryObject<Item> bakuya = ITEMS.register("bakuya", () -> new SwordItem(ItemTiers.bakuya, 0, -2f, new Item.Properties().group(Fate.TAB)));
     public static final RegistryObject<Item> archbow = ITEMS.register("archer_bow", () -> new ItemArcherBow(new Item.Properties().group(Fate.TAB)));
-    public static final RegistryObject<Item> enumaelish = ITEMS.register("enuma_elish", () -> new ItemEA(new Item.Properties().group(Fate.TAB)));
+    public static final RegistryObject<Item> enumaelish = ITEMS.register("enuma_elish", () -> new ItemEA(new Item.Properties().group(Fate.TAB).setISTER(() -> RenderEAItem::new)));
     public static final RegistryObject<Item> staff = ITEMS.register("staff", () -> new ItemStaff(new Item.Properties().group(Fate.TAB)));
     public static final RegistryObject<Item> ruleBreaker = ITEMS.register("rule_breaker", () -> new SwordItem(ItemTiers.ruleBreaker, 0, -2.4f, new Item.Properties().group(Fate.TAB)));
     public static final RegistryObject<Item> grimoire = ITEMS.register("prelati", () -> new ItemGrimoire(new Item.Properties().group(Fate.TAB)));

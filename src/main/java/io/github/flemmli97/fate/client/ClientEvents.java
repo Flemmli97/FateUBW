@@ -4,9 +4,11 @@ import io.github.flemmli97.fate.Fate;
 import io.github.flemmli97.fate.common.utils.EnumServantUpdate;
 import io.github.flemmli97.fate.network.C2SServantCommand;
 import io.github.flemmli97.fate.network.PacketHandler;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -34,5 +36,13 @@ public class ClientEvents {
         if (event.isCancelable() || event.getType() != RenderGameOverlayEvent.ElementType.EXPERIENCE || ClientHandler.manaBar == null)
             return;
         ClientHandler.manaBar.renderBar(event.getMatrixStack());
+    }
+
+    @SubscribeEvent
+    public static void clientTick(TickEvent.ClientTickEvent event) {
+        if (event.phase == TickEvent.Phase.START) {
+            if (!Minecraft.getInstance().isGamePaused())
+                ClientHandler.clientTick++;
+        }
     }
 }
