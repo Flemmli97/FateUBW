@@ -26,7 +26,7 @@ public class EntityCuchulainn extends EntityServant {
     public final CuchulainnAttackGoal attackAI = new CuchulainnAttackGoal(this);
 
     private static final AnimatedAction npAttack = new AnimatedAction(15, 9, "gae_bolg");
-    private static final AnimatedAction[] anims = new AnimatedAction[]{AnimatedAction.vanillaAttack, npAttack};
+    private static final AnimatedAction[] anims = {AnimatedAction.vanillaAttack, npAttack};
     private int gaeBolgThrowTick;
 
     public EntityCuchulainn(EntityType<? extends EntityServant> entityType, World world) {

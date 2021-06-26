@@ -1,7 +1,7 @@
 package io.github.flemmli97.fate.common.utils;
 
+import io.github.flemmli97.fate.common.capability.CapabilityInsts;
 import io.github.flemmli97.fate.common.capability.IPlayer;
-import io.github.flemmli97.fate.common.capability.PlayerCapProvider;
 import io.github.flemmli97.fate.common.entity.servant.EntityServant;
 import io.github.flemmli97.fate.common.registry.FateAttributes;
 import io.github.flemmli97.fate.common.world.TruceHandler;
@@ -46,7 +46,7 @@ public class Utils {
     }
 
     public static EntityServant getServant(PlayerEntity player) {
-        Optional<IPlayer> cap = player.getCapability(PlayerCapProvider.PlayerCap).resolve();
+        Optional<IPlayer> cap = player.getCapability(CapabilityInsts.PlayerCap).resolve();
         return cap.map(iPlayer -> iPlayer.getServant(player)).orElse(null);
     }
 }

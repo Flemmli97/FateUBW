@@ -2,8 +2,9 @@ package io.github.flemmli97.fate.common.event;
 
 import com.mojang.authlib.GameProfile;
 import io.github.flemmli97.fate.Fate;
+import io.github.flemmli97.fate.common.capability.CapabilityInsts;
 import io.github.flemmli97.fate.common.capability.IPlayer;
-import io.github.flemmli97.fate.common.capability.PlayerCapProvider;
+import io.github.flemmli97.fate.common.capability.PlayerCap;
 import io.github.flemmli97.fate.common.commands.CommandHandler;
 import io.github.flemmli97.fate.common.world.GrailWarHandler;
 import io.github.flemmli97.fate.common.world.TruceHandler;
@@ -23,9 +24,7 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber(modid = Fate.MODID)
 public class EventHandler {
 
     public static final ResourceLocation cap = new ResourceLocation(Fate.MODID, "fate_cap");
@@ -33,7 +32,7 @@ public class EventHandler {
     @SubscribeEvent
     public static void capability(AttachCapabilitiesEvent<Entity> event) {
         if (event.getObject() instanceof PlayerEntity)
-            event.addCapability(cap, new PlayerCapProvider());
+            event.addCapability(cap, new PlayerCap());
     }
 
     @SubscribeEvent
@@ -48,7 +47,7 @@ public class EventHandler {
             GrailWarHandler handler = GrailWarHandler.get(player.getServerWorld());
             if (handler.removeConnection(player))
                 handler.removePlayer(player);
-            IPlayer cap = player.getCapability(PlayerCapProvider.PlayerCap).orElse(null);
+            IPlayer cap = player.getCapability(CapabilityInsts.PlayerCap).orElse(null);
             if (cap != null)
                 PacketHandler.sendToClient(new S2CMana(cap), player);
             TruceHandler.get(player.getServerWorld()).pending(player).forEach(uuid -> {
@@ -56,8 +55,8 @@ public class EventHandler {
                 if (prof != null)
                     player.sendMessage(new TranslationTextComponent("chat.truce.pending", prof.getName()).mergeStyle(TextFormatting.GOLD), Util.DUMMY_UUID);
             });
-			/*if(player.getCapability(PlayerCapProvider.PlayerCap, null).getServant(player)!=null)
-				this.trackEntity(player, player.getCapability(PlayerCapProvider.PlayerCap, null).getServant(player));*/
+			/*if(player.getCapability(CapabilityInsts.PlayerCap, null).getServant(player)!=null)
+				this.trackEntity(player, player.getCapability(CapabilityInsts.PlayerCap, null).getServant(player));*/
         }
     }
 

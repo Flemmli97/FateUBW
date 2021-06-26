@@ -1,8 +1,8 @@
 package io.github.flemmli97.fate.network;
 
 import com.flemmli97.tenshilib.common.utils.RayTraceUtils;
+import io.github.flemmli97.fate.common.capability.CapabilityInsts;
 import io.github.flemmli97.fate.common.capability.IPlayer;
-import io.github.flemmli97.fate.common.capability.PlayerCapProvider;
 import io.github.flemmli97.fate.common.config.Config;
 import io.github.flemmli97.fate.common.entity.servant.EntityServant;
 import io.github.flemmli97.fate.common.utils.EnumServantUpdate;
@@ -43,7 +43,7 @@ public class C2SServantCommand {
             ServerPlayerEntity player = ctx.get().getSender();
             IPlayer cap;
             EntityServant servant;
-            if (player == null || (cap = player.getCapability(PlayerCapProvider.PlayerCap).orElse(null)) == null || (servant = cap.getServant(player)) == null)
+            if (player == null || (cap = player.getCapability(CapabilityInsts.PlayerCap).orElse(null)) == null || (servant = cap.getServant(player)) == null)
                 return;
             switch (pkt.command) {
                 case NORMAL:

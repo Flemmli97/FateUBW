@@ -1,11 +1,14 @@
 package io.github.flemmli97.fate;
 
+import io.github.flemmli97.fate.client.ClientEvents;
 import io.github.flemmli97.fate.client.ClientHandler;
+import io.github.flemmli97.fate.common.capability.CapabilityInsts;
 import io.github.flemmli97.fate.common.capability.IPlayer;
+import io.github.flemmli97.fate.common.capability.ItemStackCap;
 import io.github.flemmli97.fate.common.capability.PlayerCap;
-import io.github.flemmli97.fate.common.capability.PlayerCapNetwork;
 import io.github.flemmli97.fate.common.config.Config;
 import io.github.flemmli97.fate.common.config.ConfigSpecs;
+import io.github.flemmli97.fate.common.event.EventHandler;
 import io.github.flemmli97.fate.common.registry.AdvancementRegister;
 import io.github.flemmli97.fate.common.registry.ModBlocks;
 import io.github.flemmli97.fate.common.registry.ModEntities;
@@ -15,10 +18,10 @@ import io.github.flemmli97.fate.network.PacketHandler;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -43,31 +46,40 @@ public class Fate {
         File file = FMLPaths.CONFIGDIR.get().resolve("fate").toFile();
         if (!file.exists())
             file.mkdir();
+        registerContent(modBus);
+        modBus.addListener(this::setup);
+        modBus.addListener(this::client);
+        modBus.addListener(this::conf);
+
+        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> ClientEvents::register);
+
+        MinecraftForge.EVENT_BUS.register(EventHandler.class);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigSpecs.commonSpec, "fate/common.toml");
+    }
+
+    public static void registerContent(IEventBus modBus) {
         ModItems.ITEMS.register(modBus);
         ModBlocks.BLOCKS.register(modBus);
         ModBlocks.TILES.register(modBus);
         ModEntities.ENTITIES.register(modBus);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigSpecs.commonSpec, "fate/common.toml");
     }
 
-    @SubscribeEvent
-    public static void setup(FMLCommonSetupEvent event) {
+    public void setup(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
             ModEntities.registerAttributes();
             AdvancementRegister.init();
         });
         CachedWeaponList.init();
         PacketHandler.register();
-        CapabilityManager.INSTANCE.register(IPlayer.class, new PlayerCapNetwork(), PlayerCap::new);
+        CapabilityManager.INSTANCE.register(IPlayer.class, new CapabilityInsts.PlayerCapNetwork(), PlayerCap::new);
+        CapabilityManager.INSTANCE.register(ItemStackCap.class, new CapabilityInsts.ItemStackNetwork(), ItemStackCap::new);
     }
 
-    @SubscribeEvent
-    public static void client(FMLClientSetupEvent event) {
-        ClientHandler.registerRenderer();
+    public void client(FMLClientSetupEvent event) {
+        ClientHandler.registerRenderer(event);
     }
 
-    @SubscribeEvent
-    public static void conf(ModConfig.ModConfigEvent event) {
+    public void conf(ModConfig.ModConfigEvent event) {
         if (event.getConfig().getSpec() == ConfigSpecs.commonSpec)
             Config.Common.load();
         if (event.getConfig().getSpec() == ConfigSpecs.clientSpec)
@@ -76,7 +88,6 @@ public class Fate {
 
     public static final ItemGroup TAB = new ItemGroup("fate") {
         @Override
-        @OnlyIn(Dist.CLIENT)
         public ItemStack createIcon() {
             return new ItemStack(ModItems.randomIcon.get());
         }

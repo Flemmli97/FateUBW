@@ -33,7 +33,7 @@ public class EntityHassan extends EntityServant {
 
     public final HassanAttackGoal attackAI = new HassanAttackGoal(this);
     private static final AnimatedAction npAttack = new AnimatedAction(20, 1, "np");
-    private static final AnimatedAction[] anims = new AnimatedAction[]{AnimatedAction.vanillaAttack, npAttack};
+    private static final AnimatedAction[] anims = {AnimatedAction.vanillaAttack, npAttack};
 
     private Set<UUID> copies = new HashSet<>();
 

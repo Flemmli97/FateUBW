@@ -17,7 +17,7 @@ public class EntitySasaki extends EntityServant {
     public final SasakiAttackGoal attackAI = new SasakiAttackGoal(this);
 
     private static final AnimatedAction npAttack = new AnimatedAction(40, 0, "np");
-    private static final AnimatedAction[] anims = new AnimatedAction[]{AnimatedAction.vanillaAttack, npAttack};
+    private static final AnimatedAction[] anims = {AnimatedAction.vanillaAttack, npAttack};
 
     public EntitySasaki(EntityType<? extends EntityServant> entityType, World world) {
         super(entityType, world, "sasaki.hogou");

@@ -1,7 +1,7 @@
 package io.github.flemmli97.fate.common.items.weapons;
 
 import io.github.flemmli97.fate.Fate;
-import io.github.flemmli97.fate.common.capability.PlayerCapProvider;
+import io.github.flemmli97.fate.common.capability.CapabilityInsts;
 import io.github.flemmli97.fate.common.entity.EntityArcherArrow;
 import io.github.flemmli97.fate.common.entity.EntityCaladBolg;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -33,7 +33,7 @@ public class ItemArcherBow extends BowItem {
             if (player.isCreative())
                 this.setCharged(stack, true);
             else {
-                if (player.isCreative() || player.getCapability(PlayerCapProvider.PlayerCap).map(cap -> cap.useMana(player, this.specialMana)).orElse(false)) {
+                if (player.isCreative() || player.getCapability(CapabilityInsts.PlayerCap).map(cap -> cap.useMana(player, this.specialMana)).orElse(false)) {
                     this.setCharged(stack, true);
                 }
             }
@@ -52,7 +52,7 @@ public class ItemArcherBow extends BowItem {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-        if (player.isCreative() || this.charged(player.getHeldItem(hand)) || player.getCapability(PlayerCapProvider.PlayerCap).map(cap -> cap.getMana() >= this.arrowMana).orElse(false)) {
+        if (player.isCreative() || this.charged(player.getHeldItem(hand)) || player.getCapability(CapabilityInsts.PlayerCap).map(cap -> cap.getMana() >= this.arrowMana).orElse(false)) {
             player.setActiveHand(hand);
             return ActionResult.resultConsume(player.getHeldItem(hand));
         } else {
@@ -82,7 +82,7 @@ public class ItemArcherBow extends BowItem {
         if (entity instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) entity;
             boolean flag = player.abilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantments.INFINITY, stack) > 0
-                    || player.getCapability(PlayerCapProvider.PlayerCap).map(cap -> cap.useMana(player, this.arrowMana)).orElse(false);
+                    || player.getCapability(CapabilityInsts.PlayerCap).map(cap -> cap.useMana(player, this.arrowMana)).orElse(false);
             int i = this.getUseDuration(stack) - timeLeft;
 
             if (flag) {

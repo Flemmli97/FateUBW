@@ -23,7 +23,7 @@ public class EntityEmiya extends EntityServant {
 
     private static final AnimatedAction rangedAttack = new AnimatedAction(30, 10, "ranged");
     private static final AnimatedAction npAttack = new AnimatedAction(20, 0, "np");
-    private static final AnimatedAction[] anims = new AnimatedAction[]{AnimatedAction.vanillaAttack, rangedAttack, npAttack};
+    private static final AnimatedAction[] anims = {AnimatedAction.vanillaAttack, rangedAttack, npAttack};
 
     public EntityEmiya(EntityType<? extends EntityEmiya> entityType, World world) {
         super(entityType, world, "Calad Bolg II");

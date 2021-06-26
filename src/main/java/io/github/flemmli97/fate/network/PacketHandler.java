@@ -1,6 +1,7 @@
 package io.github.flemmli97.fate.network;
 
 import io.github.flemmli97.fate.Fate;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.IPacket;
 import net.minecraft.util.ResourceLocation;
@@ -31,6 +32,7 @@ public class PacketHandler {
         dispatcher.registerMessage(id++, S2CWarData.class, S2CWarData::write, S2CWarData::read, S2CWarData::handle);
         dispatcher.registerMessage(id++, C2STruceMessage.class, C2STruceMessage::write, C2STruceMessage::read, C2STruceMessage::handle);
         dispatcher.registerMessage(id++, S2CTruceData.class, S2CTruceData::write, S2CTruceData::read, S2CTruceData::handle);
+        dispatcher.registerMessage(id++, S2CItemInUse.class, S2CItemInUse::write, S2CItemInUse::read, S2CItemInUse::handle);
     }
 
     public static <T> void sendToClient(T message, ServerPlayerEntity player) {
@@ -39,6 +41,10 @@ public class PacketHandler {
 
     public static void vanillaChunkPkt(IPacket<?> pkt, ServerWorld world, BlockPos pos) {
         PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos)).send(pkt);
+    }
+
+    public static <T> void sendToTracking(T pkt, Entity e) {
+        dispatcher.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> e), pkt);
     }
 
     public static <T> void sendToServer(T message) {

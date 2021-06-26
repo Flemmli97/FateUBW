@@ -17,11 +17,6 @@ public class BlockOre extends Block {
         this.xpFunc = xpFunc;
     }
 
-    /*@Override
-    public boolean canRenderInLayer(BlockState state, BlockRender layer) {
-        return true;
-    }*/
-
     @Override
     public int getExpDrop(BlockState state, net.minecraft.world.IWorldReader reader, BlockPos pos, int fortune, int silktouch) {
         return silktouch == 0 ? this.xpFunc.apply(this.RANDOM) : 0;

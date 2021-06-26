@@ -17,7 +17,7 @@ public class EntityMedusa extends EntityServant {
     public final MedusaAttackGoal attackAI = new MedusaAttackGoal(this);
 
     private static final AnimatedAction npAttack = new AnimatedAction(20, 0, "np");
-    private static final AnimatedAction[] anims = new AnimatedAction[]{AnimatedAction.vanillaAttack, npAttack};
+    private static final AnimatedAction[] anims = {AnimatedAction.vanillaAttack, npAttack};
 
     public EntityMedusa(EntityType<? extends EntityServant> entityType, World world) {
         super(entityType, world, "medusa.hogou");

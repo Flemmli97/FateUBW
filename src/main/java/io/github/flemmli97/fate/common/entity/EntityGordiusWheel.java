@@ -22,7 +22,7 @@ public class EntityGordiusWheel extends CreatureEntity implements IServantMinion
     private AnimatedAction currentAnim;
 
     private static final AnimatedAction charging = new AnimatedAction(20, 0, "charge");
-    private static final AnimatedAction[] anims = new AnimatedAction[]{charging};
+    private static final AnimatedAction[] anims = {charging};
 
     public EntityGordiusWheel(EntityType<? extends EntityGordiusWheel> type, World world) {
         super(type, world);

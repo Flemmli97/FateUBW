@@ -19,7 +19,7 @@ public class EntityIskander extends EntityServant {
     public final IskanderAttackGoal attackAI = new IskanderAttackGoal(this);
 
     private static final AnimatedAction npAttack = new AnimatedAction(20, 0, "np");
-    private static final AnimatedAction[] anims = new AnimatedAction[]{AnimatedAction.vanillaAttack, npAttack};
+    private static final AnimatedAction[] anims = {AnimatedAction.vanillaAttack, npAttack};
 
     public EntityIskander(EntityType<? extends EntityIskander> entityType, World world) {
         super(entityType, world, "iskander.hogou");

@@ -1,6 +1,6 @@
 package io.github.flemmli97.fate.common.items.weapons;
 
-import io.github.flemmli97.fate.common.capability.PlayerCapProvider;
+import io.github.flemmli97.fate.common.capability.CapabilityInsts;
 import io.github.flemmli97.fate.common.entity.EntityGaeBolg;
 import io.github.flemmli97.fate.common.lib.ItemTiers;
 import net.minecraft.entity.player.PlayerEntity;
@@ -30,7 +30,7 @@ public class ItemGaeBolg extends ClassSpear {
                 world.addEntity(gaeBolg);
                 return ActionResult.resultSuccess(stack);
             } else {
-                if (player.getCapability(PlayerCapProvider.PlayerCap).map(mana -> mana.useMana(player, 15)).orElse(false)) {
+                if (player.getCapability(CapabilityInsts.PlayerCap).map(mana -> mana.useMana(player, 15)).orElse(false)) {
                     world.addEntity(gaeBolg);
                     stack.shrink(1);
                     player.sendMessage(new TranslationTextComponent("fate.mana.use").mergeStyle(TextFormatting.AQUA), Util.DUMMY_UUID);

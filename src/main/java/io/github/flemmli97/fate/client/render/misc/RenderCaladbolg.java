@@ -1,4 +1,4 @@
-package io.github.flemmli97.fate.client.render;
+package io.github.flemmli97.fate.client.render.misc;
 
 import com.flemmli97.tenshilib.client.render.RenderProjectileModel;
 import com.mojang.blaze3d.matrix.MatrixStack;

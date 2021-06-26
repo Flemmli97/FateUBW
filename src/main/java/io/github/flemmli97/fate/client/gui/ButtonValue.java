@@ -12,7 +12,6 @@ public class ButtonValue<T> extends Button {
     protected static final ResourceLocation guiStuff = new ResourceLocation(Fate.MODID + "textures/gui/buttons.png");
     private final Pressable<T> pressable;
 
-    @SuppressWarnings("unchecked")
     public ButtonValue(int x, int y, int widthIn, int heightIn, String buttonText, Pressable<T> press) {
         super(x, y, widthIn, heightIn, new TranslationTextComponent(buttonText), (button) -> {
         });
@@ -33,7 +32,7 @@ public class ButtonValue<T> extends Button {
         this.pressable.press(this);
     }
 
-    public static interface Pressable<T> {
+    public interface Pressable<T> {
 
         void press(ButtonValue<T> button);
     }

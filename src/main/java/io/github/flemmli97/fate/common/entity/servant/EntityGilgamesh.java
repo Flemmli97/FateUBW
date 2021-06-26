@@ -21,7 +21,7 @@ public class EntityGilgamesh extends EntityServant {
     private static final AnimatedAction rangedAttack = new AnimatedAction(40, 10, "babylon1");
     private static final AnimatedAction rangedAttack2 = new AnimatedAction(40, 10, "babylon2");
     private static final AnimatedAction npAttack = new AnimatedAction(20, 10, "np");
-    private static final AnimatedAction[] anims = new AnimatedAction[]{AnimatedAction.vanillaAttack, rangedAttack, npAttack, rangedAttack2};
+    private static final AnimatedAction[] anims = {AnimatedAction.vanillaAttack, rangedAttack, npAttack, rangedAttack2};
 
     public EntityGilgamesh(EntityType<? extends EntityGilgamesh> entityType, World world) {
         super(entityType, world, "Enuma Elish");

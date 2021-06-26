@@ -1,4 +1,4 @@
-package io.github.flemmli97.fate.client.render;
+package io.github.flemmli97.fate.client.render.misc;
 
 import com.flemmli97.tenshilib.client.render.RenderBeam;
 import io.github.flemmli97.fate.Fate;

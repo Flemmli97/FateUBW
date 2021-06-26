@@ -1,4 +1,4 @@
-package io.github.flemmli97.fate.client.render;
+package io.github.flemmli97.fate.client.render.misc;
 
 import io.github.flemmli97.fate.Fate;
 import io.github.flemmli97.fate.client.model.ModelGordiusWheel;

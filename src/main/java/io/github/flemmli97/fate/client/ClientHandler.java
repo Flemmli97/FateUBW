@@ -3,22 +3,23 @@ package io.github.flemmli97.fate.client;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.authlib.GameProfile;
+import io.github.flemmli97.fate.Fate;
 import io.github.flemmli97.fate.client.gui.CommandGui;
 import io.github.flemmli97.fate.client.gui.GuiHolyGrail;
 import io.github.flemmli97.fate.client.gui.ManaBar;
 import io.github.flemmli97.fate.client.render.RenderAltar;
-import io.github.flemmli97.fate.client.render.RenderArcherArrow;
-import io.github.flemmli97.fate.client.render.RenderBabylon;
-import io.github.flemmli97.fate.client.render.RenderCaladbolg;
-import io.github.flemmli97.fate.client.render.RenderEA;
 import io.github.flemmli97.fate.client.render.RenderEmpty;
-import io.github.flemmli97.fate.client.render.RenderExcalibur;
-import io.github.flemmli97.fate.client.render.RenderGaeBolg;
-import io.github.flemmli97.fate.client.render.RenderGem;
-import io.github.flemmli97.fate.client.render.RenderGordius;
-import io.github.flemmli97.fate.client.render.RenderHassanCopy;
-import io.github.flemmli97.fate.client.render.RenderMagicBeam;
-import io.github.flemmli97.fate.client.render.RenderStarfish;
+import io.github.flemmli97.fate.client.render.misc.RenderArcherArrow;
+import io.github.flemmli97.fate.client.render.misc.RenderBabylon;
+import io.github.flemmli97.fate.client.render.misc.RenderCaladbolg;
+import io.github.flemmli97.fate.client.render.misc.RenderEA;
+import io.github.flemmli97.fate.client.render.misc.RenderExcalibur;
+import io.github.flemmli97.fate.client.render.misc.RenderGaeBolg;
+import io.github.flemmli97.fate.client.render.misc.RenderGem;
+import io.github.flemmli97.fate.client.render.misc.RenderGordius;
+import io.github.flemmli97.fate.client.render.misc.RenderHassanCopy;
+import io.github.flemmli97.fate.client.render.misc.RenderMagicBeam;
+import io.github.flemmli97.fate.client.render.misc.RenderStarfish;
 import io.github.flemmli97.fate.client.render.servant.RenderArthur;
 import io.github.flemmli97.fate.client.render.servant.RenderCuchulainn;
 import io.github.flemmli97.fate.client.render.servant.RenderDiarmuid;
@@ -35,14 +36,18 @@ import io.github.flemmli97.fate.client.render.servant.RenderSasaki;
 import io.github.flemmli97.fate.common.blocks.BlockChalkLine;
 import io.github.flemmli97.fate.common.registry.ModBlocks;
 import io.github.flemmli97.fate.common.registry.ModEntities;
+import io.github.flemmli97.fate.common.registry.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemModelsProperties;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.Comparator;
@@ -64,7 +69,7 @@ public class ClientHandler {
 
     private static final Comparator<GameProfile> sortName = Comparator.comparing(GameProfile::getName);
 
-    public static void registerRenderer() {
+    public static void registerRenderer(FMLClientSetupEvent event) {
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.arthur.get(), RenderArthur::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.cuchulainn.get(), RenderCuchulainn::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.diarmuid.get(), RenderDiarmuid::new);
@@ -106,6 +111,10 @@ public class ClientHandler {
         ClientRegistry.registerKeyBinding(special = new KeyBinding("fate.key.np", GLFW.GLFW_KEY_J, "fate.keycategory"));
         ClientRegistry.registerKeyBinding(boost = new KeyBinding("fate.key.boost", GLFW.GLFW_KEY_N, "fate.keycategory"));
         ClientRegistry.registerKeyBinding(target = new KeyBinding("fate.key.target", GLFW.GLFW_KEY_B, "fate.keycategory"));
+
+        event.enqueueWork(() -> {
+            ItemModelsProperties.registerProperty(ModItems.excalibur.get(), new ResourceLocation(Fate.MODID, "active"), ItemModelProps.activeItemProp);
+        });
     }
 
     public static PlayerEntity clientPlayer() {

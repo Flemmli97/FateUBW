@@ -1,6 +1,6 @@
 package io.github.flemmli97.fate.common.items.weapons;
 
-import io.github.flemmli97.fate.common.capability.PlayerCapProvider;
+import io.github.flemmli97.fate.common.capability.CapabilityInsts;
 import io.github.flemmli97.fate.common.entity.EntityLesserMonster;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -27,7 +27,7 @@ public class ItemGrimoire extends Item {
                 this.spawn(player, monster, player.getHeldItem(hand));
                 return ActionResult.resultSuccess(player.getHeldItem(hand));
             } else {
-                if (player.getCapability(PlayerCapProvider.PlayerCap).map(mana -> mana.useMana(player, 30)).orElse(false)) {
+                if (player.getCapability(CapabilityInsts.PlayerCap).map(mana -> mana.useMana(player, 30)).orElse(false)) {
                     this.spawn(player, monster, player.getHeldItem(hand));
                     player.sendMessage(new TranslationTextComponent("fate.mana.use").mergeStyle(TextFormatting.AQUA), Util.DUMMY_UUID);
                     return ActionResult.resultSuccess(player.getHeldItem(hand));

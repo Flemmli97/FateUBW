@@ -1,8 +1,8 @@
 package io.github.flemmli97.fate.network;
 
 import io.github.flemmli97.fate.client.ClientHandler;
+import io.github.flemmli97.fate.common.capability.CapabilityInsts;
 import io.github.flemmli97.fate.common.capability.IPlayer;
-import io.github.flemmli97.fate.common.capability.PlayerCapProvider;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
@@ -35,7 +35,7 @@ public class S2CMana {
         ctx.get().enqueueWork(() -> {
             PlayerEntity player = DistExecutor.safeCallWhenOn(Dist.CLIENT, () -> ClientHandler::clientPlayer);
             if (player != null)
-                player.getCapability(PlayerCapProvider.PlayerCap, null).ifPresent(cap -> cap.setMana(player, pkt.manaValue));
+                player.getCapability(CapabilityInsts.PlayerCap, null).ifPresent(cap -> cap.setMana(player, pkt.manaValue));
         });
         ctx.get().setPacketHandled(true);
     }

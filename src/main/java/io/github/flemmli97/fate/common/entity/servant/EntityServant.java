@@ -5,7 +5,7 @@ import com.flemmli97.tenshilib.api.entity.IOwnable;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import com.flemmli97.tenshilib.common.entity.ai.MoveControllerPlus;
 import com.flemmli97.tenshilib.common.utils.NBTUtils;
-import io.github.flemmli97.fate.common.capability.PlayerCapProvider;
+import io.github.flemmli97.fate.common.capability.CapabilityInsts;
 import io.github.flemmli97.fate.common.config.Config;
 import io.github.flemmli97.fate.common.config.ServantProperties;
 import io.github.flemmli97.fate.common.entity.IServantMinion;
@@ -296,7 +296,7 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated,
     public void setOwner(PlayerEntity player) {
         if (player != null) {
             this.dataManager.set(ownerUUID, Optional.of(player.getUniqueID()));
-            player.getCapability(PlayerCapProvider.PlayerCap).ifPresent(cap -> cap.setServant(player, this));
+            player.getCapability(CapabilityInsts.PlayerCap).ifPresent(cap -> cap.setServant(player, this));
         } else
             this.dataManager.set(ownerUUID, Optional.empty());
         this.owner = player;

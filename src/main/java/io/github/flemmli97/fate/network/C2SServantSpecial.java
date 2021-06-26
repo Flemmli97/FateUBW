@@ -1,6 +1,6 @@
 package io.github.flemmli97.fate.network;
 
-import io.github.flemmli97.fate.common.capability.PlayerCapProvider;
+import io.github.flemmli97.fate.common.capability.CapabilityInsts;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -28,7 +28,7 @@ public class C2SServantSpecial {
             PlayerEntity player = ctx.get().getSender();
             if (player == null)
                 return;
-            player.getCapability(PlayerCapProvider.PlayerCap).ifPresent(cap -> {
+            player.getCapability(CapabilityInsts.PlayerCap).ifPresent(cap -> {
                 if (cap.getServant(player) != null)
                     cap.getServant(player).doSpecialCommand(pkt.specialID);
             });

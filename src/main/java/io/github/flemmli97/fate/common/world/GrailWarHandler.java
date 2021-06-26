@@ -3,7 +3,7 @@ package io.github.flemmli97.fate.common.world;
 import com.flemmli97.tenshilib.common.entity.EntityUtil;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.authlib.GameProfile;
-import io.github.flemmli97.fate.common.capability.PlayerCapProvider;
+import io.github.flemmli97.fate.common.capability.CapabilityInsts;
 import io.github.flemmli97.fate.common.config.Config;
 import io.github.flemmli97.fate.common.entity.servant.EntityServant;
 import io.github.flemmli97.fate.common.registry.AdvancementRegister;
@@ -108,7 +108,7 @@ public class GrailWarHandler extends WorldSavedData {
     public boolean removePlayer(ServerPlayerEntity player) {
         if (this.hasPlayer(player)) {
             this.players.remove(player.getUniqueID());
-            player.getCapability(PlayerCapProvider.PlayerCap).ifPresent(cap -> {
+            player.getCapability(CapabilityInsts.PlayerCap).ifPresent(cap -> {
                 cap.setCommandSeals(player, 0);
                 cap.setServant(player, null);
             });
@@ -221,7 +221,7 @@ public class GrailWarHandler extends WorldSavedData {
                     holyGrail.setInvulnerable(true);
                     holyGrail.setGlowing(true);
                     world.addEntity(holyGrail);
-                    player.getCapability(PlayerCapProvider.PlayerCap, null).ifPresent(cap -> cap.saveServant(player));
+                    player.getCapability(CapabilityInsts.PlayerCap, null).ifPresent(cap -> cap.saveServant(player));
                 }
                 this.reset(world);
             }

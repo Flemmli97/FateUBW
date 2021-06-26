@@ -1,7 +1,7 @@
 package io.github.flemmli97.fate.common.items;
 
 import com.flemmli97.tenshilib.common.item.SpawnEgg;
-import io.github.flemmli97.fate.common.capability.PlayerCapProvider;
+import io.github.flemmli97.fate.common.capability.CapabilityInsts;
 import io.github.flemmli97.fate.common.entity.servant.EntityServant;
 import io.github.flemmli97.fate.common.world.GrailWarHandler;
 import net.minecraft.client.util.ITooltipFlag;
@@ -29,7 +29,7 @@ public class FateEgg extends SpawnEgg {
     @Override
     public boolean onEntitySpawned(Entity e, ItemStack stack, PlayerEntity player) {
         if (player instanceof ServerPlayerEntity && stack.hasDisplayName() && "Summon".equals(stack.getDisplayName().getUnformattedComponentText())) {
-            player.getCapability(PlayerCapProvider.PlayerCap).ifPresent(cap -> {
+            player.getCapability(CapabilityInsts.PlayerCap).ifPresent(cap -> {
                 if (cap.getServant(player) == null) {
                     cap.setServant(player, (EntityServant) e);
                     ((EntityServant) e).setOwner(player);

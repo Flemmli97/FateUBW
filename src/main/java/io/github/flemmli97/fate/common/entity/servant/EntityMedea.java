@@ -28,11 +28,11 @@ public class EntityMedea extends EntityServant {
     private static final AnimatedAction npAttack = new AnimatedAction(20, 0, "np");
     private static final AnimatedAction ranged = new AnimatedAction(30, 5, "beam");
 
-    private static final AnimatedAction[] anims = new AnimatedAction[]{ranged, npAttack};
+    private static final AnimatedAction[] anims = {ranged, npAttack};
 
     private int circleDelay;
 
-    private static final int[][] castOffsets = new int[][]{{-1, 0}, {1, 0}, {0, 2}};
+    private static final int[][] castOffsets = {{-1, 0}, {1, 0}, {0, 2}};
 
     public EntityMedea(EntityType<? extends EntityServant> entityType, World world) {
         super(entityType, world, "medea.hogou");

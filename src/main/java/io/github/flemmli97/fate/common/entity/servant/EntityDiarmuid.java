@@ -20,7 +20,7 @@ public class EntityDiarmuid extends EntityServant {
     public final DiarmuidAttackGoal attackAI = new DiarmuidAttackGoal(this);
 
     private static final AnimatedAction npAttack = new AnimatedAction(20, 0, "np");
-    private static final AnimatedAction[] anims = new AnimatedAction[]{AnimatedAction.vanillaAttack, npAttack};
+    private static final AnimatedAction[] anims = {AnimatedAction.vanillaAttack, npAttack};
 
     public EntityDiarmuid(EntityType<? extends EntityDiarmuid> entityType, World world) {
         super(entityType, world, "");

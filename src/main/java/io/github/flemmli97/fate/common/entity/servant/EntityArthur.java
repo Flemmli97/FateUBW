@@ -25,7 +25,7 @@ public class EntityArthur extends EntityServant {
     public static final AnimatedAction swing_1 = new AnimatedAction(18, 15, "swing_1");
 
     public static final AnimatedAction npAttack = new AnimatedAction(15, 8, "excalibur");
-    public static final AnimatedAction[] anims = new AnimatedAction[]{swing_1, npAttack};
+    public static final AnimatedAction[] anims = {swing_1, npAttack};
 
     public EntityArthur(EntityType<? extends EntityArthur> entityType, World world) {
         super(entityType, world, "arthur.hogou");

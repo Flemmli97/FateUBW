@@ -1,7 +1,8 @@
 package io.github.flemmli97.fate.common.registry;
 
 import io.github.flemmli97.fate.Fate;
-import io.github.flemmli97.fate.client.render.RenderEAItem;
+import io.github.flemmli97.fate.client.render.item.RenderEAItem;
+import io.github.flemmli97.fate.client.render.item.RenderExcaliburItem;
 import io.github.flemmli97.fate.common.items.ItemChalk;
 import io.github.flemmli97.fate.common.items.ItemCrystal;
 import io.github.flemmli97.fate.common.items.ItemHolyGrail;
@@ -43,7 +44,7 @@ public class ModItems {
             return true;
         }
     });
-    public static final RegistryObject<Item> excalibur = ITEMS.register("excalibur", () -> new ItemExcalibur(new Item.Properties().group(Fate.TAB)));
+    public static final RegistryObject<Item> excalibur = ITEMS.register("excalibur", () -> new ItemExcalibur(new Item.Properties().group(Fate.TAB).setISTER(() -> RenderExcaliburItem::new)));
     public static final RegistryObject<Item> gaebolg = ITEMS.register("gae_bolg", () -> new ItemGaeBolg(new Item.Properties().group(Fate.TAB)));
     public static final RegistryObject<Item> gaedearg = ITEMS.register("gae_dearg", () -> new ClassSpear(ItemTiers.gae_dearg, new Item.Properties().group(Fate.TAB), -1.5f, 3.5f));
     public static final RegistryObject<Item> gaebuidhe = ITEMS.register("gae_buidhe", () -> new ClassSpear(ItemTiers.gae_buidhe, new Item.Properties().group(Fate.TAB), -1.5f, 3.5f));
@@ -102,7 +103,8 @@ public class ModItems {
     };
 
     private static RegistryObject<Item> registercharm(EnumServantType type) {
-        RegistryObject<Item> item = ITEMS.register("servant_medallion_" + type.getLowercase(), () -> new ItemServantCharm(type, new Item.Properties().group(Fate.TAB)));
+        String name = type == EnumServantType.NOTASSIGNED ? "servant_medallion" : "servant_medallion_" + type.getLowercase();
+        RegistryObject<Item> item = ITEMS.register(name, () -> new ItemServantCharm(type, new Item.Properties().group(Fate.TAB)));
         charms.add(item);
         return item;
     }

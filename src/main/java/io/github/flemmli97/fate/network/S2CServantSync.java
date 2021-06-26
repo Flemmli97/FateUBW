@@ -1,7 +1,7 @@
 package io.github.flemmli97.fate.network;
 
 import io.github.flemmli97.fate.client.ClientHandler;
-import io.github.flemmli97.fate.common.capability.PlayerCapProvider;
+import io.github.flemmli97.fate.common.capability.CapabilityInsts;
 import io.github.flemmli97.fate.common.entity.servant.EntityServant;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -43,9 +43,9 @@ public class S2CServantSync {
             if (player != null) {
                 Entity fromId = pkt.none ? null : player.world.getEntityByID(pkt.entityID);
                 if (fromId instanceof EntityServant)
-                    player.getCapability(PlayerCapProvider.PlayerCap).ifPresent(cap -> cap.setServant(player, (EntityServant) fromId));
+                    player.getCapability(CapabilityInsts.PlayerCap).ifPresent(cap -> cap.setServant(player, (EntityServant) fromId));
                 else
-                    player.getCapability(PlayerCapProvider.PlayerCap).ifPresent(cap -> cap.setServant(player, null));
+                    player.getCapability(CapabilityInsts.PlayerCap).ifPresent(cap -> cap.setServant(player, null));
             }
         });
         ctx.get().setPacketHandled(true);

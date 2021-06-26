@@ -30,7 +30,7 @@ public class EntityLesserMonster extends CreatureEntity implements IServantMinio
     private AnimatedAction currentAnim;
     public static final AnimatedAction walk = new AnimatedAction(31, 0, "walk");
     public static final AnimatedAction attack = new AnimatedAction(20, 15, "attack");
-    private static final AnimatedAction[] anims = new AnimatedAction[]{walk, attack};
+    private static final AnimatedAction[] anims = {walk, attack};
 
     public EntityLesserMonster(EntityType<? extends EntityLesserMonster> type, World world) {
         super(type, world);

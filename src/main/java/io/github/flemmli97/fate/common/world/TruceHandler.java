@@ -3,7 +3,7 @@ package io.github.flemmli97.fate.common.world;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 import com.mojang.authlib.GameProfile;
-import io.github.flemmli97.fate.common.capability.PlayerCapProvider;
+import io.github.flemmli97.fate.common.capability.CapabilityInsts;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -74,13 +74,13 @@ public class TruceHandler extends WorldSavedData {
             PlayerEntity other = player.world.getPlayerByUuid(request);
             GameProfile rec = other != null ? player.getGameProfile() : player.getServer().getPlayerProfileCache().getProfileByUUID(request);
             player.sendMessage(new TranslationTextComponent("chat.truce.accept", rec.getName()).mergeStyle(TextFormatting.GOLD), Util.DUMMY_UUID);
-            player.getCapability(PlayerCapProvider.PlayerCap).ifPresent(cap -> {
+            player.getCapability(CapabilityInsts.PlayerCap).ifPresent(cap -> {
                 if (cap.getServant(player) != null)
                     cap.getServant(player).setAttackTarget(null);
             });
             if (other != null) {
                 other.sendMessage(new TranslationTextComponent("chat.truce.requestsuccess", player.getName(), TextFormatting.GOLD), Util.DUMMY_UUID);
-                other.getCapability(PlayerCapProvider.PlayerCap).ifPresent(cap -> {
+                other.getCapability(CapabilityInsts.PlayerCap).ifPresent(cap -> {
                     if (cap.getServant(other) != null)
                         cap.getServant(other).setAttackTarget(null);
                 });

@@ -4,8 +4,8 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import io.github.flemmli97.fate.Fate;
 import io.github.flemmli97.fate.client.ClientHandler;
+import io.github.flemmli97.fate.common.capability.CapabilityInsts;
 import io.github.flemmli97.fate.common.capability.IPlayer;
-import io.github.flemmli97.fate.common.capability.PlayerCapProvider;
 import io.github.flemmli97.fate.common.entity.servant.EntityServant;
 import io.github.flemmli97.fate.common.utils.EnumServantUpdate;
 import io.github.flemmli97.fate.common.utils.Utils;
@@ -47,7 +47,7 @@ public class CommandGui extends Screen {
     public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(stack);
         PlayerEntity player = this.getMinecraft().player;
-        IPlayer capSync = player.getCapability(PlayerCapProvider.PlayerCap).orElse(null);
+        IPlayer capSync = player.getCapability(CapabilityInsts.PlayerCap).orElse(null);
         EntityServant servant = capSync.getServant(player);
         if (capSync == null)
             return;
@@ -80,7 +80,7 @@ public class CommandGui extends Screen {
     }
 
     private void drawCommand(MatrixStack stack, int amount) {
-        int[] command = new int[]{this.command1, this.command2, this.command3};
+        int[] command = {this.command1, this.command2, this.command3};
         for (int i = 0; i < amount; i++) {
             switch (command[i]) {
                 case 0:

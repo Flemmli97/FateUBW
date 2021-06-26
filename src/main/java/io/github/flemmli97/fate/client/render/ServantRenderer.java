@@ -1,8 +1,8 @@
 package io.github.flemmli97.fate.client.render;
 
-import com.flemmli97.tenshilib.client.model.IItemArmModel;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import io.github.flemmli97.fate.client.model.IArmModel;
 import io.github.flemmli97.fate.client.model.IPreRenderUpdate;
 import io.github.flemmli97.fate.common.entity.servant.EntityServant;
 import net.minecraft.client.Minecraft;
@@ -20,7 +20,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
-public abstract class ServantRenderer<T extends EntityServant, M extends EntityModel<T> & IItemArmModel & IHasHead & IPreRenderUpdate<T>> extends LivingRenderer<T, M> {
+public abstract class ServantRenderer<T extends EntityServant, M extends EntityModel<T> & IArmModel & IHasHead & IPreRenderUpdate<T>> extends LivingRenderer<T, M> {
 
     private static final ResourceLocation DEFAULT_RES_LOC = new ResourceLocation("textures/entity/steve.png");
 

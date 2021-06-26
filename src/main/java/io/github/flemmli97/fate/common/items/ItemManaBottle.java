@@ -1,6 +1,6 @@
 package io.github.flemmli97.fate.common.items;
 
-import io.github.flemmli97.fate.common.capability.PlayerCapProvider;
+import io.github.flemmli97.fate.common.capability.CapabilityInsts;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -20,7 +20,7 @@ public class ItemManaBottle extends Item {
     public ItemStack onItemUseFinish(ItemStack stack, World world, LivingEntity entity) {
         PlayerEntity player = entity instanceof PlayerEntity ? (PlayerEntity) entity : null;
         if (!world.isRemote && player != null)
-            player.getCapability(PlayerCapProvider.PlayerCap).ifPresent(cap -> cap.addMana(player, 50));
+            player.getCapability(CapabilityInsts.PlayerCap).ifPresent(cap -> cap.addMana(player, 50));
         if (player == null || !player.isCreative())
             stack.shrink(1);
         return stack;

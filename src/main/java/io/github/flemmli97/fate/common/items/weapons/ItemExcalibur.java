@@ -1,8 +1,9 @@
 package io.github.flemmli97.fate.common.items.weapons;
 
-import io.github.flemmli97.fate.common.capability.PlayerCapProvider;
+import io.github.flemmli97.fate.common.capability.CapabilityInsts;
 import io.github.flemmli97.fate.common.entity.EntityExcalibur;
 import io.github.flemmli97.fate.common.lib.ItemTiers;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -22,24 +23,36 @@ public class ItemExcalibur extends SwordItem {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-        if (!world.isRemote) {
-            EntityExcalibur excalibur = new EntityExcalibur(world, player);
+        player.setActiveHand(hand);
+        return ActionResult.resultConsume(player.getHeldItem(hand));
+    }
 
-            if (player.isCreative()) {
+    @Override
+    public void onPlayerStoppedUsing(ItemStack stack, World world, LivingEntity entityLiving, int timeLeft) {
+        int i = this.getUseDuration(stack) - timeLeft;
+        if (i < 60) {
+            return;
+        }
+        if (!world.isRemote) {
+            EntityExcalibur excalibur = new EntityExcalibur(world, entityLiving);
+
+            if (!(entityLiving instanceof PlayerEntity) || ((PlayerEntity) entityLiving).isCreative()) {
                 world.addEntity(excalibur);
-                return ActionResult.resultSuccess(player.getHeldItem(hand));
             } else {
-                if (player.getCapability(PlayerCapProvider.PlayerCap).map(mana -> mana.useMana(player, 30)).orElse(false)) {
+                PlayerEntity player = (PlayerEntity) entityLiving;
+                if (player.getCapability(CapabilityInsts.PlayerCap).map(mana -> mana.useMana(player, 30)).orElse(false)) {
                     world.addEntity(excalibur);
                     player.sendMessage(new TranslationTextComponent("fate.mana.use").mergeStyle(TextFormatting.AQUA), Util.DUMMY_UUID);
-                    return ActionResult.resultSuccess(player.getHeldItem(hand));
-
                 } else {
                     player.sendMessage(new TranslationTextComponent("fate.mana.no").mergeStyle(TextFormatting.AQUA), Util.DUMMY_UUID);
                 }
             }
-            return ActionResult.resultPass(player.getHeldItem(hand));
         }
-        return ActionResult.resultPass(player.getHeldItem(hand));
+        super.onPlayerStoppedUsing(stack, world, entityLiving, timeLeft);
+    }
+
+    @Override
+    public int getUseDuration(ItemStack stack) {
+        return 72000;
     }
 }

@@ -23,7 +23,7 @@ public class EntityGilles extends EntityServant {
 
     private static final AnimatedAction rangedAttack = new AnimatedAction(32, 25, "cast");
     private static final AnimatedAction npAttack = new AnimatedAction(20, 0, "np");
-    private static final AnimatedAction[] anims = new AnimatedAction[]{rangedAttack, npAttack};
+    private static final AnimatedAction[] anims = {rangedAttack, npAttack};
 
     public EntityGilles(EntityType<? extends EntityGilles> entityType, World world) {
         super(entityType, world, "Prelati's Spellbook");

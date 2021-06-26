@@ -9,15 +9,20 @@ import io.github.flemmli97.fate.network.S2CServantSync;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.UUID;
 import java.util.function.Predicate;
 
-public class PlayerCap implements IPlayer {
+public class PlayerCap implements IPlayer, ICapabilitySerializable<CompoundNBT> {
 
     private static final Predicate<EntityServant> notDead = t -> !t.getShouldBeDead();
+    private final LazyOptional<IPlayer> instance = LazyOptional.of(() -> this);
 
     private int currentMana = 0;
     private EntityServant servant;
@@ -155,5 +160,20 @@ public class PlayerCap implements IPlayer {
             this.servantUUID = compound.getUniqueId("ServantUUID");
         if (compound.contains("SavedServant"))
             this.savedServant = compound.getCompound("SavedServant");
+    }
+
+    @Override
+    public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
+        return CapabilityInsts.PlayerCap.orEmpty(cap, this.instance);
+    }
+
+    @Override
+    public CompoundNBT serializeNBT() {
+        return this.writeToNBT(new CompoundNBT());
+    }
+
+    @Override
+    public void deserializeNBT(CompoundNBT nbt) {
+        this.readFromNBT(nbt);
     }
 }

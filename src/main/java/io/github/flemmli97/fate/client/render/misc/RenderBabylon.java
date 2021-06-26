@@ -1,4 +1,4 @@
-package io.github.flemmli97.fate.client.render;
+package io.github.flemmli97.fate.client.render.misc;
 
 import com.flemmli97.tenshilib.client.render.RenderProjectileItem;
 import com.flemmli97.tenshilib.client.render.RenderUtils;
@@ -15,6 +15,7 @@ import net.minecraft.util.math.MathHelper;
 public class RenderBabylon extends RenderProjectileItem<EntityBabylonWeapon> {
 
     public final ResourceLocation babylonIddle = new ResourceLocation(Fate.MODID, "textures/entity/babylon.png");
+    private final RenderUtils.TextureBuilder textureBuilder = new RenderUtils.TextureBuilder();
 
     public RenderBabylon(EntityRendererManager manager) {
         super(manager);
@@ -26,9 +27,10 @@ public class RenderBabylon extends RenderProjectileItem<EntityBabylonWeapon> {
             stack.push();
             RenderUtils.applyYawPitch(stack, MathHelper.lerp(partialTicks, projectile.prevRotationYaw, projectile.rotationYaw),
                     MathHelper.lerp(partialTicks, projectile.prevRotationPitch, projectile.rotationPitch));
-            double ripple = Math.sin((projectile.ticksExisted + projectile.renderRand) / 2f) * 0.025 + 1;
+            float ripple = MathHelper.sin((projectile.ticksExisted + projectile.renderRand) / 2f) * 0.025f + 1;
             float size = (float) (1.45 * ripple);
-            RenderUtils.renderTexture(stack, buffer.getBuffer(RenderType.getEntityCutoutNoCull(this.babylonIddle)), size, size, packedLight);
+            this.textureBuilder.setLight(packedLight);
+            RenderUtils.renderTexture(stack, buffer.getBuffer(RenderType.getEntityCutoutNoCull(this.babylonIddle)), size, size, this.textureBuilder);
             stack.pop();
         }
         super.render(projectile, rotation, partialTicks, stack, buffer, packedLight);
