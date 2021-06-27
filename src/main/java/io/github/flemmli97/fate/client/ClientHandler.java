@@ -52,6 +52,7 @@ import org.lwjgl.glfw.GLFW;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class ClientHandler {
@@ -129,7 +130,7 @@ public class ClientHandler {
         Minecraft.getInstance().displayGuiScreen(new CommandGui());
     }
 
-    public static void openGrailGui(Set<String> rewards) {
+    public static void openGrailGui(Map<ResourceLocation, String> rewards) {
         Minecraft.getInstance().displayGuiScreen(new GuiHolyGrail(rewards));
     }
 

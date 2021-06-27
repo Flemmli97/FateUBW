@@ -8,6 +8,40 @@
           {
             "function": "minecraft:set_count",
             "count": {
+              "min": 45.0,
+              "max": 64.0,
+              "type": "minecraft:uniform"
+            }
+          }
+        ],
+        "name": "minecraft:iron_ingot"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "Entry": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:set_count",
+            "count": {
+              "min": 32.0,
+              "max": 48.0,
+              "type": "minecraft:uniform"
+            }
+          }
+        ],
+        "name": "minecraft:gold_ingot"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "Entry": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:set_count",
+            "count": {
               "min": 4.0,
               "max": 7.0,
               "type": "minecraft:uniform"
@@ -31,7 +65,7 @@
             }
           }
         ],
-        "name": "minecraft:gold_ingot"
+        "name": "minecraft:emerald"
       }
     }
   ],

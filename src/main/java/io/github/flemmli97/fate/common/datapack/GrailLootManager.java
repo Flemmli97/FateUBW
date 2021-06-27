@@ -12,6 +12,7 @@ import net.minecraft.util.ResourceLocation;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class GrailLootManager extends JsonReloadListener {
 
@@ -27,6 +28,11 @@ public class GrailLootManager extends JsonReloadListener {
 
     public Collection<ResourceLocation> getAll() {
         return this.lootTables.keySet();
+    }
+
+    public Map<ResourceLocation, String> clientTableMap() {
+        return this.lootTables.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().name));
     }
 
     @Override

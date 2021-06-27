@@ -1,6 +1,9 @@
 package io.github.flemmli97.fate.common.items;
 
+import io.github.flemmli97.fate.network.PacketHandler;
+import io.github.flemmli97.fate.network.S2CGrailGui;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
@@ -15,6 +18,10 @@ public class ItemHolyGrail extends Item {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-        return super.onItemRightClick(world, player, hand);
+        if (!world.isRemote) {
+            PacketHandler.sendToClient(new S2CGrailGui(), (ServerPlayerEntity) player);
+            return ActionResult.resultConsume(player.getHeldItem(hand));
+        }
+        return ActionResult.resultPass(player.getHeldItem(hand));
     }
 }

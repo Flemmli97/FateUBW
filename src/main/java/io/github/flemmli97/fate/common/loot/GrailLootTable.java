@@ -41,7 +41,7 @@ public class GrailLootTable {
             .registerTypeHierarchyAdapter(GrailLootTable.class, new GrailLootTable.Serializer())
             .setPrettyPrinting().disableHtmlEscaping().create();
 
-    private final String name;
+    public final String name;
 
     private final List<GrailLootEntry<?>> lootPool;
     private final ILootCondition[] conditions;

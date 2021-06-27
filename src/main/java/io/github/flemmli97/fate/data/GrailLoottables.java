@@ -9,6 +9,7 @@ import io.github.flemmli97.fate.common.loot.entry.XPEntry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.item.Items;
+import net.minecraft.loot.ConstantRange;
 import net.minecraft.loot.ItemLootEntry;
 import net.minecraft.loot.RandomValueRange;
 import net.minecraft.loot.functions.SetCount;
@@ -23,17 +24,32 @@ public class GrailLoottables extends GrailLootProvider {
     @Override
     protected void add() {
         this.addLootTable(new ResourceLocation(Fate.MODID, "valuables"), GrailLootBuilder.create("Riches")
+                .addEntry(new VanillaItemEntry(ItemLootEntry.builder(Items.IRON_INGOT)
+                        .acceptFunction(SetCount.builder(RandomValueRange.of(45, 64)))
+                        .build()))
+                .addEntry(new VanillaItemEntry(ItemLootEntry.builder(Items.GOLD_INGOT)
+                        .acceptFunction(SetCount.builder(RandomValueRange.of(32, 48)))
+                        .build()))
                 .addEntry(new VanillaItemEntry(ItemLootEntry.builder(Items.DIAMOND)
                         .acceptFunction(SetCount.builder(RandomValueRange.of(4, 7)))
                         .build()))
-                .addEntry(new VanillaItemEntry(ItemLootEntry.builder(Items.GOLD_INGOT)
+                .addEntry(new VanillaItemEntry(ItemLootEntry.builder(Items.EMERALD)
                         .acceptFunction(SetCount.builder(RandomValueRange.of(14, 18)))
                         .build())));
 
         this.addLootTable(new ResourceLocation(Fate.MODID, "xp"), GrailLootBuilder.create("Knowledge")
-                .addEntry(new XPEntry(RandomValueRange.of(4, 7)))
+                .addEntry(new XPEntry(RandomValueRange.of(5000, 10000)))
                 .addEntry(new VanillaItemEntry(ItemLootEntry.builder(Items.EXPERIENCE_BOTTLE)
                         .acceptFunction(SetCount.builder(RandomValueRange.of(32, 48)))
+                        .build()))
+                .addEntry(new VanillaItemEntry(ItemLootEntry.builder(Items.EXPERIENCE_BOTTLE)
+                        .acceptFunction(SetCount.builder(RandomValueRange.of(32, 48)))
+                        .build()))
+                .addEntry(new VanillaItemEntry(ItemLootEntry.builder(Items.EXPERIENCE_BOTTLE)
+                        .acceptFunction(SetCount.builder(RandomValueRange.of(16, 48)))
+                        .build()))
+                .addEntry(new VanillaItemEntry(ItemLootEntry.builder(Items.EXPERIENCE_BOTTLE)
+                        .acceptFunction(SetCount.builder(ConstantRange.of(64)))
                         .build())));
 
         this.addLootTable(new ResourceLocation(Fate.MODID, "power"), GrailLootBuilder.create("Power")

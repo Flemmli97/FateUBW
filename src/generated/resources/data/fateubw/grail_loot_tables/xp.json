@@ -3,8 +3,8 @@
     {
       "type": "fateubw:xp_entry",
       "range": {
-        "min": 4.0,
-        "max": 7.0,
+        "min": 5000.0,
+        "max": 10000.0,
         "type": "minecraft:uniform"
       }
     },
@@ -20,6 +20,53 @@
               "max": 48.0,
               "type": "minecraft:uniform"
             }
+          }
+        ],
+        "name": "minecraft:experience_bottle"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "Entry": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:set_count",
+            "count": {
+              "min": 32.0,
+              "max": 48.0,
+              "type": "minecraft:uniform"
+            }
+          }
+        ],
+        "name": "minecraft:experience_bottle"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "Entry": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:set_count",
+            "count": {
+              "min": 16.0,
+              "max": 48.0,
+              "type": "minecraft:uniform"
+            }
+          }
+        ],
+        "name": "minecraft:experience_bottle"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "Entry": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:set_count",
+            "count": 64
           }
         ],
         "name": "minecraft:experience_bottle"

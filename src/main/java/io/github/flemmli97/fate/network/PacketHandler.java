@@ -33,6 +33,9 @@ public class PacketHandler {
         dispatcher.registerMessage(id++, C2STruceMessage.class, C2STruceMessage::write, C2STruceMessage::read, C2STruceMessage::handle);
         dispatcher.registerMessage(id++, S2CTruceData.class, S2CTruceData::write, S2CTruceData::read, S2CTruceData::handle);
         dispatcher.registerMessage(id++, S2CItemInUse.class, S2CItemInUse::write, S2CItemInUse::read, S2CItemInUse::handle);
+        dispatcher.registerMessage(id++, S2CGrailGui.class, S2CGrailGui::write, S2CGrailGui::read, S2CGrailGui::handle);
+        dispatcher.registerMessage(id++, C2SGrailReward.class, C2SGrailReward::write, C2SGrailReward::read, C2SGrailReward::handle);
+
     }
 
     public static <T> void sendToClient(T message, ServerPlayerEntity player) {

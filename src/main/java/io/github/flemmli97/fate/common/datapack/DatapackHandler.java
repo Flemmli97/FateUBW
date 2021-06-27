@@ -6,6 +6,7 @@ import net.minecraftforge.event.AddReloadListenerEvent;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 
 public class DatapackHandler {
@@ -23,5 +24,9 @@ public class DatapackHandler {
 
     public static Collection<ResourceLocation> getAllTables() {
         return lootTables.getAll();
+    }
+
+    public static Map<ResourceLocation, String> getTablesForClient() {
+        return lootTables.clientTableMap();
     }
 }
