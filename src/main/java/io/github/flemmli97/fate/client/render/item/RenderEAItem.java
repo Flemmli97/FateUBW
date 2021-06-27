@@ -30,12 +30,12 @@ public class RenderEAItem extends ItemStackTileEntityRenderer {
     private final RenderUtils.BeamBuilder beam = new RenderUtils.BeamBuilder();
 
     public RenderEAItem() {
-        this.beam.setRenderType(CustomRenderTypes.TRANSLUCENTCOLOR);
         this.beam.setStartColor(0, 0, 0, 200);
     }
 
     @Override
     public void func_239207_a_(ItemStack stack, ItemCameraTransforms.TransformType transformType, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
+        this.beam.setRenderType(CustomRenderTypes.TRANSLUCENTCOLOR);
         matrixStack.push();
         matrixStack.scale(1.0F, -1.0F, -1.0F);
 

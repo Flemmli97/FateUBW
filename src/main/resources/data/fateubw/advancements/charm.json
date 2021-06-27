@@ -1,7 +1,7 @@
 {
     "display": {
         "icon": {
-            "item": "fateubw:servant_medallion_undef"
+            "item": "fateubw:servant_medallion"
         },
         "title": {
             "translate": "advancements.fate.charm.title"

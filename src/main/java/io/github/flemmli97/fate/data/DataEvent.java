@@ -23,6 +23,8 @@ public class DataEvent {
             data.addProvider(blocks);
             data.addProvider(new ItemTagGen(data, blocks, event.getExistingFileHelper()));
             data.addProvider(new RecipesGen(data));
+            data.addProvider(new GrailLoottables(data, Fate.MODID));
+
         }
     }
 
