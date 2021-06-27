@@ -1,0 +1,6 @@
+{
+  "parent": "fateubw:block/chalk_base",
+  "textures": {
+    "tex": "fateubw:blocks/chalk_line_r5c2"
+  }
+}

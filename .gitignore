@@ -23,6 +23,3 @@ build
 
 # things
 .DS_Store
-
-# datage
-src/generated

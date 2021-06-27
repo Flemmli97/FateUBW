@@ -1,0 +1,39 @@
+{
+  "pools": [
+    {
+      "type": "fateubw:vanilla_entry",
+      "Entry": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:set_count",
+            "count": {
+              "min": 4.0,
+              "max": 7.0,
+              "type": "minecraft:uniform"
+            }
+          }
+        ],
+        "name": "minecraft:diamond"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "Entry": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:set_count",
+            "count": {
+              "min": 14.0,
+              "max": 18.0,
+              "type": "minecraft:uniform"
+            }
+          }
+        ],
+        "name": "minecraft:gold_ingot"
+      }
+    }
+  ],
+  "name": "Riches"
+}

@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:block/thin_block",
+  "textures": {
+    "particle": "fateubw:blocks/chalk_line_none"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        0.5,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#tex",
+          "uv": [
+            0.0,
+            16.0,
+            16.0,
+            0.0
+          ],
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#tex"
+        }
+      }
+    }
+  ]
+}

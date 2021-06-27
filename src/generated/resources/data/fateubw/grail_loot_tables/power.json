@@ -1,0 +1,23 @@
+{
+  "pools": [
+    {
+      "type": "fateubw:attribute_entry",
+      "range": {
+        "min": 1.0,
+        "max": 2.0,
+        "type": "minecraft:uniform"
+      },
+      "Attribute": "minecraft:generic.max_health"
+    },
+    {
+      "type": "fateubw:attribute_entry",
+      "range": {
+        "min": 1.0,
+        "max": 2.0,
+        "type": "minecraft:uniform"
+      },
+      "Attribute": "minecraft:generic.attack_damage"
+    }
+  ],
+  "name": "Power"
+}

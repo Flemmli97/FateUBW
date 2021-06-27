@@ -1,0 +1,30 @@
+{
+  "pools": [
+    {
+      "type": "fateubw:xp_entry",
+      "range": {
+        "min": 4.0,
+        "max": 7.0,
+        "type": "minecraft:uniform"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "Entry": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:set_count",
+            "count": {
+              "min": 32.0,
+              "max": 48.0,
+              "type": "minecraft:uniform"
+            }
+          }
+        ],
+        "name": "minecraft:experience_bottle"
+      }
+    }
+  ],
+  "name": "Knowledge"
+}
