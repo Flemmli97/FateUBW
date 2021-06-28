@@ -55,7 +55,7 @@ public class GrailLootTable {
     }
 
     public boolean isEmpty() {
-        return this.lootPool.isEmpty();
+        return this.lootPool.isEmpty() || this.lootPool.stream().noneMatch(GrailLootEntry::valid);
     }
 
     public void give(ServerPlayerEntity player) {
@@ -85,7 +85,7 @@ public class GrailLootTable {
                 });
                 ILootCondition[] conditions = JSONUtils.deserializeClass(obj, "conditions", new ILootCondition[0], context, ILootCondition[].class);
 
-                return new GrailLootTable(obj.get("name").toString(), lootEntries, conditions);
+                return new GrailLootTable(obj.get("name").getAsString(), lootEntries, conditions);
             } else
                 throw new UnsupportedOperationException("Object " + json + " can't be deserialized");
         }

@@ -9,7 +9,7 @@ import io.github.flemmli97.fate.common.registry.GrailLootSerializer;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.loot.IRandomRange;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.RandomValueRange;
@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 
 public class AttributeEntry extends GrailLootEntry<AttributeEntry> {
 
-    private static final UUID attributeUUID = UUID.fromString("804c9232-325f-484a-b60f-061b99e46ba2");
+    public static final UUID attributeUUID = UUID.fromString("804c9232-325f-484a-b60f-061b99e46ba2");
     private final Attribute att;
 
     public AttributeEntry(Attribute att, IRandomRange range, ILootCondition... conditions) {
@@ -36,7 +36,7 @@ public class AttributeEntry extends GrailLootEntry<AttributeEntry> {
     }
 
     @Override
-    public void accept(PlayerEntity playerEntity, LootContext context) {
+    public void accept(ServerPlayerEntity playerEntity, LootContext context) {
         ModifiableAttributeInstance inst = playerEntity.getAttribute(this.att);
         if (inst != null) {
             AttributeModifier mod = inst.getModifier(attributeUUID);

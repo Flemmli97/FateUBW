@@ -1,0 +1,278 @@
+{
+  "pools": [
+    {
+      "type": "fateubw:astral_entry",
+      "range": 1
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "Entry": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:set_count",
+            "count": {
+              "min": 32.0,
+              "max": 48.0,
+              "type": "minecraft:uniform"
+            }
+          }
+        ],
+        "name": "astralsorcery:aquamarine"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "Entry": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:set_count",
+            "count": {
+              "min": 10.0,
+              "max": 16.0,
+              "type": "minecraft:uniform"
+            }
+          }
+        ],
+        "name": "astralsorcery:starmetal_ingot"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "Entry": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:set_count",
+            "count": {
+              "min": 8.0,
+              "max": 12.0,
+              "type": "minecraft:uniform"
+            }
+          }
+        ],
+        "name": "astralsorcery:resonating_gem"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "Entry": {
+        "type": "minecraft:item",
+        "conditions": [
+          {
+            "condition": "minecraft:alternative",
+            "terms": [
+              {
+                "condition": "minecraft:time_check",
+                "period": 24000,
+                "value": {
+                  "min": 23658.0,
+                  "max": 23999.0
+                }
+              },
+              {
+                "condition": "minecraft:time_check",
+                "period": 24000,
+                "value": {
+                  "min": 0.0,
+                  "max": 12342.0
+                }
+              }
+            ]
+          },
+          {
+            "condition": "minecraft:time_check",
+            "period": 24000,
+            "value": {
+              "min": 14743.0,
+              "max": 21257.0
+            }
+          }
+        ],
+        "functions": [
+          {
+            "function": "minecraft:set_count",
+            "count": 1
+          }
+        ],
+        "name": "astralsorcery:perk_gem_day"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "Entry": {
+        "type": "minecraft:item",
+        "conditions": [
+          {
+            "condition": "minecraft:alternative",
+            "terms": [
+              {
+                "condition": "minecraft:time_check",
+                "period": 24000,
+                "value": {
+                  "min": 23658.0,
+                  "max": 23999.0
+                }
+              },
+              {
+                "condition": "minecraft:time_check",
+                "period": 24000,
+                "value": {
+                  "min": 0.0,
+                  "max": 12342.0
+                }
+              }
+            ]
+          },
+          {
+            "condition": "minecraft:time_check",
+            "period": 24000,
+            "value": {
+              "min": 14743.0,
+              "max": 21257.0
+            }
+          },
+          {
+            "condition": "minecraft:random_chance",
+            "chance": 0.5
+          }
+        ],
+        "functions": [
+          {
+            "function": "minecraft:set_count",
+            "count": 1
+          }
+        ],
+        "name": "astralsorcery:perk_gem_day"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "Entry": {
+        "type": "minecraft:item",
+        "conditions": [
+          {
+            "condition": "minecraft:time_check",
+            "period": 24000,
+            "value": {
+              "min": 14743.0,
+              "max": 21257.0
+            }
+          }
+        ],
+        "functions": [
+          {
+            "function": "minecraft:set_count",
+            "count": 1
+          }
+        ],
+        "name": "astralsorcery:perk_gem_night"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "Entry": {
+        "type": "minecraft:item",
+        "conditions": [
+          {
+            "condition": "minecraft:time_check",
+            "period": 24000,
+            "value": {
+              "min": 14743.0,
+              "max": 21257.0
+            }
+          },
+          {
+            "condition": "minecraft:random_chance",
+            "chance": 0.5
+          }
+        ],
+        "functions": [
+          {
+            "function": "minecraft:set_count",
+            "count": 1
+          }
+        ],
+        "name": "astralsorcery:perk_gem_night"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "Entry": {
+        "type": "minecraft:item",
+        "conditions": [
+          {
+            "condition": "minecraft:alternative",
+            "terms": [
+              {
+                "condition": "minecraft:time_check",
+                "period": 24000,
+                "value": {
+                  "min": 12343.0,
+                  "max": 14742.0
+                }
+              },
+              {
+                "condition": "minecraft:time_check",
+                "period": 24000,
+                "value": {
+                  "min": 21258.0,
+                  "max": 23657.0
+                }
+              }
+            ]
+          }
+        ],
+        "functions": [
+          {
+            "function": "minecraft:set_count",
+            "count": 1
+          }
+        ],
+        "name": "astralsorcery:perk_gem_sky"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "Entry": {
+        "type": "minecraft:item",
+        "conditions": [
+          {
+            "condition": "minecraft:alternative",
+            "terms": [
+              {
+                "condition": "minecraft:time_check",
+                "period": 24000,
+                "value": {
+                  "min": 12343.0,
+                  "max": 14742.0
+                }
+              },
+              {
+                "condition": "minecraft:time_check",
+                "period": 24000,
+                "value": {
+                  "min": 21258.0,
+                  "max": 23657.0
+                }
+              }
+            ]
+          },
+          {
+            "condition": "minecraft:random_chance",
+            "chance": 0.5
+          }
+        ],
+        "functions": [
+          {
+            "function": "minecraft:set_count",
+            "count": 1
+          }
+        ],
+        "name": "astralsorcery:perk_gem_sky"
+      }
+    }
+  ],
+  "name": "Astral"
+}

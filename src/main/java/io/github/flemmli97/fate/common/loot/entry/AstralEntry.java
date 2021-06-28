@@ -3,9 +3,11 @@ package io.github.flemmli97.fate.common.loot.entry;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import io.github.flemmli97.fate.Fate;
+import io.github.flemmli97.fate.common.integration.AstralSorcery;
 import io.github.flemmli97.fate.common.loot.GrailLootEntry;
 import io.github.flemmli97.fate.common.loot.LootSerializerType;
-import net.minecraft.entity.player.PlayerEntity;
+import io.github.flemmli97.fate.common.registry.GrailLootSerializer;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.loot.IRandomRange;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.conditions.ILootCondition;
@@ -20,14 +22,19 @@ public class AstralEntry extends GrailLootEntry<AstralEntry> {
 
     @Override
     public Supplier<LootSerializerType<AstralEntry>> getType() {
-        return null;
+        return GrailLootSerializer.ASTRAL;
     }
 
     @Override
-    public void accept(PlayerEntity playerEntity, LootContext context) {
+    public void accept(ServerPlayerEntity playerEntity, LootContext context) {
         if (Fate.astralSorcery) {
-
+            AstralSorcery.grantFreePerkPoint(playerEntity);
         }
+    }
+
+    @Override
+    public boolean valid() {
+        return Fate.astralSorcery;
     }
 
     public static class Serializer extends BaseSerializer<AstralEntry> {

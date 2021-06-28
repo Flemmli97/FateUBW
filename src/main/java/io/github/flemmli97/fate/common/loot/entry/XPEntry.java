@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import io.github.flemmli97.fate.common.loot.GrailLootEntry;
 import io.github.flemmli97.fate.common.loot.LootSerializerType;
 import io.github.flemmli97.fate.common.registry.GrailLootSerializer;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.loot.IRandomRange;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.conditions.ILootCondition;
@@ -24,7 +24,7 @@ public class XPEntry extends GrailLootEntry<XPEntry> {
     }
 
     @Override
-    public void accept(PlayerEntity playerEntity, LootContext context) {
+    public void accept(ServerPlayerEntity playerEntity, LootContext context) {
         playerEntity.giveExperiencePoints(this.range.generateInt(context.getRandom()));
     }
 

@@ -6,7 +6,7 @@ import com.google.gson.JsonSerializationContext;
 import io.github.flemmli97.fate.common.loot.GrailLootEntry;
 import io.github.flemmli97.fate.common.loot.LootSerializerType;
 import io.github.flemmli97.fate.common.registry.GrailLootSerializer;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.loot.ConstantRange;
 import net.minecraft.loot.ILootSerializer;
 import net.minecraft.loot.LootContext;
@@ -26,7 +26,7 @@ public class EmptyEntry extends GrailLootEntry<EmptyEntry> {
     }
 
     @Override
-    public void accept(PlayerEntity playerEntity, LootContext context) {
+    public void accept(ServerPlayerEntity playerEntity, LootContext context) {
 
     }
 

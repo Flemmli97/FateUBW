@@ -3,7 +3,6 @@ package io.github.flemmli97.fate.common.loot;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.loot.ILootSerializer;
 import net.minecraft.loot.IRandomRange;
@@ -17,7 +16,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public abstract class GrailLootEntry<T extends GrailLootEntry<T>> implements BiConsumer<PlayerEntity, LootContext> {
+public abstract class GrailLootEntry<T extends GrailLootEntry<T>> implements BiConsumer<ServerPlayerEntity, LootContext> {
 
     protected final ILootCondition[] conditions;
     public final Predicate<LootContext> combinedConditions;
@@ -36,6 +35,11 @@ public abstract class GrailLootEntry<T extends GrailLootEntry<T>> implements BiC
 
     public abstract Supplier<LootSerializerType<T>> getType();
 
+    public boolean valid() {
+        return true;
+    }
+
+    @SuppressWarnings("unchecked")
     public JsonObject serialize(JsonSerializationContext context) {
         JsonObject obj = new JsonObject();
         obj.addProperty("type", this.getType().get().getRegistryName().toString());

@@ -126,7 +126,10 @@ dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.8.2:processor'
 
     compile fg.deobf(tenshilib_dep)
+    compile fg.deobf(astral_scorcery_dep)
     runtimeOnly fg.deobf(hwyla_dep)
+    runtimeOnly fg.deobf(curios_dep)
+    runtimeOnly fg.deobf(observer_dep)
 }
 
 jar {

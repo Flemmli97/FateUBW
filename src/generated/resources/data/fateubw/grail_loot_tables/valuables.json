@@ -42,8 +42,8 @@
           {
             "function": "minecraft:set_count",
             "count": {
-              "min": 4.0,
-              "max": 7.0,
+              "min": 8.0,
+              "max": 14.0,
               "type": "minecraft:uniform"
             }
           }
@@ -59,13 +59,30 @@
           {
             "function": "minecraft:set_count",
             "count": {
-              "min": 14.0,
-              "max": 18.0,
+              "min": 17.0,
+              "max": 25.0,
               "type": "minecraft:uniform"
             }
           }
         ],
         "name": "minecraft:emerald"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "Entry": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:set_count",
+            "count": {
+              "min": 4.0,
+              "max": 7.0,
+              "type": "minecraft:uniform"
+            }
+          }
+        ],
+        "name": "minecraft:netherite_ingot"
       }
     }
   ],

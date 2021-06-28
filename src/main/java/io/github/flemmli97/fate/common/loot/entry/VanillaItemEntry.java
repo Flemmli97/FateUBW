@@ -7,7 +7,6 @@ import com.google.gson.JsonSerializationContext;
 import io.github.flemmli97.fate.common.loot.GrailLootEntry;
 import io.github.flemmli97.fate.common.loot.LootSerializerType;
 import io.github.flemmli97.fate.common.registry.GrailLootSerializer;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.ConstantRange;
@@ -40,7 +39,7 @@ public class VanillaItemEntry extends GrailLootEntry<VanillaItemEntry> {
     }
 
     @Override
-    public void accept(PlayerEntity playerEntity, LootContext context) {
+    public void accept(ServerPlayerEntity playerEntity, LootContext context) {
         Consumer<ItemStack> givePlayer = stack -> playerEntity.addItemStackToInventory(stack);
         this.lootEntry.expand(context, gen -> gen.func_216188_a(givePlayer, context));
     }
