@@ -38,6 +38,11 @@ public class EntityEnumaElish extends EntityBeam {
     }
 
     @Override
+    public void tick() {
+        super.tick();
+    }
+
+    @Override
     public void onImpact(EntityRayTraceResult result) {
         result.getEntity().attackEntityFrom(CustomDamageSource.excalibur(this, this.getOwner()), Config.Common.eaDamage);
     }

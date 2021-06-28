@@ -9,7 +9,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 
 public class ButtonSpecial extends AbstractButton {
 
-    private String id = "";
+    private String id;
     protected static final ResourceLocation guiStuff = new ResourceLocation(Fate.MODID + "textures/gui/buttons.png");
 
     public ButtonSpecial(int x, int y, int widthIn, int heightIn, String specialID) {

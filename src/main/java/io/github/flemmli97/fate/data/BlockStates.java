@@ -24,6 +24,9 @@ public class BlockStates extends BlockStateProvider {
         for (RegistryObject<BlockChalkLine> e : ModBlocks.chalks.values()) {
             this.horizontalBlock(e.get(), this.chalk(e.get()));
         }
+        this.simpleBlock(ModBlocks.charmOre.get(), this.models().singleTexture(ModBlocks.charmOre.getId().getPath(), new ResourceLocation(Fate.MODID, "block/ore"), "ore", new ResourceLocation(Fate.MODID, "blocks/charm_ore")));
+        this.simpleBlock(ModBlocks.crystalOre.get(), this.models().singleTexture(ModBlocks.crystalOre.getId().getPath(), new ResourceLocation(Fate.MODID, "block/ore"), "ore", new ResourceLocation(Fate.MODID, "blocks/crystal_ore")));
+        this.horizontalBlock(ModBlocks.altar.get(), this.models().getExistingFile(new ResourceLocation(Fate.MODID, "block/altar")));
     }
 
     @Override

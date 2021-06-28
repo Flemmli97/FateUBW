@@ -44,8 +44,8 @@ public class GrailLootManager extends JsonReloadListener {
                 if (!table.isEmpty())
                     builder.put(res, table);
             } catch (JsonSyntaxException | IllegalStateException ex) {
-                Fate.logger.error("Couldnt parse grail loottable json {}", res);
-                ex.printStackTrace();
+                Fate.logger.error("Couldn't parse grail loottable json {}", res, ex);
+                //ex.printStackTrace();
             }
         });
         this.lootTables = builder.build();

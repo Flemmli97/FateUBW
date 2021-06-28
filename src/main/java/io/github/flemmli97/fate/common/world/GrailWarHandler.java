@@ -306,7 +306,7 @@ public class GrailWarHandler extends WorldSavedData {
     }
 
     private boolean notify(ResourceLocation loc) {
-        return Config.Common.whiteList == Config.Common.notifyBlackList.contains(loc);
+        return Config.Common.whiteList == Config.Common.notifyBlackList.contains(loc.toString());
     }
 
     public void untrack(EntityServant servant) {

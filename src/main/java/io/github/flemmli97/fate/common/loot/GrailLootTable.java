@@ -76,7 +76,7 @@ public class GrailLootTable {
             if (json.isJsonObject()) {
                 JsonObject obj = json.getAsJsonObject();
                 List<GrailLootEntry<?>> lootEntries = new ArrayList<>();
-                JsonArray arr = obj.getAsJsonArray("pools");
+                JsonArray arr = JSONUtils.getJsonArray(obj, "pools", new JsonArray());
                 arr.forEach(e -> {
                     JsonObject val = e.getAsJsonObject();
                     ResourceLocation type = new ResourceLocation(val.get("type").getAsString());
@@ -84,8 +84,7 @@ public class GrailLootTable {
                             .getSerializer().deserialize(val, context));
                 });
                 ILootCondition[] conditions = JSONUtils.deserializeClass(obj, "conditions", new ILootCondition[0], context, ILootCondition[].class);
-
-                return new GrailLootTable(obj.get("name").getAsString(), lootEntries, conditions);
+                return new GrailLootTable(JSONUtils.getString(obj, "name", "NONAME"), lootEntries, conditions);
             } else
                 throw new UnsupportedOperationException("Object " + json + " can't be deserialized");
         }
@@ -94,13 +93,11 @@ public class GrailLootTable {
         public JsonElement serialize(GrailLootTable src, Type typeOfSrc, JsonSerializationContext context) {
             JsonObject obj = new JsonObject();
             JsonArray pools = new JsonArray();
-            src.lootPool.forEach(entry -> {
-                pools.add(entry.serialize(context));
-            });
+            obj.addProperty("name", src.name);
+            src.lootPool.forEach(entry -> pools.add(entry.serialize(context)));
             obj.add("pools", pools);
             if (src.conditions != null && src.conditions.length > 0)
                 obj.add("conditions", context.serialize(src.conditions));
-            obj.addProperty("name", src.name);
             return obj;
         }
     }

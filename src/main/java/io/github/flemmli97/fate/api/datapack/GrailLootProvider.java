@@ -21,11 +21,9 @@ public abstract class GrailLootProvider implements IDataProvider {
     private final Map<ResourceLocation, GrailLootTable> data = new HashMap<>();
 
     private final DataGenerator gen;
-    private final String modid;
 
-    public GrailLootProvider(DataGenerator gen, String modid) {
+    public GrailLootProvider(DataGenerator gen) {
         this.gen = gen;
-        this.modid = modid;
     }
 
     protected abstract void add();

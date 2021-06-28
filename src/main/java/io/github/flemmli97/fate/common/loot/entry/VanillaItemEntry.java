@@ -34,13 +34,13 @@ public class VanillaItemEntry extends GrailLootEntry<VanillaItemEntry> {
 
     @Override
     public void give(ServerPlayerEntity player, LootContext context) {
-        Consumer<ItemStack> givePlayer = stack -> player.addItemStackToInventory(stack);
+        Consumer<ItemStack> givePlayer = player::addItemStackToInventory;
         this.lootEntry.expand(context, gen -> gen.func_216188_a(givePlayer, context));
     }
 
     @Override
     public void accept(ServerPlayerEntity playerEntity, LootContext context) {
-        Consumer<ItemStack> givePlayer = stack -> playerEntity.addItemStackToInventory(stack);
+        Consumer<ItemStack> givePlayer = playerEntity::addItemStackToInventory;
         this.lootEntry.expand(context, gen -> gen.func_216188_a(givePlayer, context));
     }
 

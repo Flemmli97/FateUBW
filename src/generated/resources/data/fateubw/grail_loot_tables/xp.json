@@ -1,4 +1,5 @@
 {
+  "name": "Knowledge",
   "pools": [
     {
       "type": "fateubw:xp_entry",
@@ -72,6 +73,5 @@
         "name": "minecraft:experience_bottle"
       }
     }
-  ],
-  "name": "Knowledge"
+  ]
 }

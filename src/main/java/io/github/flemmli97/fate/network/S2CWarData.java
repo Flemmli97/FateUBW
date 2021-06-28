@@ -48,7 +48,7 @@ public class S2CWarData {
             PlayerEntity player = DistExecutor.safeCallWhenOn(Dist.CLIENT, () -> ClientHandler::clientPlayer);
             if (player == null)
                 return;
-            if (pkt.grailWarPlayers.contains(player.getUniqueID()))
+            if (pkt.grailWarPlayers.stream().map(GameProfile::getId).anyMatch(uuid -> uuid.equals(player.getUniqueID())))
                 ClientHandler.grailData(pkt.grailWarPlayers);
         });
         ctx.get().setPacketHandled(true);

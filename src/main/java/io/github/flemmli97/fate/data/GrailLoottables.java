@@ -25,8 +25,8 @@ import java.lang.reflect.InvocationTargetException;
 
 public class GrailLoottables extends GrailLootProvider {
 
-    public GrailLoottables(DataGenerator gen, String modid) {
-        super(gen, modid);
+    public GrailLoottables(DataGenerator gen) {
+        super(gen);
     }
 
     @Override
@@ -82,13 +82,11 @@ public class GrailLoottables extends GrailLootProvider {
                         .acceptFunction(SetCount.builder(ConstantRange.of(1)))
                         .acceptCondition(new TimeCheckBuilder(24000L, RandomValueRange.of(23658, 23999))
                                 .alternative(new TimeCheckBuilder(24000L, RandomValueRange.of(0, 12342))))
-                        .acceptCondition(new TimeCheckBuilder(24000L, RandomValueRange.of(14743, 21257)))
                         .build()))
                 .addEntry(new VanillaItemEntry(ItemLootEntry.builder(ItemsAS.PERK_GEM_DAY)
                         .acceptFunction(SetCount.builder(ConstantRange.of(1)))
                         .acceptCondition(new TimeCheckBuilder(24000L, RandomValueRange.of(23658, 23999))
                                 .alternative(new TimeCheckBuilder(24000L, RandomValueRange.of(0, 12342))))
-                        .acceptCondition(new TimeCheckBuilder(24000L, RandomValueRange.of(14743, 21257)))
                         .acceptCondition(RandomChance.builder(0.5f))
                         .build()))
                 .addEntry(new VanillaItemEntry(ItemLootEntry.builder(ItemsAS.PERK_GEM_NIGHT)

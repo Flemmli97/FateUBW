@@ -1,0 +1,31 @@
+{
+  "parent": "fateubw:root",
+  "display": {
+    "icon": {
+      "item": "fateubw:altar"
+    },
+    "title": {
+      "translate": "advancements.fate.join.title"
+    },
+    "description": {
+      "translate": "advancements.fate.join.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": true
+  },
+  "criteria": {
+    "join": {
+      "trigger": "fateubw:altar",
+      "conditions": {
+        "joining": true
+      }
+    }
+  },
+  "requirements": [
+    [
+      "join"
+    ]
+  ]
+}

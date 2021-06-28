@@ -77,7 +77,7 @@ public class ConfigSpecs {
             this.minPlayer = builder.comment("Minimum of player count required to start a grail war").defineInRange("Min Player", 1, 1, Integer.MAX_VALUE);
             this.maxPlayer = builder.comment("Maximum of player allowed in a grail war").defineInRange("Max Player", 7, 1, Integer.MAX_VALUE);
             this.joinTime = builder.comment("Time buffer in ticks to join a grail war after start").define("Join Time", 12000);
-            this.rewardDelay = builder.comment("Delay after an ended grail war for getting the grail").define("Reward Delay", 2000);
+            this.rewardDelay = builder.comment("Delay after an ended grail war for getting the grail").define("Reward Delay", 500);
             this.charmSpawnRate = builder.comment("").define("Charm Gen Rate", 2000);
             this.gemSpawnRate = builder.comment("").define("Gem Gen Rate", 2000);
             this.allowDuplicateServant = builder.comment("Allow the summoning of duplicate servants during a grail war").define("Allow Duplicate Servants", false);

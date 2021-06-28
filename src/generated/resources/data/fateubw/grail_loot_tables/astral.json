@@ -1,4 +1,5 @@
 {
+  "name": "Astral",
   "pools": [
     {
       "type": "fateubw:astral_entry",
@@ -80,14 +81,6 @@
                 }
               }
             ]
-          },
-          {
-            "condition": "minecraft:time_check",
-            "period": 24000,
-            "value": {
-              "min": 14743.0,
-              "max": 21257.0
-            }
           }
         ],
         "functions": [
@@ -124,14 +117,6 @@
                 }
               }
             ]
-          },
-          {
-            "condition": "minecraft:time_check",
-            "period": 24000,
-            "value": {
-              "min": 14743.0,
-              "max": 21257.0
-            }
           },
           {
             "condition": "minecraft:random_chance",
@@ -273,6 +258,5 @@
         "name": "astralsorcery:perk_gem_sky"
       }
     }
-  ],
-  "name": "Astral"
+  ]
 }

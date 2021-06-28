@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "fateubw:block/altar"
+    },
+    "facing=south": {
+      "model": "fateubw:block/altar",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "fateubw:block/altar",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "fateubw:block/altar",
+      "y": 90
+    }
+  }
+}
