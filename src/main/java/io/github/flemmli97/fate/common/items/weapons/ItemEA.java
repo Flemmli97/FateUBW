@@ -38,7 +38,7 @@ public class ItemEA extends SwordItem {
     public void onPlayerStoppedUsing(ItemStack stack, World world, LivingEntity entityLiving, int timeLeft) {
         int i = this.getUseDuration(stack) - timeLeft;
         stack.getCapability(CapabilityInsts.ItemStackCap).ifPresent(cap -> cap.setInUse(entityLiving, false, entityLiving.getActiveHand() == Hand.MAIN_HAND));
-        if (i < 60) {
+        if (i < 40) {
             return;
         }
         if (!world.isRemote) {
