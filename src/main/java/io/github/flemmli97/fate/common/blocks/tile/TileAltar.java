@@ -155,15 +155,23 @@ public class TileAltar extends TileEntity implements ITickableTileEntity {
 
     @Override
     public void tick() {
-        if (this.isSummoning && !this.world.isRemote) {
-            this.summoningTick++;
-            if (this.summoningTick == 1) {
-                this.world.playSound(null, this.pos, SoundEvents.BLOCK_PORTAL_TRAVEL, SoundCategory.AMBIENT, 0.4F, 1F);
+        if (!this.world.isRemote) {
+            if (this.isSummoning) {
+                this.summoningTick++;
+                if (this.summoningTick == 1) {
+                    this.world.playSound(null, this.pos, SoundEvents.BLOCK_PORTAL_TRAVEL, SoundCategory.AMBIENT, 0.4F, 1F);
+                }
+                if (this.summoningTick > 150) {
+                    SummonUtils.summonRandomServant(this.inventoryCharm, (ServerPlayerEntity) this.player, this.pos, (ServerWorld) this.world);
+                    SummonUtils.removeSummoningStructure(this.world, this.getPos());
+                }
             }
-            if (this.summoningTick > 150) {
-                SummonUtils.summonRandomServant(this.inventoryCharm, (ServerPlayerEntity) this.player, this.pos, (ServerWorld) this.world);
-                SummonUtils.removeSummoningStructure(this.world, this.getPos());
-            }
+        } else {
+            this.tick++;
+            if (this.tick > 360)
+                this.tick = 0;
+            if (this.isSummoning)
+                this.summoningTick++;
         }
     }
 
@@ -184,13 +192,5 @@ public class TileAltar extends TileEntity implements ITickableTileEntity {
      */
     public void updateSummoning(boolean flag) {
         this.isSummoning = flag;
-    }
-
-    public void clientTick() {
-        this.tick++;
-        if (this.tick > 360)
-            this.tick = 0;
-        if (this.isSummoning)
-            this.summoningTick++;
     }
 }
