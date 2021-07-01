@@ -1,7 +1,6 @@
 package io.github.flemmli97.fate;
 
 import io.github.flemmli97.fate.client.ClientEvents;
-import io.github.flemmli97.fate.client.ClientHandler;
 import io.github.flemmli97.fate.common.capability.CapabilityInsts;
 import io.github.flemmli97.fate.common.capability.IPlayer;
 import io.github.flemmli97.fate.common.capability.ItemStackCap;
@@ -16,6 +15,7 @@ import io.github.flemmli97.fate.common.registry.GrailLootSerializer;
 import io.github.flemmli97.fate.common.registry.ModBlocks;
 import io.github.flemmli97.fate.common.registry.ModEntities;
 import io.github.flemmli97.fate.common.registry.ModItems;
+import io.github.flemmli97.fate.common.registry.ModParticles;
 import io.github.flemmli97.fate.common.utils.CachedWeaponList;
 import io.github.flemmli97.fate.network.PacketHandler;
 import net.minecraft.item.ItemGroup;
@@ -31,7 +31,6 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
@@ -60,7 +59,6 @@ public class Fate {
             file.mkdir();
         registerContent(modBus);
         modBus.addListener(this::setup);
-        modBus.addListener(this::client);
         modBus.addListener(this::conf);
         modBus.addListener(this::newRegistry);
 
@@ -80,6 +78,7 @@ public class Fate {
         ModBlocks.TILES.register(modBus);
         ModEntities.ENTITIES.register(modBus);
         GrailLootSerializer.SERIALIZER.register(modBus);
+        ModParticles.PARTICLES.register(modBus);
     }
 
     public void setup(FMLCommonSetupEvent event) {
@@ -97,10 +96,6 @@ public class Fate {
         grailSerializers = new RegistryBuilder<LootSerializerType<?>>().setName(new ResourceLocation(Fate.MODID, "grail_loot_serialzer"))
                 .setType(LootSerializerType.CLASS).setDefaultKey(new ResourceLocation(Fate.MODID, "default_serializer"))
                 .create();
-    }
-
-    public void client(FMLClientSetupEvent event) {
-        ClientHandler.registerRenderer(event);
     }
 
     public void conf(ModConfig.ModConfigEvent event) {

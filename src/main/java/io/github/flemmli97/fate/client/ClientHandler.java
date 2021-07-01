@@ -1,5 +1,6 @@
 package io.github.flemmli97.fate.client;
 
+import com.flemmli97.tenshilib.client.particles.ColoredParticle;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.authlib.GameProfile;
@@ -37,13 +38,16 @@ import io.github.flemmli97.fate.common.blocks.BlockChalkLine;
 import io.github.flemmli97.fate.common.registry.ModBlocks;
 import io.github.flemmli97.fate.common.registry.ModEntities;
 import io.github.flemmli97.fate.common.registry.ModItems;
+import io.github.flemmli97.fate.common.registry.ModParticles;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -116,6 +120,11 @@ public class ClientHandler {
         event.enqueueWork(() -> {
             ItemModelsProperties.registerProperty(ModItems.excalibur.get(), new ResourceLocation(Fate.MODID, "active"), ItemModelProps.activeItemProp);
         });
+    }
+
+    public static void registerParticles(ParticleFactoryRegisterEvent event) {
+        ParticleManager manager = Minecraft.getInstance().particles;
+        manager.registerFactory(ModParticles.light.get(), ColoredParticle.NoGravityParticleFactory::new);
     }
 
     public static PlayerEntity clientPlayer() {

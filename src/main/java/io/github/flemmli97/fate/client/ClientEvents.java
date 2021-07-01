@@ -10,14 +10,19 @@ import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod.EventBusSubscriber(modid = Fate.MODID, value = Dist.CLIENT)
 public class ClientEvents {
 
     public static void register() {
         MinecraftForge.EVENT_BUS.register(ClientEvents.class);
+        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
+        modBus.addListener(ClientHandler::registerRenderer);
+        modBus.addListener(ClientHandler::registerParticles);
     }
 
     @SubscribeEvent(receiveCanceled = true)

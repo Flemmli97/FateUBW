@@ -16,6 +16,7 @@ public class DataEvent {
             data.addProvider(new BlockStates(data, event.getExistingFileHelper()));
             data.addProvider(new ItemModels(data, event.getExistingFileHelper()));
             data.addProvider(new Lang(data, event.getExistingFileHelper()));
+            data.addProvider(new ParticleGen(data));
         }
         if (event.includeServer()) {
             data.addProvider(new Loottables(data));
