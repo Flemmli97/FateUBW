@@ -14,10 +14,15 @@ import io.github.flemmli97.fate.common.registry.FateAttributes;
 import io.github.flemmli97.fate.common.registry.ModEntities;
 import io.github.flemmli97.fate.common.registry.ModItems;
 import net.minecraft.entity.CreatureEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.OpenDoorGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -39,9 +44,6 @@ public class EntityHassanCopy extends CreatureEntity implements IAnimated, IOwna
 
     private UUID ownerUUID;
     private EntityHassan owner;
-
-    public FollowMasterGoal<EntityHassanCopy> follow = new FollowMasterGoal<>(this, 16.0D, 9.0F, 3.0F);
-    public WaterAvoidingRandomWalkingGoal wander = new WaterAvoidingRandomWalkingGoal(this, 1.0D);
 
     private AnimatedAction anim;
 
@@ -79,6 +81,8 @@ public class EntityHassanCopy extends CreatureEntity implements IAnimated, IOwna
         this.goalSelector.addGoal(0, new AnimatedMeleeGoal<>(this, m -> AnimatedAction.vanillaAttack));
         this.goalSelector.addGoal(1, new FollowMasterGoal<>(this, 16.0D, 9.0F, 3.0F));
         this.goalSelector.addGoal(3, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
+        this.goalSelector.addGoal(4, new SwimGoal(this));
+        this.goalSelector.addGoal(7, new OpenDoorGoal(this, true));
         this.targetSelector.addGoal(0, new TargetOwnerEnemyGoal<>(this));
     }
 
@@ -123,9 +127,20 @@ public class EntityHassanCopy extends CreatureEntity implements IAnimated, IOwna
 
     @Override
     public void livingTick() {
-        if (this.isAlive() && (this.getOwner() == null || !this.getOwner().isAlive()))
+        if (this.ticksExisted > 200 && this.isAlive() && (this.getOwner() == null || !this.getOwner().isAlive()))
             this.attackEntityFrom(DamageSource.OUT_OF_WORLD, Integer.MAX_VALUE);
         super.livingTick();
+        this.tickAnimation();
+    }
+
+    @Override
+    public boolean attackEntityAsMob(Entity entity) {
+        if (entity instanceof MobEntity) {
+            LivingEntity target = ((MobEntity) entity).getAttackTarget();
+            if (target == this.getOwner())
+                ((MobEntity) entity).setAttackTarget(this);
+        }
+        return super.attackEntityAsMob(entity);
     }
 
     @Override

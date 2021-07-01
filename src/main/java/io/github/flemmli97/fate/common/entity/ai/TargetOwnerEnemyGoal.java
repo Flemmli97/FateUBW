@@ -8,31 +8,40 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.goal.TargetGoal;
+import net.minecraft.util.math.AxisAlignedBB;
 
 import java.util.EnumSet;
 
 public class TargetOwnerEnemyGoal<T extends CreatureEntity & IOwnable<?>> extends TargetGoal {
+
     private final T tameable;
     private LivingEntity attackTarget;
+    protected EntityPredicate targetEntitySelector;
 
     public TargetOwnerEnemyGoal(T entity) {
         super(entity, false);
         this.tameable = entity;
         this.setMutexFlags(EnumSet.of(Goal.Flag.TARGET));
+        this.targetEntitySelector = new EntityPredicate().setDistance(this.getTargetDistance())
+                .setCustomPredicate(e -> e instanceof MobEntity && ((MobEntity) e).getAttackTarget() == this.tameable.getOwner());
     }
 
     @Override
     public boolean shouldExecute() {
         LivingEntity livingentity = this.tameable.getOwner();
-        if (livingentity == null) {
+        LivingEntity currentTarget = this.goalOwner.getAttackTarget();
+        if (livingentity == null || currentTarget != null) {
             return false;
-        } else {
-            LivingEntity target = livingentity instanceof MobEntity ? ((MobEntity) livingentity).getAttackTarget() : livingentity.getLastAttackedEntity();
-            if (target != null && !target.equals(this.attackTarget)) {
-                this.attackTarget = target;
-            }
-            return this.isSuitableTarget(this.attackTarget, EntityPredicate.DEFAULT);
         }
+        this.attackTarget = livingentity instanceof MobEntity ? ((MobEntity) livingentity).getAttackTarget() : livingentity.getLastAttackedEntity();
+        if (this.attackTarget != null)
+            return this.isSuitableTarget(this.attackTarget, EntityPredicate.DEFAULT);
+        this.attackTarget = this.goalOwner.world.getClosestEntity(LivingEntity.class, this.targetEntitySelector, this.goalOwner, this.goalOwner.getPosX(), this.goalOwner.getPosYEye(), this.goalOwner.getPosZ(), this.getTargetableArea(this.getTargetDistance()));
+        return this.isSuitableTarget(this.attackTarget, EntityPredicate.DEFAULT);
+    }
+
+    protected AxisAlignedBB getTargetableArea(double targetDistance) {
+        return this.goalOwner.getBoundingBox().grow(targetDistance, 4.0D, targetDistance);
     }
 
     @Override

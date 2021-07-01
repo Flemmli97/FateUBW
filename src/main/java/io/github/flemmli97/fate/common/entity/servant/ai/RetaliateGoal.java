@@ -21,18 +21,15 @@ public class RetaliateGoal extends TargetGoal {
 
     @Override
     public boolean shouldExecute() {
-        LivingEntity target = this.goalOwner.getAttackTarget() == null || this.goalOwner.getRevengeTarget() instanceof IServantMinion ? this.goalOwner.getRevengeTarget() : null;
-        if (target != null && this.checkTarget(target)) {
-            this.target = target;
-            return true;
+        LivingEntity target = this.goalOwner.getAttackTarget();
+        LivingEntity revenge = this.goalOwner.getRevengeTarget();
+        if (target == null || !target.isAlive() || revenge instanceof IServantMinion) {
+            if (this.checkTarget(revenge) && target != revenge) {
+                this.target = revenge;
+                return true;
+            }
         }
         return false;
-    }
-
-    private boolean isNotSameTarget() {
-        if (this.goalOwner.getAttackTarget() == null)
-            return true;
-        return !this.goalOwner.getRevengeTarget().equals(this.target);
     }
 
     @Override

@@ -9,6 +9,8 @@ import java.util.function.Function;
 
 public class AnimatedMeleeGoal<T extends CreatureEntity & IAnimated> extends AnimatedAttackGoal<T> {
 
+    protected int attackMoveDelay;
+
     protected double attackRange;
     private final Function<T, AnimatedAction> randomAttack;
 
@@ -37,12 +39,23 @@ public class AnimatedMeleeGoal<T extends CreatureEntity & IAnimated> extends Ani
 
     @Override
     public void handlePreAttack() {
-        this.movementDone = true;
+        this.moveToWithDelay(1);
+        this.attacker.getLookController().setLookPositionWithEntity(this.target, 30, 30);
+        if (this.attackMoveDelay <= 0)
+            this.attackMoveDelay = this.attacker.getRNG().nextInt(50) + 100;
+        if (this.distanceToTargetSq <= this.attackRange * 2) {
+            this.movementDone = true;
+            this.attacker.getLookController().setLookPositionWithEntity(this.target, 360, 90);
+        } else if (this.attackMoveDelay-- == 1) {
+            this.attackMoveDelay = 0;
+            this.next = null;
+        }
     }
 
     @Override
     public void handleIddle() {
         this.moveToWithDelay(1);
+        this.attacker.getLookController().setLookPositionWithEntity(this.target, 30, 30);
     }
 
     @Override

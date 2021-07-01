@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextFormatting;
@@ -88,5 +89,13 @@ public class EntityArthur extends EntityServant {
             excalibur.setRotationTo(pos[0], pos[1], pos[2], 0);
         this.world.addEntity(excalibur);
         this.revealServant();
+        this.stopActiveHand();
+    }
+
+    @Override
+    public void setAnimation(AnimatedAction anim) {
+        if (!this.world.isRemote && anim != null && anim.getID().equals(npAttack.getID()))
+            this.setActiveHand(Hand.MAIN_HAND);
+        super.setAnimation(anim);
     }
 }
