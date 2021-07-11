@@ -2,6 +2,7 @@ package io.github.flemmli97.fate.common.entity.servant;
 
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import io.github.flemmli97.fate.common.entity.EntityExcalibur;
+import io.github.flemmli97.fate.common.entity.SwitchableWeapon;
 import io.github.flemmli97.fate.common.entity.servant.ai.ArthurAttackGoal;
 import io.github.flemmli97.fate.common.registry.ModItems;
 import io.github.flemmli97.fate.common.utils.EnumServantUpdate;
@@ -11,7 +12,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextFormatting;
@@ -27,6 +27,8 @@ public class EntityArthur extends EntityServant {
 
     public static final AnimatedAction npAttack = new AnimatedAction(15, 8, "excalibur");
     public static final AnimatedAction[] anims = {swing_1, npAttack};
+
+    public final SwitchableWeapon<EntityArthur> switchableWeapon = new SwitchableWeapon<>(this, new ItemStack(ModItems.excalibur.get()), ItemStack.EMPTY);
 
     public EntityArthur(EntityType<? extends EntityArthur> entityType, World world) {
         super(entityType, world, "arthur.hogou");
@@ -90,12 +92,6 @@ public class EntityArthur extends EntityServant {
         this.world.addEntity(excalibur);
         this.revealServant();
         this.stopActiveHand();
-    }
-
-    @Override
-    public void setAnimation(AnimatedAction anim) {
-        if (!this.world.isRemote && anim != null && anim.getID().equals(npAttack.getID()))
-            this.setActiveHand(Hand.MAIN_HAND);
-        super.setAnimation(anim);
+        this.switchableWeapon.switchItems(true);
     }
 }

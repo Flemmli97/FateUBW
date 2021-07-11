@@ -3,6 +3,7 @@ package io.github.flemmli97.fate.common.entity.servant;
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import io.github.flemmli97.fate.common.entity.EntityArcherArrow;
 import io.github.flemmli97.fate.common.entity.EntityCaladBolg;
+import io.github.flemmli97.fate.common.entity.SwitchableWeapon;
 import io.github.flemmli97.fate.common.entity.servant.ai.EmiyaAttackGoal;
 import io.github.flemmli97.fate.common.registry.ModItems;
 import io.github.flemmli97.fate.common.utils.EnumServantUpdate;
@@ -24,6 +25,8 @@ public class EntityEmiya extends EntityServant {
     private static final AnimatedAction rangedAttack = new AnimatedAction(30, 10, "ranged");
     private static final AnimatedAction npAttack = new AnimatedAction(20, 0, "np");
     private static final AnimatedAction[] anims = {AnimatedAction.vanillaAttack, rangedAttack, npAttack};
+
+    public final SwitchableWeapon<EntityEmiya> switchableWeapon = new SwitchableWeapon<>(this, new ItemStack(ModItems.archbow.get()), ItemStack.EMPTY);
 
     public EntityEmiya(EntityType<? extends EntityEmiya> entityType, World world) {
         super(entityType, world, "Calad Bolg II");
@@ -75,12 +78,6 @@ public class EntityEmiya extends EntityServant {
             this.goalSelector.addGoal(0, this.attackAI);
     }
 
-    @Override
-    public void readAdditional(CompoundNBT tag) {
-        super.readAdditional(tag);
-
-    }
-
     public void attackWithRangedAttack(LivingEntity target) {
         EntityArcherArrow arrow = new EntityArcherArrow(this.world, this);
         if (!this.world.isRemote) {
@@ -102,14 +99,19 @@ public class EntityEmiya extends EntityServant {
             bolg.shootAtPosition(target.getPosX(), target.getPosY() + target.getEyeHeight(), target.getPosZ(), 2F, 0);
             this.world.addEntity(bolg);
             this.revealServant();
+            this.switchableWeapon.switchItems(true);
         }
     }
 
-    public void switchToNPWeapon(boolean unswitch) {
-        if (unswitch) {
+    @Override
+    public void writeAdditional(CompoundNBT tag) {
+        super.writeAdditional(tag);
+        this.switchableWeapon.save(tag);
+    }
 
-        } else {
-
-        }
+    @Override
+    public void readAdditional(CompoundNBT tag) {
+        super.readAdditional(tag);
+        this.switchableWeapon.read(tag);
     }
 }

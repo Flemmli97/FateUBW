@@ -34,7 +34,6 @@ public class EmiyaAttackGoal extends BaseServantAttackGoal<EntityEmiya> {
                     this.attacker.useMana(this.attacker.props().hogouMana());
                 this.attacker.attackWithNP(this.target);
                 this.attacker.forcedNP = false;
-                this.attacker.switchToNPWeapon(true);
             }
         } else if (this.doRanged) {
             this.attacker.getLookController().setLookPositionWithEntity(this.target, 30.0F, 30.0F);
@@ -49,7 +48,7 @@ public class EmiyaAttackGoal extends BaseServantAttackGoal<EntityEmiya> {
     public void handlePreAttack() {
         this.iddleFlag = false;
         if (this.attacker.canUse(this.next, EntityServant.AttackType.NP))
-            this.attacker.switchToNPWeapon(false);
+            this.attacker.switchableWeapon.switchItems(false);
         super.handlePreAttack();
     }
 

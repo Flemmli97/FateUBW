@@ -1,8 +1,10 @@
 package io.github.flemmli97.fate.common.entity.servant;
 
 import com.flemmli97.tenshilib.common.entity.AnimatedAction;
+import io.github.flemmli97.fate.common.capability.CapabilityInsts;
 import io.github.flemmli97.fate.common.entity.EntityBabylonWeapon;
 import io.github.flemmli97.fate.common.entity.EntityEnumaElish;
+import io.github.flemmli97.fate.common.entity.SwitchableWeapon;
 import io.github.flemmli97.fate.common.entity.servant.ai.GilgameshAttackGoal;
 import io.github.flemmli97.fate.common.registry.ModItems;
 import io.github.flemmli97.fate.common.utils.EnumServantUpdate;
@@ -22,6 +24,8 @@ public class EntityGilgamesh extends EntityServant {
     private static final AnimatedAction rangedAttack2 = new AnimatedAction(40, 10, "babylon2");
     private static final AnimatedAction npAttack = new AnimatedAction(20, 10, "np");
     private static final AnimatedAction[] anims = {AnimatedAction.vanillaAttack, rangedAttack, npAttack, rangedAttack2};
+
+    public final SwitchableWeapon<EntityGilgamesh> switchableWeapon = new SwitchableWeapon<>(this, new ItemStack(ModItems.enumaelish.get()), ItemStack.EMPTY);
 
     public EntityGilgamesh(EntityType<? extends EntityGilgamesh> entityType, World world) {
         super(entityType, world, "Enuma Elish");
@@ -78,16 +82,8 @@ public class EntityGilgamesh extends EntityServant {
             ea.setRotationTo(pos[0], pos[1], pos[2], 0);
         this.world.addEntity(ea);
         this.revealServant();
-    }
-
-    public void switchToNPWeapon(boolean unSwitch) {
-
-    }
-
-    @Override
-    public void readAdditional(CompoundNBT tag) {
-        super.readAdditional(tag);
-
+        this.getHeldItemMainhand().getCapability(CapabilityInsts.ItemStackCap).ifPresent(cap->cap.setInUse(this, false, true));
+        this.switchableWeapon.switchItems(true);
     }
 
     public void attackWithRangedAttack(LivingEntity target) {
@@ -114,5 +110,17 @@ public class EntityGilgamesh extends EntityServant {
                 weapon.setEntityProperties();
             }
         }
+    }
+
+    @Override
+    public void writeAdditional(CompoundNBT tag) {
+        super.writeAdditional(tag);
+        this.switchableWeapon.save(tag);
+    }
+
+    @Override
+    public void readAdditional(CompoundNBT tag) {
+        super.readAdditional(tag);
+        this.switchableWeapon.read(tag);
     }
 }
