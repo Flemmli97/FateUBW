@@ -23,13 +23,15 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
-public class EntityCuchulainn extends EntityServant<EntityCuchulainn> {
+public class EntityCuchulainn extends EntityServant {
 
     public final CuchulainnAttackGoal attackAI = new CuchulainnAttackGoal(this);
 
     private static final AnimatedAction npAttack = new AnimatedAction(15, 9, "gae_bolg");
     private static final AnimatedAction[] anims = {AnimatedAction.vanillaAttack, npAttack};
     private int gaeBolgThrowTick;
+
+    private final AnimationHandler<EntityCuchulainn> animationHandler = new AnimationHandler<>(this, anims);
 
     public EntityCuchulainn(EntityType<? extends EntityServant> entityType, World world) {
         super(entityType, world, "cuchulainn.hogou");
@@ -55,8 +57,8 @@ public class EntityCuchulainn extends EntityServant<EntityCuchulainn> {
     }
 
     @Override
-    public AnimationHandler<EntityCuchulainn> createAnimationHandler() {
-        return new AnimationHandler<>(this, anims);
+    public AnimationHandler<EntityCuchulainn> getAnimationHandler() {
+        return this.animationHandler;
     }
 
     @Override

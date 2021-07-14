@@ -20,13 +20,15 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
-public class EntityEmiya extends EntityServant<EntityEmiya> {
+public class EntityEmiya extends EntityServant {
 
     public final EmiyaAttackGoal attackAI = new EmiyaAttackGoal(this, 10);
 
     private static final AnimatedAction rangedAttack = new AnimatedAction(30, 10, "ranged");
     private static final AnimatedAction npAttack = new AnimatedAction(20, 0, "np");
     private static final AnimatedAction[] anims = {AnimatedAction.vanillaAttack, rangedAttack, npAttack};
+
+    private final AnimationHandler<EntityEmiya> animationHandler = new AnimationHandler<>(this, anims);
 
     public final SwitchableWeapon<EntityEmiya> switchableWeapon = new SwitchableWeapon<>(this, new ItemStack(ModItems.archbow.get()), ItemStack.EMPTY);
 
@@ -52,8 +54,8 @@ public class EntityEmiya extends EntityServant<EntityEmiya> {
     }
 
     @Override
-    public AnimationHandler<EntityEmiya> createAnimationHandler() {
-        return new AnimationHandler<>(this, anims);
+    public AnimationHandler<EntityEmiya> getAnimationHandler() {
+        return this.animationHandler;
     }
 
     @Override

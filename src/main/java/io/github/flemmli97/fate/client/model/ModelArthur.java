@@ -39,7 +39,7 @@ public class ModelArthur extends ModelServant<EntityArthur> {
             this.servantRightLegDown.rotateAngleX = ModelUtils.degToRad(14);
         } else {
             float partialTicks = Minecraft.getInstance().getRenderPartialTicks();
-            servant.getAnimationHandler().getAnimation().ifPresent(anim->this.anim.doAnimation(anim.getID(), anim.getTick(), partialTicks));
+            servant.getAnimationHandler().getAnimation().ifPresent(anim -> this.anim.doAnimation(anim.getID(), anim.getTick(), partialTicks));
         }
         this.syncOverlay();
     }

@@ -19,7 +19,7 @@ import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
-public class ModelServant<T extends EntityServant<T> & IAnimated<T>> extends EntityModel<T> implements IResetModel, IArmModel, IHasHead, IPreRenderUpdate<T> {
+public class ModelServant<T extends EntityServant & IAnimated> extends EntityModel<T> implements IResetModel, IArmModel, IHasHead, IPreRenderUpdate<T> {
 
     public ModelRendererPlus servantHead;
     public ModelRendererPlus servantHeadOverlay;
@@ -193,7 +193,7 @@ public class ModelServant<T extends EntityServant<T> & IAnimated<T>> extends Ent
             if (servant.isStaying()) {
                 this.anim.doAnimation("stay", servant.ticksExisted, partialTicks);
             } else {
-                servant.getAnimationHandler().getAnimation().ifPresent(anim->this.anim.doAnimation(anim.getID(), anim.getTick(), partialTicks));
+                servant.getAnimationHandler().getAnimation().ifPresent(anim -> this.anim.doAnimation(anim.getID(), anim.getTick(), partialTicks));
             }
         }
         this.syncOverlay();

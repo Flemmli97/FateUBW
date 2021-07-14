@@ -14,12 +14,14 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
-public class EntityMedusa extends EntityServant<EntityMedusa> {
+public class EntityMedusa extends EntityServant {
 
     public final MedusaAttackGoal attackAI = new MedusaAttackGoal(this);
 
     private static final AnimatedAction npAttack = new AnimatedAction(20, 0, "np");
     private static final AnimatedAction[] anims = {AnimatedAction.vanillaAttack, npAttack};
+
+    private final AnimationHandler<EntityMedusa> animationHandler = new AnimationHandler<>(this, anims);
 
     public EntityMedusa(EntityType<? extends EntityServant> entityType, World world) {
         super(entityType, world, "medusa.hogou");
@@ -38,8 +40,8 @@ public class EntityMedusa extends EntityServant<EntityMedusa> {
     }
 
     @Override
-    public AnimationHandler<EntityMedusa> createAnimationHandler() {
-        return new AnimationHandler<>(this, anims);
+    public AnimationHandler<EntityMedusa> getAnimationHandler() {
+        return this.animationHandler;
     }
 
     @Override

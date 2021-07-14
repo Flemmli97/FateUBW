@@ -19,13 +19,15 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
-public class EntityGilles extends EntityServant<EntityGilles> {
+public class EntityGilles extends EntityServant {
 
     public final GillesAttackGoal attackAI = new GillesAttackGoal(this, 16);
 
     private static final AnimatedAction rangedAttack = new AnimatedAction(32, 25, "cast");
     private static final AnimatedAction npAttack = new AnimatedAction(20, 0, "np");
     private static final AnimatedAction[] anims = {rangedAttack, npAttack};
+
+    private final AnimationHandler<EntityGilles> animationHandler = new AnimationHandler<>(this, anims);
 
     public EntityGilles(EntityType<? extends EntityGilles> entityType, World world) {
         super(entityType, world, "Prelati's Spellbook");
@@ -46,8 +48,8 @@ public class EntityGilles extends EntityServant<EntityGilles> {
     }
 
     @Override
-    public AnimationHandler<EntityGilles> createAnimationHandler() {
-        return new AnimationHandler<>(this, anims);
+    public AnimationHandler<EntityGilles> getAnimationHandler() {
+        return this.animationHandler;
     }
 
     @Override

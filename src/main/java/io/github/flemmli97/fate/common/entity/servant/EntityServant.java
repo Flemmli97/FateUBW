@@ -1,7 +1,6 @@
 package io.github.flemmli97.fate.common.entity.servant;
 
 import com.flemmli97.tenshilib.api.entity.AnimatedAction;
-import com.flemmli97.tenshilib.api.entity.AnimationHandler;
 import com.flemmli97.tenshilib.api.entity.IAnimated;
 import com.flemmli97.tenshilib.api.entity.IOwnable;
 import com.flemmli97.tenshilib.common.entity.ai.MoveControllerPlus;
@@ -74,7 +73,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-public abstract class EntityServant<T extends EntityServant<T>> extends CreatureEntity implements IAnimated<T>, IOwnable<PlayerEntity> {
+public abstract class EntityServant extends CreatureEntity implements IAnimated, IOwnable<PlayerEntity> {
 
     //Mana
     private int servantMana, antiRegen, counter;
@@ -89,8 +88,6 @@ public abstract class EntityServant<T extends EntityServant<T>> extends Creature
      * 0 = normal, 1 = aggressive, 2 = defensive, 3 = follow, 4 = stay, 5 = guard an area
      */
     protected EnumServantUpdate commandBehaviour = EnumServantUpdate.NORMAL;
-
-    private final AnimationHandler<T> animationHandler;
 
     private EnumServantType servantType;
     //PlayerUUID
@@ -116,7 +113,7 @@ public abstract class EntityServant<T extends EntityServant<T>> extends Creature
     public NearestAttackableTargetGoal<PlayerEntity> targetPlayer = new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 0, true, true, this.targetPred);
     public NearestAttackableTargetGoal<MobEntity> targetMob = new NearestAttackableTargetGoal<>(this, MobEntity.class, 10, true, true, this.targetPred);
 
-    public FollowMasterGoal<EntityServant<T>> follow = new FollowMasterGoal<>(this, 16.0D, 9.0F, 3.0F, EntityServant::isStaying);
+    public FollowMasterGoal<EntityServant> follow = new FollowMasterGoal<>(this, 16.0D, 9.0F, 3.0F, EntityServant::isStaying);
     public RetaliateGoal targetHurt = new RetaliateGoal(this);
     public MoveTowardsRestrictionGoal restrictArea = new MoveTowardsRestrictionGoal(this, 1.0D);
     public WaterAvoidingRandomWalkingGoal wander = new WaterAvoidingRandomWalkingGoal(this, 1.0D);
@@ -132,10 +129,7 @@ public abstract class EntityServant<T extends EntityServant<T>> extends Creature
         }
         this.servantType = ModEntities.get(entityType.getRegistryName());
         this.hogou = hogou;
-        this.animationHandler = this.createAnimationHandler();
     }
-
-    public abstract AnimationHandler<T> createAnimationHandler();
 
     protected void goals() {
         this.goalSelector.addGoal(1, this.follow);
@@ -505,11 +499,6 @@ public abstract class EntityServant<T extends EntityServant<T>> extends Creature
 	}*/
 
     //=====Entity attack etc.
-
-    @Override
-    public AnimationHandler<T> getAnimationHandler() {
-        return this.animationHandler;
-    }
 
     public abstract boolean canUse(AnimatedAction anim, AttackType type);
 

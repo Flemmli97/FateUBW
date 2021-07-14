@@ -31,11 +31,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-public class EntityHassan extends EntityServant<EntityHassan> {
+public class EntityHassan extends EntityServant {
 
     public final HassanAttackGoal attackAI = new HassanAttackGoal(this);
     private static final AnimatedAction npAttack = new AnimatedAction(20, 1, "np");
     private static final AnimatedAction[] anims = {AnimatedAction.vanillaAttack, npAttack};
+
+    private final AnimationHandler<EntityHassan> animationHandler = new AnimationHandler<>(this, anims);
 
     private Set<UUID> copies = new HashSet<>();
 
@@ -63,8 +65,8 @@ public class EntityHassan extends EntityServant<EntityHassan> {
     }
 
     @Override
-    public AnimationHandler<EntityHassan> createAnimationHandler() {
-        return new AnimationHandler<>(this, anims);
+    public AnimationHandler<EntityHassan> getAnimationHandler() {
+        return this.animationHandler;
     }
 
     @Override

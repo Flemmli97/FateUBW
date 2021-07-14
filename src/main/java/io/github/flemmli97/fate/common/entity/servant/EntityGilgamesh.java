@@ -18,7 +18,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
-public class EntityGilgamesh extends EntityServant<EntityGilgamesh> {
+public class EntityGilgamesh extends EntityServant {
 
     public final GilgameshAttackGoal attackAI = new GilgameshAttackGoal(this, 12);
 
@@ -26,6 +26,8 @@ public class EntityGilgamesh extends EntityServant<EntityGilgamesh> {
     private static final AnimatedAction rangedAttack2 = new AnimatedAction(40, 10, "babylon2");
     private static final AnimatedAction npAttack = new AnimatedAction(20, 10, "np");
     private static final AnimatedAction[] anims = {AnimatedAction.vanillaAttack, rangedAttack, npAttack, rangedAttack2};
+
+    private final AnimationHandler<EntityGilgamesh> animationHandler = new AnimationHandler<>(this, anims);
 
     public final SwitchableWeapon<EntityGilgamesh> switchableWeapon = new SwitchableWeapon<>(this, new ItemStack(ModItems.enumaelish.get()), ItemStack.EMPTY);
 
@@ -51,8 +53,8 @@ public class EntityGilgamesh extends EntityServant<EntityGilgamesh> {
     }
 
     @Override
-    public AnimationHandler<EntityGilgamesh> createAnimationHandler() {
-        return new AnimationHandler<>(this, anims);
+    public AnimationHandler<EntityGilgamesh> getAnimationHandler() {
+        return this.animationHandler;
     }
 
     @Override

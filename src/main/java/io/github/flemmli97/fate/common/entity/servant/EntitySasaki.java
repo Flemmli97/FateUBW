@@ -14,12 +14,14 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
-public class EntitySasaki extends EntityServant<EntitySasaki> {
+public class EntitySasaki extends EntityServant {
 
     public final SasakiAttackGoal attackAI = new SasakiAttackGoal(this);
 
     private static final AnimatedAction npAttack = new AnimatedAction(40, 0, "np");
     private static final AnimatedAction[] anims = {AnimatedAction.vanillaAttack, npAttack};
+
+    private final AnimationHandler<EntitySasaki> animationHandler = new AnimationHandler<>(this, anims);
 
     public EntitySasaki(EntityType<? extends EntityServant> entityType, World world) {
         super(entityType, world, "sasaki.hogou");
@@ -40,8 +42,8 @@ public class EntitySasaki extends EntityServant<EntitySasaki> {
     }
 
     @Override
-    public AnimationHandler<EntitySasaki> createAnimationHandler() {
-        return new AnimationHandler<>(this, anims);
+    public AnimationHandler<EntitySasaki> getAnimationHandler() {
+        return this.animationHandler;
     }
 
     @Override
@@ -63,7 +65,7 @@ public class EntitySasaki extends EntityServant<EntitySasaki> {
 
     @Override
     public boolean attackEntityFrom(DamageSource damageSource, float damage) {
-        if (this.getAnimationHandler().getAnimation().map(anim->this.canUse(anim, AttackType.NP)).orElse(false))
+        if (this.getAnimationHandler().getAnimation().map(anim -> this.canUse(anim, AttackType.NP)).orElse(false))
             return false;
         return super.attackEntityFrom(damageSource, damage);
     }
@@ -73,7 +75,7 @@ public class EntitySasaki extends EntityServant<EntitySasaki> {
     }
 
     public boolean canAttackNP() {
-        if (this.getAnimationHandler().getAnimation().map(anim->!this.canUse(anim, AttackType.NP)).orElse(true))
+        if (this.getAnimationHandler().getAnimation().map(anim -> !this.canUse(anim, AttackType.NP)).orElse(true))
             return false;
         int i = this.getAnimationHandler().getAnimation().map(AnimatedAction::getTick).orElse(0);
         return i == 30 || i == 20 || i == 10;

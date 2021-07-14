@@ -21,7 +21,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
-public class EntityArthur extends EntityServant<EntityArthur> {
+public class EntityArthur extends EntityServant {
 
     public final ArthurAttackGoal attackAI = new ArthurAttackGoal(this);
 
@@ -29,6 +29,8 @@ public class EntityArthur extends EntityServant<EntityArthur> {
 
     public static final AnimatedAction npAttack = new AnimatedAction(15, 8, "excalibur");
     public static final AnimatedAction[] anims = {swing_1, npAttack};
+
+    private final AnimationHandler<EntityArthur> animationHandler = new AnimationHandler<>(this, anims);
 
     public final SwitchableWeapon<EntityArthur> switchableWeapon = new SwitchableWeapon<>(this, new ItemStack(ModItems.excalibur.get()), ItemStack.EMPTY);
 
@@ -51,8 +53,8 @@ public class EntityArthur extends EntityServant<EntityArthur> {
     }
 
     @Override
-    public AnimationHandler<EntityArthur> createAnimationHandler() {
-        return new AnimationHandler<>(this, anims);
+    public AnimationHandler<EntityArthur> getAnimationHandler() {
+        return this.animationHandler;
     }
 
     @Override

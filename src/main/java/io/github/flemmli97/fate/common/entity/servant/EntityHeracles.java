@@ -19,7 +19,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
-public class EntityHeracles extends EntityServant<EntityHeracles> {
+public class EntityHeracles extends EntityServant {
 
     public final HeraclesAttackGoal attackAI = new HeraclesAttackGoal(this);
 
@@ -27,6 +27,8 @@ public class EntityHeracles extends EntityServant<EntityHeracles> {
     private static final AnimatedAction[] anims = {swing_1};
     protected static final DataParameter<Integer> deathCount = EntityDataManager.createKey(EntityHeracles.class, DataSerializers.VARINT);
     private boolean voidDeath;
+
+    private final AnimationHandler<EntityHeracles> animationHandler = new AnimationHandler<>(this, anims);
 
     public EntityHeracles(EntityType<? extends EntityServant> entityType, World world) {
         super(entityType, world, "heracles.hogou");
@@ -45,8 +47,8 @@ public class EntityHeracles extends EntityServant<EntityHeracles> {
     }
 
     @Override
-    public AnimationHandler<EntityHeracles> createAnimationHandler() {
-        return new AnimationHandler<>(this, anims);
+    public AnimationHandler<EntityHeracles> getAnimationHandler() {
+        return this.animationHandler;
     }
 
     @Override

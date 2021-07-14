@@ -186,7 +186,7 @@ public class ModelHassanCopy extends EntityModel<EntityHassanCopy> implements IR
     public void setRotationAngles(EntityHassanCopy servant, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.setAnglesPre(servant, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         float partialTicks = Minecraft.getInstance().getRenderPartialTicks();
-        servant.getAnimationHandler().getAnimation().ifPresent(anim->this.anim.doAnimation(anim.getID(), anim.getTick(), partialTicks));
+        servant.getAnimationHandler().getAnimation().ifPresent(anim -> this.anim.doAnimation(anim.getID(), anim.getTick(), partialTicks));
         this.syncOverlay();
     }
 

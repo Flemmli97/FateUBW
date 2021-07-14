@@ -7,7 +7,7 @@ import net.minecraft.entity.CreatureEntity;
 
 import java.util.function.Function;
 
-public class AnimatedMeleeGoal<T extends CreatureEntity & IAnimated<T>> extends AnimatedAttackGoal<T> {
+public class AnimatedMeleeGoal<T extends CreatureEntity & IAnimated> extends AnimatedAttackGoal<T> {
 
     protected int attackMoveDelay;
 

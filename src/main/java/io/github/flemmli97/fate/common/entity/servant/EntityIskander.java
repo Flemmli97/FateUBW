@@ -16,12 +16,14 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
-public class EntityIskander extends EntityServant<EntityIskander> {
+public class EntityIskander extends EntityServant {
 
     public final IskanderAttackGoal attackAI = new IskanderAttackGoal(this);
 
     private static final AnimatedAction npAttack = new AnimatedAction(20, 0, "np");
     private static final AnimatedAction[] anims = {AnimatedAction.vanillaAttack, npAttack};
+
+    private final AnimationHandler<EntityIskander> animationHandler = new AnimationHandler<>(this, anims);
 
     public EntityIskander(EntityType<? extends EntityIskander> entityType, World world) {
         super(entityType, world, "iskander.hogou");
@@ -43,8 +45,8 @@ public class EntityIskander extends EntityServant<EntityIskander> {
     }
 
     @Override
-    public AnimationHandler<EntityIskander> createAnimationHandler() {
-        return new AnimationHandler<>(this, anims);
+    public AnimationHandler<EntityIskander> getAnimationHandler() {
+        return this.animationHandler;
     }
 
     @Override

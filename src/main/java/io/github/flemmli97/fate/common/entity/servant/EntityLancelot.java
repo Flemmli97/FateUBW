@@ -25,11 +25,13 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
-public class EntityLancelot extends EntityServant<EntityLancelot> {
+public class EntityLancelot extends EntityServant {
 
     public final LancelotAttackGoal attackAI = new LancelotAttackGoal(this);
 
     public static final AnimatedAction[] anims = AnimatedAction.vanillaAttackOnly;
+
+    private final AnimationHandler<EntityLancelot> animationHandler = new AnimationHandler<>(this, anims);
 
     public EntityLancelot(EntityType<? extends EntityLancelot> entityType, World world) {
         super(entityType, world, "lancelot.hogou");
@@ -43,8 +45,8 @@ public class EntityLancelot extends EntityServant<EntityLancelot> {
     }
 
     @Override
-    public AnimationHandler<EntityLancelot> createAnimationHandler() {
-        return new AnimationHandler<>(this, anims);
+    public AnimationHandler<EntityLancelot> getAnimationHandler() {
+        return this.animationHandler;
     }
 
     @Override

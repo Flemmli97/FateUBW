@@ -23,7 +23,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
-public class EntityMedea extends EntityServant<EntityMedea> {
+public class EntityMedea extends EntityServant {
 
     public final MedeaAttackGoal attackAI = new MedeaAttackGoal(this, 16);
 
@@ -31,6 +31,8 @@ public class EntityMedea extends EntityServant<EntityMedea> {
     private static final AnimatedAction ranged = new AnimatedAction(30, 5, "beam");
 
     private static final AnimatedAction[] anims = {ranged, npAttack};
+
+    private final AnimationHandler<EntityMedea> animationHandler = new AnimationHandler<>(this, anims);
 
     private int circleDelay;
 
@@ -53,8 +55,8 @@ public class EntityMedea extends EntityServant<EntityMedea> {
     }
 
     @Override
-    public AnimationHandler<EntityMedea> createAnimationHandler() {
-        return new AnimationHandler<>(this, anims);
+    public AnimationHandler<EntityMedea> getAnimationHandler() {
+        return this.animationHandler;
     }
 
     @Override

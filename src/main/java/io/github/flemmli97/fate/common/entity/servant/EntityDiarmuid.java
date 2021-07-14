@@ -17,12 +17,14 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
-public class EntityDiarmuid extends EntityServant<EntityDiarmuid> {
+public class EntityDiarmuid extends EntityServant {
 
     public final DiarmuidAttackGoal attackAI = new DiarmuidAttackGoal(this);
 
     private static final AnimatedAction npAttack = new AnimatedAction(20, 0, "np");
     private static final AnimatedAction[] anims = {AnimatedAction.vanillaAttack, npAttack};
+
+    private final AnimationHandler<EntityDiarmuid> animationHandler = new AnimationHandler<>(this, anims);
 
     public EntityDiarmuid(EntityType<? extends EntityDiarmuid> entityType, World world) {
         super(entityType, world, "");
@@ -44,8 +46,8 @@ public class EntityDiarmuid extends EntityServant<EntityDiarmuid> {
     }
 
     @Override
-    public AnimationHandler<EntityDiarmuid> createAnimationHandler() {
-        return new AnimationHandler<>(this, anims);
+    public AnimationHandler<EntityDiarmuid> getAnimationHandler() {
+        return this.animationHandler;
     }
 
     @Override

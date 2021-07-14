@@ -18,7 +18,7 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class EntityGordiusWheel extends CreatureEntity implements IServantMinion, IAnimated<EntityGordiusWheel> {
+public class EntityGordiusWheel extends CreatureEntity implements IServantMinion, IAnimated {
 
     private static final AnimatedAction charging = new AnimatedAction(20, 0, "charge");
     private static final AnimatedAction[] anims = {charging};

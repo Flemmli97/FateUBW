@@ -41,7 +41,7 @@ import net.minecraft.world.World;
 
 import java.util.UUID;
 
-public class EntityHassanCopy extends CreatureEntity implements IAnimated<EntityHassanCopy>, IOwnable<EntityHassan>, IServantMinion {
+public class EntityHassanCopy extends CreatureEntity implements IAnimated, IOwnable<EntityHassan>, IServantMinion {
 
     private UUID ownerUUID;
     private EntityHassan owner;

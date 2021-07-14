@@ -23,7 +23,7 @@ import net.minecraft.world.World;
 
 import java.util.UUID;
 
-public class EntityLesserMonster extends CreatureEntity implements IServantMinion, IAnimated<EntityLesserMonster>, IOwnable<LivingEntity> {
+public class EntityLesserMonster extends CreatureEntity implements IServantMinion, IAnimated, IOwnable<LivingEntity> {
 
     private UUID ownerUUID;
     private LivingEntity owner;
