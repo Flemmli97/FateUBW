@@ -6,37 +6,28 @@ import com.flemmli97.tenshilib.api.entity.IAnimated;
 import io.github.flemmli97.fate.common.config.Config;
 import io.github.flemmli97.fate.common.utils.CustomDamageSource;
 import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityPredicates;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 import java.util.List;
 
-public class EntityGordiusWheel extends CreatureEntity implements IServantMinion, IAnimated {
+public class EntityPegasus extends CreatureEntity implements IAnimated, IServantMinion {
 
     private static final AnimatedAction charging = new AnimatedAction(20, 0, "charge");
     private static final AnimatedAction[] anims = {charging};
 
-    private final AnimationHandler<EntityGordiusWheel> animationHandler = new AnimationHandler<>(this, anims);
+    private final AnimationHandler<EntityPegasus> animationHandler = new AnimationHandler<>(this, anims);
 
-    public EntityGordiusWheel(EntityType<? extends EntityGordiusWheel> type, World world) {
-        super(type, world);
+    public EntityPegasus(EntityType<? extends EntityPegasus> type, World worldIn) {
+        super(type, worldIn);
     }
 
     @Override
-    public AnimationHandler<EntityGordiusWheel> getAnimationHandler() {
+    public AnimationHandler<EntityPegasus> getAnimationHandler() {
         return this.animationHandler;
-    }
-
-    @Override
-    public boolean shouldRiderSit() {
-        return false;
     }
 
     @Override
@@ -56,10 +47,9 @@ public class EntityGordiusWheel extends CreatureEntity implements IServantMinion
             List<LivingEntity> list = this.world.getEntitiesWithinAABB(LivingEntity.class, this.getBoundingBox().grow(0.5), EntityPredicates.NOT_SPECTATING.and(e -> !this.isPassenger(e)));
             for (LivingEntity e : list) {
                 if (e != this) {
-                    e.attackEntityFrom(CustomDamageSource.gordiusTrample(this, (LivingEntity) this.getPassengers().get(0)), Config.Common.gordiusDmg);
+                    e.attackEntityFrom(CustomDamageSource.pegasusCharge(this, (LivingEntity) this.getPassengers().get(0)), Config.Common.pegasusDamage);
                 }
             }
-            this.playSound(SoundEvents.ENTITY_COW_STEP, 0.4F, 0.4F);
         }
         if (this.isBeingRidden() && this.getPassengers().get(0) instanceof LivingEntity) {
             LivingEntity rider = (LivingEntity) this.getPassengers().get(0);
@@ -82,35 +72,7 @@ public class EntityGordiusWheel extends CreatureEntity implements IServantMinion
     }
 
     @Override
-    public void updatePassenger(Entity passenger) {
-        if (this.isPassenger(passenger)) {
-            Vector3d offSet = this.getVectorForRotation(0, this.rotationYaw).scale(1.2);
-            passenger.setPosition(this.getPosX() - offSet.x, this.getPosY() + this.getMountedYOffset() + passenger.getYOffset(), this.getPosZ() - offSet.z);
-        }
-    }
-
-    @Override
     public double getMountedYOffset() {
         return (double) this.getHeight() * 0.6D;
-    }
-
-    @Override
-    protected SoundEvent getAmbientSound() {
-        return SoundEvents.ENTITY_COW_AMBIENT;
-    }
-
-    @Override
-    protected SoundEvent getHurtSound(DamageSource damageSource) {
-        return SoundEvents.ENTITY_COW_HURT;
-    }
-
-    @Override
-    protected SoundEvent getDeathSound() {
-        return SoundEvents.ENTITY_COW_DEATH;
-    }
-
-    @Override
-    protected float getSoundPitch() {
-        return (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F;
     }
 }

@@ -53,6 +53,7 @@ public class Config {
         public static double gordiusHealth;
         public static float gordiusDmg;
         public static double pegasusHealth;
+        public static float pegasusDamage;
         public static int medeaCircleSpan;
         public static float medeaCircleRange;
         public static ServantProperties hassanCopyProps = new ServantProperties(50, 5, 6.5, 0, 12, 2, 0.34, 0);
