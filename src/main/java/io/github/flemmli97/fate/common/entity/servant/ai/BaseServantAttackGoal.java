@@ -1,10 +1,11 @@
 package io.github.flemmli97.fate.common.entity.servant.ai;
 
-import com.flemmli97.tenshilib.common.entity.AnimatedAction;
+
+import com.flemmli97.tenshilib.api.entity.AnimatedAction;
 import com.flemmli97.tenshilib.common.entity.ai.AnimatedAttackGoal;
 import io.github.flemmli97.fate.common.entity.servant.EntityServant;
 
-public class BaseServantAttackGoal<T extends EntityServant> extends AnimatedAttackGoal<T> {
+public class BaseServantAttackGoal<T extends EntityServant<T>> extends AnimatedAttackGoal<T> {
 
     public final float rangeModifier;
     protected double attackRange;

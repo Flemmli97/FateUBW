@@ -1,6 +1,7 @@
 package io.github.flemmli97.fate.common.entity.servant.ai;
 
-import com.flemmli97.tenshilib.common.entity.AnimatedAction;
+
+import com.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.fate.common.entity.servant.EntityEmiya;
 import io.github.flemmli97.fate.common.entity.servant.EntityServant;
 import io.github.flemmli97.fate.common.registry.ModItems;

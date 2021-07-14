@@ -1,6 +1,8 @@
 package io.github.flemmli97.fate.common.entity.servant;
 
-import com.flemmli97.tenshilib.common.entity.AnimatedAction;
+
+import com.flemmli97.tenshilib.api.entity.AnimatedAction;
+import com.flemmli97.tenshilib.api.entity.AnimationHandler;
 import com.flemmli97.tenshilib.common.utils.RayTraceUtils;
 import io.github.flemmli97.fate.common.config.Config;
 import io.github.flemmli97.fate.common.entity.EntityLesserMonster;
@@ -17,7 +19,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
-public class EntityGilles extends EntityServant {
+public class EntityGilles extends EntityServant<EntityGilles> {
 
     public final GillesAttackGoal attackAI = new GillesAttackGoal(this, 16);
 
@@ -44,8 +46,8 @@ public class EntityGilles extends EntityServant {
     }
 
     @Override
-    public AnimatedAction[] getAnimations() {
-        return anims;
+    public AnimationHandler<EntityGilles> createAnimationHandler() {
+        return new AnimationHandler<>(this, anims);
     }
 
     @Override

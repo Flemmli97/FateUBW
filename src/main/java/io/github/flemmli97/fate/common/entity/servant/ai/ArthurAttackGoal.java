@@ -1,6 +1,7 @@
 package io.github.flemmli97.fate.common.entity.servant.ai;
 
-import com.flemmli97.tenshilib.common.entity.AnimatedAction;
+
+import com.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.fate.common.entity.servant.EntityArthur;
 import io.github.flemmli97.fate.common.entity.servant.EntityServant;
 import net.minecraft.util.Hand;
@@ -9,6 +10,7 @@ public class ArthurAttackGoal extends BaseServantAttackGoal<EntityArthur> {
 
     private double[] targetPos;
     private boolean switchFlag;
+
     public ArthurAttackGoal(EntityArthur entity) {
         super(entity, 1);
     }
@@ -33,7 +35,7 @@ public class ArthurAttackGoal extends BaseServantAttackGoal<EntityArthur> {
     @Override
     public void handlePreAttack() {
         if (this.attacker.canUse(this.next, EntityServant.AttackType.NP)) {
-            if(!this.switchFlag) {
+            if (!this.switchFlag) {
                 this.attacker.switchableWeapon.switchItems(false);
                 this.switchFlag = true;
                 return;

@@ -1,9 +1,9 @@
 package io.github.flemmli97.fate.client.model;
 
+import com.flemmli97.tenshilib.api.entity.AnimatedAction;
 import com.flemmli97.tenshilib.client.model.BlockBenchAnimations;
 import com.flemmli97.tenshilib.client.model.IResetModel;
 import com.flemmli97.tenshilib.client.model.ModelRendererPlus;
-import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import io.github.flemmli97.fate.Fate;
@@ -246,7 +246,7 @@ public class ModelStarfishDemon<T extends EntityLesserMonster> extends EntityMod
     public void setRotationAngles(T monster, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.resetModel();
         float partialTicks = Minecraft.getInstance().getRenderPartialTicks();
-        AnimatedAction anim = monster.getAnimation();
+        AnimatedAction anim = monster.getAnimationHandler().getAnimation().orElse(null);
         if (anim != null)
             this.anim.doAnimation(anim.getID(), anim.getTick(), partialTicks);
         else if (monster.getMotion().x != 0 || monster.getMotion().z != 0)

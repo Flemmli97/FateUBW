@@ -1,6 +1,8 @@
 package io.github.flemmli97.fate.common.entity.servant;
 
-import com.flemmli97.tenshilib.common.entity.AnimatedAction;
+
+import com.flemmli97.tenshilib.api.entity.AnimatedAction;
+import com.flemmli97.tenshilib.api.entity.AnimationHandler;
 import io.github.flemmli97.fate.common.entity.EntityGordiusWheel;
 import io.github.flemmli97.fate.common.entity.servant.ai.IskanderAttackGoal;
 import io.github.flemmli97.fate.common.registry.ModEntities;
@@ -14,7 +16,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
-public class EntityIskander extends EntityServant {
+public class EntityIskander extends EntityServant<EntityIskander> {
 
     public final IskanderAttackGoal attackAI = new IskanderAttackGoal(this);
 
@@ -41,8 +43,8 @@ public class EntityIskander extends EntityServant {
     }
 
     @Override
-    public AnimatedAction[] getAnimations() {
-        return anims;
+    public AnimationHandler<EntityIskander> createAnimationHandler() {
+        return new AnimationHandler<>(this, anims);
     }
 
     @Override

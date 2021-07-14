@@ -1,8 +1,9 @@
 package io.github.flemmli97.fate.common.entity;
 
+import com.flemmli97.tenshilib.api.entity.AnimatedAction;
+import com.flemmli97.tenshilib.api.entity.AnimationHandler;
 import com.flemmli97.tenshilib.api.entity.IAnimated;
 import com.flemmli97.tenshilib.api.entity.IOwnable;
-import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import com.flemmli97.tenshilib.common.entity.EntityUtil;
 import io.github.flemmli97.fate.common.config.Config;
 import io.github.flemmli97.fate.common.entity.ai.AnimatedMeleeGoal;
@@ -22,19 +23,21 @@ import net.minecraft.world.World;
 
 import java.util.UUID;
 
-public class EntityLesserMonster extends CreatureEntity implements IServantMinion, IAnimated, IOwnable<LivingEntity> {
+public class EntityLesserMonster extends CreatureEntity implements IServantMinion, IAnimated<EntityLesserMonster>, IOwnable<LivingEntity> {
 
     private UUID ownerUUID;
     private LivingEntity owner;
     private int livingTicks;
-    private AnimatedAction currentAnim;
+
     public static final AnimatedAction walk = new AnimatedAction(31, 0, "walk");
     public static final AnimatedAction attack = new AnimatedAction(20, 15, "attack");
     private static final AnimatedAction[] anims = {walk, attack};
 
+    private final AnimationHandler<EntityLesserMonster> animationHandler = new AnimationHandler<>(this, anims);
+
     public EntityLesserMonster(EntityType<? extends EntityLesserMonster> type, World world) {
         super(type, world);
-        if (world != null && !world.isRemote) {
+        if (!world.isRemote) {
             this.goals();
             this.setAttributes();
         }
@@ -72,7 +75,7 @@ public class EntityLesserMonster extends CreatureEntity implements IServantMinio
             if (this.livingTicks > Config.Common.gillesMinionDuration)
                 this.remove();
         }
-        this.tickAnimation();
+        this.getAnimationHandler().tick();
     }
 
     /*@Override
@@ -119,18 +122,7 @@ public class EntityLesserMonster extends CreatureEntity implements IServantMinio
     }
 
     @Override
-    public AnimatedAction getAnimation() {
-        return this.currentAnim;
-    }
-
-    @Override
-    public void setAnimation(AnimatedAction anim) {
-        this.currentAnim = anim == null ? null : anim.create();
-        IAnimated.sentToClient(this);
-    }
-
-    @Override
-    public AnimatedAction[] getAnimations() {
-        return anims;
+    public AnimationHandler<EntityLesserMonster> getAnimationHandler() {
+        return this.animationHandler;
     }
 }

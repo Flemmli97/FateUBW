@@ -1,6 +1,8 @@
 package io.github.flemmli97.fate.common.entity.servant;
 
-import com.flemmli97.tenshilib.common.entity.AnimatedAction;
+
+import com.flemmli97.tenshilib.api.entity.AnimatedAction;
+import com.flemmli97.tenshilib.api.entity.AnimationHandler;
 import io.github.flemmli97.fate.common.entity.EntityArcherArrow;
 import io.github.flemmli97.fate.common.entity.EntityCaladBolg;
 import io.github.flemmli97.fate.common.entity.SwitchableWeapon;
@@ -18,7 +20,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
-public class EntityEmiya extends EntityServant {
+public class EntityEmiya extends EntityServant<EntityEmiya> {
 
     public final EmiyaAttackGoal attackAI = new EmiyaAttackGoal(this, 10);
 
@@ -50,8 +52,8 @@ public class EntityEmiya extends EntityServant {
     }
 
     @Override
-    public AnimatedAction[] getAnimations() {
-        return anims;
+    public AnimationHandler<EntityEmiya> createAnimationHandler() {
+        return new AnimationHandler<>(this, anims);
     }
 
     @Override

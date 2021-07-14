@@ -4,7 +4,6 @@ import com.flemmli97.tenshilib.client.model.BlockBenchAnimations;
 import com.flemmli97.tenshilib.client.model.IItemArmModel;
 import com.flemmli97.tenshilib.client.model.IResetModel;
 import com.flemmli97.tenshilib.client.model.ModelRendererPlus;
-import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import io.github.flemmli97.fate.Fate;
@@ -187,9 +186,7 @@ public class ModelHassanCopy extends EntityModel<EntityHassanCopy> implements IR
     public void setRotationAngles(EntityHassanCopy servant, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.setAnglesPre(servant, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         float partialTicks = Minecraft.getInstance().getRenderPartialTicks();
-        AnimatedAction anim = servant.getAnimation();
-        if (anim != null)
-            this.anim.doAnimation(anim.getID(), anim.getTick(), partialTicks);
+        servant.getAnimationHandler().getAnimation().ifPresent(anim->this.anim.doAnimation(anim.getID(), anim.getTick(), partialTicks));
         this.syncOverlay();
     }
 

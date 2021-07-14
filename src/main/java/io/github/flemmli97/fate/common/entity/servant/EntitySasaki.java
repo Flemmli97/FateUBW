@@ -1,6 +1,8 @@
 package io.github.flemmli97.fate.common.entity.servant;
 
-import com.flemmli97.tenshilib.common.entity.AnimatedAction;
+
+import com.flemmli97.tenshilib.api.entity.AnimatedAction;
+import com.flemmli97.tenshilib.api.entity.AnimationHandler;
 import io.github.flemmli97.fate.common.entity.servant.ai.SasakiAttackGoal;
 import io.github.flemmli97.fate.common.registry.ModItems;
 import io.github.flemmli97.fate.common.utils.EnumServantUpdate;
@@ -12,7 +14,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
-public class EntitySasaki extends EntityServant {
+public class EntitySasaki extends EntityServant<EntitySasaki> {
 
     public final SasakiAttackGoal attackAI = new SasakiAttackGoal(this);
 
@@ -38,8 +40,8 @@ public class EntitySasaki extends EntityServant {
     }
 
     @Override
-    public AnimatedAction[] getAnimations() {
-        return anims;
+    public AnimationHandler<EntitySasaki> createAnimationHandler() {
+        return new AnimationHandler<>(this, anims);
     }
 
     @Override
@@ -61,7 +63,7 @@ public class EntitySasaki extends EntityServant {
 
     @Override
     public boolean attackEntityFrom(DamageSource damageSource, float damage) {
-        if (this.getAnimation() != null && this.canUse(this.getAnimation(), AttackType.NP))
+        if (this.getAnimationHandler().getAnimation().map(anim->this.canUse(anim, AttackType.NP)).orElse(false))
             return false;
         return super.attackEntityFrom(damageSource, damage);
     }
@@ -71,9 +73,9 @@ public class EntitySasaki extends EntityServant {
     }
 
     public boolean canAttackNP() {
-        if (this.getAnimation() == null || !this.canUse(this.getAnimation(), AttackType.NP))
+        if (this.getAnimationHandler().getAnimation().map(anim->!this.canUse(anim, AttackType.NP)).orElse(true))
             return false;
-        int i = this.getAnimation().getTick();
+        int i = this.getAnimationHandler().getAnimation().map(AnimatedAction::getTick).orElse(0);
         return i == 30 || i == 20 || i == 10;
     }
 }

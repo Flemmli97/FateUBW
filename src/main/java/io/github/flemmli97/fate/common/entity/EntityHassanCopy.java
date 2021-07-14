@@ -1,8 +1,9 @@
 package io.github.flemmli97.fate.common.entity;
 
+import com.flemmli97.tenshilib.api.entity.AnimatedAction;
+import com.flemmli97.tenshilib.api.entity.AnimationHandler;
 import com.flemmli97.tenshilib.api.entity.IAnimated;
 import com.flemmli97.tenshilib.api.entity.IOwnable;
-import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import com.flemmli97.tenshilib.common.entity.EntityUtil;
 import io.github.flemmli97.fate.common.config.Config;
 import io.github.flemmli97.fate.common.entity.ai.AnimatedMeleeGoal;
@@ -40,12 +41,12 @@ import net.minecraft.world.World;
 
 import java.util.UUID;
 
-public class EntityHassanCopy extends CreatureEntity implements IAnimated, IOwnable<EntityHassan>, IServantMinion {
+public class EntityHassanCopy extends CreatureEntity implements IAnimated<EntityHassanCopy>, IOwnable<EntityHassan>, IServantMinion {
 
     private UUID ownerUUID;
     private EntityHassan owner;
 
-    private AnimatedAction anim;
+    private final AnimationHandler<EntityHassanCopy> animationHandler = new AnimationHandler<>(this, AnimatedAction.vanillaAttackOnly);
 
     public EntityHassanCopy(EntityType<? extends EntityHassanCopy> type, World world) {
         super(type, world);
@@ -110,19 +111,8 @@ public class EntityHassanCopy extends CreatureEntity implements IAnimated, IOwna
     }
 
     @Override
-    public AnimatedAction getAnimation() {
-        return this.anim;
-    }
-
-    @Override
-    public void setAnimation(AnimatedAction animatedAction) {
-        this.anim = animatedAction == null ? null : animatedAction.create();
-        IAnimated.sentToClient(this);
-    }
-
-    @Override
-    public AnimatedAction[] getAnimations() {
-        return AnimatedAction.vanillaAttackOnly;
+    public AnimationHandler<EntityHassanCopy> getAnimationHandler() {
+        return this.animationHandler;
     }
 
     @Override
@@ -130,7 +120,7 @@ public class EntityHassanCopy extends CreatureEntity implements IAnimated, IOwna
         if (this.ticksExisted > 200 && this.isAlive() && (this.getOwner() == null || !this.getOwner().isAlive()))
             this.attackEntityFrom(DamageSource.OUT_OF_WORLD, Integer.MAX_VALUE);
         super.livingTick();
-        this.tickAnimation();
+        this.getAnimationHandler().tick();
     }
 
     @Override

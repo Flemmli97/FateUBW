@@ -1,8 +1,9 @@
 package io.github.flemmli97.fate.common.entity.servant;
 
+import com.flemmli97.tenshilib.api.entity.AnimatedAction;
+import com.flemmli97.tenshilib.api.entity.AnimationHandler;
 import com.flemmli97.tenshilib.api.entity.IAnimated;
 import com.flemmli97.tenshilib.api.entity.IOwnable;
-import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import com.flemmli97.tenshilib.common.entity.ai.MoveControllerPlus;
 import com.flemmli97.tenshilib.common.utils.NBTUtils;
 import io.github.flemmli97.fate.common.capability.CapabilityInsts;
@@ -73,7 +74,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-public abstract class EntityServant extends CreatureEntity implements IAnimated, IOwnable<PlayerEntity> {
+public abstract class EntityServant<T extends EntityServant<T>> extends CreatureEntity implements IAnimated<T>, IOwnable<PlayerEntity> {
 
     //Mana
     private int servantMana, antiRegen, counter;
@@ -89,7 +90,7 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated,
      */
     protected EnumServantUpdate commandBehaviour = EnumServantUpdate.NORMAL;
 
-    private AnimatedAction currentAnim;
+    private final AnimationHandler<T> animationHandler;
 
     private EnumServantType servantType;
     //PlayerUUID
@@ -115,7 +116,7 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated,
     public NearestAttackableTargetGoal<PlayerEntity> targetPlayer = new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 0, true, true, this.targetPred);
     public NearestAttackableTargetGoal<MobEntity> targetMob = new NearestAttackableTargetGoal<>(this, MobEntity.class, 10, true, true, this.targetPred);
 
-    public FollowMasterGoal<EntityServant> follow = new FollowMasterGoal<>(this, 16.0D, 9.0F, 3.0F, EntityServant::isStaying);
+    public FollowMasterGoal<EntityServant<T>> follow = new FollowMasterGoal<>(this, 16.0D, 9.0F, 3.0F, EntityServant::isStaying);
     public RetaliateGoal targetHurt = new RetaliateGoal(this);
     public MoveTowardsRestrictionGoal restrictArea = new MoveTowardsRestrictionGoal(this, 1.0D);
     public WaterAvoidingRandomWalkingGoal wander = new WaterAvoidingRandomWalkingGoal(this, 1.0D);
@@ -131,7 +132,10 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated,
         }
         this.servantType = ModEntities.get(entityType.getRegistryName());
         this.hogou = hogou;
+        this.animationHandler = this.createAnimationHandler();
     }
+
+    public abstract AnimationHandler<T> createAnimationHandler();
 
     protected void goals() {
         this.goalSelector.addGoal(1, this.follow);
@@ -390,7 +394,7 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated,
     @Override
     public void livingTick() {
         super.livingTick();
-        this.tickAnimation();
+        this.getAnimationHandler().tick();
         if (!this.world.isRemote) {
             this.regenMana();
             this.combatTick = Math.max(0, --this.combatTick);
@@ -503,20 +507,14 @@ public abstract class EntityServant extends CreatureEntity implements IAnimated,
     //=====Entity attack etc.
 
     @Override
-    public AnimatedAction getAnimation() {
-        return this.currentAnim;
-    }
-
-    @Override
-    public void setAnimation(AnimatedAction anim) {
-        this.currentAnim = anim == null ? null : anim.create();
-        IAnimated.sentToClient(this);
+    public AnimationHandler<T> getAnimationHandler() {
+        return this.animationHandler;
     }
 
     public abstract boolean canUse(AnimatedAction anim, AttackType type);
 
     public AnimatedAction getRandomAttack(AttackType type) {
-        AnimatedAction anim = this.getAnimations()[this.rand.nextInt(this.getAnimations().length)];
+        AnimatedAction anim = this.getAnimationHandler().getAnimations()[this.rand.nextInt(this.getAnimationHandler().getAnimations().length)];
         if (this.canUse(anim, type))
             return anim;
         return this.getRandomAttack(type);

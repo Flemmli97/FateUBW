@@ -1,6 +1,8 @@
 package io.github.flemmli97.fate.common.entity.servant;
 
-import com.flemmli97.tenshilib.common.entity.AnimatedAction;
+
+import com.flemmli97.tenshilib.api.entity.AnimatedAction;
+import com.flemmli97.tenshilib.api.entity.AnimationHandler;
 import io.github.flemmli97.fate.common.entity.EntityExcalibur;
 import io.github.flemmli97.fate.common.entity.SwitchableWeapon;
 import io.github.flemmli97.fate.common.entity.servant.ai.ArthurAttackGoal;
@@ -19,7 +21,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
-public class EntityArthur extends EntityServant {
+public class EntityArthur extends EntityServant<EntityArthur> {
 
     public final ArthurAttackGoal attackAI = new ArthurAttackGoal(this);
 
@@ -49,8 +51,8 @@ public class EntityArthur extends EntityServant {
     }
 
     @Override
-    public AnimatedAction[] getAnimations() {
-        return anims;
+    public AnimationHandler<EntityArthur> createAnimationHandler() {
+        return new AnimationHandler<>(this, anims);
     }
 
     @Override

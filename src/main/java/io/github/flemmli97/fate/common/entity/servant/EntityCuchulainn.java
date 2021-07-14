@@ -1,6 +1,8 @@
 package io.github.flemmli97.fate.common.entity.servant;
 
-import com.flemmli97.tenshilib.common.entity.AnimatedAction;
+
+import com.flemmli97.tenshilib.api.entity.AnimatedAction;
+import com.flemmli97.tenshilib.api.entity.AnimationHandler;
 import io.github.flemmli97.fate.common.entity.EntityGaeBolg;
 import io.github.flemmli97.fate.common.entity.servant.ai.CuchulainnAttackGoal;
 import io.github.flemmli97.fate.common.registry.ModItems;
@@ -21,7 +23,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
-public class EntityCuchulainn extends EntityServant {
+public class EntityCuchulainn extends EntityServant<EntityCuchulainn> {
 
     public final CuchulainnAttackGoal attackAI = new CuchulainnAttackGoal(this);
 
@@ -53,8 +55,8 @@ public class EntityCuchulainn extends EntityServant {
     }
 
     @Override
-    public AnimatedAction[] getAnimations() {
-        return anims;
+    public AnimationHandler<EntityCuchulainn> createAnimationHandler() {
+        return new AnimationHandler<>(this, anims);
     }
 
     @Override

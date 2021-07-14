@@ -1,6 +1,8 @@
 package io.github.flemmli97.fate.common.entity.servant;
 
-import com.flemmli97.tenshilib.common.entity.AnimatedAction;
+
+import com.flemmli97.tenshilib.api.entity.AnimatedAction;
+import com.flemmli97.tenshilib.api.entity.AnimationHandler;
 import io.github.flemmli97.fate.common.config.Config;
 import io.github.flemmli97.fate.common.entity.EntityCasterCircle;
 import io.github.flemmli97.fate.common.entity.EntityMagicBeam;
@@ -21,7 +23,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
-public class EntityMedea extends EntityServant {
+public class EntityMedea extends EntityServant<EntityMedea> {
 
     public final MedeaAttackGoal attackAI = new MedeaAttackGoal(this, 16);
 
@@ -51,8 +53,8 @@ public class EntityMedea extends EntityServant {
     }
 
     @Override
-    public AnimatedAction[] getAnimations() {
-        return anims;
+    public AnimationHandler<EntityMedea> createAnimationHandler() {
+        return new AnimationHandler<>(this, anims);
     }
 
     @Override

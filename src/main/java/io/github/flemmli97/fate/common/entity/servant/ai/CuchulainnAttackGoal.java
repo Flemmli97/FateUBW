@@ -1,6 +1,7 @@
 package io.github.flemmli97.fate.common.entity.servant.ai;
 
-import com.flemmli97.tenshilib.common.entity.AnimatedAction;
+
+import com.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.fate.common.entity.servant.EntityCuchulainn;
 import io.github.flemmli97.fate.common.entity.servant.EntityServant;
 import net.minecraft.util.math.vector.Vector3d;

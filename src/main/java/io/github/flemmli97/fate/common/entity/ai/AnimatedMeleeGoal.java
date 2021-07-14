@@ -1,13 +1,13 @@
 package io.github.flemmli97.fate.common.entity.ai;
 
+import com.flemmli97.tenshilib.api.entity.AnimatedAction;
 import com.flemmli97.tenshilib.api.entity.IAnimated;
-import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import com.flemmli97.tenshilib.common.entity.ai.AnimatedAttackGoal;
 import net.minecraft.entity.CreatureEntity;
 
 import java.util.function.Function;
 
-public class AnimatedMeleeGoal<T extends CreatureEntity & IAnimated> extends AnimatedAttackGoal<T> {
+public class AnimatedMeleeGoal<T extends CreatureEntity & IAnimated<T>> extends AnimatedAttackGoal<T> {
 
     protected int attackMoveDelay;
 

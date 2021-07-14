@@ -1,6 +1,8 @@
 package io.github.flemmli97.fate.common.entity.servant;
 
-import com.flemmli97.tenshilib.common.entity.AnimatedAction;
+
+import com.flemmli97.tenshilib.api.entity.AnimatedAction;
+import com.flemmli97.tenshilib.api.entity.AnimationHandler;
 import com.flemmli97.tenshilib.common.utils.ItemUtils;
 import io.github.flemmli97.fate.common.config.Config;
 import io.github.flemmli97.fate.common.entity.servant.ai.LancelotAttackGoal;
@@ -23,7 +25,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
-public class EntityLancelot extends EntityServant {
+public class EntityLancelot extends EntityServant<EntityLancelot> {
 
     public final LancelotAttackGoal attackAI = new LancelotAttackGoal(this);
 
@@ -41,8 +43,8 @@ public class EntityLancelot extends EntityServant {
     }
 
     @Override
-    public AnimatedAction[] getAnimations() {
-        return anims;
+    public AnimationHandler<EntityLancelot> createAnimationHandler() {
+        return new AnimationHandler<>(this, anims);
     }
 
     @Override

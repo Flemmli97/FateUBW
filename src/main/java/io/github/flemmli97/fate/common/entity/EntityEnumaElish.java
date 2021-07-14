@@ -49,7 +49,7 @@ public class EntityEnumaElish extends EntityBeam {
     public void tick() {
         super.tick();
         if (this.world.isRemote) {
-            if (this.livingTicks <= this.livingTickMax()-15)
+            if (this.livingTicks <= this.livingTickMax() - 15)
                 for (int i = 0; i < 2; i++)
                     this.world.addParticle(new ColoredParticleData(ModParticles.light.get(), 255 / 255F, 15 / 255F, 5 / 255F, 1, 2), this.hitVec.getX(), this.hitVec.getY(), this.hitVec.getZ(), this.rand.nextGaussian() * 0.007, this.rand.nextGaussian() * 0.007 + 0.003, this.rand.nextGaussian() * 0.007);
             Vector3d pos = this.getPositionVec();

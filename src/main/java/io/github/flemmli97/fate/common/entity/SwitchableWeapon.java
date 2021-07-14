@@ -22,7 +22,7 @@ public class SwitchableWeapon<T extends LivingEntity> {
     }
 
     public void switchItems(boolean alreadySwitched, boolean clientUpdateFast) {
-        if(this.switched == alreadySwitched) {
+        if (this.switched == alreadySwitched) {
             this.switched = !this.switched;
             ItemStack main = this.entity.getHeldItemMainhand();
             ItemStack off = this.entity.getHeldItemOffhand();
@@ -46,7 +46,7 @@ public class SwitchableWeapon<T extends LivingEntity> {
         this.switched = tag.getBoolean("Switched");
         this.main = ItemStack.read(tag.getCompound("SwitchMain"));
         this.off = ItemStack.read(tag.getCompound("SwitchOff"));
-        if(this.switched)
+        if (this.switched)
             this.switchItems(true);
     }
 }

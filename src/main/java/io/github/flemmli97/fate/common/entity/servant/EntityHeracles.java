@@ -1,6 +1,8 @@
 package io.github.flemmli97.fate.common.entity.servant;
 
-import com.flemmli97.tenshilib.common.entity.AnimatedAction;
+
+import com.flemmli97.tenshilib.api.entity.AnimatedAction;
+import com.flemmli97.tenshilib.api.entity.AnimationHandler;
 import io.github.flemmli97.fate.common.entity.servant.ai.HeraclesAttackGoal;
 import io.github.flemmli97.fate.common.registry.ModItems;
 import io.github.flemmli97.fate.common.utils.EnumServantUpdate;
@@ -17,7 +19,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
-public class EntityHeracles extends EntityServant {
+public class EntityHeracles extends EntityServant<EntityHeracles> {
 
     public final HeraclesAttackGoal attackAI = new HeraclesAttackGoal(this);
 
@@ -43,8 +45,8 @@ public class EntityHeracles extends EntityServant {
     }
 
     @Override
-    public AnimatedAction[] getAnimations() {
-        return anims;
+    public AnimationHandler<EntityHeracles> createAnimationHandler() {
+        return new AnimationHandler<>(this, anims);
     }
 
     @Override

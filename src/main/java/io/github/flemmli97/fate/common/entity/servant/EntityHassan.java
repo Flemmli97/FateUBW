@@ -1,6 +1,8 @@
 package io.github.flemmli97.fate.common.entity.servant;
 
-import com.flemmli97.tenshilib.common.entity.AnimatedAction;
+
+import com.flemmli97.tenshilib.api.entity.AnimatedAction;
+import com.flemmli97.tenshilib.api.entity.AnimationHandler;
 import io.github.flemmli97.fate.common.config.Config;
 import io.github.flemmli97.fate.common.entity.EntityHassanCopy;
 import io.github.flemmli97.fate.common.entity.servant.ai.HassanAttackGoal;
@@ -29,7 +31,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-public class EntityHassan extends EntityServant {
+public class EntityHassan extends EntityServant<EntityHassan> {
 
     public final HassanAttackGoal attackAI = new HassanAttackGoal(this);
     private static final AnimatedAction npAttack = new AnimatedAction(20, 1, "np");
@@ -61,8 +63,8 @@ public class EntityHassan extends EntityServant {
     }
 
     @Override
-    public AnimatedAction[] getAnimations() {
-        return anims;
+    public AnimationHandler<EntityHassan> createAnimationHandler() {
+        return new AnimationHandler<>(this, anims);
     }
 
     @Override

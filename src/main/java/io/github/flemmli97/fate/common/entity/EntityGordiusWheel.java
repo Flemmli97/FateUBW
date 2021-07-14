@@ -1,7 +1,8 @@
 package io.github.flemmli97.fate.common.entity;
 
+import com.flemmli97.tenshilib.api.entity.AnimatedAction;
+import com.flemmli97.tenshilib.api.entity.AnimationHandler;
 import com.flemmli97.tenshilib.api.entity.IAnimated;
-import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import io.github.flemmli97.fate.common.config.Config;
 import io.github.flemmli97.fate.common.utils.CustomDamageSource;
 import net.minecraft.entity.CreatureEntity;
@@ -17,31 +18,20 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class EntityGordiusWheel extends CreatureEntity implements IServantMinion, IAnimated {
-
-    private AnimatedAction currentAnim;
+public class EntityGordiusWheel extends CreatureEntity implements IServantMinion, IAnimated<EntityGordiusWheel> {
 
     private static final AnimatedAction charging = new AnimatedAction(20, 0, "charge");
     private static final AnimatedAction[] anims = {charging};
+
+    private final AnimationHandler<EntityGordiusWheel> animationHandler = new AnimationHandler<>(this, anims);
 
     public EntityGordiusWheel(EntityType<? extends EntityGordiusWheel> type, World world) {
         super(type, world);
     }
 
     @Override
-    public AnimatedAction getAnimation() {
-        return this.currentAnim;
-    }
-
-    @Override
-    public void setAnimation(AnimatedAction anim) {
-        this.currentAnim = anim == null ? null : anim.create();
-        IAnimated.sentToClient(this);
-    }
-
-    @Override
-    public AnimatedAction[] getAnimations() {
-        return anims;
+    public AnimationHandler<EntityGordiusWheel> getAnimationHandler() {
+        return this.animationHandler;
     }
 
     @Override
@@ -55,12 +45,13 @@ public class EntityGordiusWheel extends CreatureEntity implements IServantMinion
     }
 
     public boolean isCharging() {
-        return this.currentAnim != null && this.currentAnim.getID().equals(charging.getID());
+        return this.getAnimationHandler().isCurrentAnim(charging.getID());
     }
 
     @Override
     public void livingTick() {
         super.livingTick();
+        this.getAnimationHandler().tick();
         if (!this.world.isRemote && this.isCharging() && !this.getPassengers().isEmpty() && this.getPassengers().get(0) instanceof LivingEntity) {
             List<LivingEntity> list = this.world.getEntitiesWithinAABB(LivingEntity.class, this.getBoundingBox().grow(0.5), EntityPredicates.NOT_SPECTATING.and(e -> !this.isPassenger(e)));
             for (LivingEntity e : list) {

@@ -4,7 +4,6 @@ import com.flemmli97.tenshilib.api.entity.IAnimated;
 import com.flemmli97.tenshilib.client.model.BlockBenchAnimations;
 import com.flemmli97.tenshilib.client.model.IResetModel;
 import com.flemmli97.tenshilib.client.model.ModelRendererPlus;
-import com.flemmli97.tenshilib.common.entity.AnimatedAction;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import io.github.flemmli97.fate.Fate;
@@ -20,7 +19,7 @@ import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
-public class ModelServant<T extends EntityServant & IAnimated> extends EntityModel<T> implements IResetModel, IArmModel, IHasHead, IPreRenderUpdate<T> {
+public class ModelServant<T extends EntityServant<T> & IAnimated<T>> extends EntityModel<T> implements IResetModel, IArmModel, IHasHead, IPreRenderUpdate<T> {
 
     public ModelRendererPlus servantHead;
     public ModelRendererPlus servantHeadOverlay;
@@ -194,9 +193,7 @@ public class ModelServant<T extends EntityServant & IAnimated> extends EntityMod
             if (servant.isStaying()) {
                 this.anim.doAnimation("stay", servant.ticksExisted, partialTicks);
             } else {
-                AnimatedAction anim = servant.getAnimation();
-                if (anim != null)
-                    this.anim.doAnimation(anim.getID(), anim.getTick(), partialTicks);
+                servant.getAnimationHandler().getAnimation().ifPresent(anim->this.anim.doAnimation(anim.getID(), anim.getTick(), partialTicks));
             }
         }
         this.syncOverlay();

@@ -1,6 +1,7 @@
 package io.github.flemmli97.fate.common.entity.servant.ai;
 
-import com.flemmli97.tenshilib.common.entity.AnimatedAction;
+
+import com.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.fate.common.capability.CapabilityInsts;
 import io.github.flemmli97.fate.common.entity.servant.EntityGilgamesh;
 import io.github.flemmli97.fate.common.entity.servant.EntityServant;
@@ -59,7 +60,7 @@ public class GilgameshAttackGoal extends BaseServantAttackGoal<EntityGilgamesh> 
         this.iddleFlag = false;
         if (this.attacker.canUse(this.next, EntityServant.AttackType.NP)) {
             this.attacker.switchableWeapon.switchItems(false);
-            this.attacker.getHeldItemMainhand().getCapability(CapabilityInsts.ItemStackCap).ifPresent(cap->cap.setInUse(this.attacker, true, true));
+            this.attacker.getHeldItemMainhand().getCapability(CapabilityInsts.ItemStackCap).ifPresent(cap -> cap.setInUse(this.attacker, true, true));
         }
         super.handlePreAttack();
     }

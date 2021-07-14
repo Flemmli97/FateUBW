@@ -1,6 +1,8 @@
 package io.github.flemmli97.fate.common.entity.servant;
 
-import com.flemmli97.tenshilib.common.entity.AnimatedAction;
+
+import com.flemmli97.tenshilib.api.entity.AnimatedAction;
+import com.flemmli97.tenshilib.api.entity.AnimationHandler;
 import io.github.flemmli97.fate.common.capability.CapabilityInsts;
 import io.github.flemmli97.fate.common.entity.EntityBabylonWeapon;
 import io.github.flemmli97.fate.common.entity.EntityEnumaElish;
@@ -16,7 +18,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
-public class EntityGilgamesh extends EntityServant {
+public class EntityGilgamesh extends EntityServant<EntityGilgamesh> {
 
     public final GilgameshAttackGoal attackAI = new GilgameshAttackGoal(this, 12);
 
@@ -49,8 +51,8 @@ public class EntityGilgamesh extends EntityServant {
     }
 
     @Override
-    public AnimatedAction[] getAnimations() {
-        return anims;
+    public AnimationHandler<EntityGilgamesh> createAnimationHandler() {
+        return new AnimationHandler<>(this, anims);
     }
 
     @Override
@@ -82,15 +84,15 @@ public class EntityGilgamesh extends EntityServant {
             ea.setRotationTo(pos[0], pos[1], pos[2], 0);
         this.world.addEntity(ea);
         this.revealServant();
-        this.getHeldItemMainhand().getCapability(CapabilityInsts.ItemStackCap).ifPresent(cap->cap.setInUse(this, false, true));
+        this.getHeldItemMainhand().getCapability(CapabilityInsts.ItemStackCap).ifPresent(cap -> cap.setInUse(this, false, true));
         this.switchableWeapon.switchItems(true);
     }
 
     public void attackWithRangedAttack(LivingEntity target) {
         int weaponAmount = this.getRNG().nextInt(15) + 4;
-        if (this.getAnimations() == null || this.getAnimation().getID().equals("babylon1"))
+        if (!this.getAnimationHandler().getAnimation().isPresent() || this.getAnimationHandler().isCurrentAnim(rangedAttack.getID()))
             this.spawnBehind(target, weaponAmount);
-        else if (this.getAnimation().getID().equals("babylon2"))
+        else if (this.getAnimationHandler().isCurrentAnim(rangedAttack2.getID()))
             this.spawnAroundTarget(target, weaponAmount);
     }
 
