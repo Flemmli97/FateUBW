@@ -252,7 +252,7 @@ public class ModelStarfishDemon<T extends EntityLesserMonster> extends EntityMod
         else if (monster.getMotion().x != 0 || monster.getMotion().z != 0)
             this.anim.doAnimation("walk", monster.ticksExisted, partialTicks);
         else
-            this.anim.doAnimation("iddle", monster.ticksExisted, partialTicks);
+            this.anim.doAnimation("idle", monster.ticksExisted, partialTicks);
     }
 
     @Override

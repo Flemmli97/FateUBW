@@ -104,7 +104,7 @@ public class ModEntities {
     public static final RegistryObject<EntityType<EntityLesserMonster>> lesserMonster = reg(EntityType.Builder.<EntityLesserMonster>create(EntityLesserMonster::new, EntityClassification.MONSTER).trackingRange(8), LibEntities.monster_small);
     public static final RegistryObject<EntityType<EntityGordiusWheel>> gordiusWheel = reg(EntityType.Builder.create(EntityGordiusWheel::new, EntityClassification.MISC), LibEntities.gordius);
     public static final RegistryObject<EntityType<EntityHassanCopy>> hassanCopy = reg(EntityType.Builder.create(EntityHassanCopy::new, EntityClassification.MISC), LibEntities.hassan_copy);
-    public static final RegistryObject<EntityType<EntityPegasus>> pegasus = reg(EntityType.Builder.create(EntityPegasus::new, EntityClassification.MISC), LibEntities.pegasus);
+    public static final RegistryObject<EntityType<EntityPegasus>> pegasus = reg(EntityType.Builder.create(EntityPegasus::new, EntityClassification.MONSTER), LibEntities.pegasus);
 
     public static final RegistryObject<EntityType<EntityGem>> gem = reg(EntityType.Builder.<EntityGem>create(EntityGem::new, EntityClassification.MISC).size(0.25F, 0.25F), LibEntities.entity_gem);
 
@@ -162,6 +162,7 @@ public class ModEntities {
 
         GlobalEntityTypeAttributes.put(lesserMonster.get(), MonsterEntity.func_234295_eP_().create());
         GlobalEntityTypeAttributes.put(gordiusWheel.get(), MonsterEntity.func_234295_eP_().create());
+        GlobalEntityTypeAttributes.put(pegasus.get(), MonsterEntity.func_234295_eP_().create());
         GlobalEntityTypeAttributes.put(hassanCopy.get(), EntityServant.createMobAttributes().create());
     }
 }

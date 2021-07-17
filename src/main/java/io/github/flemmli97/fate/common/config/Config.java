@@ -52,6 +52,7 @@ public class Config {
         public static final PotionEffectsConfig gaeBolgEffect = new PotionEffectsConfig();
         public static double gordiusHealth;
         public static float gordiusDmg;
+        public static float medeaDaggerDamage;
         public static double pegasusHealth;
         public static float pegasusDamage;
         public static int medeaCircleSpan;

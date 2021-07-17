@@ -20,7 +20,7 @@ public class EntityGem extends EntityProjectile {
     }
 
     @Override
-    protected boolean onEntityHit(EntityRayTraceResult entityRayTraceResult) {
+    protected boolean entityRayTraceHit(EntityRayTraceResult entityRayTraceResult) {
         this.world.createExplosion(this, this.getPosX(), this.getPosY(), this.getPosZ(), 2.0F, Explosion.Mode.NONE);
         this.remove();
         return true;

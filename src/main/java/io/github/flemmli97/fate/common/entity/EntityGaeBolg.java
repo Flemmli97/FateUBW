@@ -34,7 +34,7 @@ public class EntityGaeBolg extends EntityProjectile {
     }
 
     @Override
-    protected boolean onEntityHit(EntityRayTraceResult res) {
+    protected boolean entityRayTraceHit(EntityRayTraceResult res) {
         res.getEntity().attackEntityFrom(CustomDamageSource.gaeBolg(this, this.getOwner()), Config.Common.gaeBolgDmg);
         if (res.getEntity() instanceof LivingEntity && (!(res.getEntity() instanceof PlayerEntity) || !((PlayerEntity) res.getEntity()).abilities.disableDamage)) {
             for (EffectInstance effect : Config.Common.gaeBolgEffect.potions()) {

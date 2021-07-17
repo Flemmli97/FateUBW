@@ -127,7 +127,7 @@ public class EntityBabylonWeapon extends EntityProjectile {
     }
 
     @Override
-    protected boolean onEntityHit(EntityRayTraceResult result) {
+    protected boolean entityRayTraceHit(EntityRayTraceResult result) {
         result.getEntity().attackEntityFrom(CustomDamageSource.babylon(this, this.getOwner()), (float) this.dmg * 1.5F);
         this.remove();
         return true;
