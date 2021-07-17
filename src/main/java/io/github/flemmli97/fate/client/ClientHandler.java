@@ -20,6 +20,7 @@ import io.github.flemmli97.fate.client.render.misc.RenderGem;
 import io.github.flemmli97.fate.client.render.misc.RenderGordius;
 import io.github.flemmli97.fate.client.render.misc.RenderHassanCopy;
 import io.github.flemmli97.fate.client.render.misc.RenderMagicBeam;
+import io.github.flemmli97.fate.client.render.misc.RenderMedusaDagger;
 import io.github.flemmli97.fate.client.render.misc.RenderPegasus;
 import io.github.flemmli97.fate.client.render.misc.RenderStarfish;
 import io.github.flemmli97.fate.client.render.servant.RenderArthur;
@@ -102,6 +103,7 @@ public class ClientHandler {
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.lesserMonster.get(), RenderStarfish::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.hassanCopy.get(), RenderHassanCopy::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.pegasus.get(), RenderPegasus::new);
+        RenderingRegistry.registerEntityRenderingHandler(ModEntities.daggerHook.get(), RenderMedusaDagger::new);
 
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.gem.get(), RenderGem::new);
 

@@ -12,7 +12,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 
 import java.util.EnumSet;
 
-public class TargetOwnerEnemyGoal<T extends CreatureEntity & IOwnable<?>> extends TargetGoal {
+public class TargetOwnerEnemyGoal<T extends CreatureEntity & IOwnable<? extends LivingEntity>> extends TargetGoal {
 
     private final T tameable;
     private LivingEntity attackTarget;

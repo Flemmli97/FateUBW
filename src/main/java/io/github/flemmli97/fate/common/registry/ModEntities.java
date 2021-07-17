@@ -8,6 +8,7 @@ import io.github.flemmli97.fate.common.entity.EntityArcherArrow;
 import io.github.flemmli97.fate.common.entity.EntityBabylonWeapon;
 import io.github.flemmli97.fate.common.entity.EntityCaladBolg;
 import io.github.flemmli97.fate.common.entity.EntityCasterCircle;
+import io.github.flemmli97.fate.common.entity.EntityDaggerHook;
 import io.github.flemmli97.fate.common.entity.EntityEnumaElish;
 import io.github.flemmli97.fate.common.entity.EntityExcalibur;
 import io.github.flemmli97.fate.common.entity.EntityGaeBolg;
@@ -105,6 +106,7 @@ public class ModEntities {
     public static final RegistryObject<EntityType<EntityGordiusWheel>> gordiusWheel = reg(EntityType.Builder.create(EntityGordiusWheel::new, EntityClassification.MISC), LibEntities.gordius);
     public static final RegistryObject<EntityType<EntityHassanCopy>> hassanCopy = reg(EntityType.Builder.create(EntityHassanCopy::new, EntityClassification.MISC), LibEntities.hassan_copy);
     public static final RegistryObject<EntityType<EntityPegasus>> pegasus = reg(EntityType.Builder.create(EntityPegasus::new, EntityClassification.MONSTER), LibEntities.pegasus);
+    public static final RegistryObject<EntityType<EntityDaggerHook>> daggerHook = reg(EntityType.Builder.<EntityDaggerHook>create(EntityDaggerHook::new, EntityClassification.MISC).size(0.25F, 0.25F), LibEntities.daggerHook);
 
     public static final RegistryObject<EntityType<EntityGem>> gem = reg(EntityType.Builder.<EntityGem>create(EntityGem::new, EntityClassification.MISC).size(0.25F, 0.25F), LibEntities.entity_gem);
 

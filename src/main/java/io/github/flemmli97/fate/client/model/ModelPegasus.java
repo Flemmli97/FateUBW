@@ -238,7 +238,7 @@ public class ModelPegasus extends EntityModel<EntityPegasus> implements IResetMo
     }
 
     @Override
-    public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha){
+    public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         this.body.render(matrixStack, buffer, packedLight, packedOverlay);
     }
 

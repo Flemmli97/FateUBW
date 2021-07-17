@@ -14,7 +14,7 @@ import java.util.function.Predicate;
 /**
  * Copy of FollowOwnerGoal cause thats only for Tameable
  */
-public class FollowMasterGoal<T extends CreatureEntity & IOwnable<?>> extends Goal {
+public class FollowMasterGoal<T extends CreatureEntity & IOwnable<?extends LivingEntity>> extends Goal {
 
     public final T goalOwner;
     private LivingEntity follow;

@@ -31,5 +31,6 @@ public class LibEntities {
     public static final ResourceLocation ea = new ResourceLocation(Fate.MODID, "ea");
     public static final ResourceLocation monster_small = new ResourceLocation(Fate.MODID, "monster_small");
     public static final ResourceLocation medea_circle = new ResourceLocation(Fate.MODID, "medea_circle");
+    public static final ResourceLocation daggerHook = new ResourceLocation(Fate.MODID, "medusa_dagger");
 
 }

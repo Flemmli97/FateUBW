@@ -1,6 +1,7 @@
 package io.github.flemmli97.fate.common.capability;
 
 import com.flemmli97.tenshilib.common.entity.EntityUtil;
+import io.github.flemmli97.fate.common.entity.EntityDaggerHook;
 import io.github.flemmli97.fate.common.entity.servant.EntityServant;
 import io.github.flemmli97.fate.network.PacketHandler;
 import io.github.flemmli97.fate.network.S2CCommandSeals;
@@ -31,6 +32,7 @@ public class PlayerCap implements IPlayer, ICapabilitySerializable<CompoundNBT> 
     private int commandSeals = 0;
 
     private CompoundNBT savedServant;
+    private EntityDaggerHook currentDagger;
 
     public PlayerCap() {
     }
@@ -139,6 +141,18 @@ public class PlayerCap implements IPlayer, ICapabilitySerializable<CompoundNBT> 
         this.commandSeals = Math.min(amount, 3);
         if (player instanceof ServerPlayerEntity)
             PacketHandler.sendToClient(new S2CCommandSeals(this), (ServerPlayerEntity) player);
+    }
+
+    @Override
+    public void setThrownDagger(EntityDaggerHook hook) {
+        this.currentDagger = hook;
+    }
+
+    @Override
+    public EntityDaggerHook getThrownDagger() {
+        if (this.currentDagger != null && this.currentDagger.isAlive())
+            return this.currentDagger;
+        return null;
     }
 
     @Override

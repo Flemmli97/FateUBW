@@ -1,5 +1,6 @@
 package io.github.flemmli97.fate.common.capability;
 
+import io.github.flemmli97.fate.common.entity.EntityDaggerHook;
 import io.github.flemmli97.fate.common.entity.servant.EntityServant;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -35,6 +36,11 @@ public interface IPlayer {
     boolean useCommandSeal(PlayerEntity player);
 
     void setCommandSeals(PlayerEntity player, int amount);
+
+    //Other
+    void setThrownDagger(EntityDaggerHook hook);
+
+    EntityDaggerHook getThrownDagger();
 
     //NBT
 

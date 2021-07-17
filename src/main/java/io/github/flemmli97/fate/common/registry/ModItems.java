@@ -16,6 +16,7 @@ import io.github.flemmli97.fate.common.items.weapons.ItemExcalibur;
 import io.github.flemmli97.fate.common.items.weapons.ItemGaeBolg;
 import io.github.flemmli97.fate.common.items.weapons.ItemGrimoire;
 import io.github.flemmli97.fate.common.items.weapons.ItemKatana;
+import io.github.flemmli97.fate.common.items.weapons.ItemMedusaDagger;
 import io.github.flemmli97.fate.common.items.weapons.ItemStaff;
 import io.github.flemmli97.fate.common.lib.ItemTiers;
 import io.github.flemmli97.fate.common.utils.EnumServantType;
@@ -58,7 +59,7 @@ public class ModItems {
     public static final RegistryObject<Item> heraclesAxe = ITEMS.register("heracles_axe", () -> new AxeItem(ItemTiers.heraclesAxe, 0, -2.9f, new Item.Properties().group(Fate.TAB)));
     public static final RegistryObject<Item> arondight = ITEMS.register("arondight", () -> new SwordItem(ItemTiers.arondight, 0, -2.4f, new Item.Properties().group(Fate.TAB)));
     public static final RegistryObject<Item> kupriots = ITEMS.register("kupriots", () -> new SwordItem(ItemTiers.kupriots, 0, -2.4f, new Item.Properties().group(Fate.TAB)));
-    public static final RegistryObject<Item> medusaDagger = ITEMS.register("dagger", () -> new ItemDagger(ItemTiers.dagger, 0, -2.0f, new Item.Properties().group(Fate.TAB)));
+    public static final RegistryObject<Item> medusaDagger = ITEMS.register("dagger", () -> new ItemMedusaDagger(ItemTiers.dagger, 0, -2.0f, new Item.Properties().group(Fate.TAB)));
     public static final RegistryObject<Item> assassinDagger = ITEMS.register("assassin_dagger", () -> new ItemDagger(ItemTiers.assassinDagger, 0, -1.8f, new Item.Properties().group(Fate.TAB)));
     public static final RegistryObject<Item> katana = ITEMS.register("katana", () -> new ItemKatana(ItemTiers.katana, 0, -2.6f, new Item.Properties().group(Fate.TAB)));
 
