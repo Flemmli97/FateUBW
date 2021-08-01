@@ -138,4 +138,11 @@ public class EntityMedea extends EntityServant {
         super.readAdditional(tag);
         this.circleDelay = tag.getInt("CircleDelay");
     }
+
+    public enum PegasusState{
+        RECHARGE,
+        FLYING,
+        CHARGING,
+        FLYCHARGING
+    }
 }

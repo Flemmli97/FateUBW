@@ -1,6 +1,6 @@
 package io.github.flemmli97.fate.common.utils;
 
-import io.github.flemmli97.fate.common.entity.EntityGordiusWheel;
+import io.github.flemmli97.fate.common.entity.EntityGordiusBulls;
 import io.github.flemmli97.fate.common.entity.EntityPegasus;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -38,7 +38,7 @@ public class CustomDamageSource {
         return (new EntityDamageSource("tsubame", sourceEntity)).setDamageBypassesArmor();
     }
 
-    public static DamageSource gordiusTrample(EntityGordiusWheel source, LivingEntity sourceEntity) {
+    public static DamageSource gordiusTrample(EntityGordiusBulls source, LivingEntity sourceEntity) {
         return (new IndirectEntityDamageSource("gordius", source, sourceEntity));
     }
 

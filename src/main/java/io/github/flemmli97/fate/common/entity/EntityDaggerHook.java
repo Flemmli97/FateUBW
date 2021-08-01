@@ -58,15 +58,17 @@ public class EntityDaggerHook extends EntityProjectile {
                 this.setPosition(this.hookedEntity.getPosX(), this.hookedEntity.getPosYHeight(0.8D), this.hookedEntity.getPosZ());
             }
         }
-        if(!this.world.isRemote && this.retracting) {
-            LivingEntity entity = this.getOwner();
-            if (entity != null) {
-                Vector3d vector3d = new Vector3d(entity.getPosX() - this.getPosX(), entity.getPosY() - this.getPosY() + entity.getHeight() * 0.5f, entity.getPosZ() - this.getPosZ()).normalize().scale(0.6D);
-                this.setMotion(vector3d);
+        if(!this.world.isRemote) {
+            if(this.retracting) {
+                LivingEntity entity = this.getOwner();
+                if (entity != null) {
+                    Vector3d vector3d = new Vector3d(entity.getPosX() - this.getPosX(), entity.getPosY() - this.getPosY() + entity.getHeight() * 0.5f, entity.getPosZ() - this.getPosZ()).normalize().scale(0.8D);
+                    this.setMotion(vector3d);
+                }
             }
+            if (this.getOwner() == null || this.getDistanceSq(this.getOwner()) > 1024)
+                this.remove();
         }
-        if (this.getOwner() == null)
-            this.remove();
     }
 
     @Override
@@ -80,10 +82,10 @@ public class EntityDaggerHook extends EntityProjectile {
             result.getEntity().attackEntityFrom(DamageSource.causeIndirectDamage(this, this.getOwner()), Config.Common.medeaDaggerDamage);
             this.hookedEntity = result.getEntity();
             this.dataManager.set(HOOKED_ENTITY, result.getEntity().getEntityId());
+            this.setMotion(0, 0, 0);
             return true;
         } else if (result.getEntity() == this.getOwner()) {
             this.remove();
-            this.getOwner().getCapability(CapabilityInsts.PlayerCap).ifPresent(cap->cap.setThrownDagger(null));
             return true;
         }
         return false;
@@ -120,5 +122,11 @@ public class EntityDaggerHook extends EntityProjectile {
         if(this.retracting)
             return RayTraceUtils.projectileHit(this.world, this, this.getBoundingBox().expand(this.getMotion()).grow(1.0D), e->e == this.getOwner(), 0.0D);
         return super.getEntityHit(from, to);
+    }
+
+    @Override
+    public void remove() {
+        super.remove();
+        this.getOwner().getCapability(CapabilityInsts.PlayerCap).ifPresent(cap->cap.setThrownDagger(null));
     }
 }

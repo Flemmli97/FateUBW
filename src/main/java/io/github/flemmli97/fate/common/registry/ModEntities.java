@@ -13,6 +13,7 @@ import io.github.flemmli97.fate.common.entity.EntityEnumaElish;
 import io.github.flemmli97.fate.common.entity.EntityExcalibur;
 import io.github.flemmli97.fate.common.entity.EntityGaeBolg;
 import io.github.flemmli97.fate.common.entity.EntityGem;
+import io.github.flemmli97.fate.common.entity.EntityGordiusBulls;
 import io.github.flemmli97.fate.common.entity.EntityGordiusWheel;
 import io.github.flemmli97.fate.common.entity.EntityHassanCopy;
 import io.github.flemmli97.fate.common.entity.EntityLesserMonster;
@@ -38,6 +39,7 @@ import io.github.flemmli97.fate.common.utils.EnumServantType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.item.Item;
@@ -103,9 +105,11 @@ public class ModEntities {
     public static final RegistryObject<EntityType<EntityMagicBeam>> magicBeam = reg(EntityType.Builder.create(EntityMagicBeam::new, EntityClassification.MISC), LibEntities.magic_beam);
     public static final RegistryObject<EntityType<EntityCasterCircle>> medeaCircle = reg(EntityType.Builder.create(EntityCasterCircle::new, EntityClassification.MISC), LibEntities.medea_circle);
     public static final RegistryObject<EntityType<EntityLesserMonster>> lesserMonster = reg(EntityType.Builder.<EntityLesserMonster>create(EntityLesserMonster::new, EntityClassification.MONSTER).trackingRange(8), LibEntities.monster_small);
-    public static final RegistryObject<EntityType<EntityGordiusWheel>> gordiusWheel = reg(EntityType.Builder.create(EntityGordiusWheel::new, EntityClassification.MISC), LibEntities.gordius);
+    public static final RegistryObject<EntityType<EntityGordiusBulls>> gordiusBulls = reg(EntityType.Builder.create(EntityGordiusBulls::new, EntityClassification.CREATURE).size(2f, 1.6f), LibEntities.gordiusBulls);
+    public static final RegistryObject<EntityType<EntityGordiusWheel>> gordiusWheel = reg(EntityType.Builder.create(EntityGordiusWheel::new, EntityClassification.CREATURE).size(1.9f, 1.6f), LibEntities.gordiusWheel);
+
     public static final RegistryObject<EntityType<EntityHassanCopy>> hassanCopy = reg(EntityType.Builder.create(EntityHassanCopy::new, EntityClassification.MISC), LibEntities.hassan_copy);
-    public static final RegistryObject<EntityType<EntityPegasus>> pegasus = reg(EntityType.Builder.create(EntityPegasus::new, EntityClassification.MONSTER), LibEntities.pegasus);
+    public static final RegistryObject<EntityType<EntityPegasus>> pegasus = reg(EntityType.Builder.create(EntityPegasus::new, EntityClassification.MONSTER).size(1.2f, 1.6f), LibEntities.pegasus);
     public static final RegistryObject<EntityType<EntityDaggerHook>> daggerHook = reg(EntityType.Builder.<EntityDaggerHook>create(EntityDaggerHook::new, EntityClassification.MISC).size(0.25F, 0.25F), LibEntities.daggerHook);
 
     public static final RegistryObject<EntityType<EntityGem>> gem = reg(EntityType.Builder.<EntityGem>create(EntityGem::new, EntityClassification.MISC).size(0.25F, 0.25F), LibEntities.entity_gem);
@@ -162,9 +166,10 @@ public class ModEntities {
         GlobalEntityTypeAttributes.put(hassan.get(), EntityServant.createMobAttributes().create());
         GlobalEntityTypeAttributes.put(sasaki.get(), EntityServant.createMobAttributes().create());
 
-        GlobalEntityTypeAttributes.put(lesserMonster.get(), MonsterEntity.func_234295_eP_().create());
-        GlobalEntityTypeAttributes.put(gordiusWheel.get(), MonsterEntity.func_234295_eP_().create());
-        GlobalEntityTypeAttributes.put(pegasus.get(), MonsterEntity.func_234295_eP_().create());
+        GlobalEntityTypeAttributes.put(lesserMonster.get(), EntityServant.createMobAttributes().createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25).create());
+        GlobalEntityTypeAttributes.put(gordiusBulls.get(), EntityServant.createMobAttributes().createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3).create());
+        GlobalEntityTypeAttributes.put(gordiusWheel.get(), MonsterEntity.func_234295_eP_().createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3).create());
+        GlobalEntityTypeAttributes.put(pegasus.get(), EntityServant.createMobAttributes().create());
         GlobalEntityTypeAttributes.put(hassanCopy.get(), EntityServant.createMobAttributes().create());
     }
 }

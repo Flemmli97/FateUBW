@@ -20,7 +20,7 @@ public class EntityIskander extends EntityServant {
 
     public final IskanderAttackGoal attackAI = new IskanderAttackGoal(this);
 
-    private static final AnimatedAction npAttack = new AnimatedAction(20, 0, "np");
+    private static final AnimatedAction npAttack = new AnimatedAction(20, 5, "np");
     private static final AnimatedAction[] anims = {AnimatedAction.vanillaAttack, npAttack};
 
     private final AnimationHandler<EntityIskander> animationHandler = new AnimationHandler<>(this, anims);

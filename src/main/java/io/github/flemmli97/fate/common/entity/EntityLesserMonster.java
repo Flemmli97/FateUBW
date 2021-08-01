@@ -53,7 +53,6 @@ public class EntityLesserMonster extends CreatureEntity implements IServantMinio
         this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(Config.Common.smallMonsterDamage);
         this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(18);
         this.getAttribute(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
-        this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.25D);
     }
 
     protected void goals() {

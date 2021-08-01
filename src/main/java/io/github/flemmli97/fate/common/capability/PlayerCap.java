@@ -68,8 +68,11 @@ public class PlayerCap implements IPlayer, ICapabilitySerializable<CompoundNBT> 
 
     @Override
     public EntityServant getServant(PlayerEntity player) {
-        if (this.servant == null && this.servantUUID != null)
-            this.setServant(player, EntityUtil.findFromUUID(EntityServant.class, player.world, this.servantUUID, notDead));
+        if (this.servant == null && this.servantUUID != null) {
+            EntityServant servant = EntityUtil.findFromUUID(EntityServant.class, player.world, this.servantUUID, notDead);
+            if(servant != null)
+                this.setServant(player, servant);
+        }
         return this.servant;
     }
 
