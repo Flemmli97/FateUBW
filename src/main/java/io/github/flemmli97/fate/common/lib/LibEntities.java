@@ -21,7 +21,6 @@ public class LibEntities {
     public static final ResourceLocation medea = new ResourceLocation(Fate.MODID, "medea");
     public static final ResourceLocation pegasus = new ResourceLocation(Fate.MODID, "pegasus");
     public static final ResourceLocation gordiusWheel = new ResourceLocation(Fate.MODID, "gordius_wheel");
-    public static final ResourceLocation gordiusBulls = new ResourceLocation(Fate.MODID, "gordius_bulls");
 
     public static final ResourceLocation entity_gem = new ResourceLocation(Fate.MODID, "entity_gem");
     public static final ResourceLocation excalibur = new ResourceLocation(Fate.MODID, "excalibur");

@@ -13,12 +13,11 @@ import io.github.flemmli97.fate.common.entity.EntityEnumaElish;
 import io.github.flemmli97.fate.common.entity.EntityExcalibur;
 import io.github.flemmli97.fate.common.entity.EntityGaeBolg;
 import io.github.flemmli97.fate.common.entity.EntityGem;
-import io.github.flemmli97.fate.common.entity.EntityGordiusBulls;
-import io.github.flemmli97.fate.common.entity.EntityGordiusWheel;
-import io.github.flemmli97.fate.common.entity.EntityHassanCopy;
-import io.github.flemmli97.fate.common.entity.EntityLesserMonster;
 import io.github.flemmli97.fate.common.entity.EntityMagicBeam;
-import io.github.flemmli97.fate.common.entity.EntityPegasus;
+import io.github.flemmli97.fate.common.entity.minions.EntityGordius;
+import io.github.flemmli97.fate.common.entity.minions.EntityHassanCopy;
+import io.github.flemmli97.fate.common.entity.minions.EntityLesserMonster;
+import io.github.flemmli97.fate.common.entity.minions.EntityPegasus;
 import io.github.flemmli97.fate.common.entity.servant.EntityArthur;
 import io.github.flemmli97.fate.common.entity.servant.EntityCuchulainn;
 import io.github.flemmli97.fate.common.entity.servant.EntityDiarmuid;
@@ -105,8 +104,7 @@ public class ModEntities {
     public static final RegistryObject<EntityType<EntityMagicBeam>> magicBeam = reg(EntityType.Builder.create(EntityMagicBeam::new, EntityClassification.MISC), LibEntities.magic_beam);
     public static final RegistryObject<EntityType<EntityCasterCircle>> medeaCircle = reg(EntityType.Builder.create(EntityCasterCircle::new, EntityClassification.MISC), LibEntities.medea_circle);
     public static final RegistryObject<EntityType<EntityLesserMonster>> lesserMonster = reg(EntityType.Builder.<EntityLesserMonster>create(EntityLesserMonster::new, EntityClassification.MONSTER).trackingRange(8), LibEntities.monster_small);
-    public static final RegistryObject<EntityType<EntityGordiusBulls>> gordiusBulls = reg(EntityType.Builder.create(EntityGordiusBulls::new, EntityClassification.CREATURE).size(2f, 1.6f), LibEntities.gordiusBulls);
-    public static final RegistryObject<EntityType<EntityGordiusWheel>> gordiusWheel = reg(EntityType.Builder.create(EntityGordiusWheel::new, EntityClassification.CREATURE).size(1.9f, 1.6f), LibEntities.gordiusWheel);
+    public static final RegistryObject<EntityType<EntityGordius>> gordiusWheel = reg(EntityType.Builder.create(EntityGordius::new, EntityClassification.CREATURE).size(4.15f, 1.6f), LibEntities.gordiusWheel);
 
     public static final RegistryObject<EntityType<EntityHassanCopy>> hassanCopy = reg(EntityType.Builder.create(EntityHassanCopy::new, EntityClassification.MISC), LibEntities.hassan_copy);
     public static final RegistryObject<EntityType<EntityPegasus>> pegasus = reg(EntityType.Builder.create(EntityPegasus::new, EntityClassification.MONSTER).size(1.2f, 1.6f), LibEntities.pegasus);
@@ -167,8 +165,8 @@ public class ModEntities {
         GlobalEntityTypeAttributes.put(sasaki.get(), EntityServant.createMobAttributes().create());
 
         GlobalEntityTypeAttributes.put(lesserMonster.get(), EntityServant.createMobAttributes().createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25).create());
-        GlobalEntityTypeAttributes.put(gordiusBulls.get(), EntityServant.createMobAttributes().createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3).create());
-        GlobalEntityTypeAttributes.put(gordiusWheel.get(), MonsterEntity.func_234295_eP_().createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3).create());
+        GlobalEntityTypeAttributes.put(gordiusWheel.get(), MonsterEntity.func_234295_eP_().createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3)
+                .createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 1).create());
         GlobalEntityTypeAttributes.put(pegasus.get(), EntityServant.createMobAttributes().create());
         GlobalEntityTypeAttributes.put(hassanCopy.get(), EntityServant.createMobAttributes().create());
     }

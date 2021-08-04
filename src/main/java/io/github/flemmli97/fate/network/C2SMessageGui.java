@@ -1,7 +1,7 @@
 package io.github.flemmli97.fate.network;
 
 import io.github.flemmli97.fate.common.capability.CapabilityInsts;
-import io.github.flemmli97.fate.common.capability.IPlayer;
+import io.github.flemmli97.fate.common.capability.PlayerCap;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -30,7 +30,7 @@ public class C2SMessageGui {
             if (player == null)
                 return;
             if (pkt.message == Type.SERVANT || pkt.message == Type.ALL) {
-                IPlayer cap = player.getCapability(CapabilityInsts.PlayerCap).orElse(null);
+                PlayerCap cap = player.getCapability(CapabilityInsts.PlayerCap).orElse(null);
                 if (cap == null)
                     return;
                 if (cap.getServant(player) != null)

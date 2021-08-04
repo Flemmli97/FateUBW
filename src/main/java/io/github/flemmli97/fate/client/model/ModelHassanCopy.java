@@ -7,7 +7,7 @@ import com.flemmli97.tenshilib.client.model.ModelRendererPlus;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import io.github.flemmli97.fate.Fate;
-import io.github.flemmli97.fate.common.entity.EntityHassanCopy;
+import io.github.flemmli97.fate.common.entity.minions.EntityHassanCopy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.model.EntityModel;

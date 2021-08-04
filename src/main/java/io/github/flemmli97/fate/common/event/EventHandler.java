@@ -3,13 +3,12 @@ package io.github.flemmli97.fate.common.event;
 import com.mojang.authlib.GameProfile;
 import io.github.flemmli97.fate.Fate;
 import io.github.flemmli97.fate.common.capability.CapabilityInsts;
-import io.github.flemmli97.fate.common.capability.IPlayer;
 import io.github.flemmli97.fate.common.capability.PlayerCap;
 import io.github.flemmli97.fate.common.commands.CommandHandler;
 import io.github.flemmli97.fate.common.world.GrailWarHandler;
 import io.github.flemmli97.fate.common.world.TruceHandler;
 import io.github.flemmli97.fate.network.PacketHandler;
-import io.github.flemmli97.fate.network.S2CMana;
+import io.github.flemmli97.fate.network.S2CPlayerCap;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -47,9 +46,9 @@ public class EventHandler {
             GrailWarHandler handler = GrailWarHandler.get(player.getServerWorld());
             if (handler.removeConnection(player))
                 handler.removePlayer(player);
-            IPlayer cap = player.getCapability(CapabilityInsts.PlayerCap).orElse(null);
+            PlayerCap cap = player.getCapability(CapabilityInsts.PlayerCap).orElse(null);
             if (cap != null)
-                PacketHandler.sendToClient(new S2CMana(cap), player);
+                PacketHandler.sendToClient(new S2CPlayerCap(cap), player);
             TruceHandler.get(player.getServerWorld()).pending(player).forEach(uuid -> {
                 GameProfile prof = player.getServer().getPlayerProfileCache().getProfileByUUID(uuid);
                 if (prof != null)

@@ -2,7 +2,7 @@ package io.github.flemmli97.fate.network;
 
 import io.github.flemmli97.fate.client.ClientHandler;
 import io.github.flemmli97.fate.common.capability.CapabilityInsts;
-import io.github.flemmli97.fate.common.capability.IPlayer;
+import io.github.flemmli97.fate.common.capability.PlayerCap;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
@@ -19,7 +19,7 @@ public class S2CMana {
         this.manaValue = mana;
     }
 
-    public S2CMana(IPlayer playerMana) {
+    public S2CMana(PlayerCap playerMana) {
         this.manaValue = playerMana.getMana();
     }
 

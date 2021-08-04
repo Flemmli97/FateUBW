@@ -4,7 +4,7 @@ import com.flemmli97.tenshilib.client.model.IResetModel;
 import com.flemmli97.tenshilib.client.model.ModelRendererPlus;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import io.github.flemmli97.fate.common.entity.EntityGordiusWheel;
+import io.github.flemmli97.fate.common.entity.minions.EntityGordius;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.util.math.MathHelper;
 
@@ -13,8 +13,42 @@ import net.minecraft.util.math.MathHelper;
  * Created using Tabula 6.0.0
  */
 
-public class ModelGordiusWheel extends EntityModel<EntityGordiusWheel> implements IResetModel {
+public class ModelGordiusWheel extends EntityModel<EntityGordius> implements IResetModel {
 
+    public ModelRendererPlus bull1;
+    public ModelRendererPlus equipmentLayer;
+    public ModelRendererPlus footLeftFront;
+    public ModelRendererPlus footRightFront;
+    public ModelRendererPlus footLeftRear;
+    public ModelRendererPlus footRightRear;
+    public ModelRendererPlus head;
+    public ModelRendererPlus hornRight;
+    public ModelRendererPlus hornRightTip;
+    public ModelRendererPlus hornLeft;
+    public ModelRendererPlus hornLeftTip;
+    public ModelRendererPlus lead;
+    public ModelRendererPlus mouth;
+    public ModelRendererPlus leadFront;
+    public ModelRendererPlus leadFront2;
+    public ModelRendererPlus leadFront3;
+    public ModelRendererPlus leadFront4;
+    public ModelRendererPlus bull2;
+    public ModelRendererPlus equipmentLayer2;
+    public ModelRendererPlus footLeftFront2;
+    public ModelRendererPlus footRightFront2;
+    public ModelRendererPlus footLeftRear2;
+    public ModelRendererPlus footRightRear2;
+    public ModelRendererPlus head2;
+    public ModelRendererPlus hornRight2;
+    public ModelRendererPlus hornRightTip2;
+    public ModelRendererPlus hornLeft2;
+    public ModelRendererPlus hornLeftTip2;
+    public ModelRendererPlus lead2;
+    public ModelRendererPlus mouth2;
+    public ModelRendererPlus leadFront5;
+    public ModelRendererPlus leadFront6;
+    public ModelRendererPlus leadFront7;
+    public ModelRendererPlus leadFront8;
     public ModelRendererPlus centerBeam;
     public ModelRendererPlus backBeam;
     public ModelRendererPlus backBeamJoint;
@@ -110,18 +144,204 @@ public class ModelGordiusWheel extends EntityModel<EntityGordiusWheel> implement
         this.textureWidth = 129;
         this.textureHeight = 256;
 
+        this.bull1 = new ModelRendererPlus(this);
+        this.bull1.setDefaultRotPoint(-8.5F, 7.0F, -23.0F);
+        this.bull1.setTextureOffset(0, 145).addBox(-6.0F, -5.0F, -9.0F, 12.0F, 10.0F, 18.0F, 0.0F, false);
+
+        this.equipmentLayer = new ModelRendererPlus(this);
+        this.equipmentLayer.setDefaultRotPoint(0.0F, 1.0F, 0.0F);
+        this.bull1.addChild(this.equipmentLayer);
+        this.equipmentLayer.setTextureOffset(59, 128).addBox(-6.5F, -6.3F, -9.5F, 13.0F, 13.0F, 19.0F, 0.0F, false);
+
+        this.footLeftFront = new ModelRendererPlus(this);
+        this.footLeftFront.setDefaultRotPoint(4.0F, 5.0F, -6.0F);
+        this.bull1.addChild(this.footLeftFront);
+        this.footLeftFront.setTextureOffset(0, 144).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, 0.0F, false);
+
+        this.footRightFront = new ModelRendererPlus(this);
+        this.footRightFront.setDefaultRotPoint(-4.0F, 5.0F, -6.0F);
+        this.bull1.addChild(this.footRightFront);
+        this.footRightFront.setTextureOffset(0, 144).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, 0.0F, false);
+
+        this.footLeftRear = new ModelRendererPlus(this);
+        this.footLeftRear.setDefaultRotPoint(4.0F, 5.0F, 7.0F);
+        this.bull1.addChild(this.footLeftRear);
+        this.footLeftRear.setTextureOffset(0, 144).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, 0.0F, false);
+
+        this.footRightRear = new ModelRendererPlus(this);
+        this.footRightRear.setDefaultRotPoint(-4.0F, 5.0F, 7.0F);
+        this.bull1.addChild(this.footRightRear);
+        this.footRightRear.setTextureOffset(0, 144).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, 0.0F, false);
+
+        this.head = new ModelRendererPlus(this);
+        this.head.setDefaultRotPoint(0.0F, -1.0F, -9.0F);
+        this.bull1.addChild(this.head);
+        this.head.setTextureOffset(0, 128).addBox(-4.0F, -4.0F, -8.0F, 8.0F, 8.0F, 8.0F, 0.0F, false);
+
+        this.hornRight = new ModelRendererPlus(this);
+        this.hornRight.setDefaultRotPoint(-3.0F, -3.0F, -4.0F);
+        this.head.addChild(this.hornRight);
+        this.setRotationAngle(this.hornRight, 0.0F, 0.0F, 0.4363F);
+        this.hornRight.setTextureOffset(42, 140).addBox(-6.0F, -1.0F, -1.0F, 6.0F, 2.0F, 2.0F, 0.0F, false);
+
+        this.hornRightTip = new ModelRendererPlus(this);
+        this.hornRightTip.setDefaultRotPoint(-5.0F, 0.0F, 0.0F);
+        this.hornRight.addChild(this.hornRightTip);
+        this.setRotationAngle(this.hornRightTip, 0.0F, 0.0F, 1.4114F);
+        this.hornRightTip.setTextureOffset(42, 140).addBox(-4.0F, -1.0F, -1.0F, 4.0F, 2.0F, 2.0F, 0.0F, false);
+
+        this.hornLeft = new ModelRendererPlus(this);
+        this.hornLeft.setDefaultRotPoint(3.0F, -3.0F, -4.0F);
+        this.head.addChild(this.hornLeft);
+        this.setRotationAngle(this.hornLeft, 0.0F, 0.0F, -0.4363F);
+        this.hornLeft.setTextureOffset(42, 140).addBox(0.0F, -1.0F, -1.0F, 6.0F, 2.0F, 2.0F, 0.0F, false);
+
+        this.hornLeftTip = new ModelRendererPlus(this);
+        this.hornLeftTip.setDefaultRotPoint(5.0F, 0.0F, 0.0F);
+        this.hornLeft.addChild(this.hornLeftTip);
+        this.setRotationAngle(this.hornLeftTip, 0.0F, 0.0F, -1.4114F);
+        this.hornLeftTip.setTextureOffset(42, 140).addBox(0.0F, -1.0F, -1.0F, 4.0F, 2.0F, 2.0F, 0.0F, false);
+
+        this.lead = new ModelRendererPlus(this);
+        this.lead.setDefaultRotPoint(0.0F, -5.7F, -0.5F);
+        this.head.addChild(this.lead);
+        this.lead.setTextureOffset(0, 173).addBox(-4.0F, 0.0F, -0.5F, 8.0F, 0.0F, 1.0F, 0.0F, false);
+
+        this.mouth = new ModelRendererPlus(this);
+        this.mouth.setDefaultRotPoint(0.0F, 1.0F, -7.0F);
+        this.head.addChild(this.mouth);
+        this.setRotationAngle(this.mouth, 0.4363F, 0.0F, 0.0F);
+        this.mouth.setTextureOffset(42, 128).addBox(-2.5F, -2.5F, -5.0F, 5.0F, 5.0F, 5.0F, 0.0F, false);
+
+        this.leadFront = new ModelRendererPlus(this);
+        this.leadFront.setDefaultRotPoint(2.5F, 1.0F, -3.0F);
+        this.mouth.addChild(this.leadFront);
+        this.setRotationAngle(this.leadFront, 0.0F, 0.7854F, 0.0F);
+        this.leadFront.setTextureOffset(0, 167).addBox(0.0F, -0.5F, 0.0F, 0.0F, 1.0F, 6.0F, 0.0F, false);
+
+        this.leadFront2 = new ModelRendererPlus(this);
+        this.leadFront2.setDefaultRotPoint(0.0F, 0.0F, 6.0F);
+        this.leadFront.addChild(this.leadFront2);
+        this.setRotationAngle(this.leadFront2, 0.0F, -1.2217F, -0.5236F);
+        this.leadFront2.setTextureOffset(0, 164).addBox(0.0F, -0.5F, 0.0F, 0.0F, 1.0F, 9.0F, 0.0F, false);
+
+        this.leadFront3 = new ModelRendererPlus(this);
+        this.leadFront3.setDefaultRotPoint(-2.5F, 1.0F, -3.0F);
+        this.mouth.addChild(this.leadFront3);
+        this.setRotationAngle(this.leadFront3, 0.0F, -0.7854F, 0.0F);
+        this.leadFront3.setTextureOffset(0, 167).addBox(0.0F, -0.5F, 0.0F, 0.0F, 1.0F, 6.0F, 0.0F, false);
+
+        this.leadFront4 = new ModelRendererPlus(this);
+        this.leadFront4.setDefaultRotPoint(0.0F, 0.0F, 6.0F);
+        this.leadFront3.addChild(this.leadFront4);
+        this.setRotationAngle(this.leadFront4, 0.0F, 1.2217F, 0.5236F);
+        this.leadFront4.setTextureOffset(0, 164).addBox(0.0F, -0.5F, 0.0F, 0.0F, 1.0F, 9.0F, 0.0F, false);
+
+        this.bull2 = new ModelRendererPlus(this);
+        this.bull2.setDefaultRotPoint(8.5F, 7.0F, -23.0F);
+        this.bull2.setTextureOffset(0, 145).addBox(-6.0F, -5.0F, -9.0F, 12.0F, 10.0F, 18.0F, 0.0F, false);
+
+        this.equipmentLayer2 = new ModelRendererPlus(this);
+        this.equipmentLayer2.setDefaultRotPoint(0.0F, 1.0F, 0.0F);
+        this.bull2.addChild(this.equipmentLayer2);
+        this.equipmentLayer2.setTextureOffset(59, 128).addBox(-6.5F, -6.3F, -9.5F, 13.0F, 13.0F, 19.0F, 0.0F, false);
+
+        this.footLeftFront2 = new ModelRendererPlus(this);
+        this.footLeftFront2.setDefaultRotPoint(4.0F, 5.0F, -6.0F);
+        this.bull2.addChild(this.footLeftFront2);
+        this.footLeftFront2.setTextureOffset(0, 144).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, 0.0F, false);
+
+        this.footRightFront2 = new ModelRendererPlus(this);
+        this.footRightFront2.setDefaultRotPoint(-4.0F, 5.0F, -6.0F);
+        this.bull2.addChild(this.footRightFront2);
+        this.footRightFront2.setTextureOffset(0, 144).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, 0.0F, false);
+
+        this.footLeftRear2 = new ModelRendererPlus(this);
+        this.footLeftRear2.setDefaultRotPoint(4.0F, 5.0F, 7.0F);
+        this.bull2.addChild(this.footLeftRear2);
+        this.footLeftRear2.setTextureOffset(0, 144).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, 0.0F, false);
+
+        this.footRightRear2 = new ModelRendererPlus(this);
+        this.footRightRear2.setDefaultRotPoint(-4.0F, 5.0F, 7.0F);
+        this.bull2.addChild(this.footRightRear2);
+        this.footRightRear2.setTextureOffset(0, 144).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, 0.0F, false);
+
+        this.head2 = new ModelRendererPlus(this);
+        this.head2.setDefaultRotPoint(0.0F, -1.0F, -9.0F);
+        this.bull2.addChild(this.head2);
+        this.head2.setTextureOffset(0, 128).addBox(-4.0F, -4.0F, -8.0F, 8.0F, 8.0F, 8.0F, 0.0F, false);
+
+        this.hornRight2 = new ModelRendererPlus(this);
+        this.hornRight2.setDefaultRotPoint(-3.0F, -3.0F, -4.0F);
+        this.head2.addChild(this.hornRight2);
+        this.setRotationAngle(this.hornRight2, 0.0F, 0.0F, 0.4363F);
+        this.hornRight2.setTextureOffset(42, 140).addBox(-6.0F, -1.0F, -1.0F, 6.0F, 2.0F, 2.0F, 0.0F, false);
+
+        this.hornRightTip2 = new ModelRendererPlus(this);
+        this.hornRightTip2.setDefaultRotPoint(-5.0F, 0.0F, 0.0F);
+        this.hornRight2.addChild(this.hornRightTip2);
+        this.setRotationAngle(this.hornRightTip2, 0.0F, 0.0F, 1.4114F);
+        this.hornRightTip2.setTextureOffset(42, 140).addBox(-4.0F, -1.0F, -1.0F, 4.0F, 2.0F, 2.0F, 0.0F, false);
+
+        this.hornLeft2 = new ModelRendererPlus(this);
+        this.hornLeft2.setDefaultRotPoint(3.0F, -3.0F, -4.0F);
+        this.head2.addChild(this.hornLeft2);
+        this.setRotationAngle(this.hornLeft2, 0.0F, 0.0F, -0.4363F);
+        this.hornLeft2.setTextureOffset(42, 140).addBox(0.0F, -1.0F, -1.0F, 6.0F, 2.0F, 2.0F, 0.0F, false);
+
+        this.hornLeftTip2 = new ModelRendererPlus(this);
+        this.hornLeftTip2.setDefaultRotPoint(5.0F, 0.0F, 0.0F);
+        this.hornLeft2.addChild(this.hornLeftTip2);
+        this.setRotationAngle(this.hornLeftTip2, 0.0F, 0.0F, -1.4114F);
+        this.hornLeftTip2.setTextureOffset(42, 140).addBox(0.0F, -1.0F, -1.0F, 4.0F, 2.0F, 2.0F, 0.0F, false);
+
+        this.lead2 = new ModelRendererPlus(this);
+        this.lead2.setDefaultRotPoint(0.0F, -5.7F, -0.5F);
+        this.head2.addChild(this.lead2);
+        this.lead2.setTextureOffset(0, 173).addBox(-4.0F, 0.0F, -0.5F, 8.0F, 0.0F, 1.0F, 0.0F, false);
+
+        this.mouth2 = new ModelRendererPlus(this);
+        this.mouth2.setDefaultRotPoint(0.0F, 1.0F, -7.0F);
+        this.head2.addChild(this.mouth2);
+        this.setRotationAngle(this.mouth2, 0.4363F, 0.0F, 0.0F);
+        this.mouth2.setTextureOffset(42, 128).addBox(-2.5F, -2.5F, -5.0F, 5.0F, 5.0F, 5.0F, 0.0F, false);
+
+        this.leadFront5 = new ModelRendererPlus(this);
+        this.leadFront5.setDefaultRotPoint(2.5F, 1.0F, -3.0F);
+        this.mouth2.addChild(this.leadFront5);
+        this.setRotationAngle(this.leadFront5, 0.0F, 0.7854F, 0.0F);
+        this.leadFront5.setTextureOffset(0, 167).addBox(0.0F, -0.5F, 0.0F, 0.0F, 1.0F, 6.0F, 0.0F, false);
+
+        this.leadFront6 = new ModelRendererPlus(this);
+        this.leadFront6.setDefaultRotPoint(0.0F, 0.0F, 6.0F);
+        this.leadFront5.addChild(this.leadFront6);
+        this.setRotationAngle(this.leadFront6, 0.0F, -1.2217F, -0.5236F);
+        this.leadFront6.setTextureOffset(0, 164).addBox(0.0F, -0.5F, 0.0F, 0.0F, 1.0F, 9.0F, 0.0F, false);
+
+        this.leadFront7 = new ModelRendererPlus(this);
+        this.leadFront7.setDefaultRotPoint(-2.5F, 1.0F, -3.0F);
+        this.mouth2.addChild(this.leadFront7);
+        this.setRotationAngle(this.leadFront7, 0.0F, -0.7854F, 0.0F);
+        this.leadFront7.setTextureOffset(0, 167).addBox(0.0F, -0.5F, 0.0F, 0.0F, 1.0F, 6.0F, 0.0F, false);
+
+        this.leadFront8 = new ModelRendererPlus(this);
+        this.leadFront8.setDefaultRotPoint(0.0F, 0.0F, 6.0F);
+        this.leadFront7.addChild(this.leadFront8);
+        this.setRotationAngle(this.leadFront8, 0.0F, 1.2217F, 0.5236F);
+        this.leadFront8.setTextureOffset(0, 164).addBox(0.0F, -0.5F, 0.0F, 0.0F, 1.0F, 9.0F, 0.0F, false);
+
         this.centerBeam = new ModelRendererPlus(this);
-        this.centerBeam.setDefaultRotPoint(0.0F, 8.0F, -23.0F);
-        this.centerBeam.setTextureOffset(0, 95).addBox(-1.5F, -0.5F, -27.0F, 3.0F, 3.0F, 30.0F, 0.0F, false);
-        this.centerBeam.setTextureOffset(0, 106).addBox(-2.0F, -1.0F, -25.5F, 4.0F, 4.0F, 1.0F, 0.0F, false);
-        this.centerBeam.setTextureOffset(0, 106).addBox(-2.0F, -1.0F, -27.5F, 4.0F, 4.0F, 1.0F, 0.0F, false);
-        this.centerBeam.setTextureOffset(63, 120).addBox(-15.0F, 0.0F, -4.5F, 30.0F, 2.0F, 3.0F, 0.0F, false);
+        this.centerBeam.setDefaultRotPoint(0.0F, 8.0F, -4.0F);
+        this.centerBeam.setTextureOffset(0, 95).addBox(-1.5F, -1.5F, -30.0F, 3.0F, 3.0F, 30.0F, 0.0F, false);
+        this.centerBeam.setTextureOffset(0, 106).addBox(-2.0F, -2.0F, -28.5F, 4.0F, 4.0F, 1.0F, 0.0F, false);
+        this.centerBeam.setTextureOffset(0, 106).addBox(-2.0F, -2.0F, -30.5F, 4.0F, 4.0F, 1.0F, 0.0F, false);
+        this.centerBeam.setTextureOffset(63, 120).addBox(-15.0F, -1.0F, -7.5F, 30.0F, 2.0F, 3.0F, 0.0F, false);
 
         this.backBeam = new ModelRendererPlus(this);
         this.backBeam.setDefaultRotPoint(0.0F, 1.0F, -2.0F);
         this.centerBeam.addChild(this.backBeam);
         this.setRotationAngle(this.backBeam, -0.1396F, 0.0F, 0.0F);
-        this.backBeam.setTextureOffset(99, 106).addBox(-1.5F, -0.7F, 4.0F, 3.0F, 2.0F, 12.0F, 0.0F, false);
+        this.backBeam.setTextureOffset(99, 106).addBox(-1.5F, -1.0F, 0.0F, 3.0F, 2.0F, 12.0F, 0.0F, false);
 
         this.backBeamJoint = new ModelRendererPlus(this);
         this.backBeamJoint.setDefaultRotPoint(0.0F, 0.0F, 0.0F);
@@ -666,16 +886,26 @@ public class ModelGordiusWheel extends EntityModel<EntityGordiusWheel> implement
     }
 
     @Override
-    public void setRotationAngles(EntityGordiusWheel entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setRotationAngles(EntityGordius entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.resetModel();
         this.frontAxel.rotateAngleX = MathHelper.cos(limbSwing * 0.3F) * (float) Math.PI;
         this.backAxel.rotateAngleX = MathHelper.cos(limbSwing * 0.4f) * (float) Math.PI;
         this.leftWheelWeaponMain.rotateAngleX = this.frontAxel.rotateAngleX;
         this.rightWheelWeaponMain.rotateAngleX = -this.frontAxel.rotateAngleX;
+        this.footLeftFront.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * limbSwingAmount;
+        this.footRightFront.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * limbSwingAmount;
+        this.footLeftFront2.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * limbSwingAmount;
+        this.footRightFront2.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * limbSwingAmount;
+        this.footLeftRear.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * limbSwingAmount;
+        this.footRightRear.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * limbSwingAmount;
+        this.footLeftRear2.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * limbSwingAmount;
+        this.footRightRear2.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * limbSwingAmount;
     }
 
     @Override
     public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        this.bull1.render(matrixStack, buffer, packedLight, packedOverlay);
+        this.bull2.render(matrixStack, buffer, packedLight, packedOverlay);
         this.centerBeam.render(matrixStack, buffer, packedLight, packedOverlay);
     }
 
@@ -685,7 +915,11 @@ public class ModelGordiusWheel extends EntityModel<EntityGordiusWheel> implement
 
     @Override
     public void resetModel() {
+        this.bull1.reset();
+        this.bull2.reset();
         this.centerBeam.reset();
+        this.resetChild(this.bull1);
+        this.resetChild(this.bull2);
         this.resetChild(this.centerBeam);
     }
 }

@@ -1,9 +1,10 @@
-package io.github.flemmli97.fate.common.entity;
+package io.github.flemmli97.fate.common.entity.minions;
 
 import com.flemmli97.tenshilib.api.entity.AnimatedAction;
 import com.flemmli97.tenshilib.api.entity.AnimationHandler;
 import com.flemmli97.tenshilib.api.entity.IAnimated;
 import io.github.flemmli97.fate.common.config.Config;
+import io.github.flemmli97.fate.common.entity.IServantMinion;
 import io.github.flemmli97.fate.common.utils.CustomDamageSource;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.EntityType;
@@ -99,7 +100,7 @@ public class EntityPegasus extends CreatureEntity implements IAnimated, IServant
 
     @Override
     public PathNavigator getNavigator() {
-        if(this.canFly)
+        if (this.canFly)
             return this.flyingNavigator;
         return super.getNavigator();
     }
@@ -139,17 +140,16 @@ public class EntityPegasus extends CreatureEntity implements IAnimated, IServant
                     EntityPegasus.this.setMotion(EntityPegasus.this.getMotion().add(vector3d.scale(this.speed * 0.05D / d0)));
                     if (EntityPegasus.this.getAttackTarget() == null) {
                         Vector3d vector3d1 = EntityPegasus.this.getMotion();
-                        EntityPegasus.this.rotationYaw = -((float) MathHelper.atan2(vector3d1.x, vector3d1.z)) * (180F / (float)Math.PI);
+                        EntityPegasus.this.rotationYaw = -((float) MathHelper.atan2(vector3d1.x, vector3d1.z)) * (180F / (float) Math.PI);
                         EntityPegasus.this.renderYawOffset = EntityPegasus.this.rotationYaw;
                     } else {
                         double d2 = EntityPegasus.this.getAttackTarget().getPosX() - EntityPegasus.this.getPosX();
                         double d1 = EntityPegasus.this.getAttackTarget().getPosZ() - EntityPegasus.this.getPosZ();
-                        EntityPegasus.this.rotationYaw = -((float)MathHelper.atan2(d2, d1)) * (180F / (float)Math.PI);
+                        EntityPegasus.this.rotationYaw = -((float) MathHelper.atan2(d2, d1)) * (180F / (float) Math.PI);
                         EntityPegasus.this.renderYawOffset = EntityPegasus.this.rotationYaw;
                     }
                 }
-            }
-            else super.tick();
+            } else super.tick();
         }
     }
 }

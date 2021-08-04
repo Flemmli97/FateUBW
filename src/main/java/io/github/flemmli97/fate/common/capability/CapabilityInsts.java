@@ -8,20 +8,20 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 
 public class CapabilityInsts {
 
-    @CapabilityInject(IPlayer.class)
-    public static final Capability<IPlayer> PlayerCap = null;
+    @CapabilityInject(PlayerCap.class)
+    public static final Capability<PlayerCap> PlayerCap = null;
     @CapabilityInject(ItemStackCap.class)
     public static final Capability<ItemStackCap> ItemStackCap = null;
 
-    public static class PlayerCapNetwork implements Capability.IStorage<IPlayer> {
+    public static class PlayerCapNetwork implements Capability.IStorage<PlayerCap> {
 
         @Override
-        public INBT writeNBT(Capability<IPlayer> capability, IPlayer instance, Direction side) {
+        public INBT writeNBT(Capability<PlayerCap> capability, PlayerCap instance, Direction side) {
             return instance.writeToNBT(new CompoundNBT());
         }
 
         @Override
-        public void readNBT(Capability<IPlayer> capability, IPlayer instance, Direction side, INBT nbt) {
+        public void readNBT(Capability<PlayerCap> capability, PlayerCap instance, Direction side, INBT nbt) {
             instance.readFromNBT((CompoundNBT) nbt);
         }
     }

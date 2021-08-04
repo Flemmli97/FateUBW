@@ -2,7 +2,7 @@ package io.github.flemmli97.fate.common.entity.ai;
 
 import com.flemmli97.tenshilib.api.entity.AnimatedAction;
 import com.flemmli97.tenshilib.common.entity.ai.AnimatedAttackGoal;
-import io.github.flemmli97.fate.common.entity.EntityPegasus;
+import io.github.flemmli97.fate.common.entity.minions.EntityPegasus;
 
 public class PegasusAttackGoal extends AnimatedAttackGoal<EntityPegasus> {
 

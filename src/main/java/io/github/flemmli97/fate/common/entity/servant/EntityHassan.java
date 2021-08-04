@@ -4,7 +4,7 @@ package io.github.flemmli97.fate.common.entity.servant;
 import com.flemmli97.tenshilib.api.entity.AnimatedAction;
 import com.flemmli97.tenshilib.api.entity.AnimationHandler;
 import io.github.flemmli97.fate.common.config.Config;
-import io.github.flemmli97.fate.common.entity.EntityHassanCopy;
+import io.github.flemmli97.fate.common.entity.minions.EntityHassanCopy;
 import io.github.flemmli97.fate.common.entity.servant.ai.HassanAttackGoal;
 import io.github.flemmli97.fate.common.registry.ModItems;
 import io.github.flemmli97.fate.common.utils.EnumServantUpdate;

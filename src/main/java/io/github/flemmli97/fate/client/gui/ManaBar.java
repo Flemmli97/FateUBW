@@ -3,7 +3,7 @@ package io.github.flemmli97.fate.client.gui;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import io.github.flemmli97.fate.Fate;
 import io.github.flemmli97.fate.common.capability.CapabilityInsts;
-import io.github.flemmli97.fate.common.capability.IPlayer;
+import io.github.flemmli97.fate.common.capability.PlayerCap;
 import io.github.flemmli97.fate.common.config.Config;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
@@ -22,7 +22,7 @@ public class ManaBar extends AbstractGui {
     }
 
     public void renderBar(MatrixStack stack) {
-        int mana = this.mc.player.getCapability(CapabilityInsts.PlayerCap).map(IPlayer::getMana).orElse(0);
+        int mana = this.mc.player.getCapability(CapabilityInsts.PlayerCap).map(PlayerCap::getMana).orElse(0);
         int xPos = Config.Client.manaX;
         int yPos = Config.Client.manaY;
 

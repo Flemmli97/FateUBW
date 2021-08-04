@@ -1,7 +1,7 @@
 package io.github.flemmli97.fate.common.items.weapons;
 
 import io.github.flemmli97.fate.common.capability.CapabilityInsts;
-import io.github.flemmli97.fate.common.capability.IPlayer;
+import io.github.flemmli97.fate.common.capability.PlayerCap;
 import io.github.flemmli97.fate.common.entity.EntityDaggerHook;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.IItemTier;
@@ -21,8 +21,8 @@ public class ItemMedusaDagger extends ItemDagger {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         if (!world.isRemote) {
-            LazyOptional<IPlayer> opt = player.getCapability(CapabilityInsts.PlayerCap);
-            EntityDaggerHook thrownDagger = opt.resolve().map(IPlayer::getThrownDagger).orElse(null);
+            LazyOptional<PlayerCap> opt = player.getCapability(CapabilityInsts.PlayerCap);
+            EntityDaggerHook thrownDagger = opt.resolve().map(PlayerCap::getThrownDagger).orElse(null);
             if (thrownDagger == null) {
                 EntityDaggerHook hook = new EntityDaggerHook(world, player);
                 hook.shoot(player, player.rotationPitch, player.rotationYaw, 0, 3, 0);

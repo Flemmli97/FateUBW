@@ -2,7 +2,7 @@ package io.github.flemmli97.fate.client.render.misc;
 
 import io.github.flemmli97.fate.Fate;
 import io.github.flemmli97.fate.client.model.ModelHassanCopy;
-import io.github.flemmli97.fate.common.entity.EntityHassanCopy;
+import io.github.flemmli97.fate.common.entity.minions.EntityHassanCopy;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;

@@ -2,7 +2,6 @@ package io.github.flemmli97.fate;
 
 import io.github.flemmli97.fate.client.ClientEvents;
 import io.github.flemmli97.fate.common.capability.CapabilityInsts;
-import io.github.flemmli97.fate.common.capability.IPlayer;
 import io.github.flemmli97.fate.common.capability.ItemStackCap;
 import io.github.flemmli97.fate.common.capability.PlayerCap;
 import io.github.flemmli97.fate.common.config.Config;
@@ -88,7 +87,7 @@ public class Fate {
         });
         CachedWeaponList.init();
         PacketHandler.register();
-        CapabilityManager.INSTANCE.register(IPlayer.class, new CapabilityInsts.PlayerCapNetwork(), PlayerCap::new);
+        CapabilityManager.INSTANCE.register(PlayerCap.class, new CapabilityInsts.PlayerCapNetwork(), PlayerCap::new);
         CapabilityManager.INSTANCE.register(ItemStackCap.class, new CapabilityInsts.ItemStackNetwork(), ItemStackCap::new);
     }
 

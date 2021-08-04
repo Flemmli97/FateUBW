@@ -2,7 +2,7 @@ package io.github.flemmli97.fate.common.blocks;
 
 import io.github.flemmli97.fate.common.blocks.tile.TileAltar;
 import io.github.flemmli97.fate.common.capability.CapabilityInsts;
-import io.github.flemmli97.fate.common.capability.IPlayer;
+import io.github.flemmli97.fate.common.capability.PlayerCap;
 import io.github.flemmli97.fate.common.items.ItemServantCharm;
 import io.github.flemmli97.fate.common.registry.AdvancementRegister;
 import io.github.flemmli97.fate.common.registry.ModItems;
@@ -228,11 +228,11 @@ public class BlockAltar extends ContainerBlock {
             SummonUtils.placeSummoningStructure((ServerWorld) world, pos, altar, state.get(FACING).getOpposite());
             return ActionResultType.SUCCESS;
         } else if (!altar.addItem(player, stack) && stack.getItem() == ModItems.crystalCluster.get()) {
-            Optional<IPlayer> opt = player.getCapability(CapabilityInsts.PlayerCap).resolve();
+            Optional<PlayerCap> opt = player.getCapability(CapabilityInsts.PlayerCap).resolve();
             if (!opt.isPresent())
                 return ActionResultType.FAIL;
             GrailWarHandler tracker = GrailWarHandler.get((ServerWorld) world);
-            IPlayer cap = opt.get();
+            PlayerCap cap = opt.get();
             if (cap.getServant(player) == null) {
                 if (altar.isComplete()) {
                     if (!altar.isSummoning()) {

@@ -3,7 +3,7 @@ package io.github.flemmli97.fate.common.entity.servant;
 
 import com.flemmli97.tenshilib.api.entity.AnimatedAction;
 import com.flemmli97.tenshilib.api.entity.AnimationHandler;
-import io.github.flemmli97.fate.common.entity.EntityPegasus;
+import io.github.flemmli97.fate.common.entity.minions.EntityPegasus;
 import io.github.flemmli97.fate.common.entity.servant.ai.MedusaAttackGoal;
 import io.github.flemmli97.fate.common.registry.ModEntities;
 import io.github.flemmli97.fate.common.registry.ModItems;
@@ -80,23 +80,19 @@ public class EntityMedusa extends EntityServant {
     }
 
     public void attackWithNP() {
-        if(!this.world.isRemote)
-        {
+        if (!this.world.isRemote) {
             EntityPegasus peg = ModEntities.pegasus.get().create(this.world);
             peg.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
-            for(int x=0;x < 5;x++)
-            {
+            for (int x = 0; x < 5; x++) {
                 LightningBoltEntity lightning = EntityType.LIGHTNING_BOLT.create(this.world);
                 lightning.moveForced(this.getPosX(), this.getPosY(), this.getPosZ());
                 lightning.setEffectOnly(true);
             }
-            List<Entity> list =this.world.getEntitiesWithinAABBExcludingEntity(this, this.getBoundingBox().expand(5, 3.0D, 5));
-            for(int x = 0; x< list.size();x++)
-            {
-                if(list.get(x) instanceof LivingEntity)
-                {
+            List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, this.getBoundingBox().expand(5, 3.0D, 5));
+            for (int x = 0; x < list.size(); x++) {
+                if (list.get(x) instanceof LivingEntity) {
                     LivingEntity ent = (LivingEntity) list.get(x);
-                    ent.applyKnockback( 2, MathHelper.sin(this.rotationYaw * 0.017453292F), (-MathHelper.cos(this.rotationYaw * 0.017453292F)));
+                    ent.applyKnockback(2, MathHelper.sin(this.rotationYaw * 0.017453292F), (-MathHelper.cos(this.rotationYaw * 0.017453292F)));
                 }
             }
             this.world.addEntity(peg);

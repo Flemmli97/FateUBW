@@ -3,7 +3,7 @@ package io.github.flemmli97.fate.common.entity.servant;
 
 import com.flemmli97.tenshilib.api.entity.AnimatedAction;
 import com.flemmli97.tenshilib.api.entity.AnimationHandler;
-import io.github.flemmli97.fate.common.entity.EntityGordiusWheel;
+import io.github.flemmli97.fate.common.entity.minions.EntityGordius;
 import io.github.flemmli97.fate.common.entity.servant.ai.IskanderAttackGoal;
 import io.github.flemmli97.fate.common.registry.ModEntities;
 import io.github.flemmli97.fate.common.registry.ModItems;
@@ -69,12 +69,12 @@ public class EntityIskander extends EntityServant {
     }
 
     public boolean attackWithNP() {
-
         if (this.isPassenger() || this.world.isRemote)
             return false;
-        EntityGordiusWheel wheel = ModEntities.gordiusWheel.get().create(this.world);
+        EntityGordius wheel = ModEntities.gordiusWheel.get().create(this.world);
         wheel.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
         this.world.addEntity(wheel);
+        this.rideCooldown = 0;
         this.startRiding(wheel);
         //spawn lightning
         LightningBoltEntity lightningboltentity = EntityType.LIGHTNING_BOLT.create(this.world);

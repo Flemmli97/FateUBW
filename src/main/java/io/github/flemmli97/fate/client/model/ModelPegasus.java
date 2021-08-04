@@ -6,7 +6,7 @@ import com.flemmli97.tenshilib.client.model.ModelRendererPlus;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import io.github.flemmli97.fate.Fate;
-import io.github.flemmli97.fate.common.entity.EntityPegasus;
+import io.github.flemmli97.fate.common.entity.minions.EntityPegasus;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.util.ResourceLocation;
 

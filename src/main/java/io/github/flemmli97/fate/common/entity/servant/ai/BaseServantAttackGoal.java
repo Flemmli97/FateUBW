@@ -24,6 +24,8 @@ public class BaseServantAttackGoal<T extends EntityServant> extends AnimatedAtta
 
     @Override
     public boolean canChooseAttack(AnimatedAction anim) {
+        if (anim == null)
+            return false;
         return this.distanceToTargetSq < this.attackRange || this.attacker.canUse(anim, EntityServant.AttackType.NP);
     }
 

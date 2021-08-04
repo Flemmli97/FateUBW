@@ -1,7 +1,7 @@
 package io.github.flemmli97.fate.common.items.weapons;
 
 import io.github.flemmli97.fate.common.capability.CapabilityInsts;
-import io.github.flemmli97.fate.common.entity.EntityLesserMonster;
+import io.github.flemmli97.fate.common.entity.minions.EntityLesserMonster;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

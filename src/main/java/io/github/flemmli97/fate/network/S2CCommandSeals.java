@@ -2,7 +2,7 @@ package io.github.flemmli97.fate.network;
 
 import io.github.flemmli97.fate.client.ClientHandler;
 import io.github.flemmli97.fate.common.capability.CapabilityInsts;
-import io.github.flemmli97.fate.common.capability.IPlayer;
+import io.github.flemmli97.fate.common.capability.PlayerCap;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
@@ -19,7 +19,7 @@ public class S2CCommandSeals {
         this.commandSeals = seals;
     }
 
-    public S2CCommandSeals(IPlayer playerCap) {
+    public S2CCommandSeals(PlayerCap playerCap) {
         this.commandSeals = playerCap.getCommandSeals();
     }
 

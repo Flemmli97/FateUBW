@@ -1,4 +1,4 @@
-package io.github.flemmli97.fate.common.entity;
+package io.github.flemmli97.fate.common.entity.minions;
 
 import com.flemmli97.tenshilib.api.entity.AnimatedAction;
 import com.flemmli97.tenshilib.api.entity.AnimationHandler;
@@ -6,6 +6,7 @@ import com.flemmli97.tenshilib.api.entity.IAnimated;
 import com.flemmli97.tenshilib.api.entity.IOwnable;
 import com.flemmli97.tenshilib.common.entity.EntityUtil;
 import io.github.flemmli97.fate.common.config.Config;
+import io.github.flemmli97.fate.common.entity.IServantMinion;
 import io.github.flemmli97.fate.common.entity.ai.AnimatedMeleeGoal;
 import io.github.flemmli97.fate.common.entity.ai.TargetOwnerEnemyGoal;
 import io.github.flemmli97.fate.common.entity.servant.EntityHassan;

@@ -5,7 +5,7 @@ import com.flemmli97.tenshilib.api.entity.AnimatedAction;
 import com.flemmli97.tenshilib.api.entity.AnimationHandler;
 import com.flemmli97.tenshilib.common.utils.RayTraceUtils;
 import io.github.flemmli97.fate.common.config.Config;
-import io.github.flemmli97.fate.common.entity.EntityLesserMonster;
+import io.github.flemmli97.fate.common.entity.minions.EntityLesserMonster;
 import io.github.flemmli97.fate.common.entity.servant.ai.GillesAttackGoal;
 import io.github.flemmli97.fate.common.registry.ModItems;
 import io.github.flemmli97.fate.common.utils.EnumServantUpdate;

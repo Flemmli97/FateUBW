@@ -58,8 +58,8 @@ public class EntityDaggerHook extends EntityProjectile {
                 this.setPosition(this.hookedEntity.getPosX(), this.hookedEntity.getPosYHeight(0.8D), this.hookedEntity.getPosZ());
             }
         }
-        if(!this.world.isRemote) {
-            if(this.retracting) {
+        if (!this.world.isRemote) {
+            if (this.retracting) {
                 LivingEntity entity = this.getOwner();
                 if (entity != null) {
                     Vector3d vector3d = new Vector3d(entity.getPosX() - this.getPosX(), entity.getPosY() - this.getPosY() + entity.getHeight() * 0.5f, entity.getPosZ() - this.getPosZ()).normalize().scale(0.8D);
@@ -119,14 +119,14 @@ public class EntityDaggerHook extends EntityProjectile {
 
     @Override
     protected EntityRayTraceResult getEntityHit(Vector3d from, Vector3d to) {
-        if(this.retracting)
-            return RayTraceUtils.projectileHit(this.world, this, this.getBoundingBox().expand(this.getMotion()).grow(1.0D), e->e == this.getOwner(), 0.0D);
+        if (this.retracting)
+            return RayTraceUtils.projectileHit(this.world, this, this.getBoundingBox().expand(this.getMotion()).grow(1.0D), e -> e == this.getOwner(), 0.0D);
         return super.getEntityHit(from, to);
     }
 
     @Override
     public void remove() {
         super.remove();
-        this.getOwner().getCapability(CapabilityInsts.PlayerCap).ifPresent(cap->cap.setThrownDagger(null));
+        this.getOwner().getCapability(CapabilityInsts.PlayerCap).ifPresent(cap -> cap.setThrownDagger(null));
     }
 }

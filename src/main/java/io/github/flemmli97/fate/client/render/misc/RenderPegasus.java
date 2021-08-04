@@ -2,7 +2,7 @@ package io.github.flemmli97.fate.client.render.misc;
 
 import io.github.flemmli97.fate.Fate;
 import io.github.flemmli97.fate.client.model.ModelPegasus;
-import io.github.flemmli97.fate.common.entity.EntityPegasus;
+import io.github.flemmli97.fate.common.entity.minions.EntityPegasus;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;

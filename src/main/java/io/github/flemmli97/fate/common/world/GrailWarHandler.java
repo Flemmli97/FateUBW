@@ -173,17 +173,18 @@ public class GrailWarHandler extends WorldSavedData {
     }
 
     public boolean removeServant(EntityServant servant) {
-        boolean removed = this.activeServants.remove(servant.getUniqueID());
-        if (removed && !servant.world.isRemote) {
+        if (!servant.world.isRemote) {
             PlayerEntity player = servant.getOwner();
             if (player != null) {
                 servant.setOwner(null);
                 this.removePlayer((ServerPlayerEntity) player);
             } else if (servant.hasOwner())
                 this.sheduledPlayerRemoval.add(servant.getOwnerUUID());
-            this.checkWinCondition((ServerWorld) servant.world, true);
-            this.markDirty();
-            return true;
+            if (this.activeServants.remove(servant.getUniqueID())) {
+                this.checkWinCondition((ServerWorld) servant.world, true);
+                this.markDirty();
+                return true;
+            }
         }
         return false;
     }

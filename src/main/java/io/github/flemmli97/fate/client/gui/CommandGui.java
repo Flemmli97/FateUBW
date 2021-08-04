@@ -5,7 +5,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import io.github.flemmli97.fate.Fate;
 import io.github.flemmli97.fate.client.ClientHandler;
 import io.github.flemmli97.fate.common.capability.CapabilityInsts;
-import io.github.flemmli97.fate.common.capability.IPlayer;
+import io.github.flemmli97.fate.common.capability.PlayerCap;
 import io.github.flemmli97.fate.common.entity.servant.EntityServant;
 import io.github.flemmli97.fate.common.utils.EnumServantUpdate;
 import io.github.flemmli97.fate.common.utils.Utils;
@@ -47,7 +47,7 @@ public class CommandGui extends Screen {
     public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(stack);
         PlayerEntity player = this.getMinecraft().player;
-        IPlayer capSync = player.getCapability(CapabilityInsts.PlayerCap).orElse(null);
+        PlayerCap capSync = player.getCapability(CapabilityInsts.PlayerCap).orElse(null);
         EntityServant servant = capSync.getServant(player);
         if (capSync == null)
             return;

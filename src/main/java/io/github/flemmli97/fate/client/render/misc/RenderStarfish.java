@@ -2,7 +2,7 @@ package io.github.flemmli97.fate.client.render.misc;
 
 import io.github.flemmli97.fate.Fate;
 import io.github.flemmli97.fate.client.model.ModelStarfishDemon;
-import io.github.flemmli97.fate.common.entity.EntityLesserMonster;
+import io.github.flemmli97.fate.common.entity.minions.EntityLesserMonster;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;

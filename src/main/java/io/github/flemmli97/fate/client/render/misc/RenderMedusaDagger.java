@@ -54,8 +54,8 @@ public class RenderMedusaDagger extends EntityRenderer<EntityDaggerHook> {
             }
 
             float f = playerentity.getSwingProgress(partialTicks);
-            float f1 = MathHelper.sin(MathHelper.sqrt(f) * (float)Math.PI);
-            float f2 = MathHelper.lerp(partialTicks, playerentity.prevRenderYawOffset, playerentity.renderYawOffset) * ((float)Math.PI / 180F);
+            float f1 = MathHelper.sin(MathHelper.sqrt(f) * (float) Math.PI);
+            float f2 = MathHelper.lerp(partialTicks, playerentity.prevRenderYawOffset, playerentity.renderYawOffset) * ((float) Math.PI / 180F);
             double d0 = MathHelper.sin(f2);
             double d1 = MathHelper.cos(f2);
             double d2 = i * 0.35D;
@@ -68,8 +68,8 @@ public class RenderMedusaDagger extends EntityRenderer<EntityDaggerHook> {
                 double d7 = this.renderManager.options.fov;
                 d7 = d7 / 100.0D;
                 Vector3d vector3d = new Vector3d(i * -0.36D * d7, -0.045D * d7, 0.4D);
-                vector3d = vector3d.rotatePitch(-MathHelper.lerp(partialTicks, playerentity.prevRotationPitch, playerentity.rotationPitch) * ((float)Math.PI / 180F));
-                vector3d = vector3d.rotateYaw(-MathHelper.lerp(partialTicks, playerentity.prevRotationYaw, playerentity.rotationYaw) * ((float)Math.PI / 180F));
+                vector3d = vector3d.rotatePitch(-MathHelper.lerp(partialTicks, playerentity.prevRotationPitch, playerentity.rotationPitch) * ((float) Math.PI / 180F));
+                vector3d = vector3d.rotateYaw(-MathHelper.lerp(partialTicks, playerentity.prevRotationYaw, playerentity.rotationYaw) * ((float) Math.PI / 180F));
                 vector3d = vector3d.rotateYaw(f1 * 0.5F);
                 vector3d = vector3d.rotatePitch(-f1 * 0.7F);
                 d4 = MathHelper.lerp(partialTicks, playerentity.prevPosX, playerentity.getPosX()) + vector3d.x;
@@ -86,14 +86,14 @@ public class RenderMedusaDagger extends EntityRenderer<EntityDaggerHook> {
             double d9 = MathHelper.lerp(partialTicks, entityIn.prevPosX, entityIn.getPosX());
             double d10 = MathHelper.lerp(partialTicks, entityIn.prevPosY, entityIn.getPosY()) + 0.25D;
             double d8 = MathHelper.lerp(partialTicks, entityIn.prevPosZ, entityIn.getPosZ());
-            float f4 = (float)(d4 - d9);
-            float f5 = (float)(d5 - d10) + f3;
-            float f6 = (float)(d6 - d8);
+            float f4 = (float) (d4 - d9);
+            float f5 = (float) (d5 - d10) + f3;
+            float f6 = (float) (d6 - d8);
             IVertexBuilder ivertexbuilder1 = bufferIn.getBuffer(RenderType.getLines());
             Matrix4f matrix4f1 = matrixStackIn.getLast().getMatrix();
             int j = 16;
 
-            for(int k = 0; k < 16; ++k) {
+            for (int k = 0; k < 16; ++k) {
                 func_229104_a_(f4, f5, f6, ivertexbuilder1, matrix4f1, func_229105_a_(k, 16));
                 func_229104_a_(f4, f5, f6, ivertexbuilder1, matrix4f1, func_229105_a_(k + 1, 16));
             }
@@ -104,11 +104,11 @@ public class RenderMedusaDagger extends EntityRenderer<EntityDaggerHook> {
     }
 
     private static float func_229105_a_(int p_229105_0_, int p_229105_1_) {
-        return (float)p_229105_0_ / (float)p_229105_1_;
+        return (float) p_229105_0_ / (float) p_229105_1_;
     }
 
     private static void func_229106_a_(IVertexBuilder p_229106_0_, Matrix4f p_229106_1_, Matrix3f p_229106_2_, int p_229106_3_, float p_229106_4_, int p_229106_5_, int p_229106_6_, int p_229106_7_) {
-        p_229106_0_.pos(p_229106_1_, p_229106_4_ - 0.5F, (float)p_229106_5_ - 0.5F, 0.0F).color(255, 255, 255, 255).tex((float)p_229106_6_, (float)p_229106_7_).overlay(OverlayTexture.NO_OVERLAY).lightmap(p_229106_3_).normal(p_229106_2_, 0.0F, 1.0F, 0.0F).endVertex();
+        p_229106_0_.pos(p_229106_1_, p_229106_4_ - 0.5F, (float) p_229106_5_ - 0.5F, 0.0F).color(255, 255, 255, 255).tex((float) p_229106_6_, (float) p_229106_7_).overlay(OverlayTexture.NO_OVERLAY).lightmap(p_229106_3_).normal(p_229106_2_, 0.0F, 1.0F, 0.0F).endVertex();
     }
 
     private static void func_229104_a_(float p_229104_0_, float p_229104_1_, float p_229104_2_, IVertexBuilder p_229104_3_, Matrix4f p_229104_4_, float p_229104_5_) {

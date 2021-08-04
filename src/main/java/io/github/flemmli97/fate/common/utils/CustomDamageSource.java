@@ -1,7 +1,7 @@
 package io.github.flemmli97.fate.common.utils;
 
-import io.github.flemmli97.fate.common.entity.EntityGordiusBulls;
-import io.github.flemmli97.fate.common.entity.EntityPegasus;
+import io.github.flemmli97.fate.common.entity.minions.EntityGordius;
+import io.github.flemmli97.fate.common.entity.minions.EntityPegasus;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.DamageSource;
@@ -38,11 +38,11 @@ public class CustomDamageSource {
         return (new EntityDamageSource("tsubame", sourceEntity)).setDamageBypassesArmor();
     }
 
-    public static DamageSource gordiusTrample(EntityGordiusBulls source, LivingEntity sourceEntity) {
-        return (new IndirectEntityDamageSource("gordius", source, sourceEntity));
+    public static DamageSource gordiusTrample(EntityGordius source, LivingEntity sourceEntity) {
+        return (new EntityDamageSource("gordius", source));
     }
 
     public static DamageSource pegasusCharge(EntityPegasus source, LivingEntity sourceEntity) {
-        return (new IndirectEntityDamageSource("pegasus", source, sourceEntity).setMagicDamage());
+        return (new EntityDamageSource("pegasus", source).setMagicDamage());
     }
 }
