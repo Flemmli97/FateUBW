@@ -1,0 +1,12 @@
+{
+  "name": "fate.patchouli.entry.servant",
+  "category": "category.war",
+  "icon": "fateubw:servant_medallion",
+  "pages": [
+    {
+      "type": "text",
+      "text": "fate.patchouli.entry.servant.desc"
+    }
+  ],
+  "sortnum": 0
+}

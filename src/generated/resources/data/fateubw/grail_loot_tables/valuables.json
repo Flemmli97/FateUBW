@@ -1,5 +1,5 @@
 {
-  "name": "Riches",
+  "default_name": "Riches",
   "pools": [
     {
       "type": "fateubw:vanilla_entry",

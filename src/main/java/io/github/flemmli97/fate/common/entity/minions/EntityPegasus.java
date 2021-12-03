@@ -4,14 +4,20 @@ import com.flemmli97.tenshilib.api.entity.AnimatedAction;
 import com.flemmli97.tenshilib.api.entity.AnimationHandler;
 import com.flemmli97.tenshilib.api.entity.IAnimated;
 import io.github.flemmli97.fate.common.config.Config;
+import io.github.flemmli97.fate.common.entity.ChargingHandler;
 import io.github.flemmli97.fate.common.entity.IServantMinion;
+import io.github.flemmli97.fate.common.entity.ai.PegasusAttackGoal;
 import io.github.flemmli97.fate.common.utils.CustomDamageSource;
 import net.minecraft.entity.CreatureEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.controller.MovementController;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.FlyingPathNavigator;
 import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.util.DamageSource;
@@ -20,9 +26,13 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Function;
 
 public class EntityPegasus extends CreatureEntity implements IAnimated, IServantMinion {
+
+    public final PegasusAttackGoal attackAI = new PegasusAttackGoal(this);
 
     private static final AnimatedAction charging = new AnimatedAction(20, 0, "charge");
     private static final AnimatedAction chargingFlying = new AnimatedAction(20, 0, "flying_charge", charging.getID());
@@ -34,8 +44,15 @@ public class EntityPegasus extends CreatureEntity implements IAnimated, IServant
     private final PathNavigator flyingNavigator;
     private boolean canFly;
 
+    private static final Function<AnimatedAction, Boolean> chargingAnim = anim -> anim != null && (anim.getID().equals(charging.getID()) || anim.getID().equals(chargingFlying.getID()));
+    private static final DataParameter<Float> lockedYaw = EntityDataManager.createKey(EntityPegasus.class, DataSerializers.FLOAT);
+
+    public final ChargingHandler<EntityPegasus> chargingHandler = new ChargingHandler<>(this, lockedYaw, chargingAnim);
+
     public EntityPegasus(EntityType<? extends EntityPegasus> type, World world) {
         super(type, world);
+        if (world != null && !world.isRemote)
+            this.goalSelector.addGoal(0, this.attackAI);
         this.flyingNavigator = new FlyingPathNavigator(this, world);
         this.moveController = new MoveHelperController(this);
     }
@@ -54,10 +71,15 @@ public class EntityPegasus extends CreatureEntity implements IAnimated, IServant
         return this.getAnimationHandler().isCurrentAnim(charging.getID(), chargingFlying.getID());
     }
 
+    public AnimatedAction getChargingAnim() {
+        return this.canFly ? chargingFlying : charging;
+    }
+
     @Override
     public void livingTick() {
         super.livingTick();
         this.getAnimationHandler().tick();
+        this.chargingHandler.tick();
         if (!this.world.isRemote && this.isCharging() && !this.getPassengers().isEmpty() && this.getPassengers().get(0) instanceof LivingEntity) {
             List<LivingEntity> list = this.world.getEntitiesWithinAABB(LivingEntity.class, this.getBoundingBox().grow(0.5), EntityPredicates.NOT_SPECTATING.and(e -> !this.isPassenger(e)));
             for (LivingEntity e : list) {
@@ -96,6 +118,12 @@ public class EntityPegasus extends CreatureEntity implements IAnimated, IServant
         } else {
             super.travel(vec);
         }
+    }
+
+    @Override
+    @Nullable
+    public Entity getControllingPassenger() {
+        return this.getPassengers().isEmpty() ? null : this.getPassengers().get(0);
     }
 
     @Override

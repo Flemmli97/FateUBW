@@ -1,5 +1,5 @@
 {
-  "name": "Power",
+  "default_name": "Power",
   "pools": [
     {
       "type": "fateubw:attribute_entry",

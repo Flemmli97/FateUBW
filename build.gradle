@@ -119,6 +119,9 @@ repositories {
         name = "TenshiLib"
         url "https://maven.pkg.github.com/flemmli97/TenshiLib"
     }
+    maven {
+        url "https://maven.blamejared.com"
+    }
 }
 
 dependencies {
@@ -131,6 +134,10 @@ dependencies {
     runtimeOnly fg.deobf(curios_dep)
     runtimeOnly fg.deobf(observer_dep)
     runtimeOnly fg.deobf(mobbattle_dep)
+    compile fg.deobf(patchouli_datagen) {
+        transitive = false
+    }
+    runtimeOnly fg.deobf(patchouli)
 }
 
 jar {

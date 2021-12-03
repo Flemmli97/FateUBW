@@ -1,0 +1,24 @@
+{
+  "name": "fate.patchouli.entry.altar",
+  "category": "category.start",
+  "icon": "fateubw:altar",
+  "pages": [
+    {
+      "type": "crafting",
+      "recipe": "fateubw:altar",
+      "text": "fate.patchouli.entry.altar"
+    },
+    {
+      "type": "image",
+      "images": [
+        "fateubw:textures/img/altar.png"
+      ],
+      "text": "fate.patchouli.entry.altar.struct"
+    },
+    {
+      "type": "text",
+      "text": "fate.patchouli.entry.altar.charm"
+    }
+  ],
+  "sortnum": 1
+}

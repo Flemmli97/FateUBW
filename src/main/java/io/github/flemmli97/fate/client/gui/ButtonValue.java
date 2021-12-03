@@ -3,6 +3,7 @@ package io.github.flemmli97.fate.client.gui;
 import io.github.flemmli97.fate.Fate;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
 public class ButtonValue<T> extends Button {
@@ -14,6 +15,12 @@ public class ButtonValue<T> extends Button {
 
     public ButtonValue(int x, int y, int widthIn, int heightIn, String buttonText, Pressable<T> press) {
         super(x, y, widthIn, heightIn, new TranslationTextComponent(buttonText), (button) -> {
+        });
+        this.pressable = press;
+    }
+
+    public ButtonValue(int x, int y, int widthIn, int heightIn, TextComponent buttonText, Pressable<T> press) {
+        super(x, y, widthIn, heightIn, buttonText, (button) -> {
         });
         this.pressable = press;
     }

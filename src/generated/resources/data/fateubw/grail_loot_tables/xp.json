@@ -1,5 +1,5 @@
 {
-  "name": "Knowledge",
+  "default_name": "Knowledge",
   "pools": [
     {
       "type": "fateubw:xp_entry",

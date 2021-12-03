@@ -1,0 +1,13 @@
+{
+  "name": "fate.patchouli.entry.grail",
+  "category": "category.war",
+  "icon": "fateubw:holy_grail",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "fateubw:holy_grail",
+      "text": "fate.patchouli.entry.grail.item"
+    }
+  ],
+  "sortnum": 0
+}

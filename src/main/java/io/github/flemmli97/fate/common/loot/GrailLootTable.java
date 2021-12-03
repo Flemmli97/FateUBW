@@ -93,7 +93,7 @@ public class GrailLootTable {
         public JsonElement serialize(GrailLootTable src, Type typeOfSrc, JsonSerializationContext context) {
             JsonObject obj = new JsonObject();
             JsonArray pools = new JsonArray();
-            obj.addProperty("name", src.name);
+            obj.addProperty("default_name", src.name);
             src.lootPool.forEach(entry -> pools.add(entry.serialize(context)));
             obj.add("pools", pools);
             if (src.conditions != null && src.conditions.length > 0)

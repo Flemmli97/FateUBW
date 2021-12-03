@@ -1,5 +1,5 @@
 {
-  "name": "Astral",
+  "default_name": "Astral",
   "pools": [
     {
       "type": "fateubw:astral_entry",
