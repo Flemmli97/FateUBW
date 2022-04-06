@@ -105,12 +105,16 @@ public class C2SServantCommand implements Packet {
             case TELEPORT:
                 servant.randomTeleport(sender.getX(), sender.getY(), sender.getZ(), false);
                 servant.setTarget(null);
-                if (Config.Common.punishTeleport)
+                if (Config.Common.punishTeleport) {
                     for (BaseServant others : sender.level.getEntitiesOfClass(BaseServant.class, sender.getBoundingBox().inflate(32)))
                         if (others != servant && !Utils.inSameTeam(sender, others)) {
                             others.setTarget(sender);
-                            others.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 600, 1));
+                            others.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 1200, 1));
+                            others.addEffect(new MobEffectInstance(MobEffects.HEAL, 2, 3));
                         }
+                    sender.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 1200, 1));
+                    sender.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 600, 1));
+                }
                 break;
             case BOOST:
                 if (cap.useCommandSeal(sender)) {
