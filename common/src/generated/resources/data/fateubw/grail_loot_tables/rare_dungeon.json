@@ -1,0 +1,111 @@
+{
+  "default_name": "Rare Dungeon Loot",
+  "pools": [
+    {
+      "type": "fateubw:vanilla_entry",
+      "Entry": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:set_count",
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 5.0,
+              "max": 12.0
+            },
+            "add": false
+          }
+        ],
+        "name": "minecraft:diamond"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "Entry": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:set_count",
+            "count": 1.0,
+            "add": false
+          }
+        ],
+        "name": "minecraft:heart_of_the_sea"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "Entry": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:set_count",
+            "count": 1.0,
+            "add": false
+          }
+        ],
+        "name": "minecraft:enchanted_golden_apple"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "Entry": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:set_count",
+            "count": {
+              "type": "minecraft:uniform",
+              "min": -1.0,
+              "max": 2.0
+            },
+            "add": false
+          }
+        ],
+        "name": "minecraft:enchanted_golden_apple"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "Entry": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:set_count",
+            "count": 1.0,
+            "add": false
+          }
+        ],
+        "name": "minecraft:piglin_banner_pattern"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "Entry": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:set_count",
+            "count": 1.0,
+            "add": false
+          }
+        ],
+        "name": "minecraft:music_disc_pigstep"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "Entry": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:set_count",
+            "count": 1.0,
+            "add": false
+          }
+        ],
+        "name": "minecraft:music_disc_otherside"
+      }
+    }
+  ]
+}

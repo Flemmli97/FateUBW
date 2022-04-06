@@ -1,0 +1,32 @@
+{
+  "default_name": "Increased Armor",
+  "pools": [
+    {
+      "type": "fateubw:attribute_entry",
+      "range": {
+        "type": "minecraft:uniform",
+        "min": 0.0,
+        "max": 2.0
+      },
+      "Attribute": "minecraft:generic.max_health"
+    },
+    {
+      "type": "fateubw:attribute_entry",
+      "range": {
+        "type": "minecraft:uniform",
+        "min": 0.3,
+        "max": 0.5
+      },
+      "Attribute": "minecraft:generic.armor"
+    },
+    {
+      "type": "fateubw:attribute_entry",
+      "range": {
+        "type": "minecraft:uniform",
+        "min": 0.2,
+        "max": 0.5
+      },
+      "Attribute": "minecraft:generic.armor_toughness"
+    }
+  ]
+}

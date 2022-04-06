@@ -40,6 +40,29 @@ public class GrailLoottables extends GrailLootProvider {
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 7)))
                         .build())));
 
+        this.addLootTable(new ResourceLocation(Fate.MODID, "rare_dungeon"), GrailLootBuilder.create("Rare Dungeon Loot")
+                .addEntry(new VanillaItemEntry(LootItem.lootTableItem(Items.DIAMOND)
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(5, 12)))
+                        .build()))
+                .addEntry(new VanillaItemEntry(LootItem.lootTableItem(Items.HEART_OF_THE_SEA)
+                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
+                        .build()))
+                .addEntry(new VanillaItemEntry(LootItem.lootTableItem(Items.ENCHANTED_GOLDEN_APPLE)
+                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
+                        .build()))
+                .addEntry(new VanillaItemEntry(LootItem.lootTableItem(Items.ENCHANTED_GOLDEN_APPLE)
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(-1, 2)))
+                        .build()))
+                .addEntry(new VanillaItemEntry(LootItem.lootTableItem(Items.PIGLIN_BANNER_PATTERN)
+                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
+                        .build()))
+                .addEntry(new VanillaItemEntry(LootItem.lootTableItem(Items.MUSIC_DISC_PIGSTEP)
+                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
+                        .build()))
+                .addEntry(new VanillaItemEntry(LootItem.lootTableItem(Items.MUSIC_DISC_OTHERSIDE)
+                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
+                        .build())));
+
         this.addLootTable(new ResourceLocation(Fate.MODID, "xp"), GrailLootBuilder.create("Knowledge")
                 .addEntry(new XPEntry(UniformGenerator.between(5000, 10000)))
                 .addEntry(new VanillaItemEntry(LootItem.lootTableItem(Items.EXPERIENCE_BOTTLE)
@@ -58,6 +81,11 @@ public class GrailLoottables extends GrailLootProvider {
         this.addLootTable(new ResourceLocation(Fate.MODID, "power"), GrailLootBuilder.create("Power")
                 .addEntry(new AttributeEntry(Attributes.MAX_HEALTH, UniformGenerator.between(1, 2)))
                 .addEntry(new AttributeEntry(Attributes.ATTACK_DAMAGE, UniformGenerator.between(0.2f, 0.4f))));
+
+        this.addLootTable(new ResourceLocation(Fate.MODID, "armor"), GrailLootBuilder.create("Increased Armor")
+                .addEntry(new AttributeEntry(Attributes.MAX_HEALTH, UniformGenerator.between(0, 2)))
+                .addEntry(new AttributeEntry(Attributes.ARMOR, UniformGenerator.between(0.3f, 0.5f)))
+                .addEntry(new AttributeEntry(Attributes.ARMOR_TOUGHNESS, UniformGenerator.between(0.2f, 0.5f))));
 
         /*this.addLootTable(new ResourceLocation(Fate.MODID, "astral"), GrailLootBuilder.create("Astral")
                 .addEntry(new AstralEntry(ConstantValue.exactly(1)))
