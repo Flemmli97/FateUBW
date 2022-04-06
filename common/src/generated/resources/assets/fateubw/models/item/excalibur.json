@@ -1,0 +1,14 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "fateubw:items/excalibur"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "fateubw:active": 1.0
+      },
+      "model": "fateubw:item/active_item_handheld"
+    }
+  ]
+}

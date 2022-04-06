@@ -1,0 +1,8 @@
+{
+  "name": "fate_book",
+  "landing_text": "fate.patchouli.landing",
+  "show_progress": false,
+  "version": "1.0",
+  "creative_tab": "fateubw.tab",
+  "i18n": true
+}

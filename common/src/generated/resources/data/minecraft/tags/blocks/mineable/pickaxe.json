@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "fateubw:gem_ore",
+    "fateubw:artifact_ore",
+    "fateubw:deepslate_gem_ore",
+    "fateubw:deepslate_artifact_ore"
+  ]
+}

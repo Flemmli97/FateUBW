@@ -1,0 +1,6 @@
+{
+  "parent": "fateubw:item/gem_shard",
+  "textures": {
+    "layer0": "fateubw:items/gem_shard_wind"
+  }
+}

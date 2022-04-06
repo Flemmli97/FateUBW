@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "io.github.flemmli97.fateubw.fabric.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "AxeAccessor",
+    "CriteriaTriggerAccessor",
+    "DamageSourceAccessor",
+    "ItemRendererAccessor",
+    "PlayerMixin",
+    "ItemStackMixin",
+    "ServerPlayerMixin",
+    "EnchantmentMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

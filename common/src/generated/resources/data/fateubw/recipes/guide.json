@@ -1,0 +1,12 @@
+{
+  "type": "patchouli:shapeless_book_recipe",
+  "ingredients": [
+    {
+      "tag": "fateubw:crystals"
+    },
+    {
+      "item": "minecraft:book"
+    }
+  ],
+  "book": "fateubw:fate_book"
+}

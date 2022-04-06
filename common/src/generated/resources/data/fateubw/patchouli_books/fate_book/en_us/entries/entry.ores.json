@@ -1,0 +1,18 @@
+{
+  "name": "fate.patchouli.entry.ores",
+  "category": "fateubw:category.start",
+  "icon": "fateubw:gem_ore",
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "fateubw:gem_ore",
+      "text": "fate.patchouli.entry.ores.gem_ore"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "fateubw:artifact_ore",
+      "text": "fate.patchouli.entry.ores.artifact_ore"
+    }
+  ],
+  "sortnum": 0
+}

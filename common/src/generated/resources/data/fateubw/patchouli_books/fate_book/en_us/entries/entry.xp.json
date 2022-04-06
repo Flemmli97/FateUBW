@@ -1,0 +1,11 @@
+{
+  "name": "fate.patchouli.entry.xp",
+  "category": "fateubw:category.loot",
+  "icon": "minecraft:experience_bottle",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "fate.patchouli.entry.xp.1"
+    }
+  ]
+}

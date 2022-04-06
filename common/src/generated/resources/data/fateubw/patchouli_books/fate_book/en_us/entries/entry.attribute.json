@@ -1,0 +1,11 @@
+{
+  "name": "fate.patchouli.entry.attribute",
+  "category": "fateubw:category.loot",
+  "icon": "minecraft:iron_sword",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "fate.patchouli.entry.attribute.1"
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "display": {
+    "icon": {
+      "item": "fateubw:icon_0"
+    },
+    "title": {
+      "translate": "advancements.fate.title"
+    },
+    "description": {
+      "translate": "advancements.fate.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false,
+    "background": "minecraft:textures/gui/advancements/backgrounds/stone.png"
+  },
+  "criteria": {
+    "gem_fire": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "fateubw:gem_shard_fire"
+            ]
+          }
+        ]
+      }
+    },
+    "gem_water": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "fateubw:gem_shard_water"
+            ]
+          }
+        ]
+      }
+    },
+    "gem_earth": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "fateubw:gem_shard_earth"
+            ]
+          }
+        ]
+      }
+    },
+    "gem_wind": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "fateubw:gem_shard_wind"
+            ]
+          }
+        ]
+      }
+    },
+    "gem_void": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "fateubw:gem_shard_void"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "gem_fire",
+      "gem_water",
+      "gem_earth",
+      "gem_wind",
+      "gem_void"
+    ]
+  ]
+}

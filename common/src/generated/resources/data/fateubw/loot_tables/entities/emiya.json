@@ -1,0 +1,79 @@
+{
+  "type": "minecraft:entity",
+  "pools": [
+    {
+      "rolls": 1.0,
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "fateubw:emiyas_bow"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "fateubw:kanshou"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "fateubw:bakuya"
+        }
+      ],
+      "functions": [
+        {
+          "function": "minecraft:set_count",
+          "count": {
+            "type": "minecraft:uniform",
+            "min": 0.0,
+            "max": 0.1
+          },
+          "add": false
+        },
+        {
+          "function": "minecraft:looting_enchant",
+          "count": {
+            "type": "minecraft:uniform",
+            "min": 0.0,
+            "max": 0.05
+          },
+          "limit": 1
+        },
+        {
+          "function": "minecraft:set_count",
+          "count": {
+            "type": "minecraft:uniform",
+            "min": 0.0,
+            "max": 0.1
+          },
+          "add": false
+        },
+        {
+          "function": "minecraft:looting_enchant",
+          "count": {
+            "type": "minecraft:uniform",
+            "min": 0.0,
+            "max": 0.05
+          },
+          "limit": 1
+        },
+        {
+          "function": "minecraft:set_count",
+          "count": {
+            "type": "minecraft:uniform",
+            "min": 0.0,
+            "max": 0.1
+          },
+          "add": false
+        },
+        {
+          "function": "minecraft:looting_enchant",
+          "count": {
+            "type": "minecraft:uniform",
+            "min": 0.0,
+            "max": 0.05
+          },
+          "limit": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "fate.patchouli.entry.item",
+  "category": "fateubw:category.loot",
+  "icon": "minecraft:stick",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "fate.patchouli.entry.item.1"
+    }
+  ]
+}

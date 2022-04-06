@@ -1,0 +1,38 @@
+{
+  "name": "fate.patchouli.entry.altar",
+  "category": "fateubw:category.start",
+  "icon": "fateubw:altar",
+  "pages": [
+    {
+      "type": "patchouli:crafting",
+      "recipe": "fateubw:altar",
+      "text": "fate.patchouli.entry.altar.1"
+    },
+    {
+      "type": "patchouli:multiblock",
+      "name": "fate.patchouli.entry.altar",
+      "multiblock": {
+        "pattern": [
+          [
+            "CCCCC",
+            "CCCCC",
+            "CC0CC",
+            "CCCCC",
+            "CCCCC"
+          ]
+        ],
+        "mapping": {
+          "C": "fateubw:chalk_line",
+          "0": "fateubw:altar"
+        },
+        "symmetrical": true
+      },
+      "text": "fate.patchouli.entry.altar.2"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "fate.patchouli.entry.altar.3"
+    }
+  ],
+  "sortnum": 1
+}

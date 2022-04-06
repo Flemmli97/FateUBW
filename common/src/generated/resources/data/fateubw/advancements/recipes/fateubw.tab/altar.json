@@ -1,0 +1,25 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "fateubw:altar"
+    ]
+  },
+  "criteria": {
+    "dummy": {
+      "trigger": "minecraft:impossible"
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "fateubw:altar"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "dummy",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "fate.patchouli.entry.loot.servant",
+  "category": "fateubw:category.loot",
+  "icon": "minecraft:barrier",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "fate.patchouli.entry.loot.servant.1"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "fateubw:items/medusas_dagger"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "fateubw:thrown": 1.0
+      },
+      "model": "fateubw:item/medusas_dagger_thrown"
+    }
+  ]
+}

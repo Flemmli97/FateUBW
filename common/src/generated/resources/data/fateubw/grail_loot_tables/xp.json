@@ -1,0 +1,81 @@
+{
+  "default_name": "Knowledge",
+  "pools": [
+    {
+      "type": "fateubw:xp_entry",
+      "range": {
+        "type": "minecraft:uniform",
+        "min": 5000.0,
+        "max": 10000.0
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "Entry": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:set_count",
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 32.0,
+              "max": 48.0
+            },
+            "add": false
+          }
+        ],
+        "name": "minecraft:experience_bottle"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "Entry": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:set_count",
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 32.0,
+              "max": 48.0
+            },
+            "add": false
+          }
+        ],
+        "name": "minecraft:experience_bottle"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "Entry": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:set_count",
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 16.0,
+              "max": 48.0
+            },
+            "add": false
+          }
+        ],
+        "name": "minecraft:experience_bottle"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "Entry": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:set_count",
+            "count": 64.0,
+            "add": false
+          }
+        ],
+        "name": "minecraft:experience_bottle"
+      }
+    }
+  ]
+}

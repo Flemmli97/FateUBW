@@ -1,0 +1,15 @@
+{
+  "name": "fate.patchouli.entry.servant",
+  "category": "fateubw:category.war",
+  "icon": "fateubw:servant_artifact",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "fate.patchouli.entry.servant.1"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "fate.patchouli.entry.servant.2"
+    }
+  ]
+}

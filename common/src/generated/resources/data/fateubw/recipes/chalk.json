@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "  B",
+    " S ",
+    "C  "
+  ],
+  "key": {
+    "B": {
+      "tag": "c:dye_any"
+    },
+    "S": {
+      "tag": "c:wood_sticks"
+    },
+    "C": {
+      "tag": "fateubw:crystals"
+    }
+  },
+  "result": {
+    "item": "fateubw:chalk"
+  }
+}

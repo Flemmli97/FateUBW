@@ -1,0 +1,7 @@
+{
+  "parent": "fateubw:block/ore",
+  "textures": {
+    "ore": "fateubw:blocks/charm_ore",
+    "stone": "minecraft:block/deepslate"
+  }
+}
