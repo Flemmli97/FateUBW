@@ -43,7 +43,7 @@ public class EntityLancelot extends BaseServant {
 
     @Override
     public boolean canUse(AnimatedAction anim, AttackType type) {
-        return true;
+        return type == AttackType.MELEE && anim.getID().equals(AnimatedAction.vanillaAttack.getID());
     }
 
     @Override
@@ -94,8 +94,8 @@ public class EntityLancelot extends BaseServant {
     }
 
     @Override
-    public void aiStep() {
-        super.aiStep();
+    public void tick() {
+        super.tick();
         if (this.level.isClientSide)
             for (int x = 0; x < 2; x++) {
                 this.level.addParticle(

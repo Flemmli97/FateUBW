@@ -77,8 +77,8 @@ public class Pegasus extends PathfinderMob implements IAnimated, IServantMinion 
     }
 
     @Override
-    public void aiStep() {
-        super.aiStep();
+    public void tick() {
+        super.tick();
         this.getAnimationHandler().tick();
         this.chargingHandler.tick();
         if (!this.level.isClientSide && this.isCharging() && !this.getPassengers().isEmpty() && this.getPassengers().get(0) instanceof LivingEntity) {

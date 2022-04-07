@@ -38,8 +38,8 @@ public class EntitySasaki extends BaseServant {
     @Override
     public boolean canUse(AnimatedAction anim, AttackType type) {
         if (type == AttackType.NP)
-            return anim.getID().equals("np");
-        return anim.getID().equals("vanilla");
+            return anim.getID().equals(npAttack.getID());
+        return anim.getID().equals(AnimatedAction.vanillaAttack.getID());
     }
 
     @Override

@@ -47,10 +47,10 @@ public class EntityEmiya extends BaseServant {
     @Override
     public boolean canUse(AnimatedAction anim, AttackType type) {
         if (type == AttackType.RANGED)
-            return anim.getID().equals("ranged");
+            return anim.getID().equals(rangedAttack.getID());
         else if (type == AttackType.NP)
-            return anim.getID().equals("np");
-        return anim.getID().equals("vanilla");
+            return anim.getID().equals(npAttack.getID());
+        return anim.getID().equals(AnimatedAction.vanillaAttack.getID());
     }
 
     @Override

@@ -117,10 +117,10 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
     }
 
     @Override
-    public void aiStep() {
+    public void tick() {
         if (this.tickCount > 200 && this.isAlive() && (this.getOwner() == null || !this.getOwner().isAlive()))
             this.hurt(DamageSource.OUT_OF_WORLD, Integer.MAX_VALUE);
-        super.aiStep();
+        super.tick();
         this.getAnimationHandler().tick();
     }
 

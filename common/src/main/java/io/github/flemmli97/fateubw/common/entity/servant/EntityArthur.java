@@ -76,7 +76,8 @@ public class EntityArthur extends BaseServant {
     }
 
     @Override
-    public void aiStep() {
+    public void tick() {
+        super.tick();
         if (this.getHealth() < 0.25 * this.getMaxHealth() && this.getHealth() > 0) {
             if (!this.critHealth) {
                 if (!this.level.isClientSide)
@@ -86,7 +87,6 @@ public class EntityArthur extends BaseServant {
             if (!this.hasEffect(MobEffects.REGENERATION))
                 this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 50, 1, false, false));
         }
-        super.aiStep();
     }
 
     public void attackWithNP(double[] pos) {

@@ -84,7 +84,8 @@ public class EntityCuchulainn extends BaseServant {
     }
 
     @Override
-    public void aiStep() {
+    public void tick() {
+        super.tick();
         if (!this.level.isClientSide) {
             this.gaeBolgThrowTick = Math.max(0, --this.gaeBolgThrowTick);
             if (this.gaeBolgThrowTick == 1 && this.getMainHandItem().getItem() != ModItems.gaebolg.get())
@@ -97,7 +98,6 @@ public class EntityCuchulainn extends BaseServant {
                 this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 1, 2, false, false));
             }
         }
-        super.aiStep();
     }
 
     public void attackWithNP(LivingEntity target) {

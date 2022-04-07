@@ -24,12 +24,16 @@ public class EntityHeracles extends BaseServant {
 
     public final HeraclesAttackGoal attackAI = new HeraclesAttackGoal(this);
 
-    private static final AnimatedAction swing_1 = new AnimatedAction(20, 18, "swing_1");
-    private static final AnimatedAction[] anims = {swing_1};
+    private static final AnimatedAction swing_1 = new AnimatedAction(12, 8, "swing_1");
+    private static final AnimatedAction death = new AnimatedAction(59, 1, "death");
+    private static final AnimatedAction death_fake = new AnimatedAction((int) (4.56 * 20), 58, "death_fake");
+
+    private static final AnimatedAction[] anims = {swing_1, death, death_fake};
     protected static final EntityDataAccessor<Integer> deathCount = SynchedEntityData.defineId(EntityHeracles.class, EntityDataSerializers.INT);
     private boolean voidDeath;
 
-    private final AnimationHandler<EntityHeracles> animationHandler = new AnimationHandler<>(this, anims);
+    private final AnimationHandler<EntityHeracles> animationHandler = new AnimationHandler<>(this, anims)
+            .setAnimationChangeFunc(anim -> this.deathAnim().checkID(anim));
 
     public EntityHeracles(EntityType<? extends BaseServant> entityType, Level world) {
         super(entityType, world, LibEntities.heracles + ".hogou");
@@ -44,7 +48,7 @@ public class EntityHeracles extends BaseServant {
 
     @Override
     public boolean canUse(AnimatedAction anim, AttackType type) {
-        return true;
+        return type == AttackType.MELEE && anim.getID().equals(swing_1.getID());
     }
 
     @Override
@@ -83,14 +87,14 @@ public class EntityHeracles extends BaseServant {
     }
 
     @Override
-    public void aiStep() {
+    public void tick() {
+        super.tick();
         if (this.getDeaths() > 4 && this.getDeaths() <= 8) {
             this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 1, 1, false, false));
 
         } else if (this.getDeaths() > 8) {
             this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 1, 2, false, false));
         }
-        super.aiStep();
     }
 
     @Override
@@ -101,9 +105,13 @@ public class EntityHeracles extends BaseServant {
         } else if (!this.level.isClientSide) {
             if (this.getDeaths() < 12) {
                 this.deathTime++;
-                if (this.deathTime == 120) {
+                if (this.deathTime == 1) {
+                    this.getAnimationHandler().setAnimation(death_fake);
+                }
+                AnimatedAction anim = this.getAnimationHandler().getAnimation();
+                if (anim == null || !anim.getID().equals(death_fake.getID()) || anim.canAttack()) {
                     this.setDeathNumber(this.getDeaths() + 1);
-                    double heal = 1 - this.getDeaths() * 0.04 + 0.5;
+                    double heal = 1 - this.getDeaths() * 0.04;
                     this.setHealth((float) (heal * this.getMaxHealth()));
                     this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 200, 3, false, false));
                     this.deathTime = 0;
@@ -113,6 +121,16 @@ public class EntityHeracles extends BaseServant {
                 super.tickDeath();
             }
         }
+    }
+
+    @Override
+    public boolean transparentOnDeath() {
+        return false;
+    }
+
+    @Override
+    public AnimatedAction deathAnim() {
+        return death;
     }
 
     @Override

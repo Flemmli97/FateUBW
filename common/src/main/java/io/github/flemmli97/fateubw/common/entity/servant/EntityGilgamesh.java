@@ -50,7 +50,7 @@ public class EntityGilgamesh extends BaseServant {
             return anim.getID().equals(rangedAttack.getID()) || anim.getID().equals(rangedAttack2.getID());
         else if (type == AttackType.NP)
             return anim.getID().equals(npAttack.getID());
-        return anim.getID().equals("vanilla");
+        return anim.getID().equals(AnimatedAction.vanillaAttack.getID());
     }
 
     @Override

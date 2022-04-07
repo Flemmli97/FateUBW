@@ -42,8 +42,8 @@ public class EntityDiarmuid extends BaseServant {
     @Override
     public boolean canUse(AnimatedAction anim, AttackType type) {
         if (type == AttackType.NP)
-            return anim.getID().equals("np");
-        return anim.getID().equals("vanilla");
+            return anim.getID().equals(npAttack.getID());
+        return anim.getID().equals(AnimatedAction.vanillaAttack.getID());
     }
 
     @Override
@@ -74,14 +74,14 @@ public class EntityDiarmuid extends BaseServant {
     }
 
     @Override
-    public void aiStep() {
+    public void tick() {
+        super.tick();
         if (this.getHealth() < 0.25 * this.getMaxHealth() && this.getHealth() > 0) {
             if (!this.critHealth) {
                 this.critHealth = true;
             }
         }
         this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 1, 1, false, false));
-        super.aiStep();
     }
 
     @Override

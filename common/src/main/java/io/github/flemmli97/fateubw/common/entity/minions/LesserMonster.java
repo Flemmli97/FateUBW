@@ -68,8 +68,8 @@ public class LesserMonster extends PathfinderMob implements IServantMinion, IAni
     }
 
     @Override
-    public void aiStep() {
-        super.aiStep();
+    public void tick() {
+        super.tick();
         if (!this.level.isClientSide) {
             this.livingTicks++;
             if (this.livingTicks > Config.Common.gillesMinionDuration)
