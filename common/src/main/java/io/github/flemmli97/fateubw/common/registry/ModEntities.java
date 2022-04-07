@@ -84,7 +84,7 @@ public class ModEntities {
             LibEntities.gilles, 0x100460, 0x600453, new ServantProperties(350, 5.5, 7, 0, 5, 14, 0.3, 80));
 
     public static final RegistryEntrySupplier<EntityType<EntityHeracles>> heracles = regServant(EnumServantType.BERSERKER, EntityType.Builder.of(EntityHeracles::new, MobCategory.MISC),
-            LibEntities.heracles, 0x3c1d06, 0x5e3c22, new ServantProperties(75, 7.5, 10, 0, 17, 9.5, 0.2, 0));
+            LibEntities.heracles, 0x3c1d06, 0x5e3c22, new ServantProperties(100, 7.5, 10, 0, 17, 9.5, 0.22, 0));
     public static final RegistryEntrySupplier<EntityType<EntityLancelot>> lancelot = regServant(EnumServantType.BERSERKER, EntityType.Builder.of(EntityLancelot::new, MobCategory.MISC),
             LibEntities.lancelot, 0x071a33, 0x1d4f94, new ServantProperties(450, 9, 14, 0.4f, 19, 4, 0.2, 0));
 

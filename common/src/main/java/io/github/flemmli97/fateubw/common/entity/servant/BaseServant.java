@@ -224,6 +224,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         this.populateDefaultEquipmentSlots(difficulty);
         for (EquipmentSlot type : EquipmentSlot.values())
             this.setDropChance(type, 0);
+        this.setLeftHanded(false);
         return data;
     }
 
@@ -462,6 +463,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
                 this.playSound(SoundEvents.WITHER_SPAWN, 1.0F, 1.0F);
                 GrailWarHandler.get(serverLevel.getServer()).removeServant(this);
                 this.disableChunkload = true;
+                this.getAnimationHandler().setAnimation(this.deathAnim());
             }
 
             if (this.deathTime > 15 && this.deathTime % 5 == 0 && (this.lastHurtByPlayerTime > 0 || this.isAlwaysExperienceDropper()) && this.shouldDropExperience() && this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
@@ -473,10 +475,19 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
                     this.level.addFreshEntity(new ExperienceOrb(this.level, this.getX(), this.getY(), this.getZ(), splitExp));
                 }
             }
-            if (this.deathTime == this.maxDeathTick()) {
+            AnimatedAction anim = this.getAnimationHandler().getAnimation();
+            if (this.deathTime >= this.maxDeathTick() && (anim == null || anim.getTick() >= anim.getLength())) {
                 this.remove(RemovalReason.KILLED);
             }
         }
+    }
+
+    public AnimatedAction deathAnim() {
+        return null;
+    }
+
+    public boolean transparentOnDeath() {
+        return true;
     }
 
     public int maxDeathTick() {

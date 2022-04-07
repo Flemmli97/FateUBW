@@ -104,7 +104,7 @@ public abstract class ServantRenderer<T extends BaseServant, M extends BaseServa
         this.model.setupAnim(entity, maxLimbSwing, limgSwingAmount, f7, yawHeadAct, pitch);
         Minecraft minecraft = Minecraft.getInstance();
         boolean visible = this.isBodyVisible(entity);
-        boolean transparent = (!visible || entity.isDeadOrDying()) && !entity.isInvisibleTo(minecraft.player);
+        boolean transparent = (!visible || entity.isDeadOrDying()) && !entity.isInvisibleTo(minecraft.player) && entity.transparentOnDeath();
         boolean outline = minecraft.shouldEntityAppearGlowing(entity);
         RenderType rendertype = this.getRenderType(entity, visible, transparent, outline);
         if (rendertype != null) {
