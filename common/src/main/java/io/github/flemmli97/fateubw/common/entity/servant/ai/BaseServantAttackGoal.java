@@ -3,6 +3,7 @@ package io.github.flemmli97.fateubw.common.entity.servant.ai;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.common.entity.ai.AnimatedAttackGoal;
+import net.minecraft.world.level.pathfinder.Path;
 
 public class BaseServantAttackGoal<T extends BaseServant> extends AnimatedAttackGoal<T> {
 
@@ -30,6 +31,8 @@ public class BaseServantAttackGoal<T extends BaseServant> extends AnimatedAttack
 
     @Override
     public void handleAttack(AnimatedAction anim) {
+        if(!this.attacker.canUse(anim, BaseServant.AttackType.MELEE))
+            return;
         this.attacker.getNavigation().stop();
         this.attacker.getLookControl().setLookAt(this.target, 30.0F, 30.0F);
         if (this.distanceToTargetSq <= this.attackRange * 3 && anim.canAttack()) {
@@ -45,6 +48,17 @@ public class BaseServantAttackGoal<T extends BaseServant> extends AnimatedAttack
     @Override
     public void handleIddle() {
         this.moveToWithDelay(1);
+    }
+
+    @Override
+    protected void moveToWithDelay(double speed) {
+        if (this.pathFindDelay <= 0) {
+            Path path = this.attacker.getNavigation().createPath(this.target, 0);
+            if (path != null && this.attacker.getNavigation().moveTo(path, speed)) {
+                this.pathFindDelay += 15;
+            }
+            this.pathFindDelay += this.attacker.getRandom().nextInt(10) + 5;
+        }
     }
 
     @Override
