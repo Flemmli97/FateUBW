@@ -98,10 +98,10 @@ public class EntityHeracles extends BaseServant {
         if (this.getLastDamageSource() == DamageSource.OUT_OF_WORLD || this.voidDeath) {
             this.voidDeath = true;
             super.tickDeath();
-        } else {
+        } else if (!this.level.isClientSide) {
             if (this.getDeaths() < 12) {
                 this.deathTime++;
-                if (this.deathTime == 40 && !this.level.isClientSide) {
+                if (this.deathTime == 120) {
                     this.setDeathNumber(this.getDeaths() + 1);
                     double heal = 1 - this.getDeaths() * 0.04 + 0.5;
                     this.setHealth((float) (heal * this.getMaxHealth()));
