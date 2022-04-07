@@ -3,17 +3,14 @@ package io.github.flemmli97.fateubw.client.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.flemmli97.fateubw.Fate;
-import io.github.flemmli97.fateubw.client.render.ServantRenderer;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.IAnimated;
 import io.github.flemmli97.tenshilib.client.AnimationManager;
 import io.github.flemmli97.tenshilib.client.model.BlockBenchAnimations;
-import io.github.flemmli97.tenshilib.client.model.ExtendedModel;
 import io.github.flemmli97.tenshilib.client.model.ModelPartHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.HeadedModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -31,7 +28,7 @@ import net.minecraft.world.entity.HumanoidArm;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ModelServant<T extends BaseServant & IAnimated> extends EntityModel<T> implements IArmModel, HeadedModel, IPreRenderUpdate<T>, ExtendedModel {
+public class ModelServant<T extends BaseServant & IAnimated> extends BaseServantModel<T> {
 
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(Fate.MODID, "servant"), "main");
 
@@ -58,7 +55,6 @@ public class ModelServant<T extends BaseServant & IAnimated> extends EntityModel
     protected final ModelPart dummyHead = new ModelPart(new ArrayList<>(), new HashMap<>());
 
     public int heldItemMain, heldItemOff;
-    protected boolean show;
 
     public ModelServant(ModelPart root, String animFileName) {
         super(RenderType::entityTranslucent);
@@ -130,9 +126,8 @@ public class ModelServant<T extends BaseServant & IAnimated> extends EntityModel
 
     @Override
     public void update(T obj) {
-        this.show = ServantRenderer.showIdentity(obj);
-        this.heldItemMain = this.show || obj.getMainHandItem().isEmpty() ? 0 : 1;
-        this.heldItemOff = this.show || obj.getOffhandItem().isEmpty() ? 0 : 1;
+        this.heldItemMain = obj.getMainHandItem().isEmpty() ? 0 : 1;
+        this.heldItemOff = obj.getOffhandItem().isEmpty() ? 0 : 1;
     }
 
     @Override
@@ -162,15 +157,13 @@ public class ModelServant<T extends BaseServant & IAnimated> extends EntityModel
     @Override
     public void setupAnim(T servant, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.preAnimSetup(servant, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-        if (this.show) {
-            float partialTicks = Minecraft.getInstance().getFrameTime();
-            if (servant.isStaying()) {
-                this.anim.doAnimation(this, "stay", servant.tickCount, partialTicks);
-            } else {
-                AnimatedAction anim = servant.getAnimationHandler().getAnimation();
-                if (anim != null)
-                    this.anim.doAnimation(this, anim.getID(), anim.getTick(), partialTicks);
-            }
+        float partialTicks = Minecraft.getInstance().getFrameTime();
+        if (servant.isStaying()) {
+            this.anim.doAnimation(this, "stay", servant.tickCount, partialTicks);
+        } else {
+            AnimatedAction anim = servant.getAnimationHandler().getAnimation();
+            if (anim != null)
+                this.anim.doAnimation(this, anim.getID(), anim.getTick(), partialTicks);
         }
     }
 
@@ -245,7 +238,6 @@ public class ModelServant<T extends BaseServant & IAnimated> extends EntityModel
         super.copyPropertiesTo(model);
         if (model instanceof ModelServant<?>) {
             ModelServant<?> other = (ModelServant<?>) model;
-            this.show = other.show;
             this.heldItemMain = other.heldItemMain;
             this.heldItemOff = other.heldItemOff;
         }

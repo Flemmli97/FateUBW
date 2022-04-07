@@ -2,14 +2,12 @@ package io.github.flemmli97.fateubw.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import io.github.flemmli97.fateubw.client.model.IArmModel;
-import io.github.flemmli97.fateubw.client.model.IPreRenderUpdate;
+import io.github.flemmli97.fateubw.client.model.BaseServantModel;
+import io.github.flemmli97.fateubw.client.model.ModelServant;
 import io.github.flemmli97.fateubw.common.entity.NonSitVehicle;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.platform.ClientPlatform;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.HeadedModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -23,18 +21,24 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 
-public abstract class ServantRenderer<T extends BaseServant, M extends EntityModel<T> & IArmModel & HeadedModel & IPreRenderUpdate<T>> extends LivingEntityRenderer<T, M> {
+public abstract class ServantRenderer<T extends BaseServant, M extends BaseServantModel<T>> extends LivingEntityRenderer<T, BaseServantModel<T>> {
 
     private static final ResourceLocation DEFAULT_RES_LOC = new ResourceLocation("textures/entity/steve.png");
 
+    private final ModelServant<T> defaultModel;
+    private final M servantModel;
+
     public ServantRenderer(EntityRendererProvider.Context ctx, M model) {
         super(ctx, model, 0.5f);
+        this.defaultModel = new ModelServant<>(ctx.bakeLayer(ModelServant.LAYER_LOCATION), "default_servant");
+        this.servantModel = model;
         this.addLayer(new LayerHand<>(this));
         this.addLayer(new CustomHeadLayer<>(this, ctx.getModelSet()));
     }
 
     @Override
     public void render(T entity, float yaw, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int light) {
+        this.model = ServantRenderer.showIdentity(entity) ? this.servantModel : this.defaultModel;
         this.model.update(entity);
         if (ClientPlatform.INSTANCE.renderLivingEvent(entity, this, partialTicks, matrixStack, buffer, light, true))
             return;
@@ -111,7 +115,7 @@ public abstract class ServantRenderer<T extends BaseServant, M extends EntityMod
         }
 
         if (!entity.isSpectator()) {
-            for (RenderLayer<T, M> layerrenderer : this.layers) {
+            for (RenderLayer<T, BaseServantModel<T>> layerrenderer : this.layers) {
                 layerrenderer.render(matrixStack, buffer, light, entity, maxLimbSwing, limgSwingAmount, partialTicks, f7, yawHeadAct, pitch);
             }
         }

@@ -60,6 +60,7 @@ public class ModelHeracles<T extends EntityHeracles & IAnimated> extends ModelSe
         this.rightElbow = this.model.getPart("rightElbow");
         this.rightLowerArm = this.model.getPart("rightLowerArm");
         this.rightWrist = this.model.getPart("rightWrist");
+        this.servantBody.visible = false;
     }
 
     public static LayerDefinition createBodyLayer() {
@@ -223,9 +224,7 @@ public class ModelHeracles<T extends EntityHeracles & IAnimated> extends ModelSe
 
     @Override
     public ModelPartHandler.ModelPartExtended getHand(InteractionHand side) {
-        if (this.show)
-            return side == InteractionHand.MAIN_HAND ? this.rightArmUp : this.leftArmUp;
-        return side == InteractionHand.MAIN_HAND ? this.servantRightArmUp : this.servantLeftArmUp;
+        return side == InteractionHand.MAIN_HAND ? this.rightArmUp : this.leftArmUp;
     }
 
     @Override
@@ -235,96 +234,80 @@ public class ModelHeracles<T extends EntityHeracles & IAnimated> extends ModelSe
 
     @Override
     public void transform(HumanoidArm humanoidArm, PoseStack poseStack) {
-        if (this.show) {
-            if (humanoidArm == HumanoidArm.LEFT) {
-                this.rotate(poseStack, this.upperTorso, this.leftArmUp, this.leftBiceps, this.leftBicepsJoint, this.leftElbow, this.leftLowerArm, this.leftWrist);
-            } else {
-                this.rotate(poseStack, this.upperTorso, this.rightArmUp, this.rightBiceps, this.rightBicepsJoint, this.rightElbow, this.rightLowerArm, this.rightWrist);
-            }
-        } else
-            super.transform(humanoidArm, poseStack);
+        if (humanoidArm == HumanoidArm.LEFT) {
+            this.rotate(poseStack, this.upperTorso, this.leftArmUp, this.leftBiceps, this.leftBicepsJoint, this.leftElbow, this.leftLowerArm, this.leftWrist);
+        } else {
+            this.rotate(poseStack, this.upperTorso, this.rightArmUp, this.rightBiceps, this.rightBicepsJoint, this.rightElbow, this.rightLowerArm, this.rightWrist);
+        }
     }
 
     @Override
     public void postTransform(boolean leftSide, PoseStack stack) {
-        if (this.show) {
-            stack.translate(0, 0, -2 / 16d);
-        } else
-            super.postTransform(leftSide, stack);
+        stack.translate(0, 0, -2 / 16d);
     }
 
     @Override
     public void preAnimSetup(T servant, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        if (!this.show) {
-            this.servantBody.visible = true;
-            this.upperTorso.visible = false;
-            super.preAnimSetup(servant, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-        } else {
-            this.servantBody.visible = false;
-            this.upperTorso.visible = true;
+        this.upperTorso.visible = true;
 
-            this.model.resetPoses();
-            this.head.yRot = netHeadYaw / (180F / (float) Math.PI);
-            this.head.xRot = headPitch / (180F / (float) Math.PI);
+        this.model.resetPoses();
+        this.head.yRot = netHeadYaw / (180F / (float) Math.PI);
+        this.head.xRot = headPitch / (180F / (float) Math.PI);
 
-            this.rightArmUp.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 2.0F * limbSwingAmount * 0.5F;
-            this.leftArmUp.xRot = Mth.cos(limbSwing * 0.6662F) * 2.0F * limbSwingAmount * 0.5F;
-            this.rightArmUp.zRot = 0;
-            this.leftArmUp.zRot = 0;
-            this.rightUpperThigh.xRot = Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
-            this.leftUpperThigh.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
-            this.rightUpperThigh.yRot = 0;
-            this.leftUpperThigh.yRot = 0;
+        this.rightArmUp.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 2.0F * limbSwingAmount * 0.5F;
+        this.leftArmUp.xRot = Mth.cos(limbSwing * 0.6662F) * 2.0F * limbSwingAmount * 0.5F;
+        this.rightArmUp.zRot = 0;
+        this.leftArmUp.zRot = 0;
+        this.rightUpperThigh.xRot = Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+        this.leftUpperThigh.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
+        this.rightUpperThigh.yRot = 0;
+        this.leftUpperThigh.yRot = 0;
 
-            if (this.riding) {
-                this.rightArmUp.xRot += -((float) Math.PI / 5F);
-                this.leftArmUp.xRot += -((float) Math.PI / 5F);
-                this.rightUpperThigh.xRot = -((float) Math.PI * 2F / 5F);
-                this.leftUpperThigh.xRot = -((float) Math.PI * 2F / 5F);
-                this.rightUpperThigh.yRot = ((float) Math.PI / 10F);
-                this.leftUpperThigh.yRot = -((float) Math.PI / 10F);
-            }
-
-            if (this.heldItemOff == 1)
-                this.leftArmUp.xRot = this.leftArmUp.xRot * 0.5F - ((float) Math.PI / 10F);
-            if (this.heldItemMain == 1)
-                this.rightArmUp.xRot = this.rightArmUp.xRot * 0.5F - ((float) Math.PI / 10F);
-
-            this.rightArmUp.yRot = 0;
-            this.leftArmUp.yRot = 0;
-            if (this.attackTime > -9990) {
-                float swingProgress = this.attackTime;
-                this.upperTorso.yRot = Mth.sin(Mth.sqrt(swingProgress) * (float) Math.PI * 2.0F) * 0.2F;
-                this.rightArmUp.yRot += this.upperTorso.yRot;
-                this.leftArmUp.yRot += this.upperTorso.yRot;
-                this.leftArmUp.xRot += this.upperTorso.yRot;
-                swingProgress = 1.0F - this.attackTime;
-                swingProgress *= swingProgress;
-                swingProgress *= swingProgress;
-                swingProgress = 1.0F - swingProgress;
-                float var9 = Mth.sin(swingProgress * (float) Math.PI);
-                float var10 = Mth.sin(this.attackTime * (float) Math.PI) * -(this.head.xRot - 0.7F) * 0.75F;
-                this.rightArmUp.xRot = (float) ((double) this.rightArmUp.xRot - ((double) var9 * 1.2D + (double) var10));
-                this.rightArmUp.yRot += this.upperTorso.yRot * 2.0F;
-                this.rightArmUp.zRot = Mth.sin(this.attackTime * (float) Math.PI) * -0.4F;
-            }
-
-            this.upperTorso.xRot = 0;
-
-            this.rightArmUp.zRot += Mth.cos(ageInTicks * 0.09F) * 0.05F + 0.05F;
-            this.leftArmUp.zRot -= Mth.cos(ageInTicks * 0.09F) * 0.05F + 0.05F;
-            this.rightArmUp.xRot += Mth.sin(ageInTicks * 0.067F) * 0.05F;
-            this.leftArmUp.xRot -= Mth.sin(ageInTicks * 0.067F) * 0.05F;
+        if (this.riding) {
+            this.rightArmUp.xRot += -((float) Math.PI / 5F);
+            this.leftArmUp.xRot += -((float) Math.PI / 5F);
+            this.rightUpperThigh.xRot = -((float) Math.PI * 2F / 5F);
+            this.leftUpperThigh.xRot = -((float) Math.PI * 2F / 5F);
+            this.rightUpperThigh.yRot = ((float) Math.PI / 10F);
+            this.leftUpperThigh.yRot = -((float) Math.PI / 10F);
         }
+
+        if (this.heldItemOff == 1)
+            this.leftArmUp.xRot = this.leftArmUp.xRot * 0.5F - ((float) Math.PI / 10F);
+        if (this.heldItemMain == 1)
+            this.rightArmUp.xRot = this.rightArmUp.xRot * 0.5F - ((float) Math.PI / 10F);
+
+        this.rightArmUp.yRot = 0;
+        this.leftArmUp.yRot = 0;
+        if (this.attackTime > -9990) {
+            float swingProgress = this.attackTime;
+            this.upperTorso.yRot = Mth.sin(Mth.sqrt(swingProgress) * (float) Math.PI * 2.0F) * 0.2F;
+            this.rightArmUp.yRot += this.upperTorso.yRot;
+            this.leftArmUp.yRot += this.upperTorso.yRot;
+            this.leftArmUp.xRot += this.upperTorso.yRot;
+            swingProgress = 1.0F - this.attackTime;
+            swingProgress *= swingProgress;
+            swingProgress *= swingProgress;
+            swingProgress = 1.0F - swingProgress;
+            float var9 = Mth.sin(swingProgress * (float) Math.PI);
+            float var10 = Mth.sin(this.attackTime * (float) Math.PI) * -(this.head.xRot - 0.7F) * 0.75F;
+            this.rightArmUp.xRot = (float) ((double) this.rightArmUp.xRot - ((double) var9 * 1.2D + (double) var10));
+            this.rightArmUp.yRot += this.upperTorso.yRot * 2.0F;
+            this.rightArmUp.zRot = Mth.sin(this.attackTime * (float) Math.PI) * -0.4F;
+        }
+
+        this.upperTorso.xRot = 0;
+
+        this.rightArmUp.zRot += Mth.cos(ageInTicks * 0.09F) * 0.05F + 0.05F;
+        this.leftArmUp.zRot -= Mth.cos(ageInTicks * 0.09F) * 0.05F + 0.05F;
+        this.rightArmUp.xRot += Mth.sin(ageInTicks * 0.067F) * 0.05F;
+        this.leftArmUp.xRot -= Mth.sin(ageInTicks * 0.067F) * 0.05F;
     }
 
     @Override
     public ModelPart getHead() {
-        if (this.show) {
-            this.dummyHead.loadPose(this.head.storePose());
-            return this.dummyHead;
-        }
-        return super.getHead();
+        this.dummyHead.loadPose(this.head.storePose());
+        return this.dummyHead;
     }
 
     @Override

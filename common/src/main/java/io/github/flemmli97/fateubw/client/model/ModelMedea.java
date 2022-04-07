@@ -33,6 +33,7 @@ public class ModelMedea<T extends EntityMedea & IAnimated> extends ModelServant<
         this.head = this.model.getPart("head");
         this.leftArm = this.model.getPart("leftArm");
         this.rightArm = this.model.getPart("rightArm");
+        this.servantBody.visible = false;
     }
 
     public static LayerDefinition createBodyLayer() {
@@ -62,9 +63,7 @@ public class ModelMedea<T extends EntityMedea & IAnimated> extends ModelServant<
 
     @Override
     public ModelPartHandler.ModelPartExtended getHand(InteractionHand side) {
-        if (this.show)
-            return side == InteractionHand.MAIN_HAND ? this.rightArm : this.leftArm;
-        return side == InteractionHand.MAIN_HAND ? this.servantRightArmUp : this.servantLeftArmUp;
+        return side == InteractionHand.MAIN_HAND ? this.rightArm : this.leftArm;
     }
 
     @Override
@@ -74,44 +73,27 @@ public class ModelMedea<T extends EntityMedea & IAnimated> extends ModelServant<
 
     @Override
     public void transform(HumanoidArm humanoidArm, PoseStack poseStack) {
-        if (this.show) {
-            if (humanoidArm == HumanoidArm.LEFT) {
-                this.rotate(poseStack, this.body, this.leftArm);
-            } else {
-                this.rotate(poseStack, this.body, this.rightArm);
-            }
-        } else
-            super.transform(humanoidArm, poseStack);
+        if (humanoidArm == HumanoidArm.LEFT) {
+            this.rotate(poseStack, this.body, this.leftArm);
+        } else {
+            this.rotate(poseStack, this.body, this.rightArm);
+        }
     }
 
     @Override
     public void postTransform(boolean leftSide, PoseStack stack) {
-        if (this.show) {
-            stack.translate(0, 4 / 16d, -8 / 16d);
-        } else
-            super.postTransform(leftSide, stack);
+        stack.translate(0, 4 / 16d, -8 / 16d);
     }
 
     @Override
     public void preAnimSetup(T servant, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        if (!this.show) {
-            this.servantBody.visible = true;
-            this.body.visible = false;
-            super.preAnimSetup(servant, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-        } else {
-            this.servantBody.visible = false;
-            this.body.visible = true;
-            this.model.resetPoses();
-        }
+        this.model.resetPoses();
     }
 
     @Override
     public ModelPart getHead() {
-        if (this.show) {
-            this.dummyHead.loadPose(this.head.storePose());
-            return this.dummyHead;
-        }
-        return super.getHead();
+        this.dummyHead.loadPose(this.head.storePose());
+        return this.dummyHead;
     }
 
     @Override
