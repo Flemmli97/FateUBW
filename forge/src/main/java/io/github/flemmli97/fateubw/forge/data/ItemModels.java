@@ -26,7 +26,7 @@ public class ItemModels extends ItemModelProvider {
         int sealid = 1;
         for (RegistryEntrySupplier<Item> reg : ModItems.ITEMS.getEntries()) {
             //Archer bow
-            if (reg == ModItems.enumaelish || reg == ModItems.heraclesAxe)
+            if (reg == ModItems.enumaelish || reg == ModItems.heraclesAxe || reg == ModItems.archbow)
                 continue;
             if (reg == ModItems.medusaDagger) {
                 this.withExistingParent(reg.getID().getPath(), ModelLocationUtils.decorateItemModelLocation("handheld"))
