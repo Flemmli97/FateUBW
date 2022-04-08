@@ -31,7 +31,7 @@ public class BaseServantAttackGoal<T extends BaseServant> extends AnimatedAttack
 
     @Override
     public void handleAttack(AnimatedAction anim) {
-        if(!this.attacker.canUse(anim, BaseServant.AttackType.MELEE))
+        if (!this.attacker.canUse(anim, BaseServant.AttackType.MELEE))
             return;
         this.attacker.getNavigation().stop();
         this.attacker.getLookControl().setLookAt(this.target, 30.0F, 30.0F);

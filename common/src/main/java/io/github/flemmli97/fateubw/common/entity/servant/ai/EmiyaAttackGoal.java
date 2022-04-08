@@ -26,6 +26,13 @@ public class EmiyaAttackGoal extends BaseServantAttackGoal<EntityEmiya> {
     }
 
     @Override
+    public boolean canChooseAttack(AnimatedAction anim) {
+        if (this.attacker.canUse(anim, BaseServant.AttackType.RANGED))
+            return this.distanceToTargetSq < this.shootRangeSq;
+        return super.canChooseAttack(anim);
+    }
+
+    @Override
     public void handleAttack(AnimatedAction anim) {
         if (this.attacker.canUse(anim, BaseServant.AttackType.NP)) {
             this.attacker.getLookControl().setLookAt(this.target, 30.0F, 30.0F);
