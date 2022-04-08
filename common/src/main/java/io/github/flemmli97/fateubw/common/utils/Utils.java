@@ -4,6 +4,7 @@ import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.registry.ModAttributes;
 import io.github.flemmli97.fateubw.common.world.TruceHandler;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,7 +22,7 @@ public class Utils {
     }
 
     public static float projectileReduce(BaseServant servant, float damage) {
-        float reduceAmount = (float) (servant.getAttribute(ModAttributes.PROJECTILE_RESISTANCE.get()).getValue() * 0.04);
+        float reduceAmount = (float) Mth.clamp(1 - servant.getAttribute(ModAttributes.PROJECTILE_RESISTANCE.get()).getValue() * 0.04, 0.1, 1);
         return damage * reduceAmount;
     }
 
