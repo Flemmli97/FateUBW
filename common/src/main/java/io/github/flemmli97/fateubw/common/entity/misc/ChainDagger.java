@@ -166,13 +166,12 @@ public class ChainDagger extends EntityProjectile {
         this.noPhysics = true;
         Entity entity = this.getOwner();
         if (entity != null) {
-            Vec3 vector3d = new Vec3(entity.getX() - this.getX(), 0, entity.getZ() - this.getZ()).scale(0.3D);
-            if (vector3d.lengthSqr() > 16)
-                vector3d = vector3d.normalize().scale(4);
             if (this.hookedEntity != null) {
+                Vec3 vector3d = new Vec3(entity.getX() - this.getX(), 0, entity.getZ() - this.getZ()).scale(0.18D);
+                vector3d = vector3d.add(0, 1, 0);
                 if (entity instanceof LivingEntity living)
                     this.hookedEntity.hurt(DamageSource.indirectMobAttack(this, living), Config.Common.medeaDaggerDamage);
-                this.hookedEntity.setDeltaMovement(this.hookedEntity.getDeltaMovement().add(vector3d.x, 0.8, vector3d.z));
+                this.hookedEntity.setDeltaMovement(vector3d);
             }
             this.hookedEntity = null;
             this.getEntityData().set(HOOKED_ENTITY, -1);

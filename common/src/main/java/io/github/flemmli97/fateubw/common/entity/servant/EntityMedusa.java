@@ -68,7 +68,9 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
     public boolean canUse(AnimatedAction anim, AttackType type) {
         if (type == AttackType.NP)
             return anim.getID().equals(npAttack.getID());
-        return anim.getID().equals(AnimatedAction.vanillaAttack.getID()) || (this.canThrow() && anim.getID().equals(daggerAttack.getID()));
+        if (type == AttackType.RANGED)
+            return this.canThrow() && anim.getID().equals(daggerAttack.getID());
+        return anim.getID().equals(AnimatedAction.vanillaAttack.getID());
     }
 
     public boolean canThrow() {
@@ -138,7 +140,7 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
             dagger.shootAtEntity(target, 3, 0, 0);
             this.level.addFreshEntity(dagger);
             this.dagger = dagger;
-            this.throwCooldown = this.random.nextInt(27) + 45;
+            this.throwCooldown = this.random.nextInt(32) + 45;
             this.getEntityData().set(thrownDagger, true);
         }
     }

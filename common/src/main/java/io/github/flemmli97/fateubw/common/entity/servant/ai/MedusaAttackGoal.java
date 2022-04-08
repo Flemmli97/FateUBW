@@ -6,6 +6,8 @@ import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 
 public class MedusaAttackGoal extends BaseServantAttackGoal<EntityMedusa> {
 
+    private int closeDaggerCooldown;
+
     public MedusaAttackGoal(EntityMedusa entity) {
         super(entity, 1);
     }
@@ -15,8 +17,13 @@ public class MedusaAttackGoal extends BaseServantAttackGoal<EntityMedusa> {
         if ((this.attacker.canUseNP() && this.attacker.getOwner() == null && this.attacker.getMana() >= this.attacker.props().hogouMana()) || this.attacker.forcedNP)
             return this.attacker.getRandomAttack(BaseServant.AttackType.NP);
         if (this.distanceToTargetSq > this.attackRange + 16 && this.attacker.getRandom().nextFloat() < 0.4f)
-            return EntityMedusa.daggerAttack;
-        return this.attacker.getRandomAttack(BaseServant.AttackType.MELEE);
+            return this.attacker.getRandomAttack(BaseServant.AttackType.RANGED);
+        AnimatedAction anim = null;
+        if (--this.closeDaggerCooldown <= 0 && this.attacker.getRandom().nextFloat() < 0.1f) {
+            anim = this.attacker.getRandomAttack(BaseServant.AttackType.RANGED);
+            this.closeDaggerCooldown = this.attacker.getRandom().nextInt(15) + 32;
+        }
+        return anim == null ? this.attacker.getRandomAttack(BaseServant.AttackType.MELEE) : anim;
     }
 
     @Override
@@ -24,7 +31,7 @@ public class MedusaAttackGoal extends BaseServantAttackGoal<EntityMedusa> {
         if (anim == null)
             return false;
         if (anim.getID().equals(EntityMedusa.daggerAttack.getID()))
-            return this.attacker.canThrow() && this.attacker.getRandom().nextFloat() < 0.6;
+            return this.attacker.canThrow();
         return this.distanceToTargetSq < this.attackRange || this.attacker.canUse(anim, BaseServant.AttackType.NP);
     }
 
