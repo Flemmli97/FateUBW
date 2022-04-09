@@ -156,8 +156,8 @@ public class PlayerData {
     public CompoundTag writeToNBT(CompoundTag compound) {
         compound.putInt("Mana", this.currentMana);
         compound.putInt("CommandSeal", this.commandSeals);
-        if (this.servant != null)
-            compound.putUUID("ServantUUID", this.servant.getUUID());
+        if (this.servantUUID != null)
+            compound.putUUID("ServantUUID", this.servantUUID);
         if (this.savedServant != null)
             compound.put("SavedServant", this.savedServant);
         return compound;
@@ -166,7 +166,7 @@ public class PlayerData {
     public void readFromNBT(CompoundTag compound) {
         this.currentMana = compound.getInt("Mana");
         this.commandSeals = compound.getInt("CommandSeal");
-        if (compound.contains("ServantUUID"))
+        if (compound.hasUUID("ServantUUID"))
             this.servantUUID = compound.getUUID("ServantUUID");
         if (compound.contains("SavedServant"))
             this.savedServant = compound.getCompound("SavedServant");
