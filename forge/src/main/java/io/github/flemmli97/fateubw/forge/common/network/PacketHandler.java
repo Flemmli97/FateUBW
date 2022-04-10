@@ -15,6 +15,7 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -32,13 +33,13 @@ public class PacketHandler {
         int server = PacketRegistrar.registerServerPackets(new PacketRegistrar.ServerPacketRegister() {
             @Override
             public <P> void registerMessage(int index, ResourceLocation id, Class<P> clss, BiConsumer<P, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, P> decoder, BiConsumer<P, ServerPlayer> handler) {
-                dispatcher.registerMessage(index, clss, encoder, decoder, handlerServer(handler));
+                dispatcher.registerMessage(index, clss, encoder, decoder, handlerServer(handler), Optional.of(NetworkDirection.PLAY_TO_SERVER));
             }
         }, 0);
         PacketRegistrar.registerClientPackets(new PacketRegistrar.ClientPacketRegister() {
             @Override
             public <P> void registerMessage(int index, ResourceLocation id, Class<P> clss, BiConsumer<P, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, P> decoder, Consumer<P> handler) {
-                dispatcher.registerMessage(index, clss, encoder, decoder, handlerClient(handler));
+                dispatcher.registerMessage(index, clss, encoder, decoder, handlerClient(handler), Optional.of(NetworkDirection.PLAY_TO_CLIENT));
             }
         }, server);
     }

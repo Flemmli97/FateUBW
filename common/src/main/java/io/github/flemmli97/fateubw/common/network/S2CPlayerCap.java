@@ -49,11 +49,9 @@ public class S2CPlayerCap implements Packet {
         return new S2CPlayerCap(buf.readInt(), buf.readInt(), buf.readBoolean() ? buf.readUUID() : null);
     }
 
-    public static class Handler {
-        public static void handle(S2CPlayerCap pkt) {
-            Player player = ClientHandler.clientPlayer();
-            if (player != null)
-                Platform.INSTANCE.getPlayerData(player).ifPresent(cap -> cap.handleClientUpdatePacket(pkt));
-        }
+    public static void handle(S2CPlayerCap pkt) {
+        Player player = ClientHandler.clientPlayer();
+        if (player != null)
+            Platform.INSTANCE.getPlayerData(player).ifPresent(cap -> cap.handleClientUpdatePacket(pkt));
     }
 }

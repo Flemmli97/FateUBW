@@ -14,8 +14,8 @@ public class S2CCommandSeals implements Packet {
 
     private final int commandSeals;
 
-    private S2CCommandSeals(int seals) {
-        this.commandSeals = seals;
+    private S2CCommandSeals(int commandSeals) {
+        this.commandSeals = commandSeals;
     }
 
     public S2CCommandSeals(PlayerData playerCap) {
@@ -36,11 +36,9 @@ public class S2CCommandSeals implements Packet {
         return new S2CCommandSeals(buf.readInt());
     }
 
-    public static class Handler {
-        public static void handle(S2CCommandSeals pkt) {
-            Player player = ClientHandler.clientPlayer();
-            if (player != null)
-                Platform.INSTANCE.getPlayerData(player).ifPresent(cap -> cap.setCommandSeals(player, pkt.commandSeals));
-        }
+    public static void handle(S2CCommandSeals pkt) {
+        Player player = ClientHandler.clientPlayer();
+        if (player != null)
+            Platform.INSTANCE.getPlayerData(player).ifPresent(cap -> cap.setCommandSeals(player, pkt.commandSeals));
     }
 }

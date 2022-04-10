@@ -8,15 +8,9 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-public class C2SMessageGui implements Packet {
+public record C2SMessageGui(C2SMessageGui.Type message) implements Packet {
 
     public static final ResourceLocation ID = new ResourceLocation(Fate.MODID, "c2s_gui_message");
-
-    private final Type message;
-
-    public C2SMessageGui(Type i) {
-        this.message = i;
-    }
 
     @Override
     public void write(FriendlyByteBuf buf) {

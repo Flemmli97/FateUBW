@@ -8,17 +8,10 @@ import net.minecraft.server.level.ServerPlayer;
 
 import java.util.UUID;
 
-public class C2STruceMessage implements Packet {
+public record C2STruceMessage(C2STruceMessage.Type type,
+                              UUID uuid) implements Packet {
 
     public static final ResourceLocation ID = new ResourceLocation(Fate.MODID, "c2s_truce_response");
-
-    public Type type;
-    public UUID uuid;
-
-    public C2STruceMessage(Type type, UUID uuid) {
-        this.type = type;
-        this.uuid = uuid;
-    }
 
     @Override
     public void write(FriendlyByteBuf buf) {

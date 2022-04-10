@@ -21,15 +21,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.EntityHitResult;
 
-public class C2SServantCommand implements Packet {
+public record C2SServantCommand(EnumServantUpdate command) implements Packet {
 
     public static final ResourceLocation ID = new ResourceLocation(Fate.MODID, "c2s_servant_command");
-
-    private final EnumServantUpdate command;
-
-    public C2SServantCommand(EnumServantUpdate command) {
-        this.command = command;
-    }
 
     @Override
     public void write(FriendlyByteBuf buf) {

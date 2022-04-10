@@ -72,9 +72,7 @@ public class S2CTruceData implements Packet {
         return new S2CTruceData(truces, pending, requests);
     }
 
-    public static class Handler {
-        public static void handle(S2CTruceData pkt) {
-            ClientHandler.truceData(pkt.truces, pkt.pending, pkt.requests);
-        }
+    public static void handle(S2CTruceData pkt) {
+        ClientHandler.truceData(pkt.truces, pkt.pending, pkt.requests);
     }
 }

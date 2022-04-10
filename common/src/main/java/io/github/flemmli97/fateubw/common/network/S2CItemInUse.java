@@ -40,15 +40,13 @@ public class S2CItemInUse implements Packet {
         return new S2CItemInUse(buf.readInt(), buf.readBoolean(), buf.readBoolean());
     }
 
-    public static class Handler {
-        public static void handle(S2CItemInUse pkt) {
-            Player player = ClientHandler.clientPlayer();
-            if (player != null) {
-                Entity e = player.level.getEntity(pkt.entityID);
-                if (e instanceof LivingEntity) {
-                    ItemStack stack = ((LivingEntity) e).getItemInHand(pkt.mainHand ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND);
-                    Platform.INSTANCE.getItemStackData(stack).ifPresent(cap -> cap.setInUse((LivingEntity) e, pkt.inUse, pkt.mainHand));
-                }
+    public static void handle(S2CItemInUse pkt) {
+        Player player = ClientHandler.clientPlayer();
+        if (player != null) {
+            Entity e = player.level.getEntity(pkt.entityID);
+            if (e instanceof LivingEntity) {
+                ItemStack stack = ((LivingEntity) e).getItemInHand(pkt.mainHand ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND);
+                Platform.INSTANCE.getItemStackData(stack).ifPresent(cap -> cap.setInUse((LivingEntity) e, pkt.inUse, pkt.mainHand));
             }
         }
     }

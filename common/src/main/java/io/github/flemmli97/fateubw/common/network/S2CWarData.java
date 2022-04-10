@@ -49,13 +49,11 @@ public class S2CWarData implements Packet {
         return new S2CWarData(grailWarPlayers);
     }
 
-    public static class Handler {
-        public static void handle(S2CWarData pkt) {
-            Player player = ClientHandler.clientPlayer();
-            if (player == null)
-                return;
-            if (pkt.grailWarPlayers.stream().map(GameProfile::getId).anyMatch(uuid -> uuid.equals(player.getUUID())))
-                ClientHandler.grailData(pkt.grailWarPlayers);
-        }
+    public static void handle(S2CWarData pkt) {
+        Player player = ClientHandler.clientPlayer();
+        if (player == null)
+            return;
+        if (pkt.grailWarPlayers.stream().map(GameProfile::getId).anyMatch(uuid -> uuid.equals(player.getUUID())))
+            ClientHandler.grailData(pkt.grailWarPlayers);
     }
 }

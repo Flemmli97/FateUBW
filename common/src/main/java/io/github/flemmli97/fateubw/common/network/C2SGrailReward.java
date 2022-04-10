@@ -8,15 +8,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
-public class C2SGrailReward implements Packet {
+public record C2SGrailReward(ResourceLocation rewardID) implements Packet {
 
     public static final ResourceLocation ID = new ResourceLocation(Fate.MODID, "c2s_grail_reward");
-
-    private final ResourceLocation rewardID;
-
-    public C2SGrailReward(ResourceLocation rewardID) {
-        this.rewardID = rewardID;
-    }
 
     @Override
     public void write(FriendlyByteBuf buf) {

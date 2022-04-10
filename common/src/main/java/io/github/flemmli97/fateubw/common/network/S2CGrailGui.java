@@ -46,9 +46,7 @@ public class S2CGrailGui implements Packet {
         return new S2CGrailGui(rewards);
     }
 
-    public static class Handler {
-        public static void handle(S2CGrailGui pkt) {
-            ClientHandler.openGrailGui(pkt.rewards);
-        }
+    public static void handle(S2CGrailGui pkt) {
+        ClientHandler.openGrailGui(pkt.rewards);
     }
 }

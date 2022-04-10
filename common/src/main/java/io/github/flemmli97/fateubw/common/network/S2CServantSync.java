@@ -42,16 +42,14 @@ public class S2CServantSync implements Packet {
         return new S2CServantSync(buf.readBoolean(), buf.readInt());
     }
 
-    public static class Handler {
-        public static void handle(S2CServantSync pkt) {
-            Player player = ClientHandler.clientPlayer();
-            if (player != null) {
-                Entity fromId = pkt.none ? null : player.level.getEntity(pkt.entityID);
-                if (fromId instanceof BaseServant)
-                    Platform.INSTANCE.getPlayerData(player).ifPresent(cap -> cap.setServant((BaseServant) fromId));
-                else
-                    Platform.INSTANCE.getPlayerData(player).ifPresent(cap -> cap.setServant(null));
-            }
+    public static void handle(S2CServantSync pkt) {
+        Player player = ClientHandler.clientPlayer();
+        if (player != null) {
+            Entity fromId = pkt.none ? null : player.level.getEntity(pkt.entityID);
+            if (fromId instanceof BaseServant)
+                Platform.INSTANCE.getPlayerData(player).ifPresent(cap -> cap.setServant((BaseServant) fromId));
+            else
+                Platform.INSTANCE.getPlayerData(player).ifPresent(cap -> cap.setServant(null));
         }
     }
 }

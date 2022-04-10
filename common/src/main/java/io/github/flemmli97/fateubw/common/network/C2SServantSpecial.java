@@ -6,15 +6,9 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-public class C2SServantSpecial implements Packet {
+public record C2SServantSpecial(String specialID) implements Packet {
 
     public static final ResourceLocation ID = new ResourceLocation(Fate.MODID, "c2s_servant_special");
-
-    private final String specialID;
-
-    public C2SServantSpecial(String specialID) {
-        this.specialID = specialID;
-    }
 
     @Override
     public void write(FriendlyByteBuf buf) {
