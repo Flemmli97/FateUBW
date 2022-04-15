@@ -184,6 +184,6 @@ public class ChainDagger extends EntityProjectile {
     public void remove(RemovalReason reason) {
         super.remove(reason);
         if (this.getOwner() instanceof Player player)
-            Platform.INSTANCE.getPlayerData(player).ifPresent(cap -> cap.setThrownDagger(null));
+            Platform.INSTANCE.getPlayerData(player).ifPresent(data -> data.setThrownDagger(null));
     }
 }

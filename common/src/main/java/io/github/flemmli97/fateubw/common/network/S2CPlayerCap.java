@@ -52,6 +52,6 @@ public class S2CPlayerCap implements Packet {
     public static void handle(S2CPlayerCap pkt) {
         Player player = ClientHandler.clientPlayer();
         if (player != null)
-            Platform.INSTANCE.getPlayerData(player).ifPresent(cap -> cap.handleClientUpdatePacket(pkt));
+            Platform.INSTANCE.getPlayerData(player).ifPresent(data -> data.handleClientUpdatePacket(pkt));
     }
 }

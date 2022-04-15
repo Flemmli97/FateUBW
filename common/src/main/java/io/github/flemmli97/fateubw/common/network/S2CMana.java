@@ -39,6 +39,6 @@ public class S2CMana implements Packet {
     public static void handle(S2CMana pkt) {
         Player player = ClientHandler.clientPlayer();
         if (player != null)
-            Platform.INSTANCE.getPlayerData(player).ifPresent(cap -> cap.setMana(player, pkt.manaValue));
+            Platform.INSTANCE.getPlayerData(player).ifPresent(data -> data.setMana(player, pkt.manaValue));
     }
 }

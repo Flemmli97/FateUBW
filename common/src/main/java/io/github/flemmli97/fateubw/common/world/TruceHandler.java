@@ -77,9 +77,9 @@ public class TruceHandler extends SavedData {
             if (rec == null)
                 return;
             player.sendMessage(new TranslatableComponent("chat.truce.accept", rec.getName()).withStyle(ChatFormatting.GOLD), Util.NIL_UUID);
-            Platform.INSTANCE.getPlayerData(player).ifPresent(cap -> {
-                if (cap.getServant(player) != null)
-                    cap.getServant(player).setTarget(null);
+            Platform.INSTANCE.getPlayerData(player).ifPresent(data -> {
+                if (data.getServant(player) != null)
+                    data.getServant(player).setTarget(null);
             });
             if (other != null) {
                 other.sendMessage(new TranslatableComponent("chat.truce.requestsuccess", player.getName(), ChatFormatting.GOLD), Util.NIL_UUID);

@@ -11,6 +11,7 @@ import io.github.flemmli97.fateubw.common.items.weapons.ItemArcherBow;
 import io.github.flemmli97.fateubw.common.items.weapons.ItemDagger;
 import io.github.flemmli97.fateubw.common.items.weapons.ItemGaeBolg;
 import io.github.flemmli97.fateubw.common.items.weapons.ItemGrimoire;
+import io.github.flemmli97.fateubw.common.items.weapons.ItemKanshouBakuya;
 import io.github.flemmli97.fateubw.common.items.weapons.ItemKatana;
 import io.github.flemmli97.fateubw.common.items.weapons.ItemMedusaDagger;
 import io.github.flemmli97.fateubw.common.items.weapons.ItemStaff;
@@ -46,8 +47,8 @@ public class ModItems {
     public static final RegistryEntrySupplier<Item> gaebolg = ITEMS.register("gae_bolg", () -> new ItemGaeBolg(new Item.Properties().tab(Fate.TAB)));
     public static final RegistryEntrySupplier<Item> gaedearg = ITEMS.register("gae_dearg", () -> new ClassSpear(ItemTiers.gae_dearg, new Item.Properties().tab(Fate.TAB), -1.5f, 3.5f));
     public static final RegistryEntrySupplier<Item> gaebuidhe = ITEMS.register("gae_buidhe", () -> new ClassSpear(ItemTiers.gae_buidhe, new Item.Properties().tab(Fate.TAB), -1.5f, 3.5f));
-    public static final RegistryEntrySupplier<Item> kanshou = ITEMS.register("kanshou", () -> new SwordItem(ItemTiers.kanshou, 0, -2f, new Item.Properties().tab(Fate.TAB)));
-    public static final RegistryEntrySupplier<Item> bakuya = ITEMS.register("bakuya", () -> new SwordItem(ItemTiers.bakuya, 0, -2f, new Item.Properties().tab(Fate.TAB)));
+    public static final RegistryEntrySupplier<Item> kanshou = ITEMS.register("kanshou", ModItems::kanshou);
+    public static final RegistryEntrySupplier<Item> bakuya = ITEMS.register("bakuya", () -> new ItemKanshouBakuya(ItemTiers.kanshouBakuya, 0, -2f, new Item.Properties().tab(Fate.TAB), kanshou));
     public static final RegistryEntrySupplier<Item> archbow = ITEMS.register("emiyas_bow", () -> new ItemArcherBow(new Item.Properties().tab(Fate.TAB)));
     public static final RegistryEntrySupplier<Item> enumaelish = ITEMS.register("enuma_elish", () -> Platform.INSTANCE.createEA(new Item.Properties().tab(Fate.TAB)));
     public static final RegistryEntrySupplier<Item> staff = ITEMS.register("medeas_staff", () -> new ItemStaff(new Item.Properties().tab(Fate.TAB)));
@@ -107,5 +108,9 @@ public class ModItems {
         RegistryEntrySupplier<Item> item = ITEMS.register(name, () -> new ItemServantCharm(type, new Item.Properties().tab(Fate.TAB)));
         charms.add(item);
         return item;
+    }
+
+    private static ItemKanshouBakuya kanshou() {
+        return new ItemKanshouBakuya(ItemTiers.kanshouBakuya, 0, -2f, new Item.Properties().tab(Fate.TAB), bakuya);
     }
 }

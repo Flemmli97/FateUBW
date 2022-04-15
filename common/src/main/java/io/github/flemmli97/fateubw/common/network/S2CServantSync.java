@@ -47,9 +47,9 @@ public class S2CServantSync implements Packet {
         if (player != null) {
             Entity fromId = pkt.none ? null : player.level.getEntity(pkt.entityID);
             if (fromId instanceof BaseServant)
-                Platform.INSTANCE.getPlayerData(player).ifPresent(cap -> cap.setServant((BaseServant) fromId));
+                Platform.INSTANCE.getPlayerData(player).ifPresent(data -> data.setServant((BaseServant) fromId));
             else
-                Platform.INSTANCE.getPlayerData(player).ifPresent(cap -> cap.setServant(null));
+                Platform.INSTANCE.getPlayerData(player).ifPresent(data -> data.setServant(null));
         }
     }
 }

@@ -39,6 +39,6 @@ public class S2CCommandSeals implements Packet {
     public static void handle(S2CCommandSeals pkt) {
         Player player = ClientHandler.clientPlayer();
         if (player != null)
-            Platform.INSTANCE.getPlayerData(player).ifPresent(cap -> cap.setCommandSeals(player, pkt.commandSeals));
+            Platform.INSTANCE.getPlayerData(player).ifPresent(data -> data.setCommandSeals(player, pkt.commandSeals));
     }
 }

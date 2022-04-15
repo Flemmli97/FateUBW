@@ -20,8 +20,7 @@ public class ItemTiers {
     public static final TierImpl gae_buidhe = new TierImpl(900, 0, 5f, 0, 14, Ingredient.EMPTY);
     public static final TierImpl gae_dearg = new TierImpl(900, 0, 5.5f, 0, 14, Ingredient.EMPTY);
 
-    public static final TierImpl kanshou = new TierImpl(650, 0, 5, 0, 16, Ingredient.EMPTY);
-    public static final TierImpl bakuya = new TierImpl(650, 0, 5f, 0, 16, Ingredient.EMPTY);
+    public static final TierImpl kanshouBakuya = new TierImpl(650, 0, 5, 0, 16, Ingredient.EMPTY);
 
     public static class TierImpl implements Tier {
 

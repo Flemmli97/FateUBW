@@ -41,7 +41,7 @@ public class EntityEmiya extends BaseServant {
     @Override
     protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
         this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.kanshou.get()));
-        this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(ModItems.bakuya.get()));
+        //this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(ModItems.bakuya.get()));
     }
 
     @Override

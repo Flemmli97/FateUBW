@@ -106,9 +106,9 @@ public class GrailWarHandler extends SavedData {
     public boolean removePlayer(ServerPlayer player) {
         if (this.hasPlayer(player)) {
             this.players.remove(player.getUUID());
-            Platform.INSTANCE.getPlayerData(player).ifPresent(cap -> {
-                cap.setCommandSeals(player, 0);
-                cap.setServant(null);
+            Platform.INSTANCE.getPlayerData(player).ifPresent(data -> {
+                data.setCommandSeals(player, 0);
+                data.setServant(null);
             });
             TruceHandler.get(player.getServer()).disbandAll(player);
             player.level.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("chat.grailwar.playerout", player.getName()).withStyle(ChatFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
@@ -220,7 +220,7 @@ public class GrailWarHandler extends SavedData {
                     holyGrail.setInvulnerable(true);
                     holyGrail.setGlowingTag(true);
                     world.addFreshEntity(holyGrail);
-                    Platform.INSTANCE.getPlayerData(player).ifPresent(cap -> cap.saveServant(player));
+                    Platform.INSTANCE.getPlayerData(player).ifPresent(data -> data.saveServant(player));
                 }
                 this.reset(world);
             }
