@@ -10,13 +10,13 @@ displayURL="https://www.curseforge.com/minecraft/mc-mods/fate-ubw"
 logoFile="icon.png"
 authors="Flemmli97"
 description='''The Holy Grail War! Brought to minecraft'''
-[[dependencies.advancedgolems]]
+[[dependencies.fateubw]]
 modId="minecraft"
 mandatory=true
 versionRange="[1.18.2,)"
 ordering="NONE"
 side="BOTH"
-[[dependencies.advancedgolems]]
+[[dependencies.fateubw]]
 modId="tenshilib"
 mandatory=true
 versionRange="[1.18.2-1.6.6,)"
