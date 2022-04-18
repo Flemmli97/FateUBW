@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(ItemStack.class)
-public class ItemStackMixin implements ItemStackDataGet {
+public abstract class ItemStackMixin implements ItemStackDataGet {
 
     @Unique
     private final ItemStackData fateData = new ItemStackData();
