@@ -13,13 +13,13 @@
       "item": "minecraft:red_wool"
     },
     "L": {
-      "tag": "c:diamond_blocks"
+      "tag": "c:lapis_blocks"
     },
     "G": {
       "item": "fateubw:gem_cluster"
     },
     "D": {
-      "tag": "c:lapis_blocks"
+      "tag": "c:diamond_blocks"
     }
   },
   "result": {

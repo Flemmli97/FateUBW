@@ -1,7 +1,10 @@
 {
   "replace": false,
   "values": [
-    "#forge:dyes",
+    {
+      "id": "forge:dyes",
+      "required": false
+    },
     "minecraft:white_dye",
     "minecraft:orange_dye",
     "minecraft:magenta_dye",

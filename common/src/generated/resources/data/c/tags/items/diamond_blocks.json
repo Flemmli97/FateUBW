@@ -1,7 +1,10 @@
 {
   "replace": false,
   "values": [
-    "minecraft:lapis_block",
-    "#forge:storage_blocks/lapis"
+    "minecraft:diamond_block",
+    {
+      "id": "forge:storage_blocks/diamond",
+      "required": false
+    }
   ]
 }

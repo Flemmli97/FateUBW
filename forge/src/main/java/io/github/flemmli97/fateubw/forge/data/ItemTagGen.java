@@ -31,17 +31,17 @@ public class ItemTagGen extends ItemTagsProvider {
                 .add(ModItems.crystalFire.get())
                 .add(ModItems.crystalWind.get());
         TagAppender<Item> dyes = this.tag(FateTags.fabricDyeTag)
-                .addTag(Tags.Items.DYES);
+                .addOptional(Tags.Items.DYES.location());
         this.add(dyes::add);
         this.tag(FateTags.fabricStickTag)
                 .add(Items.STICK)
-                .addTag(Tags.Items.RODS_WOODEN);
+                .addOptional(Tags.Items.RODS_WOODEN.location());
         this.tag(FateTags.fabricLapisBlock)
                 .add(Items.LAPIS_BLOCK)
-                .addTag(Tags.Items.STORAGE_BLOCKS_LAPIS);
+                .addOptional(Tags.Items.STORAGE_BLOCKS_LAPIS.location());
         this.tag(FateTags.fabricDiamondBlock)
                 .add(Items.DIAMOND_BLOCK)
-                .addTag(Tags.Items.STORAGE_BLOCKS_DIAMOND);
+                .addOptional(Tags.Items.STORAGE_BLOCKS_DIAMOND.location());
     }
 
     private void add(Consumer<Item> consumer) {
