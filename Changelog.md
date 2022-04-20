@@ -1,3 +1,9 @@
+FateUBW 1.0.2
+================
+- Emiyas blades are now rendered as dual weapons
+- Fix some problems with tags
+- Fix medeas beam sometimes at wrong location
+
 FateUBW 1.0.1
 ================
 - Fix heracles and medeas unkown texture
