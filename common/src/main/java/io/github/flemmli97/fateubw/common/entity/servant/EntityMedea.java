@@ -99,7 +99,7 @@ public class EntityMedea extends BaseServant {
             strength = eff.getAmplifier();
         for (int i = 0; i < 3; i++) {
             MagicBeam beam = new MagicBeam(this.level, this, target, strength);
-            Vec3 side = MathUtils.rotate(MathUtils.normalY, MathUtils.normalZ, this.getXRot() * Mth.DEG_TO_RAD);
+            Vec3 side = MathUtils.rotate(MathUtils.normalY, MathUtils.normalX, -this.getYRot() * Mth.DEG_TO_RAD);
             int[] offset = castOffsets[this.random.nextInt(castOffsets.length)];
             Vec3 area = this.position().add(side.scale(offset[0])).add(0, this.getBbHeight() + offset[1], 0);
             beam.setPos(area.x, area.y, area.z);
