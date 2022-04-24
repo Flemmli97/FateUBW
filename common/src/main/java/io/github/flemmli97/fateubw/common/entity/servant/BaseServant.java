@@ -1,5 +1,7 @@
 package io.github.flemmli97.fateubw.common.entity.servant;
 
+import com.google.common.collect.Lists;
+import com.mojang.datafixers.util.Pair;
 import io.github.flemmli97.fateubw.common.config.Config;
 import io.github.flemmli97.fateubw.common.config.ServantProperties;
 import io.github.flemmli97.fateubw.common.entity.IServantMinion;
@@ -25,6 +27,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
+import net.minecraft.network.protocol.game.ClientboundSetEquipmentPacket;
 import net.minecraft.network.protocol.game.ClientboundUpdateAttributesPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -61,6 +64,7 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameRules;
@@ -68,6 +72,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -75,6 +80,8 @@ import java.util.UUID;
 import java.util.function.Predicate;
 
 public abstract class BaseServant extends PathfinderMob implements IAnimated, OwnableEntity {
+
+    public static final TicketType<ChunkPos> TRACKINGTICKET = TicketType.create("servant", Comparator.comparingLong(ChunkPos::toLong), 5);
 
     //Mana
     private int servantMana, antiRegen, counter;
@@ -400,21 +407,50 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
                     this.chunkTracked = true;
                 }
                 ChunkPos pos = this.chunkPosition();
-                ((ServerChunkCache) this.level.getChunkSource()).addRegionTicket(TicketType.UNKNOWN, pos, 1, pos);
+                ((ServerChunkCache) this.level.getChunkSource()).addRegionTicket(TRACKINGTICKET, pos, 2, pos);
             } else
                 this.chunkTracked = false;
-            if (this.getOwner() != null && !this.tracked.contains(this.getOwner()))
-                this.updateDataManager((ServerPlayer) this.getOwner());
+
+            if (this.getOwner() instanceof ServerPlayer serverPlayer) {
+                if (!this.tracked.contains(serverPlayer)) {
+                    if (!this.addToOwner) {
+                        this.addEntityOwner(serverPlayer);
+                        this.addToOwner = true;
+                    }
+                    this.updateDataManager(serverPlayer);
+                }
+            }
             if (this.getTarget() != null && this.getTarget().getVehicle() instanceof LivingEntity)
                 this.setTarget((LivingEntity) this.getTarget().getVehicle());
         }
     }
 
     private final List<ServerPlayer> tracked = new ArrayList<>();
+    private boolean addToOwner;
 
     @Override
     public void startSeenByPlayer(ServerPlayer player) {
         this.tracked.add(player);
+    }
+
+    @Override
+    public void stopSeenByPlayer(ServerPlayer player) {
+        this.tracked.remove(player);
+        this.addToOwner = false;
+    }
+
+    private void addEntityOwner(ServerPlayer serverPlayer) {
+        serverPlayer.connection.send(this.getAddEntityPacket());
+        serverPlayer.connection.send(new ClientboundSetEntityDataPacket(this.getId(), this.entityData, true));
+        ArrayList<Pair<EquipmentSlot, ItemStack>> list = Lists.newArrayList();
+        for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
+            ItemStack itemStack = this.getItemBySlot(equipmentSlot);
+            if (itemStack.isEmpty()) continue;
+            list.add(Pair.of(equipmentSlot, itemStack.copy()));
+        }
+        if (!list.isEmpty()) {
+            serverPlayer.connection.send(new ClientboundSetEquipmentPacket(this.getId(), list));
+        }
     }
 
     private void updateDataManager(ServerPlayer player) {
@@ -426,7 +462,6 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         if (!set.isEmpty()) {
             player.connection.send(new ClientboundUpdateAttributesPacket(this.getId(), set));
         }
-        //set.clear();
     }
 
     //=====Death Handling
