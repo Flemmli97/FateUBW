@@ -26,7 +26,7 @@ public class ClientPlatformImpl implements ClientPlatform {
 
     @Override
     public <T extends Entity> Component nameTagRenderEvent(T entity, Component content, EntityRenderer<?> entityRenderer, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, float partialTick, Function<T, Boolean> shouldRender) {
-        return entity.getDisplayName();
+        return shouldRender.apply(entity) ? entity.getDisplayName() : null;
     }
 
     @Override
