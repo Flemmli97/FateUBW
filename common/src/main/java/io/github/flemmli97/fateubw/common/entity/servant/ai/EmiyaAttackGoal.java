@@ -62,6 +62,10 @@ public class EmiyaAttackGoal extends BaseServantAttackGoal<EntityEmiya> {
     @Override
     public void handleIddle() {
         if (this.doRanged) {
+            if (!this.iddleFlag) {
+                this.clockwise = this.attacker.getRandom().nextBoolean();
+                this.iddleFlag = true;
+            }
             this.circleAroundTargetFacing(8, this.clockwise, 0.8f);
         } else
             super.handleIddle();
