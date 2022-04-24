@@ -1,3 +1,10 @@
+FateUBW 1.0.3
+================
+- Fix player owned servants not chunk loading
+- Fix emiyas bow missing texture
+- Fix owned servants not tracked client side when out of render distance
+- Fix servant names being rendered in fabric
+
 FateUBW 1.0.2
 ================
 - Emiyas blades are now rendered as dual weapons
