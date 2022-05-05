@@ -45,6 +45,7 @@ public class ConfigSpecs {
         public Client(CommentedJsonConfig.Builder builder) {
             this.manaBarX = builder.comment("X Position of the mana bar").defineInRange("Mana X", 2, 0, Integer.MAX_VALUE);
             this.manaBarY = builder.comment("Y Position of the mana bar").defineInRange("Mana Y", 2, 0, Integer.MAX_VALUE);
+            builder.registerReloadHandler(ConfigLoader::loadClient);
         }
     }
 
@@ -142,6 +143,7 @@ public class ConfigSpecs {
             builder.push("hassanCopy");
             this.hassanCopyProps = new ServantConfSpec(builder, Config.Common.hassanCopyProps);
             builder.pop();
+            builder.registerReloadHandler(ConfigLoader::loadCommon);
         }
     }
 }
