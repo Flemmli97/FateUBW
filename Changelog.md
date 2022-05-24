@@ -1,4 +1,4 @@
-FateUBW 1.0.3
+FateUBW 1.0.4
 ================
 - Forge: Fixing problems with capability loading on player clone
 
