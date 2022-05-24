@@ -53,11 +53,13 @@ public class EventHandler {
     @SubscribeEvent
     public static void clone(PlayerEvent.Clone event) {
         if (event.getPlayer() instanceof ServerPlayer serverPlayer) {
-            if (event.isWasDeath())
+            boolean rev = Platform.INSTANCE.getPlayerData(event.getOriginal()).isPresent();
+            if (!rev)
                 event.getOriginal().reviveCaps();
             Platform.INSTANCE.getPlayerData(serverPlayer).ifPresent(data -> data.from(Platform.INSTANCE.getPlayerData(event.getOriginal()).orElseThrow(() -> new NullPointerException("Capability of old player is null!"))));
             NetworkCalls.INSTANCE.sendToClient(new S2CPlayerCap(Platform.INSTANCE.getPlayerData(serverPlayer).orElseThrow(() -> new NullPointerException("Capability of player is null!"))), serverPlayer);
-
+            if (!rev)
+                event.getOriginal().invalidateCaps();
         }
     }
 }

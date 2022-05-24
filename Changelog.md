@@ -1,5 +1,9 @@
 FateUBW 1.0.3
 ================
+- Forge: Fixing problems with capability loading on player clone
+
+FateUBW 1.0.3
+================
 - Fix player owned servants not chunk loading
 - Fix emiyas bow missing texture
 - Fix owned servants not tracked client side when out of render distance
