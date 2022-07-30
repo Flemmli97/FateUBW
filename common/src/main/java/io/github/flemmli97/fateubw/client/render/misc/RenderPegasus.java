@@ -16,7 +16,7 @@ public class RenderPegasus extends MobRenderer<Pegasus, ModelPegasus> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(Pegasus gordiusWheel) {
+    public ResourceLocation getTextureLocation(Pegasus pegasus) {
         return this.tex;
     }
 }

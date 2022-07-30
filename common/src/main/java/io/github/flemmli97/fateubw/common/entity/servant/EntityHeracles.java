@@ -32,8 +32,7 @@ public class EntityHeracles extends BaseServant {
     protected static final EntityDataAccessor<Integer> deathCount = SynchedEntityData.defineId(EntityHeracles.class, EntityDataSerializers.INT);
     private boolean voidDeath;
 
-    private final AnimationHandler<EntityHeracles> animationHandler = new AnimationHandler<>(this, anims)
-            .setAnimationChangeFunc(anim -> this.deathAnim().checkID(anim));
+    private final AnimationHandler<EntityHeracles> animationHandler = new AnimationHandler<>(this, anims);
 
     public EntityHeracles(EntityType<? extends BaseServant> entityType, Level world) {
         super(entityType, world, LibEntities.heracles + ".hogou");

@@ -110,7 +110,7 @@ public class ModEntities {
     public static final RegistryEntrySupplier<EntityType<Gordius>> gordiusWheel = reg(EntityType.Builder.of(Gordius::new, MobCategory.CREATURE).sized(2, 1.5f), LibEntities.gordiusWheel);
 
     public static final RegistryEntrySupplier<EntityType<HassanClone>> hassanCopy = reg(EntityType.Builder.of(HassanClone::new, MobCategory.MISC), LibEntities.hassan_copy);
-    public static final RegistryEntrySupplier<EntityType<Pegasus>> pegasus = reg(EntityType.Builder.of(Pegasus::new, MobCategory.MONSTER).sized(1.2f, 1.6f), LibEntities.pegasus);
+    public static final RegistryEntrySupplier<EntityType<Pegasus>> pegasus = reg(EntityType.Builder.of(Pegasus::new, MobCategory.MONSTER).sized(1.35f, 1.65f), LibEntities.pegasus);
     public static final RegistryEntrySupplier<EntityType<ChainDagger>> daggerHook = reg(EntityType.Builder.<ChainDagger>of(ChainDagger::new, MobCategory.MISC).updateInterval(5).sized(0.25F, 0.25F), LibEntities.daggerHook);
 
     public static final RegistryEntrySupplier<EntityType<ThrownGem>> gem = reg(EntityType.Builder.<ThrownGem>of(ThrownGem::new, MobCategory.MISC).sized(0.25F, 0.25F), LibEntities.entity_gem);

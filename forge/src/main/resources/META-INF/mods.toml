@@ -19,6 +19,6 @@ side="BOTH"
 [[dependencies.fateubw]]
 modId="tenshilib"
 mandatory=true
-versionRange="[1.18.2-1.6.6,)"
+versionRange="[1.18.2-1.6.9,)"
 ordering="NONE"
 side="BOTH"
