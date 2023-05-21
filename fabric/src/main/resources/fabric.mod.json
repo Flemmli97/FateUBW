@@ -8,7 +8,7 @@
     "Flemmli97"
   ],
   "contact": {
-    "homepage": "https://www.curseforge.com/minecraft/mc-mods/fate-ubw-fabric",
+    "homepage": "${homepage}",
     "issues": "https://github.com/Flemmli97/FateUBW/issues",
     "sources": "https://github.com/Flemmli97/FateUBW"
   },
@@ -30,8 +30,8 @@
     "fateubw.fabric.mixins.json"
   ],
   "depends": {
-    "fabric": "*",
-    "minecraft": ">=1.18.2",
+    "fabric": ">=${fabric_version}",
+    "minecraft": ">=${mcversion}",
     "tenshilib": ">=1.18.2-1.6.9"
   }
 }
