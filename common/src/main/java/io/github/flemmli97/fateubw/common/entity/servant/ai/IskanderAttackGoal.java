@@ -42,10 +42,10 @@ public class IskanderAttackGoal extends BaseServantAttackGoal<EntityIskander> {
     }
 
     @Override
-    public void handleIddle() {
+    public void handleIdle() {
         if (this.isRidingGordius) {
             this.attacker.getLookControl().setLookAt(this.target, 30.0F, 30.0F);
         } else
-            super.handleIddle();
+            super.handleIdle();
     }
 }

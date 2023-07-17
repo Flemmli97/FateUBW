@@ -27,9 +27,9 @@ public record C2SServantSpecial(String specialID) implements Packet {
     public static void handle(C2SServantSpecial pkt, ServerPlayer sender) {
         if (sender == null)
             return;
-        Platform.INSTANCE.getPlayerData(sender).ifPresent(cap -> {
-            if (cap.getServant(sender) != null)
-                cap.getServant(sender).doSpecialCommand(pkt.specialID);
+        Platform.INSTANCE.getPlayerData(sender).ifPresent(data -> {
+            if (data.getServant(sender) != null)
+                data.getServant(sender).doSpecialCommand(pkt.specialID);
         });
     }
 }

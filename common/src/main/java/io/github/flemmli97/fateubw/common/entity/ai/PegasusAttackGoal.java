@@ -53,7 +53,7 @@ public class PegasusAttackGoal extends AnimatedAttackGoal<Pegasus> {
     }
 
     @Override
-    public void handleIddle() {
+    public void handleIdle() {
     }
 
     @Override

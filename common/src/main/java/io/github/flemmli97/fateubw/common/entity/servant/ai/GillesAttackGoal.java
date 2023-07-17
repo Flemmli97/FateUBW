@@ -7,7 +7,7 @@ import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 public class GillesAttackGoal extends BaseServantAttackGoal<EntityGilles> {
 
     private final float shootRangeSq;
-    private boolean iddleFlag, clockwise;
+    private boolean idleFlag, clockwise;
 
     public GillesAttackGoal(EntityGilles entity, float shootRange) {
         super(entity, 1);
@@ -47,18 +47,18 @@ public class GillesAttackGoal extends BaseServantAttackGoal<EntityGilles> {
 
     @Override
     public void handlePreAttack() {
-        this.iddleFlag = false;
+        this.idleFlag = false;
         super.handlePreAttack();
     }
 
     @Override
-    public void handleIddle() {
+    public void handleIdle() {
         if (this.distanceToTargetSq < 9)
             this.randomPosAwayFrom(this.target, 8);
         else {
-            if (!this.iddleFlag) {
+            if (!this.idleFlag) {
                 this.clockwise = this.attacker.getRandom().nextBoolean();
-                this.iddleFlag = true;
+                this.idleFlag = true;
             }
             this.circleAroundTargetFacing(8, this.clockwise, 0.8f);
         }

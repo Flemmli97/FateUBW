@@ -40,7 +40,7 @@ public class BabylonWeapon extends EntityProjectile {
     protected static final EntityDataAccessor<Integer> shootTime = SynchedEntityData.defineId(BabylonWeapon.class, EntityDataSerializers.INT);
     protected static final EntityDataAccessor<Integer> preShootTick = SynchedEntityData.defineId(BabylonWeapon.class, EntityDataSerializers.INT);
 
-    public boolean iddle = true;
+    public boolean idle = true;
     private LivingEntity target;
     private double dmg;
 
@@ -92,7 +92,7 @@ public class BabylonWeapon extends EntityProjectile {
                 }
             }
         } else if (this.getPreShootTick() > this.entityData.get(shootTime)) {
-            this.iddle = false;
+            this.idle = false;
             if (!this.level.isClientSide) {
                 if (thrower == null || !thrower.isAlive()) {
                     this.kill();

@@ -24,7 +24,7 @@ public class RenderMagicBeam extends RenderBeam<MagicBeam> {
 
     @Override
     public void render(MagicBeam projectile, float rotation, float partialTicks, PoseStack stack, MultiBufferSource buffer, int packedLight) {
-        if (projectile.iddle) {
+        if (projectile.idle) {
             stack.pushPose();
             RenderUtils.applyYawPitch(stack, Mth.lerp(partialTicks, projectile.yRotO, projectile.getYRot()),
                     Mth.lerp(partialTicks, projectile.xRotO, projectile.getXRot()));

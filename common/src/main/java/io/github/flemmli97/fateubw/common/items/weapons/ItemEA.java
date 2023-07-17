@@ -25,14 +25,14 @@ public class ItemEA extends SwordItem {
     public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
         player.startUsingItem(hand);
         ItemStack stack = player.getItemInHand(hand);
-        Platform.INSTANCE.getItemStackData(stack).ifPresent(cap -> cap.setInUse(player, true, hand == InteractionHand.MAIN_HAND));
+        Platform.INSTANCE.getItemStackData(stack).ifPresent(data -> data.setInUse(player, true, hand == InteractionHand.MAIN_HAND));
         return InteractionResultHolder.consume(stack);
     }
 
     @Override
     public void releaseUsing(ItemStack stack, Level world, LivingEntity entityLiving, int timeLeft) {
         int i = this.getUseDuration(stack) - timeLeft;
-        Platform.INSTANCE.getItemStackData(stack).ifPresent(cap -> cap.setInUse(entityLiving, false, entityLiving.getUsedItemHand() == InteractionHand.MAIN_HAND));
+        Platform.INSTANCE.getItemStackData(stack).ifPresent(data -> data.setInUse(entityLiving, false, entityLiving.getUsedItemHand() == InteractionHand.MAIN_HAND));
         if (i < 40) {
             return;
         }

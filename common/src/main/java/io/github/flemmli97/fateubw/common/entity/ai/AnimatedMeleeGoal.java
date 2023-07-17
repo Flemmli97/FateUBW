@@ -56,7 +56,7 @@ public class AnimatedMeleeGoal<T extends PathfinderMob & IAnimated> extends Anim
     }
 
     @Override
-    public void handleIddle() {
+    public void handleIdle() {
         this.moveToWithDelay(1);
         this.attacker.getLookControl().setLookAt(this.target, 30, 30);
     }

@@ -87,7 +87,7 @@ public class EntityGilgamesh extends BaseServant {
             ea.setRotationTo(pos[0], pos[1], pos[2], 0);
         this.level.addFreshEntity(ea);
         this.revealServant();
-        Platform.INSTANCE.getItemStackData(this.getMainHandItem()).ifPresent(cap -> cap.setInUse(this, false, true));
+        Platform.INSTANCE.getItemStackData(this.getMainHandItem()).ifPresent(data -> data.setInUse(this, false, true));
         this.switchableWeapon.switchItems(true);
     }
 

@@ -10,7 +10,7 @@ public class GilgameshAttackGoal extends BaseServantAttackGoal<EntityGilgamesh> 
     private boolean doRanged;
     private double[] targetPos;
     private final float shootRangeSq;
-    private boolean iddleFlag, clockwise;
+    private boolean idleFlag, clockwise;
 
     public GilgameshAttackGoal(EntityGilgamesh entity, float shootRange) {
         super(entity, 1);
@@ -56,28 +56,28 @@ public class GilgameshAttackGoal extends BaseServantAttackGoal<EntityGilgamesh> 
 
     @Override
     public void handlePreAttack() {
-        this.iddleFlag = false;
+        this.idleFlag = false;
         if (this.attacker.canUse(this.next, BaseServant.AttackType.NP)) {
             this.attacker.switchableWeapon.switchItems(false);
-            Platform.INSTANCE.getItemStackData(this.attacker.getMainHandItem()).ifPresent(cap -> cap.setInUse(this.attacker, true, true));
+            Platform.INSTANCE.getItemStackData(this.attacker.getMainHandItem()).ifPresent(data -> data.setInUse(this.attacker, true, true));
         }
         super.handlePreAttack();
     }
 
     @Override
-    public void handleIddle() {
+    public void handleIdle() {
         if (this.doRanged) {
             if (this.distanceToTargetSq < 9)
                 this.randomPosAwayFrom(this.target, 8);
             else {
-                if (!this.iddleFlag) {
+                if (!this.idleFlag) {
                     this.clockwise = this.attacker.getRandom().nextBoolean();
-                    this.iddleFlag = true;
+                    this.idleFlag = true;
                 }
                 this.circleAroundTargetFacing(8, this.clockwise, 0.8f);
             }
         } else
-            super.handleIddle();
+            super.handleIdle();
     }
 
     @Override

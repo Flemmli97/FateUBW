@@ -46,7 +46,7 @@ public class BaseServantAttackGoal<T extends BaseServant> extends AnimatedAttack
     }
 
     @Override
-    public void handleIddle() {
+    public void handleIdle() {
         this.moveToWithDelay(1);
     }
 

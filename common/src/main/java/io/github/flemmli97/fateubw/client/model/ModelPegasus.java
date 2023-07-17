@@ -145,7 +145,7 @@ public class ModelPegasus extends EntityModel<Pegasus> implements ExtendedModel 
             else if (limbSwingAmount > 0.1)
                 this.anim.doAnimation(this, "walk", entity.tickCount, partialTicks);
             else
-                this.anim.doAnimation(this, "iddle", entity.tickCount, partialTicks);
+                this.anim.doAnimation(this, "idle", entity.tickCount, partialTicks);
         } else
             this.anim.doAnimation(this, anim.getAnimationClient(), anim.getTick(), partialTicks);
     }

@@ -63,7 +63,7 @@ public class GordiusAttackGoal extends AnimatedAttackGoal<Gordius> {
     }
 
     @Override
-    public void handleIddle() {
+    public void handleIdle() {
         if (this.distanceToTargetSq > 81)
             this.moveToWithDelay(1);
         else

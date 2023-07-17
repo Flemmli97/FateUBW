@@ -9,7 +9,7 @@ public class EmiyaAttackGoal extends BaseServantAttackGoal<EntityEmiya> {
 
     private boolean doRanged;
     private final float shootRangeSq;
-    private boolean iddleFlag, clockwise;
+    private boolean idleFlag, clockwise;
 
     public EmiyaAttackGoal(EntityEmiya entity, float shootRange) {
         super(entity, 1);
@@ -53,22 +53,22 @@ public class EmiyaAttackGoal extends BaseServantAttackGoal<EntityEmiya> {
 
     @Override
     public void handlePreAttack() {
-        this.iddleFlag = false;
+        this.idleFlag = false;
         if (this.attacker.canUse(this.next, BaseServant.AttackType.NP))
             this.attacker.switchableWeapon.switchItems(false);
         super.handlePreAttack();
     }
 
     @Override
-    public void handleIddle() {
+    public void handleIdle() {
         if (this.doRanged) {
-            if (!this.iddleFlag) {
+            if (!this.idleFlag) {
                 this.clockwise = this.attacker.getRandom().nextBoolean();
-                this.iddleFlag = true;
+                this.idleFlag = true;
             }
             this.circleAroundTargetFacing(8, this.clockwise, 0.8f);
         } else
-            super.handleIddle();
+            super.handleIdle();
     }
 
     @Override

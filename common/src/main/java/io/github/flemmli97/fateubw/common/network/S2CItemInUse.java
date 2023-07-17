@@ -46,7 +46,7 @@ public class S2CItemInUse implements Packet {
             Entity e = player.level.getEntity(pkt.entityID);
             if (e instanceof LivingEntity) {
                 ItemStack stack = ((LivingEntity) e).getItemInHand(pkt.mainHand ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND);
-                Platform.INSTANCE.getItemStackData(stack).ifPresent(cap -> cap.setInUse((LivingEntity) e, pkt.inUse, pkt.mainHand));
+                Platform.INSTANCE.getItemStackData(stack).ifPresent(data -> data.setInUse((LivingEntity) e, pkt.inUse, pkt.mainHand));
             }
         }
     }

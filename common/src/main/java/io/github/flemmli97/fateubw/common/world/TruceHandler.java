@@ -83,9 +83,9 @@ public class TruceHandler extends SavedData {
             });
             if (other != null) {
                 other.sendMessage(new TranslatableComponent("chat.truce.requestsuccess", player.getName(), ChatFormatting.GOLD), Util.NIL_UUID);
-                Platform.INSTANCE.getPlayerData(other).ifPresent(cap -> {
-                    if (cap.getServant(other) != null)
-                        cap.getServant(other).setTarget(null);
+                Platform.INSTANCE.getPlayerData(other).ifPresent(data -> {
+                    if (data.getServant(other) != null)
+                        data.getServant(other).setTarget(null);
                 });
             }
             this.setDirty();

@@ -14,7 +14,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class RenderBabylon extends RenderProjectileItem<BabylonWeapon> {
 
-    public final ResourceLocation babylonIddle = new ResourceLocation(Fate.MODID, "textures/entity/babylon.png");
+    public final ResourceLocation babylonIdle = new ResourceLocation(Fate.MODID, "textures/entity/babylon.png");
     private final RenderUtils.TextureBuilder textureBuilder = new RenderUtils.TextureBuilder();
 
     public RenderBabylon(EntityRendererProvider.Context ctx) {
@@ -23,14 +23,14 @@ public class RenderBabylon extends RenderProjectileItem<BabylonWeapon> {
 
     @Override
     public void render(BabylonWeapon projectile, float rotation, float partialTicks, PoseStack stack, MultiBufferSource buffer, int packedLight) {
-        if (projectile.iddle) {
+        if (projectile.idle) {
             stack.pushPose();
             RenderUtils.applyYawPitch(stack, Mth.lerp(partialTicks, projectile.yRotO, projectile.getYRot()),
                     Mth.lerp(partialTicks, projectile.xRotO, projectile.getXRot()));
             float ripple = Mth.sin((projectile.tickCount + projectile.renderRand) / 2f) * 0.025f + 1;
             float size = (float) (1.45 * ripple);
             this.textureBuilder.setLight(packedLight);
-            RenderUtils.renderTexture(stack, buffer.getBuffer(RenderType.entityCutoutNoCull(this.babylonIddle)), size, size, this.textureBuilder);
+            RenderUtils.renderTexture(stack, buffer.getBuffer(RenderType.entityCutoutNoCull(this.babylonIdle)), size, size, this.textureBuilder);
             stack.popPose();
         }
         super.render(projectile, rotation, partialTicks, stack, buffer, packedLight);

@@ -23,7 +23,7 @@ public class MagicBeam extends EntityBeam {
 
     private LivingEntity target;
     private int strengthMod;
-    public boolean iddle = true;
+    public boolean idle = true;
 
     public MagicBeam(EntityType<? extends MagicBeam> type, Level world) {
         super(type, world);
@@ -60,7 +60,7 @@ public class MagicBeam extends EntityBeam {
             }
         }
         if (this.getPreShootTick() > this.entityData.get(shootTime)) {
-            this.iddle = false;
+            this.idle = false;
             if (!this.level.isClientSide) {
                 if (thrower == null || !thrower.isAlive()) {
                     this.remove(RemovalReason.KILLED);

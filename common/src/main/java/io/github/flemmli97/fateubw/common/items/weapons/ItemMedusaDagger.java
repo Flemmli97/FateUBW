@@ -28,7 +28,7 @@ public class ItemMedusaDagger extends ItemDagger {
                 ChainDagger dagger = new ChainDagger(world, player, hand == InteractionHand.MAIN_HAND);
                 dagger.shoot(player, player.getXRot(), player.getYRot(), 0, 1.5f, 0);
                 world.addFreshEntity(dagger);
-                opt.ifPresent(cap -> cap.setThrownDagger(dagger));
+                opt.ifPresent(data -> data.setThrownDagger(dagger));
             } else {
                 thrownDagger.retractHook();
             }
