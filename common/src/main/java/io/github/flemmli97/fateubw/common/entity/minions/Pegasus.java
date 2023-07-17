@@ -36,7 +36,7 @@ public class Pegasus extends PathfinderMob implements IAnimated, IServantMinion 
     public final PegasusAttackGoal attackAI = new PegasusAttackGoal(this);
 
     private static final AnimatedAction charging = new AnimatedAction(20, 0, "charge");
-    private static final AnimatedAction chargingFlying = new AnimatedAction(20, 0, "flying_charge", charging.getID());
+    private static final AnimatedAction chargingFlying = AnimatedAction.builder(20, "flycing_charge").withClientID(charging.getID()).build();
 
     private static final AnimatedAction[] anims = {charging, chargingFlying};
 
@@ -69,7 +69,7 @@ public class Pegasus extends PathfinderMob implements IAnimated, IServantMinion 
     }
 
     public boolean isCharging() {
-        return this.getAnimationHandler().isCurrentAnim(charging.getID(), chargingFlying.getID());
+        return this.getAnimationHandler().isCurrent(charging, chargingFlying);
     }
 
     public AnimatedAction getChargingAnim() {

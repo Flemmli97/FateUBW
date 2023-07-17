@@ -120,7 +120,7 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
 
     @Override
     public int attackCooldown(AnimatedAction anim) {
-        if (daggerAttack.checkID(anim))
+        if (daggerAttack.is(anim))
             return this.random.nextInt(15) + 5;
         return super.attackCooldown(anim);
     }

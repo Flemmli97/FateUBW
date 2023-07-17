@@ -5,6 +5,7 @@ import com.google.common.collect.Multimap;
 import io.github.flemmli97.tenshilib.api.item.IExtendedWeapon;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -44,7 +45,7 @@ public class ClassSpear extends TieredItem implements Vanishable, IExtendedWeapo
     }
 
     @Override
-    public float getRange() {
+    public float getRange(LivingEntity entity, ItemStack stack) {
         return this.range;
     }
 

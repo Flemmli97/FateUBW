@@ -93,9 +93,9 @@ public class EntityGilgamesh extends BaseServant {
 
     public void attackWithRangedAttack(LivingEntity target) {
         int weaponAmount = this.getRandom().nextInt(15) + 4;
-        if (this.getAnimationHandler().getAnimation() == null || this.getAnimationHandler().isCurrentAnim(rangedAttack.getID()))
+        if (this.getAnimationHandler().getAnimation() == null || this.getAnimationHandler().isCurrent(rangedAttack))
             this.spawnBehind(target, weaponAmount);
-        else if (this.getAnimationHandler().isCurrentAnim(rangedAttack2.getID()))
+        else if (this.getAnimationHandler().isCurrent(rangedAttack2))
             this.spawnAroundTarget(target, weaponAmount);
     }
 
