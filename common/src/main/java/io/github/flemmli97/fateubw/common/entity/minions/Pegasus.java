@@ -28,7 +28,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 
 public class Pegasus extends PathfinderMob implements IAnimated, IServantMinion {
@@ -45,7 +45,7 @@ public class Pegasus extends PathfinderMob implements IAnimated, IServantMinion 
     private final PathNavigation flyingNavigator;
     private boolean canFly;
 
-    private static final Function<AnimatedAction, Boolean> chargingAnim = anim -> anim != null && (anim.getID().equals(charging.getID()) || anim.getID().equals(chargingFlying.getID()));
+    private static final Predicate<AnimatedAction> chargingAnim = anim -> anim != null && (anim.getID().equals(charging.getID()) || anim.getID().equals(chargingFlying.getID()));
     private static final EntityDataAccessor<Float> lockedYaw = SynchedEntityData.defineId(Pegasus.class, EntityDataSerializers.FLOAT);
 
     public final ChargingHandler<Pegasus> chargingHandler = new ChargingHandler<>(this, lockedYaw, chargingAnim);

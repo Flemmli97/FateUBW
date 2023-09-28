@@ -18,7 +18,7 @@ import net.minecraftforge.client.event.RenderNameplateEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Event;
 
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class ClientPlatformImpl implements ClientPlatform {
 
@@ -30,10 +30,10 @@ public class ClientPlatformImpl implements ClientPlatform {
     }
 
     @Override
-    public <T extends Entity> Component nameTagRenderEvent(T entity, Component content, EntityRenderer<?> entityRenderer, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, float partialTick, Function<T, Boolean> shouldRender) {
+    public <T extends Entity> Component nameTagRenderEvent(T entity, Component content, EntityRenderer<?> entityRenderer, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, float partialTick, Predicate<T> shouldRender) {
         RenderNameplateEvent renderNameplateEvent = new RenderNameplateEvent(entity, entity.getDisplayName(), entityRenderer, poseStack, multiBufferSource, packedLight, partialTick);
         MinecraftForge.EVENT_BUS.post(renderNameplateEvent);
-        return renderNameplateEvent.getResult() != Event.Result.DENY && (renderNameplateEvent.getResult() == Event.Result.ALLOW || shouldRender.apply(entity)) ? renderNameplateEvent.getContent() : null;
+        return renderNameplateEvent.getResult() != Event.Result.DENY && (renderNameplateEvent.getResult() == Event.Result.ALLOW || shouldRender.test(entity)) ? renderNameplateEvent.getContent() : null;
     }
 
     @Override

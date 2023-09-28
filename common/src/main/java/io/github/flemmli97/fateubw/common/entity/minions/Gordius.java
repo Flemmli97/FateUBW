@@ -22,7 +22,7 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class Gordius extends PathfinderMob implements IServantMinion, IAnimated, NonSitVehicle {
 
@@ -35,7 +35,7 @@ public class Gordius extends PathfinderMob implements IServantMinion, IAnimated,
 
     private final MultiPartEntity wheels;
 
-    private static final Function<AnimatedAction, Boolean> chargingAnim = anim -> anim != null && anim.getID().equals(charging.getID());
+    private static final Predicate<AnimatedAction> chargingAnim = anim -> anim != null && anim.getID().equals(charging.getID());
     private static final EntityDataAccessor<Float> lockedYaw = SynchedEntityData.defineId(Gordius.class, EntityDataSerializers.FLOAT);
 
     public final ChargingHandler<Gordius> chargingHandler = new ChargingHandler<>(this, lockedYaw, chargingAnim);

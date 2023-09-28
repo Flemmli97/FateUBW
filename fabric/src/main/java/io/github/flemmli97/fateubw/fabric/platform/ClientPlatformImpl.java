@@ -15,7 +15,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class ClientPlatformImpl implements ClientPlatform {
 
@@ -25,8 +25,8 @@ public class ClientPlatformImpl implements ClientPlatform {
     }
 
     @Override
-    public <T extends Entity> Component nameTagRenderEvent(T entity, Component content, EntityRenderer<?> entityRenderer, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, float partialTick, Function<T, Boolean> shouldRender) {
-        return shouldRender.apply(entity) ? entity.getDisplayName() : null;
+    public <T extends Entity> Component nameTagRenderEvent(T entity, Component content, EntityRenderer<?> entityRenderer, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, float partialTick, Predicate<T> shouldRender) {
+        return shouldRender.test(entity) ? entity.getDisplayName() : null;
     }
 
     @Override

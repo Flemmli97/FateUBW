@@ -6,22 +6,22 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class ChargingHandler<T extends LivingEntity & IAnimated> {
 
     private final T entity;
     private final EntityDataAccessor<Float> lockingData;
-    private final Function<AnimatedAction, Boolean> isChargeAttack;
+    private final Predicate<AnimatedAction> isChargeAttack;
 
-    public ChargingHandler(T entity, EntityDataAccessor<Float> lockingData, Function<AnimatedAction, Boolean> isChargeAttack) {
+    public ChargingHandler(T entity, EntityDataAccessor<Float> lockingData, Predicate<AnimatedAction> isChargeAttack) {
         this.entity = entity;
         this.lockingData = lockingData;
         this.isChargeAttack = isChargeAttack;
     }
 
     public void tick() {
-        if (this.isChargeAttack.apply(this.entity.getAnimationHandler().getAnimation())) {
+        if (this.isChargeAttack.test(this.entity.getAnimationHandler().getAnimation())) {
             this.entity.setXRot(0);
             this.entity.setYRot(this.entity.getEntityData().get(this.lockingData));
             if (!this.entity.getPassengers().isEmpty() && this.entity.getPassengers().get(0) instanceof Mob) {
