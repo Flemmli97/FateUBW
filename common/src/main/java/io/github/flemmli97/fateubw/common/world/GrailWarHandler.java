@@ -136,7 +136,7 @@ public class GrailWarHandler extends SavedData {
                     world.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("chat.grailwar.win", name).withStyle(ChatFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
                 }
                 this.setDirty();
-            } else if (this.players.size() == 0)
+            } else if (this.players.isEmpty())
                 this.reset(world);
         }
     }
@@ -191,7 +191,7 @@ public class GrailWarHandler extends SavedData {
         this.state = State.RUN;
         if (this.players.size() >= Config.Common.minPlayer) {
             world.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("chat.grailwar.start").withStyle(ChatFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
-        } else if (this.players.size() == 0)
+        } else if (this.players.isEmpty())
             this.reset(world);
         else {
             this.joinTicker = Config.Common.joinTime;

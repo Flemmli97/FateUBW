@@ -127,8 +127,7 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
 
     @Override
     public boolean hurt(DamageSource damageSource, float damage) {
-        if (this.getVehicle() != null && this.getVehicle() instanceof LivingEntity) {
-            LivingEntity mount = (LivingEntity) this.getVehicle();
+        if (this.getVehicle() != null && this.getVehicle() instanceof LivingEntity mount) {
             return mount.hurt(damageSource, damage);
         }
         return super.hurt(damageSource, damage);
@@ -155,9 +154,8 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
                 lightning.setVisualOnly(true);
             }
             List<Entity> list = this.level.getEntities(this, this.getBoundingBox().expandTowards(5, 3.0D, 5));
-            for (int x = 0; x < list.size(); x++) {
-                if (list.get(x) instanceof LivingEntity) {
-                    LivingEntity ent = (LivingEntity) list.get(x);
+            for (Entity entity : list) {
+                if (entity instanceof LivingEntity ent) {
                     ent.knockback(2, Mth.sin(this.getYRot() * 0.017453292F), (-Mth.cos(this.getYRot() * 0.017453292F)));
                 }
             }

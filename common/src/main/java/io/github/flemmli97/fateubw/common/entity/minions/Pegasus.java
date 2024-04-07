@@ -93,8 +93,7 @@ public class Pegasus extends PathfinderMob implements IAnimated, IServantMinion 
 
     @Override
     public void travel(Vec3 vec) {
-        if (this.isVehicle() && this.canBeControlledByRider() && this.getControllingPassenger() instanceof LivingEntity) {
-            LivingEntity entitylivingbase = (LivingEntity) this.getControllingPassenger();
+        if (this.isVehicle() && this.canBeControlledByRider() && this.getControllingPassenger() instanceof LivingEntity entitylivingbase) {
             this.setYRot(entitylivingbase.getYRot());
             this.setXRot(entitylivingbase.getXRot() * 0.5f);
             this.yRotO = this.getYRot();

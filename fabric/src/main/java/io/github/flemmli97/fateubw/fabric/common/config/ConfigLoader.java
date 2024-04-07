@@ -7,50 +7,50 @@ import java.util.Map;
 public class ConfigLoader {
 
     public static void loadClient() {
-        Config.Client.manaX = ConfigSpecs.clientConf.manaBarX.get();
-        Config.Client.manaY = ConfigSpecs.clientConf.manaBarY.get();
+        Config.Client.manaX = ConfigSpecs.CLIENT_CONFIG.manaBarX.get();
+        Config.Client.manaY = ConfigSpecs.CLIENT_CONFIG.manaBarY.get();
     }
 
     public static void loadCommon() {
-        Config.Common.minPlayer = ConfigSpecs.commonConf.minPlayer.get();
-        Config.Common.maxPlayer = ConfigSpecs.commonConf.maxPlayer.get();
-        Config.Common.joinTime = ConfigSpecs.commonConf.joinTime.get();
-        Config.Common.rewardDelay = ConfigSpecs.commonConf.rewardDelay.get();
-        Config.Common.charmSpawnRate = ConfigSpecs.commonConf.charmSpawnRate.get();
-        Config.Common.gemSpawnRate = ConfigSpecs.commonConf.gemSpawnRate.get();
-        Config.Common.allowDuplicateServant = ConfigSpecs.commonConf.allowDuplicateServant.get();
-        Config.Common.allowDuplicateClass = ConfigSpecs.commonConf.allowDuplicateClass.get();
-        Config.Common.fillMissingSlots = ConfigSpecs.commonConf.fillMissingSlots.get();
-        Config.Common.maxServantCircle = ConfigSpecs.commonConf.maxServantCircle.get();
-        Config.Common.servantMinSpawnDelay = ConfigSpecs.commonConf.servantMinSpawnDelay.get();
-        Config.Common.servantMaxSpawnDelay = ConfigSpecs.commonConf.servantMaxSpawnDelay.get();
-        Config.Common.punishTeleport = ConfigSpecs.commonConf.punishTeleport.get();
-        Config.Common.notifyBlackList = ConfigSpecs.commonConf.notifyBlackList.get();
-        Config.Common.whiteList = ConfigSpecs.commonConf.whiteList.get();
-        Config.Common.notifyAll = ConfigSpecs.commonConf.notifyAll.get();
-        Config.Common.npBoostEffect.readFromString(ConfigSpecs.commonConf.npBoostEffect.get());
+        Config.Common.minPlayer = ConfigSpecs.COMMON_CONFIG.minPlayer.get();
+        Config.Common.maxPlayer = ConfigSpecs.COMMON_CONFIG.maxPlayer.get();
+        Config.Common.joinTime = ConfigSpecs.COMMON_CONFIG.joinTime.get();
+        Config.Common.rewardDelay = ConfigSpecs.COMMON_CONFIG.rewardDelay.get();
+        Config.Common.charmSpawnRate = ConfigSpecs.COMMON_CONFIG.charmSpawnRate.get();
+        Config.Common.gemSpawnRate = ConfigSpecs.COMMON_CONFIG.gemSpawnRate.get();
+        Config.Common.allowDuplicateServant = ConfigSpecs.COMMON_CONFIG.allowDuplicateServant.get();
+        Config.Common.allowDuplicateClass = ConfigSpecs.COMMON_CONFIG.allowDuplicateClass.get();
+        Config.Common.fillMissingSlots = ConfigSpecs.COMMON_CONFIG.fillMissingSlots.get();
+        Config.Common.maxServantCircle = ConfigSpecs.COMMON_CONFIG.maxServantCircle.get();
+        Config.Common.servantMinSpawnDelay = ConfigSpecs.COMMON_CONFIG.servantMinSpawnDelay.get();
+        Config.Common.servantMaxSpawnDelay = ConfigSpecs.COMMON_CONFIG.servantMaxSpawnDelay.get();
+        Config.Common.punishTeleport = ConfigSpecs.COMMON_CONFIG.punishTeleport.get();
+        Config.Common.notifyBlackList = ConfigSpecs.COMMON_CONFIG.notifyBlackList.get();
+        Config.Common.whiteList = ConfigSpecs.COMMON_CONFIG.whiteList.get();
+        Config.Common.notifyAll = ConfigSpecs.COMMON_CONFIG.notifyAll.get();
+        Config.Common.npBoostEffect.readFromString(ConfigSpecs.COMMON_CONFIG.npBoostEffect.get());
 
         Config.Common.attributes.clear();
-        for (Map.Entry<String, ServantConfSpec> e : ConfigSpecs.commonConf.attributes.entrySet())
+        for (Map.Entry<String, ServantConfSpec> e : ConfigSpecs.COMMON_CONFIG.attributes.entrySet())
             Config.Common.attributes.put(e.getKey(), ServantConfSpec.read(e.getValue()));
-        Config.Common.lancelotReflectChance = ConfigSpecs.commonConf.lancelotReflectChance.get().floatValue();
-        Config.Common.hassanCopies = ConfigSpecs.commonConf.hassanCopies.get();
+        Config.Common.lancelotReflectChance = ConfigSpecs.COMMON_CONFIG.lancelotReflectChance.get().floatValue();
+        Config.Common.hassanCopies = ConfigSpecs.COMMON_CONFIG.hassanCopies.get();
         //Minions
-        Config.Common.gillesMinionDuration = ConfigSpecs.commonConf.gillesMinionDuration.get();
-        Config.Common.gillesMinionAmount = ConfigSpecs.commonConf.gillesMinionAmount.get();
-        Config.Common.smallMonsterDamage = ConfigSpecs.commonConf.smallMonsterDamage.get().floatValue();
-        Config.Common.babylonScale = ConfigSpecs.commonConf.babylonScale.get().floatValue();
-        Config.Common.eaDamage = ConfigSpecs.commonConf.eaDamage.get().floatValue();
-        Config.Common.excaliburDamage = ConfigSpecs.commonConf.excaliburDamage.get().floatValue();
-        Config.Common.caladBolgDmg = ConfigSpecs.commonConf.caladBolgDmg.get().floatValue();
-        Config.Common.magicBeam = ConfigSpecs.commonConf.magicBeam.get().floatValue();
-        Config.Common.gaeBolgDmg = ConfigSpecs.commonConf.gaeBolgDmg.get().floatValue();
-        Config.Common.gaeBolgEffect.readFromString(ConfigSpecs.commonConf.gaeBolgEffect.get());
-        Config.Common.gordiusHealth = ConfigSpecs.commonConf.gordiusHealth.get();
-        Config.Common.gordiusDmg = ConfigSpecs.commonConf.gordiusDmg.get().floatValue();
-        Config.Common.pegasusHealth = ConfigSpecs.commonConf.pegasusHealth.get();
-        Config.Common.medeaCircleSpan = ConfigSpecs.commonConf.medeaCircleSpan.get();
-        Config.Common.medeaCircleRange = ConfigSpecs.commonConf.medeaCircleRange.get().floatValue();
-        Config.Common.hassanCopyProps = ServantConfSpec.read(ConfigSpecs.commonConf.hassanCopyProps);
+        Config.Common.gillesMinionDuration = ConfigSpecs.COMMON_CONFIG.gillesMinionDuration.get();
+        Config.Common.gillesMinionAmount = ConfigSpecs.COMMON_CONFIG.gillesMinionAmount.get();
+        Config.Common.smallMonsterDamage = ConfigSpecs.COMMON_CONFIG.smallMonsterDamage.get().floatValue();
+        Config.Common.babylonScale = ConfigSpecs.COMMON_CONFIG.babylonScale.get().floatValue();
+        Config.Common.eaDamage = ConfigSpecs.COMMON_CONFIG.eaDamage.get().floatValue();
+        Config.Common.excaliburDamage = ConfigSpecs.COMMON_CONFIG.excaliburDamage.get().floatValue();
+        Config.Common.caladBolgDmg = ConfigSpecs.COMMON_CONFIG.caladBolgDmg.get().floatValue();
+        Config.Common.magicBeam = ConfigSpecs.COMMON_CONFIG.magicBeam.get().floatValue();
+        Config.Common.gaeBolgDmg = ConfigSpecs.COMMON_CONFIG.gaeBolgDmg.get().floatValue();
+        Config.Common.gaeBolgEffect.readFromString(ConfigSpecs.COMMON_CONFIG.gaeBolgEffect.get());
+        Config.Common.gordiusHealth = ConfigSpecs.COMMON_CONFIG.gordiusHealth.get();
+        Config.Common.gordiusDmg = ConfigSpecs.COMMON_CONFIG.gordiusDmg.get().floatValue();
+        Config.Common.pegasusHealth = ConfigSpecs.COMMON_CONFIG.pegasusHealth.get();
+        Config.Common.medeaCircleSpan = ConfigSpecs.COMMON_CONFIG.medeaCircleSpan.get();
+        Config.Common.medeaCircleRange = ConfigSpecs.COMMON_CONFIG.medeaCircleRange.get().floatValue();
+        Config.Common.hassanCopyProps = ServantConfSpec.read(ConfigSpecs.COMMON_CONFIG.hassanCopyProps);
     }
 }

@@ -228,11 +228,6 @@ public class ModelHeracles<T extends EntityHeracles & IAnimated> extends ModelSe
     }
 
     @Override
-    public ModelPartHandler getHandler() {
-        return this.model;
-    }
-
-    @Override
     public void transform(HumanoidArm humanoidArm, PoseStack poseStack) {
         if (humanoidArm == HumanoidArm.LEFT) {
             this.rotate(poseStack, this.upperTorso, this.leftArmUp, this.leftBiceps, this.leftBicepsJoint, this.leftElbow, this.leftLowerArm, this.leftWrist);
@@ -264,8 +259,8 @@ public class ModelHeracles<T extends EntityHeracles & IAnimated> extends ModelSe
         this.leftUpperThigh.yRot = 0;
 
         if (this.riding) {
-            this.rightArmUp.xRot += -((float) Math.PI / 5F);
-            this.leftArmUp.xRot += -((float) Math.PI / 5F);
+            this.rightArmUp.xRot -= ((float) Math.PI / 5F);
+            this.leftArmUp.xRot -= ((float) Math.PI / 5F);
             this.rightUpperThigh.xRot = -((float) Math.PI * 2F / 5F);
             this.leftUpperThigh.xRot = -((float) Math.PI * 2F / 5F);
             this.rightUpperThigh.yRot = ((float) Math.PI / 10F);

@@ -36,21 +36,12 @@ public class ButtonGameProfile extends Button {
             //GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
             this.isHovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
             int i = this.active ? 2 : this.getYImage(this.isHovered);
-            int state = 0;
-            switch (this.state) {
-                case NONE:
-                    state = 0;
-                    break;
-                case PENDING:
-                    state = 1;
-                    break;
-                case REQUESTED:
-                    state = 2;
-                    break;
-                case TRUCE:
-                    state = 3;
-                    break;
-            }
+            int state = switch (this.state) {
+                case NONE -> 0;
+                case PENDING -> 1;
+                case REQUESTED -> 2;
+                case TRUCE -> 3;
+            };
             GlStateManager._enableBlend();
             RenderSystem.defaultBlendFunc();
             RenderSystem.enableDepthTest();

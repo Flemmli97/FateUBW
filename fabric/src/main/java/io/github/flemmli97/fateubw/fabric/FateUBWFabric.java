@@ -52,9 +52,7 @@ public class FateUBWFabric implements ModInitializer {
                 GrailWarHandler.get(world.getServer()).tick(world);
             }
         });
-        ServerLifecycleEvents.SERVER_STARTING.register(server -> {
-            ConfigLoader.loadCommon();
-        });
+        ServerLifecycleEvents.SERVER_STARTING.register(server -> ConfigLoader.loadCommon());
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new IdentifiableResourceReloadListener() {
             @Override
             public CompletableFuture<Void> reload(PreparationBarrier preparationBarrier, ResourceManager resourceManager, ProfilerFiller preparationsProfiler, ProfilerFiller reloadProfiler, Executor backgroundExecutor, Executor gameExecutor) {

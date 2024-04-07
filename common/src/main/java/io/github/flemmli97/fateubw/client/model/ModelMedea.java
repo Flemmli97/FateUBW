@@ -67,11 +67,6 @@ public class ModelMedea<T extends EntityMedea & IAnimated> extends ModelServant<
     }
 
     @Override
-    public ModelPartHandler getHandler() {
-        return this.model;
-    }
-
-    @Override
     public void transform(HumanoidArm humanoidArm, PoseStack poseStack) {
         if (humanoidArm == HumanoidArm.LEFT) {
             this.rotate(poseStack, this.body, this.leftArm);

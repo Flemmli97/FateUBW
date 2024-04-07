@@ -38,7 +38,7 @@ public class RenderEAItem extends BlockEntityWithoutLevelRenderer {
 
     @Override
     public void renderByItem(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
-        render(stack, transformType, matrixStack, buffer, combinedLight, combinedOverlay, beam, model);
+        render(stack, transformType, matrixStack, buffer, combinedLight, combinedOverlay, this.beam, this.model);
     }
 
     public static RenderUtils.BeamBuilder createBeam() {

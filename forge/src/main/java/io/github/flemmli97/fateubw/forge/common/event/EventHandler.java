@@ -23,13 +23,13 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class EventHandler {
 
-    public static final ResourceLocation playerCap = new ResourceLocation(Fate.MODID, "player_cap");
-    public static final ResourceLocation stackCap = new ResourceLocation(Fate.MODID, "itemstack_cap");
+    public static final ResourceLocation PLAYER_CAP = new ResourceLocation(Fate.MODID, "player_cap");
+    public static final ResourceLocation ITEMSTACK_CAP = new ResourceLocation(Fate.MODID, "itemstack_cap");
 
     @SubscribeEvent
     public static void attachCapability(AttachCapabilitiesEvent<Entity> event) {
         if (event.getObject() instanceof Player)
-            event.addCapability(playerCap, new PlayerCap());
+            event.addCapability(PLAYER_CAP, new PlayerCap());
     }
 
     @SubscribeEvent

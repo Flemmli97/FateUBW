@@ -12,6 +12,6 @@ public class ModMenuIntegration implements ModMenuApi {
 
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return parent -> ClothConfigScreenHelper.configScreenOf(parent, Fate.MODID, List.of(ConfigSpecs.clientSpec, ConfigSpecs.commonSpec));
+        return parent -> ClothConfigScreenHelper.configScreenOf(parent, Fate.MODID, List.of(ConfigSpecs.CLIENT_SPEC, ConfigSpecs.COMMON_SPEC));
     }
 }

@@ -1,5 +1,6 @@
 package io.github.flemmli97.fateubw.client;
 
+import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.client.model.ModelCaladBolg;
 import io.github.flemmli97.fateubw.client.model.ModelEA;
 import io.github.flemmli97.fateubw.client.model.ModelGordiusWheel;
@@ -39,6 +40,7 @@ import io.github.flemmli97.fateubw.client.render.servant.RenderMedusa;
 import io.github.flemmli97.fateubw.client.render.servant.RenderSasaki;
 import io.github.flemmli97.fateubw.common.registry.ModBlocks;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
+import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.registry.ModParticles;
 import io.github.flemmli97.tenshilib.client.particles.ColoredParticle;
 import net.minecraft.client.KeyMapping;
@@ -49,10 +51,13 @@ import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import org.lwjgl.glfw.GLFW;
 
@@ -68,6 +73,11 @@ public class ClientRegister {
         consumer.accept(ClientHandler.special = new KeyMapping("fate.key.np", GLFW.GLFW_KEY_J, "fate.keycategory"));
         consumer.accept(ClientHandler.boost = new KeyMapping("fate.key.boost", GLFW.GLFW_KEY_N, "fate.keycategory"));
         consumer.accept(ClientHandler.target = new KeyMapping("fate.key.target", GLFW.GLFW_KEY_B, "fate.keycategory"));
+    }
+
+    public static void registerItemProps(ItemModelPropsRegister register) {
+        register.register(ModItems.excalibur.get(), new ResourceLocation(Fate.MODID, "active"), ItemModelProps.activeItemProp);
+        register.register(ModItems.medusaDagger.get(), new ResourceLocation(Fate.MODID, "thrown"), ItemModelProps.thrownDaggerProp);
     }
 
     public static void setupRenderLayers(BiConsumer<Block, RenderType> consumer) {
@@ -138,5 +148,9 @@ public class ClientRegister {
 
     public interface PartileRegister {
         <T extends ParticleOptions> void register(ParticleType<T> type, Function<SpriteSet, ParticleProvider<T>> provider);
+    }
+
+    public interface ItemModelPropsRegister {
+        void register(Item item, ResourceLocation res, ClampedItemPropertyFunction function);
     }
 }

@@ -1,11 +1,8 @@
 package io.github.flemmli97.fateubw.forge.client;
 
-import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.client.ClientRegister;
-import io.github.flemmli97.fateubw.client.ItemModelProps;
 import io.github.flemmli97.fateubw.client.render.RenderAltar;
 import io.github.flemmli97.fateubw.common.registry.ModBlocks;
-import io.github.flemmli97.fateubw.common.registry.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.ParticleProvider;
@@ -15,7 +12,6 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.ClientRegistry;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
@@ -31,10 +27,7 @@ public class ForgeClientRegister {
         ClientRegister.registerKeyBinding(ClientRegistry::registerKeyBinding);
 
         BlockEntityRenderers.register(ModBlocks.tileAltar.get(), RenderAltar::new);
-        event.enqueueWork(() -> {
-            ItemProperties.register(ModItems.excalibur.get(), new ResourceLocation(Fate.MODID, "active"), ItemModelProps.activeItemProp);
-            ItemProperties.register(ModItems.medusaDagger.get(), new ResourceLocation(Fate.MODID, "thrown"), ItemModelProps.thrownDaggerProp);
-        });
+        event.enqueueWork(() -> ClientRegister.registerItemProps(ItemProperties::register));
     }
 
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {

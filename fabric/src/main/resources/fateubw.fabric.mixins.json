@@ -4,8 +4,6 @@
   "package": "io.github.flemmli97.fateubw.fabric.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "AxeAccessor",
-    "CriteriaTriggerAccessor",
     "DamageSourceAccessor",
     "ItemRendererAccessor",
     "PlayerMixin",

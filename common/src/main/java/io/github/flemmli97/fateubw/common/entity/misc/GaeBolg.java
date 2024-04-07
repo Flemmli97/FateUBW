@@ -55,8 +55,7 @@ public class GaeBolg extends EntityProjectile {
     @Override
     public void remove(RemovalReason removalReason) {
         if (!this.level.isClientSide) {
-            if (this.getOwner() instanceof Player) {
-                Player player = (Player) this.getOwner();
+            if (this.getOwner() instanceof Player player) {
                 if (!player.isCreative()) {
                     ItemEntity gaeBolg = new ItemEntity(this.level, this.getOwner().getX(), this.getOwner().getY(), this.getOwner().getZ(), new ItemStack(ModItems.gaebolg.get()));
                     gaeBolg.setPickUpDelay(0);

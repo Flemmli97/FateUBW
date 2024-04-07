@@ -36,10 +36,9 @@ public class ItemExcalibur extends SwordItem {
         if (!world.isClientSide) {
             Excalibur excalibur = new Excalibur(world, entityLiving);
 
-            if (!(entityLiving instanceof Player) || ((Player) entityLiving).isCreative()) {
+            if (!(entityLiving instanceof Player player) || ((Player) entityLiving).isCreative()) {
                 world.addFreshEntity(excalibur);
             } else {
-                Player player = (Player) entityLiving;
                 if (Platform.INSTANCE.getPlayerData(player).map(mana -> mana.useMana(player, 30)).orElse(false)) {
                     world.addFreshEntity(excalibur);
                     player.sendMessage(new TranslatableComponent("fate.mana.use").withStyle(ChatFormatting.AQUA), Util.NIL_UUID);

@@ -17,24 +17,24 @@ import java.util.Map;
 
 public class ConfigSpecs {
 
-    public static JsonConfig<CommentedJsonConfig> clientSpec;
-    public static Client clientConf;
+    public static JsonConfig<CommentedJsonConfig> CLIENT_SPEC;
+    public static Client CLIENT_CONFIG;
 
-    public static JsonConfig<CommentedJsonConfig> commonSpec;
-    public static Common commonConf;
+    public static JsonConfig<CommentedJsonConfig> COMMON_SPEC;
+    public static Common COMMON_CONFIG;
 
     public static void initClientConfig() {
         Pair<JsonConfig<CommentedJsonConfig>, Client> pair = CommentedJsonConfig.Builder
                 .create(FabricLoader.getInstance().getConfigDir().resolve(Fate.MODID).resolve("client.json"), 1, Client::new);
-        clientSpec = pair.getKey();
-        clientConf = pair.getValue();
+        CLIENT_SPEC = pair.getKey();
+        CLIENT_CONFIG = pair.getValue();
     }
 
     public static void initCommonConfig() {
         Pair<JsonConfig<CommentedJsonConfig>, Common> pair = CommentedJsonConfig.Builder
                 .create(FabricLoader.getInstance().getConfigDir().resolve(Fate.MODID).resolve("common.json"), 1, Common::new);
-        commonSpec = pair.getKey();
-        commonConf = pair.getValue();
+        COMMON_SPEC = pair.getKey();
+        COMMON_CONFIG = pair.getValue();
     }
 
     public static class Client {

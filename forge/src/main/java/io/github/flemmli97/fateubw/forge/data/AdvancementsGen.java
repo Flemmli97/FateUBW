@@ -53,7 +53,7 @@ public class AdvancementsGen implements DataProvider {
     }
 
     @Override
-    public void run(HashCache cache) throws IOException {
+    public void run(HashCache cache) {
         this.advancements.clear();
         this.add();
         Path path = this.generator.getOutputFolder();

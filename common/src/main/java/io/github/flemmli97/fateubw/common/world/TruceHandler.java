@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 public class TruceHandler extends SavedData {
 
-    private static final String identifier = "TruceData";
+    private static final String IDENTIFIER = "TruceData";
 
     private final SetMultimap<UUID, UUID> truceMap = HashMultimap.create();
     private final SetMultimap<UUID, UUID> pendingRequests = HashMultimap.create();
@@ -36,7 +36,7 @@ public class TruceHandler extends SavedData {
     }
 
     public static TruceHandler get(MinecraftServer server) {
-        return server.overworld().getDataStorage().computeIfAbsent(TruceHandler::new, TruceHandler::new, identifier);
+        return server.overworld().getDataStorage().computeIfAbsent(TruceHandler::new, TruceHandler::new, IDENTIFIER);
     }
 
     public boolean sendRequest(ServerPlayer from, UUID to) {

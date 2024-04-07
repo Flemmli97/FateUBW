@@ -11,7 +11,7 @@ public enum EnumServantType {
     ASSASSIN("assassin"),
     NOTASSIGNED("undef");
 
-    private String name;
+    private final String name;
 
     EnumServantType(String s) {
         this.name = s;

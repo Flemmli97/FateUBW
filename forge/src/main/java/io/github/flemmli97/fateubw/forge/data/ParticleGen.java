@@ -37,7 +37,7 @@ public class ParticleGen implements DataProvider {
     }
 
     @Override
-    public void run(HashCache cache) throws IOException {
+    public void run(HashCache cache) {
         this.particleTextures.clear();
         this.add();
         this.particleTextures.forEach((particle, list) -> {
@@ -77,6 +77,6 @@ public class ParticleGen implements DataProvider {
     }
 
     private Path getPath(ResourceLocation particle) {
-        return generator.getOutputFolder().resolve("assets/" + particle.getNamespace() + "/particles/" + particle.getPath() + ".json");
+        return this.generator.getOutputFolder().resolve("assets/" + particle.getNamespace() + "/particles/" + particle.getPath() + ".json");
     }
 }

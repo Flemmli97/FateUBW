@@ -24,8 +24,7 @@ public class ChargingHandler<T extends LivingEntity & IAnimated> {
         if (this.isChargeAttack.test(this.entity.getAnimationHandler().getAnimation())) {
             this.entity.setXRot(0);
             this.entity.setYRot(this.entity.getEntityData().get(this.lockingData));
-            if (!this.entity.getPassengers().isEmpty() && this.entity.getPassengers().get(0) instanceof Mob) {
-                Mob pass = (Mob) this.entity.getPassengers().get(0);
+            if (!this.entity.getPassengers().isEmpty() && this.entity.getPassengers().get(0) instanceof Mob pass) {
                 pass.setYRot(this.entity.getEntityData().get(this.lockingData));
             }
         }

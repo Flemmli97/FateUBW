@@ -118,7 +118,7 @@ public class SummonUtils {
             type = spawnableTypes.get(world.random.nextInt(spawnableTypes.size()));
         List<RegistryEntrySupplier<EntityType<BaseServant>>> entities = ModEntities.getFromType(type)
                 .stream().filter(sup -> handler.canSpawnServantType(sup.getID())).toList();
-        if (entities.size() == 0)
+        if (entities.isEmpty())
             return;
         BaseServant servant = entities.get(world.random.nextInt(entities.size())).get().create(world);
         summonServant(servant, player, world, pos);
@@ -128,12 +128,12 @@ public class SummonUtils {
         GrailWarHandler handler = GrailWarHandler.get(world.getServer());
         List<EnumServantType> spawnableTypes = Arrays.stream(EnumServantType.values())
                 .filter(handler::canSpawnServantClass).toList();
-        if (spawnableTypes.size() == 0)
+        if (spawnableTypes.isEmpty())
             return null;
         EnumServantType type = spawnableTypes.get(world.random.nextInt(spawnableTypes.size()));
         List<RegistryEntrySupplier<EntityType<BaseServant>>> entities = ModEntities.getFromType(type)
                 .stream().filter(sup -> handler.canSpawnServantType(sup.getID())).toList();
-        if (entities.size() == 0)
+        if (entities.isEmpty())
             return null;
         return entities.get(world.random.nextInt(entities.size())).get().create(world);
     }

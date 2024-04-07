@@ -182,8 +182,8 @@ public class ModelServant<T extends BaseServant & IAnimated> extends BaseServant
         this.servantLeftLegUp.yRot = 0;
 
         if (this.riding) {
-            this.servantRightArmUp.xRot += -((float) Math.PI / 5F);
-            this.servantLeftArmUp.xRot += -((float) Math.PI / 5F);
+            this.servantRightArmUp.xRot -= ((float) Math.PI / 5F);
+            this.servantLeftArmUp.xRot -= ((float) Math.PI / 5F);
             this.servantRightLegUp.xRot = -((float) Math.PI * 2F / 5F);
             this.servantLeftLegUp.xRot = -((float) Math.PI * 2F / 5F);
             this.servantRightLegUp.yRot = ((float) Math.PI / 10F);
@@ -236,8 +236,7 @@ public class ModelServant<T extends BaseServant & IAnimated> extends BaseServant
     @Override
     public void copyPropertiesTo(EntityModel<T> model) {
         super.copyPropertiesTo(model);
-        if (model instanceof ModelServant<?>) {
-            ModelServant<?> other = (ModelServant<?>) model;
+        if (model instanceof ModelServant<?> other) {
             this.heldItemMain = other.heldItemMain;
             this.heldItemOff = other.heldItemOff;
         }

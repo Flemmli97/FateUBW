@@ -92,15 +92,12 @@ public class ModItems {
 
     public static final Supplier<Item> randomIcon = () -> {
         int i = new Random().nextInt(4);
-        switch (i) {
-            case 0:
-                return icon0.get();
-            case 1:
-                return icon1.get();
-            case 2:
-                return icon2.get();
-        }
-        return icon3.get();
+        return switch (i) {
+            case 0 -> icon0.get();
+            case 1 -> icon1.get();
+            case 2 -> icon2.get();
+            default -> icon3.get();
+        };
     };
 
     private static RegistryEntrySupplier<Item> registercharm(EnumServantType type) {

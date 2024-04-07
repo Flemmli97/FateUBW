@@ -14,11 +14,11 @@ import java.util.Map;
 
 public class ConfigSpecs {
 
-    public static final ForgeConfigSpec clientSpec;
-    public static final Client clientConf;
+    public static final ForgeConfigSpec CLIENT_SPEC;
+    public static final Client CLIENT_CONF;
 
-    public static final ForgeConfigSpec commonSpec;
-    public static final Common commonConf;
+    public static final ForgeConfigSpec COMMON_SPEC;
+    public static final Common COMMON_CONF;
 
     public static class Client {
 
@@ -136,11 +136,11 @@ public class ConfigSpecs {
 
     static {
         Pair<Client, ForgeConfigSpec> specPair1 = new ForgeConfigSpec.Builder().configure(Client::new);
-        clientSpec = specPair1.getRight();
-        clientConf = specPair1.getLeft();
+        CLIENT_SPEC = specPair1.getRight();
+        CLIENT_CONF = specPair1.getLeft();
 
         Pair<Common, ForgeConfigSpec> specPair2 = new ForgeConfigSpec.Builder().configure(Common::new);
-        commonSpec = specPair2.getRight();
-        commonConf = specPair2.getLeft();
+        COMMON_SPEC = specPair2.getRight();
+        COMMON_CONF = specPair2.getLeft();
     }
 }

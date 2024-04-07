@@ -6,10 +6,9 @@ import io.github.flemmli97.fateubw.common.items.weapons.ItemEA;
 import io.github.flemmli97.fateubw.common.items.weapons.ItemExcalibur;
 import io.github.flemmli97.fateubw.fabric.common.data.ItemStackDataGet;
 import io.github.flemmli97.fateubw.fabric.common.data.PlayerDataGet;
-import io.github.flemmli97.fateubw.fabric.mixin.AxeAccessor;
-import io.github.flemmli97.fateubw.fabric.mixin.CriteriaTriggerAccessor;
 import io.github.flemmli97.fateubw.fabric.mixin.DamageSourceAccessor;
 import io.github.flemmli97.fateubw.platform.Platform;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -24,6 +23,8 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.LevelAccessor;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 
 public class PlatformImpl implements Platform {
@@ -57,7 +58,7 @@ public class PlatformImpl implements Platform {
 
     @Override
     public <T extends CriterionTrigger<?>> T registerCriteriaTrigger(T criterion) {
-        return CriteriaTriggerAccessor.registerCriteria(criterion);
+        return CriteriaTriggers.register(criterion);
     }
 
     @Override
@@ -77,11 +78,22 @@ public class PlatformImpl implements Platform {
 
     @Override
     public AxeItem createAxe(Tier tier, float baseAttack, float speed, Item.Properties props) {
-        return AxeAccessor.inst(tier, baseAttack, speed, props);
+        return createNewAxe(tier, baseAttack, speed, props);
     }
 
     @Override
     public DamageSource setBypassArmor(DamageSource source) {
         return ((DamageSourceAccessor) source).setBypassArmor();
+    }
+
+    private static AxeItem createNewAxe(Tier tier, float baseAttack, float speed, Item.Properties props) {
+        try {
+            Constructor<AxeItem> cons = AxeItem.class.getDeclaredConstructor(Tier.class, float.class, float.class, Item.Properties.class);
+            cons.setAccessible(true);
+            return cons.newInstance(tier, baseAttack, speed, props);
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
+                 InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

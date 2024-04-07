@@ -47,7 +47,7 @@ public class Lang implements DataProvider {
     private final String modid;
     private final String locale;
 
-    private static final Comparator<String> order = Comparator.comparingInt(o -> LangType.get(o).ordinal());
+    private static final Comparator<String> ORDER = Comparator.comparingInt(o -> LangType.get(o).ordinal());
 
     public Lang(DataGenerator gen, ExistingFileHelper existing) {
         this.gen = gen;
@@ -239,9 +239,6 @@ public class Lang implements DataProvider {
         this.add("fate.patchouli.entry.loot.servant.1", "Not implemented yet");
         this.add("fate.patchouli.entry.xp", "XP");
         this.add("fate.patchouli.entry.xp.1", "Grants random amount of xp points");
-        //this.add("fate.patchouli.entry.astral", "Astral Sorcery");
-        //this.add("fate.patchouli.entry.astral.1", "Astral sorcery missing.");
-
     }
 
     private String simpleOfRegName(ResourceLocation res) {
@@ -250,7 +247,7 @@ public class Lang implements DataProvider {
 
     private String capitalize(String s, List<String> dont) {
         return Stream.of(s.trim().split("\\s"))
-                .filter(word -> word.length() > 0)
+                .filter(word -> !word.isEmpty())
                 .map(word -> dont.contains(word) ? word : word.substring(0, 1).toUpperCase() + word.substring(1))
                 .collect(Collectors.joining(" "));
     }
@@ -258,7 +255,7 @@ public class Lang implements DataProvider {
     @Override
     public void run(HashCache cache) throws IOException {
         this.addTranslations();
-        Map<String, String> sort = this.data.entrySet().stream().sorted((e, e2) -> order.compare(e.getKey(), e2.getKey()))
+        Map<String, String> sort = this.data.entrySet().stream().sorted((e, e2) -> ORDER.compare(e.getKey(), e2.getKey()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (old, v) -> old, LinkedHashMap::new));
         if (!this.data.isEmpty())
             this.save(cache, sort, this.gen.getOutputFolder().resolve("assets/" + this.modid + "/lang/" + this.locale + ".json"));

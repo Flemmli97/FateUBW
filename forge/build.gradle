@@ -26,6 +26,10 @@ repositories {
         url "https://gitlab.com/api/v4/projects/21830712/packages/maven"
     }
     maven {
+        name = "CurseMaven"
+        url "https://www.cursemaven.com"
+    }
+    maven {
         url "https://maven.blamejared.com"
     }
 }
@@ -34,4 +38,11 @@ dependencies {
     modImplementation "io.github.flemmli97:tenshilib:${tenshilib_version}-forge"
     modImplementation "${patchouli}"
     modImplementation "${patchouli_datagen}"
+
+    //Mods useful for testing things
+    modRuntimeOnly "curse.maven:mobbattle-268746:4697990"
+    modRuntimeOnly "curse.maven:dummy-225738:3820503"
+    modRuntimeOnly "curse.maven:spark-361579:3824951"
+
+    modRuntimeOnly "io.github.flemmli97:debugutils:1.18.2-1.0.1-forge"
 }

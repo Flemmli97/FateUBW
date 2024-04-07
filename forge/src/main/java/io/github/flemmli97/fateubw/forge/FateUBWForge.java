@@ -16,11 +16,8 @@ import io.github.flemmli97.fateubw.forge.common.config.ConfigLoader;
 import io.github.flemmli97.fateubw.forge.common.config.ConfigSpecs;
 import io.github.flemmli97.fateubw.forge.common.event.EventHandler;
 import io.github.flemmli97.fateubw.forge.common.network.PacketHandler;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
@@ -37,7 +34,6 @@ import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.FMLPaths;
 
 import java.io.File;
-import java.util.Set;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 @Mod(value = Fate.MODID)
@@ -60,8 +56,8 @@ public class FateUBWForge {
         forgeBus.register(EventHandler.class);
         forgeBus.addListener(this::reloadListener);
         forgeBus.addListener(this::biomeLoadEvent);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ConfigSpecs.clientSpec, Fate.MODID + "/client.toml");
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigSpecs.commonSpec, Fate.MODID + "/common.toml");
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ConfigSpecs.CLIENT_SPEC, Fate.MODID + "/client.toml");
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigSpecs.COMMON_SPEC, Fate.MODID + "/common.toml");
         Fate.astralSorcery = ModList.get().isLoaded("astralsorcery");
     }
 
@@ -84,9 +80,9 @@ public class FateUBWForge {
     }
 
     public void conf(ModConfigEvent event) {
-        if (event.getConfig().getSpec() == ConfigSpecs.commonSpec)
+        if (event.getConfig().getSpec() == ConfigSpecs.COMMON_SPEC)
             ConfigLoader.loadCommon();
-        if (event.getConfig().getSpec() == ConfigSpecs.clientSpec)
+        if (event.getConfig().getSpec() == ConfigSpecs.CLIENT_SPEC)
             ConfigLoader.loadClient();
     }
 

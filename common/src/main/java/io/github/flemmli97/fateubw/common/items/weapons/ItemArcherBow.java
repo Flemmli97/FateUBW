@@ -29,8 +29,7 @@ public class ItemArcherBow extends BowItem implements SwingItem {
 
     @Override
     public boolean onEntitySwing(ItemStack stack, LivingEntity entity) {
-        if (!this.charged(stack) && !entity.level.isClientSide && entity instanceof Player) {
-            Player player = (Player) entity;
+        if (!this.charged(stack) && !entity.level.isClientSide && entity instanceof Player player) {
             if (player.isCreative())
                 this.setCharged(stack, true);
             else {
@@ -80,8 +79,7 @@ public class ItemArcherBow extends BowItem implements SwingItem {
     }
 
     public void spawnNormalArrow(ItemStack stack, Level world, LivingEntity entity, int timeLeft) {
-        if (entity instanceof Player) {
-            Player player = (Player) entity;
+        if (entity instanceof Player player) {
             boolean flag = player.getAbilities().instabuild || EnchantmentHelper.getItemEnchantmentLevel(Enchantments.INFINITY_ARROWS, stack) > 0
                     || Platform.INSTANCE.getPlayerData(player).map(cap -> cap.useMana(player, this.arrowMana)).orElse(false);
             int i = this.getUseDuration(stack) - timeLeft;

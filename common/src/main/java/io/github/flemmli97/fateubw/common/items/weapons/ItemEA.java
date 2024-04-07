@@ -39,10 +39,9 @@ public class ItemEA extends SwordItem {
         if (!world.isClientSide) {
             EnumaElish ea = new EnumaElish(world, entityLiving);
 
-            if (!(entityLiving instanceof Player) || ((Player) entityLiving).isCreative()) {
+            if (!(entityLiving instanceof Player player) || ((Player) entityLiving).isCreative()) {
                 world.addFreshEntity(ea);
             } else {
-                Player player = (Player) entityLiving;
                 if (Platform.INSTANCE.getPlayerData(player).map(mana -> mana.useMana(player, 30)).orElse(false)) {
                     world.addFreshEntity(ea);
                     player.sendMessage(new TranslatableComponent("fate.mana.use").withStyle(ChatFormatting.AQUA), Util.NIL_UUID);

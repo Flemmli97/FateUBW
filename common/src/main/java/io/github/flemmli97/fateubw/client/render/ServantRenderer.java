@@ -51,8 +51,7 @@ public abstract class ServantRenderer<T extends BaseServant, M extends BaseServa
         float yawOffset = Mth.rotLerp(partialTicks, entity.yBodyRotO, entity.yBodyRot);
         float yawHead = Mth.rotLerp(partialTicks, entity.yHeadRotO, entity.yHeadRot);
         float yawHeadAct = yawHead - yawOffset;
-        if (shouldSit && entity.getVehicle() instanceof LivingEntity) {
-            LivingEntity livingentity = (LivingEntity) entity.getVehicle();
+        if (shouldSit && entity.getVehicle() instanceof LivingEntity livingentity) {
             yawOffset = Mth.rotLerp(partialTicks, livingentity.yBodyRotO, livingentity.yBodyRot);
             yawHeadAct = yawHead - yawOffset;
             float wrappedYaw = Mth.wrapDegrees(yawHeadAct);
