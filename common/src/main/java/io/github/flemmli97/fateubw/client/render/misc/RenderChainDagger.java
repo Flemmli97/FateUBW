@@ -22,11 +22,11 @@ import net.minecraft.world.phys.Vec3;
 
 public class RenderChainDagger extends EntityRenderer<ChainDagger> {
 
-    private static final ResourceLocation tex = new ResourceLocation(Fate.MODID, "textures/entity/chain_dagger_tip.png");
-    private static final ResourceLocation chain = new ResourceLocation(Fate.MODID, "textures/entity/chain.png");
+    public static final ResourceLocation TEX = new ResourceLocation(Fate.MODID, "textures/entity/chain_dagger_tip.png");
+    public static final ResourceLocation CHAIN = new ResourceLocation(Fate.MODID, "textures/entity/chain.png");
 
-    private static final RenderType RENDER_TYPE = RenderType.entityCutout(tex);
-    private static final RenderType CHAIN_RENDER = RenderType.entityCutout(chain);
+    private static final RenderType RENDER_TYPE = RenderType.entityCutout(TEX);
+    private static final RenderType CHAIN_RENDER = RenderType.entityCutout(CHAIN);
 
     public RenderChainDagger(EntityRendererProvider.Context ctx) {
         super(ctx);
@@ -60,9 +60,9 @@ public class RenderChainDagger extends EntityRenderer<ChainDagger> {
             matrix4f = pose.pose();
             matrix3f = pose.normal();
             int i = entity.fromMainHand() ? 1 : -1;
-            if (living.getMainHandItem().getItem() == ModItems.medusaDagger.get())
+            if (living.getMainHandItem().getItem() == ModItems.MEDUSA_DAGGER.get())
                 i = 1;
-            else if (living.getOffhandItem().getItem() == ModItems.medusaDagger.get())
+            else if (living.getOffhandItem().getItem() == ModItems.MEDUSA_DAGGER.get())
                 i = -1;
             float xOffset;
             float yOffset;
@@ -130,6 +130,6 @@ public class RenderChainDagger extends EntityRenderer<ChainDagger> {
 
     @Override
     public ResourceLocation getTextureLocation(ChainDagger entity) {
-        return tex;
+        return TEX;
     }
 }

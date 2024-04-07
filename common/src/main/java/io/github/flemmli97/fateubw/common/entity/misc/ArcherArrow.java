@@ -26,7 +26,7 @@ public class ArcherArrow extends AbstractArrow {
     }
 
     public ArcherArrow(Level world, LivingEntity shootingEntity) {
-        super(ModEntities.archerArrow.get(), shootingEntity, world);
+        super(ModEntities.ARCHER_ARROW.get(), shootingEntity, world);
     }
 
     @Override

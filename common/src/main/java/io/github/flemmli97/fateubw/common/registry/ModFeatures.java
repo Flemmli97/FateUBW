@@ -29,11 +29,11 @@ public class ModFeatures {
 
     public static void register() {
         charmFeature = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, new ResourceLocation(Fate.MODID, "charm_ore"),
-                new ConfiguredFeature<>(OreFeature.ORE, new OreConfiguration(List.of(OreConfiguration.target(OreFeatures.STONE_ORE_REPLACEABLES, ModBlocks.artifactOre.get().defaultBlockState()),
-                        OreConfiguration.target(OreFeatures.DEEPSLATE_ORE_REPLACEABLES, ModBlocks.deepSlateArtifactOre.get().defaultBlockState())), 2)));
+                new ConfiguredFeature<>(OreFeature.ORE, new OreConfiguration(List.of(OreConfiguration.target(OreFeatures.STONE_ORE_REPLACEABLES, ModBlocks.ARTIFACT_ORE.get().defaultBlockState()),
+                        OreConfiguration.target(OreFeatures.DEEPSLATE_ORE_REPLACEABLES, ModBlocks.DEEP_SLATE_ARTIFACT_ORE.get().defaultBlockState())), 2)));
         gemFeature = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, new ResourceLocation(Fate.MODID, "gem_ores"),
-                new ConfiguredFeature<>(OreFeature.ORE, new OreConfiguration(List.of(OreConfiguration.target(OreFeatures.STONE_ORE_REPLACEABLES, ModBlocks.gemOre.get().defaultBlockState()),
-                        OreConfiguration.target(OreFeatures.DEEPSLATE_ORE_REPLACEABLES, ModBlocks.deepSlateGemOre.get().defaultBlockState())), 9)));
+                new ConfiguredFeature<>(OreFeature.ORE, new OreConfiguration(List.of(OreConfiguration.target(OreFeatures.STONE_ORE_REPLACEABLES, ModBlocks.GEM_ORE.get().defaultBlockState()),
+                        OreConfiguration.target(OreFeatures.DEEPSLATE_ORE_REPLACEABLES, ModBlocks.DEEP_SLATE_GEM_ORE.get().defaultBlockState())), 9)));
 
         charmPlacedFeature = BuiltinRegistries.register(BuiltinRegistries.PLACED_FEATURE, new ResourceLocation(Fate.MODID, "charm_ore"), new PlacedFeature(charmFeature,
                 List.of(CountPlacement.of(4),

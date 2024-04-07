@@ -33,22 +33,22 @@ import java.util.function.Predicate;
 
 public class Pegasus extends PathfinderMob implements IAnimated, IServantMinion {
 
+    private static final EntityDataAccessor<Float> LOCKED_YAW = SynchedEntityData.defineId(Pegasus.class, EntityDataSerializers.FLOAT);
+
+    private static final AnimatedAction CHARGING = new AnimatedAction(20, 0, "charge");
+    private static final AnimatedAction CHARGING_FLYING = AnimatedAction.builder(20, "flycing_charge").withClientID(CHARGING.getID()).build();
+    private static final AnimatedAction[] ANIMS = {CHARGING, CHARGING_FLYING};
+    private static final Predicate<AnimatedAction> CHARGING_ANIM = anim -> anim != null && (anim.getID().equals(CHARGING.getID()) || anim.getID().equals(CHARGING_FLYING.getID()));
+
+
     public final PegasusAttackGoal attackAI = new PegasusAttackGoal(this);
 
-    private static final AnimatedAction charging = new AnimatedAction(20, 0, "charge");
-    private static final AnimatedAction chargingFlying = AnimatedAction.builder(20, "flycing_charge").withClientID(charging.getID()).build();
-
-    private static final AnimatedAction[] anims = {charging, chargingFlying};
-
-    private final AnimationHandler<Pegasus> animationHandler = new AnimationHandler<>(this, anims);
+    private final AnimationHandler<Pegasus> animationHandler = new AnimationHandler<>(this, ANIMS);
 
     private final PathNavigation flyingNavigator;
     private boolean canFly;
 
-    private static final Predicate<AnimatedAction> chargingAnim = anim -> anim != null && (anim.getID().equals(charging.getID()) || anim.getID().equals(chargingFlying.getID()));
-    private static final EntityDataAccessor<Float> lockedYaw = SynchedEntityData.defineId(Pegasus.class, EntityDataSerializers.FLOAT);
-
-    public final ChargingHandler<Pegasus> chargingHandler = new ChargingHandler<>(this, lockedYaw, chargingAnim);
+    public final ChargingHandler<Pegasus> chargingHandler = new ChargingHandler<>(this, LOCKED_YAW, CHARGING_ANIM);
 
     public Pegasus(EntityType<? extends Pegasus> type, Level world) {
         super(type, world);
@@ -69,11 +69,11 @@ public class Pegasus extends PathfinderMob implements IAnimated, IServantMinion 
     }
 
     public boolean isCharging() {
-        return this.getAnimationHandler().isCurrent(charging, chargingFlying);
+        return this.getAnimationHandler().isCurrent(CHARGING, CHARGING_FLYING);
     }
 
     public AnimatedAction getChargingAnim() {
-        return this.canFly ? chargingFlying : charging;
+        return this.canFly ? CHARGING_FLYING : CHARGING;
     }
 
     @Override

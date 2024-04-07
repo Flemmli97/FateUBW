@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class RenderArthur extends ServantRenderer<EntityArthur, ModelServant<EntityArthur>> {
 
-    private static final ResourceLocation textures = new ResourceLocation(Fate.MODID, "textures/entity/servant/arthur.png");
+    public static final ResourceLocation TEXTURES = new ResourceLocation(Fate.MODID, "textures/entity/servant/arthur.png");
 
     public RenderArthur(EntityRendererProvider.Context ctx) {
         super(ctx, new ModelServant<>(ctx.bakeLayer(ModelServant.LAYER_LOCATION), "arthur"));
@@ -17,6 +17,6 @@ public class RenderArthur extends ServantRenderer<EntityArthur, ModelServant<Ent
 
     @Override
     public ResourceLocation servantTexture(EntityArthur servant) {
-        return textures;
+        return TEXTURES;
     }
 }

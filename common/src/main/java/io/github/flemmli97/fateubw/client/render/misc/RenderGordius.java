@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class RenderGordius extends MobRenderer<Gordius, ModelGordiusWheel> {
 
-    public final ResourceLocation tex = new ResourceLocation(Fate.MODID, "textures/entity/gordius_wheel.png");
+    public static final ResourceLocation TEX = new ResourceLocation(Fate.MODID, "textures/entity/gordius_wheel.png");
 
     public RenderGordius(EntityRendererProvider.Context ctx) {
         super(ctx, new ModelGordiusWheel(ctx.bakeLayer(ModelGordiusWheel.LAYER_LOCATION)), 0.5f);
@@ -17,6 +17,6 @@ public class RenderGordius extends MobRenderer<Gordius, ModelGordiusWheel> {
 
     @Override
     public ResourceLocation getTextureLocation(Gordius gordiusWheel) {
-        return this.tex;
+        return TEX;
     }
 }

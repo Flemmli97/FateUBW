@@ -10,7 +10,7 @@ import net.minecraft.world.item.Items;
 
 public class LayerHand<T extends BaseServant, M extends EntityModel<T> & IItemArmModel> extends ItemLayer<T, M> {
 
-    private static final ItemStack genericWeapon = new ItemStack(Items.IRON_SWORD);
+    private static final ItemStack GENERIC_WEAPON = new ItemStack(Items.IRON_SWORD);
 
     public LayerHand(RenderLayerParent<T, M> renderer) {
         super(renderer);
@@ -23,6 +23,6 @@ public class LayerHand<T extends BaseServant, M extends EntityModel<T> & IItemAr
 
     @Override
     protected ItemStack heldItemRight(T entity, boolean rightHanded) {
-        return ServantRenderer.showIdentity(entity) ? super.heldItemRight(entity, rightHanded) : genericWeapon;
+        return ServantRenderer.showIdentity(entity) ? super.heldItemRight(entity, rightHanded) : GENERIC_WEAPON;
     }
 }

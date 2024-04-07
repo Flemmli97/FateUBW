@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class RenderHeracles extends ServantRenderer<EntityHeracles, ModelHeracles<EntityHeracles>> {
 
-    private static final ResourceLocation textures = new ResourceLocation(Fate.MODID, "textures/entity/servant/heracles.png");
+    public static final ResourceLocation TEXTURES = new ResourceLocation(Fate.MODID, "textures/entity/servant/heracles.png");
 
     public RenderHeracles(EntityRendererProvider.Context ctx) {
         super(ctx, new ModelHeracles<>(ctx.bakeLayer(ModelHeracles.LAYER_LOCATION)));
@@ -17,6 +17,6 @@ public class RenderHeracles extends ServantRenderer<EntityHeracles, ModelHeracle
 
     @Override
     public ResourceLocation servantTexture(EntityHeracles servant) {
-        return textures;
+        return TEXTURES;
     }
 }

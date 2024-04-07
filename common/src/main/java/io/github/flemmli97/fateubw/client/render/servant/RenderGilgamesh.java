@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class RenderGilgamesh extends ServantRenderer<EntityGilgamesh, ModelServant<EntityGilgamesh>> {
 
-    private static final ResourceLocation textures = new ResourceLocation(Fate.MODID, "textures/entity/servant/gilgamesh.png");
+    public static final ResourceLocation TEXTURES = new ResourceLocation(Fate.MODID, "textures/entity/servant/gilgamesh.png");
 
     public RenderGilgamesh(EntityRendererProvider.Context ctx) {
         super(ctx, new ModelServant<>(ctx.bakeLayer(ModelServant.LAYER_LOCATION), "gilgamesh"));
@@ -17,6 +17,6 @@ public class RenderGilgamesh extends ServantRenderer<EntityGilgamesh, ModelServa
 
     @Override
     public ResourceLocation servantTexture(EntityGilgamesh servant) {
-        return textures;
+        return TEXTURES;
     }
 }

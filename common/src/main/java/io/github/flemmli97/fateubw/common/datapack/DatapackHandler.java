@@ -9,17 +9,17 @@ import java.util.Optional;
 
 public class DatapackHandler {
 
-    public static final GrailLootManager lootTables = new GrailLootManager();
+    public static final GrailLootManager LOOT_TABLES = new GrailLootManager();
 
     public static Optional<GrailLootTable> getLootTable(ResourceLocation res) {
-        return Optional.ofNullable(lootTables.get(res));
+        return Optional.ofNullable(LOOT_TABLES.get(res));
     }
 
     public static Collection<ResourceLocation> getAllTables() {
-        return lootTables.getAll();
+        return LOOT_TABLES.getAll();
     }
 
     public static Map<ResourceLocation, String> getTablesForClient() {
-        return lootTables.clientTableMap();
+        return LOOT_TABLES.clientTableMap();
     }
 }

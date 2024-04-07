@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 public class PotionEffectsConfig implements IConfigListValue<PotionEffectsConfig> {
+
     private Map<MobEffect, Pair<Integer, Integer>> potions;
     private List<String> confVal = new ArrayList<>();
 

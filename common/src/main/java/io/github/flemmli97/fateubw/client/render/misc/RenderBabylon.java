@@ -14,7 +14,8 @@ import net.minecraft.world.item.ItemStack;
 
 public class RenderBabylon extends RenderProjectileItem<BabylonWeapon> {
 
-    public final ResourceLocation babylonIdle = new ResourceLocation(Fate.MODID, "textures/entity/babylon.png");
+    public static final ResourceLocation BABYLON_IDLE = new ResourceLocation(Fate.MODID, "textures/entity/babylon.png");
+
     private final RenderUtils.TextureBuilder textureBuilder = new RenderUtils.TextureBuilder();
 
     public RenderBabylon(EntityRendererProvider.Context ctx) {
@@ -30,7 +31,7 @@ public class RenderBabylon extends RenderProjectileItem<BabylonWeapon> {
             float ripple = Mth.sin((projectile.tickCount + projectile.renderRand) / 2f) * 0.025f + 1;
             float size = (float) (1.45 * ripple);
             this.textureBuilder.setLight(packedLight);
-            RenderUtils.renderTexture(stack, buffer.getBuffer(RenderType.entityCutoutNoCull(this.babylonIdle)), size, size, this.textureBuilder);
+            RenderUtils.renderTexture(stack, buffer.getBuffer(RenderType.entityCutoutNoCull(BABYLON_IDLE)), size, size, this.textureBuilder);
             stack.popPose();
         }
         super.render(projectile, rotation, partialTicks, stack, buffer, packedLight);

@@ -22,7 +22,7 @@ import java.util.function.Predicate;
 
 public class PlayerData {
 
-    private static final Predicate<BaseServant> notDead = t -> !t.isDeadOrDying();
+    private static final Predicate<BaseServant> NOT_DEAD = t -> !t.isDeadOrDying();
 
     private int currentMana, commandSeals = 0;
 
@@ -71,7 +71,7 @@ public class PlayerData {
             this.setServant(null);
         }
         if (this.servantUUID != null) {
-            BaseServant servant = EntityUtil.findFromUUID(BaseServant.class, level, this.servantUUID, notDead);
+            BaseServant servant = EntityUtil.findFromUUID(BaseServant.class, level, this.servantUUID, NOT_DEAD);
             if (servant != null) {
                 if (!servant.isAlive())
                     this.setServant(null);

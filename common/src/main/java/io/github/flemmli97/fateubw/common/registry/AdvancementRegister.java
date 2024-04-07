@@ -5,9 +5,9 @@ import io.github.flemmli97.fateubw.platform.Platform;
 
 public class AdvancementRegister {
 
-    public static GrailWarTrigger grailWarTrigger;
+    public static GrailWarTrigger GRAIL_WAR_TRIGGER;
 
     public static void init() {
-        grailWarTrigger = Platform.INSTANCE.registerCriteriaTrigger(new GrailWarTrigger());
+        GRAIL_WAR_TRIGGER = Platform.INSTANCE.registerCriteriaTrigger(new GrailWarTrigger());
     }
 }

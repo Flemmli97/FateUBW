@@ -26,9 +26,9 @@ import java.util.UUID;
 
 public class MultiPartEntity extends Entity {
 
-    private static final EntityDataAccessor<Optional<UUID>> parentUUID = SynchedEntityData.defineId(MultiPartEntity.class, EntityDataSerializers.OPTIONAL_UUID);
-    private static final EntityDataAccessor<Float> sizeX = SynchedEntityData.defineId(MultiPartEntity.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> sizeY = SynchedEntityData.defineId(MultiPartEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Optional<UUID>> PARENT_UUID = SynchedEntityData.defineId(MultiPartEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Float> SIZE_X = SynchedEntityData.defineId(MultiPartEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> SIZE_Y = SynchedEntityData.defineId(MultiPartEntity.class, EntityDataSerializers.FLOAT);
 
     private Entity parent;
     private EntityDimensions dimensions = EntityDimensions.fixed(1, 1);
@@ -39,12 +39,12 @@ public class MultiPartEntity extends Entity {
     }
 
     public MultiPartEntity(Level level, float width, float height) {
-        super(ModEntities.multipart.get(), level);
+        super(ModEntities.MULTIPART.get(), level);
         this.setSize(width, height);
     }
 
     public void setParent(Entity parent) {
-        this.entityData.set(parentUUID, Optional.of(parent.getUUID()));
+        this.entityData.set(PARENT_UUID, Optional.of(parent.getUUID()));
         this.parent = parent;
     }
 
@@ -55,9 +55,9 @@ public class MultiPartEntity extends Entity {
 
     @Override
     protected void defineSynchedData() {
-        this.entityData.define(parentUUID, Optional.empty());
-        this.entityData.define(sizeX, 0f);
-        this.entityData.define(sizeY, 0f);
+        this.entityData.define(PARENT_UUID, Optional.empty());
+        this.entityData.define(SIZE_X, 0f);
+        this.entityData.define(SIZE_Y, 0f);
     }
 
     @Override
@@ -122,15 +122,15 @@ public class MultiPartEntity extends Entity {
     public Entity getParent() {
         if (this.parent != null && this.parent.isAlive())
             return this.parent;
-        this.entityData.get(parentUUID).ifPresent(uuid -> this.parent = EntityUtil.findFromUUID(Entity.class, this.level, uuid));
+        this.entityData.get(PARENT_UUID).ifPresent(uuid -> this.parent = EntityUtil.findFromUUID(Entity.class, this.level, uuid));
         return this.parent;
     }
 
     @Override
     public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
         super.onSyncedDataUpdated(key);
-        if (sizeY.equals(key)) {
-            this.setSize(this.entityData.get(sizeX), this.entityData.get(sizeY));
+        if (SIZE_Y.equals(key)) {
+            this.setSize(this.entityData.get(SIZE_X), this.entityData.get(SIZE_Y));
         }
     }
 
@@ -146,8 +146,8 @@ public class MultiPartEntity extends Entity {
 
     public MultiPartEntity setSize(float x, float y) {
         if (!this.level.isClientSide) {
-            this.entityData.set(sizeX, x);
-            this.entityData.set(sizeY, y);
+            this.entityData.set(SIZE_X, x);
+            this.entityData.set(SIZE_Y, y);
         }
         this.dimensions = EntityDimensions.fixed(x, y);
         this.refreshDimensions();

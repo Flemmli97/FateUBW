@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class RenderCuchulainn extends ServantRenderer<EntityCuchulainn, ModelServant<EntityCuchulainn>> {
 
-    private static final ResourceLocation textures = new ResourceLocation(Fate.MODID, "textures/entity/servant/cuchulainn.png");
+    public static final ResourceLocation TEXTURES = new ResourceLocation(Fate.MODID, "textures/entity/servant/cuchulainn.png");
 
     public RenderCuchulainn(EntityRendererProvider.Context ctx) {
         super(ctx, new ModelServant<>(ctx.bakeLayer(ModelServant.LAYER_LOCATION), "cuchulainn"));
@@ -17,6 +17,6 @@ public class RenderCuchulainn extends ServantRenderer<EntityCuchulainn, ModelSer
 
     @Override
     public ResourceLocation servantTexture(EntityCuchulainn servant) {
-        return textures;
+        return TEXTURES;
     }
 }

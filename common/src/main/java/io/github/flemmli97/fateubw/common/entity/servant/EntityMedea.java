@@ -28,35 +28,35 @@ import net.minecraft.world.phys.Vec3;
 
 public class EntityMedea extends BaseServant {
 
+    private static final AnimatedAction NP_ATTACK = new AnimatedAction(20, 0, "np");
+    private static final AnimatedAction RANGED = new AnimatedAction(30, 5, "beam");
+
+    private static final AnimatedAction[] ANIMS = {RANGED, NP_ATTACK};
+
     public final MedeaAttackGoal attackAI = new MedeaAttackGoal(this, 16);
 
-    private static final AnimatedAction npAttack = new AnimatedAction(20, 0, "np");
-    private static final AnimatedAction ranged = new AnimatedAction(30, 5, "beam");
-
-    private static final AnimatedAction[] anims = {ranged, npAttack};
-
-    private final AnimationHandler<EntityMedea> animationHandler = new AnimationHandler<>(this, anims);
+    private final AnimationHandler<EntityMedea> animationHandler = new AnimationHandler<>(this, ANIMS);
 
     private int circleDelay;
 
     private static final int[][] castOffsets = {{-2, 0}, {-1, 0}, {1, 0}, {0, 1}, {0, 2}};
 
     public EntityMedea(EntityType<? extends BaseServant> entityType, Level world) {
-        super(entityType, world, LibEntities.medea + ".hogou");
+        super(entityType, world, LibEntities.MEDEA + ".hogou");
         if (world != null && !world.isClientSide)
             this.goalSelector.addGoal(0, this.attackAI);
     }
 
     @Override
     protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.staff.get()));
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.STAFF.get()));
     }
 
     @Override
     public boolean canUse(AnimatedAction anim, AttackType type) {
         if (type == AttackType.RANGED)
-            return anim.getID().equals(ranged.getID());
-        return type == AttackType.NP && anim.getID().equals(npAttack.getID());
+            return anim.getID().equals(RANGED.getID());
+        return type == AttackType.NP && anim.getID().equals(NP_ATTACK.getID());
     }
 
     @Override
@@ -120,12 +120,12 @@ public class EntityMedea extends BaseServant {
 
     @Override
     public String[] specialCommands() {
-        return new String[]{LibEntities.medea + ".circle"};
+        return new String[]{LibEntities.MEDEA + ".circle"};
     }
 
     @Override
     public void doSpecialCommand(String s) {
-        if (s.equals(LibEntities.medea + ".circle"))
+        if (s.equals(LibEntities.MEDEA + ".circle"))
             this.makeCircle();
     }
 

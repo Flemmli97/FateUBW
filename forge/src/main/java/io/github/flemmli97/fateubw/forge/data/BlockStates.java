@@ -22,18 +22,18 @@ public class BlockStates extends BlockStateProvider {
     protected void registerStatesAndModels() {
         this.chalkBase();
 
-        this.chalk(ModBlocks.chalk.get());
-        this.simpleBlock(ModBlocks.artifactOre.get(), this.models().singleTexture(ModBlocks.artifactOre.getID().getPath(), new ResourceLocation(Fate.MODID, "block/ore"), "ore", new ResourceLocation(Fate.MODID, "blocks/charm_ore")));
-        this.simpleBlock(ModBlocks.gemOre.get(), this.models().singleTexture(ModBlocks.gemOre.getID().getPath(), new ResourceLocation(Fate.MODID, "block/ore"), "ore", new ResourceLocation(Fate.MODID, "blocks/crystal_ore")));
-        this.simpleBlock(ModBlocks.deepSlateArtifactOre.get(), this.models().getBuilder(ModBlocks.deepSlateArtifactOre.getID().getPath())
+        this.chalk(ModBlocks.CHALK.get());
+        this.simpleBlock(ModBlocks.ARTIFACT_ORE.get(), this.models().singleTexture(ModBlocks.ARTIFACT_ORE.getID().getPath(), new ResourceLocation(Fate.MODID, "block/ore"), "ore", new ResourceLocation(Fate.MODID, "blocks/charm_ore")));
+        this.simpleBlock(ModBlocks.GEM_ORE.get(), this.models().singleTexture(ModBlocks.GEM_ORE.getID().getPath(), new ResourceLocation(Fate.MODID, "block/ore"), "ore", new ResourceLocation(Fate.MODID, "blocks/crystal_ore")));
+        this.simpleBlock(ModBlocks.DEEP_SLATE_ARTIFACT_ORE.get(), this.models().getBuilder(ModBlocks.DEEP_SLATE_ARTIFACT_ORE.getID().getPath())
                 .parent(this.models().getExistingFile(new ResourceLocation(Fate.MODID, "block/ore")))
                 .texture("ore", new ResourceLocation(Fate.MODID, "blocks/charm_ore"))
                 .texture("stone", new ResourceLocation("block/deepslate")));
-        this.simpleBlock(ModBlocks.deepSlateGemOre.get(), this.models().getBuilder(ModBlocks.deepSlateGemOre.getID().getPath())
+        this.simpleBlock(ModBlocks.DEEP_SLATE_GEM_ORE.get(), this.models().getBuilder(ModBlocks.DEEP_SLATE_GEM_ORE.getID().getPath())
                 .parent(this.models().getExistingFile(new ResourceLocation(Fate.MODID, "block/ore")))
                 .texture("ore", new ResourceLocation(Fate.MODID, "blocks/crystal_ore"))
                 .texture("stone", new ResourceLocation("block/deepslate")));
-        this.horizontalBlock(ModBlocks.altar.get(), this.models().getExistingFile(new ResourceLocation(Fate.MODID, "block/altar")));
+        this.horizontalBlock(ModBlocks.ALTAR.get(), this.models().getExistingFile(new ResourceLocation(Fate.MODID, "block/altar")));
     }
 
     @Override

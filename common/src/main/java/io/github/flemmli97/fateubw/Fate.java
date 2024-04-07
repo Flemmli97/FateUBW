@@ -11,9 +11,9 @@ import org.apache.logging.log4j.Logger;
 public class Fate {
 
     public static final String MODID = "fateubw";
-    public static final Logger logger = LogManager.getLogger(Fate.MODID);
+    public static final Logger LOGGER = LogManager.getLogger(Fate.MODID);
 
     public static boolean astralSorcery;
 
-    public static final CreativeModeTab TAB = PlatformUtils.INSTANCE.tab(new ResourceLocation(Fate.MODID, "tab"), () -> new ItemStack(ModItems.randomIcon.get()));
+    public static final CreativeModeTab TAB = PlatformUtils.INSTANCE.tab(new ResourceLocation(Fate.MODID, "tab"), () -> new ItemStack(ModItems.RANDOM_ICON.get()));
 }

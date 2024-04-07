@@ -16,7 +16,7 @@ import net.minecraft.world.level.Level;
 public class ItemGaeBolg extends ClassSpear {
 
     public ItemGaeBolg(Item.Properties props) {
-        super(ItemTiers.gae_bolg, props, -1.5f, 4);
+        super(ItemTiers.GAE_BOLG, props, -1.5f, 4);
     }
 
     @Override

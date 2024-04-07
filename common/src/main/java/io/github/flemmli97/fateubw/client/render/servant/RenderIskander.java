@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class RenderIskander extends ServantRenderer<EntityIskander, ModelServant<EntityIskander>> {
 
-    private static final ResourceLocation textures = new ResourceLocation(Fate.MODID, "textures/entity/servant/iskander.png");
+    public static final ResourceLocation TEXTURES = new ResourceLocation(Fate.MODID, "textures/entity/servant/iskander.png");
 
     public RenderIskander(EntityRendererProvider.Context ctx) {
         super(ctx, new ModelServant<>(ctx.bakeLayer(ModelServant.LAYER_LOCATION), "iskander"));
@@ -17,6 +17,6 @@ public class RenderIskander extends ServantRenderer<EntityIskander, ModelServant
 
     @Override
     public ResourceLocation servantTexture(EntityIskander servant) {
-        return textures;
+        return TEXTURES;
     }
 }

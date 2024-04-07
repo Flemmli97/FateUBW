@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class RenderArcherArrow extends ArrowRenderer<ArcherArrow> {
 
-    public final ResourceLocation LOCATION = new ResourceLocation(Fate.MODID, "textures/entity/arrows.png");
+    public static final ResourceLocation LOCATION = new ResourceLocation(Fate.MODID, "textures/entity/arrows.png");
 
     public RenderArcherArrow(EntityRendererProvider.Context ctx) {
         super(ctx);
@@ -16,6 +16,6 @@ public class RenderArcherArrow extends ArrowRenderer<ArcherArrow> {
 
     @Override
     public ResourceLocation getTextureLocation(ArcherArrow arrow) {
-        return this.LOCATION;
+        return LOCATION;
     }
 }

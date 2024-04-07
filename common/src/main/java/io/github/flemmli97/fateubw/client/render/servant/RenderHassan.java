@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class RenderHassan extends ServantRenderer<EntityHassan, ModelServant<EntityHassan>> {
 
-    private static final ResourceLocation textures = new ResourceLocation(Fate.MODID, "textures/entity/servant/hassan.png");
+    public static final ResourceLocation TEXTURES = new ResourceLocation(Fate.MODID, "textures/entity/servant/hassan.png");
 
     public RenderHassan(EntityRendererProvider.Context ctx) {
         super(ctx, new ModelServant<>(ctx.bakeLayer(ModelServant.LAYER_LOCATION), "hassan"));
@@ -17,6 +17,6 @@ public class RenderHassan extends ServantRenderer<EntityHassan, ModelServant<Ent
 
     @Override
     public ResourceLocation servantTexture(EntityHassan servant) {
-        return textures;
+        return TEXTURES;
     }
 }

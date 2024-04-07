@@ -8,7 +8,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 
 public class ButtonSpecial extends AbstractButton {
 
-    private String id;
+    private final String id;
 
     public ButtonSpecial(int x, int y, int widthIn, int heightIn, String specialID) {
         super(x, y, widthIn, heightIn, new TranslatableComponent(specialID));

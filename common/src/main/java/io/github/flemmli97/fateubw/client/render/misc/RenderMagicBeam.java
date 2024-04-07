@@ -13,8 +13,8 @@ import net.minecraft.util.Mth;
 
 public class RenderMagicBeam extends RenderBeam<MagicBeam> {
 
-    private static final ResourceLocation tex = new ResourceLocation(Fate.MODID, "textures/entity/magic_beam.png");
-    private static final ResourceLocation texCircle = new ResourceLocation(Fate.MODID, "textures/entity/medea_beam_circle.png");
+    public static final ResourceLocation TEX = new ResourceLocation(Fate.MODID, "textures/entity/magic_beam.png");
+    public static final ResourceLocation TEX_CIRCLE = new ResourceLocation(Fate.MODID, "textures/entity/medea_beam_circle.png");
 
     private final RenderUtils.TextureBuilder textureBuilder = new RenderUtils.TextureBuilder();
 
@@ -29,7 +29,7 @@ public class RenderMagicBeam extends RenderBeam<MagicBeam> {
             RenderUtils.applyYawPitch(stack, Mth.lerp(partialTicks, projectile.yRotO, projectile.getYRot()),
                     Mth.lerp(partialTicks, projectile.xRotO, projectile.getXRot()));
             this.textureBuilder.setLight(0xf000f0);
-            RenderUtils.renderTexture(stack, buffer.getBuffer(RenderType.entityCutoutNoCull(texCircle)), 1, 1, this.textureBuilder);
+            RenderUtils.renderTexture(stack, buffer.getBuffer(RenderType.entityCutoutNoCull(TEX_CIRCLE)), 1, 1, this.textureBuilder);
             stack.popPose();
         } else
             super.render(projectile, rotation, partialTicks, stack, buffer, packedLight);
@@ -47,6 +47,6 @@ public class RenderMagicBeam extends RenderBeam<MagicBeam> {
 
     @Override
     public ResourceLocation getTextureLocation(MagicBeam entityMagicBeam) {
-        return tex;
+        return TEX;
     }
 }

@@ -16,9 +16,10 @@ import java.util.UUID;
 
 public class ButtonGameProfile extends Button {
 
+    protected static final ResourceLocation GUI_STUFF = new ResourceLocation(Fate.MODID, "textures/gui/player_button.png");
+
     public boolean selected;
-    private GameProfile prof;
-    protected static final ResourceLocation guiStuff = new ResourceLocation(Fate.MODID, "textures/gui/player_button.png");
+    private final GameProfile prof;
     private State state;
 
     public ButtonGameProfile(int x, int y, GameProfile prof, Button.OnPress press) {
@@ -32,7 +33,7 @@ public class ButtonGameProfile extends Button {
         if (this.visible) {
             Minecraft mc = Minecraft.getInstance();
             Font fontrenderer = mc.font;
-            RenderSystem.setShaderTexture(0, guiStuff);
+            RenderSystem.setShaderTexture(0, GUI_STUFF);
             //GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
             this.isHovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
             int i = this.active ? 2 : this.getYImage(this.isHovered);

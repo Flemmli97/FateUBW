@@ -21,12 +21,12 @@ import java.util.stream.Collectors;
 
 public class GuiHolyGrail extends Screen {
 
-    private static final ResourceLocation tex = new ResourceLocation(Fate.MODID, "textures/gui/grail_reward.png");
+    private static final ResourceLocation TEX = new ResourceLocation(Fate.MODID, "textures/gui/grail_reward.png");
 
     private final Map<ResourceLocation, BaseComponent> rewards;
     private int page;
 
-    private static final int xSize = 255, ySize = 186;
+    private static final int X_SIZE = 255, Y_SIZE = 186;
 
     public GuiHolyGrail(Map<ResourceLocation, String> rewards) {
         super(new TranslatableComponent("fate.gui.holy_grail"));
@@ -52,22 +52,22 @@ public class GuiHolyGrail extends Screen {
             int index = this.page * 7 + i;
             if (index < list.size()) {
                 Map.Entry<ResourceLocation, BaseComponent> val = list.get(this.page * 7 + i);
-                this.addRenderableWidget(new ButtonValue<String>(this.width / 2 - xSize / 2 + 6, this.height / 2 - ySize / 2 + (i * 23) + 6, 243, 20, val.getValue(),
+                this.addRenderableWidget(new ButtonValue<String>(this.width / 2 - X_SIZE / 2 + 6, this.height / 2 - Y_SIZE / 2 + (i * 23) + 6, 243, 20, val.getValue(),
                         button -> {
                             NetworkCalls.INSTANCE.sendToServer(new C2SGrailReward(val.getKey()));
                             GuiHolyGrail.this.minecraft.player.closeContainer();
-                        }).setTexture(tex, 0, 216 - 20).setVal(val.getKey().toString()));
+                        }).setTexture(TEX, 0, 216 - 20).setVal(val.getKey().toString()));
             }
         }
         if (this.page > 0) {
-            this.addRenderableWidget(new PageButton(this.width / 2 - xSize / 2 + 220, this.height / 2 - ySize / 2 + 167, false, b -> {
+            this.addRenderableWidget(new PageButton(this.width / 2 - X_SIZE / 2 + 220, this.height / 2 - Y_SIZE / 2 + 167, false, b -> {
                 this.page--;
                 this.clearWidgets();
                 this.init();
             }));
         }
         if ((this.page + 1) * 7 + 1 <= list.size()) {
-            this.addRenderableWidget(new PageButton(this.width / 2 - xSize / 2 + 235, this.height / 2 - ySize / 2 + 167, true, b -> {
+            this.addRenderableWidget(new PageButton(this.width / 2 - X_SIZE / 2 + 235, this.height / 2 - Y_SIZE / 2 + 167, true, b -> {
                 this.page++;
                 this.clearWidgets();
                 this.init();
@@ -78,8 +78,8 @@ public class GuiHolyGrail extends Screen {
     @Override
     public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(stack);
-        RenderSystem.setShaderTexture(0, tex);
-        this.blit(stack, this.width / 2 - xSize / 2, this.height / 2 - ySize / 2, 0, 0, xSize, ySize);
+        RenderSystem.setShaderTexture(0, TEX);
+        this.blit(stack, this.width / 2 - X_SIZE / 2, this.height / 2 - Y_SIZE / 2, 0, 0, X_SIZE, Y_SIZE);
         super.render(stack, mouseX, mouseY, partialTicks);
     }
 
@@ -110,7 +110,7 @@ public class GuiHolyGrail extends Screen {
         public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
             Minecraft minecraft = Minecraft.getInstance();
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
-            RenderSystem.setShaderTexture(0, GuiHolyGrail.tex);
+            RenderSystem.setShaderTexture(0, GuiHolyGrail.TEX);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
             int i = this.isHoveredOrFocused() ? 1 : 0;
             RenderSystem.enableBlend();

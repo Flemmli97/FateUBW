@@ -27,7 +27,7 @@ public class ItemServantCharm extends Item {
                 if (!player.isCreative())
                     stack.shrink(1);
                 ItemEntity item = new ItemEntity(world, player.getX(), player.getY(), player.getZ(),
-                        new ItemStack(ModItems.charms.get(world.random.nextInt(ModItems.charms.size())).get()));
+                        new ItemStack(ModItems.CHARMS.get(world.random.nextInt(ModItems.CHARMS.size())).get()));
                 item.setPickUpDelay(0);
                 world.addFreshEntity(item);
             }

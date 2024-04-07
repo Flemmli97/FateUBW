@@ -2,11 +2,11 @@ package io.github.flemmli97.fateubw.common.config;
 
 public class ServantProperties {
 
-    public static final ServantProperties def = new ServantProperties(20, 1, 0, 0, 0, 0.2, 0.7, 0);
+    public static final ServantProperties DEF = new ServantProperties(20, 1, 0, 0, 0, 0.2, 0.7, 0);
 
-    private double health, strength, armor, proj, magic, move;
-    private float block;
-    private int mana;
+    private final double health, strength, armor, proj, magic, move;
+    private final float block;
+    private final int mana;
 
     public ServantProperties(double health, double strength, double armor, float block, double projProt, double magic, double moveSpeed, int hogouMana) {
         this.health = health;

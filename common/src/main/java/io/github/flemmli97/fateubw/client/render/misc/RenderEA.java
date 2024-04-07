@@ -9,15 +9,15 @@ import net.minecraft.resources.ResourceLocation;
 
 public class RenderEA extends RenderBeam<EnumaElish> {
 
-    public final ResourceLocation tex = new ResourceLocation(Fate.MODID, "textures/entity/ea.png");
+    public static final ResourceLocation TEX = new ResourceLocation(Fate.MODID, "textures/entity/ea.png");
 
     public RenderEA(EntityRendererProvider.Context ctx) {
-        super(ctx, Excalibur.radius - 0.2f, 6);
+        super(ctx, Excalibur.RADIUS - 0.2f, 6);
     }
 
     @Override
     public ResourceLocation getTextureLocation(EnumaElish entity) {
-        return this.tex;
+        return TEX;
     }
 
     @Override

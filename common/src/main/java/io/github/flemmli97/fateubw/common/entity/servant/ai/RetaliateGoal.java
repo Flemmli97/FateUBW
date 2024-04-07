@@ -11,7 +11,7 @@ import net.minecraft.world.entity.player.Player;
 
 public class RetaliateGoal extends TargetGoal {
 
-    private static final TargetingConditions pred = TargetingConditions.forCombat().ignoreLineOfSight().ignoreInvisibilityTesting();
+    private static final TargetingConditions PRED = TargetingConditions.forCombat().ignoreLineOfSight().ignoreInvisibilityTesting();
 
     protected LivingEntity target;
 
@@ -55,6 +55,6 @@ public class RetaliateGoal extends TargetGoal {
                 return false;
             }
         }
-        return super.canAttack(livingBase, pred);
+        return super.canAttack(livingBase, PRED);
     }
 }

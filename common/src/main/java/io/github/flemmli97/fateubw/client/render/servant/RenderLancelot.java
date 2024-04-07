@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class RenderLancelot extends ServantRenderer<EntityLancelot, ModelServant<EntityLancelot>> {
 
-    private static final ResourceLocation textures = new ResourceLocation(Fate.MODID, "textures/entity/servant/lancelot.png");
+    public static final ResourceLocation TEXTURES = new ResourceLocation(Fate.MODID, "textures/entity/servant/lancelot.png");
 
     public RenderLancelot(EntityRendererProvider.Context ctx) {
         super(ctx, new ModelServant<>(ctx.bakeLayer(ModelServant.LAYER_LOCATION), "lancelot"));
@@ -17,6 +17,6 @@ public class RenderLancelot extends ServantRenderer<EntityLancelot, ModelServant
 
     @Override
     public ResourceLocation servantTexture(EntityLancelot servant) {
-        return textures;
+        return TEXTURES;
     }
 }

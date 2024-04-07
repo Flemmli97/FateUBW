@@ -13,6 +13,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SwordItem;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
+import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class ItemModels extends ItemModelProvider {
@@ -26,9 +27,9 @@ public class ItemModels extends ItemModelProvider {
         int sealid = 1;
         for (RegistryEntrySupplier<Item> reg : ModItems.ITEMS.getEntries()) {
             //Archer bow
-            if (reg == ModItems.enumaelish || reg == ModItems.heraclesAxe || reg == ModItems.archbow)
+            if (reg == ModItems.ENUMAELISH || reg == ModItems.HERACLES_AXE || reg == ModItems.ARCHBOW)
                 continue;
-            if (reg == ModItems.medusaDagger) {
+            if (reg == ModItems.MEDUSA_DAGGER) {
                 this.withExistingParent(reg.getID().getPath(), ModelLocationUtils.decorateItemModelLocation("handheld"))
                         .texture("layer0", this.itemTexture(reg.getID()))
                         .override().predicate(new ResourceLocation(Fate.MODID, "thrown"), 1)
@@ -47,20 +48,20 @@ public class ItemModels extends ItemModelProvider {
                                 .end());
             } else if (reg.get() instanceof SpawnEgg)
                 this.withExistingParent(reg.getID().getPath(), ModelLocationUtils.decorateItemModelLocation("template_spawn_egg"));
-            else if (reg == ModItems.excalibur) {
+            else if (reg == ModItems.EXCALIBUR) {
                 this.withExistingParent(reg.getID().getPath(), ModelLocationUtils.decorateItemModelLocation("handheld"))
                         .texture("layer0", "fateubw:items/excalibur")
                         .override().predicate(new ResourceLocation(Fate.MODID, "active"), 1).model(this.getExistingFile(new ResourceLocation(Fate.MODID, "active_item_handheld")));
             } else if (reg.get() instanceof BlockItem blockItem) {
-                this.withExistingParent(reg.getID().getPath(), new ResourceLocation(blockItem.getBlock().getRegistryName().getNamespace(), "block/" + blockItem.getBlock().getRegistryName().getPath()));
-            } else if (reg.get() instanceof SwordItem || reg.get() instanceof ClassSpear || reg == ModItems.staff) {
+                this.getBuilder(reg.getID().getPath()).parent(new ModelFile.UncheckedModelFile(new ResourceLocation(blockItem.getBlock().getRegistryName().getNamespace(), "block/" + blockItem.getBlock().getRegistryName().getPath())));
+            } else if (reg.get() instanceof SwordItem || reg.get() instanceof ClassSpear || reg == ModItems.STAFF) {
                 this.withExistingParent(reg.getID().getPath(), ModelLocationUtils.decorateItemModelLocation("handheld"))
                         .texture("layer0", this.itemTexture(reg.getID()));
-            } else if (reg == ModItems.icon0 || reg == ModItems.icon1 || reg == ModItems.icon2 || reg == ModItems.icon3) {
+            } else if (reg == ModItems.ICON_0 || reg == ModItems.ICON_1 || reg == ModItems.ICON_2 || reg == ModItems.ICON_3) {
                 this.withExistingParent(reg.getID().getPath(), ModelLocationUtils.decorateItemModelLocation("generated"))
                         .texture("layer0", new ResourceLocation(reg.getID().getNamespace(), "gui/command_seal_" + sealid));
                 sealid++;
-            } else if (reg == ModItems.crystalFire || reg == ModItems.crystalEarth || reg == ModItems.crystalVoid || reg == ModItems.crystalWater || reg == ModItems.crystalWind) {
+            } else if (reg == ModItems.CRYSTAL_FIRE || reg == ModItems.CRYSTAL_EARTH || reg == ModItems.CRYSTAL_VOID || reg == ModItems.CRYSTAL_WATER || reg == ModItems.CRYSTAL_WIND) {
                 this.withExistingParent(reg.getID().getPath(), new ResourceLocation(Fate.MODID, "item/gem_shard"))
                         .texture("layer0", this.itemTexture(reg.getID()));
             } else {

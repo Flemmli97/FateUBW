@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class RenderMedusa extends ServantRenderer<EntityMedusa, ModelServant<EntityMedusa>> {
 
-    private static final ResourceLocation textures = new ResourceLocation(Fate.MODID, "textures/entity/servant/medusa.png");
+    public static final ResourceLocation TEXTURES = new ResourceLocation(Fate.MODID, "textures/entity/servant/medusa.png");
 
     public RenderMedusa(EntityRendererProvider.Context ctx) {
         super(ctx, new ModelServant<>(ctx.bakeLayer(ModelServant.LAYER_LOCATION), "medusa"));
@@ -17,6 +17,6 @@ public class RenderMedusa extends ServantRenderer<EntityMedusa, ModelServant<Ent
 
     @Override
     public ResourceLocation servantTexture(EntityMedusa servant) {
-        return textures;
+        return TEXTURES;
     }
 }

@@ -19,16 +19,12 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.Random;
-
 public class RenderEAItem extends BlockEntityWithoutLevelRenderer {
 
-    private static final Random random = new Random(432L);
-    private static final float triangleMult = (float) (Math.sqrt(3.0D) / 2.0D);
+    private static final ResourceLocation BASE = new ResourceLocation(Fate.MODID, "textures/items/ea/ea_base.png");
+    private static final ResourceLocation BLADE = new ResourceLocation(Fate.MODID, "textures/items/ea/ea_blade.png");
 
     private final ModelEA model;
-    private static final ResourceLocation base = new ResourceLocation(Fate.MODID, "textures/items/ea/ea_base.png");
-    private static final ResourceLocation blade = new ResourceLocation(Fate.MODID, "textures/items/ea/ea_blade.png");
     private final RenderUtils.BeamBuilder beam = createBeam();
 
     public RenderEAItem(BlockEntityRenderDispatcher blockEntityRenderDispatcher, EntityModelSet entityModelSet) {
@@ -53,12 +49,12 @@ public class RenderEAItem extends BlockEntityWithoutLevelRenderer {
         matrixStack.scale(1.0F, -1.0F, -1.0F);
 
         model.setBase(true);
-        VertexConsumer builder = ItemRenderer.getFoilBufferDirect(buffer, model.renderType(base), true, stack.hasFoil());
+        VertexConsumer builder = ItemRenderer.getFoilBufferDirect(buffer, model.renderType(BASE), true, stack.hasFoil());
         model.renderToBuffer(matrixStack, builder, combinedLight, combinedOverlay, 1, 1, 1, 1);
 
         model.setBase(false);
         model.spinBlade(ClientHandler.clientTick, ClientHandler.getPartialTicks());
-        VertexConsumer builder2 = ItemRenderer.getFoilBufferDirect(buffer, model.renderType(blade), true, stack.hasFoil());
+        VertexConsumer builder2 = ItemRenderer.getFoilBufferDirect(buffer, model.renderType(BLADE), true, stack.hasFoil());
         model.renderToBuffer(matrixStack, builder2, combinedLight, combinedOverlay, 1, 0, 0, 1);
         matrixStack.popPose();
 

@@ -27,7 +27,7 @@ public class ItemChalk extends Item {
         BlockPlaceContext ctx = new BlockPlaceContext(ictx);
         ItemStack stack = ctx.getItemInHand();
         if (ctx.canPlace()) {
-            BlockState state = ModBlocks.chalk.get().defaultBlockState();
+            BlockState state = ModBlocks.CHALK.get().defaultBlockState();
             if (this.canPlace(ctx, state) && world.setBlockAndUpdate(ctx.getClickedPos(), state)) {
                 world.playSound(null, ctx.getClickedPos(), SoundEvents.WOOL_PLACE, SoundSource.BLOCKS, 1.0F / 2.0F, 1.0F);
                 if (ctx.getPlayer() != null && !ctx.getPlayer().isCreative())

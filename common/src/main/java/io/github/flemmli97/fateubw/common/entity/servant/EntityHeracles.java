@@ -22,32 +22,34 @@ import net.minecraft.world.level.Level;
 
 public class EntityHeracles extends BaseServant {
 
+    protected static final EntityDataAccessor<Integer> DEATH_COUNT = SynchedEntityData.defineId(EntityHeracles.class, EntityDataSerializers.INT);
+
+    private static final AnimatedAction SWING_1 = new AnimatedAction(12, 8, "swing_1");
+    private static final AnimatedAction DEATH = new AnimatedAction(59, 1, "death");
+    private static final AnimatedAction DEATH_FAKE = new AnimatedAction((int) (4.56 * 20), 58, "death_fake");
+
+    private static final AnimatedAction[] ANIMS = {SWING_1, DEATH, DEATH_FAKE};
+
     public final HeraclesAttackGoal attackAI = new HeraclesAttackGoal(this);
 
-    private static final AnimatedAction swing_1 = new AnimatedAction(12, 8, "swing_1");
-    private static final AnimatedAction death = new AnimatedAction(59, 1, "death");
-    private static final AnimatedAction death_fake = new AnimatedAction((int) (4.56 * 20), 58, "death_fake");
-
-    private static final AnimatedAction[] anims = {swing_1, death, death_fake};
-    protected static final EntityDataAccessor<Integer> deathCount = SynchedEntityData.defineId(EntityHeracles.class, EntityDataSerializers.INT);
     private boolean voidDeath;
 
-    private final AnimationHandler<EntityHeracles> animationHandler = new AnimationHandler<>(this, anims);
+    private final AnimationHandler<EntityHeracles> animationHandler = new AnimationHandler<>(this, ANIMS);
 
     public EntityHeracles(EntityType<? extends BaseServant> entityType, Level world) {
-        super(entityType, world, LibEntities.heracles + ".hogou");
+        super(entityType, world, LibEntities.HERACLES + ".hogou");
         if (world != null && !world.isClientSide)
             this.goalSelector.addGoal(0, this.attackAI);
     }
 
     @Override
     protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.heraclesAxe.get()));
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.HERACLES_AXE.get()));
     }
 
     @Override
     public boolean canUse(AnimatedAction anim, AttackType type) {
-        return type == AttackType.MELEE && anim.getID().equals(swing_1.getID());
+        return type == AttackType.MELEE && anim.getID().equals(SWING_1.getID());
     }
 
     @Override
@@ -58,7 +60,7 @@ public class EntityHeracles extends BaseServant {
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-        this.entityData.define(deathCount, 0);
+        this.entityData.define(DEATH_COUNT, 0);
     }
 
     @Override
@@ -71,11 +73,11 @@ public class EntityHeracles extends BaseServant {
     }
 
     public void setDeathNumber(int death) {
-        this.entityData.set(deathCount, death);
+        this.entityData.set(DEATH_COUNT, death);
     }
 
     public int getDeaths() {
-        return this.entityData.get(deathCount);
+        return this.entityData.get(DEATH_COUNT);
     }
 
     @Override
@@ -105,10 +107,10 @@ public class EntityHeracles extends BaseServant {
             if (this.getDeaths() < 12) {
                 this.deathTime++;
                 if (this.deathTime == 1) {
-                    this.getAnimationHandler().setAnimation(death_fake);
+                    this.getAnimationHandler().setAnimation(DEATH_FAKE);
                 }
                 AnimatedAction anim = this.getAnimationHandler().getAnimation();
-                if (anim == null || !anim.getID().equals(death_fake.getID()) || anim.canAttack()) {
+                if (anim == null || !anim.getID().equals(DEATH_FAKE.getID()) || anim.canAttack()) {
                     this.setDeathNumber(this.getDeaths() + 1);
                     double heal = 1 - this.getDeaths() * 0.04;
                     this.setHealth((float) (heal * this.getMaxHealth()));
@@ -129,7 +131,7 @@ public class EntityHeracles extends BaseServant {
 
     @Override
     public AnimatedAction deathAnim() {
-        return death;
+        return DEATH;
     }
 
     @Override

@@ -76,53 +76,53 @@ public class ClientRegister {
     }
 
     public static void registerItemProps(ItemModelPropsRegister register) {
-        register.register(ModItems.excalibur.get(), new ResourceLocation(Fate.MODID, "active"), ItemModelProps.activeItemProp);
-        register.register(ModItems.medusaDagger.get(), new ResourceLocation(Fate.MODID, "thrown"), ItemModelProps.thrownDaggerProp);
+        register.register(ModItems.EXCALIBUR.get(), new ResourceLocation(Fate.MODID, "active"), ItemModelProps.ACTIVE_ITEM_PROP);
+        register.register(ModItems.MEDUSA_DAGGER.get(), new ResourceLocation(Fate.MODID, "thrown"), ItemModelProps.THROWN_DAGGER_PROP);
     }
 
     public static void setupRenderLayers(BiConsumer<Block, RenderType> consumer) {
-        consumer.accept(ModBlocks.altar.get(), RenderType.cutout());
-        consumer.accept(ModBlocks.gemOre.get(), RenderType.cutout());
-        consumer.accept(ModBlocks.artifactOre.get(), RenderType.cutout());
-        consumer.accept(ModBlocks.deepSlateGemOre.get(), RenderType.cutout());
-        consumer.accept(ModBlocks.deepSlateArtifactOre.get(), RenderType.cutout());
-        consumer.accept(ModBlocks.chalk.get(), RenderType.cutout());
+        consumer.accept(ModBlocks.ALTAR.get(), RenderType.cutout());
+        consumer.accept(ModBlocks.GEM_ORE.get(), RenderType.cutout());
+        consumer.accept(ModBlocks.ARTIFACT_ORE.get(), RenderType.cutout());
+        consumer.accept(ModBlocks.DEEP_SLATE_GEM_ORE.get(), RenderType.cutout());
+        consumer.accept(ModBlocks.DEEP_SLATE_ARTIFACT_ORE.get(), RenderType.cutout());
+        consumer.accept(ModBlocks.CHALK.get(), RenderType.cutout());
     }
 
     public static <T extends Entity> void registerRenderers(EntityRendererRegister consumer) {
-        consumer.register(ModEntities.arthur.get(), RenderArthur::new);
-        consumer.register(ModEntities.arthur.get(), RenderArthur::new);
-        consumer.register(ModEntities.cuchulainn.get(), RenderCuchulainn::new);
-        consumer.register(ModEntities.diarmuid.get(), RenderDiarmuid::new);
-        consumer.register(ModEntities.emiya.get(), RenderEmiya::new);
-        consumer.register(ModEntities.gilgamesh.get(), RenderGilgamesh::new);
-        consumer.register(ModEntities.medea.get(), RenderMedea::new);
-        consumer.register(ModEntities.gilles.get(), RenderGilles::new);
-        consumer.register(ModEntities.heracles.get(), RenderHeracles::new);
-        consumer.register(ModEntities.lancelot.get(), RenderLancelot::new);
-        consumer.register(ModEntities.iskander.get(), RenderIskander::new);
-        consumer.register(ModEntities.medusa.get(), RenderMedusa::new);
-        consumer.register(ModEntities.hassan.get(), RenderHassan::new);
-        consumer.register(ModEntities.sasaki.get(), RenderSasaki::new);
+        consumer.register(ModEntities.ARTHUR.get(), RenderArthur::new);
+        consumer.register(ModEntities.ARTHUR.get(), RenderArthur::new);
+        consumer.register(ModEntities.CUCHULAINN.get(), RenderCuchulainn::new);
+        consumer.register(ModEntities.DIARMUID.get(), RenderDiarmuid::new);
+        consumer.register(ModEntities.EMIYA.get(), RenderEmiya::new);
+        consumer.register(ModEntities.GILGAMESH.get(), RenderGilgamesh::new);
+        consumer.register(ModEntities.MEDEA.get(), RenderMedea::new);
+        consumer.register(ModEntities.GILLES.get(), RenderGilles::new);
+        consumer.register(ModEntities.HERACLES.get(), RenderHeracles::new);
+        consumer.register(ModEntities.LANCELOT.get(), RenderLancelot::new);
+        consumer.register(ModEntities.ISKANDER.get(), RenderIskander::new);
+        consumer.register(ModEntities.MEDUSA.get(), RenderMedusa::new);
+        consumer.register(ModEntities.HASSAN.get(), RenderHassan::new);
+        consumer.register(ModEntities.SASAKI.get(), RenderSasaki::new);
 
-        consumer.register(ModEntities.excalibur.get(), RenderExcalibur::new);
-        consumer.register(ModEntities.gaebolg.get(), RenderGaeBolg::new);
-        consumer.register(ModEntities.archerArrow.get(), RenderArcherArrow::new);
-        consumer.register(ModEntities.caladbolg.get(), RenderCaladbolg::new);
-        consumer.register(ModEntities.babylon.get(), RenderBabylon::new);
-        consumer.register(ModEntities.ea.get(), RenderEA::new);
-        consumer.register(ModEntities.magicBeam.get(), RenderMagicBeam::new);
-        consumer.register(ModEntities.medeaCircle.get(), RenderEmpty::new);
-        consumer.register(ModEntities.gordiusWheel.get(), RenderGordius::new);
+        consumer.register(ModEntities.EXCALIBUR.get(), RenderExcalibur::new);
+        consumer.register(ModEntities.GAEBOLG.get(), RenderGaeBolg::new);
+        consumer.register(ModEntities.ARCHER_ARROW.get(), RenderArcherArrow::new);
+        consumer.register(ModEntities.CALADBOLG.get(), RenderCaladbolg::new);
+        consumer.register(ModEntities.BABYLON.get(), RenderBabylon::new);
+        consumer.register(ModEntities.EA.get(), RenderEA::new);
+        consumer.register(ModEntities.MAGIC_BEAM.get(), RenderMagicBeam::new);
+        consumer.register(ModEntities.MEDEA_CIRCLE.get(), RenderEmpty::new);
+        consumer.register(ModEntities.GORDIUS_WHEEL.get(), RenderGordius::new);
 
-        consumer.register(ModEntities.lesserMonster.get(), RenderStarfish::new);
-        consumer.register(ModEntities.hassanCopy.get(), RenderHassanCopy::new);
-        consumer.register(ModEntities.pegasus.get(), RenderPegasus::new);
-        consumer.register(ModEntities.daggerHook.get(), RenderChainDagger::new);
+        consumer.register(ModEntities.LESSER_MONSTER.get(), RenderStarfish::new);
+        consumer.register(ModEntities.HASSAN_COPY.get(), RenderHassanCopy::new);
+        consumer.register(ModEntities.PEGASUS.get(), RenderPegasus::new);
+        consumer.register(ModEntities.DAGGER_HOOK.get(), RenderChainDagger::new);
 
-        consumer.register(ModEntities.gem.get(), RenderGem::new);
+        consumer.register(ModEntities.GEM.get(), RenderGem::new);
 
-        consumer.register(ModEntities.multipart.get(), RenderMultiPartEntity::new);
+        consumer.register(ModEntities.MULTIPART.get(), RenderMultiPartEntity::new);
     }
 
     public static void layerRegister(BiConsumer<ModelLayerLocation, Supplier<LayerDefinition>> cons) {
@@ -139,7 +139,7 @@ public class ClientRegister {
     }
 
     public static <T extends ParticleOptions> void registerParticles(PartileRegister consumer) {
-        consumer.register(ModParticles.light.get(), ColoredParticle.NoGravityParticleFactory::new);
+        consumer.register(ModParticles.LIGHT.get(), ColoredParticle.NoGravityParticleFactory::new);
     }
 
     public interface EntityRendererRegister {

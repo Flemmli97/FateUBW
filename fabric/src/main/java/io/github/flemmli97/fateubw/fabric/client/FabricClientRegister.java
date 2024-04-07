@@ -31,7 +31,7 @@ public class FabricClientRegister {
 
         ClientRegister.registerKeyBinding(KeyBindingHelper::registerKeyBinding);
 
-        BlockEntityRendererRegistry.register(ModBlocks.tileAltar.get(), RenderAltar::new);
+        BlockEntityRendererRegistry.register(ModBlocks.TILE_ALTAR.get(), RenderAltar::new);
         ClientRegister.registerItemProps(ItemProperties::register);
         ClientRegister.registerRenderers(EntityRendererRegistry::register);
         ClientRegister.layerRegister((loc, sup) -> EntityModelLayerRegistry.registerModelLayer(loc, sup::get));
@@ -50,8 +50,8 @@ public class FabricClientRegister {
     private static ModelEA EA_MODEL;
 
     public static void registerBEWLR() {
-        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.excalibur.get(), ((stack, mode, matrices, vertexConsumers, light, overlay) -> RenderExcaliburItem.render(stack, mode, matrices, vertexConsumers, light, overlay, EXCALIBUR_BEAM)));
-        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.enumaelish.get(), ((stack, mode, matrices, vertexConsumers, light, overlay) -> {
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.EXCALIBUR.get(), ((stack, mode, matrices, vertexConsumers, light, overlay) -> RenderExcaliburItem.render(stack, mode, matrices, vertexConsumers, light, overlay, EXCALIBUR_BEAM)));
+        BuiltinItemRendererRegistry.INSTANCE.register(ModItems.ENUMAELISH.get(), ((stack, mode, matrices, vertexConsumers, light, overlay) -> {
             if (EA_MODEL == null)
                 EA_MODEL = new ModelEA(Minecraft.getInstance().getEntityModels().bakeLayer(ModelEA.LAYER_LOCATION));
             RenderEAItem.render(stack, mode, matrices, vertexConsumers, light, overlay, EA_BEAM, EA_MODEL);

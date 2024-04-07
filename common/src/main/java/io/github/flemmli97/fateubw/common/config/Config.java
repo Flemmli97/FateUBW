@@ -28,9 +28,9 @@ public class Config {
         public static List<String> notifyBlackList;
         public static boolean whiteList;
         public static boolean notifyAll;
-        public static final PotionEffectsConfig npBoostEffect = new PotionEffectsConfig();
+        public static PotionEffectsConfig npBoostEffect = new PotionEffectsConfig();
 
-        public static final Map<String, ServantProperties> attributes = new HashMap<>();
+        public static Map<String, ServantProperties> attributes = new HashMap<>();
         public static float lancelotReflectChance;
         public static int hassanCopies;
 
@@ -44,7 +44,7 @@ public class Config {
         public static float caladBolgDmg;
         public static float magicBeam;
         public static float gaeBolgDmg;
-        public static final PotionEffectsConfig gaeBolgEffect = new PotionEffectsConfig();
+        public static PotionEffectsConfig gaeBolgEffect = new PotionEffectsConfig();
         public static double gordiusHealth;
         public static float gordiusDmg;
         public static float medeaDaggerDamage;

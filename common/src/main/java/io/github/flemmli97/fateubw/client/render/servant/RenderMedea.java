@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class RenderMedea extends ServantRenderer<EntityMedea, ModelServant<EntityMedea>> {
 
-    private static final ResourceLocation textures = new ResourceLocation(Fate.MODID, "textures/entity/servant/medea.png");
+    public static final ResourceLocation TEXTURES = new ResourceLocation(Fate.MODID, "textures/entity/servant/medea.png");
 
     public RenderMedea(EntityRendererProvider.Context ctx) {
         super(ctx, new ModelMedea<>(ctx.bakeLayer(ModelMedea.LAYER_LOCATION)));
@@ -18,6 +18,6 @@ public class RenderMedea extends ServantRenderer<EntityMedea, ModelServant<Entit
 
     @Override
     public ResourceLocation servantTexture(EntityMedea servant) {
-        return textures;
+        return TEXTURES;
     }
 }

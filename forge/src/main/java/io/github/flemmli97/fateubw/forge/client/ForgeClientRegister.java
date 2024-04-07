@@ -26,7 +26,7 @@ public class ForgeClientRegister {
 
         ClientRegister.registerKeyBinding(ClientRegistry::registerKeyBinding);
 
-        BlockEntityRenderers.register(ModBlocks.tileAltar.get(), RenderAltar::new);
+        BlockEntityRenderers.register(ModBlocks.TILE_ALTAR.get(), RenderAltar::new);
         event.enqueueWork(() -> ClientRegister.registerItemProps(ItemProperties::register));
     }
 

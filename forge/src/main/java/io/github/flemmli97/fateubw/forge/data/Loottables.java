@@ -64,19 +64,19 @@ public class Loottables extends LootTableProvider {
         private final Map<ResourceLocation, LootTable.Builder> lootTables = new HashMap<>();
 
         private void init() {
-            this.registerLootTable(ModEntities.arthur.get(), this.getDefault(ModItems.excalibur.get()));
-            this.registerLootTable(ModEntities.cuchulainn.get(), this.getDefault(ModItems.gaebolg.get()));
-            this.registerLootTable(ModEntities.diarmuid.get(), this.getDefault(ModItems.gaebuidhe.get(), ModItems.gaedearg.get()));
-            this.registerLootTable(ModEntities.emiya.get(), this.getDefault(ModItems.archbow.get(), ModItems.kanshou.get(), ModItems.bakuya.get()));
-            this.registerLootTable(ModEntities.gilgamesh.get(), this.getDefault(ModItems.enumaelish.get()));
-            this.registerLootTable(ModEntities.medea.get(), this.getDefault(ModItems.staff.get(), ModItems.ruleBreaker.get()));
-            this.registerLootTable(ModEntities.gilles.get(), this.getDefault(ModItems.grimoire.get()));
-            this.registerLootTable(ModEntities.heracles.get(), this.getDefault(ModItems.heraclesAxe.get()));
-            this.registerLootTable(ModEntities.lancelot.get(), this.getDefault(ModItems.arondight.get()));
-            this.registerLootTable(ModEntities.iskander.get(), this.getDefault(ModItems.kupriots.get()));
-            this.registerLootTable(ModEntities.medusa.get(), this.getDefault(ModItems.medusaDagger.get()));
-            this.registerLootTable(ModEntities.hassan.get(), this.getDefault(ModItems.assassinDagger.get()));
-            this.registerLootTable(ModEntities.sasaki.get(), this.getDefault(ModItems.katana.get()));
+            this.registerLootTable(ModEntities.ARTHUR.get(), this.getDefault(ModItems.EXCALIBUR.get()));
+            this.registerLootTable(ModEntities.CUCHULAINN.get(), this.getDefault(ModItems.GAEBOLG.get()));
+            this.registerLootTable(ModEntities.DIARMUID.get(), this.getDefault(ModItems.GAEBUIDHE.get(), ModItems.GAEDEARG.get()));
+            this.registerLootTable(ModEntities.EMIYA.get(), this.getDefault(ModItems.ARCHBOW.get(), ModItems.KANSHOU.get(), ModItems.BAKUYA.get()));
+            this.registerLootTable(ModEntities.GILGAMESH.get(), this.getDefault(ModItems.ENUMAELISH.get()));
+            this.registerLootTable(ModEntities.MEDEA.get(), this.getDefault(ModItems.STAFF.get(), ModItems.RULE_BREAKER.get()));
+            this.registerLootTable(ModEntities.GILLES.get(), this.getDefault(ModItems.GRIMOIRE.get()));
+            this.registerLootTable(ModEntities.HERACLES.get(), this.getDefault(ModItems.HERACLES_AXE.get()));
+            this.registerLootTable(ModEntities.LANCELOT.get(), this.getDefault(ModItems.ARONDIGHT.get()));
+            this.registerLootTable(ModEntities.ISKANDER.get(), this.getDefault(ModItems.KUPRIOTS.get()));
+            this.registerLootTable(ModEntities.MEDUSA.get(), this.getDefault(ModItems.MEDUSA_DAGGER.get()));
+            this.registerLootTable(ModEntities.HASSAN.get(), this.getDefault(ModItems.ASSASSIN_DAGGER.get()));
+            this.registerLootTable(ModEntities.SASAKI.get(), this.getDefault(ModItems.KATANA.get()));
         }
 
         private LootTable.Builder getDefault(ItemLike... items) {
@@ -108,13 +108,13 @@ public class Loottables extends LootTableProvider {
 
         @Override
         public void accept(BiConsumer<ResourceLocation, LootTable.Builder> cons) {
-            this.dropSelf(ModBlocks.altar.get());
-            this.add(ModBlocks.artifactOre.get(), drop -> createSingleItemTableWithSilkTouch(drop, ModItems.charmNone.get()));
-            this.add(ModBlocks.deepSlateArtifactOre.get(), drop -> createSingleItemTableWithSilkTouch(drop, ModItems.charmNone.get()));
+            this.dropSelf(ModBlocks.ALTAR.get());
+            this.add(ModBlocks.ARTIFACT_ORE.get(), drop -> createSingleItemTableWithSilkTouch(drop, ModItems.CHARM_NONE.get()));
+            this.add(ModBlocks.DEEP_SLATE_ARTIFACT_ORE.get(), drop -> createSingleItemTableWithSilkTouch(drop, ModItems.CHARM_NONE.get()));
             ResourceLocation crystal = new ResourceLocation(Fate.MODID, "blocks/crystals");
-            this.registerLootTable(crystal, createLootPool(5, ModItems.crystalEarth.get(), ModItems.crystalWind.get(), ModItems.crystalWater.get(), ModItems.crystalVoid.get(), ModItems.crystalFire.get()));
-            this.add(ModBlocks.gemOre.get(), drop -> createSilkTouchDispatchTable(drop, LootTableReference.lootTableReference(crystal)));
-            this.add(ModBlocks.deepSlateGemOre.get(), drop -> createSilkTouchDispatchTable(drop, LootTableReference.lootTableReference(crystal)));
+            this.registerLootTable(crystal, createLootPool(5, ModItems.CRYSTAL_EARTH.get(), ModItems.CRYSTAL_WIND.get(), ModItems.CRYSTAL_WATER.get(), ModItems.CRYSTAL_VOID.get(), ModItems.CRYSTAL_FIRE.get()));
+            this.add(ModBlocks.GEM_ORE.get(), drop -> createSilkTouchDispatchTable(drop, LootTableReference.lootTableReference(crystal)));
+            this.add(ModBlocks.DEEP_SLATE_GEM_ORE.get(), drop -> createSilkTouchDispatchTable(drop, LootTableReference.lootTableReference(crystal)));
             this.loots.forEach(cons);
         }
 

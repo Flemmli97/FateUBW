@@ -29,22 +29,22 @@ import java.util.List;
 
 public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
 
+    protected static final EntityDataAccessor<Boolean> thrownDagger = SynchedEntityData.defineId(EntityMedusa.class, EntityDataSerializers.BOOLEAN);
+
+    public static final AnimatedAction DAGGER_ATTACK = new AnimatedAction(20, 7, "dagger");
+    public static final AnimatedAction DAGGER_RETRACT = new AnimatedAction(20, 7, "dagger_retract");
+    private static final AnimatedAction NP_ATTACK = new AnimatedAction(20, 5, "np");
+    private static final AnimatedAction[] ANIMS = {AnimatedAction.vanillaAttack, DAGGER_ATTACK, DAGGER_RETRACT, NP_ATTACK};
+
     public final MedusaAttackGoal attackAI = new MedusaAttackGoal(this);
 
-    public static final AnimatedAction daggerAttack = new AnimatedAction(20, 7, "dagger");
-    public static final AnimatedAction daggerRetract = new AnimatedAction(20, 7, "dagger_retract");
-    private static final AnimatedAction npAttack = new AnimatedAction(20, 5, "np");
-    private static final AnimatedAction[] anims = {AnimatedAction.vanillaAttack, daggerAttack, daggerRetract, npAttack};
-
-    private final AnimationHandler<EntityMedusa> animationHandler = new AnimationHandler<>(this, anims);
-
-    protected static final EntityDataAccessor<Boolean> thrownDagger = SynchedEntityData.defineId(EntityMedusa.class, EntityDataSerializers.BOOLEAN);
+    private final AnimationHandler<EntityMedusa> animationHandler = new AnimationHandler<>(this, ANIMS);
 
     private ChainDagger dagger;
     private int throwCooldown;
 
     public EntityMedusa(EntityType<? extends BaseServant> entityType, Level world) {
-        super(entityType, world, LibEntities.medusa + ".hogou");
+        super(entityType, world, LibEntities.MEDUSA + ".hogou");
         if (world != null && !world.isClientSide)
             this.goalSelector.addGoal(0, this.attackAI);
     }
@@ -61,15 +61,15 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
 
     @Override
     protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.medusaDagger.get()));
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.MEDUSA_DAGGER.get()));
     }
 
     @Override
     public boolean canUse(AnimatedAction anim, AttackType type) {
         if (type == AttackType.NP)
-            return anim.getID().equals(npAttack.getID());
+            return anim.getID().equals(NP_ATTACK.getID());
         if (type == AttackType.RANGED)
-            return this.canThrow() && anim.getID().equals(daggerAttack.getID());
+            return this.canThrow() && anim.getID().equals(DAGGER_ATTACK.getID());
         return anim.getID().equals(AnimatedAction.vanillaAttack.getID());
     }
 
@@ -91,7 +91,7 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
                 this.getEntityData().set(thrownDagger, false);
             }
             this.getAnimationHandler().runIfNotNull(anim -> {
-                if (anim.getID().equals(daggerRetract.getID()) && anim.canAttack() && this.dagger != null) {
+                if (anim.getID().equals(DAGGER_RETRACT.getID()) && anim.canAttack() && this.dagger != null) {
                     this.dagger.retractHook();
                     this.dagger = null;
                     this.getEntityData().set(thrownDagger, false);
@@ -120,7 +120,7 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
 
     @Override
     public int attackCooldown(AnimatedAction anim) {
-        if (daggerAttack.is(anim))
+        if (DAGGER_ATTACK.is(anim))
             return this.random.nextInt(15) + 5;
         return super.attackCooldown(anim);
     }
@@ -146,7 +146,7 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
 
     public void attackWithNP() {
         if (!this.level.isClientSide) {
-            Pegasus peg = ModEntities.pegasus.get().create(this.level);
+            Pegasus peg = ModEntities.PEGASUS.get().create(this.level);
             peg.setPos(this.getX(), this.getY(), this.getZ());
             for (int x = 0; x < 5; x++) {
                 LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(this.level);
@@ -167,6 +167,6 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
 
     @Override
     public void onDaggerHit(ChainDagger dagger) {
-        this.getAnimationHandler().setAnimation(daggerRetract);
+        this.getAnimationHandler().setAnimation(DAGGER_RETRACT);
     }
 }

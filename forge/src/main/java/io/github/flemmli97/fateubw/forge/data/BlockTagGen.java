@@ -16,8 +16,8 @@ public class BlockTagGen extends BlockTagsProvider {
     @Override
     public void addTags() {
         this.tag(BlockTags.MINEABLE_WITH_PICKAXE)
-                .add(ModBlocks.gemOre.get(), ModBlocks.artifactOre.get(), ModBlocks.deepSlateGemOre.get(), ModBlocks.deepSlateArtifactOre.get());
+                .add(ModBlocks.GEM_ORE.get(), ModBlocks.ARTIFACT_ORE.get(), ModBlocks.DEEP_SLATE_GEM_ORE.get(), ModBlocks.DEEP_SLATE_ARTIFACT_ORE.get());
         this.tag(BlockTags.NEEDS_IRON_TOOL)
-                .add(ModBlocks.gemOre.get(), ModBlocks.artifactOre.get(), ModBlocks.deepSlateGemOre.get(), ModBlocks.deepSlateArtifactOre.get());
+                .add(ModBlocks.GEM_ORE.get(), ModBlocks.ARTIFACT_ORE.get(), ModBlocks.DEEP_SLATE_GEM_ORE.get(), ModBlocks.DEEP_SLATE_ARTIFACT_ORE.get());
     }
 }

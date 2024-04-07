@@ -19,15 +19,15 @@ import net.minecraft.world.level.Level;
 
 public class EntityIskander extends BaseServant {
 
+    private static final AnimatedAction NP_ATTACK = new AnimatedAction(20, 5, "np");
+    private static final AnimatedAction[] ANIMS = {AnimatedAction.vanillaAttack, NP_ATTACK};
+
     public final IskanderAttackGoal attackAI = new IskanderAttackGoal(this);
 
-    private static final AnimatedAction npAttack = new AnimatedAction(20, 5, "np");
-    private static final AnimatedAction[] anims = {AnimatedAction.vanillaAttack, npAttack};
-
-    private final AnimationHandler<EntityIskander> animationHandler = new AnimationHandler<>(this, anims);
+    private final AnimationHandler<EntityIskander> animationHandler = new AnimationHandler<>(this, ANIMS);
 
     public EntityIskander(EntityType<? extends EntityIskander> entityType, Level world) {
-        super(entityType, world, LibEntities.alexander + ".hogou");
+        super(entityType, world, LibEntities.ALEXANDER + ".hogou");
         this.canUseNP = true;
         if (world != null && !world.isClientSide)
             this.goalSelector.addGoal(0, this.attackAI);
@@ -35,13 +35,13 @@ public class EntityIskander extends BaseServant {
 
     @Override
     protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.kupriots.get()));
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.KUPRIOTS.get()));
     }
 
     @Override
     public boolean canUse(AnimatedAction anim, AttackType type) {
         if (type == AttackType.NP)
-            return anim.getID().equals(npAttack.getID());
+            return anim.getID().equals(NP_ATTACK.getID());
         return anim.getID().equals(AnimatedAction.vanillaAttack.getID());
     }
 
@@ -72,7 +72,7 @@ public class EntityIskander extends BaseServant {
     public boolean attackWithNP() {
         if (this.isPassenger() || this.level.isClientSide)
             return false;
-        Gordius wheel = ModEntities.gordiusWheel.get().create(this.level);
+        Gordius wheel = ModEntities.GORDIUS_WHEEL.get().create(this.level);
         wheel.setPos(this.getX(), this.getY(), this.getZ());
         this.level.addFreshEntity(wheel);
         this.boardingCooldown = 0;

@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class RenderHassanCopy extends MobRenderer<HassanClone, ModelHassanClone<HassanClone>> {
 
-    private static final ResourceLocation textures = new ResourceLocation(Fate.MODID, "textures/entity/servant/hassan.png");
+    public static final ResourceLocation TEXTURES = new ResourceLocation(Fate.MODID, "textures/entity/servant/hassan.png");
 
     public RenderHassanCopy(EntityRendererProvider.Context ctx) {
         super(ctx, new ModelHassanClone<>(ctx.bakeLayer(ModelHassanClone.LAYER_LOCATION)), 0.5F);
@@ -17,6 +17,6 @@ public class RenderHassanCopy extends MobRenderer<HassanClone, ModelHassanClone<
 
     @Override
     public ResourceLocation getTextureLocation(HassanClone servant) {
-        return textures;
+        return TEXTURES;
     }
 }

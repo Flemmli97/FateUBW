@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class RenderSasaki extends ServantRenderer<EntitySasaki, ModelServant<EntitySasaki>> {
 
-    private static final ResourceLocation textures = new ResourceLocation(Fate.MODID, "textures/entity/servant/sasaki.png");
+    public static final ResourceLocation TEXTURES = new ResourceLocation(Fate.MODID, "textures/entity/servant/sasaki.png");
 
     public RenderSasaki(EntityRendererProvider.Context ctx) {
         super(ctx, new ModelServant<>(ctx.bakeLayer(ModelServant.LAYER_LOCATION), "sasaki"));
@@ -17,6 +17,6 @@ public class RenderSasaki extends ServantRenderer<EntitySasaki, ModelServant<Ent
 
     @Override
     public ResourceLocation servantTexture(EntitySasaki servant) {
-        return textures;
+        return TEXTURES;
     }
 }

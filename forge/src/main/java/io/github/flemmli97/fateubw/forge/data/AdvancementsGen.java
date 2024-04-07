@@ -36,18 +36,18 @@ public class AdvancementsGen implements DataProvider {
 
     public void add() {
         this.advancements.add(cons -> {
-            Advancement root = Advancement.Builder.advancement().display(ModItems.icon0.get(), new TranslatableComponent("advancements.fate.title"), new TranslatableComponent("advancements.fate.description"), new ResourceLocation("textures/gui/advancements/backgrounds/stone.png"), FrameType.TASK, true, true, false)
-                    .addCriterion("gem_fire", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.crystalFire.get()))
-                    .addCriterion("gem_water", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.crystalWater.get()))
-                    .addCriterion("gem_earth", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.crystalEarth.get()))
-                    .addCriterion("gem_wind", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.crystalWind.get()))
-                    .addCriterion("gem_void", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.crystalVoid.get()))
+            Advancement root = Advancement.Builder.advancement().display(ModItems.ICON_0.get(), new TranslatableComponent("advancements.fate.title"), new TranslatableComponent("advancements.fate.description"), new ResourceLocation("textures/gui/advancements/backgrounds/stone.png"), FrameType.TASK, true, true, false)
+                    .addCriterion("gem_fire", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.CRYSTAL_FIRE.get()))
+                    .addCriterion("gem_water", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.CRYSTAL_WATER.get()))
+                    .addCriterion("gem_earth", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.CRYSTAL_EARTH.get()))
+                    .addCriterion("gem_wind", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.CRYSTAL_WIND.get()))
+                    .addCriterion("gem_void", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.CRYSTAL_VOID.get()))
                     .requirements(RequirementsStrategy.OR).save(cons, Fate.MODID + ":root");
-            Advancement charm = Advancement.Builder.advancement().parent(root).display(ModItems.charmNone.get(), new TranslatableComponent("advancements.fate.charm.title"), new TranslatableComponent("advancements.fate.charm.description"), null, FrameType.TASK, true, true, true)
-                    .addCriterion("charm", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.charmNone.get())).save(cons, Fate.MODID + ":charm");
-            Advancement summon = Advancement.Builder.advancement().parent(root).display(ModItems.altar.get(), new TranslatableComponent("advancements.fate.join.title"), new TranslatableComponent("advancements.fate.join.description"), null, FrameType.TASK, true, false, true)
+            Advancement charm = Advancement.Builder.advancement().parent(root).display(ModItems.CHARM_NONE.get(), new TranslatableComponent("advancements.fate.charm.title"), new TranslatableComponent("advancements.fate.charm.description"), null, FrameType.TASK, true, true, true)
+                    .addCriterion("charm", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.CHARM_NONE.get())).save(cons, Fate.MODID + ":charm");
+            Advancement summon = Advancement.Builder.advancement().parent(root).display(ModItems.ALTAR.get(), new TranslatableComponent("advancements.fate.join.title"), new TranslatableComponent("advancements.fate.join.description"), null, FrameType.TASK, true, false, true)
                     .addCriterion("join", new GrailWarTrigger.Instance(true, EntityPredicate.Composite.ANY)).save(cons, Fate.MODID + ":summon");
-            Advancement win = Advancement.Builder.advancement().parent(summon).display(ModItems.grail.get(), new TranslatableComponent("advancements.fate.win.title"), new TranslatableComponent("advancements.fate.win.description"), null, FrameType.CHALLENGE, true, true, true)
+            Advancement win = Advancement.Builder.advancement().parent(summon).display(ModItems.GRAIL.get(), new TranslatableComponent("advancements.fate.win.title"), new TranslatableComponent("advancements.fate.win.description"), null, FrameType.CHALLENGE, true, true, true)
                     .addCriterion("win", new GrailWarTrigger.Instance(false, EntityPredicate.Composite.ANY)).save(cons, Fate.MODID + ":win");
         });
     }
@@ -67,7 +67,7 @@ public class AdvancementsGen implements DataProvider {
                 try {
                     DataProvider.save(GSON, cache, advancement.deconstruct().serializeToJson(), path1);
                 } catch (IOException ioexception) {
-                    Fate.logger.error("Couldn't save advancement {}", path1, ioexception);
+                    Fate.LOGGER.error("Couldn't save advancement {}", path1, ioexception);
                 }
             }
         };

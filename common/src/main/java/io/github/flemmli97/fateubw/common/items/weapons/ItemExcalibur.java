@@ -18,7 +18,7 @@ import net.minecraft.world.level.Level;
 public class ItemExcalibur extends SwordItem {
 
     public ItemExcalibur(Item.Properties props) {
-        super(ItemTiers.excalibur, 0, -2.4f, props);
+        super(ItemTiers.EXCALIBUR, 0, -2.4f, props);
     }
 
     @Override

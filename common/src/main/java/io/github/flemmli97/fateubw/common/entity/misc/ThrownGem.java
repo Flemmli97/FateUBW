@@ -16,7 +16,7 @@ public class ThrownGem extends EntityProjectile {
     }
 
     public ThrownGem(Level world, LivingEntity shooter) {
-        super(ModEntities.gem.get(), world, shooter);
+        super(ModEntities.GEM.get(), world, shooter);
     }
 
     @Override

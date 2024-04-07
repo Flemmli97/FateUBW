@@ -57,13 +57,13 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
     }
 
     public HassanClone(Level world, EntityHassan entityHassan) {
-        this(ModEntities.hassanCopy.get(), world);
+        this(ModEntities.HASSAN_COPY.get(), world);
         this.setOriginal(entityHassan);
     }
 
     @Override
     protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.assassinDagger.get()));
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.ASSASSIN_DAGGER.get()));
     }
 
     @Override

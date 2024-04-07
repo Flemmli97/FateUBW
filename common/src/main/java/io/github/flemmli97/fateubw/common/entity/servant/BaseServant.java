@@ -83,6 +83,10 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
 
     public static final TicketType<ChunkPos> TRACKINGTICKET = TicketType.create("servant", Comparator.comparingLong(ChunkPos::toLong), 5);
 
+    protected static final EntityDataAccessor<Boolean> SHOW_SERVANT = SynchedEntityData.defineId(BaseServant.class, EntityDataSerializers.BOOLEAN);
+    protected static final EntityDataAccessor<Boolean> STATIONARY = SynchedEntityData.defineId(BaseServant.class, EntityDataSerializers.BOOLEAN);
+    protected static final EntityDataAccessor<Optional<UUID>> OWNER_UUID = SynchedEntityData.defineId(BaseServant.class, EntityDataSerializers.OPTIONAL_UUID);
+
     //Mana
     private int servantMana, antiRegen, counter;
     private boolean died = false;
@@ -102,10 +106,6 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     private Player owner;
 
     private final TranslatableComponent hogou;
-
-    protected static final EntityDataAccessor<Boolean> showServant = SynchedEntityData.defineId(BaseServant.class, EntityDataSerializers.BOOLEAN);
-    protected static final EntityDataAccessor<Boolean> stationary = SynchedEntityData.defineId(BaseServant.class, EntityDataSerializers.BOOLEAN);
-    protected static final EntityDataAccessor<Optional<UUID>> ownerUUID = SynchedEntityData.defineId(BaseServant.class, EntityDataSerializers.OPTIONAL_UUID);
 
     private final ServantProperties prop;
 
@@ -130,7 +130,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         super(entityType, world);
         this.moveControl = new MoveControllerPlus(this);
         this.xpReward = 35;
-        this.prop = Config.Common.attributes.getOrDefault(PlatformUtils.INSTANCE.entities().getIDFrom(entityType).toString(), ServantProperties.def);
+        this.prop = Config.Common.attributes.getOrDefault(PlatformUtils.INSTANCE.entities().getIDFrom(entityType).toString(), ServantProperties.DEF);
         if (world != null && !world.isClientSide) {
             this.goals();
             this.updateAttributes();
@@ -193,19 +193,19 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     //=====Client-Server sync
 
     public boolean showServant() {
-        return this.entityData.get(showServant);
+        return this.entityData.get(SHOW_SERVANT);
     }
 
     public boolean isStaying() {
-        return this.entityData.get(stationary);
+        return this.entityData.get(STATIONARY);
     }
 
     public void setStaying(boolean stay) {
-        this.entityData.set(stationary, stay);
+        this.entityData.set(STATIONARY, stay);
     }
 
     public void revealServant() {
-        this.entityData.set(showServant, true);
+        this.entityData.set(SHOW_SERVANT, true);
     }
 
     /**
@@ -220,9 +220,9 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-        this.entityData.define(stationary, false);
-        this.entityData.define(showServant, false);
-        this.entityData.define(ownerUUID, Optional.empty());
+        this.entityData.define(STATIONARY, false);
+        this.entityData.define(SHOW_SERVANT, false);
+        this.entityData.define(OWNER_UUID, Optional.empty());
     }
 
     @Override
@@ -287,25 +287,25 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         if (this.owner != null && this.owner.isAlive())
             return this.owner;
         if (this.hasOwner())
-            this.owner = this.level.getPlayerByUUID(this.entityData.get(ownerUUID).get());
+            this.owner = this.level.getPlayerByUUID(this.entityData.get(OWNER_UUID).get());
         return this.owner;
     }
 
     public boolean hasOwner() {
-        return this.entityData.get(ownerUUID).isPresent();
+        return this.entityData.get(OWNER_UUID).isPresent();
     }
 
     @Override
     public UUID getOwnerUUID() {
-        return this.entityData.get(ownerUUID).orElse(null);
+        return this.entityData.get(OWNER_UUID).orElse(null);
     }
 
     public void setOwner(Player player) {
         if (player != null) {
-            this.entityData.set(ownerUUID, Optional.of(player.getUUID()));
+            this.entityData.set(OWNER_UUID, Optional.of(player.getUUID()));
             Platform.INSTANCE.getPlayerData(player).ifPresent(data -> data.setServant(this));
         } else
-            this.entityData.set(ownerUUID, Optional.empty());
+            this.entityData.set(OWNER_UUID, Optional.empty());
         this.owner = player;
         this.disableChunkload = !this.hasOwner();
     }
@@ -315,7 +315,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
         if (this.hasOwner())
-            tag.putUUID("Owner", this.entityData.get(ownerUUID).get());
+            tag.putUUID("Owner", this.entityData.get(OWNER_UUID).get());
         tag.putBoolean("CanUseNP", this.canUseNP);
         tag.putInt("Death", this.deathTime);
         tag.putBoolean("IsDead", this.died);
@@ -330,14 +330,14 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
         if (tag.contains("Owner"))
-            this.entityData.set(ownerUUID, Optional.of(tag.getUUID("Owner")));
+            this.entityData.set(OWNER_UUID, Optional.of(tag.getUUID("Owner")));
         this.canUseNP = tag.getBoolean("CanUseNP");
         this.deathTime = tag.getInt("Death");
         this.died = tag.getBoolean("IsDead");
         this.updateAI(NBTUtils.get(EnumServantUpdate.class, tag, "Command", EnumServantUpdate.NORMAL));
         this.servantMana = tag.getInt("Mana");
         this.critHealth = tag.getBoolean("HealthMessage");
-        this.entityData.set(showServant, tag.getBoolean("Revealed"));
+        this.entityData.set(SHOW_SERVANT, tag.getBoolean("Revealed"));
         this.disableChunkload = tag.getBoolean("DisableChunkload");
     }
 

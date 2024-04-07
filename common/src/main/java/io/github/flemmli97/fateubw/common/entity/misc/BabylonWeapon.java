@@ -36,9 +36,9 @@ import java.util.Random;
 
 public class BabylonWeapon extends EntityProjectile {
 
-    protected static final EntityDataAccessor<ItemStack> weaponType = SynchedEntityData.defineId(BabylonWeapon.class, EntityDataSerializers.ITEM_STACK);
-    protected static final EntityDataAccessor<Integer> shootTime = SynchedEntityData.defineId(BabylonWeapon.class, EntityDataSerializers.INT);
-    protected static final EntityDataAccessor<Integer> preShootTick = SynchedEntityData.defineId(BabylonWeapon.class, EntityDataSerializers.INT);
+    protected static final EntityDataAccessor<ItemStack> WEAPON_TYPE = SynchedEntityData.defineId(BabylonWeapon.class, EntityDataSerializers.ITEM_STACK);
+    protected static final EntityDataAccessor<Integer> SHOOT_TIME = SynchedEntityData.defineId(BabylonWeapon.class, EntityDataSerializers.INT);
+    protected static final EntityDataAccessor<Integer> PRE_SHOOT_TICK = SynchedEntityData.defineId(BabylonWeapon.class, EntityDataSerializers.INT);
 
     public boolean idle = true;
     private LivingEntity target;
@@ -53,7 +53,7 @@ public class BabylonWeapon extends EntityProjectile {
     }
 
     public BabylonWeapon(Level world, LivingEntity shootingEntity) {
-        super(ModEntities.babylon.get(), world, shootingEntity);
+        super(ModEntities.BABYLON.get(), world, shootingEntity);
     }
 
     public BabylonWeapon(Level world, LivingEntity shootingEntity, LivingEntity target) {
@@ -69,19 +69,19 @@ public class BabylonWeapon extends EntityProjectile {
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-        this.entityData.define(weaponType, ItemStack.EMPTY);
-        this.entityData.define(shootTime, this.random.nextInt(20) + 25);
-        this.entityData.define(preShootTick, 0);
+        this.entityData.define(WEAPON_TYPE, ItemStack.EMPTY);
+        this.entityData.define(SHOOT_TIME, this.random.nextInt(20) + 25);
+        this.entityData.define(PRE_SHOOT_TICK, 0);
     }
 
     @Override
     public void tick() {
         Entity thrower = this.getOwner();
-        if (this.getPreShootTick() <= this.entityData.get(shootTime)) {
+        if (this.getPreShootTick() <= this.entityData.get(SHOOT_TIME)) {
             this.livingTicks++;
             this.updatePreShootTick();
         }
-        if (this.getPreShootTick() == this.entityData.get(shootTime)) {
+        if (this.getPreShootTick() == this.entityData.get(SHOOT_TIME)) {
             if (!this.level.isClientSide) {
                 if (thrower instanceof Player) {
                     HitResult hit = RayTraceUtils.entityRayTrace(thrower, 64, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, false, false, null);
@@ -91,7 +91,7 @@ public class BabylonWeapon extends EntityProjectile {
                     this.shootAtPosition(this.target.getX() + targetMot.x, this.target.getY() + this.target.getBbHeight() / 2 + targetMot.y, this.target.getZ() + targetMot.z, 0.5F, 4);
                 }
             }
-        } else if (this.getPreShootTick() > this.entityData.get(shootTime)) {
+        } else if (this.getPreShootTick() > this.entityData.get(SHOOT_TIME)) {
             this.idle = false;
             if (!this.level.isClientSide) {
                 if (thrower == null || !thrower.isAlive()) {
@@ -106,13 +106,13 @@ public class BabylonWeapon extends EntityProjectile {
     }
 
     private int getPreShootTick() {
-        return this.entityData.get(preShootTick);
+        return this.entityData.get(PRE_SHOOT_TICK);
     }
 
     private void updatePreShootTick() {
-        this.entityData.set(preShootTick, this.getPreShootTick() + 1);
+        this.entityData.set(PRE_SHOOT_TICK, this.getPreShootTick() + 1);
         if (this.level.isClientSide) {
-            this.level.addParticle(new ColoredParticleData(ModParticles.light.get(), 235 / 255F, 235 / 255F, 0 / 255F, 1, 0.15f), this.getX(), this.getY(), this.getZ(), this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01);
+            this.level.addParticle(new ColoredParticleData(ModParticles.LIGHT.get(), 235 / 255F, 235 / 255F, 0 / 255F, 1, 0.15f), this.getX(), this.getY(), this.getZ(), this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01);
         }
     }
 
@@ -149,12 +149,12 @@ public class BabylonWeapon extends EntityProjectile {
     }
 
     public ItemStack getWeapon() {
-        return this.entityData.get(weaponType);
+        return this.entityData.get(WEAPON_TYPE);
     }
 
     public void setWeapon(ItemStack stack) {
         if (!stack.isEmpty()) {
-            this.entityData.set(weaponType, stack);
+            this.entityData.set(WEAPON_TYPE, stack);
             this.dmg = ItemUtils.damage(stack) * Config.Common.babylonScale;
         }
     }
@@ -170,7 +170,7 @@ public class BabylonWeapon extends EntityProjectile {
     protected void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
         this.setWeapon(ItemStack.of(compound.getCompound("Weapon")));
-        this.entityData.set(preShootTick, compound.getInt("PreShoot"));
+        this.entityData.set(PRE_SHOOT_TICK, compound.getInt("PreShoot"));
     }
 
     /**

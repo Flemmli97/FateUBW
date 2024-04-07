@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class RenderEmiya extends ServantRenderer<EntityEmiya, ModelServant<EntityEmiya>> {
 
-    private static final ResourceLocation textures = new ResourceLocation(Fate.MODID, "textures/entity/servant/emiya.png");
+    public static final ResourceLocation TEXTURES = new ResourceLocation(Fate.MODID, "textures/entity/servant/emiya.png");
 
     public RenderEmiya(EntityRendererProvider.Context ctx) {
         super(ctx, new ModelServant<>(ctx.bakeLayer(ModelServant.LAYER_LOCATION), "emiya"));
@@ -17,6 +17,6 @@ public class RenderEmiya extends ServantRenderer<EntityEmiya, ModelServant<Entit
 
     @Override
     public ResourceLocation servantTexture(EntityEmiya servant) {
-        return textures;
+        return TEXTURES;
     }
 }

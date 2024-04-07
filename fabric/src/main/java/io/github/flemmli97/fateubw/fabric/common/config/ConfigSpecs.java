@@ -107,7 +107,7 @@ public class ConfigSpecs {
             this.servantMinSpawnDelay = builder.comment("Minimum time between each attempt to spawn masterless servants. (Fill Empty Slots needs to be true)").defineInRange("Servant Spawn Delay (Min)", 3000, 0, Integer.MAX_VALUE);
             this.servantMaxSpawnDelay = builder.comment("Maximum time between each attempt to spawn masterless servants. (Fill Empty Slots needs to be true)").defineInRange("Servant Spawn Delay (Max)", 6000, 0, Integer.MAX_VALUE);
             this.punishTeleport = builder.comment("Should teleporting servants to the owner during a fight be punished").define("Punish Teleport", true);
-            this.notifyBlackList = builder.comment("Servants that dont notify players when spawned (from filling missing slots)").define("Servant notification", Lists.newArrayList(LibEntities.hassan.toString()));
+            this.notifyBlackList = builder.comment("Servants that dont notify players when spawned (from filling missing slots)").define("Servant notification", Lists.newArrayList(LibEntities.HASSAN.toString()));
             this.whiteList = builder.comment("Turn servant notification list into a whitelist").define("Notify Whitelist", true);
             this.notifyAll = builder.comment("Notify everyone if a servant spawns. Else only the player the servant spawned on will be notified").define("Notify Everyone", true);
             this.npBoostEffect = builder.comment("Potions applied when boostin servants using a command seal. Usage: " + PotionEffectsConfig.usage()).define("NP Effects",
@@ -117,9 +117,9 @@ public class ConfigSpecs {
             for (Map.Entry<String, ServantProperties> e : Config.Common.attributes.entrySet()) {
                 builder.push(e.getKey());
                 this.attributes.put(e.getKey(), new ServantConfSpec(builder, e.getValue()));
-                if (e.getKey().equals(LibEntities.lancelot.toString()))
+                if (e.getKey().equals(LibEntities.LANCELOT.toString()))
                     this.lancelotReflectChance = builder.comment("Chance for lancelot to reflect a blocked projectile").defineInRange("Projectile Reflect Chance", 0.3, 0, 1);
-                if (e.getKey().equals(LibEntities.hassan.toString()))
+                if (e.getKey().equals(LibEntities.HASSAN.toString()))
                     this.hassanCopies = builder.comment("Amount of copies hassan can call").defineInRange("Hassan Copies", 5, 0, Integer.MAX_VALUE);
                 builder.pop();
             }

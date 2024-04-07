@@ -48,7 +48,7 @@ import java.util.UUID;
 
 public class GrailWarHandler extends SavedData {
 
-    private static final String identifier = "GrailWarTracker";
+    private static final String IDENTIFIER = "GrailWarTracker";
 
     private final Set<UUID> players = new HashSet<>();
 
@@ -73,7 +73,7 @@ public class GrailWarHandler extends SavedData {
     }
 
     public static GrailWarHandler get(MinecraftServer server) {
-        return server.overworld().getDataStorage().computeIfAbsent(GrailWarHandler::new, GrailWarHandler::new, identifier);
+        return server.overworld().getDataStorage().computeIfAbsent(GrailWarHandler::new, GrailWarHandler::new, IDENTIFIER);
     }
 
     public boolean join(ServerPlayer player) {
@@ -127,7 +127,7 @@ public class GrailWarHandler extends SavedData {
                     Player player = world.getPlayerByUUID(uuid);
                     String name;
                     if (player instanceof ServerPlayer) {
-                        AdvancementRegister.grailWarTrigger.trigger((ServerPlayer) player, false);
+                        AdvancementRegister.GRAIL_WAR_TRIGGER.trigger((ServerPlayer) player, false);
                         name = player.getGameProfile().getName();
                     } else {
 
@@ -214,7 +214,7 @@ public class GrailWarHandler extends SavedData {
             if (--this.winningDelay <= 0) {
                 Player player = this.winner(world);
                 if (player != null) {
-                    ItemEntity holyGrail = new ItemEntity(player.level, player.getX() + world.random.nextInt(9) - 4, player.getY(), player.getZ() + world.random.nextInt(9) - 4, new ItemStack(ModItems.grail.get()));
+                    ItemEntity holyGrail = new ItemEntity(player.level, player.getX() + world.random.nextInt(9) - 4, player.getY(), player.getZ() + world.random.nextInt(9) - 4, new ItemStack(ModItems.GRAIL.get()));
                     holyGrail.setExtendedLifetime();
                     holyGrail.setOwner(player.getUUID());
                     holyGrail.setInvulnerable(true);

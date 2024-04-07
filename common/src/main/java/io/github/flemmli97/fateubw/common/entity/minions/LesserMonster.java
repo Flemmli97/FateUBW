@@ -26,15 +26,15 @@ import java.util.UUID;
 
 public class LesserMonster extends PathfinderMob implements IServantMinion, IAnimated, OwnableEntity {
 
+    public static final AnimatedAction WALK = new AnimatedAction(31, 0, "walk");
+    public static final AnimatedAction ATTACK = new AnimatedAction(20, 15, "attack");
+    private static final AnimatedAction[] ANIMS = {WALK, ATTACK};
+
     private UUID ownerUUID;
     private LivingEntity owner;
     private int livingTicks;
 
-    public static final AnimatedAction walk = new AnimatedAction(31, 0, "walk");
-    public static final AnimatedAction attack = new AnimatedAction(20, 15, "attack");
-    private static final AnimatedAction[] anims = {walk, attack};
-
-    private final AnimationHandler<LesserMonster> animationHandler = new AnimationHandler<>(this, anims);
+    private final AnimationHandler<LesserMonster> animationHandler = new AnimationHandler<>(this, ANIMS);
 
     public LesserMonster(EntityType<? extends LesserMonster> type, Level world) {
         super(type, world);
@@ -45,7 +45,7 @@ public class LesserMonster extends PathfinderMob implements IServantMinion, IAni
     }
 
     public LesserMonster(Level world, LivingEntity owner) {
-        this(ModEntities.lesserMonster.get(), world);
+        this(ModEntities.LESSER_MONSTER.get(), world);
         this.owner = owner;
         this.ownerUUID = owner.getUUID();
     }
@@ -57,7 +57,7 @@ public class LesserMonster extends PathfinderMob implements IServantMinion, IAni
     }
 
     protected void goals() {
-        this.goalSelector.addGoal(2, new AnimatedMeleeGoal<>(this, m -> attack));
+        this.goalSelector.addGoal(2, new AnimatedMeleeGoal<>(this, m -> ATTACK));
         this.goalSelector.addGoal(3, new FloatGoal(this));
         this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
         this.goalSelector.addGoal(5, new LookAtPlayerGoal(this, Player.class, 8.0F));

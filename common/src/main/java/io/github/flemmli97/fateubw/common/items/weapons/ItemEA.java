@@ -18,7 +18,7 @@ import net.minecraft.world.level.Level;
 public class ItemEA extends SwordItem {
 
     public ItemEA(Item.Properties props) {
-        super(ItemTiers.ea, 0, -2.4f, props);
+        super(ItemTiers.EA, 0, -2.4f, props);
     }
 
     @Override

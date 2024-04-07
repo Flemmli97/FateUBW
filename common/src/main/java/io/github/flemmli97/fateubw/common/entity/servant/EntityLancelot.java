@@ -29,14 +29,14 @@ import net.minecraft.world.phys.Vec3;
 
 public class EntityLancelot extends BaseServant {
 
+    public static final AnimatedAction[] ANIMS = AnimatedAction.vanillaAttackOnly;
+
     public final LancelotAttackGoal attackAI = new LancelotAttackGoal(this);
 
-    public static final AnimatedAction[] anims = AnimatedAction.vanillaAttackOnly;
-
-    private final AnimationHandler<EntityLancelot> animationHandler = new AnimationHandler<>(this, anims);
+    private final AnimationHandler<EntityLancelot> animationHandler = new AnimationHandler<>(this, ANIMS);
 
     public EntityLancelot(EntityType<? extends EntityLancelot> entityType, Level world) {
-        super(entityType, world, LibEntities.lancelot + ".hogou");
+        super(entityType, world, LibEntities.LANCELOT + ".hogou");
         if (world != null && !world.isClientSide)
             this.goalSelector.addGoal(0, this.attackAI);
     }
@@ -65,7 +65,7 @@ public class EntityLancelot extends BaseServant {
         super.actuallyHurt(damageSrc, damageAmount);
         if (!this.canUseNP && !this.isDeadOrDying() && this.getHealth() < 0.5 * this.getMaxHealth()) {
             this.canUseNP = true;
-            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.arondight.get()));
+            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.ARONDIGHT.get()));
         }
     }
 
@@ -151,7 +151,7 @@ public class EntityLancelot extends BaseServant {
     }
 
     public boolean canPickWeapon() {
-        return this.getMainHandItem().getItem() != ModItems.arondight.get();
+        return this.getMainHandItem().getItem() != ModItems.ARONDIGHT.get();
     }
 
     public boolean checkItemToWield(ItemStack stack) {

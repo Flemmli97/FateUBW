@@ -17,28 +17,28 @@ import net.minecraft.world.level.Level;
 
 public class EntitySasaki extends BaseServant {
 
+    private static final AnimatedAction NP_ATTACK = new AnimatedAction(40, 0, "np");
+    private static final AnimatedAction[] ANIMS = {AnimatedAction.vanillaAttack, NP_ATTACK};
+
     public final SasakiAttackGoal attackAI = new SasakiAttackGoal(this);
 
-    private static final AnimatedAction npAttack = new AnimatedAction(40, 0, "np");
-    private static final AnimatedAction[] anims = {AnimatedAction.vanillaAttack, npAttack};
-
-    private final AnimationHandler<EntitySasaki> animationHandler = new AnimationHandler<>(this, anims);
+    private final AnimationHandler<EntitySasaki> animationHandler = new AnimationHandler<>(this, ANIMS);
 
     public EntitySasaki(EntityType<? extends BaseServant> entityType, Level world) {
-        super(entityType, world, LibEntities.sasaki + ".hogou");
+        super(entityType, world, LibEntities.SASAKI + ".hogou");
         if (world != null && !world.isClientSide)
             this.goalSelector.addGoal(0, this.attackAI);
     }
 
     @Override
     protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.katana.get()));
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.KATANA.get()));
     }
 
     @Override
     public boolean canUse(AnimatedAction anim, AttackType type) {
         if (type == AttackType.NP)
-            return anim.getID().equals(npAttack.getID());
+            return anim.getID().equals(NP_ATTACK.getID());
         return anim.getID().equals(AnimatedAction.vanillaAttack.getID());
     }
 

@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class RenderCaladbolg extends RenderProjectileModel<CaladBolg> {
 
-    public final ResourceLocation tex = new ResourceLocation(Fate.MODID, "textures/entity/caladbolg.png");
+    public static final ResourceLocation TEX = new ResourceLocation(Fate.MODID, "textures/entity/caladbolg.png");
 
     public RenderCaladbolg(EntityRendererProvider.Context ctx) {
         super(ctx, new ModelCaladBolg(ctx.bakeLayer(ModelCaladBolg.LAYER_LOCATION)));
@@ -18,7 +18,7 @@ public class RenderCaladbolg extends RenderProjectileModel<CaladBolg> {
 
     @Override
     public ResourceLocation getTextureLocation(CaladBolg entity) {
-        return this.tex;
+        return TEX;
     }
 
     @Override

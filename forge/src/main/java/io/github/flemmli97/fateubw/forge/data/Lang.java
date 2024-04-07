@@ -59,74 +59,74 @@ public class Lang implements DataProvider {
         for (RegistryEntrySupplier<Item> reg : ModItems.ITEMS.getEntries()) {
             if (reg.get() instanceof BlockItem || reg.get() instanceof SpawnEgg || reg.getID().getPath().startsWith("gem") || reg.getID().getPath().startsWith("servant_artifact"))
                 continue;
-            if (reg == ModItems.excalibur)
+            if (reg == ModItems.EXCALIBUR)
                 this.add(reg.get(), "Holy Sword Excalibur");
-            else if (reg == ModItems.enumaelish)
+            else if (reg == ModItems.ENUMAELISH)
                 this.add(reg.get(), "EA");
-            else if (reg == ModItems.katana)
+            else if (reg == ModItems.KATANA)
                 this.add(reg.get(), "Monohoshi Zao");
             else
                 this.add(reg.get(), this.simpleOfRegName(reg.getID()));
         }
 
-        this.add(ModItems.crystalFire.get(), "Red Gem Shard");
-        this.add(ModItems.crystalWater.get(), "Blue Gem Shard");
-        this.add(ModItems.crystalEarth.get(), "Green Gem Shard");
-        this.add(ModItems.crystalWind.get(), "Yellow Gem Shard");
-        this.add(ModItems.crystalVoid.get(), "Black Gem Shard");
-        this.add(ModItems.crystalCluster.get(), "Synthesized Gem");
-        this.add(ModItems.charmNone.get(), "Servant Artifact");
-        this.add(ModItems.charmSaber.get(), "Servant Artifact (Saber)");
-        this.add(ModItems.charmArcher.get(), "Servant Artifact (Archer)");
-        this.add(ModItems.charmLancer.get(), "Servant Artifact (Lancer)");
-        this.add(ModItems.charmBerserker.get(), "Servant Artifact (Berserker)");
-        this.add(ModItems.charmAssassin.get(), "Servant Artifact (Assassin)");
-        this.add(ModItems.charmCaster.get(), "Servant Artifact (Caster)");
-        this.add(ModItems.charmRider.get(), "Servant Artifact (Rider)");
+        this.add(ModItems.CRYSTAL_FIRE.get(), "Red Gem Shard");
+        this.add(ModItems.CRYSTAL_WATER.get(), "Blue Gem Shard");
+        this.add(ModItems.CRYSTAL_EARTH.get(), "Green Gem Shard");
+        this.add(ModItems.CRYSTAL_WIND.get(), "Yellow Gem Shard");
+        this.add(ModItems.CRYSTAL_VOID.get(), "Black Gem Shard");
+        this.add(ModItems.CRYSTAL_CLUSTER.get(), "Synthesized Gem");
+        this.add(ModItems.CHARM_NONE.get(), "Servant Artifact");
+        this.add(ModItems.CHARM_SABER.get(), "Servant Artifact (Saber)");
+        this.add(ModItems.CHARM_ARCHER.get(), "Servant Artifact (Archer)");
+        this.add(ModItems.CHARM_LANCER.get(), "Servant Artifact (Lancer)");
+        this.add(ModItems.CHARM_BERSERKER.get(), "Servant Artifact (Berserker)");
+        this.add(ModItems.CHARM_ASSASSIN.get(), "Servant Artifact (Assassin)");
+        this.add(ModItems.CHARM_CASTER.get(), "Servant Artifact (Caster)");
+        this.add(ModItems.CHARM_RIDER.get(), "Servant Artifact (Rider)");
 
         for (RegistryEntrySupplier<EntityType<?>> type : ModEntities.ENTITIES.getEntries()) {
             SpawnEgg.fromType(type.get()).ifPresent(egg -> this.add(egg, "%s" + " Spawn Egg"));
         }
 
-        this.add(ModBlocks.altar.get(), "Summoning Altar");
-        this.add(ModBlocks.gemOre.get(), "Magic Gem Ore");
-        this.add(ModBlocks.artifactOre.get(), "Artifact Ore");
-        this.add(ModBlocks.deepSlateGemOre.get(), "Deepslate Magic Gem Ore");
-        this.add(ModBlocks.deepSlateArtifactOre.get(), "Deepslate Artifact Ore");
-        this.add(ModBlocks.chalk.get(), "Chalk Line");
+        this.add(ModBlocks.ALTAR.get(), "Summoning Altar");
+        this.add(ModBlocks.GEM_ORE.get(), "Magic Gem Ore");
+        this.add(ModBlocks.ARTIFACT_ORE.get(), "Artifact Ore");
+        this.add(ModBlocks.DEEP_SLATE_GEM_ORE.get(), "Deepslate Magic Gem Ore");
+        this.add(ModBlocks.DEEP_SLATE_ARTIFACT_ORE.get(), "Deepslate Artifact Ore");
+        this.add(ModBlocks.CHALK.get(), "Chalk Line");
 
-        this.add(ModEntities.arthur.get(), "King Arthur");
-        this.add(ModEntities.arthur.getID() + ".hogou", "Excalibur");
-        this.add(ModEntities.cuchulainn.get(), "Cuchulainn");
-        this.add(ModEntities.cuchulainn.getID() + ".hogou", "Gae Bolg");
-        this.add(ModEntities.diarmuid.get(), "Diarmuid ua Duibhne");
-        this.add(ModEntities.diarmuid.getID() + ".hogou", "Gae Dearg/Buidhe");
-        this.add(ModEntities.emiya.get(), "Archer Emiya");
-        this.add(ModEntities.emiya.getID() + ".hogou", "Caladbolg");
-        this.add(ModEntities.gilgamesh.get(), "King Gilgamesh");
-        this.add(ModEntities.gilgamesh.getID() + ".hogou", "Gate of Babylon");
-        this.add(ModEntities.medea.get(), "Medea");
-        this.add(ModEntities.medea.getID() + ".hogou", "Rule Breaker");
-        this.add(ModEntities.medea.getID() + ".circle", "Magic Circle");
-        this.add(ModEntities.gilles.get(), "Gilles de Rais");
-        this.add(ModEntities.gilles.getID() + ".hogou", "Prelati's Spellbook");
-        this.add(ModEntities.heracles.get(), "Heracles");
-        this.add(ModEntities.heracles.getID() + ".hogou", "God Hand");
-        this.add(ModEntities.lancelot.get(), "Sir Lancelot");
-        this.add(ModEntities.lancelot.getID() + ".hogou", "Knight of Owner");
-        this.add(ModEntities.iskander.get(), "Alexander the Great");
-        this.add(ModEntities.iskander.getID() + ".hogou", "Gordius Bulls");
-        this.add(ModEntities.medusa.get(), "Medusa");
-        this.add(ModEntities.medusa.getID() + ".hogou", "Bellerophon");
-        this.add(ModEntities.hassan.get(), "Hassan-i-Sabbah");
-        this.add(ModEntities.hassan.getID() + ".hogou", "Delusional Illusion");
-        this.add(ModEntities.sasaki.get(), "Sasaki Kojiro");
-        this.add(ModEntities.sasaki.getID() + ".hogou", "Tsubame Gaeshi");
+        this.add(ModEntities.ARTHUR.get(), "King Arthur");
+        this.add(ModEntities.ARTHUR.getID() + ".hogou", "Excalibur");
+        this.add(ModEntities.CUCHULAINN.get(), "Cuchulainn");
+        this.add(ModEntities.CUCHULAINN.getID() + ".hogou", "Gae Bolg");
+        this.add(ModEntities.DIARMUID.get(), "Diarmuid ua Duibhne");
+        this.add(ModEntities.DIARMUID.getID() + ".hogou", "Gae Dearg/Buidhe");
+        this.add(ModEntities.EMIYA.get(), "Archer Emiya");
+        this.add(ModEntities.EMIYA.getID() + ".hogou", "Caladbolg");
+        this.add(ModEntities.GILGAMESH.get(), "King Gilgamesh");
+        this.add(ModEntities.GILGAMESH.getID() + ".hogou", "Gate of Babylon");
+        this.add(ModEntities.MEDEA.get(), "Medea");
+        this.add(ModEntities.MEDEA.getID() + ".hogou", "Rule Breaker");
+        this.add(ModEntities.MEDEA.getID() + ".circle", "Magic Circle");
+        this.add(ModEntities.GILLES.get(), "Gilles de Rais");
+        this.add(ModEntities.GILLES.getID() + ".hogou", "Prelati's Spellbook");
+        this.add(ModEntities.HERACLES.get(), "Heracles");
+        this.add(ModEntities.HERACLES.getID() + ".hogou", "God Hand");
+        this.add(ModEntities.LANCELOT.get(), "Sir Lancelot");
+        this.add(ModEntities.LANCELOT.getID() + ".hogou", "Knight of Owner");
+        this.add(ModEntities.ISKANDER.get(), "Alexander the Great");
+        this.add(ModEntities.ISKANDER.getID() + ".hogou", "Gordius Bulls");
+        this.add(ModEntities.MEDUSA.get(), "Medusa");
+        this.add(ModEntities.MEDUSA.getID() + ".hogou", "Bellerophon");
+        this.add(ModEntities.HASSAN.get(), "Hassan-i-Sabbah");
+        this.add(ModEntities.HASSAN.getID() + ".hogou", "Delusional Illusion");
+        this.add(ModEntities.SASAKI.get(), "Sasaki Kojiro");
+        this.add(ModEntities.SASAKI.getID() + ".hogou", "Tsubame Gaeshi");
 
-        this.add(ModEntities.lesserMonster.get(), "Monster");
-        this.add(ModEntities.gordiusWheel.get(), "Gordius Wheel");
-        this.add(ModEntities.hassanCopy.get(), "Hassan-i-Sabbah");
-        this.add(ModEntities.pegasus.get(), "Pegasus");
+        this.add(ModEntities.LESSER_MONSTER.get(), "Monster");
+        this.add(ModEntities.GORDIUS_WHEEL.get(), "Gordius Wheel");
+        this.add(ModEntities.HASSAN_COPY.get(), "Hassan-i-Sabbah");
+        this.add(ModEntities.PEGASUS.get(), "Pegasus");
 
         this.add("itemGroup." + Fate.MODID + ".tab", "The Fate Universe");
 
@@ -210,9 +210,9 @@ public class Lang implements DataProvider {
         this.add("fate.patchouli.category.start", "How to start");
         this.add("fate.patchouli.category.start.desc", "");
         this.add("fate.patchouli.entry.ores", "Ores");
-        this.add("fate.patchouli.entry.ores." + ModBlocks.gemOre.getID().getPath(), "Gem shards that are common underground. " +
+        this.add("fate.patchouli.entry.ores." + ModBlocks.GEM_ORE.getID().getPath(), "Gem shards that are common underground. " +
                 "Combine 5 different types to create a cluster. You need a bit of them to start. Gem clusters are throwable that create an explosion on impact");
-        this.add("fate.patchouli.entry.ores." + ModBlocks.artifactOre.getID().getPath(), "Rarely found underground. Right click an empty one to get a random " +
+        this.add("fate.patchouli.entry.ores." + ModBlocks.ARTIFACT_ORE.getID().getPath(), "Rarely found underground. Right click an empty one to get a random " +
                 "artifact for a class. Using an artifact during summoning increases your chances of getting a servant of that class");
         this.add("fate.patchouli.entry.altar", "Summoning Altar");
         this.add("fate.patchouli.entry.altar.1", "To use the summoning altar you need to make a drawing chalk and use it to create a 5x5 field of chalk with the altar in the center. " +

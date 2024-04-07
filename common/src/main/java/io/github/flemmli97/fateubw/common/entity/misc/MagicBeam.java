@@ -18,8 +18,8 @@ import net.minecraft.world.phys.EntityHitResult;
 
 public class MagicBeam extends EntityBeam {
 
-    protected static final EntityDataAccessor<Integer> shootTime = SynchedEntityData.defineId(MagicBeam.class, EntityDataSerializers.INT);
-    protected static final EntityDataAccessor<Integer> preShootTick = SynchedEntityData.defineId(MagicBeam.class, EntityDataSerializers.INT);
+    protected static final EntityDataAccessor<Integer> SHOOT_TIME = SynchedEntityData.defineId(MagicBeam.class, EntityDataSerializers.INT);
+    protected static final EntityDataAccessor<Integer> PRE_SHOOT_TICK = SynchedEntityData.defineId(MagicBeam.class, EntityDataSerializers.INT);
 
     private LivingEntity target;
     private int strengthMod;
@@ -30,7 +30,7 @@ public class MagicBeam extends EntityBeam {
     }
 
     public MagicBeam(Level world, LivingEntity shooter) {
-        super(ModEntities.magicBeam.get(), world, shooter);
+        super(ModEntities.MAGIC_BEAM.get(), world, shooter);
     }
 
     public MagicBeam(Level world, LivingEntity shootingEntity, LivingEntity target, int strength) {
@@ -42,24 +42,24 @@ public class MagicBeam extends EntityBeam {
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-        this.entityData.define(shootTime, this.random.nextInt(20) + 25);
-        this.entityData.define(preShootTick, 0);
+        this.entityData.define(SHOOT_TIME, this.random.nextInt(20) + 25);
+        this.entityData.define(PRE_SHOOT_TICK, 0);
     }
 
     @Override
     public void tick() {
         if (this.level.isClientSide) {
-            this.level.addParticle(new ColoredParticleData(ModParticles.light.get(), 205 / 255F, 13 / 255F, 205 / 255F, 1, 0.15f), this.getX(), this.getY(), this.getZ(), this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01);
+            this.level.addParticle(new ColoredParticleData(ModParticles.LIGHT.get(), 205 / 255F, 13 / 255F, 205 / 255F, 1, 0.15f), this.getX(), this.getY(), this.getZ(), this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01);
         }
         Entity thrower = this.getOwner();
-        if (this.getPreShootTick() <= this.entityData.get(shootTime)) {
+        if (this.getPreShootTick() <= this.entityData.get(SHOOT_TIME)) {
             //this.livingTicks++;
             this.updatePreShootTick();
             if (this.getPreShootTick() == 15 && this.target != null) {
                 this.setRotationTo(this.target.getX(), this.target.getY() + this.target.getBbHeight() * 0.5, this.target.getZ(), 0.05f);
             }
         }
-        if (this.getPreShootTick() > this.entityData.get(shootTime)) {
+        if (this.getPreShootTick() > this.entityData.get(SHOOT_TIME)) {
             this.idle = false;
             if (!this.level.isClientSide) {
                 if (thrower == null || !thrower.isAlive()) {
@@ -77,11 +77,11 @@ public class MagicBeam extends EntityBeam {
     }
 
     private int getPreShootTick() {
-        return this.entityData.get(preShootTick);
+        return this.entityData.get(PRE_SHOOT_TICK);
     }
 
     private void updatePreShootTick() {
-        this.entityData.set(preShootTick, this.getPreShootTick() + 1);
+        this.entityData.set(PRE_SHOOT_TICK, this.getPreShootTick() + 1);
     }
 
     @Override
@@ -93,6 +93,6 @@ public class MagicBeam extends EntityBeam {
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        this.entityData.set(preShootTick, compound.getInt("PreShoot"));
+        this.entityData.set(PRE_SHOOT_TICK, compound.getInt("PreShoot"));
     }
 }

@@ -22,34 +22,34 @@ import net.minecraft.world.level.Level;
 
 public class EntityEmiya extends BaseServant {
 
+    private static final AnimatedAction RANGED_ATTACK = new AnimatedAction(30, 10, "ranged");
+    private static final AnimatedAction NP_ATTACK = new AnimatedAction(20, 0, "np");
+    private static final AnimatedAction[] ANIMS = {AnimatedAction.vanillaAttack, RANGED_ATTACK, NP_ATTACK};
+
     public final EmiyaAttackGoal attackAI = new EmiyaAttackGoal(this, 10);
 
-    private static final AnimatedAction rangedAttack = new AnimatedAction(30, 10, "ranged");
-    private static final AnimatedAction npAttack = new AnimatedAction(20, 0, "np");
-    private static final AnimatedAction[] anims = {AnimatedAction.vanillaAttack, rangedAttack, npAttack};
+    private final AnimationHandler<EntityEmiya> animationHandler = new AnimationHandler<>(this, ANIMS);
 
-    private final AnimationHandler<EntityEmiya> animationHandler = new AnimationHandler<>(this, anims);
-
-    public final SwitchableWeapon<EntityEmiya> switchableWeapon = new SwitchableWeapon<>(this, new ItemStack(ModItems.archbow.get()), ItemStack.EMPTY);
+    public final SwitchableWeapon<EntityEmiya> switchableWeapon = new SwitchableWeapon<>(this, new ItemStack(ModItems.ARCHBOW.get()), ItemStack.EMPTY);
 
     public EntityEmiya(EntityType<? extends EntityEmiya> entityType, Level world) {
-        super(entityType, world, LibEntities.emiya + ".hogou");
+        super(entityType, world, LibEntities.EMIYA + ".hogou");
         if (world != null && !world.isClientSide)
             this.goalSelector.addGoal(0, this.attackAI);
     }
 
     @Override
     protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.kanshou.get()));
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.KANSHOU.get()));
         //this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(ModItems.bakuya.get()));
     }
 
     @Override
     public boolean canUse(AnimatedAction anim, AttackType type) {
         if (type == AttackType.RANGED)
-            return anim.getID().equals(rangedAttack.getID());
+            return anim.getID().equals(RANGED_ATTACK.getID());
         else if (type == AttackType.NP)
-            return anim.getID().equals(npAttack.getID());
+            return anim.getID().equals(NP_ATTACK.getID());
         return anim.getID().equals(AnimatedAction.vanillaAttack.getID());
     }
 
@@ -68,7 +68,7 @@ public class EntityEmiya extends BaseServant {
         super.actuallyHurt(damageSrc, damageAmount);
         if (!this.canUseNP && !this.isDeadOrDying() && this.getHealth() < 0.5 * this.getMaxHealth()) {
             this.canUseNP = true;
-            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.archbow.get()));
+            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.ARCHBOW.get()));
             this.setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
         }
     }

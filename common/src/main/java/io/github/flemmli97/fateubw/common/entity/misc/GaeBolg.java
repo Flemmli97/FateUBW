@@ -25,7 +25,7 @@ public class GaeBolg extends EntityProjectile {
     }
 
     public GaeBolg(Level world, LivingEntity shooter) {
-        super(ModEntities.gaebolg.get(), world, shooter);
+        super(ModEntities.GAEBOLG.get(), world, shooter);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class GaeBolg extends EntityProjectile {
         if (!this.level.isClientSide) {
             if (this.getOwner() instanceof Player player) {
                 if (!player.isCreative()) {
-                    ItemEntity gaeBolg = new ItemEntity(this.level, this.getOwner().getX(), this.getOwner().getY(), this.getOwner().getZ(), new ItemStack(ModItems.gaebolg.get()));
+                    ItemEntity gaeBolg = new ItemEntity(this.level, this.getOwner().getX(), this.getOwner().getY(), this.getOwner().getZ(), new ItemStack(ModItems.GAEBOLG.get()));
                     gaeBolg.setPickUpDelay(0);
                     player.level.addFreshEntity(gaeBolg);
                     player.playSound(SoundEvents.ITEM_PICKUP, 0.8f, 1);

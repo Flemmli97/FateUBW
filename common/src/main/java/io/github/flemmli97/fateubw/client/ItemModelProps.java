@@ -9,9 +9,9 @@ import net.minecraft.world.entity.player.Player;
 
 public class ItemModelProps {
 
-    public static final ClampedItemPropertyFunction activeItemProp = (stack, world, entity, seed) -> entity != null && entity.getUseItem().getItem() == stack.getItem() ? 1 : 0;
+    public static final ClampedItemPropertyFunction ACTIVE_ITEM_PROP = (stack, world, entity, seed) -> entity != null && entity.getUseItem().getItem() == stack.getItem() ? 1 : 0;
 
-    public static final ClampedItemPropertyFunction thrownDaggerProp = (stack, world, entity, seed) -> {
+    public static final ClampedItemPropertyFunction THROWN_DAGGER_PROP = (stack, world, entity, seed) -> {
         Entity thrown = null;
         if (entity instanceof Player player) {
             thrown = Platform.INSTANCE.getPlayerData(player).map(PlayerData::getThrownDagger).orElse(null);

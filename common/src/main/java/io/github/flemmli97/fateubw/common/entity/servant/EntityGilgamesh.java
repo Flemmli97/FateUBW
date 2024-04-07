@@ -21,19 +21,19 @@ import net.minecraft.world.level.Level;
 
 public class EntityGilgamesh extends BaseServant {
 
+    private static final AnimatedAction RANGED_ATTACK = new AnimatedAction(40, 10, "babylon1");
+    private static final AnimatedAction RANGED_ATTACK_2 = new AnimatedAction(40, 10, "babylon2");
+    private static final AnimatedAction NP_ATTACK = new AnimatedAction(20, 10, "np");
+    private static final AnimatedAction[] ANIMS = {AnimatedAction.vanillaAttack, RANGED_ATTACK, NP_ATTACK, RANGED_ATTACK_2};
+
     public final GilgameshAttackGoal attackAI = new GilgameshAttackGoal(this, 12);
 
-    private static final AnimatedAction rangedAttack = new AnimatedAction(40, 10, "babylon1");
-    private static final AnimatedAction rangedAttack2 = new AnimatedAction(40, 10, "babylon2");
-    private static final AnimatedAction npAttack = new AnimatedAction(20, 10, "np");
-    private static final AnimatedAction[] anims = {AnimatedAction.vanillaAttack, rangedAttack, npAttack, rangedAttack2};
+    private final AnimationHandler<EntityGilgamesh> animationHandler = new AnimationHandler<>(this, ANIMS);
 
-    private final AnimationHandler<EntityGilgamesh> animationHandler = new AnimationHandler<>(this, anims);
-
-    public final SwitchableWeapon<EntityGilgamesh> switchableWeapon = new SwitchableWeapon<>(this, new ItemStack(ModItems.enumaelish.get()), ItemStack.EMPTY);
+    public final SwitchableWeapon<EntityGilgamesh> switchableWeapon = new SwitchableWeapon<>(this, new ItemStack(ModItems.ENUMAELISH.get()), ItemStack.EMPTY);
 
     public EntityGilgamesh(EntityType<? extends EntityGilgamesh> entityType, Level world) {
-        super(entityType, world, LibEntities.gilgamesh + ".hogou");
+        super(entityType, world, LibEntities.GILGAMESH + ".hogou");
         this.revealServant();
         if (world != null && !world.isClientSide)
             this.goalSelector.addGoal(0, this.attackAI);
@@ -47,9 +47,9 @@ public class EntityGilgamesh extends BaseServant {
     @Override
     public boolean canUse(AnimatedAction anim, AttackType type) {
         if (type == AttackType.RANGED)
-            return anim.getID().equals(rangedAttack.getID()) || anim.getID().equals(rangedAttack2.getID());
+            return anim.getID().equals(RANGED_ATTACK.getID()) || anim.getID().equals(RANGED_ATTACK_2.getID());
         else if (type == AttackType.NP)
-            return anim.getID().equals(npAttack.getID());
+            return anim.getID().equals(NP_ATTACK.getID());
         return anim.getID().equals(AnimatedAction.vanillaAttack.getID());
     }
 
@@ -77,7 +77,7 @@ public class EntityGilgamesh extends BaseServant {
         super.actuallyHurt(damageSrc, damageAmount);
         if (!this.canUseNP && !this.isDeadOrDying() && this.getHealth() < 0.5 * this.getMaxHealth()) {
             this.canUseNP = true;
-            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.enumaelish.get()));
+            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.ENUMAELISH.get()));
         }
     }
 
@@ -93,9 +93,9 @@ public class EntityGilgamesh extends BaseServant {
 
     public void attackWithRangedAttack(LivingEntity target) {
         int weaponAmount = this.getRandom().nextInt(15) + 4;
-        if (this.getAnimationHandler().getAnimation() == null || this.getAnimationHandler().isCurrent(rangedAttack))
+        if (this.getAnimationHandler().getAnimation() == null || this.getAnimationHandler().isCurrent(RANGED_ATTACK))
             this.spawnBehind(target, weaponAmount);
-        else if (this.getAnimationHandler().isCurrent(rangedAttack2))
+        else if (this.getAnimationHandler().isCurrent(RANGED_ATTACK_2))
             this.spawnAroundTarget(target, weaponAmount);
     }
 

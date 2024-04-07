@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class RenderStarfish<T extends LesserMonster> extends MobRenderer<T, ModelStarfishDemon<T>> {
 
-    public final ResourceLocation tex = new ResourceLocation(Fate.MODID, "textures/entity/starfish.png");
+    public static final ResourceLocation TEX = new ResourceLocation(Fate.MODID, "textures/entity/starfish.png");
 
     public RenderStarfish(EntityRendererProvider.Context ctx) {
         super(ctx, new ModelStarfishDemon<>(ctx.bakeLayer(ModelStarfishDemon.LAYER_LOCATION)), 0.5f);
@@ -17,6 +17,6 @@ public class RenderStarfish<T extends LesserMonster> extends MobRenderer<T, Mode
 
     @Override
     public ResourceLocation getTextureLocation(T entity) {
-        return this.tex;
+        return TEX;
     }
 }

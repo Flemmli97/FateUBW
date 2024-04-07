@@ -23,7 +23,6 @@ import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -58,7 +57,6 @@ public class FateUBWForge {
         forgeBus.addListener(this::biomeLoadEvent);
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ConfigSpecs.CLIENT_SPEC, Fate.MODID + "/client.toml");
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigSpecs.COMMON_SPEC, Fate.MODID + "/common.toml");
-        Fate.astralSorcery = ModList.get().isLoaded("astralsorcery");
     }
 
     public static void registerContent() {
@@ -87,7 +85,7 @@ public class FateUBWForge {
     }
 
     public void reloadListener(AddReloadListenerEvent event) {
-        event.addListener(DatapackHandler.lootTables);
+        event.addListener(DatapackHandler.LOOT_TABLES);
     }
 
     public void attributes(EntityAttributeCreationEvent event) {

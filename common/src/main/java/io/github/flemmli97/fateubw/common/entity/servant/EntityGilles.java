@@ -22,30 +22,30 @@ import net.minecraft.world.level.Level;
 
 public class EntityGilles extends BaseServant {
 
+    private static final AnimatedAction RANGED_ATTACK = new AnimatedAction(32, 25, "cast");
+    private static final AnimatedAction NP_ATTACK = new AnimatedAction(20, 0, "np");
+    private static final AnimatedAction[] ANIMS = {RANGED_ATTACK, NP_ATTACK};
+
     public final GillesAttackGoal attackAI = new GillesAttackGoal(this, 16);
 
-    private static final AnimatedAction rangedAttack = new AnimatedAction(32, 25, "cast");
-    private static final AnimatedAction npAttack = new AnimatedAction(20, 0, "np");
-    private static final AnimatedAction[] anims = {rangedAttack, npAttack};
-
-    private final AnimationHandler<EntityGilles> animationHandler = new AnimationHandler<>(this, anims);
+    private final AnimationHandler<EntityGilles> animationHandler = new AnimationHandler<>(this, ANIMS);
 
     public EntityGilles(EntityType<? extends EntityGilles> entityType, Level world) {
-        super(entityType, world, LibEntities.gilles + ".hogou");
+        super(entityType, world, LibEntities.GILLES + ".hogou");
         if (world != null && !world.isClientSide)
             this.goalSelector.addGoal(0, this.attackAI);
     }
 
     @Override
     protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.grimoire.get()));
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.GRIMOIRE.get()));
     }
 
     @Override
     public boolean canUse(AnimatedAction anim, AttackType type) {
         if (type == AttackType.NP)
-            return anim.getID().equals(npAttack.getID());
-        return anim.getID().equals(rangedAttack.getID());
+            return anim.getID().equals(NP_ATTACK.getID());
+        return anim.getID().equals(RANGED_ATTACK.getID());
     }
 
     @Override

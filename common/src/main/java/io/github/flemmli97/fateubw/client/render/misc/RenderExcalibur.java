@@ -8,15 +8,15 @@ import net.minecraft.resources.ResourceLocation;
 
 public class RenderExcalibur extends RenderBeam<Excalibur> {
 
-    public final ResourceLocation tex = new ResourceLocation(Fate.MODID, "textures/entity/excalibur.png");
+    public static final ResourceLocation TEX = new ResourceLocation(Fate.MODID, "textures/entity/excalibur.png");
 
     public RenderExcalibur(EntityRendererProvider.Context ctx) {
-        super(ctx, Excalibur.radius - 0.2f, 6);
+        super(ctx, Excalibur.RADIUS - 0.2f, 6);
     }
 
     @Override
     public ResourceLocation getTextureLocation(Excalibur entity) {
-        return this.tex;
+        return TEX;
     }
 
     @Override

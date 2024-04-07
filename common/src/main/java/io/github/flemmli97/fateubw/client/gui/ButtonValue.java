@@ -15,9 +15,10 @@ import net.minecraft.util.Mth;
 
 public class ButtonValue<T> extends Button {
 
+    public static final ResourceLocation GUI_STUFF = new ResourceLocation(Fate.MODID + "textures/gui/buttons.png");
+
     public boolean selected;
     private T val;
-    public static final ResourceLocation guiStuff = new ResourceLocation(Fate.MODID + "textures/gui/buttons.png");
     private final Pressable<T> pressable;
 
     private int u, v = 46, uMax = 200;

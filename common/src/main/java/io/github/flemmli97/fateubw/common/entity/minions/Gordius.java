@@ -26,19 +26,20 @@ import java.util.function.Predicate;
 
 public class Gordius extends PathfinderMob implements IServantMinion, IAnimated, NonSitVehicle {
 
+    private static final EntityDataAccessor<Float> LOCKED_YAW = SynchedEntityData.defineId(Gordius.class, EntityDataSerializers.FLOAT);
+
+    public static final AnimatedAction CHARGING = new AnimatedAction(20, 5, "charge");
+    private static final AnimatedAction[] ANIMS = {AnimatedAction.vanillaAttack, CHARGING};
+    private static final Predicate<AnimatedAction> CHARGING_ANIM = anim -> anim != null && anim.getID().equals(CHARGING.getID());
+
+
     public final GordiusAttackGoal attackAI = new GordiusAttackGoal(this);
 
-    public static final AnimatedAction charging = new AnimatedAction(20, 5, "charge");
-    private static final AnimatedAction[] anims = {AnimatedAction.vanillaAttack, charging};
-
-    private final AnimationHandler<Gordius> animationHandler = new AnimationHandler<>(this, anims);
+    private final AnimationHandler<Gordius> animationHandler = new AnimationHandler<>(this, ANIMS);
 
     private final MultiPartEntity wheels;
 
-    private static final Predicate<AnimatedAction> chargingAnim = anim -> anim != null && anim.getID().equals(charging.getID());
-    private static final EntityDataAccessor<Float> lockedYaw = SynchedEntityData.defineId(Gordius.class, EntityDataSerializers.FLOAT);
-
-    public final ChargingHandler<Gordius> chargingHandler = new ChargingHandler<>(this, lockedYaw, chargingAnim);
+    public final ChargingHandler<Gordius> chargingHandler = new ChargingHandler<>(this, LOCKED_YAW, CHARGING_ANIM);
 
     private Vec3 view = Vec3.ZERO;
 
@@ -54,7 +55,7 @@ public class Gordius extends PathfinderMob implements IServantMinion, IAnimated,
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-        this.entityData.define(lockedYaw, 0f);
+        this.entityData.define(LOCKED_YAW, 0f);
     }
 
     @Override
@@ -68,12 +69,12 @@ public class Gordius extends PathfinderMob implements IServantMinion, IAnimated,
     }
 
     public AnimatedAction getChargingAnim() {
-        return charging;
+        return CHARGING;
     }
 
     public boolean isCharging() {
         AnimatedAction anim = this.getAnimationHandler().getAnimation();
-        return anim != null && charging.getID().equals(anim.getID()) && anim.getTick() >= anim.getAttackTime();
+        return anim != null && CHARGING.getID().equals(anim.getID()) && anim.getTick() >= anim.getAttackTime();
     }
 
     @Override

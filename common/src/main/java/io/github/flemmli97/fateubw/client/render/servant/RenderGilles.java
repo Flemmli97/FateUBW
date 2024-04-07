@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class RenderGilles extends ServantRenderer<EntityGilles, ModelServant<EntityGilles>> {
 
-    private static final ResourceLocation textures = new ResourceLocation(Fate.MODID, "textures/entity/servant/gilles.png");
+    public static final ResourceLocation TEXTURES = new ResourceLocation(Fate.MODID, "textures/entity/servant/gilles.png");
 
     public RenderGilles(EntityRendererProvider.Context ctx) {
         super(ctx, new ModelServant<>(ctx.bakeLayer(ModelServant.LAYER_LOCATION), "gilles"));
@@ -17,6 +17,6 @@ public class RenderGilles extends ServantRenderer<EntityGilles, ModelServant<Ent
 
     @Override
     public ResourceLocation servantTexture(EntityGilles servant) {
-        return textures;
+        return TEXTURES;
     }
 }

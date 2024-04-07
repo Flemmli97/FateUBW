@@ -20,29 +20,29 @@ import net.minecraft.world.level.Level;
 
 public class EntityDiarmuid extends BaseServant {
 
+    private static final AnimatedAction NP_ATTACK = new AnimatedAction(20, 0, "np");
+    private static final AnimatedAction[] ANIMS = {AnimatedAction.vanillaAttack, NP_ATTACK};
+
     public final DiarmuidAttackGoal attackAI = new DiarmuidAttackGoal(this);
 
-    private static final AnimatedAction npAttack = new AnimatedAction(20, 0, "np");
-    private static final AnimatedAction[] anims = {AnimatedAction.vanillaAttack, npAttack};
-
-    private final AnimationHandler<EntityDiarmuid> animationHandler = new AnimationHandler<>(this, anims);
+    private final AnimationHandler<EntityDiarmuid> animationHandler = new AnimationHandler<>(this, ANIMS);
 
     public EntityDiarmuid(EntityType<? extends EntityDiarmuid> entityType, Level world) {
-        super(entityType, world, LibEntities.diarmuid + ".hogou");
+        super(entityType, world, LibEntities.DIARMUID + ".hogou");
         if (world != null && !world.isClientSide)
             this.goalSelector.addGoal(0, this.attackAI);
     }
 
     @Override
     protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.gaedearg.get()));
-        this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(ModItems.gaebuidhe.get()));
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.GAEDEARG.get()));
+        this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(ModItems.GAEBUIDHE.get()));
     }
 
     @Override
     public boolean canUse(AnimatedAction anim, AttackType type) {
         if (type == AttackType.NP)
-            return anim.getID().equals(npAttack.getID());
+            return anim.getID().equals(NP_ATTACK.getID());
         return anim.getID().equals(AnimatedAction.vanillaAttack.getID());
     }
 

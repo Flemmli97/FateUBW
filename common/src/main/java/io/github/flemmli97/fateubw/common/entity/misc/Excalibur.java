@@ -17,8 +17,8 @@ import net.minecraft.world.phys.Vec3;
 
 public class Excalibur extends EntityBeam {
 
-    public static final float radius = 1.5f;
-    public static final float range = 16;
+    public static final float RADIUS = 1.5f;
+    public static final float RANGE = 16;
 
     private Vec3 dir, up, side;
 
@@ -27,17 +27,17 @@ public class Excalibur extends EntityBeam {
     }
 
     public Excalibur(Level world, LivingEntity shooter) {
-        super(ModEntities.excalibur.get(), world, shooter);
+        super(ModEntities.EXCALIBUR.get(), world, shooter);
     }
 
     @Override
     public float radius() {
-        return radius;
+        return RADIUS;
     }
 
     @Override
     public float getRange() {
-        return range;
+        return RANGE;
     }
 
     @Override
@@ -51,14 +51,14 @@ public class Excalibur extends EntityBeam {
         if (this.level.isClientSide) {
             if (this.livingTicks <= this.livingTickMax() - 15)
                 for (int i = 0; i < 2; i++)
-                    this.level.addParticle(new ColoredParticleData(ModParticles.light.get(), 245 / 255F, 245 / 255F, 5 / 255F, 1, 2), this.hitVec.x(), this.hitVec.y() - 0.15, this.hitVec.z(), this.random.nextGaussian() * 0.007, this.random.nextGaussian() * 0.007 + 0.003, this.random.nextGaussian() * 0.007);
+                    this.level.addParticle(new ColoredParticleData(ModParticles.LIGHT.get(), 245 / 255F, 245 / 255F, 5 / 255F, 1, 2), this.hitVec.x(), this.hitVec.y() - 0.15, this.hitVec.z(), this.random.nextGaussian() * 0.007, this.random.nextGaussian() * 0.007 + 0.003, this.random.nextGaussian() * 0.007);
             Vec3 pos = this.position();
             for (int i = 0; i < 4; i++) {
                 double upScale = this.random.nextDouble() * 2 - 1 + 0.3;
                 double sideScale = this.random.nextDouble() * 2.2 - 1.1;
                 double lenScale = this.random.nextDouble();
                 Vec3 ppos = pos.add(this.up.scale(upScale)).add(this.side.scale(sideScale)).add(this.dir.scale(lenScale));
-                this.level.addParticle(new ColoredParticleData(ModParticles.light.get(), 245 / 255F, 245 / 255F, 5 / 255F, 1, 0.15f), ppos.x(), ppos.y(), ppos.z(), this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01);
+                this.level.addParticle(new ColoredParticleData(ModParticles.LIGHT.get(), 245 / 255F, 245 / 255F, 5 / 255F, 1, 0.15f), ppos.x(), ppos.y(), ppos.z(), this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01);
             }
         }
     }

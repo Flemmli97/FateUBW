@@ -17,7 +17,7 @@ public class CaladBolg extends EntityProjectile {
     }
 
     public CaladBolg(Level world, LivingEntity shootingEntity) {
-        super(ModEntities.caladbolg.get(), world, shootingEntity);
+        super(ModEntities.CALADBOLG.get(), world, shootingEntity);
     }
 
     @Override

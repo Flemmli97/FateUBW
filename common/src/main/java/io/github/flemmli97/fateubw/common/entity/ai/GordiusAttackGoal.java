@@ -72,7 +72,7 @@ public class GordiusAttackGoal extends AnimatedAttackGoal<Gordius> {
 
     @Override
     public int coolDown(AnimatedAction animatedAction) {
-        if (Gordius.charging.is(animatedAction))
+        if (Gordius.CHARGING.is(animatedAction))
             return this.attacker.getRandom().nextInt(60) + 33;
         return this.attacker.getRandom().nextInt(13) + 7;
     }

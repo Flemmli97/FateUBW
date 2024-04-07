@@ -24,22 +24,22 @@ import net.minecraft.world.phys.Vec3;
 
 public class ChainDagger extends EntityProjectile {
 
-    private Entity hookedEntity;
-
     private static final EntityDataAccessor<Boolean> RETRACTING = SynchedEntityData.defineId(ChainDagger.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> MAINHAND = SynchedEntityData.defineId(ChainDagger.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> HOOKED_ENTITY = SynchedEntityData.defineId(ChainDagger.class, EntityDataSerializers.INT);
+
+    private Entity hookedEntity;
 
     public ChainDagger(EntityType<? extends EntityProjectile> type, Level world) {
         super(type, world);
     }
 
     public ChainDagger(Level world, double x, double y, double z) {
-        super(ModEntities.daggerHook.get(), world, x, y, z);
+        super(ModEntities.DAGGER_HOOK.get(), world, x, y, z);
     }
 
     public ChainDagger(Level world, LivingEntity shooter, boolean mainHand) {
-        super(ModEntities.daggerHook.get(), world, shooter);
+        super(ModEntities.DAGGER_HOOK.get(), world, shooter);
         this.getEntityData().set(MAINHAND, mainHand);
     }
 

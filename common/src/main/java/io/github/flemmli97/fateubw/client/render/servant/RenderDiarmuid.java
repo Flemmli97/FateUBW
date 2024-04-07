@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class RenderDiarmuid extends ServantRenderer<EntityDiarmuid, ModelServant<EntityDiarmuid>> {
 
-    private static final ResourceLocation textures = new ResourceLocation(Fate.MODID, "textures/entity/servant/diarmuid.png");
+    public static final ResourceLocation TEXTURES = new ResourceLocation(Fate.MODID, "textures/entity/servant/diarmuid.png");
 
     public RenderDiarmuid(EntityRendererProvider.Context ctx) {
         super(ctx, new ModelServant<>(ctx.bakeLayer(ModelServant.LAYER_LOCATION), "diarmuid"));
@@ -17,6 +17,6 @@ public class RenderDiarmuid extends ServantRenderer<EntityDiarmuid, ModelServant
 
     @Override
     public ResourceLocation servantTexture(EntityDiarmuid servant) {
-        return textures;
+        return TEXTURES;
     }
 }

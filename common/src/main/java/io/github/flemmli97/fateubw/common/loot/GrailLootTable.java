@@ -25,14 +25,11 @@ import net.minecraft.world.level.storage.loot.providers.number.NumberProviders;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Predicate;
 
 public class GrailLootTable {
 
-    private static final Map<String, GrailLootTable> loots = new HashMap<>();
     public static final Gson GSON = Deserializers.createFunctionSerializer()
             .registerTypeAdapter(NumberProvider.class, NumberProviders.createGsonAdapter())
             .registerTypeHierarchyAdapter(GrailLootTable.class, new GrailLootTable.Serializer())

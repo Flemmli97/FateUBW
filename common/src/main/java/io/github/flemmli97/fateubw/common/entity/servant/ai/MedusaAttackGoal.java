@@ -30,7 +30,7 @@ public class MedusaAttackGoal extends BaseServantAttackGoal<EntityMedusa> {
     public boolean canChooseAttack(AnimatedAction anim) {
         if (anim == null)
             return false;
-        if (anim.getID().equals(EntityMedusa.daggerAttack.getID()))
+        if (anim.getID().equals(EntityMedusa.DAGGER_ATTACK.getID()))
             return this.attacker.canThrow();
         return this.distanceToTargetSq < this.attackRange || this.attacker.canUse(anim, BaseServant.AttackType.NP);
     }
@@ -45,12 +45,12 @@ public class MedusaAttackGoal extends BaseServantAttackGoal<EntityMedusa> {
                 this.attacker.attackWithNP();
                 this.attacker.forcedNP = false;
             }
-        } else if (anim.getID().equals(EntityMedusa.daggerAttack.getID())) {
+        } else if (anim.getID().equals(EntityMedusa.DAGGER_ATTACK.getID())) {
             this.attacker.lookAt(this.target, 0, 0);
             if (anim.canAttack()) {
                 this.attacker.throwDaggerAt(this.target);
             }
-        } else if (anim.getID().equals(EntityMedusa.daggerRetract.getID())) {
+        } else if (anim.getID().equals(EntityMedusa.DAGGER_RETRACT.getID())) {
             this.moveToWithDelay(1);
         } else {
             super.handleAttack(anim);

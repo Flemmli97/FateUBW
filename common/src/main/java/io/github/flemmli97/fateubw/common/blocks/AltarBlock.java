@@ -48,9 +48,9 @@ import java.util.stream.Stream;
 public class AltarBlock extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
-    private static final double pixel = 0.0625;
+    private static final double PIXEL = 0.0625;
 
-    private static final VoxelShape tableShape = Stream.of(
+    private static final VoxelShape TABLE_SHAPE = Stream.of(
             Block.box(13.5, 0, 0.5, 15.5, 11, 2.5),
             Block.box(0.5, 0, 0.5, 2.5, 11, 2.5),
             Block.box(0.5, 9, 0.5, 15.5, 12, 15.5),
@@ -86,7 +86,7 @@ public class AltarBlock extends BaseEntityBlock {
             Block.box(0, 6, 0, 16, 12, 0.1),
             Block.box(0, 6, 15.9, 16, 12, 16)
     ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).orElse(Shapes.empty());
-    private static final VoxelShape south = Shapes.join(tableShape, Stream.of(
+    private static final VoxelShape SOUTH = Shapes.join(TABLE_SHAPE, Stream.of(
             Block.box(7, 12, 1, 9, 15, 3),
             Block.box(6.5, 11.5, 2.5, 7.5, 12.5, 3.5),
             Block.box(13.5, 11.5, 2.5, 14.5, 12.5, 3.5),
@@ -95,7 +95,7 @@ public class AltarBlock extends BaseEntityBlock {
             Block.box(2.5, 11.5, 3.5, 3.5, 12.5, 4.5),
             Block.box(2, 11.5, 2, 4, 14.5, 4)
     ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).orElse(Shapes.empty()), BooleanOp.OR);
-    private static final VoxelShape east = Shapes.join(tableShape, Stream.of(
+    private static final VoxelShape EAST = Shapes.join(TABLE_SHAPE, Stream.of(
             Block.box(1, 12, 7, 3, 15, 9),
             Block.box(2.5, 11.5, 8.5, 3.5, 12.5, 9.5),
             Block.box(2.5, 11.5, 1.5, 3.5, 12.5, 2.5),
@@ -104,7 +104,7 @@ public class AltarBlock extends BaseEntityBlock {
             Block.box(3.5, 11.5, 12.5, 4.5, 12.5, 13.5),
             Block.box(2, 11.5, 12, 4, 14.5, 14)
     ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).orElse(Shapes.empty()), BooleanOp.OR);
-    private static final VoxelShape west = Shapes.join(tableShape, Stream.of(
+    private static final VoxelShape WEST = Shapes.join(TABLE_SHAPE, Stream.of(
             Block.box(13, 12, 7, 15, 15, 9),
             Block.box(12.5, 11.5, 6.5, 13.5, 12.5, 7.5),
             Block.box(12.5, 11.5, 13.5, 13.5, 12.5, 14.5),
@@ -113,7 +113,7 @@ public class AltarBlock extends BaseEntityBlock {
             Block.box(11.5, 11.5, 2.5, 12.5, 12.5, 3.5),
             Block.box(12, 11.5, 2, 14, 14.5, 4)
     ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).orElse(Shapes.empty()), BooleanOp.OR);
-    private static final VoxelShape north = Shapes.join(tableShape, Stream.of(
+    private static final VoxelShape NORTH = Shapes.join(TABLE_SHAPE, Stream.of(
             Block.box(7, 12, 13, 9, 15, 15),
             Block.box(8.5, 11.5, 12.5, 9.5, 12.5, 13.5),
             Block.box(1.5, 11.5, 12.5, 2.5, 12.5, 13.5),
@@ -137,10 +137,10 @@ public class AltarBlock extends BaseEntityBlock {
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
         return switch (state.getValue(FACING)) {
-            case WEST -> west;
-            case EAST -> east;
-            case SOUTH -> south;
-            default -> north;
+            case WEST -> WEST;
+            case EAST -> EAST;
+            case SOUTH -> SOUTH;
+            default -> NORTH;
         };
     }
 
@@ -184,24 +184,24 @@ public class AltarBlock extends BaseEntityBlock {
         }
         switch (state.getValue(FACING)) {
             case NORTH -> {
-                world.addParticle(ParticleTypes.FLAME, pos.getX() + 3 * pixel, pos.getY() + 16 * pixel, pos.getZ() + 12.5 * pixel, 0, 0, 0);
-                world.addParticle(ParticleTypes.FLAME, pos.getX() + 8 * pixel, pos.getY() + 17.5 * pixel, pos.getZ() + 13.5 * pixel, 0, 0, 0);
-                world.addParticle(ParticleTypes.FLAME, pos.getX() + 13 * pixel, pos.getY() + 17 * pixel, pos.getZ() + 12.5 * pixel, 0, 0, 0);
+                world.addParticle(ParticleTypes.FLAME, pos.getX() + 3 * PIXEL, pos.getY() + 16 * PIXEL, pos.getZ() + 12.5 * PIXEL, 0, 0, 0);
+                world.addParticle(ParticleTypes.FLAME, pos.getX() + 8 * PIXEL, pos.getY() + 17.5 * PIXEL, pos.getZ() + 13.5 * PIXEL, 0, 0, 0);
+                world.addParticle(ParticleTypes.FLAME, pos.getX() + 13 * PIXEL, pos.getY() + 17 * PIXEL, pos.getZ() + 12.5 * PIXEL, 0, 0, 0);
             }
             case SOUTH -> {
-                world.addParticle(ParticleTypes.FLAME, pos.getX() + 13 * pixel, pos.getY() + 16 * pixel, pos.getZ() + 2.5 * pixel, 0, 0, 0);
-                world.addParticle(ParticleTypes.FLAME, pos.getX() + 8 * pixel, pos.getY() + 17.5 * pixel, pos.getZ() + 1.5 * pixel, 0, 0, 0);
-                world.addParticle(ParticleTypes.FLAME, pos.getX() + 3 * pixel, pos.getY() + 17 * pixel, pos.getZ() + 2.5 * pixel, 0, 0, 0);
+                world.addParticle(ParticleTypes.FLAME, pos.getX() + 13 * PIXEL, pos.getY() + 16 * PIXEL, pos.getZ() + 2.5 * PIXEL, 0, 0, 0);
+                world.addParticle(ParticleTypes.FLAME, pos.getX() + 8 * PIXEL, pos.getY() + 17.5 * PIXEL, pos.getZ() + 1.5 * PIXEL, 0, 0, 0);
+                world.addParticle(ParticleTypes.FLAME, pos.getX() + 3 * PIXEL, pos.getY() + 17 * PIXEL, pos.getZ() + 2.5 * PIXEL, 0, 0, 0);
             }
             case EAST -> {
-                world.addParticle(ParticleTypes.FLAME, pos.getX() + 2.5 * pixel, pos.getY() + 16 * pixel, pos.getZ() + 3 * pixel, 0, 0, 0);
-                world.addParticle(ParticleTypes.FLAME, pos.getX() + 1.5 * pixel, pos.getY() + 17.5 * pixel, pos.getZ() + 8 * pixel, 0, 0, 0);
-                world.addParticle(ParticleTypes.FLAME, pos.getX() + 2.5 * pixel, pos.getY() + 17 * pixel, pos.getZ() + 13 * pixel, 0, 0, 0);
+                world.addParticle(ParticleTypes.FLAME, pos.getX() + 2.5 * PIXEL, pos.getY() + 16 * PIXEL, pos.getZ() + 3 * PIXEL, 0, 0, 0);
+                world.addParticle(ParticleTypes.FLAME, pos.getX() + 1.5 * PIXEL, pos.getY() + 17.5 * PIXEL, pos.getZ() + 8 * PIXEL, 0, 0, 0);
+                world.addParticle(ParticleTypes.FLAME, pos.getX() + 2.5 * PIXEL, pos.getY() + 17 * PIXEL, pos.getZ() + 13 * PIXEL, 0, 0, 0);
             }
             case WEST -> {
-                world.addParticle(ParticleTypes.FLAME, pos.getX() + 12.5 * pixel, pos.getY() + 16 * pixel, pos.getZ() + 13 * pixel, 0, 0, 0);
-                world.addParticle(ParticleTypes.FLAME, pos.getX() + 13.5 * pixel, pos.getY() + 17.5 * pixel, pos.getZ() + 8 * pixel, 0, 0, 0);
-                world.addParticle(ParticleTypes.FLAME, pos.getX() + 12.5 * pixel, pos.getY() + 17 * pixel, pos.getZ() + 3 * pixel, 0, 0, 0);
+                world.addParticle(ParticleTypes.FLAME, pos.getX() + 12.5 * PIXEL, pos.getY() + 16 * PIXEL, pos.getZ() + 13 * PIXEL, 0, 0, 0);
+                world.addParticle(ParticleTypes.FLAME, pos.getX() + 13.5 * PIXEL, pos.getY() + 17.5 * PIXEL, pos.getZ() + 8 * PIXEL, 0, 0, 0);
+                world.addParticle(ParticleTypes.FLAME, pos.getX() + 12.5 * PIXEL, pos.getY() + 17 * PIXEL, pos.getZ() + 3 * PIXEL, 0, 0, 0);
             }
             default -> {
             }
@@ -216,7 +216,7 @@ public class AltarBlock extends BaseEntityBlock {
         if (!(blockEntity instanceof AltarBlockEntity altar))
             return InteractionResult.PASS;
         if (world.isClientSide) {
-            if (player.isShiftKeyDown() || stack.getItem() == ModItems.chalk.get() || stack.getItem() == ModItems.crystalCluster.get() || stack.getItem() instanceof ItemServantCharm)
+            if (player.isShiftKeyDown() || stack.getItem() == ModItems.CHALK.get() || stack.getItem() == ModItems.CRYSTAL_CLUSTER.get() || stack.getItem() instanceof ItemServantCharm)
                 return InteractionResult.SUCCESS;
             return InteractionResult.PASS;
         }
@@ -226,10 +226,10 @@ public class AltarBlock extends BaseEntityBlock {
         if (player.isShiftKeyDown()) {
             if (altar.removeItem(player))
                 return InteractionResult.SUCCESS;
-        } else if (stack.getItem() == ModItems.chalk.get() && !altar.isComplete()) {
+        } else if (stack.getItem() == ModItems.CHALK.get() && !altar.isComplete()) {
             SummonUtils.placeSummoningStructure((ServerLevel) world, pos, altar, state.getValue(FACING).getOpposite());
             return InteractionResult.SUCCESS;
-        } else if (!altar.addItem(player, stack) && stack.getItem() == ModItems.crystalCluster.get()) {
+        } else if (!altar.addItem(player, stack) && stack.getItem() == ModItems.CRYSTAL_CLUSTER.get()) {
             return Platform.INSTANCE.getPlayerData(player).map(cap -> {
                 GrailWarHandler tracker = GrailWarHandler.get(world.getServer());
                 if (cap.getServant(player) == null) {
@@ -240,7 +240,7 @@ public class AltarBlock extends BaseEntityBlock {
                                     stack.shrink(1);
                                 altar.setSummoning(player);
                                 cap.setCommandSeals(player, 3);
-                                AdvancementRegister.grailWarTrigger.trigger((ServerPlayer) player, true);
+                                AdvancementRegister.GRAIL_WAR_TRIGGER.trigger((ServerPlayer) player, true);
                                 return InteractionResult.CONSUME;
                             } else {
                                 player.sendMessage(new TranslatableComponent("chat.altar.fail").withStyle(ChatFormatting.DARK_RED), Util.NIL_UUID);
@@ -266,7 +266,7 @@ public class AltarBlock extends BaseEntityBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createTickerHelper(blockEntityType, ModBlocks.tileAltar.get(), AltarBlockEntity::ticker);
+        return createTickerHelper(blockEntityType, ModBlocks.TILE_ALTAR.get(), AltarBlockEntity::ticker);
     }
 
     @Override

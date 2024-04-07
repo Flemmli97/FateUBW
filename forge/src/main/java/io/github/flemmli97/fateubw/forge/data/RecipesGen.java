@@ -3,7 +3,7 @@ package io.github.flemmli97.fateubw.forge.data;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import io.github.flemmli97.fateubw.Fate;
-import io.github.flemmli97.fateubw.common.registry.FateTags;
+import io.github.flemmli97.fateubw.common.lib.FateTags;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import net.minecraft.advancements.critereon.ImpossibleTrigger;
 import net.minecraft.data.DataGenerator;
@@ -29,32 +29,32 @@ public class RecipesGen extends RecipeProvider {
 
     @Override
     public void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
-        ShapelessRecipeBuilder.shapeless(ModItems.crystalCluster.get())
-                .requires(ModItems.crystalFire.get())
-                .requires(ModItems.crystalVoid.get())
-                .requires(ModItems.crystalWater.get())
-                .requires(ModItems.crystalWind.get())
-                .requires(ModItems.crystalEarth.get())
+        ShapelessRecipeBuilder.shapeless(ModItems.CRYSTAL_CLUSTER.get())
+                .requires(ModItems.CRYSTAL_FIRE.get())
+                .requires(ModItems.CRYSTAL_VOID.get())
+                .requires(ModItems.CRYSTAL_WATER.get())
+                .requires(ModItems.CRYSTAL_WIND.get())
+                .requires(ModItems.CRYSTAL_EARTH.get())
                 .unlockedBy("dummy", new ImpossibleTrigger.TriggerInstance()).save(consumer);
-        ShapedRecipeBuilder.shaped(ModItems.altar.get())
+        ShapedRecipeBuilder.shaped(ModItems.ALTAR.get())
                 .define('T', Items.TORCH)
                 .define('R', Items.RED_WOOL)
-                .define('L', FateTags.fabricLapisBlock)
-                .define('G', ModItems.crystalCluster.get())
-                .define('D', FateTags.fabricDiamondBlock)
+                .define('L', FateTags.FABRIC_LAPIS_BLOCK)
+                .define('G', ModItems.CRYSTAL_CLUSTER.get())
+                .define('D', FateTags.FABRIC_DIAMOND_BLOCK)
                 .pattern("RTR").pattern("GDG").pattern("LGL")
                 .unlockedBy("dummy", new ImpossibleTrigger.TriggerInstance()).save(consumer);
-        ShapedRecipeBuilder.shaped(ModItems.chalk.get())
-                .define('B', FateTags.fabricDyeTag)
-                .define('S', FateTags.fabricStickTag)
-                .define('C', FateTags.crystals)
+        ShapedRecipeBuilder.shaped(ModItems.CHALK.get())
+                .define('B', FateTags.FABRIC_DYE_TAG)
+                .define('S', FateTags.FABRIC_STICK_TAG)
+                .define('C', FateTags.CRYSTALS)
                 .pattern("  B").pattern(" S ").pattern("C  ")
                 .unlockedBy("dummy", new ImpossibleTrigger.TriggerInstance()).save(consumer);
         consumer.accept(new FinishedRecipe() {
             @Override
             public void serializeRecipeData(JsonObject json) {
                 JsonArray jsonArray = new JsonArray();
-                List<Ingredient> ings = List.of(Ingredient.of(FateTags.crystals), Ingredient.of(Items.BOOK));
+                List<Ingredient> ings = List.of(Ingredient.of(FateTags.CRYSTALS), Ingredient.of(Items.BOOK));
 
                 for (Ingredient ing : ings)
                     jsonArray.add(ing.toJson());

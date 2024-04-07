@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class RenderPegasus extends MobRenderer<Pegasus, ModelPegasus> {
 
-    public final ResourceLocation tex = new ResourceLocation(Fate.MODID, "textures/entity/pegasus.png");
+    public static final ResourceLocation TEX = new ResourceLocation(Fate.MODID, "textures/entity/pegasus.png");
 
     public RenderPegasus(EntityRendererProvider.Context ctx) {
         super(ctx, new ModelPegasus(ctx.bakeLayer(ModelPegasus.LAYER_LOCATION)), 0.5f);
@@ -17,6 +17,6 @@ public class RenderPegasus extends MobRenderer<Pegasus, ModelPegasus> {
 
     @Override
     public ResourceLocation getTextureLocation(Pegasus pegasus) {
-        return this.tex;
+        return TEX;
     }
 }

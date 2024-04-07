@@ -25,23 +25,24 @@ import net.minecraft.world.level.Level;
 
 public class EntityCuchulainn extends BaseServant {
 
+    private static final AnimatedAction NP_ATTACK = new AnimatedAction(15, 9, "gae_bolg");
+    private static final AnimatedAction[] ANIMS = {AnimatedAction.vanillaAttack, NP_ATTACK};
+
     public final CuchulainnAttackGoal attackAI = new CuchulainnAttackGoal(this);
 
-    private static final AnimatedAction npAttack = new AnimatedAction(15, 9, "gae_bolg");
-    private static final AnimatedAction[] anims = {AnimatedAction.vanillaAttack, npAttack};
     private int gaeBolgThrowTick;
 
-    private final AnimationHandler<EntityCuchulainn> animationHandler = new AnimationHandler<>(this, anims);
+    private final AnimationHandler<EntityCuchulainn> animationHandler = new AnimationHandler<>(this, ANIMS);
 
     public EntityCuchulainn(EntityType<? extends BaseServant> entityType, Level world) {
-        super(entityType, world, LibEntities.cuchulainn + ".hogou");
+        super(entityType, world, LibEntities.CUCHULAINN + ".hogou");
         if (world != null && !world.isClientSide)
             this.goalSelector.addGoal(0, this.attackAI);
     }
 
     @Override
     protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.gaebolg.get()));
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.GAEBOLG.get()));
     }
 
     @Override
@@ -52,7 +53,7 @@ public class EntityCuchulainn extends BaseServant {
     @Override
     public boolean canUse(AnimatedAction anim, AttackType type) {
         if (type == AttackType.NP)
-            return anim.getID().equals(npAttack.getID());
+            return anim.getID().equals(NP_ATTACK.getID());
         return anim.getID().equals(AnimatedAction.vanillaAttack.getID());
     }
 
@@ -88,8 +89,8 @@ public class EntityCuchulainn extends BaseServant {
         super.tick();
         if (!this.level.isClientSide) {
             this.gaeBolgThrowTick = Math.max(0, --this.gaeBolgThrowTick);
-            if (this.gaeBolgThrowTick == 1 && this.getMainHandItem().getItem() != ModItems.gaebolg.get())
-                this.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.gaebolg.get()));
+            if (this.gaeBolgThrowTick == 1 && this.getMainHandItem().getItem() != ModItems.GAEBOLG.get())
+                this.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.GAEBOLG.get()));
             if (this.getHealth() < 0.25 * this.getMaxHealth() && this.getHealth() > 0) {
                 if (!this.critHealth) {
                     this.level.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("chat.servant.cuchulainn").withStyle(ChatFormatting.GOLD), ChatType.SYSTEM, Util.NIL_UUID);
@@ -112,7 +113,7 @@ public class EntityCuchulainn extends BaseServant {
     }
 
     public void retrieveGaeBolg() {
-        this.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.gaebolg.get()));
+        this.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.GAEBOLG.get()));
         this.gaeBolgThrowTick = 0;
     }
 

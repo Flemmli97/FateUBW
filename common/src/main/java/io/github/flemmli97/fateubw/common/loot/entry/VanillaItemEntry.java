@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 
 public class VanillaItemEntry extends GrailLootEntry<VanillaItemEntry> {
 
-    private LootPoolEntryContainer lootEntry;
+    private final LootPoolEntryContainer lootEntry;
 
     public VanillaItemEntry(LootPoolEntryContainer itemLootEntry) {
         super(ConstantValue.exactly(1), new LootItemCondition[0]);

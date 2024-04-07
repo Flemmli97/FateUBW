@@ -29,7 +29,7 @@ public class ClientHandler {
     public static Set<GameProfile> truce = ImmutableSet.of();
     public static int clientTick;
 
-    private static final Comparator<GameProfile> sortName = Comparator.comparing(GameProfile::getName);
+    private static final Comparator<GameProfile> SORT_NAME = Comparator.comparing(GameProfile::getName);
 
     public static ManaBar getManaBar() {
         if (manaBar == null) {
@@ -55,12 +55,12 @@ public class ClientHandler {
     }
 
     public static void grailData(Set<GameProfile> set) {
-        grailPlayers = ImmutableList.copyOf(set.stream().sorted(sortName).filter(prof -> prof.getId().equals(Minecraft.getInstance().player.getUUID())).iterator());
+        grailPlayers = ImmutableList.copyOf(set.stream().sorted(SORT_NAME).filter(prof -> prof.getId().equals(Minecraft.getInstance().player.getUUID())).iterator());
     }
 
     public static void truceData(Set<GameProfile> t, Set<GameProfile> p, Set<GameProfile> r) {
-        truce = ImmutableSet.copyOf(t.stream().sorted(sortName).iterator());
-        pending = ImmutableSet.copyOf(p.stream().sorted(sortName).iterator());
-        requests = ImmutableSet.copyOf(r.stream().sorted(sortName).iterator());
+        truce = ImmutableSet.copyOf(t.stream().sorted(SORT_NAME).iterator());
+        pending = ImmutableSet.copyOf(p.stream().sorted(SORT_NAME).iterator());
+        requests = ImmutableSet.copyOf(r.stream().sorted(SORT_NAME).iterator());
     }
 }

@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 
 public class AttributeEntry extends GrailLootEntry<AttributeEntry> {
 
-    public static final UUID attributeUUID = UUID.fromString("804c9232-325f-484a-b60f-061b99e46ba2");
+    public static final UUID ATTRIBUTE_UUID = UUID.fromString("804c9232-325f-484a-b60f-061b99e46ba2");
     private final Attribute att;
 
     public AttributeEntry(Attribute att, NumberProvider range, LootItemCondition... conditions) {
@@ -38,13 +38,13 @@ public class AttributeEntry extends GrailLootEntry<AttributeEntry> {
     public void accept(ServerPlayer playerEntity, LootContext context) {
         AttributeInstance inst = playerEntity.getAttribute(this.att);
         if (inst != null) {
-            AttributeModifier mod = inst.getModifier(attributeUUID);
+            AttributeModifier mod = inst.getModifier(ATTRIBUTE_UUID);
             float val = this.range.getFloat(context);
             if (mod != null) {
                 val += mod.getAmount();
-                inst.removeModifier(attributeUUID);
+                inst.removeModifier(ATTRIBUTE_UUID);
             }
-            inst.addPermanentModifier(new AttributeModifier(attributeUUID, "fate.modifier", val, AttributeModifier.Operation.ADDITION));
+            inst.addPermanentModifier(new AttributeModifier(ATTRIBUTE_UUID, "fate.modifier", val, AttributeModifier.Operation.ADDITION));
         }
     }
 

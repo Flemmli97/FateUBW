@@ -41,7 +41,7 @@ public class SummonUtils {
             for (int z = -2; z <= 2; z++) {
                 if (x != 0 || z != 0) {
                     BlockPos newPos = new BlockPos(pos.getX() + x, pos.getY(), pos.getZ() + z);
-                    world.setBlockAndUpdate(newPos, ModBlocks.chalk.get().defaultBlockState().setValue(ChalkBlock.FACING, facing).setValue(ChalkBlock.POSITION, getChalkPos(x, z, facing)));
+                    world.setBlockAndUpdate(newPos, ModBlocks.CHALK.get().defaultBlockState().setValue(ChalkBlock.FACING, facing).setValue(ChalkBlock.POSITION, getChalkPos(x, z, facing)));
                     world.sendParticles(ParticleTypes.CLOUD, newPos.getX() + 0.5, newPos.getY(), newPos.getZ() + 0.5, 1, 0, 0.2, 0, 0);
                 }
             }

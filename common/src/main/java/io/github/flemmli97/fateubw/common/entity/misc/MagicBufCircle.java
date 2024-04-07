@@ -22,10 +22,11 @@ import java.util.UUID;
 
 public class MagicBufCircle extends Entity implements OwnableEntity {
 
+    protected static final EntityDataAccessor<Float> RANGE = SynchedEntityData.defineId(MagicBufCircle.class, EntityDataSerializers.FLOAT);
+
     private EntityMedea owner;
     private UUID ownerUUID;
     private int livingTick;
-    protected static final EntityDataAccessor<Float> range = SynchedEntityData.defineId(MagicBufCircle.class, EntityDataSerializers.FLOAT);
     private List<float[]> circlePoints;
 
     public MagicBufCircle(EntityType<?> entityTypeIn, Level worldIn) {
@@ -33,11 +34,11 @@ public class MagicBufCircle extends Entity implements OwnableEntity {
     }
 
     public MagicBufCircle(Level world, EntityMedea owner, float r) {
-        this(ModEntities.medeaCircle.get(), world);
+        this(ModEntities.MEDEA_CIRCLE.get(), world);
         this.setPos(owner.getX(), owner.getY(), owner.getZ());
         this.owner = owner;
         this.ownerUUID = owner.getUUID();
-        this.entityData.set(range, r);
+        this.entityData.set(RANGE, r);
     }
 
     @Override
@@ -46,13 +47,13 @@ public class MagicBufCircle extends Entity implements OwnableEntity {
         this.livingTick++;
         if (this.level.isClientSide && this.livingTick % 5 == 0) {
             if (this.circlePoints == null)
-                this.circlePoints = MathUtils.pointsOfCircle(this.entityData.get(range), 7);
+                this.circlePoints = MathUtils.pointsOfCircle(this.entityData.get(RANGE), 7);
             for (float[] f : this.circlePoints)
                 for (int i = 0; i < 3; i++)
                     this.level.addParticle(ParticleTypes.WITCH, this.getX() + f[0], this.getY() + 0.2, this.getZ() + f[1], 0, 0.12, 0);
         }
         if (!this.level.isClientSide) {
-            float r = this.entityData.get(range);
+            float r = this.entityData.get(RANGE);
             if (this.getOwner() != null && this.getOwner().position().distanceToSqr(this.position()) < r * r)
                 this.getOwner().buff();
             if (this.livingTick > Config.Common.medeaCircleSpan || this.getOwner() == null || this.getOwner().isDeadOrDying())
@@ -62,21 +63,21 @@ public class MagicBufCircle extends Entity implements OwnableEntity {
 
     @Override
     protected void defineSynchedData() {
-        this.entityData.define(range, 1f);
+        this.entityData.define(RANGE, 1f);
     }
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
         this.ownerUUID = compound.getUUID("Owner");
         this.livingTick = compound.getInt("Ticks");
-        this.entityData.set(range, compound.getFloat("Range"));
+        this.entityData.set(RANGE, compound.getFloat("Range"));
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag compound) {
         compound.putUUID("Owner", this.ownerUUID);
         compound.putInt("Ticks", this.livingTick);
-        compound.putFloat("Range", this.entityData.get(range));
+        compound.putFloat("Range", this.entityData.get(RANGE));
     }
 
     @Override

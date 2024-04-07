@@ -2,7 +2,6 @@ package io.github.flemmli97.fateubw.common.registry;
 
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.loot.LootSerializerType;
-import io.github.flemmli97.fateubw.common.loot.entry.AstralEntry;
 import io.github.flemmli97.fateubw.common.loot.entry.AttributeEntry;
 import io.github.flemmli97.fateubw.common.loot.entry.EmptyEntry;
 import io.github.flemmli97.fateubw.common.loot.entry.VanillaItemEntry;
@@ -23,6 +22,4 @@ public class GrailLootSerializer {
     public static RegistryEntrySupplier<LootSerializerType<VanillaItemEntry>> VANILLA = SERIALIZER.register("vanilla_entry", () -> new LootSerializerType<>(new VanillaItemEntry.SerializerImpl()));
     public static RegistryEntrySupplier<LootSerializerType<XPEntry>> XP = SERIALIZER.register("xp_entry", () -> new LootSerializerType<>(new XPEntry.Serializer()));
     public static RegistryEntrySupplier<LootSerializerType<AttributeEntry>> ATTRIBUTE = SERIALIZER.register("attribute_entry", () -> new LootSerializerType<>(new AttributeEntry.Serializer()));
-    public static RegistryEntrySupplier<LootSerializerType<AstralEntry>> ASTRAL = SERIALIZER.register("astral_entry", () -> new LootSerializerType<>(new AstralEntry.Serializer()));
-
 }

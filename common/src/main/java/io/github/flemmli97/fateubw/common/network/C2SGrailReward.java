@@ -31,14 +31,14 @@ public record C2SGrailReward(ResourceLocation rewardID) implements Packet {
             return;
         ItemStack grailItem = ItemStack.EMPTY;
         for (ItemStack stack : sender.getHandSlots()) {
-            if (stack.getItem() == ModItems.grail.get()) {
+            if (stack.getItem() == ModItems.GRAIL.get()) {
                 grailItem = stack;
                 break;
             }
         }
         if (grailItem.isEmpty())
             for (ItemStack stack : sender.getInventory().items) {
-                if (stack.getItem() == ModItems.grail.get()) {
+                if (stack.getItem() == ModItems.GRAIL.get()) {
                     grailItem = stack;
                     break;
                 }

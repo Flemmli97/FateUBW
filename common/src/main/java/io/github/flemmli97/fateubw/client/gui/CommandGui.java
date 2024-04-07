@@ -27,6 +27,9 @@ import java.util.UUID;
 
 public class CommandGui extends Screen {
 
+    private final static ResourceLocation GUI_BACK_GROUND = new ResourceLocation(Fate.MODID, "textures/gui/command_gui_1.png");
+    private final static ResourceLocation GUI_TRUCE = new ResourceLocation(Fate.MODID, "textures/gui/command_gui_2.png");
+
     private Pages currentPage = Pages.MENU;
     private int trucePage = 0;
     private Random rand = new Random();
@@ -34,9 +37,6 @@ public class CommandGui extends Screen {
     private int command2 = this.rand.nextInt(3);
     private int command3 = this.rand.nextInt(3);
     private ButtonValue<UUID> request, accept, remove;
-
-    private final static ResourceLocation guiBackGround = new ResourceLocation(Fate.MODID, "textures/gui/command_gui_1.png");
-    private final static ResourceLocation guiTruce = new ResourceLocation(Fate.MODID, "textures/gui/command_gui_2.png");
 
     public CommandGui() {
         super(new TranslatableComponent("fate.gui.command"));
@@ -52,7 +52,7 @@ public class CommandGui extends Screen {
         if (capSync == null)
             return;
         if (this.currentPage != Pages.TRUCE) {
-            RenderSystem.setShaderTexture(0, guiBackGround);
+            RenderSystem.setShaderTexture(0, GUI_BACK_GROUND);
             this.blit(stack, this.width / 2 - 100, this.height / 2 - 100, 0, 0, 201, 210);
             this.drawCommand(stack, capSync.getCommandSeals());
 
@@ -67,7 +67,7 @@ public class CommandGui extends Screen {
                 this.minecraft.font.draw(stack, servant.nobelPhantasm(), this.width / 2 - 90, this.height / 2 + 65, 1);
             }
         } else {
-            RenderSystem.setShaderTexture(0, guiTruce);
+            RenderSystem.setShaderTexture(0, GUI_TRUCE);
             this.blit(stack, this.width / 2 - 100, this.height / 2 - 100, 0, 0, 201, 210);
             this.drawCommand(stack, capSync.getCommandSeals());
         }

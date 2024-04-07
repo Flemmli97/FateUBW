@@ -23,33 +23,33 @@ import net.minecraft.world.level.Level;
 
 public class EntityArthur extends BaseServant {
 
+    public static final AnimatedAction SWING_1 = new AnimatedAction(18, 15, "swing_1");
+
+    public static final AnimatedAction NP_ATTACK = new AnimatedAction(15, 8, "excalibur");
+    public static final AnimatedAction[] ANIMS = {SWING_1, NP_ATTACK};
+
     public final ArthurAttackGoal attackAI = new ArthurAttackGoal(this);
 
-    public static final AnimatedAction swing_1 = new AnimatedAction(18, 15, "swing_1");
+    private final AnimationHandler<EntityArthur> animationHandler = new AnimationHandler<>(this, ANIMS);
 
-    public static final AnimatedAction npAttack = new AnimatedAction(15, 8, "excalibur");
-    public static final AnimatedAction[] anims = {swing_1, npAttack};
-
-    private final AnimationHandler<EntityArthur> animationHandler = new AnimationHandler<>(this, anims);
-
-    public final SwitchableWeapon<EntityArthur> switchableWeapon = new SwitchableWeapon<>(this, new ItemStack(ModItems.excalibur.get()), ItemStack.EMPTY);
+    public final SwitchableWeapon<EntityArthur> switchableWeapon = new SwitchableWeapon<>(this, new ItemStack(ModItems.EXCALIBUR.get()), ItemStack.EMPTY);
 
     public EntityArthur(EntityType<? extends EntityArthur> entityType, Level world) {
-        super(entityType, world, LibEntities.arthur + ".hogou");
+        super(entityType, world, LibEntities.ARTHUR + ".hogou");
         if (world != null && !world.isClientSide)
             this.goalSelector.addGoal(0, this.attackAI);
     }
 
     @Override
     protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.invisexcalibur.get()));
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.INVISEXCALIBUR.get()));
     }
 
     @Override
     public boolean canUse(AnimatedAction anim, AttackType type) {
         if (type == AttackType.NP)
-            return anim.getID().equals(npAttack.getID());
-        return anim.getID().equals(swing_1.getID());
+            return anim.getID().equals(NP_ATTACK.getID());
+        return anim.getID().equals(SWING_1.getID());
     }
 
     @Override
@@ -71,7 +71,7 @@ public class EntityArthur extends BaseServant {
         super.actuallyHurt(damageSrc, damageAmount);
         if (!this.canUseNP && !this.isDeadOrDying() && this.getHealth() < 0.5 * this.getMaxHealth()) {
             this.canUseNP = true;
-            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.excalibur.get()));
+            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.EXCALIBUR.get()));
         }
     }
 

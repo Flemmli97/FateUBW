@@ -33,7 +33,7 @@ public class ParticleGen implements DataProvider {
     }
 
     public void add() {
-        this.addTo(ModParticles.light.get());
+        this.addTo(ModParticles.LIGHT.get());
     }
 
     @Override

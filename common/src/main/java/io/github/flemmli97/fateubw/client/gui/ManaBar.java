@@ -11,10 +11,9 @@ import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.resources.ResourceLocation;
 
 public class ManaBar extends GuiComponent {
-    private Minecraft mc;
-    public static int width;
+    private final Minecraft mc;
 
-    private static final ResourceLocation texturepath = new ResourceLocation(Fate.MODID + ":textures/gui/mana_bar.png");
+    private static final ResourceLocation TEXTUREPATH = new ResourceLocation(Fate.MODID + ":textures/gui/mana_bar.png");
 
     public ManaBar(Minecraft mc) {
         super();
@@ -25,7 +24,7 @@ public class ManaBar extends GuiComponent {
         int mana = Platform.INSTANCE.getPlayerData(this.mc.player).map(PlayerData::getMana).orElse(0);
         int xPos = Config.Client.manaX;
         int yPos = Config.Client.manaY;
-        RenderSystem.setShaderTexture(0, texturepath);
+        RenderSystem.setShaderTexture(0, TEXTUREPATH);
         this.blit(stack, xPos, yPos, 0, 0, 102, 5);
 
         int manabarwidth = (int) ((mana / 100F) * 102);

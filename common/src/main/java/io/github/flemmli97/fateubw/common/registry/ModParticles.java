@@ -13,6 +13,6 @@ public class ModParticles {
 
     public static final PlatformRegistry<ParticleType<?>> PARTICLES = PlatformUtils.INSTANCE.of(Registry.PARTICLE_TYPE_REGISTRY, Fate.MODID);
 
-    public static final RegistryEntrySupplier<ParticleType<ColoredParticleData>> light = PARTICLES.register("light", () -> new ColoredParticleType(false));
+    public static final RegistryEntrySupplier<ParticleType<ColoredParticleData>> LIGHT = PARTICLES.register("light", () -> new ColoredParticleType(false));
 
 }

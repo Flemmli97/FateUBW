@@ -5,9 +5,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
-import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
-import io.github.flemmli97.fateubw.common.integration.AstralSorcery;
 import io.github.flemmli97.fateubw.common.loot.GrailLootTable;
 import io.github.flemmli97.fateubw.common.loot.entry.AttributeEntry;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
@@ -32,7 +30,6 @@ public class CommandHandler {
     public static void reg(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("fate")
                 .then(Commands.literal("reset").requires(src -> src.hasPermission(2)).executes(CommandHandler::resetWar)
-                        .then(Commands.literal("astral").then(Commands.argument("players", EntityArgument.players()).executes(CommandHandler::resetAstralPoints)))
                         .then(Commands.literal("attributes").then(Commands.argument("players", EntityArgument.players()).executes(CommandHandler::resetAttributes))))
                 .then(Commands.literal("loot").requires(src -> src.hasPermission(2))
                         .then(Commands.argument("id", ResourceLocationArgument.id()).suggests(GRAILLOOTSUGGESTION)
@@ -63,19 +60,9 @@ public class CommandHandler {
         players.forEach(player -> attributes.forEach(att -> {
             AttributeInstance inst = player.getAttribute(att);
             if (inst != null)
-                inst.removeModifier(AttributeEntry.attributeUUID);
+                inst.removeModifier(AttributeEntry.ATTRIBUTE_UUID);
         }));
         ctx.getSource().sendSuccess(new TranslatableComponent("fate.command.attributes.reset", players), false);
         return Command.SINGLE_SUCCESS;
-    }
-
-    private static int resetAstralPoints(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
-        if (Fate.astralSorcery) {
-            Collection<ServerPlayer> players = EntityArgument.getPlayers(ctx, "players");
-            players.forEach(AstralSorcery::resetPerkPoints);
-            ctx.getSource().sendSuccess(new TranslatableComponent("fate.command.astral.reset", players), false);
-            return Command.SINGLE_SUCCESS;
-        }
-        return 0;
     }
 }

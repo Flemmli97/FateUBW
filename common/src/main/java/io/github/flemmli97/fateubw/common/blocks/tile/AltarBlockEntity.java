@@ -32,7 +32,7 @@ public class AltarBlockEntity extends BlockEntity {
     private Player player;
 
     public AltarBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlocks.tileAltar.get(), pos, state);
+        super(ModBlocks.TILE_ALTAR.get(), pos, state);
     }
 
     public ItemStack getCharm() {
@@ -65,7 +65,7 @@ public class AltarBlockEntity extends BlockEntity {
                     this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), Block.UPDATE_CLIENTS);
                 return true;
             }
-        } else if (stack.getItem() == ModItems.crystalCluster.get()) {
+        } else if (stack.getItem() == ModItems.CRYSTAL_CLUSTER.get()) {
             ItemStack add = stack.copy();
             add.setCount(1);
             for (int x = 0; x < this.invCatalyst.size(); x++) {

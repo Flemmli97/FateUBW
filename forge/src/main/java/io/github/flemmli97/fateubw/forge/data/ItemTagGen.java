@@ -1,7 +1,7 @@
 package io.github.flemmli97.fateubw.forge.data;
 
 import io.github.flemmli97.fateubw.Fate;
-import io.github.flemmli97.fateubw.common.registry.FateTags;
+import io.github.flemmli97.fateubw.common.lib.FateTags;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
@@ -24,22 +24,22 @@ public class ItemTagGen extends ItemTagsProvider {
 
     @Override
     protected void addTags() {
-        this.tag(FateTags.crystals)
-                .add(ModItems.crystalEarth.get())
-                .add(ModItems.crystalWater.get())
-                .add(ModItems.crystalVoid.get())
-                .add(ModItems.crystalFire.get())
-                .add(ModItems.crystalWind.get());
-        TagAppender<Item> dyes = this.tag(FateTags.fabricDyeTag)
+        this.tag(FateTags.CRYSTALS)
+                .add(ModItems.CRYSTAL_EARTH.get())
+                .add(ModItems.CRYSTAL_WATER.get())
+                .add(ModItems.CRYSTAL_VOID.get())
+                .add(ModItems.CRYSTAL_FIRE.get())
+                .add(ModItems.CRYSTAL_WIND.get());
+        TagAppender<Item> dyes = this.tag(FateTags.FABRIC_DYE_TAG)
                 .addOptional(Tags.Items.DYES.location());
         this.add(dyes::add);
-        this.tag(FateTags.fabricStickTag)
+        this.tag(FateTags.FABRIC_STICK_TAG)
                 .add(Items.STICK)
                 .addOptional(Tags.Items.RODS_WOODEN.location());
-        this.tag(FateTags.fabricLapisBlock)
+        this.tag(FateTags.FABRIC_LAPIS_BLOCK)
                 .add(Items.LAPIS_BLOCK)
                 .addOptional(Tags.Items.STORAGE_BLOCKS_LAPIS.location());
-        this.tag(FateTags.fabricDiamondBlock)
+        this.tag(FateTags.FABRIC_DIAMOND_BLOCK)
                 .add(Items.DIAMOND_BLOCK)
                 .addOptional(Tags.Items.STORAGE_BLOCKS_DIAMOND.location());
     }
