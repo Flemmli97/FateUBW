@@ -18,6 +18,7 @@ import io.github.flemmli97.fateubw.forge.common.event.EventHandler;
 import io.github.flemmli97.fateubw.forge.common.network.PacketHandler;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.MinecraftForge;
@@ -99,8 +100,7 @@ public class FateUBWForge {
     }
 
     public void biomeLoadEvent(BiomeLoadingEvent event) {
-        Set<BiomeDictionary.Type> types = BiomeDictionary.getTypes(ResourceKey.create(Registry.BIOME_REGISTRY, event.getName()));
-        if (types.contains(BiomeDictionary.Type.OVERWORLD)) {
+        if (event.getCategory() != Biome.BiomeCategory.THEEND && event.getCategory() != Biome.BiomeCategory.NETHER) {
             ModFeatures.registerToBiomes((dec, holder) -> event.getGeneration().addFeature(dec, holder));
         }
     }

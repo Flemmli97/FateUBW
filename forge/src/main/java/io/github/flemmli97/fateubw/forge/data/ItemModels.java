@@ -5,6 +5,7 @@ import io.github.flemmli97.fateubw.common.items.weapons.ClassSpear;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.tenshilib.common.item.SpawnEgg;
 import io.github.flemmli97.tenshilib.platform.registry.RegistryEntrySupplier;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.models.model.ModelLocationUtils;
 import net.minecraft.resources.ResourceLocation;
@@ -34,12 +35,12 @@ public class ItemModels extends ItemModelProvider {
                         .override().predicate(new ResourceLocation(Fate.MODID, "thrown"), 1)
                         .model(this.withExistingParent(reg.getID().getPath() + "_thrown", ModelLocationUtils.decorateItemModelLocation("handheld"))
                                 .texture("layer0", this.itemTexture(reg.getID().getPath() + "_thrown"))
-                                .transforms().transform(ModelBuilder.Perspective.FIRSTPERSON_LEFT)
+                                .transforms().transform(ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND)
                                 .rotation(0, 90, -25)
                                 .translation(1.13f, 6.3f, 1.13f)
                                 .scale(0.68f, 0.68f, 0.68f)
                                 .end()
-                                .transform(ModelBuilder.Perspective.FIRSTPERSON_RIGHT)
+                                .transform(ItemTransforms.TransformType.FIRST_PERSON_RIGHT_HAND)
                                 .rotation(0, -90, 25)
                                 .translation(1.13f, 6.3f, 1.13f)
                                 .scale(0.68f, 0.68f, 0.68f)

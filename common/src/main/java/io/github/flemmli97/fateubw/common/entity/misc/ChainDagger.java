@@ -145,7 +145,7 @@ public class ChainDagger extends EntityProjectile {
     @Override
     protected EntityHitResult getEntityHit(Vec3 from, Vec3 to) {
         if (this.retracting())
-            return RayTraceUtils.rayTraceEntities(this.level, this, from, to, this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1.0D), e -> e == this.getOwner());
+            return RayTraceUtils.rayTraceEntities(this, from, to, e -> e == this.getOwner());
         return super.getEntityHit(from, to);
     }
 
