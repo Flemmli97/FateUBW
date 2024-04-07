@@ -17,6 +17,7 @@ import io.github.flemmli97.fateubw.platform.Platform;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.IAnimated;
 import io.github.flemmli97.tenshilib.common.entity.ai.MoveControllerPlus;
+import io.github.flemmli97.tenshilib.common.item.SpawnEgg;
 import io.github.flemmli97.tenshilib.common.utils.NBTUtils;
 import io.github.flemmli97.tenshilib.platform.PlatformUtils;
 import net.minecraft.ChatFormatting;
@@ -70,6 +71,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -652,6 +654,12 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     @Override
     public void knockback(double strength, double xRatio, double zRatio) {
         super.knockback(strength * 0.75, xRatio, zRatio);
+    }
+
+    @Nullable
+    @Override
+    public ItemStack getPickResult() {
+        return SpawnEgg.fromType(this.getType()).map(ItemStack::new).orElse(null);
     }
 
     public enum AttackType {
