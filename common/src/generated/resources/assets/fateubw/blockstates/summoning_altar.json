@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "fateubw:block/summoning_altar"
+    },
+    "facing=south": {
+      "model": "fateubw:block/summoning_altar",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "fateubw:block/summoning_altar",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "fateubw:block/summoning_altar",
+      "y": 90
+    }
+  }
+}

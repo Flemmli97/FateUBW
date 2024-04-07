@@ -22,7 +22,7 @@
         "items": [
           {
             "items": [
-              "fateubw:gem_shard_fire"
+              "fateubw:gem_shard_red"
             ]
           }
         ]
@@ -34,7 +34,7 @@
         "items": [
           {
             "items": [
-              "fateubw:gem_shard_water"
+              "fateubw:gem_shard_blue"
             ]
           }
         ]
@@ -46,7 +46,7 @@
         "items": [
           {
             "items": [
-              "fateubw:gem_shard_earth"
+              "fateubw:gem_shard_yellow"
             ]
           }
         ]
@@ -58,7 +58,7 @@
         "items": [
           {
             "items": [
-              "fateubw:gem_shard_wind"
+              "fateubw:gem_shard_green"
             ]
           }
         ]
@@ -70,7 +70,7 @@
         "items": [
           {
             "items": [
-              "fateubw:gem_shard_void"
+              "fateubw:gem_shard_black"
             ]
           }
         ]

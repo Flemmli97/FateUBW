@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "fateubw:items/servant_artifact_archer"
+    "layer0": "fateubw:items/artifact_rider"
   }
 }

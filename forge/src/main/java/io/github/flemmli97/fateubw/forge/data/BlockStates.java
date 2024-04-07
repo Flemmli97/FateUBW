@@ -33,7 +33,7 @@ public class BlockStates extends BlockStateProvider {
                 .parent(this.models().getExistingFile(new ResourceLocation(Fate.MODID, "block/ore")))
                 .texture("ore", new ResourceLocation(Fate.MODID, "blocks/crystal_ore"))
                 .texture("stone", new ResourceLocation("block/deepslate")));
-        this.horizontalBlock(ModBlocks.ALTAR.get(), this.models().getExistingFile(new ResourceLocation(Fate.MODID, "block/altar")));
+        this.horizontalBlock(ModBlocks.ALTAR.get(), this.models().getExistingFile(new ResourceLocation(Fate.MODID, "block/summoning_altar")));
     }
 
     @Override

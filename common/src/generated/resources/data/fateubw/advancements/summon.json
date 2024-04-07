@@ -2,7 +2,7 @@
   "parent": "fateubw:root",
   "display": {
     "icon": {
-      "item": "fateubw:altar"
+      "item": "fateubw:summoning_altar"
     },
     "title": {
       "translate": "advancements.fate.join.title"

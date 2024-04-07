@@ -34,7 +34,7 @@
                   "condition": "minecraft:survives_explosion"
                 }
               ],
-              "name": "fateubw:servant_artifact"
+              "name": "fateubw:artifact_none"
             }
           ]
         }

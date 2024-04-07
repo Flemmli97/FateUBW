@@ -57,7 +57,7 @@ public class Lang implements DataProvider {
 
     protected void addTranslations() {
         for (RegistryEntrySupplier<Item> reg : ModItems.ITEMS.getEntries()) {
-            if (reg.get() instanceof BlockItem || reg.get() instanceof SpawnEgg || reg.getID().getPath().startsWith("gem") || reg.getID().getPath().startsWith("servant_artifact"))
+            if (reg.get() instanceof BlockItem || reg.get() instanceof SpawnEgg || reg.getID().getPath().startsWith("gem") || reg.getID().getPath().startsWith("artifact"))
                 continue;
             if (reg == ModItems.EXCALIBUR)
                 this.add(reg.get(), "Holy Sword Excalibur");
@@ -243,13 +243,6 @@ public class Lang implements DataProvider {
 
     private String simpleOfRegName(ResourceLocation res) {
         return StringUtils.capitalize(res.getPath().replace("_", " "));
-    }
-
-    private String capitalize(String s, List<String> dont) {
-        return Stream.of(s.trim().split("\\s"))
-                .filter(word -> !word.isEmpty())
-                .map(word -> dont.contains(word) ? word : word.substring(0, 1).toUpperCase() + word.substring(1))
-                .collect(Collectors.joining(" "));
     }
 
     @Override

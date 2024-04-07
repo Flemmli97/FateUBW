@@ -9,7 +9,7 @@ public enum EnumServantType {
     BERSERKER("berserker"),
     RIDER("rider"),
     ASSASSIN("assassin"),
-    NOTASSIGNED("undef");
+    NOTASSIGNED("none");
 
     private final String name;
 

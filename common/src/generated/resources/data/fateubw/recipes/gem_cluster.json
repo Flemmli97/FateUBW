@@ -2,19 +2,19 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "item": "fateubw:gem_shard_fire"
+      "item": "fateubw:gem_shard_red"
     },
     {
-      "item": "fateubw:gem_shard_void"
+      "item": "fateubw:gem_shard_black"
     },
     {
-      "item": "fateubw:gem_shard_water"
+      "item": "fateubw:gem_shard_blue"
     },
     {
-      "item": "fateubw:gem_shard_wind"
+      "item": "fateubw:gem_shard_green"
     },
     {
-      "item": "fateubw:gem_shard_earth"
+      "item": "fateubw:gem_shard_yellow"
     }
   ],
   "result": {

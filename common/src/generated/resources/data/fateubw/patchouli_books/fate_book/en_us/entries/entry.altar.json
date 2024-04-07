@@ -1,7 +1,7 @@
 {
   "name": "fate.patchouli.entry.altar",
   "category": "fateubw:category.start",
-  "icon": "fateubw:altar",
+  "icon": "fateubw:summoning_altar",
   "pages": [
     {
       "type": "patchouli:crafting",
@@ -23,7 +23,7 @@
         ],
         "mapping": {
           "C": "fateubw:chalk_line",
-          "0": "fateubw:altar"
+          "0": "fateubw:summoning_altar"
         },
         "symmetrical": true
       },

@@ -1,7 +1,7 @@
 {
   "name": "fate.patchouli.entry.servant",
   "category": "fateubw:category.war",
-  "icon": "fateubw:servant_artifact",
+  "icon": "fateubw:artifact_none",
   "pages": [
     {
       "type": "patchouli:text",

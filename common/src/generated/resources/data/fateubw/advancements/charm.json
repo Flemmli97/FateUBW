@@ -2,7 +2,7 @@
   "parent": "fateubw:root",
   "display": {
     "icon": {
-      "item": "fateubw:servant_artifact"
+      "item": "fateubw:artifact_none"
     },
     "title": {
       "translate": "advancements.fate.charm.title"
@@ -22,7 +22,7 @@
         "items": [
           {
             "items": [
-              "fateubw:servant_artifact"
+              "fateubw:artifact_none"
             ]
           }
         ]

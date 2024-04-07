@@ -61,7 +61,7 @@ public class ModItems {
     public static final RegistryEntrySupplier<Item> ASSASSIN_DAGGER = ITEMS.register("assassin_dagger", () -> new ItemDagger(ItemTiers.ASSASSIN_DAGGER, 0, -1.8f, new Item.Properties().tab(Fate.TAB)));
     public static final RegistryEntrySupplier<Item> KATANA = ITEMS.register("katana", () -> new ItemKatana(ItemTiers.KATANA, 0, -2.6f, new Item.Properties().tab(Fate.TAB)));
 
-    public static final RegistryEntrySupplier<Item> ALTAR = ITEMS.register("altar", () -> new BlockItem(ModBlocks.ALTAR.get(), new Item.Properties().tab(Fate.TAB)));
+    public static final RegistryEntrySupplier<Item> ALTAR = ITEMS.register("summoning_altar", () -> new BlockItem(ModBlocks.ALTAR.get(), new Item.Properties().tab(Fate.TAB)));
     public static final RegistryEntrySupplier<Item> GEM_ORE = ITEMS.register("gem_ore", () -> new BlockItem(ModBlocks.GEM_ORE.get(), new Item.Properties().tab(Fate.TAB)));
     public static final RegistryEntrySupplier<Item> ARTIFACT_ORE = ITEMS.register("artifact_ore", () -> new BlockItem(ModBlocks.ARTIFACT_ORE.get(), new Item.Properties().tab(Fate.TAB)));
     public static final RegistryEntrySupplier<Item> DEEP_SLATE_GEM_ORE = ITEMS.register("deepslate_gem_ore", () -> new BlockItem(ModBlocks.DEEP_SLATE_GEM_ORE.get(), new Item.Properties().tab(Fate.TAB)));
@@ -101,8 +101,7 @@ public class ModItems {
     };
 
     private static RegistryEntrySupplier<Item> registercharm(EnumServantType type) {
-        String name = type == EnumServantType.NOTASSIGNED ? "artifact" : "artifact_" + type.getLowercase();
-        RegistryEntrySupplier<Item> item = ITEMS.register(name, () -> new ItemServantCharm(type, new Item.Properties().tab(Fate.TAB)));
+        RegistryEntrySupplier<Item> item = ITEMS.register("artifact_" + type.getLowercase(), () -> new ItemServantCharm(type, new Item.Properties().tab(Fate.TAB)));
         CHARMS.add(item);
         return item;
     }
