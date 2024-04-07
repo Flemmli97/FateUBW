@@ -30,11 +30,11 @@ public class RecipesGen extends RecipeProvider {
     @Override
     public void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
         ShapelessRecipeBuilder.shapeless(ModItems.CRYSTAL_CLUSTER.get())
-                .requires(ModItems.CRYSTAL_FIRE.get())
-                .requires(ModItems.CRYSTAL_VOID.get())
-                .requires(ModItems.CRYSTAL_WATER.get())
-                .requires(ModItems.CRYSTAL_WIND.get())
-                .requires(ModItems.CRYSTAL_EARTH.get())
+                .requires(ModItems.CRYSTAL_RED.get())
+                .requires(ModItems.CRYSTAL_BLACK.get())
+                .requires(ModItems.CRYSTAL_BLUE.get())
+                .requires(ModItems.CRYSTAL_GREEN.get())
+                .requires(ModItems.CRYSTAL_YELLOW.get())
                 .unlockedBy("dummy", new ImpossibleTrigger.TriggerInstance()).save(consumer);
         ShapedRecipeBuilder.shaped(ModItems.ALTAR.get())
                 .define('T', Items.TORCH)

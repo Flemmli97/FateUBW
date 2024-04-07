@@ -94,7 +94,7 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
         this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(Config.Common.hassanCopyProps.strength());
         this.getAttribute(Attributes.ARMOR).setBaseValue(Config.Common.hassanCopyProps.armor());
         this.getAttribute(ModAttributes.MAGIC_RESISTANCE.get()).setBaseValue(Config.Common.hassanCopyProps.magicRes());
-        this.getAttribute(ModAttributes.PROJECTILE_BLOCKCHANCE.get()).setBaseValue(Config.Common.hassanCopyProps.projectileBlockChance());
+        this.getAttribute(ModAttributes.PROJECTILE_BLOCK_CHANCE.get()).setBaseValue(Config.Common.hassanCopyProps.projectileBlockChance());
         this.getAttribute(ModAttributes.PROJECTILE_RESISTANCE.get()).setBaseValue(Config.Common.hassanCopyProps.projectileProt());
         this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(Config.Common.hassanCopyProps.moveSpeed());//default 0.3
     }
@@ -153,7 +153,7 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
     }
 
     public boolean projectileBlockChance(DamageSource damageSource, float damage) {
-        return this.random.nextFloat() < (float) this.getAttributeValue(ModAttributes.PROJECTILE_BLOCKCHANCE.get());
+        return this.random.nextFloat() < (float) this.getAttributeValue(ModAttributes.PROJECTILE_BLOCK_CHANCE.get());
     }
 
     @Override

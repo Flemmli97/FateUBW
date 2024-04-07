@@ -69,29 +69,29 @@ public class Lang implements DataProvider {
                 this.add(reg.get(), this.simpleOfRegName(reg.getID()));
         }
 
-        this.add(ModItems.CRYSTAL_FIRE.get(), "Red Gem Shard");
-        this.add(ModItems.CRYSTAL_WATER.get(), "Blue Gem Shard");
-        this.add(ModItems.CRYSTAL_EARTH.get(), "Green Gem Shard");
-        this.add(ModItems.CRYSTAL_WIND.get(), "Yellow Gem Shard");
-        this.add(ModItems.CRYSTAL_VOID.get(), "Black Gem Shard");
+        this.add(ModItems.CRYSTAL_RED.get(), "Red Gem Shard");
+        this.add(ModItems.CRYSTAL_BLUE.get(), "Blue Gem Shard");
+        this.add(ModItems.CRYSTAL_YELLOW.get(), "Green Gem Shard");
+        this.add(ModItems.CRYSTAL_GREEN.get(), "Yellow Gem Shard");
+        this.add(ModItems.CRYSTAL_BLACK.get(), "Black Gem Shard");
         this.add(ModItems.CRYSTAL_CLUSTER.get(), "Synthesized Gem");
-        this.add(ModItems.CHARM_NONE.get(), "Servant Artifact");
-        this.add(ModItems.CHARM_SABER.get(), "Servant Artifact (Saber)");
-        this.add(ModItems.CHARM_ARCHER.get(), "Servant Artifact (Archer)");
-        this.add(ModItems.CHARM_LANCER.get(), "Servant Artifact (Lancer)");
-        this.add(ModItems.CHARM_BERSERKER.get(), "Servant Artifact (Berserker)");
-        this.add(ModItems.CHARM_ASSASSIN.get(), "Servant Artifact (Assassin)");
-        this.add(ModItems.CHARM_CASTER.get(), "Servant Artifact (Caster)");
-        this.add(ModItems.CHARM_RIDER.get(), "Servant Artifact (Rider)");
+        this.add(ModItems.CHARM_NONE.get(), "Artifact");
+        this.add(ModItems.CHARM_SABER.get(), "Artifact (Saber)");
+        this.add(ModItems.CHARM_ARCHER.get(), "Artifact (Archer)");
+        this.add(ModItems.CHARM_LANCER.get(), "Artifact (Lancer)");
+        this.add(ModItems.CHARM_BERSERKER.get(), "Artifact (Berserker)");
+        this.add(ModItems.CHARM_ASSASSIN.get(), "Artifact (Assassin)");
+        this.add(ModItems.CHARM_CASTER.get(), "Artifact (Caster)");
+        this.add(ModItems.CHARM_RIDER.get(), "Artifact (Rider)");
 
         for (RegistryEntrySupplier<EntityType<?>> type : ModEntities.ENTITIES.getEntries()) {
             SpawnEgg.fromType(type.get()).ifPresent(egg -> this.add(egg, "%s" + " Spawn Egg"));
         }
 
         this.add(ModBlocks.ALTAR.get(), "Summoning Altar");
-        this.add(ModBlocks.GEM_ORE.get(), "Magic Gem Ore");
+        this.add(ModBlocks.GEM_ORE.get(), "Gem Ore");
         this.add(ModBlocks.ARTIFACT_ORE.get(), "Artifact Ore");
-        this.add(ModBlocks.DEEP_SLATE_GEM_ORE.get(), "Deepslate Magic Gem Ore");
+        this.add(ModBlocks.DEEP_SLATE_GEM_ORE.get(), "Deepslate Gem Ore");
         this.add(ModBlocks.DEEP_SLATE_ARTIFACT_ORE.get(), "Deepslate Artifact Ore");
         this.add(ModBlocks.CHALK.get(), "Chalk Line");
 

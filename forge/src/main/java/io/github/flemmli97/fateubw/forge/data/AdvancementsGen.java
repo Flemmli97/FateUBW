@@ -37,11 +37,11 @@ public class AdvancementsGen implements DataProvider {
     public void add() {
         this.advancements.add(cons -> {
             Advancement root = Advancement.Builder.advancement().display(ModItems.ICON_0.get(), new TranslatableComponent("advancements.fate.title"), new TranslatableComponent("advancements.fate.description"), new ResourceLocation("textures/gui/advancements/backgrounds/stone.png"), FrameType.TASK, true, true, false)
-                    .addCriterion("gem_fire", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.CRYSTAL_FIRE.get()))
-                    .addCriterion("gem_water", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.CRYSTAL_WATER.get()))
-                    .addCriterion("gem_earth", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.CRYSTAL_EARTH.get()))
-                    .addCriterion("gem_wind", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.CRYSTAL_WIND.get()))
-                    .addCriterion("gem_void", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.CRYSTAL_VOID.get()))
+                    .addCriterion("gem_fire", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.CRYSTAL_RED.get()))
+                    .addCriterion("gem_water", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.CRYSTAL_BLUE.get()))
+                    .addCriterion("gem_earth", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.CRYSTAL_YELLOW.get()))
+                    .addCriterion("gem_wind", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.CRYSTAL_GREEN.get()))
+                    .addCriterion("gem_void", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.CRYSTAL_BLACK.get()))
                     .requirements(RequirementsStrategy.OR).save(cons, Fate.MODID + ":root");
             Advancement charm = Advancement.Builder.advancement().parent(root).display(ModItems.CHARM_NONE.get(), new TranslatableComponent("advancements.fate.charm.title"), new TranslatableComponent("advancements.fate.charm.description"), null, FrameType.TASK, true, true, true)
                     .addCriterion("charm", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.CHARM_NONE.get())).save(cons, Fate.MODID + ":charm");

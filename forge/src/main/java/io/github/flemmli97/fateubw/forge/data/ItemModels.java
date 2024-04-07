@@ -61,7 +61,7 @@ public class ItemModels extends ItemModelProvider {
                 this.withExistingParent(reg.getID().getPath(), ModelLocationUtils.decorateItemModelLocation("generated"))
                         .texture("layer0", new ResourceLocation(reg.getID().getNamespace(), "gui/command_seal_" + sealid));
                 sealid++;
-            } else if (reg == ModItems.CRYSTAL_FIRE || reg == ModItems.CRYSTAL_EARTH || reg == ModItems.CRYSTAL_VOID || reg == ModItems.CRYSTAL_WATER || reg == ModItems.CRYSTAL_WIND) {
+            } else if (reg == ModItems.CRYSTAL_RED || reg == ModItems.CRYSTAL_YELLOW || reg == ModItems.CRYSTAL_BLACK || reg == ModItems.CRYSTAL_BLUE || reg == ModItems.CRYSTAL_GREEN) {
                 this.withExistingParent(reg.getID().getPath(), new ResourceLocation(Fate.MODID, "item/gem_shard"))
                         .texture("layer0", this.itemTexture(reg.getID()));
             } else {

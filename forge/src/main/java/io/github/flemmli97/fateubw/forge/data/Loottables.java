@@ -112,7 +112,7 @@ public class Loottables extends LootTableProvider {
             this.add(ModBlocks.ARTIFACT_ORE.get(), drop -> createSingleItemTableWithSilkTouch(drop, ModItems.CHARM_NONE.get()));
             this.add(ModBlocks.DEEP_SLATE_ARTIFACT_ORE.get(), drop -> createSingleItemTableWithSilkTouch(drop, ModItems.CHARM_NONE.get()));
             ResourceLocation crystal = new ResourceLocation(Fate.MODID, "blocks/crystals");
-            this.registerLootTable(crystal, createLootPool(5, ModItems.CRYSTAL_EARTH.get(), ModItems.CRYSTAL_WIND.get(), ModItems.CRYSTAL_WATER.get(), ModItems.CRYSTAL_VOID.get(), ModItems.CRYSTAL_FIRE.get()));
+            this.registerLootTable(crystal, createLootPool(5, ModItems.CRYSTAL_YELLOW.get(), ModItems.CRYSTAL_GREEN.get(), ModItems.CRYSTAL_BLUE.get(), ModItems.CRYSTAL_BLACK.get(), ModItems.CRYSTAL_RED.get()));
             this.add(ModBlocks.GEM_ORE.get(), drop -> createSilkTouchDispatchTable(drop, LootTableReference.lootTableReference(crystal)));
             this.add(ModBlocks.DEEP_SLATE_GEM_ORE.get(), drop -> createSilkTouchDispatchTable(drop, LootTableReference.lootTableReference(crystal)));
             this.loots.forEach(cons);

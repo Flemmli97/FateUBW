@@ -75,11 +75,11 @@ public class ModItems {
     public static final RegistryEntrySupplier<Item> CHARM_BERSERKER = registercharm(EnumServantType.BERSERKER);
     public static final RegistryEntrySupplier<Item> CHARM_RIDER = registercharm(EnumServantType.RIDER);
     public static final RegistryEntrySupplier<Item> CHARM_ASSASSIN = registercharm(EnumServantType.ASSASSIN);
-    public static final RegistryEntrySupplier<Item> CRYSTAL_FIRE = ITEMS.register("gem_shard_fire", () -> new Item(new Item.Properties().tab(Fate.TAB)));
-    public static final RegistryEntrySupplier<Item> CRYSTAL_WIND = ITEMS.register("gem_shard_wind", () -> new Item(new Item.Properties().tab(Fate.TAB)));
-    public static final RegistryEntrySupplier<Item> CRYSTAL_EARTH = ITEMS.register("gem_shard_earth", () -> new Item(new Item.Properties().tab(Fate.TAB)));
-    public static final RegistryEntrySupplier<Item> CRYSTAL_WATER = ITEMS.register("gem_shard_water", () -> new Item(new Item.Properties().tab(Fate.TAB)));
-    public static final RegistryEntrySupplier<Item> CRYSTAL_VOID = ITEMS.register("gem_shard_void", () -> new Item(new Item.Properties().tab(Fate.TAB)));
+    public static final RegistryEntrySupplier<Item> CRYSTAL_RED = ITEMS.register("gem_shard_red", () -> new Item(new Item.Properties().tab(Fate.TAB)));
+    public static final RegistryEntrySupplier<Item> CRYSTAL_GREEN = ITEMS.register("gem_shard_green", () -> new Item(new Item.Properties().tab(Fate.TAB)));
+    public static final RegistryEntrySupplier<Item> CRYSTAL_YELLOW = ITEMS.register("gem_shard_yellow", () -> new Item(new Item.Properties().tab(Fate.TAB)));
+    public static final RegistryEntrySupplier<Item> CRYSTAL_BLUE = ITEMS.register("gem_shard_blue", () -> new Item(new Item.Properties().tab(Fate.TAB)));
+    public static final RegistryEntrySupplier<Item> CRYSTAL_BLACK = ITEMS.register("gem_shard_black", () -> new Item(new Item.Properties().tab(Fate.TAB)));
     public static final RegistryEntrySupplier<Item> CRYSTAL_CLUSTER = ITEMS.register("gem_cluster", () -> new ItemCrystal(new Item.Properties().tab(Fate.TAB)));
     public static final RegistryEntrySupplier<Item> CHALK = ITEMS.register("chalk", () -> new ItemChalk(new Item.Properties().tab(Fate.TAB).defaultDurability(32)));
     public static final RegistryEntrySupplier<Item> MANA_BOTTLE = ITEMS.register("mana_bottle", () -> new ItemManaBottle(new Item.Properties().tab(Fate.TAB)));
@@ -101,7 +101,7 @@ public class ModItems {
     };
 
     private static RegistryEntrySupplier<Item> registercharm(EnumServantType type) {
-        String name = type == EnumServantType.NOTASSIGNED ? "servant_artifact" : "servant_artifact_" + type.getLowercase();
+        String name = type == EnumServantType.NOTASSIGNED ? "artifact" : "artifact_" + type.getLowercase();
         RegistryEntrySupplier<Item> item = ITEMS.register(name, () -> new ItemServantCharm(type, new Item.Properties().tab(Fate.TAB)));
         CHARMS.add(item);
         return item;

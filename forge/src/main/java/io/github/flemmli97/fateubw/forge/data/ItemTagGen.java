@@ -25,11 +25,11 @@ public class ItemTagGen extends ItemTagsProvider {
     @Override
     protected void addTags() {
         this.tag(FateTags.CRYSTALS)
-                .add(ModItems.CRYSTAL_EARTH.get())
-                .add(ModItems.CRYSTAL_WATER.get())
-                .add(ModItems.CRYSTAL_VOID.get())
-                .add(ModItems.CRYSTAL_FIRE.get())
-                .add(ModItems.CRYSTAL_WIND.get());
+                .add(ModItems.CRYSTAL_YELLOW.get())
+                .add(ModItems.CRYSTAL_BLUE.get())
+                .add(ModItems.CRYSTAL_BLACK.get())
+                .add(ModItems.CRYSTAL_RED.get())
+                .add(ModItems.CRYSTAL_GREEN.get());
         TagAppender<Item> dyes = this.tag(FateTags.FABRIC_DYE_TAG)
                 .addOptional(Tags.Items.DYES.location());
         this.add(dyes::add);

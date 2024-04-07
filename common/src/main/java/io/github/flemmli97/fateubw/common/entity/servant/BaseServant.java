@@ -236,7 +236,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     }
 
     public static AttributeSupplier.Builder createMobAttributes() {
-        return Monster.createMonsterAttributes().add(ModAttributes.MAGIC_RESISTANCE.get()).add(ModAttributes.PROJECTILE_BLOCKCHANCE.get()).add(ModAttributes.PROJECTILE_RESISTANCE.get());
+        return Monster.createMonsterAttributes().add(ModAttributes.MAGIC_RESISTANCE.get()).add(ModAttributes.PROJECTILE_BLOCK_CHANCE.get()).add(ModAttributes.PROJECTILE_RESISTANCE.get());
     }
 
     private void updateAttributes() {
@@ -245,7 +245,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(this.prop.strength());
         this.getAttribute(Attributes.ARMOR).setBaseValue(this.prop.armor());
         this.getAttribute(ModAttributes.MAGIC_RESISTANCE.get()).setBaseValue(this.prop.magicRes());
-        this.getAttribute(ModAttributes.PROJECTILE_BLOCKCHANCE.get()).setBaseValue(this.prop.projectileBlockChance());
+        this.getAttribute(ModAttributes.PROJECTILE_BLOCK_CHANCE.get()).setBaseValue(this.prop.projectileBlockChance());
         this.getAttribute(ModAttributes.PROJECTILE_RESISTANCE.get()).setBaseValue(this.prop.projectileProt());
         this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(this.prop.moveSpeed());//default 0.3
     }
@@ -646,7 +646,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     }
 
     public boolean projectileBlockChance(DamageSource damageSource, float damage) {
-        return this.random.nextFloat() < (float) this.getAttributeValue(ModAttributes.PROJECTILE_BLOCKCHANCE.get());
+        return this.random.nextFloat() < (float) this.getAttributeValue(ModAttributes.PROJECTILE_BLOCK_CHANCE.get());
     }
 
     @Override
