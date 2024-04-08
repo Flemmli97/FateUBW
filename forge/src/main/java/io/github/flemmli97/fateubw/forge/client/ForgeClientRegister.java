@@ -1,6 +1,7 @@
 package io.github.flemmli97.fateubw.forge.client;
 
 import io.github.flemmli97.fateubw.client.ClientRegister;
+import io.github.flemmli97.fateubw.client.render.CustomRenderTypes;
 import io.github.flemmli97.fateubw.client.render.RenderAltar;
 import io.github.flemmli97.fateubw.common.registry.ModBlocks;
 import net.minecraft.client.Minecraft;
@@ -8,6 +9,7 @@ import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.particles.ParticleOptions;
@@ -15,6 +17,7 @@ import net.minecraft.core.particles.ParticleType;
 import net.minecraftforge.client.ClientRegistry;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
+import net.minecraftforge.client.event.RegisterShadersEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import java.util.function.Function;
@@ -46,5 +49,10 @@ public class ForgeClientRegister {
                 manager.register(type, provider::apply);
             }
         });
+    }
+
+    public static void registerShader(RegisterShadersEvent event) {
+        CustomRenderTypes.registerShader(((id, vertexFormat, onLoad) ->
+                event.registerShader(new ShaderInstance(event.getResourceManager(), id, vertexFormat), onLoad)));
     }
 }

@@ -1,6 +1,7 @@
 package io.github.flemmli97.fateubw.common.entity.servant;
 
 
+import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.config.Config;
 import io.github.flemmli97.fateubw.common.entity.servant.ai.LancelotAttackGoal;
 import io.github.flemmli97.fateubw.common.lib.LibEntities;
@@ -28,6 +29,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 public class EntityLancelot extends BaseServant {
+
+    public static final String CORRUPTED_ITEM = Fate.MODID + ":Corrupted";
 
     public static final AnimatedAction[] ANIMS = AnimatedAction.vanillaAttackOnly;
 
@@ -107,15 +110,29 @@ public class EntityLancelot extends BaseServant {
                         this.random.nextGaussian() * 0.02D,
                         this.random.nextGaussian() * 0.02D);
             }
-        if (!this.level.isClientSide && this.canPickUpLoot() && this.isAlive() && !this.dead && Platform.INSTANCE.mobGriefing(this)) {
+        if (!this.level.isClientSide && this.isAlive() && !this.dead && Platform.INSTANCE.mobGriefing(this)) {
             for (ItemEntity itementity : this.level.getEntitiesOfClass(ItemEntity.class, this.getBoundingBox().inflate(1.0D, 0.0D, 1.0D))) {
                 if (this.canPickWeapon() && itementity.isAlive() && !itementity.getItem().isEmpty() && !itementity.hasPickUpDelay() && this.wantsToPickUp(itementity.getItem()) && this.checkItemToWield(itementity.getItem())
-                        && ItemUtils.isItemBetter(this.getMainHandItem(), itementity.getItem())) {
+                        && ItemUtils.isItemBetter(itementity.getItem(), this.getMainHandItem())) {
                     this.pickUpItem(itementity);
                     this.revealServant();
                 }
             }
         }
+    }
+
+    @Override
+    public void setItemSlot(EquipmentSlot slot, ItemStack stack) {
+        if (stack.getItem() != ModItems.ARONDIGHT.get())
+            stack.getOrCreateTag().putBoolean(CORRUPTED_ITEM, true);
+        super.setItemSlot(slot, stack);
+    }
+
+    @Override
+    public ItemEntity spawnAtLocation(ItemStack stack) {
+        if (stack.hasTag())
+            stack.getTag().remove(CORRUPTED_ITEM);
+        return this.spawnAtLocation(stack, 0.0F);
     }
 
     private void reflectProjectile(Entity oldProjectile) {

@@ -27,6 +27,7 @@
     ]
   },
   "mixins": [
+    "fateubw.mixins.json",
     "fateubw.fabric.mixins.json"
   ],
   "depends": {

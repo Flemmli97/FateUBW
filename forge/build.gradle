@@ -5,6 +5,9 @@ ext {
 apply from: "https://raw.githubusercontent.com/Flemmli97/GradleScripts/mc-architectury-v1/forge.gradle"
 
 loom {
+    forge {
+        mixinConfigs = ["fateubw.mixins.json"]
+    }
     runs {
         data {
             data()

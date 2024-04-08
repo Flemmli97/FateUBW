@@ -24,6 +24,7 @@ public class ClientEvents {
         modBus.addListener(ForgeClientRegister::registerRenderers);
         modBus.addListener(ForgeClientRegister::registerParticles);
         modBus.addListener(ForgeClientRegister::layerRegister);
+        modBus.addListener(ForgeClientRegister::registerShader);
     }
 
     @SubscribeEvent(receiveCanceled = true)
