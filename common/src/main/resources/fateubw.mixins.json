@@ -7,7 +7,8 @@
   ],
   "client": [
     "ItemRendererMixin",
-    "RenderBuffersMixin"
+    "RenderBuffersMixin",
+    "RenderTypeAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

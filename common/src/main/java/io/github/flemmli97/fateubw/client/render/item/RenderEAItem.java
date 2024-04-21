@@ -6,7 +6,7 @@ import com.mojang.math.Vector3f;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.client.ClientHandler;
 import io.github.flemmli97.fateubw.client.model.ModelEA;
-import io.github.flemmli97.fateubw.client.render.CustomRenderTypes;
+import io.github.flemmli97.fateubw.client.render.FateRenderTypes;
 import io.github.flemmli97.fateubw.common.attachment.ItemStackData;
 import io.github.flemmli97.fateubw.platform.Platform;
 import io.github.flemmli97.tenshilib.client.render.RenderUtils;
@@ -40,7 +40,7 @@ public class RenderEAItem extends BlockEntityWithoutLevelRenderer {
     public static RenderUtils.BeamBuilder createBeam() {
         RenderUtils.BeamBuilder beam = new RenderUtils.BeamBuilder();
         beam.setStartColor(0, 0, 0, 200);
-        beam.setRenderType(CustomRenderTypes.TRANSLUCENTCOLOR);
+        beam.setRenderType(FateRenderTypes.TRANSLUCENTCOLOR);
         return beam;
     }
 

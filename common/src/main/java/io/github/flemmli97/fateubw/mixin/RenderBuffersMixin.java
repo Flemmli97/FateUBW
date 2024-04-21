@@ -1,7 +1,7 @@
 package io.github.flemmli97.fateubw.mixin;
 
 import com.mojang.blaze3d.vertex.BufferBuilder;
-import io.github.flemmli97.fateubw.client.render.CustomRenderTypes;
+import io.github.flemmli97.fateubw.client.render.FateRenderTypes;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.renderer.RenderType;
@@ -15,6 +15,6 @@ public class RenderBuffersMixin {
 
     @Inject(method = "put", at = @At("HEAD"))
     private static void addGlintTypes(Object2ObjectLinkedOpenHashMap<RenderType, BufferBuilder> map, RenderType type, CallbackInfo callbackInfo) {
-        CustomRenderTypes.addRendertype(map);
+        FateRenderTypes.addRendertype(map);
     }
 }

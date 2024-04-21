@@ -32,7 +32,6 @@ public class Gordius extends PathfinderMob implements IServantMinion, IAnimated,
     private static final AnimatedAction[] ANIMS = {AnimatedAction.vanillaAttack, CHARGING};
     private static final Predicate<AnimatedAction> CHARGING_ANIM = anim -> anim != null && anim.getID().equals(CHARGING.getID());
 
-
     public final GordiusAttackGoal attackAI = new GordiusAttackGoal(this);
 
     private final AnimationHandler<Gordius> animationHandler = new AnimationHandler<>(this, ANIMS);

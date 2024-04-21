@@ -3,7 +3,7 @@ package io.github.flemmli97.fateubw.mixin;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexMultiConsumer;
-import io.github.flemmli97.fateubw.client.render.CustomRenderTypes;
+import io.github.flemmli97.fateubw.client.render.FateRenderTypes;
 import io.github.flemmli97.fateubw.common.entity.servant.EntityLancelot;
 import io.github.flemmli97.fateubw.mixinhelper.ClientMixinUtils;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -29,7 +29,7 @@ public class ItemRendererMixin {
     @Inject(method = "getCompassFoilBuffer", at = @At("HEAD"), cancellable = true)
     private static void compassFoil(MultiBufferSource buffer, RenderType renderType, PoseStack.Pose matrixEntry, CallbackInfoReturnable<VertexConsumer> info) {
         if (ClientMixinUtils.renderCorruptedItem) {
-            info.setReturnValue(VertexMultiConsumer.create(buffer.getBuffer(CustomRenderTypes.CORRUPTED_OVERLAY), buffer.getBuffer(renderType)));
+            info.setReturnValue(VertexMultiConsumer.create(buffer.getBuffer(FateRenderTypes.CORRUPTED_OVERLAY), buffer.getBuffer(renderType)));
             ClientMixinUtils.renderCorruptedItem = false;
         }
     }
@@ -37,7 +37,7 @@ public class ItemRendererMixin {
     @Inject(method = "getCompassFoilBufferDirect", at = @At("HEAD"), cancellable = true)
     private static void compassDirect(MultiBufferSource buffer, RenderType renderType, PoseStack.Pose matrixEntry, CallbackInfoReturnable<VertexConsumer> info) {
         if (ClientMixinUtils.renderCorruptedItem) {
-            info.setReturnValue(VertexMultiConsumer.create(buffer.getBuffer(CustomRenderTypes.CORRUPTED_OVERLAY), buffer.getBuffer(renderType)));
+            info.setReturnValue(VertexMultiConsumer.create(buffer.getBuffer(FateRenderTypes.CORRUPTED_OVERLAY), buffer.getBuffer(renderType)));
             ClientMixinUtils.renderCorruptedItem = false;
         }
     }
@@ -45,7 +45,7 @@ public class ItemRendererMixin {
     @Inject(method = "getFoilBuffer", at = @At("HEAD"), cancellable = true)
     private static void foil(MultiBufferSource buffer, RenderType renderType, boolean isItem, boolean glint, CallbackInfoReturnable<VertexConsumer> info) {
         if (ClientMixinUtils.renderCorruptedItem) {
-            info.setReturnValue(VertexMultiConsumer.create(buffer.getBuffer(CustomRenderTypes.CORRUPTED_OVERLAY), buffer.getBuffer(renderType)));
+            info.setReturnValue(VertexMultiConsumer.create(buffer.getBuffer(FateRenderTypes.CORRUPTED_OVERLAY), buffer.getBuffer(renderType)));
             ClientMixinUtils.renderCorruptedItem = false;
         }
     }
@@ -53,7 +53,7 @@ public class ItemRendererMixin {
     @Inject(method = "getFoilBufferDirect", at = @At("HEAD"), cancellable = true)
     private static void foilDirect(MultiBufferSource buffer, RenderType renderType, boolean noEntity, boolean withGlint, CallbackInfoReturnable<VertexConsumer> info) {
         if (ClientMixinUtils.renderCorruptedItem) {
-            info.setReturnValue(VertexMultiConsumer.create(buffer.getBuffer(CustomRenderTypes.CORRUPTED_OVERLAY), buffer.getBuffer(renderType)));
+            info.setReturnValue(VertexMultiConsumer.create(buffer.getBuffer(FateRenderTypes.CORRUPTED_OVERLAY), buffer.getBuffer(renderType)));
             ClientMixinUtils.renderCorruptedItem = false;
         }
     }

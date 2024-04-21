@@ -36,6 +36,7 @@ import io.github.flemmli97.fateubw.common.entity.servant.EntitySasaki;
 import io.github.flemmli97.fateubw.common.items.FateEgg;
 import io.github.flemmli97.fateubw.common.lib.LibEntities;
 import io.github.flemmli97.fateubw.common.utils.EnumServantType;
+import io.github.flemmli97.tenshilib.common.item.SpawnEgg;
 import io.github.flemmli97.tenshilib.platform.PlatformUtils;
 import io.github.flemmli97.tenshilib.platform.registry.PlatformRegistry;
 import io.github.flemmli97.tenshilib.platform.registry.RegistryEntrySupplier;
@@ -106,11 +107,11 @@ public class ModEntities {
     public static final RegistryEntrySupplier<EntityType<EnumaElish>> EA = reg(EntityType.Builder.<EnumaElish>of(EnumaElish::new, MobCategory.MISC).sized(0.25F, 0.25F), LibEntities.EA);
     public static final RegistryEntrySupplier<EntityType<MagicBeam>> MAGIC_BEAM = reg(EntityType.Builder.of(MagicBeam::new, MobCategory.MISC), LibEntities.MAGIC_BEAM);
     public static final RegistryEntrySupplier<EntityType<MagicBufCircle>> MEDEA_CIRCLE = reg(EntityType.Builder.of(MagicBufCircle::new, MobCategory.MISC), LibEntities.MEDEA_CIRCLE);
-    public static final RegistryEntrySupplier<EntityType<LesserMonster>> LESSER_MONSTER = reg(EntityType.Builder.<LesserMonster>of(LesserMonster::new, MobCategory.MONSTER).clientTrackingRange(8), LibEntities.MONSTER_SMALL);
-    public static final RegistryEntrySupplier<EntityType<Gordius>> GORDIUS_WHEEL = reg(EntityType.Builder.of(Gordius::new, MobCategory.CREATURE).sized(2, 1.5f), LibEntities.GORDIUS_WHEEL);
+    public static final RegistryEntrySupplier<EntityType<LesserMonster>> LESSER_MONSTER = regWithEgg(EntityType.Builder.<LesserMonster>of(LesserMonster::new, MobCategory.MONSTER).clientTrackingRange(8), LibEntities.MONSTER_SMALL, 0x6f086b, 0x4a8be5);
+    public static final RegistryEntrySupplier<EntityType<Gordius>> GORDIUS_WHEEL = regWithEgg(EntityType.Builder.of(Gordius::new, MobCategory.CREATURE).sized(2, 1.5f), LibEntities.GORDIUS_WHEEL, 0x6f086b, 0x4a8be5);
 
     public static final RegistryEntrySupplier<EntityType<HassanClone>> HASSAN_COPY = reg(EntityType.Builder.of(HassanClone::new, MobCategory.MISC), LibEntities.HASSAN_COPY);
-    public static final RegistryEntrySupplier<EntityType<Pegasus>> PEGASUS = reg(EntityType.Builder.of(Pegasus::new, MobCategory.MONSTER).sized(1.35f, 1.65f), LibEntities.PEGASUS);
+    public static final RegistryEntrySupplier<EntityType<Pegasus>> PEGASUS = regWithEgg(EntityType.Builder.of(Pegasus::new, MobCategory.MONSTER).sized(1.35f, 1.65f), LibEntities.PEGASUS, 0x6f086b, 0x4a8be5);
     public static final RegistryEntrySupplier<EntityType<ChainDagger>> DAGGER_HOOK = reg(EntityType.Builder.<ChainDagger>of(ChainDagger::new, MobCategory.MISC).updateInterval(5).sized(0.25F, 0.25F), LibEntities.DAGGER_HOOK);
 
     public static final RegistryEntrySupplier<EntityType<ThrownGem>> GEM = reg(EntityType.Builder.<ThrownGem>of(ThrownGem::new, MobCategory.MISC).sized(0.25F, 0.25F), LibEntities.ENTITY_GEM);
@@ -126,6 +127,12 @@ public class ModEntities {
         });
         ModItems.ITEMS.register(name.getPath() + "_spawn_egg", () -> new FateEgg(reg, primary, secondary, new Item.Properties().tab(Fate.TAB)));
         Config.Common.attributes.put(name.toString(), defaultVals);
+        return reg;
+    }
+
+    public static <V extends Entity> RegistryEntrySupplier<EntityType<V>> regWithEgg(EntityType.Builder<V> entity, ResourceLocation name, int primary, int secondary) {
+        RegistryEntrySupplier<EntityType<V>> reg = reg(entity.clientTrackingRange(10), name);
+        ModItems.ITEMS.register(name.getPath() + "_spawn_egg", () -> new SpawnEgg(reg, primary, secondary, new Item.Properties().tab(Fate.TAB)));
         return reg;
     }
 
