@@ -7,12 +7,10 @@ import net.minecraft.world.level.storage.loot.Deserializers;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
-import net.minecraft.world.level.storage.loot.providers.number.NumberProviders;
 
 public class LootCodecs {
 
     private static final Gson GSON = Deserializers.createFunctionSerializer()
-            .registerTypeAdapter(NumberProvider.class, NumberProviders.createGsonAdapter())
             .setPrettyPrinting().disableHtmlEscaping().create();
 
     public static Codec<LootPoolEntryContainer> POOL_ENTRY_CODEC = CodecUtils.jsonCodecBuilder(GSON, LootPoolEntryContainer.class, "LootPoolEntryContainer");
