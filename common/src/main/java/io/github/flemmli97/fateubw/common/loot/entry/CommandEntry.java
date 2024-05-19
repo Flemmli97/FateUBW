@@ -18,7 +18,7 @@ public class CommandEntry extends GrailLootEntry<CommandEntry> {
 
     public static final Codec<CommandEntry> CODEC = RecordCodecBuilder.create(inst -> inst.group(
                     Codec.STRING.fieldOf("command").forGetter(d -> d.command),
-                    LootCodecs.LOOT_ITEM_CONDITION.listOf().optionalFieldOf("conditions").forGetter(d -> Optional.of(Arrays.stream(d.conditions).toList()))
+                    LootCodecs.LOOT_ITEM_CONDITION.listOf().optionalFieldOf("conditions").forGetter(d -> d.conditions.length == 0 ? Optional.empty() :Optional.of(Arrays.stream(d.conditions).toList()))
             ).apply(inst, (command, cond) -> new CommandEntry(command, cond.map(l -> l.toArray(l.toArray(new LootItemCondition[0]))).orElse(new LootItemCondition[0])))
     );
 

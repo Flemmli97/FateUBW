@@ -1,95 +1,95 @@
 {
-  "default_name": "Riches",
-  "pools": [
+  "name": "Riches",
+  "loot_pools": [
     {
-      "type": "fateubw:vanilla_entry",
-      "Entry": {
+      "entry": {
         "type": "minecraft:item",
         "functions": [
           {
             "function": "minecraft:set_count",
             "count": {
               "type": "minecraft:uniform",
-              "min": 45.0,
-              "max": 64.0
+              "min": 45,
+              "max": 64
             },
             "add": false
           }
         ],
         "name": "minecraft:iron_ingot"
-      }
+      },
+      "type": "fateubw:vanilla_entry"
     },
     {
-      "type": "fateubw:vanilla_entry",
-      "Entry": {
+      "entry": {
         "type": "minecraft:item",
         "functions": [
           {
             "function": "minecraft:set_count",
             "count": {
               "type": "minecraft:uniform",
-              "min": 32.0,
-              "max": 48.0
+              "min": 32,
+              "max": 48
             },
             "add": false
           }
         ],
         "name": "minecraft:gold_ingot"
-      }
+      },
+      "type": "fateubw:vanilla_entry"
     },
     {
-      "type": "fateubw:vanilla_entry",
-      "Entry": {
+      "entry": {
         "type": "minecraft:item",
         "functions": [
           {
             "function": "minecraft:set_count",
             "count": {
               "type": "minecraft:uniform",
-              "min": 8.0,
-              "max": 14.0
+              "min": 8,
+              "max": 14
             },
             "add": false
           }
         ],
         "name": "minecraft:diamond"
-      }
+      },
+      "type": "fateubw:vanilla_entry"
     },
     {
-      "type": "fateubw:vanilla_entry",
-      "Entry": {
+      "entry": {
         "type": "minecraft:item",
         "functions": [
           {
             "function": "minecraft:set_count",
             "count": {
               "type": "minecraft:uniform",
-              "min": 17.0,
-              "max": 25.0
+              "min": 17,
+              "max": 25
             },
             "add": false
           }
         ],
         "name": "minecraft:emerald"
-      }
+      },
+      "type": "fateubw:vanilla_entry"
     },
     {
-      "type": "fateubw:vanilla_entry",
-      "Entry": {
+      "entry": {
         "type": "minecraft:item",
         "functions": [
           {
             "function": "minecraft:set_count",
             "count": {
               "type": "minecraft:uniform",
-              "min": 4.0,
-              "max": 7.0
+              "min": 4,
+              "max": 7
             },
             "add": false
           }
         ],
         "name": "minecraft:netherite_ingot"
-      }
+      },
+      "type": "fateubw:vanilla_entry"
     }
   ]
 }

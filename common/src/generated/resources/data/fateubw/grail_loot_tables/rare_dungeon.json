@@ -1,111 +1,111 @@
 {
-  "default_name": "Rare Dungeon Loot",
-  "pools": [
+  "name": "Rare Dungeon Loot",
+  "loot_pools": [
     {
-      "type": "fateubw:vanilla_entry",
-      "Entry": {
+      "entry": {
         "type": "minecraft:item",
         "functions": [
           {
             "function": "minecraft:set_count",
             "count": {
               "type": "minecraft:uniform",
-              "min": 5.0,
-              "max": 12.0
+              "min": 5,
+              "max": 12
             },
             "add": false
           }
         ],
         "name": "minecraft:diamond"
-      }
+      },
+      "type": "fateubw:vanilla_entry"
     },
     {
-      "type": "fateubw:vanilla_entry",
-      "Entry": {
+      "entry": {
         "type": "minecraft:item",
         "functions": [
           {
             "function": "minecraft:set_count",
-            "count": 1.0,
+            "count": 1,
             "add": false
           }
         ],
         "name": "minecraft:heart_of_the_sea"
-      }
+      },
+      "type": "fateubw:vanilla_entry"
     },
     {
-      "type": "fateubw:vanilla_entry",
-      "Entry": {
+      "entry": {
         "type": "minecraft:item",
         "functions": [
           {
             "function": "minecraft:set_count",
-            "count": 1.0,
+            "count": 1,
             "add": false
           }
         ],
         "name": "minecraft:enchanted_golden_apple"
-      }
+      },
+      "type": "fateubw:vanilla_entry"
     },
     {
-      "type": "fateubw:vanilla_entry",
-      "Entry": {
+      "entry": {
         "type": "minecraft:item",
         "functions": [
           {
             "function": "minecraft:set_count",
             "count": {
               "type": "minecraft:uniform",
-              "min": -1.0,
-              "max": 2.0
+              "min": -1,
+              "max": 2
             },
             "add": false
           }
         ],
         "name": "minecraft:enchanted_golden_apple"
-      }
+      },
+      "type": "fateubw:vanilla_entry"
     },
     {
-      "type": "fateubw:vanilla_entry",
-      "Entry": {
+      "entry": {
         "type": "minecraft:item",
         "functions": [
           {
             "function": "minecraft:set_count",
-            "count": 1.0,
+            "count": 1,
             "add": false
           }
         ],
         "name": "minecraft:piglin_banner_pattern"
-      }
+      },
+      "type": "fateubw:vanilla_entry"
     },
     {
-      "type": "fateubw:vanilla_entry",
-      "Entry": {
+      "entry": {
         "type": "minecraft:item",
         "functions": [
           {
             "function": "minecraft:set_count",
-            "count": 1.0,
+            "count": 1,
             "add": false
           }
         ],
         "name": "minecraft:music_disc_pigstep"
-      }
+      },
+      "type": "fateubw:vanilla_entry"
     },
     {
-      "type": "fateubw:vanilla_entry",
-      "Entry": {
+      "entry": {
         "type": "minecraft:item",
         "functions": [
           {
             "function": "minecraft:set_count",
-            "count": 1.0,
+            "count": 1,
             "add": false
           }
         ],
         "name": "minecraft:music_disc_otherside"
-      }
+      },
+      "type": "fateubw:vanilla_entry"
     }
   ]
 }

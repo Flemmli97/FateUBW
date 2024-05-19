@@ -1,23 +1,23 @@
 {
-  "default_name": "Power",
-  "pools": [
+  "name": "Power",
+  "loot_pools": [
     {
-      "type": "fateubw:attribute_entry",
+      "attribute": "minecraft:generic.max_health",
       "range": {
         "type": "minecraft:uniform",
-        "min": 1.0,
-        "max": 2.0
+        "min": 1,
+        "max": 2
       },
-      "Attribute": "minecraft:generic.max_health"
+      "type": "fateubw:attribute_entry"
     },
     {
-      "type": "fateubw:attribute_entry",
+      "attribute": "minecraft:generic.attack_damage",
       "range": {
         "type": "minecraft:uniform",
         "min": 0.2,
         "max": 0.4
       },
-      "Attribute": "minecraft:generic.attack_damage"
+      "type": "fateubw:attribute_entry"
     }
   ]
 }

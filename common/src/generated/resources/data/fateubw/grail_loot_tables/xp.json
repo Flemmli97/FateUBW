@@ -1,81 +1,81 @@
 {
-  "default_name": "Knowledge",
-  "pools": [
+  "name": "Knowledge",
+  "loot_pools": [
     {
-      "type": "fateubw:xp_entry",
       "range": {
         "type": "minecraft:uniform",
-        "min": 5000.0,
-        "max": 10000.0
-      }
+        "min": 5000,
+        "max": 10000
+      },
+      "type": "fateubw:xp_entry"
     },
     {
-      "type": "fateubw:vanilla_entry",
-      "Entry": {
+      "entry": {
         "type": "minecraft:item",
         "functions": [
           {
             "function": "minecraft:set_count",
             "count": {
               "type": "minecraft:uniform",
-              "min": 32.0,
-              "max": 48.0
+              "min": 32,
+              "max": 48
             },
             "add": false
           }
         ],
         "name": "minecraft:experience_bottle"
-      }
+      },
+      "type": "fateubw:vanilla_entry"
     },
     {
-      "type": "fateubw:vanilla_entry",
-      "Entry": {
+      "entry": {
         "type": "minecraft:item",
         "functions": [
           {
             "function": "minecraft:set_count",
             "count": {
               "type": "minecraft:uniform",
-              "min": 32.0,
-              "max": 48.0
+              "min": 32,
+              "max": 48
             },
             "add": false
           }
         ],
         "name": "minecraft:experience_bottle"
-      }
+      },
+      "type": "fateubw:vanilla_entry"
     },
     {
-      "type": "fateubw:vanilla_entry",
-      "Entry": {
+      "entry": {
         "type": "minecraft:item",
         "functions": [
           {
             "function": "minecraft:set_count",
             "count": {
               "type": "minecraft:uniform",
-              "min": 16.0,
-              "max": 48.0
+              "min": 16,
+              "max": 48
             },
             "add": false
           }
         ],
         "name": "minecraft:experience_bottle"
-      }
+      },
+      "type": "fateubw:vanilla_entry"
     },
     {
-      "type": "fateubw:vanilla_entry",
-      "Entry": {
+      "entry": {
         "type": "minecraft:item",
         "functions": [
           {
             "function": "minecraft:set_count",
-            "count": 64.0,
+            "count": 64,
             "add": false
           }
         ],
         "name": "minecraft:experience_bottle"
-      }
+      },
+      "type": "fateubw:vanilla_entry"
     }
   ]
 }

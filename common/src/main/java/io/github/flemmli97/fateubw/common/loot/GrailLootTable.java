@@ -23,7 +23,7 @@ public class GrailLootTable {
             Codec.STRING.fieldOf("name").forGetter(d -> d.name.getString()),
             Codec.STRING.listOf().optionalFieldOf("descriptions").forGetter(d -> d.descriptions.isEmpty() ? Optional.empty() : Optional.of(d.descriptions.stream().map(Component::getString).toList())),
             GrailLootEntry.CODEC.listOf().fieldOf("loot_pools").forGetter(d -> d.lootPool),
-            LootCodecs.LOOT_ITEM_CONDITION.listOf().optionalFieldOf("condition").forGetter(d -> Optional.of(Arrays.stream(d.conditions).toList()))
+            LootCodecs.LOOT_ITEM_CONDITION.listOf().optionalFieldOf("conditions").forGetter(d -> d.conditions.length == 0 ? Optional.empty() : Optional.of(Arrays.stream(d.conditions).toList()))
     ).apply(inst, (name, description, pool, conditions) -> new GrailLootTable(name, description.orElse(List.of()), pool, conditions.map(l -> l.toArray(l.toArray(new LootItemCondition[0]))).orElse(new LootItemCondition[0]))));
 
     public final Component name;
