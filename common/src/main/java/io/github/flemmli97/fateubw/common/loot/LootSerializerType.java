@@ -1,7 +1,7 @@
 package io.github.flemmli97.fateubw.common.loot;
 
+import com.mojang.serialization.Codec;
 import io.github.flemmli97.tenshilib.platform.registry.CustomRegistryEntry;
-import net.minecraft.world.level.storage.loot.Serializer;
 
 public class LootSerializerType<T extends GrailLootEntry<T>> extends CustomRegistryEntry<LootSerializerType<?>> {
 
@@ -11,13 +11,13 @@ public class LootSerializerType<T extends GrailLootEntry<T>> extends CustomRegis
     @SuppressWarnings("unchecked")
     public static final Class<LootSerializerType<?>> CLASS = (Class<LootSerializerType<?>>) ((Class<?>) LootSerializerType.class);
 
-    private final Serializer<T> serializer;
+    private final Codec<T> codec;
 
-    public LootSerializerType(Serializer<T> serializer) {
-        this.serializer = serializer;
+    public LootSerializerType(Codec<T> serializer) {
+        this.codec = serializer;
     }
 
-    public Serializer<T> getSerializer() {
-        return this.serializer;
+    public Codec<T> getCodec() {
+        return this.codec;
     }
 }

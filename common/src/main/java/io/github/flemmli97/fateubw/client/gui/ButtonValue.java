@@ -8,7 +8,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.BaseComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -31,7 +31,7 @@ public class ButtonValue<T> extends Button {
         this.pressable = press;
     }
 
-    public ButtonValue(int x, int y, int widthIn, int heightIn, BaseComponent buttonText, Pressable<T> press) {
+    public ButtonValue(int x, int y, int widthIn, int heightIn, Component buttonText, Pressable<T> press) {
         super(x, y, widthIn, heightIn, buttonText, (button) -> {
         });
         this.pressable = press;

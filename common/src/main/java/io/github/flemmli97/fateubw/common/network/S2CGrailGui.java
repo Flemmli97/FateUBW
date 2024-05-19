@@ -4,6 +4,7 @@ import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.client.ClientHandler;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
@@ -13,9 +14,9 @@ public class S2CGrailGui implements Packet {
 
     public static final ResourceLocation ID = new ResourceLocation(Fate.MODID, "s2c_grail_reward_data");
 
-    private final Map<ResourceLocation, String> rewards;
+    private final Map<ResourceLocation, Component> rewards;
 
-    private S2CGrailGui(Map<ResourceLocation, String> rewards) {
+    private S2CGrailGui(Map<ResourceLocation, Component> rewards) {
         this.rewards = rewards;
     }
 
@@ -28,7 +29,7 @@ public class S2CGrailGui implements Packet {
         buf.writeInt(this.rewards.size());
         this.rewards.forEach((res, s) -> {
             buf.writeResourceLocation(res);
-            buf.writeUtf(s);
+            buf.writeComponent(s);
         });
     }
 
@@ -38,10 +39,10 @@ public class S2CGrailGui implements Packet {
     }
 
     public static S2CGrailGui read(FriendlyByteBuf buf) {
-        Map<ResourceLocation, String> rewards = new HashMap<>();
+        Map<ResourceLocation, Component> rewards = new HashMap<>();
         int size = buf.readInt();
         for (int i = 0; i < size; i++) {
-            rewards.put(buf.readResourceLocation(), buf.readUtf());
+            rewards.put(buf.readResourceLocation(), buf.readComponent());
         }
         return new S2CGrailGui(rewards);
     }

@@ -1,6 +1,7 @@
 package io.github.flemmli97.fateubw.common.datapack;
 
 import io.github.flemmli97.fateubw.common.loot.GrailLootTable;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Collection;
@@ -19,7 +20,7 @@ public class DatapackHandler {
         return LOOT_TABLES.getAll();
     }
 
-    public static Map<ResourceLocation, String> getTablesForClient() {
+    public static Map<ResourceLocation, Component> getTablesForClient() {
         return LOOT_TABLES.clientTableMap();
     }
 }

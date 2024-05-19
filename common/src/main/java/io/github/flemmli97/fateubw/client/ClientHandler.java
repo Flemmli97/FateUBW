@@ -8,6 +8,7 @@ import io.github.flemmli97.fateubw.client.gui.GuiHolyGrail;
 import io.github.flemmli97.fateubw.client.gui.ManaBar;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
@@ -50,7 +51,7 @@ public class ClientHandler {
         Minecraft.getInstance().setScreen(new CommandGui());
     }
 
-    public static void openGrailGui(Map<ResourceLocation, String> rewards) {
+    public static void openGrailGui(Map<ResourceLocation, Component> rewards) {
         Minecraft.getInstance().setScreen(new GuiHolyGrail(rewards));
     }
 

@@ -1,6 +1,10 @@
 package io.github.flemmli97.fateubw.api.datagen;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+import com.mojang.serialization.JsonOps;
+import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.loot.GrailLootTable;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
@@ -17,6 +21,7 @@ import java.util.Map;
 public abstract class GrailLootProvider implements DataProvider {
 
     private static final Logger LOGGER = LogManager.getLogger();
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
     private final Map<ResourceLocation, GrailLootTable> data = new HashMap<>();
 
@@ -34,8 +39,8 @@ public abstract class GrailLootProvider implements DataProvider {
         this.data.forEach((res, builder) -> {
             Path path = this.gen.getOutputFolder().resolve("data/" + res.getNamespace() + "/grail_loot_tables/" + res.getPath() + ".json");
             try {
-                JsonElement obj = GrailLootTable.GSON.toJsonTree(builder);
-                DataProvider.save(GrailLootTable.GSON, cache, obj, path);
+                JsonElement obj = GrailLootTable.CODEC.encodeStart(JsonOps.INSTANCE, builder).getOrThrow(false, Fate.LOGGER::error);
+                DataProvider.save(GSON, cache, obj, path);
             } catch (IOException e) {
                 LOGGER.error("Couldn't save grail loot table {}", path, e);
             }

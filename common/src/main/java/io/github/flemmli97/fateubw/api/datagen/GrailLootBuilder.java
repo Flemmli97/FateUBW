@@ -11,6 +11,7 @@ import java.util.List;
 public class GrailLootBuilder {
 
     private final String name;
+    private final List<String> descriptions = new ArrayList<>();
     private List<GrailLootEntry<?>> pools = new ArrayList<>();
     private List<LootItemCondition> conditions = new ArrayList<>();
 
@@ -20,6 +21,11 @@ public class GrailLootBuilder {
 
     public static GrailLootBuilder create(String name) {
         return new GrailLootBuilder(name);
+    }
+
+    public GrailLootBuilder addDescription(String description) {
+        this.descriptions.add(description);
+        return this;
     }
 
     public GrailLootBuilder addEntry(GrailLootEntry<?> entry) {
@@ -33,6 +39,6 @@ public class GrailLootBuilder {
     }
 
     public GrailLootTable build() {
-        return new GrailLootTable(this.name, ImmutableList.copyOf(this.pools), this.conditions.toArray(new LootItemCondition[0]));
+        return new GrailLootTable(this.name, this.descriptions, ImmutableList.copyOf(this.pools), this.conditions.toArray(new LootItemCondition[0]));
     }
 }

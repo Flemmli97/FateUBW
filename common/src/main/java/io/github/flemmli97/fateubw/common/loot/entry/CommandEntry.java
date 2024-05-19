@@ -9,34 +9,33 @@ import io.github.flemmli97.fateubw.common.registry.GrailLootSerializer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-public class XPEntry extends GrailLootEntry<XPEntry> {
+public class CommandEntry extends GrailLootEntry<CommandEntry> {
 
-    private final NumberProvider range;
-
-    public static final Codec<XPEntry> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-                    LootCodecs.NUMBER_PROVIDER_CODEC.fieldOf("range").forGetter(d -> d.range),
+    public static final Codec<CommandEntry> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+                    Codec.STRING.fieldOf("command").forGetter(d -> d.command),
                     LootCodecs.LOOT_ITEM_CONDITION.listOf().optionalFieldOf("conditions").forGetter(d -> Optional.of(Arrays.stream(d.conditions).toList()))
-            ).apply(inst, (range, cond) -> new XPEntry(range, cond.map(l -> l.toArray(l.toArray(new LootItemCondition[0]))).orElse(new LootItemCondition[0])))
+            ).apply(inst, (command, cond) -> new CommandEntry(command, cond.map(l -> l.toArray(l.toArray(new LootItemCondition[0]))).orElse(new LootItemCondition[0])))
     );
 
-    public XPEntry(NumberProvider range, LootItemCondition... conditions) {
+    private final String command;
+
+    public CommandEntry(String command, LootItemCondition... conditions) {
         super(conditions);
-        this.range = range;
+        this.command = command;
     }
 
     @Override
-    public Supplier<LootSerializerType<XPEntry>> getType() {
-        return GrailLootSerializer.XP;
+    public Supplier<LootSerializerType<CommandEntry>> getType() {
+        return GrailLootSerializer.COMMAND;
     }
 
     @Override
     public void accept(ServerPlayer player, LootContext context) {
-        player.giveExperiencePoints(this.range.getInt(context));
+        player.getServer().getCommands().performCommand(player.createCommandSourceStack().withPermission(2), this.command);
     }
 }

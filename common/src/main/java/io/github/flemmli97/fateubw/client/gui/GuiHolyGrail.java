@@ -9,49 +9,36 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.BaseComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class GuiHolyGrail extends Screen {
 
     private static final ResourceLocation TEX = new ResourceLocation(Fate.MODID, "textures/gui/grail_reward.png");
 
-    private final Map<ResourceLocation, BaseComponent> rewards;
+    private final Map<ResourceLocation, Component> rewards;
     private int page;
 
     private static final int X_SIZE = 255, Y_SIZE = 186;
 
-    public GuiHolyGrail(Map<ResourceLocation, String> rewards) {
+    public GuiHolyGrail(Map<ResourceLocation, Component> rewards) {
         super(new TranslatableComponent("fate.gui.holy_grail"));
-        this.rewards = rewards.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> {
-            String key = "grail.loot." + e.getKey().toString();
-            TranslatableComponent translationTextComponent = new TranslatableComponent(key);
-            StringBuilder b = new StringBuilder();
-            translationTextComponent.visitSelf(s -> {
-                b.append(s);
-                return Optional.empty();
-            });
-            if (b.toString().equals(key))
-                return new TextComponent(e.getValue());
-            return translationTextComponent;
-        }));
+        this.rewards = rewards;
     }
 
     @Override
     protected void init() {
         super.init();
-        List<Map.Entry<ResourceLocation, BaseComponent>> list = this.rewards.entrySet().stream().toList();
+        List<Map.Entry<ResourceLocation, Component>> list = this.rewards.entrySet().stream().toList();
         for (int i = 0; i < 7; i++) {
             int index = this.page * 7 + i;
             if (index < list.size()) {
-                Map.Entry<ResourceLocation, BaseComponent> val = list.get(this.page * 7 + i);
+                Map.Entry<ResourceLocation, Component> val = list.get(this.page * 7 + i);
                 this.addRenderableWidget(new ButtonValue<String>(this.width / 2 - X_SIZE / 2 + 6, this.height / 2 - Y_SIZE / 2 + (i * 23) + 6, 243, 20, val.getValue(),
                         button -> {
                             NetworkCalls.INSTANCE.sendToServer(new C2SGrailReward(val.getKey()));

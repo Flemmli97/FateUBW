@@ -45,6 +45,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -130,7 +131,7 @@ public class ModEntities {
         return reg;
     }
 
-    public static <V extends Entity> RegistryEntrySupplier<EntityType<V>> regWithEgg(EntityType.Builder<V> entity, ResourceLocation name, int primary, int secondary) {
+    public static <V extends Mob> RegistryEntrySupplier<EntityType<V>> regWithEgg(EntityType.Builder<V> entity, ResourceLocation name, int primary, int secondary) {
         RegistryEntrySupplier<EntityType<V>> reg = reg(entity.clientTrackingRange(10), name);
         ModItems.ITEMS.register(name.getPath() + "_spawn_egg", () -> new SpawnEgg(reg, primary, secondary, new Item.Properties().tab(Fate.TAB)));
         return reg;
