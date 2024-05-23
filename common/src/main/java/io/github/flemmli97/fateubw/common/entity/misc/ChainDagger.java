@@ -108,7 +108,7 @@ public class ChainDagger extends EntityProjectile {
                 }
             }
             if (this.getOwner() == null)
-                this.kill();
+                this.discard();
             else if (this.distanceToSqr(this.getOwner()) > 900)
                 this.retractHook();
         }
@@ -136,7 +136,7 @@ public class ChainDagger extends EntityProjectile {
                 notif.onDaggerHit(this);
             return true;
         } else if (result.getEntity() == this.getOwner()) {
-            this.kill();
+            this.discard();
             return true;
         }
         return false;
@@ -176,7 +176,7 @@ public class ChainDagger extends EntityProjectile {
             this.hookedEntity = null;
             this.getEntityData().set(HOOKED_ENTITY, -1);
         } else {
-            this.kill();
+            this.discard();
         }
     }
 

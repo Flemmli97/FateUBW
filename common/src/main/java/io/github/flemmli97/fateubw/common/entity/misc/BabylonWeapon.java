@@ -85,17 +85,16 @@ public class BabylonWeapon extends EntityProjectile {
             if (!this.level.isClientSide) {
                 if (thrower instanceof Player) {
                     HitResult hit = RayTraceUtils.entityRayTrace(thrower, 64, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, false, false, null);
-                    this.shootAtPosition(hit.getLocation().x, hit.getLocation().y, hit.getLocation().z, 0.5F, 0.5F);
+                    this.shootAtPosition(hit.getLocation().x, hit.getLocation().y, hit.getLocation().z, 1.5F, 1);
                 } else if (this.target != null) {
-                    Vec3 targetMot = this.target.getDeltaMovement();
-                    this.shootAtPosition(this.target.getX() + targetMot.x, this.target.getY() + this.target.getBbHeight() / 2 + targetMot.y, this.target.getZ() + targetMot.z, 0.5F, 4);
+                    this.shootAtEntity(this.target, 1.5F, 1, 0);
                 }
             }
         } else if (this.getPreShootTick() > this.entityData.get(SHOOT_TIME)) {
             this.idle = false;
             if (!this.level.isClientSide) {
                 if (thrower == null || !thrower.isAlive()) {
-                    this.kill();
+                    this.discard();
                     return;
                 }
             }
@@ -134,13 +133,13 @@ public class BabylonWeapon extends EntityProjectile {
     @Override
     protected boolean entityRayTraceHit(EntityHitResult result) {
         result.getEntity().hurt(CustomDamageSource.babylon(this, this.getOwner()), (float) this.dmg * 1.5F);
-        this.kill();
+        this.discard();
         return true;
     }
 
     @Override
     protected void onBlockHit(BlockHitResult result) {
-        this.kill();
+        this.discard();
     }
 
     public void setEntityProperties() {

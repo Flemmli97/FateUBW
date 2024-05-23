@@ -100,7 +100,7 @@ public class EntityEmiya extends BaseServant {
     public void attackWithNP(LivingEntity target) {
         if (target != null) {
             CaladBolg bolg = new CaladBolg(this.level, this);
-            bolg.shootAtPosition(target.getX(), target.getY() + target.getEyeHeight(), target.getZ(), 2F, 0);
+            bolg.shootAtEntity(target, 2F, 0, 0);
             this.level.addFreshEntity(bolg);
             this.revealServant();
             this.switchableWeapon.switchItems(true);

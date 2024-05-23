@@ -20,6 +20,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 public class EntityArthur extends BaseServant {
 
@@ -89,10 +90,10 @@ public class EntityArthur extends BaseServant {
         }
     }
 
-    public void attackWithNP(double[] pos) {
+    public void attackWithNP(Vec3 pos) {
         Excalibur excalibur = new Excalibur(this.level, this);
         if (pos != null)
-            excalibur.setRotationTo(pos[0], pos[1], pos[2], 0);
+            excalibur.setRotationTo(pos.x(), pos.y(), pos.z(), 0);
         this.level.addFreshEntity(excalibur);
         this.revealServant();
         this.releaseUsingItem();

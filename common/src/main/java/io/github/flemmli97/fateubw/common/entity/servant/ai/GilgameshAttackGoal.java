@@ -4,11 +4,13 @@ import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.servant.EntityGilgamesh;
 import io.github.flemmli97.fateubw.platform.Platform;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
+import io.github.flemmli97.tenshilib.common.entity.EntityUtil;
+import net.minecraft.world.phys.Vec3;
 
 public class GilgameshAttackGoal extends BaseServantAttackGoal<EntityGilgamesh> {
 
     private boolean doRanged;
-    private double[] targetPos;
+    private Vec3 targetPos;
     private final float shootRangeSq;
     private boolean idleFlag, clockwise;
 
@@ -30,8 +32,9 @@ public class GilgameshAttackGoal extends BaseServantAttackGoal<EntityGilgamesh> 
     public void handleAttack(AnimatedAction anim) {
         if (this.attacker.canUse(anim, BaseServant.AttackType.NP)) {
             this.attacker.getLookControl().setLookAt(this.target, 30.0F, 30.0F);
-            if (anim.getTick() == 7)
-                this.targetPos = new double[]{this.target.getX(), this.target.getY(), this.target.getZ()};
+            if (anim.getTick() == 7) {
+                this.targetPos = EntityUtil.getStraightProjectileTarget(this.attacker.position(), this.target);
+            }
             if (anim.canAttack()) {
                 if (!this.attacker.forcedNP)
                     this.attacker.useMana(this.attacker.props().hogouMana());

@@ -43,13 +43,13 @@ public class GaeBolg extends EntityProjectile {
                     ((LivingEntity) res.getEntity()).addEffect(effect);
             }
         }
-        this.kill();
+        this.discard();
         return true;
     }
 
     @Override
     protected void onBlockHit(BlockHitResult blockRayTraceResult) {
-        this.kill();
+        this.discard();
     }
 
     @Override

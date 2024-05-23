@@ -22,13 +22,13 @@ public class ThrownGem extends EntityProjectile {
     @Override
     protected boolean entityRayTraceHit(EntityHitResult entityRayTraceResult) {
         this.level.explode(this, this.getX(), this.getY(), this.getZ(), 2.0F, Explosion.BlockInteraction.NONE);
-        this.kill();
+        this.discard();
         return true;
     }
 
     @Override
     protected void onBlockHit(BlockHitResult blockRayTraceResult) {
         this.level.explode(this, this.getX(), this.getY(), this.getZ(), 2.0F, Explosion.BlockInteraction.NONE);
-        this.kill();
+        this.discard();
     }
 }

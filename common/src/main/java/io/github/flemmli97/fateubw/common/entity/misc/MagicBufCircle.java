@@ -57,7 +57,7 @@ public class MagicBufCircle extends Entity implements OwnableEntity {
             if (this.getOwner() != null && this.getOwner().position().distanceToSqr(this.position()) < r * r)
                 this.getOwner().buff();
             if (this.livingTick > Config.Common.medeaCircleSpan || this.getOwner() == null || this.getOwner().isDeadOrDying())
-                this.kill();
+                this.discard();
         }
     }
 

@@ -27,18 +27,18 @@ public class CaladBolg extends EntityProjectile {
 
     @Override
     protected float getGravityVelocity() {
-        return 0.001F;
+        return 0;
     }
 
     @Override
     protected boolean entityRayTraceHit(EntityHitResult result) {
         result.getEntity().hurt(CustomDamageSource.caladBolg(this, this.getOwner()), Config.Common.caladBolgDmg);
-        this.kill();
+        this.discard();
         return true;
     }
 
     @Override
     protected void onBlockHit(BlockHitResult blockRayTraceResult) {
-        this.kill();
+        this.discard();
     }
 }

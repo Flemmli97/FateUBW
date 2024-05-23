@@ -3,11 +3,13 @@ package io.github.flemmli97.fateubw.common.entity.servant.ai;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.servant.EntityArthur;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
+import io.github.flemmli97.tenshilib.common.entity.EntityUtil;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.phys.Vec3;
 
 public class ArthurAttackGoal extends BaseServantAttackGoal<EntityArthur> {
 
-    private double[] targetPos;
+    private Vec3 targetPos;
     private boolean switchFlag;
 
     public ArthurAttackGoal(EntityArthur entity) {
@@ -18,8 +20,9 @@ public class ArthurAttackGoal extends BaseServantAttackGoal<EntityArthur> {
     public void handleAttack(AnimatedAction anim) {
         if (this.attacker.canUse(anim, BaseServant.AttackType.NP)) {
             this.attacker.lookAt(this.target, 0, 0);
-            if (anim.getTick() == 3)
-                this.targetPos = new double[]{this.target.getX(), this.target.getY() + this.target.getEyeHeight(), this.target.getZ()};
+            if (anim.getTick() == 3) {
+                this.targetPos = EntityUtil.getStraightProjectileTarget(this.attacker.position(), this.target);
+            }
             if (anim.canAttack()) {
                 if (!this.attacker.forcedNP)
                     this.attacker.useMana(this.attacker.props().hogouMana());

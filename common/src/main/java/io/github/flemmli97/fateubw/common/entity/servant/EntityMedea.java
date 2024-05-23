@@ -103,7 +103,7 @@ public class EntityMedea extends BaseServant {
             int[] offset = castOffsets[this.random.nextInt(castOffsets.length)];
             Vec3 area = this.position().add(side.scale(offset[0])).add(0, this.getBbHeight() + offset[1], 0);
             beam.setPos(area.x, area.y, area.z);
-            beam.setRotationTo(target.getX(), target.getY() + target.getBbHeight() * 0.5, target.getZ(), 0f);
+            beam.setRotationTo(target, 0);
             this.level.addFreshEntity(beam);
         }
         this.revealServant();

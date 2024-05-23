@@ -18,6 +18,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 public class EntityGilgamesh extends BaseServant {
 
@@ -81,10 +82,10 @@ public class EntityGilgamesh extends BaseServant {
         }
     }
 
-    public void attackWithNP(double[] pos) {
+    public void attackWithNP(Vec3 pos) {
         EnumaElish ea = new EnumaElish(this.level, this);
         if (pos != null)
-            ea.setRotationTo(pos[0], pos[1], pos[2], 0);
+            ea.setRotationTo(pos.x(), pos.y(), pos.z(), 0);
         this.level.addFreshEntity(ea);
         this.revealServant();
         Platform.INSTANCE.getItemStackData(this.getMainHandItem()).ifPresent(data -> data.setInUse(this, false, true));
