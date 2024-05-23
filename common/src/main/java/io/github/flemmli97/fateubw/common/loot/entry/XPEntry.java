@@ -21,7 +21,7 @@ public class XPEntry extends GrailLootEntry<XPEntry> {
 
     public static final Codec<XPEntry> CODEC = RecordCodecBuilder.create(inst -> inst.group(
                     LootCodecs.NUMBER_PROVIDER_CODEC.fieldOf("range").forGetter(d -> d.range),
-                    LootCodecs.LOOT_ITEM_CONDITION.listOf().optionalFieldOf("conditions").forGetter(d -> d.conditions.length == 0 ? Optional.empty() :Optional.of(Arrays.stream(d.conditions).toList()))
+                    LootCodecs.LOOT_ITEM_CONDITION.listOf().optionalFieldOf("conditions").forGetter(d -> d.conditions.length == 0 ? Optional.empty() : Optional.of(Arrays.stream(d.conditions).toList()))
             ).apply(inst, (range, cond) -> new XPEntry(range, cond.map(l -> l.toArray(l.toArray(new LootItemCondition[0]))).orElse(new LootItemCondition[0])))
     );
 

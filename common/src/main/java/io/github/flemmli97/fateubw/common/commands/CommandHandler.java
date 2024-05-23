@@ -2,6 +2,7 @@ package io.github.flemmli97.fateubw.common.commands;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
@@ -9,6 +10,7 @@ import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.loot.GrailLootTable;
 import io.github.flemmli97.fateubw.common.loot.entry.AttributeEntry;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
+import io.github.flemmli97.fateubw.platform.Platform;
 import io.github.flemmli97.tenshilib.platform.PlatformUtils;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -34,6 +36,16 @@ public class CommandHandler {
                 .then(Commands.literal("loot").requires(src -> src.hasPermission(2))
                         .then(Commands.argument("id", ResourceLocationArgument.id()).suggests(GRAILLOOTSUGGESTION)
                                 .then(Commands.argument("players", EntityArgument.players()).executes(CommandHandler::giveLoot))))
+                .then(Commands.literal("command_spell").requires(src -> src.hasPermission(2))
+                        .then(Commands.literal("set")
+                                .then(Commands.argument("players", EntityArgument.players())
+                                        .then(Commands.argument("amount", IntegerArgumentType.integer(1)).executes(ctx -> CommandHandler.modifyCommandspell(ctx, CommnandMode.SET)))))
+                        .then(Commands.literal("give")
+                                .then(Commands.argument("players", EntityArgument.players())
+                                        .then(Commands.argument("amount", IntegerArgumentType.integer(1)).executes(ctx -> CommandHandler.modifyCommandspell(ctx, CommnandMode.ADD)))))
+                        .then(Commands.literal("take")
+                                .then(Commands.argument("players", EntityArgument.players())
+                                        .then(Commands.argument("amount", IntegerArgumentType.integer(1)).executes(ctx -> CommandHandler.modifyCommandspell(ctx, CommnandMode.TAKE))))))
         );
     }
 
@@ -47,10 +59,11 @@ public class CommandHandler {
         ResourceLocation id = ResourceLocationArgument.getId(ctx, "id");
         GrailLootTable loot = DatapackHandler.getLootTable(id).orElse(null);
         if (loot == null) {
-            ctx.getSource().sendSuccess(new TranslatableComponent("fate.command.loot.give", players), false);
+            ctx.getSource().sendSuccess(new TranslatableComponent("fate.command.loot.none", players), false);
             return 0;
         }
         players.forEach(loot::give);
+        ctx.getSource().sendSuccess(new TranslatableComponent("fate.command.loot.give", players, id), false);
         return Command.SINGLE_SUCCESS;
     }
 
@@ -64,5 +77,33 @@ public class CommandHandler {
         }));
         ctx.getSource().sendSuccess(new TranslatableComponent("fate.command.attributes.reset", players), false);
         return Command.SINGLE_SUCCESS;
+    }
+
+    private static int modifyCommandspell(CommandContext<CommandSourceStack> ctx, CommnandMode mode) throws CommandSyntaxException {
+        Collection<ServerPlayer> players = EntityArgument.getPlayers(ctx, "players");
+        int amount = IntegerArgumentType.getInteger(ctx, "amount");
+        players.forEach(player -> Platform.INSTANCE.getPlayerData(player).ifPresent(d -> {
+            int count = switch (mode) {
+                case SET -> amount;
+                case TAKE -> d.getCommandSeals() - amount;
+                case ADD -> d.getCommandSeals() + amount;
+            };
+            d.setCommandSeals(player, count);
+        }));
+        switch (mode) {
+            case SET ->
+                    ctx.getSource().sendSuccess(new TranslatableComponent("fate.command.spells.set", players, amount), false);
+            case TAKE ->
+                    ctx.getSource().sendSuccess(new TranslatableComponent("fate.command.spells.take", players, amount), false);
+            case ADD ->
+                    ctx.getSource().sendSuccess(new TranslatableComponent("fate.command.spells.add", players, amount), false);
+        }
+        return players.size();
+    }
+
+    private enum CommnandMode {
+        SET,
+        TAKE,
+        ADD
     }
 }
