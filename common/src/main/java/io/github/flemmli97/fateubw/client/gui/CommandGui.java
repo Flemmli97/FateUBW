@@ -39,7 +39,7 @@ public class CommandGui extends Screen {
     private ButtonValue<UUID> request, accept, remove;
 
     public CommandGui() {
-        super(new TranslatableComponent("fate.gui.command"));
+        super(new TranslatableComponent("fateubw.gui.command"));
         NetworkCalls.INSTANCE.sendToServer(new C2SMessageGui(C2SMessageGui.Type.ALL));
     }
 
@@ -109,22 +109,22 @@ public class CommandGui extends Screen {
         super.init();
         if (this.currentPage == Pages.MENU) {
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 82, 80, 20
-                    , new TranslatableComponent("fate.gui.command.attack"), b -> {
+                    , new TranslatableComponent("fateubw.gui.command.attack"), b -> {
                 this.currentPage = Pages.ATTACK;
                 this.init(this.minecraft, this.width, this.height);
             }));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 52, 80, 20
-                    , new TranslatableComponent("fate.gui.command.movement"), b -> {
+                    , new TranslatableComponent("fateubw.gui.command.movement"), b -> {
                 this.currentPage = Pages.MOVEMENT;
                 this.init(this.minecraft, this.width, this.height);
             }));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 22, 80, 20
-                    , new TranslatableComponent("fate.gui.command.truce"), b -> {
+                    , new TranslatableComponent("fateubw.gui.command.truce"), b -> {
                 this.currentPage = Pages.TRUCE;
                 this.init(this.minecraft, this.width, this.height);
             }));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 + 8, 80, 20
-                    , new TranslatableComponent("fate.gui.command.kill"), b -> {
+                    , new TranslatableComponent("fateubw.gui.command.kill"), b -> {
                 NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(EnumServantUpdate.KILL));
                 NetworkCalls.INSTANCE.sendToServer(new C2SMessageGui(C2SMessageGui.Type.SERVANT));
             }));
@@ -132,34 +132,34 @@ public class CommandGui extends Screen {
             if (servant != null) {
                 if (servant.specialCommands() != null)
                     this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 + 38, 80, 20
-                            , new TranslatableComponent("fate.gui.command.special"), b -> {
+                            , new TranslatableComponent("fateubw.gui.command.special"), b -> {
                         this.currentPage = Pages.SPECIAL;
                         this.init(this.minecraft, this.width, this.height);
                     }));
             }
         } else if (this.currentPage == Pages.ATTACK) {
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 82, 80, 20
-                    , new TranslatableComponent("fate.gui.command.back"), this::backButton));
+                    , new TranslatableComponent("fateubw.gui.command.back"), this::backButton));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 52, 80, 20
-                    , new TranslatableComponent("fate.gui.command.aggressive"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(EnumServantUpdate.AGGRESSIVE))));
+                    , new TranslatableComponent("fateubw.gui.command.aggressive"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(EnumServantUpdate.AGGRESSIVE))));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 22, 80, 20
-                    , new TranslatableComponent("fate.gui.command.normal"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(EnumServantUpdate.NORMAL))));
+                    , new TranslatableComponent("fateubw.gui.command.normal"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(EnumServantUpdate.NORMAL))));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 + 8, 80, 20
-                    , new TranslatableComponent("fate.gui.command.defensive"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(EnumServantUpdate.DEFENSIVE))));
+                    , new TranslatableComponent("fateubw.gui.command.defensive"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(EnumServantUpdate.DEFENSIVE))));
         } else if (this.currentPage == Pages.MOVEMENT) {
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 82, 80, 20
-                    , new TranslatableComponent("fate.gui.command.back"), this::backButton));
+                    , new TranslatableComponent("fateubw.gui.command.back"), this::backButton));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 52, 80, 20
-                    , new TranslatableComponent("fate.gui.command.follow"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(EnumServantUpdate.FOLLOW))));
+                    , new TranslatableComponent("fateubw.gui.command.follow"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(EnumServantUpdate.FOLLOW))));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 22, 80, 20
-                    , new TranslatableComponent("fate.gui.command.stay"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(EnumServantUpdate.STAY))));
+                    , new TranslatableComponent("fateubw.gui.command.stay"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(EnumServantUpdate.STAY))));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 + 8, 80, 20
-                    , new TranslatableComponent("fate.gui.command.protect"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(EnumServantUpdate.GUARD))));
+                    , new TranslatableComponent("fateubw.gui.command.protect"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(EnumServantUpdate.GUARD))));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 + 38, 80, 20
-                    , new TranslatableComponent("fate.gui.command.call"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(EnumServantUpdate.TELEPORT))));
+                    , new TranslatableComponent("fateubw.gui.command.call"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(EnumServantUpdate.TELEPORT))));
         } else if (this.currentPage == Pages.SPECIAL) {
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 82, 80, 20
-                    , new TranslatableComponent("fate.gui.command.back"), this::backButton));
+                    , new TranslatableComponent("fateubw.gui.command.back"), this::backButton));
             BaseServant servant = Platform.INSTANCE.getPlayerData(this.minecraft.player).map(data -> data.getServant(this.minecraft.player)).orElse(null);
             if (servant != null)
                 for (int i = 0; i < servant.specialCommands().length; i++)
@@ -215,7 +215,7 @@ public class CommandGui extends Screen {
             }));
 
             this.addRenderableWidget(new Button(this.width / 2 - 90, this.height / 2 - 5, 80, 20
-                    , new TranslatableComponent("fate.gui.command.back"), this::backButton));
+                    , new TranslatableComponent("fateubw.gui.command.back"), this::backButton));
             this.addRenderableWidget(this.request = new ButtonValue<>(this.width / 2 - 90, this.height / 2 + 25, 80, 20, "fate.gui.truce.request", button -> {
                 if (button.getVal() != null) {
                     NetworkCalls.INSTANCE.sendToServer(new C2STruceMessage(C2STruceMessage.Type.SEND, button.getVal()));

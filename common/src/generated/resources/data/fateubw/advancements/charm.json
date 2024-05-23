@@ -5,10 +5,10 @@
       "item": "fateubw:artifact_none"
     },
     "title": {
-      "translate": "advancements.fate.charm.title"
+      "translate": "fateubw.advancements.charm.title"
     },
     "description": {
-      "translate": "advancements.fate.charm.description"
+      "translate": "fateubw.advancements.charm.description"
     },
     "frame": "task",
     "show_toast": true,

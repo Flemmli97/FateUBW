@@ -4,10 +4,10 @@
       "item": "fateubw:icon_0"
     },
     "title": {
-      "translate": "advancements.fate.title"
+      "translate": "fateubw.advancements.title"
     },
     "description": {
-      "translate": "advancements.fate.description"
+      "translate": "fateubw.advancements.description"
     },
     "frame": "task",
     "show_toast": true,

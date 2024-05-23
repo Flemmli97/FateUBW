@@ -5,10 +5,10 @@
       "item": "fateubw:summoning_altar"
     },
     "title": {
-      "translate": "advancements.fate.join.title"
+      "translate": "fateubw.advancements.join.title"
     },
     "description": {
-      "translate": "advancements.fate.join.description"
+      "translate": "fateubw.advancements.join.description"
     },
     "frame": "task",
     "show_toast": true,

@@ -46,9 +46,9 @@ public class TruceHandler extends SavedData {
             GameProfile rec = player != null ? player.getGameProfile() : from.getServer().getProfileCache().get(to).get();
             if (rec == null)
                 return false;
-            from.sendMessage(new TranslatableComponent("chat.truce.send", rec.getName()).withStyle(ChatFormatting.GOLD), Util.NIL_UUID);
+            from.sendMessage(new TranslatableComponent("fateubw.chat.truce.send", rec.getName()).withStyle(ChatFormatting.GOLD), Util.NIL_UUID);
             if (player != null)
-                player.sendMessage(new TranslatableComponent("chat.truce.request", from.getName()).withStyle(ChatFormatting.GOLD), Util.NIL_UUID);
+                player.sendMessage(new TranslatableComponent("fateubw.chat.truce.request", from.getName()).withStyle(ChatFormatting.GOLD), Util.NIL_UUID);
             return true;
         }
         return false;
@@ -76,13 +76,13 @@ public class TruceHandler extends SavedData {
             GameProfile rec = other != null ? player.getGameProfile() : player.getServer().getProfileCache().get(request).get();
             if (rec == null)
                 return;
-            player.sendMessage(new TranslatableComponent("chat.truce.accept", rec.getName()).withStyle(ChatFormatting.GOLD), Util.NIL_UUID);
+            player.sendMessage(new TranslatableComponent("fateubw.chat.truce.accept", rec.getName()).withStyle(ChatFormatting.GOLD), Util.NIL_UUID);
             Platform.INSTANCE.getPlayerData(player).ifPresent(data -> {
                 if (data.getServant(player) != null)
                     data.getServant(player).setTarget(null);
             });
             if (other != null) {
-                other.sendMessage(new TranslatableComponent("chat.truce.requestsuccess", player.getName(), ChatFormatting.GOLD), Util.NIL_UUID);
+                other.sendMessage(new TranslatableComponent("fateubw.chat.truce.requestsuccess", player.getName(), ChatFormatting.GOLD), Util.NIL_UUID);
                 Platform.INSTANCE.getPlayerData(other).ifPresent(data -> {
                     if (data.getServant(other) != null)
                         data.getServant(other).setTarget(null);
@@ -100,9 +100,9 @@ public class TruceHandler extends SavedData {
             GameProfile rec = other != null ? player.getGameProfile() : player.getServer().getProfileCache().get(uuid).get();
             if (rec == null)
                 return;
-            player.sendMessage(new TranslatableComponent("chat.truce.disband", rec.getName()).withStyle(ChatFormatting.RED), Util.NIL_UUID);
+            player.sendMessage(new TranslatableComponent("fateubw.chat.truce.disband", rec.getName()).withStyle(ChatFormatting.RED), Util.NIL_UUID);
             if (other != null)
-                other.sendMessage(new TranslatableComponent("chat.truce.disband", player.getName(), ChatFormatting.RED), Util.NIL_UUID);
+                other.sendMessage(new TranslatableComponent("fateubw.chat.truce.disband", player.getName(), ChatFormatting.RED), Util.NIL_UUID);
             this.setDirty();
         }
     }

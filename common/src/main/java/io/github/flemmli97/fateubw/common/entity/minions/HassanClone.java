@@ -169,7 +169,7 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
             ++this.deathTime;
             if (this.deathTime == 1) {
                 //if(this.getLastDamageSource()!=DamageSource.OUT_OF_WORLD)
-                this.level.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("chat.servant.death").withStyle(ChatFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
+                this.level.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("fateubw.chat.servant.death").withStyle(ChatFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
                 this.playSound(SoundEvents.WITHER_SPAWN, 1.0F, 1.0F);
             }
             if (this.deathTime == this.maxDeathTick()) {

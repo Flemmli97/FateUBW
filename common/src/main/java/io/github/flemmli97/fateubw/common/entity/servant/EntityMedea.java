@@ -114,7 +114,7 @@ public class EntityMedea extends BaseServant {
             this.level.addFreshEntity(new MagicBufCircle(this.level, this, Config.Common.medeaCircleRange));
             this.circleDelay = Config.Common.medeaCircleSpan;
             if (this.getOwner() != null)
-                this.getOwner().sendMessage(new TranslatableComponent("chat.medea.circle.spawn"), Util.NIL_UUID);
+                this.getOwner().sendMessage(new TranslatableComponent("fateubw.chat.medea.circle.spawn"), Util.NIL_UUID);
         }
     }
 

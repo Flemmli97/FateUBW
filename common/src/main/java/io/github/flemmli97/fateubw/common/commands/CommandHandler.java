@@ -59,11 +59,11 @@ public class CommandHandler {
         ResourceLocation id = ResourceLocationArgument.getId(ctx, "id");
         GrailLootTable loot = DatapackHandler.getLootTable(id).orElse(null);
         if (loot == null) {
-            ctx.getSource().sendSuccess(new TranslatableComponent("fate.command.loot.none", players), false);
+            ctx.getSource().sendSuccess(new TranslatableComponent("fateubw.command.loot.none", players), false);
             return 0;
         }
         players.forEach(loot::give);
-        ctx.getSource().sendSuccess(new TranslatableComponent("fate.command.loot.give", players, id), false);
+        ctx.getSource().sendSuccess(new TranslatableComponent("fateubw.command.loot.give", players, id), false);
         return Command.SINGLE_SUCCESS;
     }
 
@@ -75,7 +75,7 @@ public class CommandHandler {
             if (inst != null)
                 inst.removeModifier(AttributeEntry.ATTRIBUTE_UUID);
         }));
-        ctx.getSource().sendSuccess(new TranslatableComponent("fate.command.attributes.reset", players), false);
+        ctx.getSource().sendSuccess(new TranslatableComponent("fateubw.command.attributes.reset", players), false);
         return Command.SINGLE_SUCCESS;
     }
 
@@ -92,11 +92,11 @@ public class CommandHandler {
         }));
         switch (mode) {
             case SET ->
-                    ctx.getSource().sendSuccess(new TranslatableComponent("fate.command.spells.set", players, amount), false);
+                    ctx.getSource().sendSuccess(new TranslatableComponent("fateubw.command.spells.set", players, amount), false);
             case TAKE ->
-                    ctx.getSource().sendSuccess(new TranslatableComponent("fate.command.spells.take", players, amount), false);
+                    ctx.getSource().sendSuccess(new TranslatableComponent("fateubw.command.spells.take", players, amount), false);
             case ADD ->
-                    ctx.getSource().sendSuccess(new TranslatableComponent("fate.command.spells.add", players, amount), false);
+                    ctx.getSource().sendSuccess(new TranslatableComponent("fateubw.command.spells.add", players, amount), false);
         }
         return players.size();
     }

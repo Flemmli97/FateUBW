@@ -44,9 +44,9 @@ public class ItemEA extends SwordItem {
             } else {
                 if (Platform.INSTANCE.getPlayerData(player).map(mana -> mana.useMana(player, 30)).orElse(false)) {
                     world.addFreshEntity(ea);
-                    player.sendMessage(new TranslatableComponent("fate.mana.use").withStyle(ChatFormatting.AQUA), Util.NIL_UUID);
+                    player.sendMessage(new TranslatableComponent("fateubw.mana.use").withStyle(ChatFormatting.AQUA), Util.NIL_UUID);
                 } else {
-                    player.sendMessage(new TranslatableComponent("fate.mana.no").withStyle(ChatFormatting.AQUA), Util.NIL_UUID);
+                    player.sendMessage(new TranslatableComponent("fateubw.mana.no").withStyle(ChatFormatting.AQUA), Util.NIL_UUID);
                 }
             }
         }

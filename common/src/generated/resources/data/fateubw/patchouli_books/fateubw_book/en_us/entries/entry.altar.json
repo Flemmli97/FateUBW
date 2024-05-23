@@ -1,16 +1,16 @@
 {
-  "name": "fate.patchouli.entry.altar",
+  "name": "fateubw.patchouli.entry.altar",
   "category": "fateubw:category.start",
   "icon": "fateubw:summoning_altar",
   "pages": [
     {
       "type": "patchouli:crafting",
       "recipe": "fateubw:altar",
-      "text": "fate.patchouli.entry.altar.1"
+      "text": "fateubw.patchouli.entry.altar.1"
     },
     {
       "type": "patchouli:multiblock",
-      "name": "fate.patchouli.entry.altar",
+      "name": "fateubw.patchouli.entry.altar",
       "multiblock": {
         "pattern": [
           [
@@ -27,11 +27,11 @@
         },
         "symmetrical": true
       },
-      "text": "fate.patchouli.entry.altar.2"
+      "text": "fateubw.patchouli.entry.altar.2"
     },
     {
       "type": "patchouli:text",
-      "text": "fate.patchouli.entry.altar.3"
+      "text": "fateubw.patchouli.entry.altar.3"
     }
   ],
   "sortnum": 1

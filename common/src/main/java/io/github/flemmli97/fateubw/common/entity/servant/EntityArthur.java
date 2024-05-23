@@ -81,7 +81,7 @@ public class EntityArthur extends BaseServant {
         if (this.getHealth() < 0.25 * this.getMaxHealth() && this.getHealth() > 0) {
             if (!this.critHealth) {
                 if (!this.level.isClientSide)
-                    this.level.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("chat.servant.avalon").withStyle(ChatFormatting.GOLD), ChatType.SYSTEM, Util.NIL_UUID);
+                    this.level.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("fateubw.chat.servant.avalon").withStyle(ChatFormatting.GOLD), ChatType.SYSTEM, Util.NIL_UUID);
                 this.critHealth = true;
             }
             if (!this.hasEffect(MobEffects.REGENERATION))

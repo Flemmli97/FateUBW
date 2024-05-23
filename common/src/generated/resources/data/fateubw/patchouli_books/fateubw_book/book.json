@@ -1,6 +1,6 @@
 {
-  "name": "fate_book",
-  "landing_text": "fate.patchouli.landing",
+  "name": "fateubw_book",
+  "landing_text": "fateubw.patchouli.landing",
   "show_progress": false,
   "version": "1.0",
   "creative_tab": "fateubw.tab",

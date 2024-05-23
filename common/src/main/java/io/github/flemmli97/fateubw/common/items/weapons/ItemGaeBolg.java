@@ -33,11 +33,11 @@ public class ItemGaeBolg extends ClassSpear {
                 if (Platform.INSTANCE.getPlayerData(player).map(mana -> mana.useMana(player, 15)).orElse(false)) {
                     world.addFreshEntity(gaeBolg);
                     stack.shrink(1);
-                    player.sendMessage(new TranslatableComponent("fate.mana.use").withStyle(ChatFormatting.AQUA), Util.NIL_UUID);
+                    player.sendMessage(new TranslatableComponent("fateubw.mana.use").withStyle(ChatFormatting.AQUA), Util.NIL_UUID);
                     return InteractionResultHolder.success(stack);
 
                 } else {
-                    player.sendMessage(new TranslatableComponent("fate.mana.no").withStyle(ChatFormatting.AQUA), Util.NIL_UUID);
+                    player.sendMessage(new TranslatableComponent("fateubw.mana.no").withStyle(ChatFormatting.AQUA), Util.NIL_UUID);
                 }
             }
             return InteractionResultHolder.pass(stack);

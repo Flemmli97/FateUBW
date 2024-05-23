@@ -5,10 +5,10 @@
       "item": "fateubw:holy_grail"
     },
     "title": {
-      "translate": "advancements.fate.win.title"
+      "translate": "fateubw.advancements.win.title"
     },
     "description": {
-      "translate": "advancements.fate.win.description"
+      "translate": "fateubw.advancements.win.description"
     },
     "frame": "challenge",
     "show_toast": true,

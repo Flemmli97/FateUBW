@@ -35,7 +35,7 @@ public class FateEgg extends SpawnEgg {
                     GrailWarHandler track = GrailWarHandler.get(player.getServer());
                     track.join((ServerPlayer) player);
                 } else {
-                    player.sendMessage(new TranslatableComponent("chat.item.spawn").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                    player.sendMessage(new TranslatableComponent("fateubw.chat.item.spawn").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 }
             });
         }
@@ -52,7 +52,7 @@ public class FateEgg extends SpawnEgg {
 
     @Override
     public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag flag) {
-        tooltip.add(new TranslatableComponent("tooltip.item.spawn").withStyle(ChatFormatting.GOLD));
+        tooltip.add(new TranslatableComponent("fateubw.tooltip.item.spawn").withStyle(ChatFormatting.GOLD));
         super.appendHoverText(stack, world, tooltip, flag);
     }
 }

@@ -128,115 +128,115 @@ public class Lang implements DataProvider {
 
         this.add("itemGroup." + Fate.MODID + ".tab", "The Fate Universe");
 
-        this.add("chat.item.spawn", "You already have a servant, spawned a masterless one");
-        this.add("chat.mana.missing", "You don't have enough mana");
-        this.add("chat.grailwar.init", "A grailwar has been initialized. You have %1$s seconds to join it.");
-        this.add("chat.grailwar.start", "Joining is now locked.");
-        this.add("chat.grailwar.missingplayer", "Not enough player, restarting timer");
-        this.add("chat.grailwar.win", "%1$s won the grail war.");
-        this.add("chat.grailwar.playerout", "%1$s is out.");
-        this.add("chat.grailwar.spawn", "A servant has spawned near %1$s.");
-        this.add("chat.grailwar.end", "The grailwar has ended");
-        this.add("chat.truce.send", "Send a truce request to %1$s");
-        this.add("chat.truce.pending", "Pending truce request from %1$s");
-        this.add("chat.truce.request", "%1$s send you a truce request");
-        this.add("chat.truce.requestsuccess", "%1$s accepted your a truce request");
-        this.add("chat.truce.accept", "You accepted %1$s's truces request");
-        this.add("chat.servant.death", "A servant has been killed");
-        this.add("chat.servant.avalon", "Avalons healing ability has activated");
-        this.add("chat.servant.cuchulainn", "Cuchulainn's speed increased");
-        this.add("chat.servant.diarmuid", "Diarmuid's speed increased");
-        this.add("chat.altar.fail", "Summon failed either because you can't join the current war or joined already");
-        this.add("chat.altar.incomplete", "Incomplete Structure");
-        this.add("chat.altar.existing", "How dare you to summon another servant");
-        this.add("chat.command.attackall", "Your servant now attacks every mob");
-        this.add("chat.command.attackservant", "Your servant now only attacks other servants");
-        this.add("chat.command.defensive", "Your servant now only fights back when attacked");
-        this.add("chat.command.npfail", "Seems like you don't have enough mana or command spells");
-        this.add("chat.command.npsuccess", "You commanded your servant to use a Nobel Phantasm");
-        this.add("chat.command.npprep", "Your servant is already preparing for an attack");
-        this.add("chat.command.follow", "Your servant now follows you");
-        this.add("chat.command.stay", "You told your servant to hold their position");
-        this.add("chat.command.patrol", "Your servant now protects this area");
-        this.add("chat.command.kill", "You killed your servant");
-        this.add("chat.command.spellsuccess", "You buffed your servant using a command spell");
-        this.add("chat.command.spellfail", "You don't have any command spells anymore");
-        this.add("chat.medea.circle.spawn", "Medea created a magic circle");
+        this.add("fateubw.chat.item.spawn", "You already have a servant, spawned a masterless one");
+        this.add("fateubw.chat.mana.missing", "You don't have enough mana");
+        this.add("fateubw.chat.grailwar.init", "A grailwar has been initialized. You have %1$s seconds to join it.");
+        this.add("fateubw.chat.grailwar.start", "Joining is now locked.");
+        this.add("fateubw.chat.grailwar.missingplayer", "Not enough player, restarting timer");
+        this.add("fateubw.chat.grailwar.win", "%1$s won the grail war.");
+        this.add("fateubw.chat.grailwar.playerout", "%1$s is out.");
+        this.add("fateubw.chat.grailwar.spawn", "A servant has spawned near %1$s.");
+        this.add("fateubw.chat.grailwar.end", "The grailwar has ended");
+        this.add("fateubw.chat.truce.send", "Send a truce request to %1$s");
+        this.add("fateubw.chat.truce.pending", "Pending truce request from %1$s");
+        this.add("fateubw.chat.truce.request", "%1$s send you a truce request");
+        this.add("fateubw.chat.truce.requestsuccess", "%1$s accepted your a truce request");
+        this.add("fateubw.chat.truce.accept", "You accepted %1$s's truces request");
+        this.add("fateubw.chat.servant.death", "A servant has been killed");
+        this.add("fateubw.chat.servant.avalon", "Avalons healing ability has activated");
+        this.add("fateubw.chat.servant.cuchulainn", "Cuchulainn's speed increased");
+        this.add("fateubw.chat.servant.diarmuid", "Diarmuid's speed increased");
+        this.add("fateubw.chat.altar.fail", "Summon failed either because you can't join the current war or joined already");
+        this.add("fateubw.chat.altar.incomplete", "Incomplete Structure");
+        this.add("fateubw.chat.altar.existing", "How dare you to summon another servant");
+        this.add("fateubw.chat.command.attackall", "Your servant now attacks every mob");
+        this.add("fateubw.chat.command.attackservant", "Your servant now only attacks other servants");
+        this.add("fateubw.chat.command.defensive", "Your servant now only fights back when attacked");
+        this.add("fateubw.chat.command.npfail", "Seems like you don't have enough mana or command spells");
+        this.add("fateubw.chat.command.npsuccess", "You commanded your servant to use a Nobel Phantasm");
+        this.add("fateubw.chat.command.npprep", "Your servant is already preparing for an attack");
+        this.add("fateubw.chat.command.follow", "Your servant now follows you");
+        this.add("fateubw.chat.command.stay", "You told your servant to hold their position");
+        this.add("fateubw.chat.command.patrol", "Your servant now protects this area");
+        this.add("fateubw.chat.command.kill", "You killed your servant");
+        this.add("fateubw.chat.command.spellsuccess", "You buffed your servant using a command spell");
+        this.add("fateubw.chat.command.spellfail", "You don't have any command spells anymore");
+        this.add("fateubw.chat.medea.circle.spawn", "Medea created a magic circle");
 
-        this.add("fate.gui.command.attack", "Attack");
-        this.add("fate.gui.command.movement", "Movement");
-        this.add("fate.gui.command.truce", "Truce");
-        this.add("fate.gui.command.kill", "Kill");
-        this.add("fate.gui.command.special", "Special");
-        this.add("fate.gui.command.back", "Back");
-        this.add("fate.gui.command.aggressive", "Aggressive");
-        this.add("fate.gui.command.normal", "Normal");
-        this.add("fate.gui.command.defensive", "Defensive");
-        this.add("fate.gui.command.follow", "Follow");
-        this.add("fate.gui.command.stay", "Stay");
-        this.add("fate.gui.command.protect", "Guard");
-        this.add("fate.gui.command.call", "Call");
-        this.add("fate.gui.truce.request", "Request");
-        this.add("fate.gui.truce.accept", "Accept");
-        this.add("fate.gui.truce.remove", "Remove/Deny");
+        this.add("fateubw.gui.command.attack", "Attack");
+        this.add("fateubw.gui.command.movement", "Movement");
+        this.add("fateubw.gui.command.truce", "Truce");
+        this.add("fateubw.gui.command.kill", "Kill");
+        this.add("fateubw.gui.command.special", "Special");
+        this.add("fateubw.gui.command.back", "Back");
+        this.add("fateubw.gui.command.aggressive", "Aggressive");
+        this.add("fateubw.gui.command.normal", "Normal");
+        this.add("fateubw.gui.command.defensive", "Defensive");
+        this.add("fateubw.gui.command.follow", "Follow");
+        this.add("fateubw.gui.command.stay", "Stay");
+        this.add("fateubw.gui.command.protect", "Guard");
+        this.add("fateubw.gui.command.call", "Call");
+        this.add("fateubw.gui.truce.request", "Request");
+        this.add("fateubw.gui.truce.accept", "Accept");
+        this.add("fateubw.gui.truce.remove", "Remove/Deny");
 
         this.add("death.attack.excalibur", "%1$s was vaporized by %2$s with excalibur");
         this.add("death.attack.babylon", "%1$s was impaled by %2$s with the gate of babylon");
         this.add("death.attack.gaeBolg", "%1$s's heart was pierced with gae bolg");
         this.add("death.attack.arrow", "%1$s was shoot by %2$s");
 
-        this.add("config.fateubw.general", "General");
-        this.add("config.fateubw.general.tooltip", "");
-        this.add("config.fateubw.servants", "Servants");
-        this.add("config.fateubw.servants.tooltip", "Configure individual servants");
-        this.add("config.fateubw.minions", "Servant minions");
-        this.add("config.fateubw.hassancopy", "Hassan Clone");
+        this.add("fateubw.advancements.title", "Welcome to the §k__§r grailwar");
+        this.add("fateubw.advancements.description", "Mine some gem shards to start");
+        this.add("fateubw.advancements.charm.title", "To get the strongest servant");
+        this.add("fateubw.advancements.charm.description", "Find a charm to increase the odds of a class");
+        this.add("fateubw.advancements.join.title", "A fight between heroes");
+        this.add("fateubw.advancements.join.description", "Join or start a grailwar");
+        this.add("fateubw.advancements.win.title", "People die if they are killed");
+        this.add("fateubw.advancements.win.description", "Win a grailwar. Sounds easy right");
 
-        this.add("advancements.fate.title", "Welcome to the §k__§r grailwar");
-        this.add("advancements.fate.description", "Mine some gem shards to start");
-        this.add("advancements.fate.charm.title", "To get the strongest servant");
-        this.add("advancements.fate.charm.description", "Find a charm to increase the odds of a class");
-        this.add("advancements.fate.join.title", "A fight between heroes");
-        this.add("advancements.fate.join.description", "Join or start a grailwar");
-        this.add("advancements.fate.win.title", "People die if they are killed");
-        this.add("advancements.fate.win.description", "Win a grailwar. Sounds easy right");
+        this.add("fateubw.command.loot.none", "No such loot %s");
+        this.add("fateubw.command.loot.give", "Gave loot %1$s to %2$s");
+        this.add("fateubw.command.attributes.reset", "Reset all attributes obtained through grail loots for %s");
+        this.add("fateubw.command.spells.set", "Set command spells for %2$s to %1$s");
+        this.add("fateubw.command.spells.take", "Took %2$s command spells from %1$s");
+        this.add("fateubw.command.spells.add", "Gave %2$s command spells to %1$s");
 
-        this.add("tooltip.item.spawn", "Rename to \"Summon\" to spawn as your servant");
+        this.add("fateubw.tooltip.item.spawn", "Rename to \"Summon\" to spawn as your servant");
 
-        this.add("fate_book", "Fate Guidebook");
-        this.add("fate.patchouli.landing", "");
-        this.add("fate.patchouli.category.start", "How to start");
-        this.add("fate.patchouli.category.start.desc", "");
-        this.add("fate.patchouli.entry.ores", "Ores");
-        this.add("fate.patchouli.entry.ores." + ModBlocks.GEM_ORE.getID().getPath(), "Gem shards that are common underground. " +
+        this.add("fateubw_book", "Fate Guidebook");
+        this.add("fateubw.patchouli.landing", "");
+        this.add("fateubw.patchouli.category.start", "How to start");
+        this.add("fateubw.patchouli.category.start.desc", "");
+        this.add("fateubw.patchouli.entry.ores", "Ores");
+        this.add("fateubw.patchouli.entry.ores." + ModBlocks.GEM_ORE.getID().getPath(), "Gem shards that are common underground. " +
                 "Combine 5 different types to create a cluster. You need a bit of them to start. Gem clusters are throwable that create an explosion on impact");
-        this.add("fate.patchouli.entry.ores." + ModBlocks.ARTIFACT_ORE.getID().getPath(), "Rarely found underground. Right click an empty one to get a random " +
+        this.add("fateubw.patchouli.entry.ores." + ModBlocks.ARTIFACT_ORE.getID().getPath(), "Rarely found underground. Right click an empty one to get a random " +
                 "artifact for a class. Using an artifact during summoning increases your chances of getting a servant of that class");
-        this.add("fate.patchouli.entry.altar", "Summoning Altar");
-        this.add("fate.patchouli.entry.altar.1", "To use the summoning altar you need to make a drawing chalk and use it to create a 5x5 field of chalk with the altar in the center. " +
+        this.add("fateubw.patchouli.entry.altar", "Summoning Altar");
+        this.add("fateubw.patchouli.entry.altar.1", "To use the summoning altar you need to make a drawing chalk and use it to create a 5x5 field of chalk with the altar in the center. " +
                 "After that right click the altar with the drawing chalk and it should form a proper red magic circle.");
-        this.add("fate.patchouli.entry.altar.2", "Now put 8 gem clusters into the altar and right click it with another cluster to start the summoning");
-        this.add("fate.patchouli.entry.altar.3", "If you use an artifact before the summoning you can increase your chances of getting a servant of said class");
-        this.add("fate.patchouli.category.war", "Grail War");
-        this.add("fate.patchouli.category.war.desc", "During a grailwar (depending on the config) enemy servants without players might also spawn. Defeating every servant and being the last one standing will grant the player the holy grail rewarding the player with various loot.");
-        this.add("fate.patchouli.entry.servant", "Servant");
-        this.add("fate.patchouli.entry.servant.1", "After you used the $(l:entry.altar)summoning altar$(/l) to summon your servant you can press $(4)($(k:fate.key.gui))$() to open the servant gui from which you can issue various orders to your servant. " +
+        this.add("fateubw.patchouli.entry.altar.2", "Now put 8 gem clusters into the altar and right click it with another cluster to start the summoning");
+        this.add("fateubw.patchouli.entry.altar.3", "If you use an artifact before the summoning you can increase your chances of getting a servant of said class");
+        this.add("fateubw.patchouli.category.war", "Grail War");
+        this.add("fateubw.patchouli.category.war.desc", "During a grailwar (depending on the config) enemy servants without players might also spawn. Defeating every servant and being the last one standing will grant the player the holy grail rewarding the player with various loot.");
+        this.add("fateubw.patchouli.entry.servant", "Servant");
+        this.add("fateubw.patchouli.entry.servant.1", "After you used the $(l:entry.altar)summoning altar$(/l) to summon your servant you can press $(4)($(k:fate.key.gui))$() to open the servant gui from which you can issue various orders to your servant. " +
                 "Additionally pressing $(li)$(4)($(k:fate.key.np))$() commands them to use their nobel phantasm at the cost of using up a command spell and your own mana.");
-        this.add("fate.patchouli.entry.servant.2", "$(li)$(4)($(k:fate.key.boost))$() uses up a command spell to boost your servant temporary." +
+        this.add("fateubw.patchouli.entry.servant.2", "$(li)$(4)($(k:fate.key.boost))$() uses up a command spell to boost your servant temporary." +
                 "$(li)$(4)($(k:fate.key.target))$() while looking at an entity makes your servant attack said entity.");
-        this.add("fate.patchouli.entry.grail", "Holy Grail");
-        this.add("fate.patchouli.entry.grail.1", "By being victorious in the grail war you will be awarded with the holy grail. An object said to be able to grant any wish you want. " +
+        this.add("fateubw.patchouli.entry.grail", "Holy Grail");
+        this.add("fateubw.patchouli.entry.grail.1", "By being victorious in the grail war you will be awarded with the holy grail. An object said to be able to grant any wish you want. " +
                 "Though for gameplays sake this is sadly not the case. By using it you will be able to select a from a pool of loottables.");
-        this.add("fate.patchouli.category.loot", "Loot");
-        this.add("fate.patchouli.category.loot.desc", "Overview of possible loot to be granted. The actual loot depends on the selected loottable. The server can define custom loottables via datapacks.");
-        this.add("fate.patchouli.entry.item", "Items");
-        this.add("fate.patchouli.entry.item.1", "Items as per defined in the loot table");
-        this.add("fate.patchouli.entry.attribute", "Attributes");
-        this.add("fate.patchouli.entry.attribute.1", "Can grant attributes like permanent extra health or attack damage etc.");
-        this.add("fate.patchouli.entry.loot.servant", "Servant");
-        this.add("fate.patchouli.entry.loot.servant.1", "Not implemented yet");
-        this.add("fate.patchouli.entry.xp", "XP");
-        this.add("fate.patchouli.entry.xp.1", "Grants random amount of xp points");
+        this.add("fateubw.patchouli.category.loot", "Loot");
+        this.add("fateubw.patchouli.category.loot.desc", "Overview of possible loot to be granted. The actual loot depends on the selected loottable. The server can define custom loottables via datapacks.");
+        this.add("fateubw.patchouli.entry.item", "Items");
+        this.add("fateubw.patchouli.entry.item.1", "Items as per defined in the loot table");
+        this.add("fateubw.patchouli.entry.attribute", "Attributes");
+        this.add("fateubw.patchouli.entry.attribute.1", "Can grant attributes like permanent extra health or attack damage etc.");
+        this.add("fateubw.patchouli.entry.loot.servant", "Servant");
+        this.add("fateubw.patchouli.entry.loot.servant.1", "Not implemented yet");
+        this.add("fateubw.patchouli.entry.xp", "XP");
+        this.add("fateubw.patchouli.entry.xp.1", "Grants random amount of xp points");
     }
 
     private String simpleOfRegName(ResourceLocation res) {

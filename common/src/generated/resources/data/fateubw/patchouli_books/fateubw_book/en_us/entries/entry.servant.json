@@ -1,15 +1,15 @@
 {
-  "name": "fate.patchouli.entry.servant",
+  "name": "fateubw.patchouli.entry.servant",
   "category": "fateubw:category.war",
   "icon": "fateubw:artifact_none",
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "fate.patchouli.entry.servant.1"
+      "text": "fateubw.patchouli.entry.servant.1"
     },
     {
       "type": "patchouli:text",
-      "text": "fate.patchouli.entry.servant.2"
+      "text": "fateubw.patchouli.entry.servant.2"
     }
   ]
 }

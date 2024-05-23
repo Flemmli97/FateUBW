@@ -47,43 +47,43 @@ public record C2SServantCommand(EnumServantUpdate command) implements Packet {
         switch (pkt.command) {
             case NORMAL:
                 servant.updateAI(pkt.command);
-                sender.sendMessage(new TranslatableComponent("chat.command.attackservant").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                sender.sendMessage(new TranslatableComponent("fateubw.chat.command.attackservant").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 break;
             case AGGRESSIVE:
                 servant.updateAI(pkt.command);
-                sender.sendMessage(new TranslatableComponent("chat.command.attackall").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                sender.sendMessage(new TranslatableComponent("fateubw.chat.command.attackall").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 break;
             case DEFENSIVE:
                 servant.updateAI(pkt.command);
-                sender.sendMessage(new TranslatableComponent("chat.command.defensive").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                sender.sendMessage(new TranslatableComponent("fateubw.chat.command.defensive").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 break;
             case FOLLOW:
                 servant.updateAI(pkt.command);
-                sender.sendMessage(new TranslatableComponent("chat.command.follow").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                sender.sendMessage(new TranslatableComponent("fateubw.chat.command.follow").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 break;
             case STAY:
                 servant.updateAI(pkt.command);
-                sender.sendMessage(new TranslatableComponent("chat.command.stay").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                sender.sendMessage(new TranslatableComponent("fateubw.chat.command.stay").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 break;
             case GUARD:
                 servant.updateAI(pkt.command);
-                sender.sendMessage(new TranslatableComponent("chat.command.patrol").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                sender.sendMessage(new TranslatableComponent("fateubw.chat.command.patrol").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 break;
             case NP:
                 if (!servant.forcedNP) {
                     if (!sender.isCreative()) {
                         if (cap.useMana(sender, servant.props().hogouMana()) && cap.useCommandSeal(sender)) {
-                            sender.sendMessage(new TranslatableComponent("chat.command.npsuccess").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                            sender.sendMessage(new TranslatableComponent("fateubw.chat.command.npsuccess").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                             servant.forcedNP = true;
                         } else {
-                            sender.sendMessage(new TranslatableComponent("chat.command.npfail").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                            sender.sendMessage(new TranslatableComponent("fateubw.chat.command.npfail").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                         }
                     } else {
-                        sender.sendMessage(new TranslatableComponent("chat.command.npsuccess").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                        sender.sendMessage(new TranslatableComponent("fateubw.chat.command.npsuccess").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                         servant.forcedNP = true;
                     }
                 } else {
-                    sender.sendMessage(new TranslatableComponent("chat.command.npprep").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                    sender.sendMessage(new TranslatableComponent("fateubw.chat.command.npprep").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 }
                 break;
             case KILL:
@@ -114,9 +114,9 @@ public record C2SServantCommand(EnumServantUpdate command) implements Packet {
                 if (cap.useCommandSeal(sender)) {
                     for (MobEffectInstance effect : Config.Common.npBoostEffect.potions())
                         servant.addEffect(effect);
-                    sender.sendMessage(new TranslatableComponent("chat.command.spell.success").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                    sender.sendMessage(new TranslatableComponent("fateubw.chat.command.spell.success").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 } else
-                    sender.sendMessage(new TranslatableComponent("chat.command.spell.fail").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                    sender.sendMessage(new TranslatableComponent("fateubw.chat.command.spell.fail").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 break;
             case TARGET:
                 EntityHitResult res = RayTraceUtils.calculateEntityFromLook(sender, 16);

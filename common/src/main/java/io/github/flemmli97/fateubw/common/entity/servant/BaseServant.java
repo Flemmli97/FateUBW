@@ -496,7 +496,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
             ++this.deathTime;
             if (this.deathTime == 1) {
                 //if(this.getLastDamageSource()!=DamageSource.OUT_OF_WORLD)
-                this.level.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("chat.servant.death").withStyle(ChatFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
+                this.level.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("fateubw.chat.servant.death").withStyle(ChatFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
                 this.playSound(SoundEvents.WITHER_SPAWN, 1.0F, 1.0F);
                 GrailWarHandler.get(serverLevel.getServer()).removeServant(this);
                 this.disableChunkload = true;
@@ -640,7 +640,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
 
     public void onKillOrder(Player player, boolean success) {
         this.hurt(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
-        player.sendMessage(new TranslatableComponent("chat.command.kill").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+        player.sendMessage(new TranslatableComponent("fateubw.chat.command.kill").withStyle(ChatFormatting.RED), Util.NIL_UUID);
     }
 
     public void onForfeit(Player player) {

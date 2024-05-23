@@ -27,7 +27,7 @@ public class GuiHolyGrail extends Screen {
     private static final int X_SIZE = 255, Y_SIZE = 186;
 
     public GuiHolyGrail(Map<ResourceLocation, Component> rewards) {
-        super(new TranslatableComponent("fate.gui.holy_grail"));
+        super(new TranslatableComponent("fateubw.gui.holy_grail"));
         this.rewards = rewards;
     }
 

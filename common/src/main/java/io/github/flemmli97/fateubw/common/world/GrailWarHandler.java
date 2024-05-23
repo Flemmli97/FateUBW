@@ -85,7 +85,7 @@ public class GrailWarHandler extends SavedData {
                     this.players.add(uuid); //<-----------------
                     if (this.state == State.NOTHING) {
                         this.joinTicker = Config.Common.joinTime;
-                        player.level.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("chat.grailwar.init", this.joinTicker / 20).withStyle(ChatFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
+                        player.level.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("fateubw.chat.grailwar.init", this.joinTicker / 20).withStyle(ChatFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
                         this.state = State.JOIN;
                     }
                     this.setDirty();
@@ -111,7 +111,7 @@ public class GrailWarHandler extends SavedData {
                 data.setServant(null);
             });
             TruceHandler.get(player.getServer()).disbandAll(player);
-            player.level.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("chat.grailwar.playerout", player.getName()).withStyle(ChatFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
+            player.level.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("fateubw.chat.grailwar.playerout", player.getName()).withStyle(ChatFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
             this.setDirty();
             return true;
         }
@@ -133,7 +133,7 @@ public class GrailWarHandler extends SavedData {
 
                         name = player.getServer().getProfileCache().get(uuid).map(GameProfile::getName).orElse("MISSINGNO");
                     }
-                    world.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("chat.grailwar.win", name).withStyle(ChatFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
+                    world.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("fateubw.chat.grailwar.win", name).withStyle(ChatFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
                 }
                 this.setDirty();
             } else if (this.players.isEmpty())
@@ -190,13 +190,13 @@ public class GrailWarHandler extends SavedData {
     public void start(ServerLevel world) {
         this.state = State.RUN;
         if (this.players.size() >= Config.Common.minPlayer) {
-            world.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("chat.grailwar.start").withStyle(ChatFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
+            world.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("fateubw.chat.grailwar.start").withStyle(ChatFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
         } else if (this.players.isEmpty())
             this.reset(world);
         else {
             this.joinTicker = Config.Common.joinTime;
             this.state = State.JOIN;
-            world.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("chat.grailwar.missingplayer").withStyle(ChatFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
+            world.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("fateubw.chat.grailwar.missingplayer").withStyle(ChatFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
         }
         this.setDirty();
     }
@@ -244,7 +244,7 @@ public class GrailWarHandler extends SavedData {
             this.servants.clear();
             this.servantClasses.clear();
             this.spawnedServants = 0;
-            world.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("chat.grailwar.end").withStyle(ChatFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
+            world.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("fateubw.chat.grailwar.end").withStyle(ChatFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
             NetworkCalls.INSTANCE.sendToAll(new S2CWarData(world), world.getServer());
         }
         this.setDirty();
@@ -302,9 +302,9 @@ public class GrailWarHandler extends SavedData {
                     this.timeToNextServant = Mth.nextInt(world.random, Config.Common.servantMinSpawnDelay, Config.Common.servantMaxSpawnDelay);
                     if (!this.notify(PlatformUtils.INSTANCE.entities().getIDFrom(servant.getType())))
                         if (Config.Common.notifyAll)
-                            world.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("chat.grailwar.spawn", player.getName()).withStyle(ChatFormatting.GOLD), ChatType.SYSTEM, Util.NIL_UUID);
+                            world.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("fateubw.chat.grailwar.spawn", player.getName()).withStyle(ChatFormatting.GOLD), ChatType.SYSTEM, Util.NIL_UUID);
                         else
-                            player.sendMessage(new TranslatableComponent("chat.grailwar.spawn", player.getName()).withStyle(ChatFormatting.GOLD), Util.NIL_UUID);
+                            player.sendMessage(new TranslatableComponent("fateubw.chat.grailwar.spawn", player.getName()).withStyle(ChatFormatting.GOLD), Util.NIL_UUID);
                 }
             }
         }

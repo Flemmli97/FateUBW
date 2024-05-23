@@ -19,6 +19,6 @@ public class EventCalls {
         Platform.INSTANCE.getPlayerData(player).ifPresent(data -> NetworkCalls.INSTANCE.sendToClient(new S2CPlayerCap(data), player));
         TruceHandler.get(player.getServer()).pending(player).forEach(uuid -> player.getServer().getProfileCache().get(uuid)
                 .ifPresent(prof ->
-                        player.sendMessage(new TranslatableComponent("chat.truce.pending", prof.getName()).withStyle(ChatFormatting.GOLD), Util.NIL_UUID)));
+                        player.sendMessage(new TranslatableComponent("fateubw.chat.truce.pending", prof.getName()).withStyle(ChatFormatting.GOLD), Util.NIL_UUID)));
     }
 }

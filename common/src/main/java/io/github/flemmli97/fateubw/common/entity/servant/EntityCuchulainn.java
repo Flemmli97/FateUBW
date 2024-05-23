@@ -93,7 +93,7 @@ public class EntityCuchulainn extends BaseServant {
                 this.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.GAEBOLG.get()));
             if (this.getHealth() < 0.25 * this.getMaxHealth() && this.getHealth() > 0) {
                 if (!this.critHealth) {
-                    this.level.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("chat.servant.cuchulainn").withStyle(ChatFormatting.GOLD), ChatType.SYSTEM, Util.NIL_UUID);
+                    this.level.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("fateubw.chat.servant.cuchulainn").withStyle(ChatFormatting.GOLD), ChatType.SYSTEM, Util.NIL_UUID);
                     this.critHealth = true;
                 }
                 this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 1, 2, false, false));

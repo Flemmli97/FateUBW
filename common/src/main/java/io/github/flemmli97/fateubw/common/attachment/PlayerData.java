@@ -95,7 +95,7 @@ public class PlayerData {
         if (this.getServant(level) != null) {
             return this.getServant(level).getName();
         }
-        return new TranslatableComponent("fate.servant.none");
+        return new TranslatableComponent("fateubw.servant.none");
     }
 
     public void saveServant(Player player) {
