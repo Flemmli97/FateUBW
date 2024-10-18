@@ -43,7 +43,7 @@ public class CustomDamageSource {
         return (new EntityDamageSource("gordius", source));
     }
 
-    public static DamageSource pegasusCharge(Pegasus source, LivingEntity sourceEntity) {
+    public static DamageSource pegasusCharge(Pegasus source, Entity sourceEntity) {
         return (new EntityDamageSource("pegasus", source).setMagic());
     }
 }

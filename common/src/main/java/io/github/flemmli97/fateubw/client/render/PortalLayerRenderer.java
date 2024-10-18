@@ -35,7 +35,7 @@ public class PortalLayerRenderer<T extends Entity, M extends EntityModel<T>> ext
             poseStack.pushPose();
             this.transform.accept(poseStack);
             Matrix4f mat = poseStack.last().pose();
-            VertexConsumer vert = buffer.getBuffer(FateRenderTypes.getPulsingEntityText(this.texture));
+            VertexConsumer vert = buffer.getBuffer(FateRenders.getPulsingEntityText(this.texture));
             vert.vertex(mat, this.size, this.size, 0).color(255, 255, 255, 255).uv(0, 0).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xff00ff).normal(1, 0, 0).endVertex();
             vert.vertex(mat, this.size, -this.size, 0).color(255, 255, 255, 255).uv(0, 1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xff00ff).normal(1, 0, 0).endVertex();
             vert.vertex(mat, -this.size, -this.size, 0).color(255, 255, 255, 255).uv(1, 1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xff00ff).normal(1, 0, 0).endVertex();

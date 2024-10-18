@@ -1,7 +1,7 @@
 package io.github.flemmli97.fateubw.forge.client;
 
 import io.github.flemmli97.fateubw.client.ClientRegister;
-import io.github.flemmli97.fateubw.client.render.FateRenderTypes;
+import io.github.flemmli97.fateubw.client.render.FateRenders;
 import io.github.flemmli97.fateubw.client.render.RenderAltar;
 import io.github.flemmli97.fateubw.common.registry.ModBlocks;
 import net.minecraft.client.Minecraft;
@@ -52,7 +52,7 @@ public class ForgeClientRegister {
     }
 
     public static void registerShader(RegisterShadersEvent event) {
-        FateRenderTypes.registerShader(((id, vertexFormat, onLoad) ->
+        FateRenders.registerShader(((id, vertexFormat, onLoad) ->
                 event.registerShader(new ShaderInstance(event.getResourceManager(), id, vertexFormat), onLoad)));
     }
 }

@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.client.model.ModelPegasus;
-import io.github.flemmli97.fateubw.client.render.FateRenderTypes;
+import io.github.flemmli97.fateubw.client.render.FateRenders;
 import io.github.flemmli97.fateubw.client.render.PortalLayerRenderer;
 import io.github.flemmli97.fateubw.common.entity.minions.Pegasus;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -48,8 +48,8 @@ public class RenderPegasus extends MobRenderer<Pegasus, ModelPegasus> {
             return origin;
         Vector3f normal = new Vector3f(0, 0, 1);
         normal.transform(Vector3f.YP.rotationDegrees(-Mth.rotLerp(this.partialTicks, livingEntity.yBodyRotO, livingEntity.yBodyRot)));
-        return FateRenderTypes.getClippedRendertype(origin,
-                FateRenderTypes.createClippingPlane(normal, livingEntity, this.portalOffset()));
+        return FateRenders.getClippedRendertype(origin,
+                FateRenders.createClippingPlane(normal, livingEntity, this.portalOffset()));
     }
 
     private float portalOffset() {

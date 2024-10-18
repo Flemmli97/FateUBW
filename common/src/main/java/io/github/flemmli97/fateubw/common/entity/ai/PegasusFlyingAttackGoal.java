@@ -5,30 +5,29 @@ import io.github.flemmli97.fateubw.common.entity.minions.Pegasus;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.common.entity.ai.AnimatedAttackGoal;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
-public class PegasusAttackGoal extends AnimatedAttackGoal<Pegasus> {
+public class PegasusFlyingAttackGoal extends AnimatedAttackGoal<Pegasus> {
 
     private double[] chargeMotion;
 
-    public PegasusAttackGoal(Pegasus entity) {
+    public PegasusFlyingAttackGoal(Pegasus entity) {
         super(entity);
     }
 
     @Override
     public boolean canUse() {
-        return !this.attacker.canFly() && super.canUse();
+        return this.attacker.canFly() && super.canUse();
     }
 
     @Override
     public AnimatedAction randomAttack() {
         this.chargeMotion = null;
-        if (!this.attacker.canFly() && this.attacker.getRandom().nextFloat() < 0.7 && this.attacker.attackAABB(Pegasus.STOMP).inflate(-0.3).intersects(this.target.getBoundingBox()))
-            return Pegasus.STOMP;
         return Pegasus.CHARGING;
     }
 
@@ -53,18 +52,10 @@ public class PegasusAttackGoal extends AnimatedAttackGoal<Pegasus> {
                         e.hurt(CustomDamageSource.pegasusCharge(this.attacker, this.attacker.getControllingPassenger()), Config.Common.gordiusDmg);
                     }
                 }
+                this.attacker.playSound(SoundEvents.COW_STEP, 0.4F, 0.4F);
             } else {
                 this.attacker.lookAt(this.target, 90, 10);
                 this.attacker.chargingHandler.lockYaw(this.attacker.getYRot());
-            }
-        } else if (this.attacker.getAnimationHandler().isCurrent(Pegasus.STOMP)) {
-            if (animatedAction.canAttack()) {
-                List<LivingEntity> list = this.attacker.level.getEntitiesOfClass(LivingEntity.class, this.attacker.attackAABB(this.attacker.getAnimationHandler().getAnimation()).inflate(0.5), EntitySelector.NO_SPECTATORS.and(e -> !this.attacker.hasPassenger(e)));
-                for (LivingEntity e : list) {
-                    if (e != this.attacker) {
-                        e.hurt(CustomDamageSource.pegasusCharge(this.attacker, this.attacker.getControllingPassenger()), Config.Common.gordiusDmg);
-                    }
-                }
             }
         }
     }

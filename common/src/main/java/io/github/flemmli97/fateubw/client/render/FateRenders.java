@@ -27,14 +27,16 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class FateRenderTypes extends RenderType {
+public class FateRenders extends RenderType {
 
     private static ShaderInstance CORRUPTED_SHADER_INSTANCE;
     private static ShaderInstance CLIPPED_SHADER_INSTANCE;
     private static ShaderInstance PULSING_TEXT_SHADER;
+
     public static final ShaderStateShard CORRUPTED_SHADER = new ShaderStateShard(() -> CORRUPTED_SHADER_INSTANCE);
     public static final ShaderStateShard CLIPPED_SHADER = new ShaderStateShard(() -> CLIPPED_SHADER_INSTANCE);
     public static final ShaderStateShard BLOOM_SHADER = new ShaderStateShard(() -> PULSING_TEXT_SHADER);
+
     public static final TransparencyStateShard CORRUPTED_OVERLAY_TRANSPARENCY = new TransparencyStateShard("fateubw:corrupted_overlay_transparency", () -> {
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.SRC_COLOR);
@@ -73,11 +75,11 @@ public class FateRenderTypes extends RenderType {
     public static void registerShader(ShaderRegister register) {
         try {
             register.register(new ResourceLocation(Fate.MODID, "rendertype_corrupted"), DefaultVertexFormat.POSITION_TEX,
-                    shaderInstance -> FateRenderTypes.CORRUPTED_SHADER_INSTANCE = shaderInstance);
+                    shaderInstance -> FateRenders.CORRUPTED_SHADER_INSTANCE = shaderInstance);
             register.register(new ResourceLocation(Fate.MODID, "rendertype_clipped"), DefaultVertexFormat.NEW_ENTITY,
-                    shaderInstance -> FateRenderTypes.CLIPPED_SHADER_INSTANCE = shaderInstance);
+                    shaderInstance -> FateRenders.CLIPPED_SHADER_INSTANCE = shaderInstance);
             register.register(new ResourceLocation(Fate.MODID, "pulsing_entity_text"), DefaultVertexFormat.NEW_ENTITY,
-                    shaderInstance -> FateRenderTypes.PULSING_TEXT_SHADER = shaderInstance);
+                    shaderInstance -> FateRenders.PULSING_TEXT_SHADER = shaderInstance);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -87,7 +89,7 @@ public class FateRenderTypes extends RenderType {
         if (init)
             return;
         init = true;
-        map.computeIfAbsent(FateRenderTypes.CORRUPTED_OVERLAY, e -> new BufferBuilder(FateRenderTypes.CORRUPTED_OVERLAY.bufferSize()));
+        map.computeIfAbsent(FateRenders.CORRUPTED_OVERLAY, e -> new BufferBuilder(FateRenders.CORRUPTED_OVERLAY.bufferSize()));
     }
 
     public static RenderType getClippedRendertype(RenderType origin, Vector4f clippingPlane) {
@@ -106,7 +108,7 @@ public class FateRenderTypes extends RenderType {
         return new Vector4f(normal.x(), normal.y(), normal.z(), (float) dist + offset);
     }
 
-    private FateRenderTypes(String string, VertexFormat vertexFormat, VertexFormat.Mode mode, int i, boolean bl, boolean bl2, Runnable runnable, Runnable runnable2) {
+    private FateRenders(String string, VertexFormat vertexFormat, VertexFormat.Mode mode, int i, boolean bl, boolean bl2, Runnable runnable, Runnable runnable2) {
         super(string, vertexFormat, mode, i, bl, bl2, runnable, runnable2);
     }
 

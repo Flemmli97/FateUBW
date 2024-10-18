@@ -1,11 +1,10 @@
 package io.github.flemmli97.fateubw.common.entity.minions;
 
-import io.github.flemmli97.fateubw.common.config.Config;
 import io.github.flemmli97.fateubw.common.entity.ChargingHandler;
 import io.github.flemmli97.fateubw.common.entity.IServantMinion;
 import io.github.flemmli97.fateubw.common.entity.ai.PegasusAttackGoal;
+import io.github.flemmli97.fateubw.common.entity.ai.PegasusFlyingAttackGoal;
 import io.github.flemmli97.fateubw.common.registry.ModParticles;
-import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
 import io.github.flemmli97.tenshilib.api.entity.IAnimated;
@@ -19,9 +18,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.SpawnGroupData;
@@ -32,10 +31,10 @@ import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.function.Predicate;
 
 
@@ -45,19 +44,21 @@ public class Pegasus extends PathfinderMob implements IAnimated, IServantMinion 
     public static float PORTAL_OFFSET = 1.3f;
 
     private static final EntityDataAccessor<Float> LOCKED_YAW = SynchedEntityData.defineId(Pegasus.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Boolean> FLYING = SynchedEntityData.defineId(Pegasus.class, EntityDataSerializers.BOOLEAN);
 
-    public static final AnimatedAction CHARGING = new AnimatedAction(20, 0, "charge");
-    public static final AnimatedAction SUMMON = new AnimatedAction(1.84, 0, "summon");
-    public static final AnimatedAction CHARGING_FLYING = AnimatedAction.builder(20, "flying_charge").withClientID(CHARGING.getID()).build();
-    private static final AnimatedAction[] ANIMS = {CHARGING, SUMMON, CHARGING_FLYING};
-    private static final Predicate<AnimatedAction> CHARGING_ANIM = anim -> anim != null && (anim.getID().equals(CHARGING.getID()) || anim.getID().equals(CHARGING_FLYING.getID()));
+    public static final AnimatedAction CHARGING = new AnimatedAction(1.6, 0.36, "charge");
+    public static final AnimatedAction STOMP = new AnimatedAction(0.56, 0.4, "stomp");
+    public static final AnimatedAction SUMMON = new AnimatedAction(2.04, 0, "summon");
+    private static final AnimatedAction[] ANIMS = {CHARGING, SUMMON, STOMP};
+    private static final Predicate<AnimatedAction> CHARGING_ANIM = anim -> anim != null && (anim.getID().equals(CHARGING.getID()));
 
     public final PegasusAttackGoal attackAI = new PegasusAttackGoal(this);
+    public final PegasusFlyingAttackGoal flyingAttackAI = new PegasusFlyingAttackGoal(this);
 
     private final AnimationHandler<Pegasus> animationHandler = new AnimationHandler<>(this, ANIMS);
 
     private final PathNavigation flyingNavigator;
-    private boolean canFly;
+    private int flyTimer;
 
     public final ChargingHandler<Pegasus> chargingHandler = new ChargingHandler<>(this, LOCKED_YAW, CHARGING_ANIM);
 
@@ -67,6 +68,13 @@ public class Pegasus extends PathfinderMob implements IAnimated, IServantMinion 
             this.goalSelector.addGoal(0, this.attackAI);
         this.flyingNavigator = new FlyingPathNavigation(this, world);
         this.moveControl = new MoveHelperController(this);
+    }
+
+    @Override
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(LOCKED_YAW, 0f);
+        this.entityData.define(FLYING, false);
     }
 
     @Override
@@ -80,11 +88,7 @@ public class Pegasus extends PathfinderMob implements IAnimated, IServantMinion 
     }
 
     public boolean isCharging() {
-        return this.getAnimationHandler().isCurrent(CHARGING, CHARGING_FLYING);
-    }
-
-    public AnimatedAction getChargingAnim() {
-        return this.canFly ? CHARGING_FLYING : CHARGING;
+        return this.getAnimationHandler().isCurrent(CHARGING);
     }
 
     @Override
@@ -102,11 +106,22 @@ public class Pegasus extends PathfinderMob implements IAnimated, IServantMinion 
                 this.level.addParticle(new ColoredParticleData(ModParticles.LIGHT.get(), 245 / 255F, 10 / 255F, 10 / 255F, 1, 0.5f), pos.x(), pos.y(), pos.z(), this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01);
             }
         }
-        if (!this.level.isClientSide && this.isCharging() && !this.getPassengers().isEmpty() && this.getPassengers().get(0) instanceof LivingEntity) {
-            List<LivingEntity> list = this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(0.5), EntitySelector.NO_SPECTATORS.and(e -> !this.hasPassenger(e)));
-            for (LivingEntity e : list) {
-                if (e != this) {
-                    e.hurt(CustomDamageSource.pegasusCharge(this, (LivingEntity) this.getPassengers().get(0)), Config.Common.pegasusDamage);
+        if (!this.level.isClientSide) {
+            if (this.tickCount % 10 == 0 && this.getControllingPassenger() instanceof Mob mob) {
+                this.setTarget(mob.getTarget());
+            }
+            if (this.getTarget() == null || !this.getTarget().isAlive()) {
+                if (this.canFly())
+                    this.setCanFly(false);
+            } else {
+                if (--this.flyTimer <= 0) {
+                    if (this.canFly()) {
+                        this.flyTimer = 800 + this.getRandom().nextInt(400);
+                        this.setCanFly(false);
+                    } else {
+                        this.flyTimer = 400 + this.getRandom().nextInt(200);
+                        this.setCanFly(true);
+                    }
                 }
             }
         }
@@ -159,13 +174,25 @@ public class Pegasus extends PathfinderMob implements IAnimated, IServantMinion 
 
     @Override
     public PathNavigation getNavigation() {
-        if (this.canFly)
+        if (this.canFly())
             return this.flyingNavigator;
         return super.getNavigation();
     }
 
     public void setCanFly(boolean flag) {
-        this.canFly = flag;
+        this.entityData.set(FLYING, flag);
+        this.getAnimationHandler().setAnimation(null);
+        if (flag) {
+            this.goalSelector.removeGoal(this.attackAI);
+            this.goalSelector.addGoal(0, this.flyingAttackAI);
+        } else {
+            this.goalSelector.removeGoal(this.flyingAttackAI);
+            this.goalSelector.addGoal(0, this.attackAI);
+        }
+    }
+
+    public boolean canFly() {
+        return this.entityData.get(FLYING);
     }
 
     @Override
@@ -175,9 +202,31 @@ public class Pegasus extends PathfinderMob implements IAnimated, IServantMinion 
         return super.hurt(damageSource, damage);
     }
 
+    public AABB attackAABB(AnimatedAction anim) {
+        double range = 2;
+        if (anim.is(STOMP)) {
+            range = this.getBbWidth() * 0.5 + 2;
+            return new AABB(-range, -0.02, -range, range, this.getBbHeight() + 0.02, range).move(this.position());
+        }
+        return new AABB(-range, -0.02, -range, range, this.getBbHeight() + 0.02, range).move(this.position())
+                .expandTowards(this.getDeltaMovement());
+    }
+
     @Override
     public double getPassengersRidingOffset() {
         return (double) this.getBbHeight() * 0.6D;
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag compound) {
+        super.addAdditionalSaveData(compound);
+        compound.putBoolean("Flying", this.canFly());
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag compound) {
+        super.readAdditionalSaveData(compound);
+        this.setCanFly(compound.getBoolean("Flying"));
     }
 
     class MoveHelperController extends MoveControl {
