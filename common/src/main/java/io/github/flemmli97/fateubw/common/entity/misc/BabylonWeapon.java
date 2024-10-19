@@ -1,5 +1,6 @@
 package io.github.flemmli97.fateubw.common.entity.misc;
 
+import com.mojang.datafixers.util.Pair;
 import io.github.flemmli97.fateubw.common.config.Config;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModParticles;
@@ -9,7 +10,6 @@ import io.github.flemmli97.tenshilib.common.entity.EntityProjectile;
 import io.github.flemmli97.tenshilib.common.particle.ColoredParticleData;
 import io.github.flemmli97.tenshilib.common.utils.ItemUtils;
 import io.github.flemmli97.tenshilib.common.utils.RayTraceUtils;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -25,14 +25,13 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.List;
-import java.util.Random;
+import java.util.HashSet;
+import java.util.Set;
 
 public class BabylonWeapon extends EntityProjectile {
 
@@ -104,6 +103,10 @@ public class BabylonWeapon extends EntityProjectile {
         }
     }
 
+    public float preparationState(float partialTicks) {
+        return Math.min(1, (this.getPreShootTick() + partialTicks) / this.entityData.get(SHOOT_TIME));
+    }
+
     private int getPreShootTick() {
         return this.entityData.get(PRE_SHOOT_TICK);
     }
@@ -142,11 +145,6 @@ public class BabylonWeapon extends EntityProjectile {
         this.discard();
     }
 
-    public void setEntityProperties() {
-        this.setWeapon(CachedWeaponList.getRandomWeapon(this.random));
-        this.setProjectileAreaPosition(7);
-    }
-
     public ItemStack getWeapon() {
         return this.entityData.get(WEAPON_TYPE);
     }
@@ -172,12 +170,7 @@ public class BabylonWeapon extends EntityProjectile {
         this.entityData.set(PRE_SHOOT_TICK, compound.getInt("PreShoot"));
     }
 
-    /**
-     * for symmetry range should be odd number, minimum is 3
-     */
-    public void setProjectileAreaPosition(int range) {
-        Random rand = new Random();
-        Entity thrower = this.getOwner();
+    public static void spawnWeapons(LivingEntity thrower, LivingEntity target, int amount, int range) {
         Vec3 pos = thrower.position();
         Vec3 look = thrower.getLookAngle();
         Vec3 vert = new Vec3(0, 1, 0);
@@ -190,23 +183,24 @@ public class BabylonWeapon extends EntityProjectile {
         Vec3 hor = look.cross(vert);
         vert.normalize();
         hor.normalize();
-        int scaleHor = rand.nextInt(range) - (range - 1) / 2;
-        int scaleVert = rand.nextInt((range + 1) / 2);
-        double distance = (scaleHor * scaleHor + scaleVert * scaleVert);
-        float rangeSq = (range - 1) / 2 * (range - 1) / 2;
-        boolean playerSpace = (scaleVert == 0 && scaleHor == 0);
-        if (distance <= rangeSq && !playerSpace) {
-            Vec3 area = pos.add(hor.scale(scaleHor * 2)).add(vert.scale(scaleVert * 2 + 1));
-            BlockPos spawnPos = new BlockPos(area);
-            AABB axis = new AABB(spawnPos, spawnPos).inflate(1.0);
-            List<BabylonWeapon> list = this.level.getEntitiesOfClass(BabylonWeapon.class, axis);
-            if (list.isEmpty()) {
-                this.shoot(thrower, thrower.getXRot(), thrower.getYRot(), 0, 0.5F, 0);
-                this.setPos(area.x, area.y, area.z);
-                this.level.addFreshEntity(this);
+        float rangeSq = (range - 1f) / 2 * (range - 1f) / 2;
+        Set<Pair<Integer, Integer>> offsets = new HashSet<>();
+        for (int i = 0; i < amount; i++) {
+            Pair<Integer, Integer> offset = Pair.of(thrower.getRandom().nextInt(range) - (range - 1) / 2, thrower.getRandom().nextInt((range + 1) / 2));
+            double distance = (offset.getFirst() * offset.getFirst() + offset.getSecond() * offset.getSecond());
+            while (distance > rangeSq || offsets.contains(offset)) {
+                offset = Pair.of(thrower.getRandom().nextInt(range) - (range - 1) / 2, thrower.getRandom().nextInt((range + 1) / 2));
+                distance = (offset.getFirst() * offset.getFirst() + offset.getSecond() * offset.getSecond());
             }
-        } else {
-            this.setProjectileAreaPosition(range);
+            offsets.add(offset);
+        }
+        for (Pair<Integer, Integer> offset : offsets) {
+            BabylonWeapon weapon = new BabylonWeapon(thrower.level, thrower, target);
+            weapon.shoot(thrower, thrower.getXRot(), thrower.getYRot(), 0, 0.5F, 0);
+            Vec3 area = pos.add(hor.scale(offset.getFirst() * 2)).add(vert.scale(offset.getSecond() * 2 + 1));
+            weapon.setPos(area.x, area.y, area.z);
+            weapon.setWeapon(CachedWeaponList.getRandomWeapon(weapon.random));
+            weapon.level.addFreshEntity(weapon);
         }
     }
 }

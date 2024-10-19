@@ -51,7 +51,7 @@ public class FateRenders extends RenderType {
     public static final RenderType CORRUPTED_OVERLAY = CustomRenderTypesHelper.createType("fateubw:corrupted_overlay", DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS, 256, false, false, RenderType.CompositeState.builder().setShaderState(CORRUPTED_SHADER).setTextureState(new RenderStateShard.TextureStateShard(CORRUPTED_TEXTURE, true, false)).setWriteMaskState(COLOR_WRITE).setCullState(NO_CULL).setDepthTestState(EQUAL_DEPTH_TEST).setTransparencyState(CORRUPTED_OVERLAY_TRANSPARENCY).setTexturingState(GLINT_TEXTURING).createCompositeState(false));
 
     private static final BiFunction<RenderType, Vector4f, RenderType> CLIPPED = (wrapped, plane) ->
-            new RenderType("rendertype_clipped", wrapped.format(), wrapped.mode(), wrapped.bufferSize(),
+            new RenderType("rendertype_clipped_" + wrapped.toString(), wrapped.format(), wrapped.mode(), wrapped.bufferSize(),
                     wrapped.affectsCrumbling(), ((RenderTypeAccessor) wrapped).getSortOnUpload(), () -> {
                 wrapped.setupRenderState();
                 CLIPPED_SHADER.setupRenderState();

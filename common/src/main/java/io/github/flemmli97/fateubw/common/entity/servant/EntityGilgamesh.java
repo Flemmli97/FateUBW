@@ -101,21 +101,11 @@ public class EntityGilgamesh extends BaseServant {
     }
 
     private void spawnBehind(LivingEntity target, int amount) {
-        for (int x = 0; x < amount; x++) {
-            BabylonWeapon weapon = new BabylonWeapon(this.level, this, target);
-            if (!this.level.isClientSide) {
-                weapon.setEntityProperties();
-            }
-        }
+        BabylonWeapon.spawnWeapons(this, target, amount, 7);
     }
 
     private void spawnAroundTarget(LivingEntity target, int amount) {
-        for (int x = 0; x < amount; x++) {
-            BabylonWeapon weapon = new BabylonWeapon(this.level, this, target);
-            if (!this.level.isClientSide) {
-                weapon.setEntityProperties();
-            }
-        }
+        BabylonWeapon.spawnWeapons(this, target, amount, 7);
     }
 
     @Override
