@@ -104,7 +104,7 @@ public class EntityCuchulainn extends BaseServant {
     public void attackWithNP(LivingEntity target) {
         if (target != null) {
             GaeBolg gaeBolg = new GaeBolg(this.level, this);
-            gaeBolg.shootAtEntity(target, 1.5F, 0, 0);
+            gaeBolg.shootAtEntity(target, 1.5F, 0);
             this.level.addFreshEntity(gaeBolg);
             this.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
             this.gaeBolgThrowTick = 100;

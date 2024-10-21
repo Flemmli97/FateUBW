@@ -12,7 +12,7 @@ public class RenderEA extends RenderBeam<EnumaElish> {
     public static final ResourceLocation TEX = new ResourceLocation(Fate.MODID, "textures/entity/ea.png");
 
     public RenderEA(EntityRendererProvider.Context ctx) {
-        super(ctx, Excalibur.RADIUS - 0.2f, 6);
+        super(ctx, Excalibur.RADIUS - 0.2f, 4);
     }
 
     @Override

@@ -23,6 +23,7 @@ import net.minecraft.world.entity.Pose;
 
 public abstract class ServantRenderer<T extends BaseServant, M extends BaseServantModel<T>> extends LivingEntityRenderer<T, BaseServantModel<T>> {
 
+    private static boolean DEBUG_RENDER = false;
     private static final ResourceLocation DEFAULT_RES_LOC = new ResourceLocation("textures/entity/steve.png");
 
     private final ModelServant<T> defaultModel;
@@ -147,7 +148,7 @@ public abstract class ServantRenderer<T extends BaseServant, M extends BaseServa
     }
 
     public static boolean showIdentity(BaseServant servant) {
-        return servant.isDeadOrDying() || servant.showServant() || Minecraft.getInstance().player.equals(servant.getOwner());
+        return DEBUG_RENDER || servant.isDeadOrDying() || servant.showServant() || Minecraft.getInstance().player.equals(servant.getOwner());
     }
 
     public abstract ResourceLocation servantTexture(T servant);

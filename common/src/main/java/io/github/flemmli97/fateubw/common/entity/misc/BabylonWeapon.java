@@ -86,7 +86,7 @@ public class BabylonWeapon extends EntityProjectile {
                     HitResult hit = RayTraceUtils.entityRayTrace(thrower, 64, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, false, false, null);
                     this.shootAtPosition(hit.getLocation().x, hit.getLocation().y, hit.getLocation().z, 1.5F, 1);
                 } else if (this.target != null) {
-                    this.shootAtEntity(this.target, 1.5F, 1, 0);
+                    this.shootAtEntity(this.target, 1.5F, 1);
                 }
             }
         } else if (this.getPreShootTick() > this.entityData.get(SHOOT_TIME)) {
@@ -171,6 +171,40 @@ public class BabylonWeapon extends EntityProjectile {
     }
 
     public static void spawnWeapons(LivingEntity thrower, LivingEntity target, int amount, int range) {
+        Vec3 pos = thrower.position();
+        Vec3 look = thrower.getLookAngle();
+        Vec3 vert = new Vec3(0, 1, 0);
+        if (-20 < thrower.getXRot() && thrower.getXRot() > 20)
+            vert.xRot(thrower.getXRot());
+        if (-20 > thrower.getXRot())
+            vert.xRot(-20);
+        if (20 < thrower.getXRot())
+            vert.xRot(20);
+        Vec3 hor = look.cross(vert);
+        vert.normalize();
+        hor.normalize();
+        float rangeSq = (range - 1f) / 2 * (range - 1f) / 2;
+        Set<Pair<Integer, Integer>> offsets = new HashSet<>();
+        for (int i = 0; i < amount; i++) {
+            Pair<Integer, Integer> offset = Pair.of(thrower.getRandom().nextInt(range) - (range - 1) / 2, thrower.getRandom().nextInt((range + 1) / 2));
+            double distance = (offset.getFirst() * offset.getFirst() + offset.getSecond() * offset.getSecond());
+            while (distance > rangeSq || offsets.contains(offset)) {
+                offset = Pair.of(thrower.getRandom().nextInt(range) - (range - 1) / 2, thrower.getRandom().nextInt((range + 1) / 2));
+                distance = (offset.getFirst() * offset.getFirst() + offset.getSecond() * offset.getSecond());
+            }
+            offsets.add(offset);
+        }
+        for (Pair<Integer, Integer> offset : offsets) {
+            BabylonWeapon weapon = new BabylonWeapon(thrower.level, thrower, target);
+            weapon.shoot(thrower, thrower.getXRot(), thrower.getYRot(), 0, 0.5F, 0);
+            Vec3 area = pos.add(hor.scale(offset.getFirst() * 2)).add(vert.scale(offset.getSecond() * 2 + 1));
+            weapon.setPos(area.x, area.y, area.z);
+            weapon.setWeapon(CachedWeaponList.getRandomWeapon(weapon.random));
+            weapon.level.addFreshEntity(weapon);
+        }
+    }
+
+    public static void spawnWeaponsAround(LivingEntity thrower, LivingEntity target, int amount, int range) {
         Vec3 pos = thrower.position();
         Vec3 look = thrower.getLookAngle();
         Vec3 vert = new Vec3(0, 1, 0);

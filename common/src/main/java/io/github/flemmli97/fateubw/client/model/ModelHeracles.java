@@ -60,7 +60,7 @@ public class ModelHeracles<T extends EntityHeracles & IAnimated> extends ModelSe
         this.rightElbow = this.model.getPart("rightElbow");
         this.rightLowerArm = this.model.getPart("rightLowerArm");
         this.rightWrist = this.model.getPart("rightWrist");
-        this.servantBody.visible = false;
+        this.body.visible = false;
     }
 
     public static LayerDefinition createBodyLayer() {

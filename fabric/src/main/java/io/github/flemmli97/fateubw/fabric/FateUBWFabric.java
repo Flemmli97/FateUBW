@@ -1,6 +1,7 @@
 package io.github.flemmli97.fateubw.fabric;
 
 import io.github.flemmli97.fateubw.Fate;
+import io.github.flemmli97.fateubw.client.ClientCalls;
 import io.github.flemmli97.fateubw.common.commands.CommandHandler;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.event.EventCalls;
@@ -31,6 +32,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 
 import java.util.concurrent.CompletableFuture;
@@ -84,5 +86,10 @@ public class FateUBWFabric implements ModInitializer {
         ModEntities.registeredAttributes().forEach(FabricDefaultAttributeRegistry::register);
         AdvancementRegister.init();
         ServerPacketHandler.registerServer();
+    }
+
+    public static void entityTick(LivingEntity entity) {
+        if (entity.level.isClientSide)
+            ClientCalls.tick(entity);
     }
 }

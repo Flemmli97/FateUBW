@@ -33,7 +33,7 @@ public class ModelMedea<T extends EntityMedea & IAnimated> extends ModelServant<
         this.head = this.model.getPart("head");
         this.leftArm = this.model.getPart("leftArm");
         this.rightArm = this.model.getPart("rightArm");
-        this.servantBody.visible = false;
+        this.body.visible = false;
     }
 
     public static LayerDefinition createBodyLayer() {

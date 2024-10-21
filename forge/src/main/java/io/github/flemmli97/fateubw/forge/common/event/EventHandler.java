@@ -1,6 +1,7 @@
 package io.github.flemmli97.fateubw.forge.common.event;
 
 import io.github.flemmli97.fateubw.Fate;
+import io.github.flemmli97.fateubw.client.ClientCalls;
 import io.github.flemmli97.fateubw.common.commands.CommandHandler;
 import io.github.flemmli97.fateubw.common.event.EventCalls;
 import io.github.flemmli97.fateubw.common.network.S2CPlayerCap;
@@ -18,6 +19,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -61,5 +63,11 @@ public class EventHandler {
             if (!rev)
                 event.getOriginal().invalidateCaps();
         }
+    }
+
+    @SubscribeEvent
+    public static void updateLivingTick(LivingEvent.LivingUpdateEvent event) {
+        if (event.getEntityLiving().level.isClientSide)
+            ClientCalls.tick(event.getEntityLiving());
     }
 }

@@ -29,6 +29,7 @@ public class PacketRegistrar {
         register.registerMessage(id++, S2CServantSync.ID, S2CServantSync.class, S2CServantSync::write, S2CServantSync::read, S2CServantSync::handle);
         register.registerMessage(id++, S2CTruceData.ID, S2CTruceData.class, S2CTruceData::write, S2CTruceData::read, S2CTruceData::handle);
         register.registerMessage(id++, S2CWarData.ID, S2CWarData.class, S2CWarData::write, S2CWarData::read, S2CWarData::handle);
+        register.registerMessage(id++, S2CScreenShake.ID, S2CScreenShake.class, S2CScreenShake::write, S2CScreenShake::read, S2CScreenShake::handle);
         return id;
     }
 

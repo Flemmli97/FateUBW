@@ -3,6 +3,7 @@ package io.github.flemmli97.fateubw.common.utils;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.registry.ModAttributes;
 import io.github.flemmli97.fateubw.common.world.TruceHandler;
+import io.github.flemmli97.tenshilib.common.entity.ai.animated.GoalAttackAction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 
@@ -10,6 +11,10 @@ import java.util.List;
 import java.util.UUID;
 
 public class Utils {
+
+    public static <T extends BaseServant> GoalAttackAction.Condition<T> npCheck() {
+        return (goal, target, prev) -> (goal.attacker.canUseNP() && goal.attacker.getOwner() == null && goal.attacker.getMana() >= goal.attacker.props().hogouMana()) || goal.attacker.forcedNP;
+    }
 
     public static boolean testNearbyEnemy(BaseServant servant) {
         List<?> var1 = servant.level.getEntitiesOfClass(BaseServant.class, servant.getBoundingBox().expandTowards(32, 3.0D, 32));

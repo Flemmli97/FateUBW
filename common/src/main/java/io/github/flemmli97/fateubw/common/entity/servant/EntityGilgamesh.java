@@ -105,7 +105,7 @@ public class EntityGilgamesh extends BaseServant {
     }
 
     private void spawnAroundTarget(LivingEntity target, int amount) {
-        BabylonWeapon.spawnWeapons(this, target, amount, 7);
+        BabylonWeapon.spawnWeaponsAround(this, target, amount, 7);
     }
 
     @Override

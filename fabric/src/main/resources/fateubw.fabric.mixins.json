@@ -7,11 +7,14 @@
     "DamageSourceAccessor",
     "ItemRendererAccessor",
     "PlayerMixin",
+    "LivingEntityMixin",
     "ItemStackMixin",
     "ServerPlayerMixin",
     "EnchantmentMixin"
   ],
   "client": [
+    "CameraAccessor",
+    "GameRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

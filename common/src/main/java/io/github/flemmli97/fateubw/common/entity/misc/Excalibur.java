@@ -1,6 +1,7 @@
 package io.github.flemmli97.fateubw.common.entity.misc;
 
 import com.mojang.math.Vector3f;
+import io.github.flemmli97.fateubw.client.ShakeHandler;
 import io.github.flemmli97.fateubw.common.config.Config;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModParticles;
@@ -59,6 +60,9 @@ public class Excalibur extends EntityBeam {
                 double lenScale = this.random.nextDouble();
                 Vec3 ppos = pos.add(this.up.scale(upScale)).add(this.side.scale(sideScale)).add(this.dir.scale(lenScale));
                 this.level.addParticle(new ColoredParticleData(ModParticles.LIGHT.get(), 245 / 255F, 245 / 255F, 5 / 255F, 1, 0.15f), ppos.x(), ppos.y(), ppos.z(), this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01);
+            }
+            if (this.tickCount % 3 == 1) {
+                ShakeHandler.shakeScreen(this.position(), this.getRange() + 4, 3, 1.5f);
             }
         }
     }

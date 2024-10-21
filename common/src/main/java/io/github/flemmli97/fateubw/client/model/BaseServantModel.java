@@ -11,10 +11,6 @@ import java.util.function.Function;
 
 public abstract class BaseServantModel<T extends Entity> extends EntityModel<T> implements IArmModel, HeadedModel, IPreRenderUpdate<T>, ExtendedModel {
 
-    protected BaseServantModel() {
-        this(RenderType::entityCutoutNoCull);
-    }
-
     protected BaseServantModel(Function<ResourceLocation, RenderType> function) {
         super(function);
     }

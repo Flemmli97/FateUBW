@@ -71,6 +71,8 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -79,6 +81,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public abstract class BaseServant extends PathfinderMob implements IAnimated, OwnableEntity {
@@ -112,8 +115,12 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     private final ServantProperties prop;
 
     private final Predicate<LivingEntity> targetPred = (target) -> {
+        if (target == this)
+            return false;
         if (target instanceof BaseServant)
             return !Utils.inSameTeam(BaseServant.this, (BaseServant) target);
+        if (target instanceof Mob mob && this == mob.getTarget())
+            return true;
         if (target instanceof ServerPlayer)
             return target != BaseServant.this.getOwner() && !Utils.inSameTeam((ServerPlayer) target, BaseServant.this);
         return target instanceof Enemy;
@@ -127,13 +134,14 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     public RetaliateGoal targetHurt = new RetaliateGoal(this);
     public MoveTowardsRestrictionGoal restrictArea = new MoveTowardsRestrictionGoal(this, 1.0D);
     public WaterAvoidingRandomStrollGoal wander = new WaterAvoidingRandomStrollGoal(this, 1.0D);
+    protected Vec3 targetPosition;
 
     public BaseServant(EntityType<? extends BaseServant> entityType, Level world, String hogou) {
         super(entityType, world);
         this.moveControl = new MoveControllerPlus(this);
         this.xpReward = 35;
         this.prop = Config.Common.attributes.getOrDefault(PlatformUtils.INSTANCE.entities().getIDFrom(entityType).toString(), ServantProperties.DEF);
-        if (world != null && !world.isClientSide) {
+        if (!world.isClientSide) {
             this.goals();
             this.updateAttributes();
         }
@@ -413,6 +421,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
             } else
                 this.chunkTracked = false;
 
+            this.getAnimationHandler().runIfNotNull(this::handleAttack);
             if (this.getOwner() instanceof ServerPlayer serverPlayer) {
                 if (!this.tracked.contains(serverPlayer)) {
                     if (!this.addToOwner) {
@@ -551,6 +560,61 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         if (matching.isEmpty())
             return null;
         return matching.get(this.random.nextInt(matching.size()));
+    }
+
+    public void handleAttack(AnimatedAction anim) {
+        this.getNavigation().stop();
+        if (anim.getTick() == 1 && this.getTarget() != null) {
+            this.lookAtNow(this.getTarget(), 360, 90);
+            this.targetPosition = this.getTarget().position();
+        }
+        if (anim.canAttack()) {
+            this.mobAttack(anim, this.getTarget(), this::doHurtTarget);
+            this.targetPosition = null;
+        }
+    }
+
+    public void lookAtNow(Entity entity, float maxYRotIncrease, float maxXRotIncrease) {
+        super.lookAt(entity, maxYRotIncrease, maxXRotIncrease);
+        this.yHeadRot = this.getYRot();
+        this.yBodyRot = this.yHeadRot;
+    }
+
+    public void mobAttack(AnimatedAction anim, LivingEntity target, Consumer<LivingEntity> cons) {
+        AABB aabb = this.calculateAttackAABB(anim, this.targetPosition != null || target == null ? this.targetPosition : target.position(), 0.2);
+        this.level.getEntitiesOfClass(LivingEntity.class, aabb, this.targetPred).forEach(e -> {
+            e.hurtTime = 10;
+            cons.accept(e);
+        });
+    }
+
+    public AABB calculateAttackAABB(AnimatedAction anim, Vec3 target, double grow) {
+        double reach = this.maxAttackRange(anim) * 0.5 + this.getBbWidth();
+        Vec3 dir;
+        if (target != null && !this.canBeControlledByRider()) {
+            reach = Math.min(reach, this.position().distanceTo(target));
+            dir = target.subtract(this.position()).normalize();
+        } else {
+            if (this.getControllingPassenger() instanceof Player player)
+                dir = player.getLookAngle();
+            else
+                dir = Vec3.directionFromRotation(this.getXRot(), this.getYRot());
+        }
+        Vec3 attackPos = this.position().add(dir.scale(reach));
+        return this.attackAABB(anim).inflate(grow, 0, grow).move(attackPos.x, attackPos.y, attackPos.z);
+    }
+
+    public AABB attackCheckAABB(AnimatedAction anim, LivingEntity target, double grow) {
+        return this.calculateAttackAABB(anim, target.position(), grow);
+    }
+
+    public AABB attackAABB(AnimatedAction anim) {
+        double range = this.maxAttackRange(anim) * 0.5;
+        return new AABB(-range, -0.02, -range, range, this.getBbHeight() + 0.02, range);
+    }
+
+    public double maxAttackRange(AnimatedAction anim) {
+        return 1.2;
     }
 
     @Override

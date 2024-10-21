@@ -3,8 +3,10 @@ package io.github.flemmli97.fateubw.forge.client;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.client.ClientCalls;
 import io.github.flemmli97.fateubw.client.ClientHandler;
+import io.github.flemmli97.fateubw.client.ShakeHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -45,5 +47,10 @@ public class ClientEvents {
             if (!Minecraft.getInstance().isPaused())
                 ClientHandler.clientTick++;
         }
+    }
+
+    @SubscribeEvent
+    public static void shaking(EntityViewRenderEvent.CameraSetup event) {
+        ShakeHandler.renderShaking(event.getCamera(), event.getYaw(), event.getPitch(), event.getRoll(), (float) event.getPartialTicks(), event::setYaw, event::setPitch, event::setRoll);
     }
 }

@@ -136,7 +136,7 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
     public void throwDaggerAt(LivingEntity target) {
         if (!this.level.isClientSide) {
             ChainDagger dagger = new ChainDagger(this.level, this, true);
-            dagger.shootAtEntity(target, 3, 0, 0);
+            dagger.shootAtEntity(target, 3, 0);
             this.level.addFreshEntity(dagger);
             this.dagger = dagger;
             this.throwCooldown = this.random.nextInt(32) + 45;
