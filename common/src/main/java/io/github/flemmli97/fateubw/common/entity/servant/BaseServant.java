@@ -2,8 +2,8 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
-import io.github.flemmli97.fateubw.common.config.Config;
-import io.github.flemmli97.fateubw.common.config.ServantProperties;
+import io.github.flemmli97.fateubw.api.datapack.ServantProperties;
+import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.entity.IServantMinion;
 import io.github.flemmli97.fateubw.common.entity.servant.ai.FollowMasterGoal;
 import io.github.flemmli97.fateubw.common.entity.servant.ai.RetaliateGoal;
@@ -141,7 +141,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         super(entityType, world);
         this.moveControl = new MoveControllerPlus(this);
         this.xpReward = 35;
-        this.prop = Config.Common.attributes.getOrDefault(PlatformUtils.INSTANCE.entities().getIDFrom(entityType).toString(), ServantProperties.DEF);
+        this.prop = DatapackHandler.getServantProp(this.getType());
         if (!world.isClientSide) {
             this.goals();
             this.updateAttributes();
@@ -258,7 +258,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         this.getAttribute(ModAttributes.MAGIC_RESISTANCE.get()).setBaseValue(this.prop.magicRes());
         this.getAttribute(ModAttributes.PROJECTILE_BLOCK_CHANCE.get()).setBaseValue(this.prop.projectileBlockChance());
         this.getAttribute(ModAttributes.PROJECTILE_RESISTANCE.get()).setBaseValue(this.prop.projectileProt());
-        this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(this.prop.moveSpeed());//default 0.3
+        this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(this.prop.moveSpeed());
     }
 
     //=====Mana stuff

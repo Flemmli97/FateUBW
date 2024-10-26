@@ -23,12 +23,18 @@ import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.NaturalSpawner;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.data.loading.DatagenModLoader;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.eventbus.api.Event;
 
 import java.util.Optional;
 
 public class PlatformImpl implements Platform {
+
+    @Override
+    public boolean isDatagen() {
+        return DatagenModLoader.isRunningDataGen();
+    }
 
     @Override
     public Optional<PlayerData> getPlayerData(Player player) {

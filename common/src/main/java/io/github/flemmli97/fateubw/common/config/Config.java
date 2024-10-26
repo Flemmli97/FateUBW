@@ -1,8 +1,6 @@
 package io.github.flemmli97.fateubw.common.config;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Config {
 
@@ -30,7 +28,6 @@ public class Config {
         public static boolean notifyAll;
         public static PotionEffectsConfig npBoostEffect = new PotionEffectsConfig();
 
-        public static Map<String, ServantProperties> attributes = new HashMap<>();
         public static float lancelotReflectChance;
         public static int hassanCopies;
 
@@ -52,6 +49,5 @@ public class Config {
         public static float pegasusDamage;
         public static int medeaCircleSpan;
         public static float medeaCircleRange;
-        public static ServantProperties hassanCopyProps = new ServantProperties(50, 5, 6.5, 0, 12, 2, 0.34, 0);
     }
 }

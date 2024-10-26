@@ -2,8 +2,6 @@ package io.github.flemmli97.fateubw.forge.common.config;
 
 import io.github.flemmli97.fateubw.common.config.Config;
 
-import java.util.Map;
-
 public class ConfigLoader {
 
     public static void loadClient() {
@@ -30,9 +28,6 @@ public class ConfigLoader {
         Config.Common.notifyAll = ConfigSpecs.COMMON_CONF.notifyAll.get();
         Config.Common.npBoostEffect.readFromString(ConfigSpecs.COMMON_CONF.npBoostEffect.get());
 
-        Config.Common.attributes.clear();
-        for (Map.Entry<String, ServantConfSpec> e : ConfigSpecs.COMMON_CONF.attributes.entrySet())
-            Config.Common.attributes.put(e.getKey(), ServantConfSpec.read(e.getValue()));
         Config.Common.lancelotReflectChance = ConfigSpecs.COMMON_CONF.lancelotReflectChance.get().floatValue();
         Config.Common.hassanCopies = ConfigSpecs.COMMON_CONF.hassanCopies.get();
         //Minions
@@ -51,6 +46,5 @@ public class ConfigLoader {
         Config.Common.pegasusHealth = ConfigSpecs.COMMON_CONF.pegasusHealth.get();
         Config.Common.medeaCircleSpan = ConfigSpecs.COMMON_CONF.medeaCircleSpan.get();
         Config.Common.medeaCircleRange = ConfigSpecs.COMMON_CONF.medeaCircleRange.get().floatValue();
-        Config.Common.hassanCopyProps = ServantConfSpec.read(ConfigSpecs.COMMON_CONF.hassanCopyProps);
     }
 }

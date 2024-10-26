@@ -1,0 +1,10 @@
+{
+  "health": 200.0,
+  "strength": 6.0,
+  "armor": 8.5,
+  "projectileProt": 17.0,
+  "magicProt": 4.0,
+  "moveSpeed": 0.34,
+  "projectileBlockChance": 0.0,
+  "nobelPhantasmCost": 15
+}

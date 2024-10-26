@@ -30,6 +30,11 @@ import java.util.Optional;
 public class PlatformImpl implements Platform {
 
     @Override
+    public boolean isDatagen() {
+        return false;
+    }
+
+    @Override
     public Optional<PlayerData> getPlayerData(Player player) {
         return Optional.ofNullable(((PlayerDataGet) player).getData());
     }

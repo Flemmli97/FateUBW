@@ -25,6 +25,8 @@ public interface Platform {
             "io.github.flemmli97.fateubw.fabric.platform.PlatformImpl",
             "io.github.flemmli97.fateubw.forge.platform.PlatformImpl");
 
+    boolean isDatagen();
+
     Optional<PlayerData> getPlayerData(Player player);
 
     /**
@@ -50,5 +52,4 @@ public interface Platform {
     AxeItem createAxe(Tier tier, float baseAttack, float speed, Item.Properties props);
 
     DamageSource setBypassArmor(DamageSource source);
-
 }

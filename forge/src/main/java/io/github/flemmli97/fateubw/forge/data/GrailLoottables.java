@@ -1,8 +1,8 @@
 package io.github.flemmli97.fateubw.forge.data;
 
 import io.github.flemmli97.fateubw.Fate;
-import io.github.flemmli97.fateubw.api.datagen.GrailLootBuilder;
-import io.github.flemmli97.fateubw.api.datagen.GrailLootProvider;
+import io.github.flemmli97.fateubw.api.datapack.GrailLootBuilder;
+import io.github.flemmli97.fateubw.api.datapack.provider.GrailLootProvider;
 import io.github.flemmli97.fateubw.common.loot.entry.AttributeEntry;
 import io.github.flemmli97.fateubw.common.loot.entry.VanillaItemEntry;
 import io.github.flemmli97.fateubw.common.loot.entry.XPEntry;

@@ -86,6 +86,7 @@ public class FateUBWForge {
 
     public void reloadListener(AddReloadListenerEvent event) {
         event.addListener(DatapackHandler.LOOT_TABLES);
+        event.addListener(DatapackHandler.SERVANT_PROPS);
     }
 
     public void attributes(EntityAttributeCreationEvent event) {

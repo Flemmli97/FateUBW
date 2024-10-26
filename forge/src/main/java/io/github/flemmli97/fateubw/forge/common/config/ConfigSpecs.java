@@ -1,16 +1,12 @@
 package io.github.flemmli97.fateubw.forge.common.config;
 
 import com.google.common.collect.Lists;
-import io.github.flemmli97.fateubw.common.config.Config;
 import io.github.flemmli97.fateubw.common.config.PotionEffectsConfig;
-import io.github.flemmli97.fateubw.common.config.ServantProperties;
 import io.github.flemmli97.fateubw.common.lib.LibEntities;
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ConfigSpecs {
 
@@ -53,7 +49,6 @@ public class ConfigSpecs {
         public final ForgeConfigSpec.ConfigValue<List<String>> npBoostEffect;
 
         //Servants
-        public final Map<String, ServantConfSpec> attributes = new HashMap<>();
         public ForgeConfigSpec.DoubleValue lancelotReflectChance;
         public ForgeConfigSpec.IntValue hassanCopies;
 
@@ -73,7 +68,6 @@ public class ConfigSpecs {
         public final ForgeConfigSpec.DoubleValue pegasusHealth;
         public final ForgeConfigSpec.IntValue medeaCircleSpan;
         public final ForgeConfigSpec.DoubleValue medeaCircleRange;
-        public final ServantConfSpec hassanCopyProps;
 
         public Common(ForgeConfigSpec.Builder builder) {
             builder.push("general");
@@ -98,16 +92,8 @@ public class ConfigSpecs {
             builder.pop();
 
             builder.push("servants");
-            this.attributes.clear();
-            for (Map.Entry<String, ServantProperties> e : Config.Common.attributes.entrySet()) {
-                builder.push(e.getKey());
-                this.attributes.put(e.getKey(), new ServantConfSpec(builder, e.getValue()));
-                if (e.getKey().equals(LibEntities.LANCELOT.toString()))
-                    this.lancelotReflectChance = builder.comment("Chance for lancelot to reflect a blocked projectile").defineInRange("Projectile Reflect Chance", 0.3, 0, 1);
-                if (e.getKey().equals(LibEntities.HASSAN.toString()))
-                    this.hassanCopies = builder.comment("Amount of copies hassan can call").defineInRange("Hassan Copies", 5, 0, Integer.MAX_VALUE);
-                builder.pop();
-            }
+            this.lancelotReflectChance = builder.comment("Chance for lancelot to reflect a blocked projectile").defineInRange("Projectile Reflect Chance", 0.3, 0, 1);
+            this.hassanCopies = builder.comment("Amount of copies hassan can call").defineInRange("Hassan Copies", 5, 0, Integer.MAX_VALUE);
             builder.pop();
 
             builder.push("minions");
@@ -127,9 +113,6 @@ public class ConfigSpecs {
             this.pegasusHealth = builder.comment("Health of Pegasus").defineInRange("Pegasus Health", 50D, 0, Double.MAX_VALUE);
             this.medeaCircleSpan = builder.comment("Time in ticks for medeas magic circle").defineInRange("Magic Circle Duration", 12000, 0, Integer.MAX_VALUE);
             this.medeaCircleRange = builder.comment("Range of medeas magic circle").defineInRange("Magic Circle Range", 32D, 0, Double.MAX_VALUE);
-            builder.push("hassanCopy");
-            this.hassanCopyProps = new ServantConfSpec(builder, Config.Common.hassanCopyProps);
-            builder.pop();
             builder.pop();
         }
     }

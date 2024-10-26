@@ -1,10 +1,11 @@
-package io.github.flemmli97.fateubw.api.datagen;
+package io.github.flemmli97.fateubw.api.datapack.provider;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
 import io.github.flemmli97.fateubw.Fate;
+import io.github.flemmli97.fateubw.api.datapack.GrailLootBuilder;
 import io.github.flemmli97.fateubw.common.loot.GrailLootTable;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;

@@ -1,6 +1,7 @@
 package io.github.flemmli97.fateubw.common.entity.minions;
 
-import io.github.flemmli97.fateubw.common.config.Config;
+import io.github.flemmli97.fateubw.api.datapack.ServantProperties;
+import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.entity.IServantMinion;
 import io.github.flemmli97.fateubw.common.entity.ai.AnimatedMeleeGoal;
 import io.github.flemmli97.fateubw.common.entity.ai.TargetOwnerEnemyGoal;
@@ -49,9 +50,9 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
 
     private final AnimationHandler<HassanClone> animationHandler = new AnimationHandler<>(this, AnimatedAction.vanillaAttackOnly);
 
-    public HassanClone(EntityType<? extends HassanClone> type, Level world) {
-        super(type, world);
-        if (world != null && !world.isClientSide) {
+    public HassanClone(EntityType<? extends HassanClone> type, Level level) {
+        super(type, level);
+        if (!level.isClientSide) {
             this.updateAttributes();
         }
     }
@@ -89,14 +90,15 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
     }
 
     private void updateAttributes() {
-        this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(Config.Common.hassanCopyProps.health());
+        ServantProperties props = DatapackHandler.getServantProp(this.getType());
+        this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(props.health());
         this.setHealth(this.getMaxHealth());
-        this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(Config.Common.hassanCopyProps.strength());
-        this.getAttribute(Attributes.ARMOR).setBaseValue(Config.Common.hassanCopyProps.armor());
-        this.getAttribute(ModAttributes.MAGIC_RESISTANCE.get()).setBaseValue(Config.Common.hassanCopyProps.magicRes());
-        this.getAttribute(ModAttributes.PROJECTILE_BLOCK_CHANCE.get()).setBaseValue(Config.Common.hassanCopyProps.projectileBlockChance());
-        this.getAttribute(ModAttributes.PROJECTILE_RESISTANCE.get()).setBaseValue(Config.Common.hassanCopyProps.projectileProt());
-        this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(Config.Common.hassanCopyProps.moveSpeed());//default 0.3
+        this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(props.strength());
+        this.getAttribute(Attributes.ARMOR).setBaseValue(props.armor());
+        this.getAttribute(ModAttributes.MAGIC_RESISTANCE.get()).setBaseValue(props.magicRes());
+        this.getAttribute(ModAttributes.PROJECTILE_BLOCK_CHANCE.get()).setBaseValue(props.projectileBlockChance());
+        this.getAttribute(ModAttributes.PROJECTILE_RESISTANCE.get()).setBaseValue(props.projectileProt());
+        this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(props.moveSpeed());//default 0.3
     }
 
     @Override

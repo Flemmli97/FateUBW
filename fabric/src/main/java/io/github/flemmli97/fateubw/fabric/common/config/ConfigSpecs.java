@@ -2,18 +2,14 @@ package io.github.flemmli97.fateubw.fabric.common.config;
 
 import com.google.common.collect.Lists;
 import io.github.flemmli97.fateubw.Fate;
-import io.github.flemmli97.fateubw.common.config.Config;
 import io.github.flemmli97.fateubw.common.config.PotionEffectsConfig;
-import io.github.flemmli97.fateubw.common.config.ServantProperties;
 import io.github.flemmli97.fateubw.common.lib.LibEntities;
 import io.github.flemmli97.tenshilib.common.config.CommentedJsonConfig;
 import io.github.flemmli97.tenshilib.common.config.JsonConfig;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ConfigSpecs {
 
@@ -71,7 +67,6 @@ public class ConfigSpecs {
         public final CommentedJsonConfig.CommentedVal<List<String>> npBoostEffect;
 
         //Servants
-        public final Map<String, ServantConfSpec> attributes = new HashMap<>();
         public CommentedJsonConfig.DoubleVal lancelotReflectChance;
         public CommentedJsonConfig.IntVal hassanCopies;
 
@@ -91,7 +86,6 @@ public class ConfigSpecs {
         public final CommentedJsonConfig.DoubleVal pegasusHealth;
         public final CommentedJsonConfig.IntVal medeaCircleSpan;
         public final CommentedJsonConfig.DoubleVal medeaCircleRange;
-        public final ServantConfSpec hassanCopyProps;
 
         public Common(CommentedJsonConfig.Builder builder) {
             this.minPlayer = builder.comment("Minimum of player count required to start a grail war").defineInRange("Min Player", 1, 1, Integer.MAX_VALUE);
@@ -113,17 +107,12 @@ public class ConfigSpecs {
             this.npBoostEffect = builder.comment("Potions applied when boostin servants using a command seal. Usage: " + PotionEffectsConfig.usage()).define("NP Effects",
                     Lists.newArrayList("minecraft:resistance,6000,2", "minecraft:regeneration,6000,1", "minecraft:strength,6000,2", "minecraft:speed,6000,2"));
 
-            this.attributes.clear();
-            for (Map.Entry<String, ServantProperties> e : Config.Common.attributes.entrySet()) {
-                builder.push(e.getKey());
-                this.attributes.put(e.getKey(), new ServantConfSpec(builder, e.getValue()));
-                if (e.getKey().equals(LibEntities.LANCELOT.toString()))
-                    this.lancelotReflectChance = builder.comment("Chance for lancelot to reflect a blocked projectile").defineInRange("Projectile Reflect Chance", 0.3, 0, 1);
-                if (e.getKey().equals(LibEntities.HASSAN.toString()))
-                    this.hassanCopies = builder.comment("Amount of copies hassan can call").defineInRange("Hassan Copies", 5, 0, Integer.MAX_VALUE);
-                builder.pop();
-            }
+            builder.push("servants");
+            this.lancelotReflectChance = builder.comment("Chance for lancelot to reflect a blocked projectile").defineInRange("Projectile Reflect Chance", 0.3, 0, 1);
+            this.hassanCopies = builder.comment("Amount of copies hassan can call").defineInRange("Hassan Copies", 5, 0, Integer.MAX_VALUE);
+            builder.pop();
 
+            builder.push("minions");
             this.gillesMinionDuration = builder.comment("Living duration of gilles monster in ticks").defineInRange("Gilles Monster", 6000, 0, Integer.MAX_VALUE);
             this.gillesMinionAmount = builder.comment("Max amount gilles can have at once").defineInRange("Gilles Monster Max Amount", 6, 0, Integer.MAX_VALUE);
             this.smallMonsterDamage = builder.comment("Damage by gilles small monsters").defineInRange("Small Monster Damage", 14D, 0, Double.MAX_VALUE);
@@ -140,8 +129,6 @@ public class ConfigSpecs {
             this.pegasusHealth = builder.comment("Health of Pegasus").defineInRange("Pegasus Health", 50D, 0, Double.MAX_VALUE);
             this.medeaCircleSpan = builder.comment("Time in ticks for medeas magic circle").defineInRange("Magic Circle Duration", 12000, 0, Integer.MAX_VALUE);
             this.medeaCircleRange = builder.comment("Range of medeas magic circle").defineInRange("Magic Circle Range", 32D, 0, Double.MAX_VALUE);
-            builder.push("hassanCopy");
-            this.hassanCopyProps = new ServantConfSpec(builder, Config.Common.hassanCopyProps);
             builder.pop();
             builder.registerReloadHandler(ConfigLoader::loadCommon);
         }

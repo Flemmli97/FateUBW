@@ -66,6 +66,17 @@ public class FateUBWFabric implements ModInitializer {
                 return new ResourceLocation(Fate.MODID, "grail_loots");
             }
         });
+        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new IdentifiableResourceReloadListener() {
+            @Override
+            public CompletableFuture<Void> reload(PreparationBarrier preparationBarrier, ResourceManager resourceManager, ProfilerFiller preparationsProfiler, ProfilerFiller reloadProfiler, Executor backgroundExecutor, Executor gameExecutor) {
+                return DatapackHandler.SERVANT_PROPS.reload(preparationBarrier, resourceManager, preparationsProfiler, reloadProfiler, backgroundExecutor, gameExecutor);
+            }
+
+            @Override
+            public ResourceLocation getFabricId() {
+                return new ResourceLocation(Fate.MODID, "servant_props");
+            }
+        });
         ConfigSpecs.initCommonConfig();
     }
 

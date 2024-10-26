@@ -1,4 +1,4 @@
-package io.github.flemmli97.fateubw.api.datagen;
+package io.github.flemmli97.fateubw.api.datapack;
 
 import com.google.common.collect.ImmutableList;
 import io.github.flemmli97.fateubw.common.loot.GrailLootEntry;

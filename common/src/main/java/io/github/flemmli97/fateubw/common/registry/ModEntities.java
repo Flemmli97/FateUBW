@@ -1,9 +1,9 @@
 package io.github.flemmli97.fateubw.common.registry;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import io.github.flemmli97.fateubw.Fate;
-import io.github.flemmli97.fateubw.common.config.Config;
-import io.github.flemmli97.fateubw.common.config.ServantProperties;
+import io.github.flemmli97.fateubw.api.datapack.ServantProperties;
 import io.github.flemmli97.fateubw.common.entity.MultiPartEntity;
 import io.github.flemmli97.fateubw.common.entity.minions.Gordius;
 import io.github.flemmli97.fateubw.common.entity.minions.HassanClone;
@@ -36,6 +36,7 @@ import io.github.flemmli97.fateubw.common.entity.servant.EntitySasaki;
 import io.github.flemmli97.fateubw.common.items.FateEgg;
 import io.github.flemmli97.fateubw.common.lib.LibEntities;
 import io.github.flemmli97.fateubw.common.utils.EnumServantType;
+import io.github.flemmli97.fateubw.platform.Platform;
 import io.github.flemmli97.tenshilib.common.item.SpawnEgg;
 import io.github.flemmli97.tenshilib.platform.PlatformUtils;
 import io.github.flemmli97.tenshilib.platform.registry.PlatformRegistry;
@@ -63,6 +64,8 @@ public class ModEntities {
 
     public static final PlatformRegistry<EntityType<?>> ENTITIES = PlatformUtils.INSTANCE.of(Registry.ENTITY_TYPE_REGISTRY, Fate.MODID);
     private static final Map<ResourceLocation, EnumServantType> SERVANT_TYPE_MAP = new HashMap<>();
+
+    private static final Map<ResourceLocation, ServantProperties> DEFAULT_PROPERTIES = new HashMap<>();
 
     //This is generic hell
     private static final EnumMap<EnumServantType, List<RegistryEntrySupplier<?>>> TYPE_SERVANTS_MAP = new EnumMap<>(EnumServantType.class);
@@ -119,7 +122,7 @@ public class ModEntities {
 
     public static final RegistryEntrySupplier<EntityType<MultiPartEntity>> MULTIPART = reg(EntityType.Builder.<MultiPartEntity>of(MultiPartEntity::new, MobCategory.MISC).sized(0.25F, 0.25F), LibEntities.MULTIPART);
 
-    public static <V extends BaseServant> RegistryEntrySupplier<EntityType<V>> regServant(EnumServantType type, EntityType.Builder<V> entity, ResourceLocation name, int primary, int secondary, ServantProperties defaultVals) {
+    public static <V extends BaseServant> RegistryEntrySupplier<EntityType<V>> regServant(EnumServantType type, EntityType.Builder<V> entity, ResourceLocation name, int primary, int secondary, ServantProperties props) {
         RegistryEntrySupplier<EntityType<V>> reg = reg(entity.clientTrackingRange(10), name);
         SERVANT_TYPE_MAP.put(name, type);
         TYPE_SERVANTS_MAP.merge(type, Lists.newArrayList(reg), (old, val) -> {
@@ -127,7 +130,8 @@ public class ModEntities {
             return old;
         });
         ModItems.ITEMS.register(name.getPath() + "_spawn_egg", () -> new FateEgg(reg, primary, secondary, new Item.Properties().tab(Fate.TAB)));
-        Config.Common.attributes.put(name.toString(), defaultVals);
+        if (Platform.INSTANCE.isDatagen())
+            DEFAULT_PROPERTIES.put(name, props);
         return reg;
     }
 
@@ -147,6 +151,10 @@ public class ModEntities {
 
     public static Collection<ResourceLocation> registeredServants() {
         return SERVANT_TYPE_MAP.keySet();
+    }
+
+    public static Map<ResourceLocation, ServantProperties> getDefaultMobProperties() {
+        return ImmutableMap.copyOf(DEFAULT_PROPERTIES);
     }
 
     @SuppressWarnings("unchecked")

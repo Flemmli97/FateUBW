@@ -27,6 +27,7 @@ public class DataEvent {
             data.addProvider(new GrailLoottables(data));
             data.addProvider(new AdvancementsGen(data));
             data.addProvider(new PatchouliGen(data));
+            data.addProvider(new ServantPropGen(data));
         }
     }
 
