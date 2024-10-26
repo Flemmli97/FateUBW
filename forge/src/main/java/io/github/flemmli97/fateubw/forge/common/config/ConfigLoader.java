@@ -24,7 +24,7 @@ public class ConfigLoader {
         Config.Common.servantMaxSpawnDelay = ConfigSpecs.COMMON_CONF.servantMaxSpawnDelay.get();
         Config.Common.punishTeleport = ConfigSpecs.COMMON_CONF.punishTeleport.get();
         Config.Common.notifyBlackList = ConfigSpecs.COMMON_CONF.notifyBlackList.get();
-        Config.Common.whiteList = ConfigSpecs.COMMON_CONF.whiteList.get();
+        Config.Common.notificationWhitelist = ConfigSpecs.COMMON_CONF.whiteList.get();
         Config.Common.notifyAll = ConfigSpecs.COMMON_CONF.notifyAll.get();
         Config.Common.npBoostEffect.readFromString(ConfigSpecs.COMMON_CONF.npBoostEffect.get());
 
@@ -44,6 +44,7 @@ public class ConfigLoader {
         Config.Common.gordiusHealth = ConfigSpecs.COMMON_CONF.gordiusHealth.get();
         Config.Common.gordiusDmg = ConfigSpecs.COMMON_CONF.gordiusDmg.get().floatValue();
         Config.Common.pegasusHealth = ConfigSpecs.COMMON_CONF.pegasusHealth.get();
+        Config.Common.pegasusDamage = ConfigSpecs.COMMON_CONF.pegasusDamage.get().floatValue();
         Config.Common.medeaCircleSpan = ConfigSpecs.COMMON_CONF.medeaCircleSpan.get();
         Config.Common.medeaCircleRange = ConfigSpecs.COMMON_CONF.medeaCircleRange.get().floatValue();
     }

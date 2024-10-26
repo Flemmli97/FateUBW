@@ -1,8 +1,7 @@
 package io.github.flemmli97.fateubw.forge.common.config;
 
-import com.google.common.collect.Lists;
+import io.github.flemmli97.fateubw.common.config.Config;
 import io.github.flemmli97.fateubw.common.config.PotionEffectsConfig;
-import io.github.flemmli97.fateubw.common.lib.LibEntities;
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -22,8 +21,8 @@ public class ConfigSpecs {
         public final ForgeConfigSpec.IntValue manaBarY;
 
         public Client(ForgeConfigSpec.Builder builder) {
-            this.manaBarX = builder.comment("X Position of the mana bar").defineInRange("Mana X", 2, 0, Integer.MAX_VALUE);
-            this.manaBarY = builder.comment("Y Position of the mana bar").defineInRange("Mana Y", 2, 0, Integer.MAX_VALUE);
+            this.manaBarX = builder.comment("X Position of the mana bar").defineInRange("Mana X", Config.Client.manaX, 0, Integer.MAX_VALUE);
+            this.manaBarY = builder.comment("Y Position of the mana bar").defineInRange("Mana Y", Config.Client.manaY, 0, Integer.MAX_VALUE);
         }
     }
 
@@ -66,53 +65,55 @@ public class ConfigSpecs {
         public final ForgeConfigSpec.DoubleValue gordiusHealth;
         public final ForgeConfigSpec.DoubleValue gordiusDmg;
         public final ForgeConfigSpec.DoubleValue pegasusHealth;
+        public final ForgeConfigSpec.DoubleValue pegasusDamage;
         public final ForgeConfigSpec.IntValue medeaCircleSpan;
         public final ForgeConfigSpec.DoubleValue medeaCircleRange;
 
         public Common(ForgeConfigSpec.Builder builder) {
             builder.push("general");
-            this.minPlayer = builder.comment("Minimum of player count required to start a grail war").defineInRange("Min Player", 1, 1, Integer.MAX_VALUE);
-            this.maxPlayer = builder.comment("Maximum of player allowed in a grail war").defineInRange("Max Player", 7, 1, Integer.MAX_VALUE);
-            this.joinTime = builder.comment("Time buffer in ticks to join a grail war after start").defineInRange("Join Time", 12000, 0, Integer.MAX_VALUE);
-            this.rewardDelay = builder.comment("Delay after an ended grail war for getting the grail").defineInRange("Reward Delay", 500, 0, Integer.MAX_VALUE);
-            this.charmSpawnRate = builder.comment("Legacy. Does Nothing").defineInRange("Charm Gen Rate", 2000, 0, Integer.MAX_VALUE);
-            this.gemSpawnRate = builder.comment("Legacy. Does Nothing").defineInRange("Gem Gen Rate", 2000, 0, Integer.MAX_VALUE);
-            this.allowDuplicateServant = builder.comment("Allow the summoning of duplicate servants during a grail war").define("Allow Duplicate Servants", false);
-            this.allowDuplicateClass = builder.comment("Allow the summoning of duplicate servant classes during a grail war").define("Allow Duplicate Classes", false);
-            this.fillMissingSlots = builder.comment("Fill in missing players till max allowed with npc").define("Fill Empty Slots", true);
-            this.maxServantCircle = builder.comment("Amount of masterless servant that can spawn each time. (Fill Empty Slots needs to be true)").defineInRange("Servant Amount", 1, 0, Integer.MAX_VALUE);
-            this.servantMinSpawnDelay = builder.comment("Minimum time between each attempt to spawn masterless servants. (Fill Empty Slots needs to be true)").defineInRange("Servant Spawn Delay (Min)", 3000, 0, Integer.MAX_VALUE);
-            this.servantMaxSpawnDelay = builder.comment("Maximum time between each attempt to spawn masterless servants. (Fill Empty Slots needs to be true)").defineInRange("Servant Spawn Delay (Max)", 6000, 0, Integer.MAX_VALUE);
-            this.punishTeleport = builder.comment("Should teleporting servants to the owner during a fight be punished").define("Punish Teleport", true);
-            this.notifyBlackList = builder.comment("Servants that dont notify players when spawned (from filling missing slots)").define("Servant notification", Lists.newArrayList(LibEntities.HASSAN.toString()));
-            this.whiteList = builder.comment("Turn servant notification list into a whitelist").define("Notify Whitelist", true);
-            this.notifyAll = builder.comment("Notify everyone if a servant spawns. Else only the player the servant spawned on will be notified").define("Notify Everyone", true);
+            this.minPlayer = builder.comment("Minimum of player count required to start a grail war").defineInRange("Min Player", Config.Common.minPlayer, 1, Integer.MAX_VALUE);
+            this.maxPlayer = builder.comment("Maximum of player allowed in a grail war").defineInRange("Max Player", Config.Common.maxPlayer, 1, Integer.MAX_VALUE);
+            this.joinTime = builder.comment("Time buffer in ticks to join a grail war after start").defineInRange("Join Time", Config.Common.joinTime, 0, Integer.MAX_VALUE);
+            this.rewardDelay = builder.comment("Delay after an ended grail war for getting the grail").defineInRange("Reward Delay", Config.Common.rewardDelay, 0, Integer.MAX_VALUE);
+            this.charmSpawnRate = builder.comment("Legacy. Does Nothing").defineInRange("Charm Gen Rate", Config.Common.charmSpawnRate, 0, Integer.MAX_VALUE);
+            this.gemSpawnRate = builder.comment("Legacy. Does Nothing").defineInRange("Gem Gen Rate", Config.Common.gemSpawnRate, 0, Integer.MAX_VALUE);
+            this.allowDuplicateServant = builder.comment("Allow the summoning of duplicate servants during a grail war").define("Allow Duplicate Servants", Config.Common.allowDuplicateClass);
+            this.allowDuplicateClass = builder.comment("Allow the summoning of duplicate servant classes during a grail war").define("Allow Duplicate Classes", Config.Common.allowDuplicateClass);
+            this.fillMissingSlots = builder.comment("Fill in missing players till max allowed with npc").define("Fill Empty Slots", Config.Common.fillMissingSlots);
+            this.maxServantCircle = builder.comment("Amount of masterless servant that can spawn each time. (Fill Empty Slots needs to be true)").defineInRange("Servant Amount", Config.Common.maxServantCircle, 0, Integer.MAX_VALUE);
+            this.servantMinSpawnDelay = builder.comment("Minimum time between each attempt to spawn masterless servants. (Fill Empty Slots needs to be true)").defineInRange("Servant Spawn Delay (Min)", Config.Common.servantMinSpawnDelay, 0, Integer.MAX_VALUE);
+            this.servantMaxSpawnDelay = builder.comment("Maximum time between each attempt to spawn masterless servants. (Fill Empty Slots needs to be true)").defineInRange("Servant Spawn Delay (Max)", Config.Common.servantMaxSpawnDelay, 0, Integer.MAX_VALUE);
+            this.punishTeleport = builder.comment("Should teleporting servants to the owner during a fight be punished").define("Punish Teleport", Config.Common.punishTeleport);
+            this.notifyBlackList = builder.comment("Servants that dont notify players when spawned (from filling missing slots)").define("Servant notification", Config.Common.notifyBlackList);
+            this.whiteList = builder.comment("Turn servant notification list into a whitelist").define("Notify Whitelist", Config.Common.notificationWhitelist);
+            this.notifyAll = builder.comment("Notify everyone if a servant spawns. Else only the player the servant spawned on will be notified").define("Notify Everyone", Config.Common.notifyAll);
             this.npBoostEffect = builder.comment("Potions applied when boostin servants using a command seal. Usage: " + PotionEffectsConfig.usage()).define("NP Effects",
-                    Lists.newArrayList("minecraft:resistance,12000,2", "minecraft:regeneration,12000,1", "minecraft:strength,12000,3", "minecraft:speed,12000,2"));
+                    Config.Common.npBoostEffect.writeToString());
             builder.pop();
 
             builder.push("servants");
-            this.lancelotReflectChance = builder.comment("Chance for lancelot to reflect a blocked projectile").defineInRange("Projectile Reflect Chance", 0.3, 0, 1);
-            this.hassanCopies = builder.comment("Amount of copies hassan can call").defineInRange("Hassan Copies", 5, 0, Integer.MAX_VALUE);
+            this.lancelotReflectChance = builder.comment("Chance for lancelot to reflect a blocked projectile").defineInRange("Projectile Reflect Chance", Config.Common.lancelotReflectChance, 0, 1);
+            this.hassanCopies = builder.comment("Amount of copies hassan can call").defineInRange("Hassan Copies", Config.Common.hassanCopies, 0, Integer.MAX_VALUE);
             builder.pop();
 
             builder.push("minions");
-            this.gillesMinionDuration = builder.comment("Living duration of gilles monster in ticks").defineInRange("Gilles Monster", 6000, 0, Integer.MAX_VALUE);
-            this.gillesMinionAmount = builder.comment("Max amount gilles can have at once").defineInRange("Gilles Monster Max Amount", 6, 0, Integer.MAX_VALUE);
-            this.smallMonsterDamage = builder.comment("Damage by gilles small monsters").defineInRange("Small Monster Damage", 14D, 0, Double.MAX_VALUE);
-            this.babylonScale = builder.comment("Damage scaling for projectiles from the gate of babylon").defineInRange("Babylon Dmg Scale", 1.5, 0, Double.MAX_VALUE);
-            this.eaDamage = builder.comment("Damage of EA").defineInRange("EA Dmg", 13D, 0, Double.MAX_VALUE);
-            this.excaliburDamage = builder.comment("Damage of excalibur").defineInRange("Excalibur Dmg", 19D, 0, Double.MAX_VALUE);
-            this.caladBolgDmg = builder.comment("Caladbolg damage").defineInRange("Caladbolg Dmg", 18D, 0, Double.MAX_VALUE);
-            this.magicBeam = builder.comment("Damage of medeas magic beams").defineInRange("Magic Beam Dmg", 5D, 0, Double.MAX_VALUE);
-            this.gaeBolgDmg = builder.comment("Damage of Gae Bolg").defineInRange("Gae Bolg Dmg", 10D, 0, Double.MAX_VALUE);
+            this.gillesMinionDuration = builder.comment("Living duration of gilles monster in ticks").defineInRange("Gilles Monster", Config.Common.gillesMinionDuration, 0, Integer.MAX_VALUE);
+            this.gillesMinionAmount = builder.comment("Max amount gilles can have at once").defineInRange("Gilles Monster Max Amount", Config.Common.gillesMinionAmount, 0, Integer.MAX_VALUE);
+            this.smallMonsterDamage = builder.comment("Damage by gilles small monsters").defineInRange("Small Monster Damage", Config.Common.smallMonsterDamage, 0, Double.MAX_VALUE);
+            this.babylonScale = builder.comment("Damage scaling for projectiles from the gate of babylon").defineInRange("Babylon Dmg Scale", Config.Common.babylonScale, 0, Double.MAX_VALUE);
+            this.eaDamage = builder.comment("Damage of EA").defineInRange("EA Dmg", Config.Common.eaDamage, 0, Double.MAX_VALUE);
+            this.excaliburDamage = builder.comment("Damage of excalibur").defineInRange("Excalibur Dmg", Config.Common.excaliburDamage, 0, Double.MAX_VALUE);
+            this.caladBolgDmg = builder.comment("Caladbolg damage").defineInRange("Caladbolg Dmg", Config.Common.caladBolgDmg, 0, Double.MAX_VALUE);
+            this.magicBeam = builder.comment("Damage of medeas magic beams").defineInRange("Magic Beam Dmg", Config.Common.magicBeam, 0, Double.MAX_VALUE);
+            this.gaeBolgDmg = builder.comment("Damage of Gae Bolg").defineInRange("Gae Bolg Dmg", Config.Common.gaeBolgDmg, 0, Double.MAX_VALUE);
             this.gaeBolgEffect = builder.comment("Potions applied by Gae Bolg. Usage: " + PotionEffectsConfig.usage()).define("Gae Bolg Potions",
-                    Lists.newArrayList("minecraft:wither,200,2", "minecraft:slowness,100,7", "minecraft:jump_boost,100,128"));
-            this.gordiusHealth = builder.comment("Health of the Gordius Wheels").defineInRange("Gordius Health", 53D, 0, Double.MAX_VALUE);
-            this.gordiusDmg = builder.comment("Dmg of the Gordius Wheel during charging").defineInRange("Gordius Dmg", 10D, 0, Double.MAX_VALUE);
-            this.pegasusHealth = builder.comment("Health of Pegasus").defineInRange("Pegasus Health", 50D, 0, Double.MAX_VALUE);
-            this.medeaCircleSpan = builder.comment("Time in ticks for medeas magic circle").defineInRange("Magic Circle Duration", 12000, 0, Integer.MAX_VALUE);
-            this.medeaCircleRange = builder.comment("Range of medeas magic circle").defineInRange("Magic Circle Range", 32D, 0, Double.MAX_VALUE);
+                    Config.Common.gaeBolgEffect.writeToString());
+            this.gordiusHealth = builder.comment("Health of the Gordius Wheels").defineInRange("Gordius Health", Config.Common.gordiusHealth, 0, Double.MAX_VALUE);
+            this.gordiusDmg = builder.comment("Dmg of the Gordius Wheel during charging").defineInRange("Gordius Dmg", Config.Common.gordiusDmg, 0, Double.MAX_VALUE);
+            this.pegasusHealth = builder.comment("Health of Pegasus").defineInRange("Pegasus Health", Config.Common.pegasusHealth, 0, Double.MAX_VALUE);
+            this.pegasusDamage = builder.comment("Damage of Pegasus").defineInRange("Pegasus Damage", Config.Common.pegasusDamage, 0, Double.MAX_VALUE);
+            this.medeaCircleSpan = builder.comment("Time in ticks for medeas magic circle").defineInRange("Magic Circle Duration", Config.Common.medeaCircleSpan, 0, Integer.MAX_VALUE);
+            this.medeaCircleRange = builder.comment("Range of medeas magic circle").defineInRange("Magic Circle Range", Config.Common.medeaCircleRange, 0, Double.MAX_VALUE);
             builder.pop();
         }
     }

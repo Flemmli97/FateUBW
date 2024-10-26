@@ -2,21 +2,25 @@ package io.github.flemmli97.fateubw.common.config;
 
 import com.google.common.collect.Lists;
 import io.github.flemmli97.tenshilib.api.config.IConfigListValue;
-import io.github.flemmli97.tenshilib.platform.PlatformUtils;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class PotionEffectsConfig implements IConfigListValue<PotionEffectsConfig> {
 
-    private Map<MobEffect, Pair<Integer, Integer>> potions;
-    private List<String> confVal = new ArrayList<>();
+    private List<EffectInstance> potions = new ArrayList<>();
+    private List<String> confVal;
+
+    public PotionEffectsConfig() {
+    }
+
+    public PotionEffectsConfig(List<EffectInstance> potions) {
+        this.potions = potions;
+    }
 
     @Override
     public PotionEffectsConfig readFromString(List<String> s) {
@@ -27,6 +31,12 @@ public class PotionEffectsConfig implements IConfigListValue<PotionEffectsConfig
 
     @Override
     public List<String> writeToString() {
+        if (this.confVal == null) {
+            if (this.potions != null)
+                this.confVal = this.potions.stream().map(eff -> String.format("%s,%s,%s", Registry.MOB_EFFECT.getKey(eff.effect), eff.amplifier, eff.duration)).toList();
+            else
+                this.confVal = new ArrayList<>();
+        }
         return Lists.newArrayList(this.confVal);
     }
 
@@ -36,21 +46,26 @@ public class PotionEffectsConfig implements IConfigListValue<PotionEffectsConfig
 
     public MobEffectInstance[] potions() {
         if (this.potions == null) {
-            this.potions = new HashMap<>();
+            if (this.confVal == null)
+                return new MobEffectInstance[0];
+            this.potions = new ArrayList<>();
             for (String p : this.confVal) {
                 String[] sub = p.split(",");
                 if (sub.length != 3)
                     continue;
-                this.potions.put(PlatformUtils.INSTANCE.effects().getFromId(new ResourceLocation(sub[0])), Pair.of(Integer.parseInt(sub[1]), Integer.parseInt(sub[2])));
+                this.potions.add(new EffectInstance(Registry.MOB_EFFECT.get(new ResourceLocation(sub[0])),
+                        Integer.parseInt(sub[1]), Integer.parseInt(sub[2])));
             }
         }
         MobEffectInstance[] effects = new MobEffectInstance[this.potions.size()];
         int i = 0;
-        for (Map.Entry<MobEffect, Pair<Integer, Integer>> entry : this.potions.entrySet()) {
-            Pair<Integer, Integer> p = entry.getValue();
-            effects[i] = new MobEffectInstance(entry.getKey(), p.getLeft(), p.getRight());
+        for (EffectInstance effectInstance : this.potions) {
+            effects[i] = new MobEffectInstance(effectInstance.effect(), effectInstance.duration(), effectInstance.amplifier());
             i++;
         }
         return effects;
+    }
+
+    public record EffectInstance(MobEffect effect, int duration, int amplifier) {
     }
 }

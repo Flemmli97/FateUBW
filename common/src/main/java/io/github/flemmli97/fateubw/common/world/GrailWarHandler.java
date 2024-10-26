@@ -311,7 +311,7 @@ public class GrailWarHandler extends SavedData {
     }
 
     private boolean notify(ResourceLocation loc) {
-        return Config.Common.whiteList == Config.Common.notifyBlackList.contains(loc.toString());
+        return Config.Common.notificationWhitelist == Config.Common.notifyBlackList.contains(loc.toString());
     }
 
     public void untrack(BaseServant servant) {
