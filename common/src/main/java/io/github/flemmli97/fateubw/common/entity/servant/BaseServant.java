@@ -15,6 +15,7 @@ import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import io.github.flemmli97.fateubw.platform.Platform;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
+import io.github.flemmli97.tenshilib.api.entity.AoeAttackEntity;
 import io.github.flemmli97.tenshilib.api.entity.IAnimated;
 import io.github.flemmli97.tenshilib.common.entity.ai.MoveControllerPlus;
 import io.github.flemmli97.tenshilib.common.item.SpawnEgg;
@@ -84,7 +85,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public abstract class BaseServant extends PathfinderMob implements IAnimated, OwnableEntity {
+public abstract class BaseServant extends PathfinderMob implements IAnimated, OwnableEntity, AoeAttackEntity {
 
     public static final TicketType<ChunkPos> TRACKINGTICKET = TicketType.create("servant", Comparator.comparingLong(ChunkPos::toLong), 5);
 
@@ -604,7 +605,8 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         return this.attackAABB(anim).inflate(grow, 0, grow).move(attackPos.x, attackPos.y, attackPos.z);
     }
 
-    public AABB attackCheckAABB(AnimatedAction anim, LivingEntity target, double grow) {
+    @Override
+    public AABB prepareAttackBox(AnimatedAction anim, LivingEntity target, double grow, boolean debug) {
         return this.calculateAttackAABB(anim, target.position(), grow);
     }
 
@@ -614,7 +616,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     }
 
     public double maxAttackRange(AnimatedAction anim) {
-        return 1.2;
+        return 1.5;
     }
 
     @Override

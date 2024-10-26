@@ -18,7 +18,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class Excalibur extends EntityBeam {
 
-    public static final float RADIUS = 1.5f;
+    public static final float RADIUS = 1.35f;
     public static final float RANGE = 16;
 
     private Vec3 dir, up, side;
@@ -29,6 +29,8 @@ public class Excalibur extends EntityBeam {
 
     public Excalibur(Level world, LivingEntity shooter) {
         super(ModEntities.EXCALIBUR.get(), world, shooter);
+        Vec3 off = new Vec3(shooter.getLookAngle().x, 0, shooter.getLookAngle().z).normalize().scale(shooter.getBbWidth() * 0.5);
+        this.setPos(this.getX() + off.x, this.getY(), this.getZ() + off.z);
     }
 
     @Override

@@ -30,9 +30,9 @@ public class EntityGilles extends BaseServant {
 
     private final AnimationHandler<EntityGilles> animationHandler = new AnimationHandler<>(this, ANIMS);
 
-    public EntityGilles(EntityType<? extends EntityGilles> entityType, Level world) {
-        super(entityType, world, LibEntities.GILLES + ".hogou");
-        if (world != null && !world.isClientSide)
+    public EntityGilles(EntityType<? extends EntityGilles> entityType, Level level) {
+        super(entityType, level, LibEntities.GILLES + ".hogou");
+        if (!level.isClientSide)
             this.goalSelector.addGoal(0, this.attackAI);
     }
 

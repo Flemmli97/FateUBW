@@ -68,7 +68,7 @@ public class ModEntities {
     private static final EnumMap<EnumServantType, List<RegistryEntrySupplier<?>>> TYPE_SERVANTS_MAP = new EnumMap<>(EnumServantType.class);
 
     public static final RegistryEntrySupplier<EntityType<EntityArthur>> ARTHUR = regServant(EnumServantType.SABER, EntityType.Builder.of(EntityArthur::new, MobCategory.MISC),
-            LibEntities.ARTHUR, 0x048dd0, 0xecee37, new ServantProperties(300, 10, 17, 0.4f, 12, 10, 0.3, 100));
+            LibEntities.ARTHUR, 0x048dd0, 0xecee37, new ServantProperties(300, 10, 17, 0.15f, 12, 10, 0.3, 100));
 
     public static final RegistryEntrySupplier<EntityType<EntityCuchulainn>> CUCHULAINN = regServant(EnumServantType.LANCER, EntityType.Builder.of(EntityCuchulainn::new, MobCategory.MISC),
             LibEntities.CUCHULAINN, 0x0038ff, 0xb6c0c1, new ServantProperties(275, 7.5, 10, 0, 14, 6, 0.35, 75));
@@ -100,12 +100,12 @@ public class ModEntities {
     public static final RegistryEntrySupplier<EntityType<EntitySasaki>> SASAKI = regServant(EnumServantType.ASSASSIN, EntityType.Builder.of(EntitySasaki::new, MobCategory.MISC),
             LibEntities.SASAKI, 0x4e04c3, 0xa77cec, new ServantProperties(350, 9.5, 9, 0, 8, 8.5, 0.3, 50));
 
-    public static final RegistryEntrySupplier<EntityType<Excalibur>> EXCALIBUR = reg(EntityType.Builder.<Excalibur>of(Excalibur::new, MobCategory.MISC).sized(0.25F, 0.25F), LibEntities.EXCALIBUR);
+    public static final RegistryEntrySupplier<EntityType<Excalibur>> EXCALIBUR = reg(EntityType.Builder.<Excalibur>of(Excalibur::new, MobCategory.MISC).sized(0.05F, 0.05F), LibEntities.EXCALIBUR);
     public static final RegistryEntrySupplier<EntityType<GaeBolg>> GAEBOLG = reg(EntityType.Builder.<GaeBolg>of(GaeBolg::new, MobCategory.MISC).sized(0.25F, 0.25F), LibEntities.GAE_BOLG);
     public static final RegistryEntrySupplier<EntityType<ArcherArrow>> ARCHER_ARROW = reg(EntityType.Builder.<ArcherArrow>of(ArcherArrow::new, MobCategory.MISC).sized(0.25F, 0.25F), LibEntities.ARCHER_ARROW);
     public static final RegistryEntrySupplier<EntityType<CaladBolg>> CALADBOLG = reg(EntityType.Builder.<CaladBolg>of(CaladBolg::new, MobCategory.MISC).sized(0.25F, 0.25F), LibEntities.CALADBOLG);
     public static final RegistryEntrySupplier<EntityType<BabylonWeapon>> BABYLON = reg(EntityType.Builder.<BabylonWeapon>of(BabylonWeapon::new, MobCategory.MISC).sized(0.25F, 0.25F), LibEntities.BABYLON);
-    public static final RegistryEntrySupplier<EntityType<EnumaElish>> EA = reg(EntityType.Builder.<EnumaElish>of(EnumaElish::new, MobCategory.MISC).sized(0.25F, 0.25F), LibEntities.EA);
+    public static final RegistryEntrySupplier<EntityType<EnumaElish>> EA = reg(EntityType.Builder.<EnumaElish>of(EnumaElish::new, MobCategory.MISC).sized(0.05F, 0.05F), LibEntities.EA);
     public static final RegistryEntrySupplier<EntityType<MagicBeam>> MAGIC_BEAM = reg(EntityType.Builder.of(MagicBeam::new, MobCategory.MISC), LibEntities.MAGIC_BEAM);
     public static final RegistryEntrySupplier<EntityType<MagicBufCircle>> MEDEA_CIRCLE = reg(EntityType.Builder.of(MagicBufCircle::new, MobCategory.MISC), LibEntities.MEDEA_CIRCLE);
     public static final RegistryEntrySupplier<EntityType<LesserMonster>> LESSER_MONSTER = regWithEgg(EntityType.Builder.<LesserMonster>of(LesserMonster::new, MobCategory.MONSTER).clientTrackingRange(8), LibEntities.MONSTER_SMALL, 0x6f086b, 0x4a8be5);

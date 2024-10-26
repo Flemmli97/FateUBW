@@ -161,7 +161,9 @@ public class ModelServant<T extends BaseServant & IAnimated> extends BaseServant
         if (servant.isStaying()) {
             this.anim.doAnimation(this, "stay", servant.tickCount, partialTicks);
         } else {
-            this.anim.doAnimation(this, servant.getAnimationHandler(), partialTicks);
+            if (servant.getAnimationHandler().hasAnimation())
+                this.model.resetPoses();
+            this.anim.doAnimation(this, servant.getAnimationHandler(), partialTicks, 5, false);
         }
     }
 

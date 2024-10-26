@@ -1,11 +1,13 @@
 package io.github.flemmli97.fateubw.client.render;
 
+import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.shaders.Uniform;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormatElement;
 import com.mojang.math.Vector3f;
 import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.Fate;
@@ -23,19 +25,21 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 
 import java.io.IOException;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class FateRenders extends RenderType {
 
+    private static final Vector4f NO_COLOR = new Vector4f(1, 1, 1, 1);
     private static ShaderInstance CORRUPTED_SHADER_INSTANCE;
     private static ShaderInstance CLIPPED_SHADER_INSTANCE;
     private static ShaderInstance PULSING_TEXT_SHADER;
+    private static ShaderInstance BABYLON_SHADER_INSTANCE;
 
     public static final ShaderStateShard CORRUPTED_SHADER = new ShaderStateShard(() -> CORRUPTED_SHADER_INSTANCE);
     public static final ShaderStateShard CLIPPED_SHADER = new ShaderStateShard(() -> CLIPPED_SHADER_INSTANCE);
     public static final ShaderStateShard BLOOM_SHADER = new ShaderStateShard(() -> PULSING_TEXT_SHADER);
+    public static final ShaderStateShard BABYLON_SHADER = new ShaderStateShard(() -> BABYLON_SHADER_INSTANCE);
 
     public static final TransparencyStateShard CORRUPTED_OVERLAY_TRANSPARENCY = new TransparencyStateShard("fateubw:corrupted_overlay_transparency", () -> {
         RenderSystem.enableBlend();
@@ -47,10 +51,20 @@ public class FateRenders extends RenderType {
 
     public static final ResourceLocation CORRUPTED_TEXTURE = new ResourceLocation(Fate.MODID, "textures/misc/corrupted_overlay.png");
 
+    public static final VertexFormat POSITION_COLOR_TEX_TIME = new VertexFormat(ImmutableMap.<String, VertexFormatElement>builder()
+            .put("Position", DefaultVertexFormat.ELEMENT_POSITION)
+            .put("Color", DefaultVertexFormat.ELEMENT_COLOR)
+            .put("UV0", DefaultVertexFormat.ELEMENT_UV0)
+            .put("Time", VertexHelper.TIME).build());
+
+    public static final RenderType BABYLON_RENDER = CustomRenderTypesHelper.createType("fateubw:babylon", POSITION_COLOR_TEX_TIME, VertexFormat.Mode.QUADS, 256, false, false, CompositeState.builder()
+            .setShaderState(BABYLON_SHADER)
+            .setTransparencyState(RenderType.TRANSLUCENT_TRANSPARENCY)
+            .createCompositeState(false));
     public static final RenderType TRANSLUCENTCOLOR = CustomRenderTypesHelper.createType("fateubw:translucent_color", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, true, CustomRenderTypesHelper.createBuilder().setWriteMaskState(COLOR_DEPTH_WRITE).setTransparencyState(TRANSLUCENT_TRANSPARENCY).setOutputState(WEATHER_TARGET).setShaderState(RENDERTYPE_LIGHTNING_SHADER).createCompositeState(false));
     public static final RenderType CORRUPTED_OVERLAY = CustomRenderTypesHelper.createType("fateubw:corrupted_overlay", DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS, 256, false, false, RenderType.CompositeState.builder().setShaderState(CORRUPTED_SHADER).setTextureState(new RenderStateShard.TextureStateShard(CORRUPTED_TEXTURE, true, false)).setWriteMaskState(COLOR_WRITE).setCullState(NO_CULL).setDepthTestState(EQUAL_DEPTH_TEST).setTransparencyState(CORRUPTED_OVERLAY_TRANSPARENCY).setTexturingState(GLINT_TEXTURING).createCompositeState(false));
 
-    private static final BiFunction<RenderType, Vector4f, RenderType> CLIPPED = (wrapped, plane) ->
+    private static final ClipRenderFactory CLIPPED = (wrapped, plane, color, width) ->
             new RenderType("rendertype_clipped_" + wrapped.toString(), wrapped.format(), wrapped.mode(), wrapped.bufferSize(),
                     wrapped.affectsCrumbling(), ((RenderTypeAccessor) wrapped).getSortOnUpload(), () -> {
                 wrapped.setupRenderState();
@@ -58,6 +72,14 @@ public class FateRenders extends RenderType {
                 Uniform uniform = CLIPPED_SHADER_INSTANCE.getUniform("ClippingPlane");
                 if (uniform != null) {
                     uniform.set(plane);
+                }
+                Uniform uniformColor = CLIPPED_SHADER_INSTANCE.getUniform("ClippingColor");
+                if (uniformColor != null) {
+                    uniformColor.set(color);
+                }
+                Uniform uniformWidth = CLIPPED_SHADER_INSTANCE.getUniform("ClippingWidth");
+                if (uniformWidth != null) {
+                    uniformWidth.set(width);
                 }
             }, () -> {
                 wrapped.clearRenderState();
@@ -80,6 +102,8 @@ public class FateRenders extends RenderType {
                     shaderInstance -> FateRenders.CLIPPED_SHADER_INSTANCE = shaderInstance);
             register.register(new ResourceLocation(Fate.MODID, "pulsing_entity_text"), DefaultVertexFormat.NEW_ENTITY,
                     shaderInstance -> FateRenders.PULSING_TEXT_SHADER = shaderInstance);
+            register.register(new ResourceLocation(Fate.MODID, "babylon"), POSITION_COLOR_TEX_TIME,
+                    shaderInstance -> FateRenders.BABYLON_SHADER_INSTANCE = shaderInstance);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -93,7 +117,11 @@ public class FateRenders extends RenderType {
     }
 
     public static RenderType getClippedRendertype(RenderType origin, Vector4f clippingPlane) {
-        return CLIPPED.apply(origin, clippingPlane);
+        return getClippedRendertype(origin, clippingPlane, NO_COLOR, 0);
+    }
+
+    public static RenderType getClippedRendertype(RenderType origin, Vector4f clippingPlane, Vector4f color, float width) {
+        return CLIPPED.get(origin, clippingPlane, color, width);
     }
 
     public static RenderType getPulsingEntityText(ResourceLocation texture) {
@@ -115,5 +143,11 @@ public class FateRenders extends RenderType {
     public interface ShaderRegister {
 
         void register(ResourceLocation id, VertexFormat vertexFormat, Consumer<ShaderInstance> onLoad) throws IOException;
+    }
+
+    public interface ClipRenderFactory {
+
+        RenderType get(RenderType wrapped, Vector4f plane, Vector4f color, float width);
+
     }
 }

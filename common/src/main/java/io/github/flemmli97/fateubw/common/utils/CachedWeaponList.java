@@ -1,5 +1,6 @@
 package io.github.flemmli97.fateubw.common.utils;
 
+import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.tenshilib.platform.PlatformUtils;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -17,7 +18,7 @@ public class CachedWeaponList {
         if (weapons == null) {
             weapons = new ArrayList<>();
             PlatformUtils.INSTANCE.items().getIterator().forEach(item -> {
-                if (item instanceof TieredItem)
+                if (item instanceof TieredItem && item != ModItems.ENUMAELISH.get())
                     weapons.add(item);
             });
         }

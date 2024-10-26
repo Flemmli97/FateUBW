@@ -9,6 +9,9 @@ uniform float FogStart;
 uniform float FogEnd;
 uniform vec4 FogColor;
 
+uniform vec4 ClippingColor;
+uniform float ClippingWidth;
+
 in float vertexDistance;
 in vec4 vertexColor;
 in vec4 lightMapColor;
@@ -31,5 +34,8 @@ void main() {
     color *= vertexColor * ColorModulator;
     color.rgb = mix(overlayColor.rgb, color.rgb, overlayColor.a);
     color *= lightMapColor;
+    if (clip_distance < ClippingWidth) {
+        color.rgb = mix(color.rgb, ClippingColor.rgb, ClippingColor.a);
+    }
     fragColor = linear_fog(color, vertexDistance, FogStart, FogEnd, FogColor);
 }
