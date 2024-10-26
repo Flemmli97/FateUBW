@@ -1121,6 +1121,39 @@
 					}
 				}
 			}
+		},
+		"summon": {
+			"animation_length": 0.2,
+			"bones": {
+				"Body": {
+					"rotation": [-5, 0, 0],
+					"position": [0, 0, 1]
+				},
+				"LeftArm": {
+					"rotation": [-37.5, 0, 17.5],
+					"position": [-1, -2, -1]
+				},
+				"LeftArmDown": {
+					"rotation": [0, 0, 82.5],
+					"position": [0, -2, 0],
+					"scale": [1, 1.5, 1]
+				},
+				"RightArm": {
+					"rotation": [-37.5, 0, -17.5],
+					"position": [1, -2, -1]
+				},
+				"RightArmDown": {
+					"rotation": [0, 0, -75],
+					"position": [0, -2, 0],
+					"scale": [1, 1.5, 1]
+				},
+				"LeftLeg": {
+					"rotation": [5, 0, 0]
+				},
+				"RightLeg": {
+					"rotation": [5, 0, 0]
+				}
+			}
 		}
 	}
 }

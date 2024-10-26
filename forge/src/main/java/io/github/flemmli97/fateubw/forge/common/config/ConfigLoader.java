@@ -47,5 +47,7 @@ public class ConfigLoader {
         Config.Common.pegasusDamage = ConfigSpecs.COMMON_CONF.pegasusDamage.get().floatValue();
         Config.Common.medeaCircleSpan = ConfigSpecs.COMMON_CONF.medeaCircleSpan.get();
         Config.Common.medeaCircleRange = ConfigSpecs.COMMON_CONF.medeaCircleRange.get().floatValue();
+
+        Config.Common.debugAttack = ConfigSpecs.COMMON_CONF.debugAttack.get();
     }
 }

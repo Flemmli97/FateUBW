@@ -7,6 +7,7 @@ import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.entity.IServantMinion;
 import io.github.flemmli97.fateubw.common.entity.servant.ai.FollowMasterGoal;
 import io.github.flemmli97.fateubw.common.entity.servant.ai.RetaliateGoal;
+import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.registry.ModAttributes;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.utils.EnumServantType;
@@ -20,9 +21,9 @@ import io.github.flemmli97.tenshilib.api.entity.IAnimated;
 import io.github.flemmli97.tenshilib.common.entity.ai.MoveControllerPlus;
 import io.github.flemmli97.tenshilib.common.item.SpawnEgg;
 import io.github.flemmli97.tenshilib.common.utils.NBTUtils;
-import io.github.flemmli97.tenshilib.platform.PlatformUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
@@ -34,6 +35,7 @@ import net.minecraft.network.protocol.game.ClientboundUpdateAttributesPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -137,17 +139,18 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     public WaterAvoidingRandomStrollGoal wander = new WaterAvoidingRandomStrollGoal(this, 1.0D);
     protected Vec3 targetPosition;
 
-    public BaseServant(EntityType<? extends BaseServant> entityType, Level world, String hogou) {
-        super(entityType, world);
+    public BaseServant(EntityType<? extends BaseServant> entityType, Level level) {
+        super(entityType, level);
         this.moveControl = new MoveControllerPlus(this);
         this.xpReward = 35;
-        this.prop = DatapackHandler.getServantProp(this.getType());
-        if (!world.isClientSide) {
+        ResourceLocation id = Registry.ENTITY_TYPE.getKey(this.getType());
+        this.prop = DatapackHandler.getServantProp(id);
+        if (!level.isClientSide) {
             this.goals();
             this.updateAttributes();
         }
-        this.servantType = ModEntities.get(PlatformUtils.INSTANCE.entities().getIDFrom(entityType));
-        this.hogou = new TranslatableComponent(hogou);
+        this.servantType = ModEntities.get(id);
+        this.hogou = new TranslatableComponent(id + ".hogou");
     }
 
     protected void goals() {
@@ -222,6 +225,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     /**
      * Cooldown between each attack. (The time after an attack has fully finished)
      */
+    // TODO: Remove once ai all updated
     public int attackCooldown(AnimatedAction anim) {
         return 0;
     }
@@ -550,8 +554,12 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
 
     //=====Entity attack etc.
 
-    public abstract boolean canUse(AnimatedAction anim, AttackType type);
+    // TODO: Remove once ai all updated
+    public boolean canUse(AnimatedAction anim, AttackType type) {
+        return false;
+    }
 
+    // TODO: Remove once ai all updated
     public AnimatedAction getRandomAttack(AttackType type) {
         List<AnimatedAction> matching = new ArrayList<>();
         for (AnimatedAction anim : this.getAnimationHandler().getAnimations()) {
@@ -587,6 +595,8 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
             e.hurtTime = 10;
             cons.accept(e);
         });
+        if (!this.level.isClientSide)
+            S2CAttackDebug.sendDebugPacket(aabb, S2CAttackDebug.EnumAABBType.ATTACK, this);
     }
 
     public AABB calculateAttackAABB(AnimatedAction anim, Vec3 target, double grow) {
@@ -607,7 +617,10 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
 
     @Override
     public AABB prepareAttackBox(AnimatedAction anim, LivingEntity target, double grow, boolean debug) {
-        return this.calculateAttackAABB(anim, target.position(), grow);
+        AABB aabb = this.calculateAttackAABB(anim, target.position(), grow);
+        if (debug)
+            S2CAttackDebug.sendDebugPacket(aabb, S2CAttackDebug.EnumAABBType.ATTEMPT, this);
+        return aabb;
     }
 
     public AABB attackAABB(AnimatedAction anim) {
@@ -726,6 +739,10 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     @Override
     public ItemStack getPickResult() {
         return SpawnEgg.fromType(this.getType()).map(ItemStack::new).orElse(null);
+    }
+
+    public boolean flipAnimation() {
+        return false;
     }
 
     public enum AttackType {

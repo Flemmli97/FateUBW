@@ -3,7 +3,6 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 
 import io.github.flemmli97.fateubw.common.entity.minions.Gordius;
 import io.github.flemmli97.fateubw.common.entity.servant.ai.IskanderAttackGoal;
-import io.github.flemmli97.fateubw.common.lib.LibEntities;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
@@ -27,7 +26,7 @@ public class EntityIskander extends BaseServant {
     private final AnimationHandler<EntityIskander> animationHandler = new AnimationHandler<>(this, ANIMS);
 
     public EntityIskander(EntityType<? extends EntityIskander> entityType, Level world) {
-        super(entityType, world, LibEntities.ALEXANDER + ".hogou");
+        super(entityType, world);
         this.canUseNP = true;
         if (world != null && !world.isClientSide)
             this.goalSelector.addGoal(0, this.attackAI);

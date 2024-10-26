@@ -1,6 +1,5 @@
 package io.github.flemmli97.fateubw.common.entity.misc;
 
-import io.github.flemmli97.fateubw.common.config.Config;
 import io.github.flemmli97.fateubw.common.entity.DaggerHitNotifiable;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.platform.Platform;
@@ -16,6 +15,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
@@ -128,7 +128,7 @@ public class ChainDagger extends EntityProjectile {
     protected boolean entityRayTraceHit(EntityHitResult result) {
         if (!this.retracting()) {
             if (this.getOwner() instanceof LivingEntity entity)
-                result.getEntity().hurt(DamageSource.indirectMobAttack(this, entity), Config.Common.medeaDaggerDamage);
+                result.getEntity().hurt(DamageSource.indirectMobAttack(this, entity), (float) entity.getAttributeValue(Attributes.ATTACK_DAMAGE));
             this.hookedEntity = result.getEntity();
             this.entityData.set(HOOKED_ENTITY, result.getEntity().getId());
             this.setDeltaMovement(Vec3.ZERO);
@@ -170,7 +170,7 @@ public class ChainDagger extends EntityProjectile {
                 Vec3 vector3d = new Vec3(entity.getX() - this.getX(), 0, entity.getZ() - this.getZ()).scale(0.18D);
                 vector3d = vector3d.add(0, 1, 0);
                 if (entity instanceof LivingEntity living)
-                    this.hookedEntity.hurt(DamageSource.indirectMobAttack(this, living), Config.Common.medeaDaggerDamage);
+                    this.hookedEntity.hurt(DamageSource.indirectMobAttack(this, living), (float) living.getAttributeValue(Attributes.ATTACK_DAMAGE));
                 this.hookedEntity.setDeltaMovement(vector3d);
             }
             this.hookedEntity = null;

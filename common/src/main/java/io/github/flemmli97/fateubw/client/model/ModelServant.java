@@ -163,7 +163,7 @@ public class ModelServant<T extends BaseServant & IAnimated> extends BaseServant
         } else {
             if (servant.getAnimationHandler().hasAnimation())
                 this.model.resetPoses();
-            this.anim.doAnimation(this, servant.getAnimationHandler(), partialTicks, 5, false);
+            this.anim.doAnimation(this, servant.getAnimationHandler(), partialTicks, 5, servant.flipAnimation());
         }
     }
 

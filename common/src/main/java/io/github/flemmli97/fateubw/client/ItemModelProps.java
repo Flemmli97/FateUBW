@@ -25,4 +25,11 @@ public class ItemModelProps {
         return (main || off) ? 1 : 0;
     };
 
+    public static final ClampedItemPropertyFunction BOW_PULL_PROP = (stack, world, entity, seed) -> {
+        if (entity == null) {
+            return 0.0F;
+        } else {
+            return !entity.isUsingItem() || entity.getUseItem() != stack ? 0.0F : (stack.getUseDuration() - entity.getUseItemRemainingTicks()) / 10.0F;
+        }
+    };
 }

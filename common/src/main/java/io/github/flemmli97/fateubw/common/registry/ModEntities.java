@@ -111,11 +111,11 @@ public class ModEntities {
     public static final RegistryEntrySupplier<EntityType<EnumaElish>> EA = reg(EntityType.Builder.<EnumaElish>of(EnumaElish::new, MobCategory.MISC).sized(0.05F, 0.05F), LibEntities.EA);
     public static final RegistryEntrySupplier<EntityType<MagicBeam>> MAGIC_BEAM = reg(EntityType.Builder.of(MagicBeam::new, MobCategory.MISC), LibEntities.MAGIC_BEAM);
     public static final RegistryEntrySupplier<EntityType<MagicBufCircle>> MEDEA_CIRCLE = reg(EntityType.Builder.of(MagicBufCircle::new, MobCategory.MISC), LibEntities.MEDEA_CIRCLE);
-    public static final RegistryEntrySupplier<EntityType<LesserMonster>> LESSER_MONSTER = regWithEgg(EntityType.Builder.<LesserMonster>of(LesserMonster::new, MobCategory.MONSTER).clientTrackingRange(8), LibEntities.MONSTER_SMALL, 0x6f086b, 0x4a8be5);
-    public static final RegistryEntrySupplier<EntityType<Gordius>> GORDIUS_WHEEL = regWithEgg(EntityType.Builder.of(Gordius::new, MobCategory.CREATURE).sized(2, 1.5f), LibEntities.GORDIUS_WHEEL, 0x6f086b, 0x4a8be5);
+    public static final RegistryEntrySupplier<EntityType<LesserMonster>> LESSER_MONSTER = regWithEgg(EntityType.Builder.<LesserMonster>of(LesserMonster::new, MobCategory.MONSTER).clientTrackingRange(8), LibEntities.MONSTER_SMALL, 0x171c3f, 0x00ff00);
+    public static final RegistryEntrySupplier<EntityType<Gordius>> GORDIUS_WHEEL = regWithEgg(EntityType.Builder.of(Gordius::new, MobCategory.CREATURE).sized(2, 1.5f), LibEntities.GORDIUS_WHEEL, 0x87595c, 0x981a24);
 
     public static final RegistryEntrySupplier<EntityType<HassanClone>> HASSAN_COPY = reg(EntityType.Builder.of(HassanClone::new, MobCategory.MISC), LibEntities.HASSAN_COPY);
-    public static final RegistryEntrySupplier<EntityType<Pegasus>> PEGASUS = regWithEgg(EntityType.Builder.of(Pegasus::new, MobCategory.MONSTER).sized(1.35f, 1.65f), LibEntities.PEGASUS, 0x6f086b, 0x4a8be5);
+    public static final RegistryEntrySupplier<EntityType<Pegasus>> PEGASUS = regWithEgg(EntityType.Builder.of(Pegasus::new, MobCategory.MONSTER).sized(1.35f, 1.65f), LibEntities.PEGASUS, 0xffffff, 0xdde0e1);
     public static final RegistryEntrySupplier<EntityType<ChainDagger>> DAGGER_HOOK = reg(EntityType.Builder.<ChainDagger>of(ChainDagger::new, MobCategory.MISC).updateInterval(5).sized(0.25F, 0.25F), LibEntities.DAGGER_HOOK);
 
     public static final RegistryEntrySupplier<EntityType<ThrownGem>> GEM = reg(EntityType.Builder.<ThrownGem>of(ThrownGem::new, MobCategory.MISC).sized(0.25F, 0.25F), LibEntities.ENTITY_GEM);

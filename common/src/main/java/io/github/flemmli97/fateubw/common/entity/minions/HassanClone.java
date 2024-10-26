@@ -17,9 +17,11 @@ import io.github.flemmli97.tenshilib.api.entity.IAnimated;
 import io.github.flemmli97.tenshilib.common.entity.EntityUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.DifficultyInstance;
@@ -90,7 +92,8 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
     }
 
     private void updateAttributes() {
-        ServantProperties props = DatapackHandler.getServantProp(this.getType());
+        ResourceLocation id = Registry.ENTITY_TYPE.getKey(this.getType());
+        ServantProperties props = DatapackHandler.getServantProp(id);
         this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(props.health());
         this.setHealth(this.getMaxHealth());
         this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(props.strength());

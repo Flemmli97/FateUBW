@@ -69,6 +69,8 @@ public class ConfigSpecs {
         public final ForgeConfigSpec.IntValue medeaCircleSpan;
         public final ForgeConfigSpec.DoubleValue medeaCircleRange;
 
+        public final ForgeConfigSpec.BooleanValue debugAttack;
+
         public Common(ForgeConfigSpec.Builder builder) {
             builder.push("general");
             this.minPlayer = builder.comment("Minimum of player count required to start a grail war").defineInRange("Min Player", Config.Common.minPlayer, 1, Integer.MAX_VALUE);
@@ -115,6 +117,8 @@ public class ConfigSpecs {
             this.medeaCircleSpan = builder.comment("Time in ticks for medeas magic circle").defineInRange("Magic Circle Duration", Config.Common.medeaCircleSpan, 0, Integer.MAX_VALUE);
             this.medeaCircleRange = builder.comment("Range of medeas magic circle").defineInRange("Magic Circle Range", Config.Common.medeaCircleRange, 0, Double.MAX_VALUE);
             builder.pop();
+
+            this.debugAttack = builder.comment("Turn on attack bounding box debugging").define("Debug Attack", Config.Common.debugAttack);
         }
     }
 

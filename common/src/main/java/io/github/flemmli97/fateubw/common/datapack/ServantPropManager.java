@@ -7,12 +7,10 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.api.datapack.ServantProperties;
-import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraft.world.entity.EntityType;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -29,9 +27,8 @@ public class ServantPropManager extends SimpleJsonResourceReloadListener {
     }
 
     @Nullable
-    public ServantProperties get(EntityType<?> entityType) {
-        ResourceLocation res = Registry.ENTITY_TYPE.getKey(entityType);
-        return this.props.getOrDefault(res, ServantProperties.DEFAULT);
+    public ServantProperties get(ResourceLocation entityType) {
+        return this.props.getOrDefault(entityType, ServantProperties.DEFAULT);
     }
 
     @Override

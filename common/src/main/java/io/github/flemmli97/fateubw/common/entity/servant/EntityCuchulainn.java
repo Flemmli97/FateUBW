@@ -2,7 +2,6 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 
 import io.github.flemmli97.fateubw.common.entity.misc.GaeBolg;
 import io.github.flemmli97.fateubw.common.entity.servant.ai.CuchulainnAttackGoal;
-import io.github.flemmli97.fateubw.common.lib.LibEntities;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
@@ -35,7 +34,7 @@ public class EntityCuchulainn extends BaseServant {
     private final AnimationHandler<EntityCuchulainn> animationHandler = new AnimationHandler<>(this, ANIMS);
 
     public EntityCuchulainn(EntityType<? extends BaseServant> entityType, Level world) {
-        super(entityType, world, LibEntities.CUCHULAINN + ".hogou");
+        super(entityType, world);
         if (world != null && !world.isClientSide)
             this.goalSelector.addGoal(0, this.attackAI);
     }

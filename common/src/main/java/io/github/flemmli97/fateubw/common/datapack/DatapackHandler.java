@@ -4,7 +4,6 @@ import io.github.flemmli97.fateubw.api.datapack.ServantProperties;
 import io.github.flemmli97.fateubw.common.loot.GrailLootTable;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EntityType;
 
 import java.util.Collection;
 import java.util.Map;
@@ -19,8 +18,8 @@ public class DatapackHandler {
         return Optional.ofNullable(LOOT_TABLES.get(res));
     }
 
-    public static ServantProperties getServantProp(EntityType<?> entityType) {
-        return SERVANT_PROPS.get(entityType);
+    public static ServantProperties getServantProp(ResourceLocation entityTypeId) {
+        return SERVANT_PROPS.get(entityTypeId);
     }
 
     public static Collection<ResourceLocation> getAllTables() {

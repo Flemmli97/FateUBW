@@ -1,5 +1,7 @@
 package io.github.flemmli97.fateubw.client;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import io.github.flemmli97.fateubw.common.config.Config;
 import io.github.flemmli97.fateubw.common.network.C2SServantCommand;
 import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
 import io.github.flemmli97.fateubw.platform.NetworkCalls;
@@ -26,6 +28,12 @@ public class ClientCalls {
     public static void tick(Entity entity) {
         if (entity == Minecraft.getInstance().player) {
             ShakeHandler.shakeTick--;
+        }
+    }
+
+    public static void worldRender(PoseStack stack) {
+        if (Config.Common.debugAttack) {
+            AttackAABBRender.INST.render(stack, Minecraft.getInstance().renderBuffers().crumblingBufferSource());
         }
     }
 }

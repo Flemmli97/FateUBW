@@ -11,6 +11,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.CoreShaderRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 
 public class FateUBWFabricClient implements ClientModInitializer {
 
@@ -22,6 +23,7 @@ public class FateUBWFabricClient implements ClientModInitializer {
                 ClientHandler.clientTick++;
             ClientCalls.keyEvent();
         });
+        WorldRenderEvents.END.register(ctx -> ClientCalls.worldRender(ctx.matrixStack()));
         HudRenderCallback.EVENT.register((matrixStack, tickDelta) -> ClientHandler.getManaBar().renderBar(matrixStack));
         ClientPacketHandler.registerClientPackets();
         ConfigSpecs.initClientConfig();

@@ -5,7 +5,6 @@ import io.github.flemmli97.fateubw.common.entity.SwitchableWeapon;
 import io.github.flemmli97.fateubw.common.entity.ai.DoNothingWithoutSightRun;
 import io.github.flemmli97.fateubw.common.entity.misc.BabylonWeapon;
 import io.github.flemmli97.fateubw.common.entity.misc.EnumaElish;
-import io.github.flemmli97.fateubw.common.lib.LibEntities;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
 import io.github.flemmli97.fateubw.common.utils.Utils;
@@ -133,7 +132,7 @@ public class EntityGilgamesh extends BaseServant {
     public final SwitchableWeapon<EntityGilgamesh> switchableWeapon = new SwitchableWeapon<>(this, new ItemStack(ModItems.ENUMAELISH.get()), ItemStack.EMPTY);
 
     public EntityGilgamesh(EntityType<? extends EntityGilgamesh> entityType, Level level) {
-        super(entityType, level, LibEntities.GILGAMESH + ".hogou");
+        super(entityType, level);
         this.revealServant();
         if (!level.isClientSide)
             this.goalSelector.addGoal(0, this.attack);
@@ -145,22 +144,8 @@ public class EntityGilgamesh extends BaseServant {
     }
 
     @Override
-    public boolean canUse(AnimatedAction anim, AttackType type) {
-        if (type == AttackType.RANGED)
-            return anim.getID().equals(BABYLON_1.getID()) || anim.getID().equals(BABYLON_2.getID());
-        else if (type == AttackType.NP)
-            return anim.getID().equals(EA.getID());
-        return anim.getID().equals(AnimatedAction.vanillaAttack.getID());
-    }
-
-    @Override
     public AnimationHandler<EntityGilgamesh> getAnimationHandler() {
         return this.animationHandler;
-    }
-
-    @Override
-    public int attackCooldown(AnimatedAction anim) {
-        return this.canUse(anim, AttackType.RANGED) ? 40 : 0;
     }
 
     @Override
@@ -257,7 +242,7 @@ public class EntityGilgamesh extends BaseServant {
         this.switchableWeapon.read(tag);
     }
 
-    public boolean useRanged() {
+    protected boolean useRanged() {
         return this.getMainHandItem().getItem() != ModItems.ENUMAELISH.get();
     }
 }

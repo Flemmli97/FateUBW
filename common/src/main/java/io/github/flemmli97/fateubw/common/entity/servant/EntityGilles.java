@@ -4,7 +4,6 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 import io.github.flemmli97.fateubw.common.config.Config;
 import io.github.flemmli97.fateubw.common.entity.minions.LesserMonster;
 import io.github.flemmli97.fateubw.common.entity.servant.ai.GillesAttackGoal;
-import io.github.flemmli97.fateubw.common.lib.LibEntities;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
@@ -31,7 +30,7 @@ public class EntityGilles extends BaseServant {
     private final AnimationHandler<EntityGilles> animationHandler = new AnimationHandler<>(this, ANIMS);
 
     public EntityGilles(EntityType<? extends EntityGilles> entityType, Level level) {
-        super(entityType, level, LibEntities.GILLES + ".hogou");
+        super(entityType, level);
         if (!level.isClientSide)
             this.goalSelector.addGoal(0, this.attackAI);
     }

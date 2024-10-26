@@ -4,7 +4,6 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 import io.github.flemmli97.fateubw.common.config.Config;
 import io.github.flemmli97.fateubw.common.entity.minions.HassanClone;
 import io.github.flemmli97.fateubw.common.entity.servant.ai.HassanAttackGoal;
-import io.github.flemmli97.fateubw.common.lib.LibEntities;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
@@ -44,7 +43,7 @@ public class EntityHassan extends BaseServant {
     private final Set<UUID> copies = new HashSet<>();
 
     public EntityHassan(EntityType<? extends EntityHassan> entityType, Level world) {
-        super(entityType, world, LibEntities.HASSAN + ".hogou");
+        super(entityType, world);
         if (world != null && !world.isClientSide)
             this.goalSelector.addGoal(0, this.attackAI);
     }

@@ -2,7 +2,6 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 
 import io.github.flemmli97.fateubw.common.entity.SwitchableWeapon;
 import io.github.flemmli97.fateubw.common.entity.misc.Excalibur;
-import io.github.flemmli97.fateubw.common.lib.LibEntities;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
@@ -110,7 +109,7 @@ public class EntityArthur extends BaseServant {
     protected List<LivingEntity> hitEntity;
 
     public EntityArthur(EntityType<? extends EntityArthur> entityType, Level level) {
-        super(entityType, level, LibEntities.ARTHUR + ".hogou");
+        super(entityType, level);
         if (!level.isClientSide)
             this.goalSelector.addGoal(0, this.attack);
     }
@@ -124,13 +123,6 @@ public class EntityArthur extends BaseServant {
     @Override
     protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
         this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.INVISEXCALIBUR.get()));
-    }
-
-    @Override
-    public boolean canUse(AnimatedAction anim, AttackType type) {
-        if (type == AttackType.NP)
-            return anim.getID().equals(EXCALIBAA.getID());
-        return anim.getID().equals(SWING_1.getID());
     }
 
     @Override

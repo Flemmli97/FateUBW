@@ -27,7 +27,7 @@ public class ItemModels extends ItemModelProvider {
         int sealid = 1;
         for (RegistryEntrySupplier<Item> reg : ModItems.ITEMS.getEntries()) {
             //Archer bow
-            if (reg == ModItems.ENUMAELISH || reg == ModItems.HERACLES_AXE || reg == ModItems.ARCHBOW)
+            if (reg == ModItems.ENUMAELISH || reg == ModItems.HERACLES_AXE)
                 continue;
             if (reg == ModItems.MEDUSA_DAGGER) {
                 this.withExistingParent(reg.getID().getPath(), ModelLocationUtils.decorateItemModelLocation("handheld"))
@@ -46,6 +46,38 @@ public class ItemModels extends ItemModelProvider {
                                 .scale(0.68f, 0.68f, 0.68f)
                                 .end()
                                 .end());
+            } else if (reg == ModItems.ARCHBOW) {
+                this.withExistingParent(reg.getID().getPath(), ModelLocationUtils.decorateItemModelLocation("generated"))
+                        .texture("layer0", "fateubw:items/emiyas_bow")
+                        .override().predicate(new ResourceLocation(Fate.MODID, "pull"), 0.05f)
+                        .model(this.withExistingParent(reg.getID().getPath() + "_pull_0", new ResourceLocation(Fate.MODID, "item/" + reg.getID().getPath()))
+                                .texture("layer0", "fateubw:items/emiyas_bow_pull_0")).end()
+                        .override().predicate(new ResourceLocation(Fate.MODID, "pull"), 0.65f)
+                        .model(this.withExistingParent(reg.getID().getPath() + "_pull_1", new ResourceLocation(Fate.MODID, "item/" + reg.getID().getPath()))
+                                .texture("layer0", "fateubw:items/emiyas_bow_pull_1")).end()
+                        .override().predicate(new ResourceLocation(Fate.MODID, "pull"), 0.9f)
+                        .model(this.withExistingParent(reg.getID().getPath() + "_pull_2", new ResourceLocation(Fate.MODID, "item/" + reg.getID().getPath()))
+                                .texture("layer0", "fateubw:items/emiyas_bow_pull_2")).end()
+                        .transforms().transform(ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND)
+                        .rotation(-80, 260, -40)
+                        .translation(-1, -2, 2.5f)
+                        .scale(0.9f, 0.9f, 0.9f)
+                        .end()
+                        .transform(ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND)
+                        .rotation(-80, -280, 40)
+                        .translation(-1, -2, 2.5f)
+                        .scale(0.9f, 0.9f, 0.9f)
+                        .end()
+                        .transform(ItemTransforms.TransformType.FIRST_PERSON_RIGHT_HAND)
+                        .rotation(0, -90, 25)
+                        .translation(1.13f, 3.2f, 1.13f)
+                        .scale(0.68f, 0.68f, 0.68f)
+                        .end()
+                        .transform(ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND)
+                        .rotation(0, 90, -25)
+                        .translation(1.13f, 3.2f, 1.13f)
+                        .scale(0.68f, 0.68f, 0.68f)
+                        .end();
             } else if (reg.get() instanceof SpawnEgg)
                 this.withExistingParent(reg.getID().getPath(), ModelLocationUtils.decorateItemModelLocation("template_spawn_egg"));
             else if (reg == ModItems.EXCALIBUR) {

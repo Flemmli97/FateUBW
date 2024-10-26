@@ -69,7 +69,7 @@ public class ItemArcherBow extends BowItem implements SwingItem {
         CaladBolg bolg = new CaladBolg(world, entityLiving);
         if (!world.isClientSide) {
             int i = this.getUseDuration(stack) - timeLeft;
-            float f = getPowerForTime(i);
+            float f = getPowerForTime(i * 2);
             if (f >= 0.1D) {
                 bolg.shoot(entityLiving, entityLiving.getXRot(), entityLiving.getYRot(), 0, f * 2, 0);
                 world.addFreshEntity(bolg);
@@ -85,11 +85,11 @@ public class ItemArcherBow extends BowItem implements SwingItem {
             int i = this.getUseDuration(stack) - timeLeft;
 
             if (flag) {
-                float f = getPowerForTime(i) * 1.2f;
+                float f = getPowerForTime(i * 2);
                 if (f >= 0.1D) {
                     if (!world.isClientSide) {
                         ArcherArrow arrow = new ArcherArrow(player.level, player);
-                        arrow.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, f * 3.0F, 1.0F);
+                        arrow.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, f * 2.5F, 1.0F);
                         if (f == 1.0F)
                             arrow.setCritArrow(true);
 

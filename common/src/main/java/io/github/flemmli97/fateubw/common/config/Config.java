@@ -61,5 +61,7 @@ public class Config {
         public static float pegasusDamage = 14;
         public static int medeaCircleSpan = 12000;
         public static float medeaCircleRange = 32;
+
+        public static boolean debugAttack = false;
     }
 }

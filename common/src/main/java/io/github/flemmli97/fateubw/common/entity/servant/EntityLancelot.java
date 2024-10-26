@@ -4,7 +4,6 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.config.Config;
 import io.github.flemmli97.fateubw.common.entity.servant.ai.LancelotAttackGoal;
-import io.github.flemmli97.fateubw.common.lib.LibEntities;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
 import io.github.flemmli97.fateubw.platform.Platform;
@@ -39,7 +38,7 @@ public class EntityLancelot extends BaseServant {
     private final AnimationHandler<EntityLancelot> animationHandler = new AnimationHandler<>(this, ANIMS);
 
     public EntityLancelot(EntityType<? extends EntityLancelot> entityType, Level world) {
-        super(entityType, world, LibEntities.LANCELOT + ".hogou");
+        super(entityType, world);
         if (world != null && !world.isClientSide)
             this.goalSelector.addGoal(0, this.attackAI);
     }

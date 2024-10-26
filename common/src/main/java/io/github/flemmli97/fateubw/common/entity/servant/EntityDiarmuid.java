@@ -2,7 +2,6 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 
 
 import io.github.flemmli97.fateubw.common.entity.servant.ai.DiarmuidAttackGoal;
-import io.github.flemmli97.fateubw.common.lib.LibEntities;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
@@ -28,7 +27,7 @@ public class EntityDiarmuid extends BaseServant {
     private final AnimationHandler<EntityDiarmuid> animationHandler = new AnimationHandler<>(this, ANIMS);
 
     public EntityDiarmuid(EntityType<? extends EntityDiarmuid> entityType, Level world) {
-        super(entityType, world, LibEntities.DIARMUID + ".hogou");
+        super(entityType, world);
         if (world != null && !world.isClientSide)
             this.goalSelector.addGoal(0, this.attackAI);
     }

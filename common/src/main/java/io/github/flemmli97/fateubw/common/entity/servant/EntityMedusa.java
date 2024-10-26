@@ -5,7 +5,6 @@ import io.github.flemmli97.fateubw.common.entity.DaggerHitNotifiable;
 import io.github.flemmli97.fateubw.common.entity.minions.Pegasus;
 import io.github.flemmli97.fateubw.common.entity.misc.ChainDagger;
 import io.github.flemmli97.fateubw.common.entity.servant.ai.MedusaAttackGoal;
-import io.github.flemmli97.fateubw.common.lib.LibEntities;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
@@ -44,7 +43,7 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
     private int throwCooldown;
 
     public EntityMedusa(EntityType<? extends BaseServant> entityType, Level world) {
-        super(entityType, world, LibEntities.MEDUSA + ".hogou");
+        super(entityType, world);
         if (world != null && !world.isClientSide)
             this.goalSelector.addGoal(0, this.attackAI);
     }

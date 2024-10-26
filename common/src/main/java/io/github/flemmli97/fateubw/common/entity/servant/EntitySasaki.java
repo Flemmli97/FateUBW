@@ -2,7 +2,6 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 
 
 import io.github.flemmli97.fateubw.common.entity.servant.ai.SasakiAttackGoal;
-import io.github.flemmli97.fateubw.common.lib.LibEntities;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
@@ -25,7 +24,7 @@ public class EntitySasaki extends BaseServant {
     private final AnimationHandler<EntitySasaki> animationHandler = new AnimationHandler<>(this, ANIMS);
 
     public EntitySasaki(EntityType<? extends BaseServant> entityType, Level world) {
-        super(entityType, world, LibEntities.SASAKI + ".hogou");
+        super(entityType, world);
         if (world != null && !world.isClientSide)
             this.goalSelector.addGoal(0, this.attackAI);
     }

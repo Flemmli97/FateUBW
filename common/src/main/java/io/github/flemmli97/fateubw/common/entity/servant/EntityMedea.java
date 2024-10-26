@@ -42,7 +42,7 @@ public class EntityMedea extends BaseServant {
     private static final int[][] castOffsets = {{-2, 0}, {-1, 0}, {1, 0}, {0, 1}, {0, 2}};
 
     public EntityMedea(EntityType<? extends BaseServant> entityType, Level world) {
-        super(entityType, world, LibEntities.MEDEA + ".hogou");
+        super(entityType, world);
         if (world != null && !world.isClientSide)
             this.goalSelector.addGoal(0, this.attackAI);
     }
