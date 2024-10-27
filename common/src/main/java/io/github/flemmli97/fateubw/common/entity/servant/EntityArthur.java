@@ -55,7 +55,8 @@ public class EntityArthur extends BaseServant {
     public static final AnimatedAction INVISIBLE_BURST_HIT = new AnimatedAction(0.64, 0.36, "invisible_burst_hit");
 
     public static final AnimatedAction EXCALIBAA = new AnimatedAction(1.6, 0.6, "excalibur");
-    public static final AnimatedAction[] ANIMS = {SWING_1, SWING_1_VAR_1, SWING_1_VAR_2, SWING_2, INVISIBLE_BURST, INVISIBLE_BURST_HIT, EXCALIBAA};
+    public static final AnimatedAction SUMMON = new AnimatedAction(2., 0, "summon");
+    public static final AnimatedAction[] ANIMS = {SWING_1, SWING_1_VAR_1, SWING_1_VAR_2, SWING_2, INVISIBLE_BURST, INVISIBLE_BURST_HIT, EXCALIBAA, SUMMON};
 
     protected static final EntityDataAccessor<Float> LOCKED_YAW = SynchedEntityData.defineId(EntityArthur.class, EntityDataSerializers.FLOAT);
 
@@ -249,5 +250,10 @@ public class EntityArthur extends BaseServant {
         this.level.addFreshEntity(excalibur);
         this.revealServant();
         this.releaseUsingItem();
+    }
+
+    @Override
+    protected AnimatedAction getSummonAnimation() {
+        return SUMMON;
     }
 }

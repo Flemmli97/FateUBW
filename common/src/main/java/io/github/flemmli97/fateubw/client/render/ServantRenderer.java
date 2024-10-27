@@ -1,7 +1,10 @@
 package io.github.flemmli97.fateubw.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
+import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.client.model.BaseServantModel;
 import io.github.flemmli97.fateubw.client.model.ModelServant;
 import io.github.flemmli97.fateubw.common.entity.NonSitVehicle;
@@ -21,10 +24,14 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public abstract class ServantRenderer<T extends BaseServant, M extends BaseServantModel<T>> extends LivingEntityRenderer<T, BaseServantModel<T>> {
 
     private static boolean DEBUG_RENDER = false;
     private static final ResourceLocation DEFAULT_RES_LOC = new ResourceLocation("textures/entity/steve.png");
+
+    private static final MultiBufferSource.BufferSource SEP = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
 
     private final ModelServant<T> defaultModel;
     private final M servantModel;
@@ -39,7 +46,8 @@ public abstract class ServantRenderer<T extends BaseServant, M extends BaseServa
 
     @Override
     public void render(T entity, float yaw, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int light) {
-        this.model = ServantRenderer.showIdentity(entity) ? this.servantModel : this.defaultModel;
+        boolean showIdentity = ServantRenderer.showIdentity(entity);
+        this.model = showIdentity ? this.servantModel : this.defaultModel;
         this.model.update(entity);
         if (ClientPlatform.INSTANCE.renderLivingEvent(entity, this, partialTicks, matrixStack, buffer, light, true))
             return;
@@ -107,8 +115,27 @@ public abstract class ServantRenderer<T extends BaseServant, M extends BaseServa
         boolean transparent = (!visible || entity.isDeadOrDying()) && !entity.isInvisibleTo(minecraft.player) && entity.transparentOnDeath();
         boolean outline = minecraft.shouldEntityAppearGlowing(entity);
         RenderType rendertype = this.getRenderType(entity, visible, transparent, outline);
+        float summonProgress = entity.getSummonProgress(partialTicks);
+        Vector4f clip;
+        if (summonProgress >= 0) {
+            Vector3f normal = new Vector3f(0, 0, 1);
+            normal.transform(Vector3f.XP.rotationDegrees(-90));
+            clip = FateRenders.createClippingPlane(normal, entity, -(entity.getBbHeight() + 0.3f) * (1 - summonProgress));
+        } else
+            clip = null;
+        AtomicInteger state = new AtomicInteger();
+        MultiBufferSource buf = clip != null ? renderType -> {
+            RenderType type = FateRenders.getClippedRendertype(renderType, clip, entity.summonColor(), 0.1f);
+            int current = state.get();
+            VertexConsumer cons = current == 1 ? SEP.getBuffer(type) : buffer.getBuffer(type);
+            if (current == 0 || current == 2)
+                state.set(1);
+            else
+                state.set(2);
+            return cons;
+        } : buffer;
         if (rendertype != null) {
-            VertexConsumer ivertexbuilder = buffer.getBuffer(rendertype);
+            VertexConsumer ivertexbuilder = buf.getBuffer(rendertype);
             int i = getOverlayCoords(entity, this.getWhiteOverlayProgress(entity, partialTicks));
             float alpha = entity.isDeadOrDying() ? Math.max(0.1f, 1 - (entity.getDeathTick() / (float) entity.maxDeathTick())) : transparent ? 0.15f : 1;
             this.model.renderToBuffer(matrixStack, ivertexbuilder, light, i, 1.0F, 1.0F, 1.0F, alpha);
@@ -116,9 +143,11 @@ public abstract class ServantRenderer<T extends BaseServant, M extends BaseServa
 
         if (!entity.isSpectator()) {
             for (RenderLayer<T, BaseServantModel<T>> layerrenderer : this.layers) {
-                layerrenderer.render(matrixStack, buffer, light, entity, maxLimbSwing, limgSwingAmount, partialTicks, f7, yawHeadAct, pitch);
+                layerrenderer.render(matrixStack, buf, light, entity, maxLimbSwing, limgSwingAmount, partialTicks, f7, yawHeadAct, pitch);
             }
         }
+        if (state.get() != 0) // other buffersource was used
+            SEP.endBatch();
 
         matrixStack.popPose();
         this.nameTag(entity, yaw, partialTicks, matrixStack, buffer, light);

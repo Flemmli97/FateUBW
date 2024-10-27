@@ -2,6 +2,7 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.api.datapack.ServantProperties;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.entity.IServantMinion;
@@ -95,6 +96,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     protected static final EntityDataAccessor<Boolean> STATIONARY = SynchedEntityData.defineId(BaseServant.class, EntityDataSerializers.BOOLEAN);
     protected static final EntityDataAccessor<Optional<UUID>> OWNER_UUID = SynchedEntityData.defineId(BaseServant.class, EntityDataSerializers.OPTIONAL_UUID);
 
+    protected static final Vector4f SUMMON_COLOR = new Vector4f(60 / 255f, 118 / 255f, 199 / 255f, 0.8f);
     //Mana
     private int servantMana, antiRegen, counter;
     private boolean died = false;
@@ -138,6 +140,9 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     public MoveTowardsRestrictionGoal restrictArea = new MoveTowardsRestrictionGoal(this, 1.0D);
     public WaterAvoidingRandomStrollGoal wander = new WaterAvoidingRandomStrollGoal(this, 1.0D);
     protected Vec3 targetPosition;
+
+    private final List<ServerPlayer> tracked = new ArrayList<>();
+    private boolean addToOwner;
 
     public BaseServant(EntityType<? extends BaseServant> entityType, Level level) {
         super(entityType, level);
@@ -247,7 +252,28 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         for (EquipmentSlot type : EquipmentSlot.values())
             this.setDropChance(type, 0);
         this.setLeftHanded(false);
+        if (this.getSummonAnimation() != null) {
+            if (reason == MobSpawnType.SPAWN_EGG || reason == MobSpawnType.MOB_SUMMONED) {
+                this.getAnimationHandler().setAnimation(this.getSummonAnimation());
+            }
+        }
         return data;
+    }
+
+    protected AnimatedAction getSummonAnimation() {
+        return null;
+    }
+
+    public float getSummonProgress(float partialTicks) {
+        AnimatedAction summon = this.getSummonAnimation();
+        if (summon != null && this.getAnimationHandler().isCurrent(summon)) {
+            return Math.min(1, (this.getAnimationHandler().getAnimation().getTickRaw() + partialTicks) / summon.getLength());
+        }
+        return -1;
+    }
+
+    public Vector4f summonColor() {
+        return SUMMON_COLOR;
     }
 
     public static AttributeSupplier.Builder createMobAttributes() {
@@ -413,6 +439,10 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     public void tick() {
         super.tick();
         this.getAnimationHandler().tick();
+        if (this.getSummonAnimation() != null && this.getAnimationHandler().isCurrent(this.getSummonAnimation())) {
+            this.setDeltaMovement(Vec3.ZERO);
+            this.getNavigation().stop();
+        }
         if (this.level instanceof ServerLevel serverLevel) {
             this.regenMana();
             this.combatTick = Math.max(0, --this.combatTick);
@@ -441,8 +471,10 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         }
     }
 
-    private final List<ServerPlayer> tracked = new ArrayList<>();
-    private boolean addToOwner;
+    @Override
+    protected boolean isImmobile() {
+        return super.isImmobile() || (this.getSummonAnimation() != null && this.getAnimationHandler().isCurrent(this.getSummonAnimation()));
+    }
 
     @Override
     public void startSeenByPlayer(ServerPlayer player) {

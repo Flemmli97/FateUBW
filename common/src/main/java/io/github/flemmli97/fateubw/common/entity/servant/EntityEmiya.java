@@ -1,6 +1,7 @@
 package io.github.flemmli97.fateubw.common.entity.servant;
 
 
+import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.common.entity.SwitchableWeapon;
 import io.github.flemmli97.fateubw.common.entity.misc.ArcherArrow;
 import io.github.flemmli97.fateubw.common.entity.misc.CaladBolg;
@@ -43,7 +44,8 @@ public class EntityEmiya extends BaseServant {
     private static final AnimatedAction BOW = new AnimatedAction(1, 0.76, "bow");
     private static final AnimatedAction JUMP_SHOT = new AnimatedAction(1.28, 0.92, "jump_shot");
     private static final AnimatedAction CALADBOLG = new AnimatedAction(1.28, 1.04, "caladbolg");
-    private static final AnimatedAction[] ANIMS = {MELEE_1, MELEE_2, MELEE_3, MELEE_4, BOW, JUMP_SHOT, CALADBOLG};
+    public static final AnimatedAction SUMMON = new AnimatedAction(2., 0, "summon");
+    private static final AnimatedAction[] ANIMS = {MELEE_1, MELEE_2, MELEE_3, MELEE_4, BOW, JUMP_SHOT, CALADBOLG, SUMMON};
 
     public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityEmiya>>> ATTACKS = List.of(
             WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.MELEE_1)
@@ -94,6 +96,8 @@ public class EntityEmiya extends BaseServant {
             });
 
     public final SwitchableWeapon<EntityEmiya> switchableWeapon = new SwitchableWeapon<>(this, ItemStack.EMPTY, new ItemStack(ModItems.ARCHBOW.get()));
+
+    private final Vector4f summonColor = new Vector4f(213 / 255f, 0, 6 / 255f, 0.7f);
 
     public EntityEmiya(EntityType<? extends EntityEmiya> entityType, Level level) {
         super(entityType, level);
@@ -258,5 +262,15 @@ public class EntityEmiya extends BaseServant {
     public boolean flipAnimation() {
         return this.getAnimationHandler().isCurrent(BOW, JUMP_SHOT, CALADBOLG)
                 && this.getMainHandItem().getItem() instanceof BowItem;
+    }
+
+    @Override
+    protected AnimatedAction getSummonAnimation() {
+        return SUMMON;
+    }
+
+    @Override
+    public Vector4f summonColor() {
+        return this.summonColor;
     }
 }

@@ -1,6 +1,7 @@
 package io.github.flemmli97.fateubw.common.entity.servant;
 
 
+import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.common.entity.SwitchableWeapon;
 import io.github.flemmli97.fateubw.common.entity.ai.DoNothingWithoutSightRun;
 import io.github.flemmli97.fateubw.common.entity.misc.BabylonWeapon;
@@ -46,7 +47,11 @@ public class EntityGilgamesh extends BaseServant {
     public static final AnimatedAction BABYLON_2 = new AnimatedAction(0.8, 0.2, "babylon_2");
     public static final AnimatedAction BABYLON_3 = new AnimatedAction(0.88, 0.24, "babylon_3");
     public static final AnimatedAction EA = new AnimatedAction(1.6, 0.72, "ea");
-    private static final AnimatedAction[] ANIMS = {MELEE_1, MELEE_2, MELEE_3, MELEE_4, BABYLON_1, BABYLON_2, BABYLON_3, EA};
+    public static final AnimatedAction SUMMON = new AnimatedAction(2., 0, "summon");
+
+    private static final AnimatedAction[] ANIMS = {MELEE_1, MELEE_2, MELEE_3, MELEE_4, BABYLON_1, BABYLON_2, BABYLON_3, EA, SUMMON};
+
+    private final Vector4f summonColor = new Vector4f(1.0f, 0.85f, 0.3f, 0.7f);
 
     public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityGilgamesh>>> ATTACKS = List.of(
             WeightedEntry.wrap(new GoalAttackAction<EntityGilgamesh>(EntityGilgamesh.MELEE_1)
@@ -244,5 +249,15 @@ public class EntityGilgamesh extends BaseServant {
 
     protected boolean useRanged() {
         return this.getMainHandItem().getItem() != ModItems.ENUMAELISH.get();
+    }
+
+    @Override
+    protected AnimatedAction getSummonAnimation() {
+        return SUMMON;
+    }
+
+    @Override
+    public Vector4f summonColor() {
+        return this.summonColor;
     }
 }
