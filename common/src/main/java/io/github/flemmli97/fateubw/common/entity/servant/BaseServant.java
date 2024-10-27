@@ -11,6 +11,7 @@ import io.github.flemmli97.fateubw.common.entity.servant.ai.RetaliateGoal;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.registry.ModAttributes;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
+import io.github.flemmli97.fateubw.common.registry.ModParticles;
 import io.github.flemmli97.fateubw.common.utils.EnumServantType;
 import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
 import io.github.flemmli97.fateubw.common.utils.Utils;
@@ -21,6 +22,7 @@ import io.github.flemmli97.tenshilib.api.entity.AoeAttackEntity;
 import io.github.flemmli97.tenshilib.api.entity.IAnimated;
 import io.github.flemmli97.tenshilib.common.entity.ai.MoveControllerPlus;
 import io.github.flemmli97.tenshilib.common.item.SpawnEgg;
+import io.github.flemmli97.tenshilib.common.particle.ColoredParticleData;
 import io.github.flemmli97.tenshilib.common.utils.NBTUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
@@ -477,6 +479,13 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     }
 
     @Override
+    public boolean isInvulnerableTo(DamageSource source) {
+        if (this.getSummonAnimation() != null && this.getAnimationHandler().isCurrent(this.getSummonAnimation()))
+            return true;
+        return super.isInvulnerableTo(source);
+    }
+
+    @Override
     public void startSeenByPlayer(ServerPlayer player) {
         this.tracked.add(player);
     }
@@ -531,15 +540,18 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     @Override
     protected void tickDeath() {
         this.died = true;
-		/*for(int i = 0; i < ((int)((7/(float)this.maxDeathTick())*this.deathTicks-1)); i++)
-			Particles.spawnParticle(ModRender.particleFade, this.world, this.posX + (this.rand.nextDouble() - 0.5D) * (this.width+3),
-    		this.posY + this.rand.nextDouble() * (this.height+1.5), 
-    		this.posZ + (this.rand.nextDouble() - 0.5D) * (this.width+3), 
-    		this.rand.nextGaussian() * 0.02D, 
-    		this.rand.nextGaussian() * 0.02D,
-    		this.rand.nextGaussian() * 0.02D);*/
+        if (this.level.isClientSide) {
+            for (int i = 0; i < ((int) ((9 / (float) this.maxDeathTick()) * this.deathTime - 1)); i++) {
+                this.level.addParticle(new ColoredParticleData(ModParticles.LIGHT.get(), 76 / 255f, 128 / 255f, 207 / 255f, 0.3f, 0.15f), this.getX(this.random.nextDouble() * 3 - 1.5),
+                        this.getY(this.random.nextDouble() * 3 - 1.5),
+                        this.getZ(this.random.nextDouble() * 3 - 1.5),
+                        this.random.nextGaussian() * 0.02D,
+                        this.random.nextGaussian() * 0.02D,
+                        this.random.nextGaussian() * 0.02D);
+            }
+        }
+        ++this.deathTime;
         if (this.level instanceof ServerLevel serverLevel) {
-            ++this.deathTime;
             if (this.deathTime == 1) {
                 //if(this.getLastDamageSource()!=DamageSource.OUT_OF_WORLD)
                 this.level.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("fateubw.chat.servant.death").withStyle(ChatFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);

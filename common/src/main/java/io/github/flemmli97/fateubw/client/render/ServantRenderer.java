@@ -137,7 +137,7 @@ public abstract class ServantRenderer<T extends BaseServant, M extends BaseServa
         if (rendertype != null) {
             VertexConsumer ivertexbuilder = buf.getBuffer(rendertype);
             int i = getOverlayCoords(entity, this.getWhiteOverlayProgress(entity, partialTicks));
-            float alpha = entity.isDeadOrDying() ? Math.max(0.1f, 1 - (entity.getDeathTick() / (float) entity.maxDeathTick())) : transparent ? 0.15f : 1;
+            float alpha = entity.isDeadOrDying() ? Math.max(0.15f, 1 - (entity.getDeathTick() / (float) entity.maxDeathTick())) : transparent ? 0.15f : 1;
             this.model.renderToBuffer(matrixStack, ivertexbuilder, light, i, 1.0F, 1.0F, 1.0F, alpha);
         }
 
@@ -169,6 +169,11 @@ public abstract class ServantRenderer<T extends BaseServant, M extends BaseServa
     @Override
     protected void setupRotations(T entityLiving, PoseStack matrixStackIn, float ageInTicks, float rotationYaw, float partialTicks) {
         super.setupRotations(entityLiving, matrixStackIn, ageInTicks, rotationYaw, partialTicks);
+    }
+
+    @Override
+    protected float getFlipDegrees(T livingEntity) {
+        return 0;
     }
 
     @Override
