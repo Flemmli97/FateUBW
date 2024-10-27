@@ -6,8 +6,8 @@ import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.api.datapack.ServantProperties;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.entity.IServantMinion;
+import io.github.flemmli97.fateubw.common.entity.ai.HurtByTargetPredicateGoal;
 import io.github.flemmli97.fateubw.common.entity.servant.ai.FollowMasterGoal;
-import io.github.flemmli97.fateubw.common.entity.servant.ai.RetaliateGoal;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.registry.ModAttributes;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
@@ -133,12 +133,22 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         return target instanceof Enemy;
     };
 
+    private final Predicate<LivingEntity> retaliatePred = (target) -> {
+        if (target == this)
+            return false;
+        if (target instanceof BaseServant)
+            return !Utils.inSameTeam(BaseServant.this, (BaseServant) target);
+        if (target instanceof ServerPlayer)
+            return target != BaseServant.this.getOwner() && !Utils.inSameTeam((ServerPlayer) target, BaseServant.this);
+        return true;
+    };
+
     public NearestAttackableTargetGoal<BaseServant> targetServant = new NearestAttackableTargetGoal<>(this, BaseServant.class, 10, true, true, this.targetPred);
     public NearestAttackableTargetGoal<Player> targetPlayer = new NearestAttackableTargetGoal<>(this, Player.class, 0, true, true, this.targetPred);
     public NearestAttackableTargetGoal<Mob> targetMob = new NearestAttackableTargetGoal<>(this, Mob.class, 10, true, true, this.targetPred);
 
     public FollowMasterGoal<BaseServant> follow = new FollowMasterGoal<>(this, 16.0D, 9.0F, 3.0F, BaseServant::isStaying);
-    public RetaliateGoal targetHurt = new RetaliateGoal(this);
+    public HurtByTargetPredicateGoal targetHurt = new HurtByTargetPredicateGoal(this, this.retaliatePred);
     public MoveTowardsRestrictionGoal restrictArea = new MoveTowardsRestrictionGoal(this, 1.0D);
     public WaterAvoidingRandomStrollGoal wander = new WaterAvoidingRandomStrollGoal(this, 1.0D);
     protected Vec3 targetPosition;

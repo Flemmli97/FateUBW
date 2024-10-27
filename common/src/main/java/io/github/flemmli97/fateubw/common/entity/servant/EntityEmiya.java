@@ -69,7 +69,7 @@ public class EntityEmiya extends BaseServant {
                     .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 14, 1.1))), 10),
             WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.JUMP_SHOT)
                     .cooldown(e -> e.getRandom().nextInt(15) + 10)
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(4, 10, 1.1))), 7),
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(4, 10, 1.1))), 6),
             WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.CALADBOLG)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
                     .withCondition(Utils.npCheck())
