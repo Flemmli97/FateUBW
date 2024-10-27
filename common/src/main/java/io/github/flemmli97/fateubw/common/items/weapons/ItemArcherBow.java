@@ -71,7 +71,7 @@ public class ItemArcherBow extends BowItem implements SwingItem {
             int i = this.getUseDuration(stack) - timeLeft;
             float f = getPowerForTime(i * 2);
             if (f >= 0.1D) {
-                bolg.shoot(entityLiving, entityLiving.getXRot(), entityLiving.getYRot(), 0, f * 2, 0);
+                bolg.shoot(entityLiving, entityLiving.getXRot(), entityLiving.getYRot(), 0, f, 0);
                 world.addFreshEntity(bolg);
                 this.setCharged(stack, false);
             }
@@ -114,7 +114,7 @@ public class ItemArcherBow extends BowItem implements SwingItem {
         }
     }
 
-    private boolean charged(ItemStack stack) {
+    public boolean charged(ItemStack stack) {
         return stack.hasTag() && stack.getTag().getBoolean(Fate.MODID + ":Charged");
     }
 

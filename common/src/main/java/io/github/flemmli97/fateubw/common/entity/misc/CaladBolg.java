@@ -1,14 +1,26 @@
 package io.github.flemmli97.fateubw.common.entity.misc;
 
 import io.github.flemmli97.fateubw.common.config.Config;
+import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
+import io.github.flemmli97.fateubw.platform.NetworkCalls;
 import io.github.flemmli97.tenshilib.common.entity.EntityProjectile;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.Vec3;
+
+import java.util.List;
 
 public class CaladBolg extends EntityProjectile {
 
@@ -32,13 +44,43 @@ public class CaladBolg extends EntityProjectile {
 
     @Override
     protected boolean entityRayTraceHit(EntityHitResult result) {
-        result.getEntity().hurt(CustomDamageSource.caladBolg(this, this.getOwner()), Config.Common.caladBolgDmg);
-        this.discard();
+        this.doExplosion(result.getEntity().getX(), result.getEntity().getY(), result.getEntity().getZ(), result.getEntity());
         return true;
     }
 
     @Override
-    protected void onBlockHit(BlockHitResult blockRayTraceResult) {
+    protected void onBlockHit(BlockHitResult result) {
+        this.doExplosion(result.getLocation().x, result.getLocation().y, result.getLocation().z, null);
+    }
+
+    private void doExplosion(double x, double y, double z, Entity hit) {
+        this.doExplosion(hit);
+        this.level.playSound(null, x, y, z, SoundEvents.GENERIC_EXPLODE, this.getSoundSource(), 1.0f, 1.0f);
         this.discard();
+        if (this.level instanceof ServerLevel serverLevel) {
+            AABB area = new AABB(x - 0.5, y - 0.5, z + 0.5, x + 0.5, y + 0.5, z + 0.5).inflate(9);
+            for (ServerPlayer player : serverLevel.players()) {
+                if (!area.contains(player.getX(), player.getY(), player.getZ()))
+                    continue;
+                NetworkCalls.INSTANCE.sendToClient(new S2CScreenShake(8, 2), player);
+            }
+        }
+    }
+
+    protected void doExplosion(Entity hit) {
+        if (hit != null)
+            hit.hurt(CustomDamageSource.caladBolg(this, this.getOwner()), Config.Common.caladBolgDmg);
+        Vec3 pos = hit != null ? hit.position() : this.position();
+        List<Entity> list = this.level.getEntities(this, new AABB(-6, -6, -6, 6, 6, 6).move(pos));
+        for (Entity e : list) {
+            double dist;
+            if ((dist = e.distanceToSqr(this)) > 36 || (e != hit && !this.canHit(e)))
+                continue;
+            dist -= 8;
+            float dmgPerc = (float) Mth.clamp(1 - (dist / 26f), 0.15f, 1);
+            e.hurt(CustomDamageSource.caladBolg(this, this.getOwner()), Config.Common.caladBolgDmg * dmgPerc);
+        }
+        if (this.level instanceof ServerLevel serverLevel)
+            serverLevel.sendParticles(ParticleTypes.EXPLOSION_EMITTER, pos.x(), pos.y(), pos.z(), 2, 1.0, 0.0, 0.0, 1);
     }
 }

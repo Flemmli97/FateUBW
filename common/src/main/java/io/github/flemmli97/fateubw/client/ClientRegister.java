@@ -79,6 +79,7 @@ public class ClientRegister {
         register.register(ModItems.EXCALIBUR.get(), new ResourceLocation(Fate.MODID, "active"), ItemModelProps.ACTIVE_ITEM_PROP);
         register.register(ModItems.MEDUSA_DAGGER.get(), new ResourceLocation(Fate.MODID, "thrown"), ItemModelProps.THROWN_DAGGER_PROP);
         register.register(ModItems.ARCHBOW.get(), new ResourceLocation(Fate.MODID, "pull"), ItemModelProps.BOW_PULL_PROP);
+        register.register(ModItems.ARCHBOW.get(), new ResourceLocation(Fate.MODID, "caladbolg"), ItemModelProps.CALADBOLG_CHARGE);
     }
 
     public static void setupRenderLayers(BiConsumer<Block, RenderType> consumer) {

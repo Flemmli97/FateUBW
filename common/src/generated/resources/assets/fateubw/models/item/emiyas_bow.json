@@ -76,21 +76,45 @@
   "overrides": [
     {
       "predicate": {
-        "fateubw:pull": 0.05
+        "fateubw:pull": 0.05,
+        "fateubw:caladbolg": 0.0
       },
       "model": "fateubw:item/emiyas_bow_pull_0"
     },
     {
       "predicate": {
-        "fateubw:pull": 0.65
+        "fateubw:pull": 0.65,
+        "fateubw:caladbolg": 0.0
       },
       "model": "fateubw:item/emiyas_bow_pull_1"
     },
     {
       "predicate": {
-        "fateubw:pull": 0.9
+        "fateubw:pull": 0.9,
+        "fateubw:caladbolg": 0.0
       },
       "model": "fateubw:item/emiyas_bow_pull_2"
+    },
+    {
+      "predicate": {
+        "fateubw:pull": 0.05,
+        "fateubw:caladbolg": 1.0
+      },
+      "model": "fateubw:item/emiyas_bow_caladbolg_pull_0"
+    },
+    {
+      "predicate": {
+        "fateubw:pull": 0.65,
+        "fateubw:caladbolg": 1.0
+      },
+      "model": "fateubw:item/emiyas_bow_caladbolg_pull_1"
+    },
+    {
+      "predicate": {
+        "fateubw:pull": 0.9,
+        "fateubw:caladbolg": 1.0
+      },
+      "model": "fateubw:item/emiyas_bow_caladbolg_pull_2"
     }
   ]
 }

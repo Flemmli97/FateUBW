@@ -36,33 +36,33 @@ import java.util.List;
 
 public class EntityEmiya extends BaseServant {
 
-    private static final AnimatedAction MELEE_1 = new AnimatedAction(0.68, 0.36, "dual_slash_1");
-    private static final AnimatedAction MELEE_2 = new AnimatedAction(0.64, 0.32, "dual_slash_2");
-    private static final AnimatedAction MELEE_3 = new AnimatedAction(1., 0.4, "dual_slash_3");
-    private static final AnimatedAction MELEE_4 = new AnimatedAction(0.84, 0.48, "dual_slash_4");
+    public static final AnimatedAction MELEE_1 = new AnimatedAction(0.68, 0.36, "dual_slash_1");
+    public static final AnimatedAction MELEE_2 = new AnimatedAction(0.64, 0.32, "dual_slash_2");
+    public static final AnimatedAction MELEE_3 = new AnimatedAction(1., 0.4, "dual_slash_3");
+    public static final AnimatedAction MELEE_4 = new AnimatedAction(0.84, 0.48, "dual_slash_4");
 
-    private static final AnimatedAction BOW = new AnimatedAction(1, 0.76, "bow");
-    private static final AnimatedAction JUMP_SHOT = new AnimatedAction(1.28, 0.92, "jump_shot");
-    private static final AnimatedAction CALADBOLG = new AnimatedAction(1.28, 1.04, "caladbolg");
+    public static final AnimatedAction BOW = new AnimatedAction(1, 0.76, "bow");
+    public static final AnimatedAction JUMP_SHOT = new AnimatedAction(1.28, 0.92, "jump_shot");
+    public static final AnimatedAction CALADBOLG = new AnimatedAction(1.28, 1.04, "caladbolg");
     public static final AnimatedAction SUMMON = new AnimatedAction(2., 0, "summon");
     private static final AnimatedAction[] ANIMS = {MELEE_1, MELEE_2, MELEE_3, MELEE_4, BOW, JUMP_SHOT, CALADBOLG, SUMMON};
 
     public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityEmiya>>> ATTACKS = List.of(
             WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.MELEE_1)
                     .cooldown(e -> e.getRandom().nextInt(15) + 7)
-                    .withCondition((goal, target, previous) -> goal.distanceToTargetSq < 5 * 5)
+                    .withCondition((goal, target, previous) -> goal.distanceToTargetSq < 36)
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 8),
             WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.MELEE_2)
                     .cooldown(e -> e.getRandom().nextInt(15) + 7)
-                    .withCondition((goal, target, previous) -> goal.distanceToTargetSq < 5 * 5)
+                    .withCondition((goal, target, previous) -> goal.distanceToTargetSq < 36)
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 8),
             WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.MELEE_3)
                     .cooldown(e -> e.getRandom().nextInt(15) + 7)
-                    .withCondition((goal, target, previous) -> goal.distanceToTargetSq < 5 * 5)
+                    .withCondition((goal, target, previous) -> goal.distanceToTargetSq < 36)
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 8),
             WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.MELEE_4)
                     .cooldown(e -> e.getRandom().nextInt(15) + 7)
-                    .withCondition((goal, target, previous) -> goal.distanceToTargetSq < 5 * 5)
+                    .withCondition((goal, target, previous) -> goal.distanceToTargetSq < 36)
                     .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(5, 6, 1.1))), 8),
             WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.BOW)
                     .cooldown(e -> e.getRandom().nextInt(15) + 10)
