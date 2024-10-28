@@ -50,19 +50,19 @@ public class EntityEmiya extends BaseServant {
     public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityEmiya>>> ATTACKS = List.of(
             WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.MELEE_1)
                     .cooldown(e -> e.getRandom().nextInt(15) + 7)
-                    .withCondition((goal, target, previous) -> goal.distanceToTargetSq < 36)
+                    .withCondition((goal, target, previous) -> goal.distanceToTargetSq < 40)
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 8),
             WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.MELEE_2)
                     .cooldown(e -> e.getRandom().nextInt(15) + 7)
-                    .withCondition((goal, target, previous) -> goal.distanceToTargetSq < 36)
+                    .withCondition((goal, target, previous) -> goal.distanceToTargetSq < 40)
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 8),
             WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.MELEE_3)
                     .cooldown(e -> e.getRandom().nextInt(15) + 7)
-                    .withCondition((goal, target, previous) -> goal.distanceToTargetSq < 36)
+                    .withCondition((goal, target, previous) -> goal.distanceToTargetSq < 40)
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 8),
             WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.MELEE_4)
                     .cooldown(e -> e.getRandom().nextInt(15) + 7)
-                    .withCondition((goal, target, previous) -> goal.distanceToTargetSq < 36)
+                    .withCondition((goal, target, previous) -> goal.distanceToTargetSq < 40)
                     .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(5, 6, 1.1))), 8),
             WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.BOW)
                     .cooldown(e -> e.getRandom().nextInt(15) + 10)

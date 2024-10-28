@@ -51,7 +51,7 @@ public class EntityArthur extends BaseServant {
     public static final AnimatedAction SWING_1_VAR_1 = new AnimatedAction(0.64, 0.52, "long_sword_1_2");
     public static final AnimatedAction SWING_1_VAR_2 = new AnimatedAction(0.6, 0.24, "long_sword_1_3");
     public static final AnimatedAction SWING_2 = new AnimatedAction(0.44, 0.36, "vertical_slash");
-    public static final AnimatedAction INVISIBLE_BURST = new AnimatedAction(0.96, 1.32, "invisible_burst");
+    public static final AnimatedAction INVISIBLE_BURST = new AnimatedAction(0.8, 0.28, "invisible_burst");
     public static final AnimatedAction INVISIBLE_BURST_HIT = new AnimatedAction(0.64, 0.36, "invisible_burst_hit");
 
     public static final AnimatedAction EXCALIBAA = new AnimatedAction(1.6, 0.6, "excalibur");
@@ -71,8 +71,8 @@ public class EntityArthur extends BaseServant {
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 4),
             WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.INVISIBLE_BURST)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .withCondition(((goal, target, previous) -> goal.distanceToTargetSq > 4 * 4))
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetRunner<>(1, 5))), 6),
+                    .withCondition(((goal, target, previous) -> goal.distanceToTargetSq > 25))
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetRunner<>(1, 14))), 6),
             WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.EXCALIBAA)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
                     .withCondition(Utils.npCheck())
@@ -195,7 +195,8 @@ public class EntityArthur extends BaseServant {
         } else if (anim.is(INVISIBLE_BURST)) {
             if (anim.isAtTick(0.2)) {
                 Vec3 dir = this.getTarget() != null ? this.getTarget().position().subtract(this.position()) : this.position().add(this.getLookAngle());
-                this.burstDir = dir.normalize().scale(0.7);
+
+                this.burstDir = dir.normalize().scale(0.95);
                 this.lookAt(EntityAnchorArgument.Anchor.EYES, this.position().add(dir));
                 this.entityData.set(LOCKED_YAW, this.getYHeadRot());
             }
@@ -221,7 +222,7 @@ public class EntityArthur extends BaseServant {
 
     private boolean duringBurst() {
         AnimatedAction anim = this.getAnimationHandler().getAnimation();
-        return anim != null && anim.is(INVISIBLE_BURST) && anim.isPastTick(0.28);
+        return anim != null && anim.is(INVISIBLE_BURST) && anim.isPastTick(0.28) && !anim.isPastTick(0.8);
     }
 
     @Override
