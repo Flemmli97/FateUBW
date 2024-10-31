@@ -5,7 +5,7 @@ import io.github.flemmli97.fateubw.common.config.Config;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicBeam;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicBufCircle;
 import io.github.flemmli97.fateubw.common.entity.servant.ai.MedeaAttackGoal;
-import io.github.flemmli97.fateubw.common.lib.LibEntities;
+import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
@@ -120,12 +120,12 @@ public class EntityMedea extends BaseServant {
 
     @Override
     public String[] specialCommands() {
-        return new String[]{LibEntities.MEDEA + ".circle"};
+        return new String[]{ModEntities.MEDEA.getID() + ".circle"};
     }
 
     @Override
     public void doSpecialCommand(String s) {
-        if (s.equals(LibEntities.MEDEA + ".circle"))
+        if (s.equals(ModEntities.MEDEA.getID() + ".circle"))
             this.makeCircle();
     }
 

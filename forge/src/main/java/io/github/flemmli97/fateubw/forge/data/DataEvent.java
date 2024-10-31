@@ -23,6 +23,7 @@ public class DataEvent {
             BlockTagGen blocks = new BlockTagGen(data, event.getExistingFileHelper());
             data.addProvider(blocks);
             data.addProvider(new ItemTagGen(data, blocks, event.getExistingFileHelper()));
+            data.addProvider(new EntityTagGen(data, event.getExistingFileHelper()));
             data.addProvider(new RecipesGen(data));
             data.addProvider(new GrailLoottables(data));
             data.addProvider(new AdvancementsGen(data));

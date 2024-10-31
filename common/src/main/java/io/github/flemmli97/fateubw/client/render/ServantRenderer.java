@@ -28,7 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class ServantRenderer<T extends BaseServant, M extends BaseServantModel<T>> extends LivingEntityRenderer<T, BaseServantModel<T>> {
 
-    private static boolean DEBUG_RENDER = false;
+    private static boolean DEBUG_RENDER = true;
     private static final ResourceLocation DEFAULT_RES_LOC = new ResourceLocation("textures/entity/steve.png");
 
     private static final MultiBufferSource.BufferSource SEP = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
