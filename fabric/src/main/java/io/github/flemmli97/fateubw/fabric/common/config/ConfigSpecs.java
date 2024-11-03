@@ -100,7 +100,7 @@ public class ConfigSpecs {
             this.allowDuplicateServant = builder.comment("Allow the summoning of duplicate servants during a grail war").define("Allow Duplicate Servants", Config.Common.allowDuplicateClass);
             this.allowDuplicateClass = builder.comment("Allow the summoning of duplicate servant classes during a grail war").define("Allow Duplicate Classes", Config.Common.allowDuplicateClass);
             this.fillMissingSlots = builder.comment("Fill in missing players till max allowed with npc").define("Fill Empty Slots", Config.Common.fillMissingSlots);
-            this.maxServantCircle = builder.comment("Amount of masterless servant that can spawn each time. (Fill Empty Slots needs to be true)").defineInRange("Servant Amount", Config.Common.maxServantCircle, 0, Integer.MAX_VALUE);
+            this.maxServantCircle = builder.comment("Amount of masterless servant that can spawn each time. (Fill Empty Slots needs to be true)").defineInRange("Servant Amount", Config.Common.maxServantCircle, 1, Integer.MAX_VALUE);
             this.servantMinSpawnDelay = builder.comment("Minimum time between each attempt to spawn masterless servants. (Fill Empty Slots needs to be true)").defineInRange("Servant Spawn Delay (Min)", Config.Common.servantMinSpawnDelay, 0, Integer.MAX_VALUE);
             this.servantMaxSpawnDelay = builder.comment("Maximum time between each attempt to spawn masterless servants. (Fill Empty Slots needs to be true)").defineInRange("Servant Spawn Delay (Max)", Config.Common.servantMaxSpawnDelay, 0, Integer.MAX_VALUE);
             this.punishTeleport = builder.comment("Should teleporting servants to the owner during a fight be punished").define("Punish Teleport", Config.Common.punishTeleport);

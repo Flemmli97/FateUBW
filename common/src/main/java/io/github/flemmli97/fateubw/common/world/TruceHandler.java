@@ -118,10 +118,13 @@ public class TruceHandler extends SavedData {
     }
 
     public void disbandAll(Player player) {
-        for (UUID a : this.truceMap.remove(player.getUUID())) {
-            Set<UUID> truces = this.truceMap.get(a);
-            if (truces != null)
-                truces.remove(player.getUUID());
+        Set<UUID> truce = this.truceMap.remove(player.getUUID());
+        if (truce != null) {
+            for (UUID a : truce) {
+                Set<UUID> truces = this.truceMap.get(a);
+                if (truces != null)
+                    truces.remove(player.getUUID());
+            }
         }
         this.truceMap.remove(player.getUUID());
         this.setDirty();

@@ -7,6 +7,7 @@ import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.utils.EnumServantType;
 import io.github.flemmli97.fateubw.common.utils.SummonUtils;
 import io.github.flemmli97.fateubw.platform.NetworkCalls;
+import io.github.flemmli97.fateubw.platform.Platform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -156,7 +157,9 @@ public class AltarBlockEntity extends BlockEntity {
                     level.playSound(null, altar.worldPosition, SoundEvents.PORTAL_TRAVEL, SoundSource.AMBIENT, 0.4F, 1F);
                 }
                 if (altar.summoningTick > 150) {
-                    SummonUtils.summonRandomServant(altar.inventoryCharm, (ServerPlayer) altar.player, altar.worldPosition, serverLevel);
+                    boolean success = SummonUtils.summonRandomServant(altar.inventoryCharm, (ServerPlayer) altar.player, altar.worldPosition, serverLevel);
+                    if (success)
+                        Platform.INSTANCE.getPlayerData(altar.player).ifPresent(data -> data.setCommandSeals(altar.player, 3));
                     SummonUtils.removeSummoningStructure(level, pos);
                 }
             }

@@ -8,6 +8,7 @@ import io.github.flemmli97.fateubw.common.registry.ModBlocks;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import io.github.flemmli97.tenshilib.platform.registry.RegistryEntrySupplier;
+import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -15,13 +16,14 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
@@ -99,42 +101,41 @@ public class SummonUtils {
         world.destroyBlock(pos, false);
     }
 
-    public static void summonServant(BaseServant servant, ServerPlayer player, ServerLevel world, BlockPos pos) {
+    public static void summonServant(BaseServant servant, ServerPlayer player, ServerLevel level) {
         servant.setOwner(player);
-        servant.moveTo(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5, Mth.wrapDegrees(world.random.nextFloat() * 360.0F), 0.0F);
-        servant.finalizeSpawn(world, world.getCurrentDifficultyAt(servant.blockPosition()), MobSpawnType.TRIGGERED, null, null);
-        world.addFreshEntity(servant);
-        GrailWarHandler.get(world.getServer()).join(player);
+        servant.finalizeSpawn(level, level.getCurrentDifficultyAt(servant.blockPosition()), MobSpawnType.TRIGGERED, null, null);
+        level.addFreshEntity(servant);
+        GrailWarHandler.get(level.getServer()).join(player);
     }
 
-    public static void summonRandomServant(ItemStack stack, ServerPlayer player, BlockPos pos, ServerLevel world) {
-        GrailWarHandler handler = GrailWarHandler.get(world.getServer());
-        List<EnumServantType> spawnableTypes = Arrays.stream(EnumServantType.values())
-                .filter(handler::canSpawnServantClass).toList();
-        EnumServantType type;
+    public static boolean summonRandomServant(ItemStack stack, ServerPlayer player, BlockPos pos, ServerLevel level) {
+        GrailWarHandler handler = GrailWarHandler.get(level.getServer());
+        EnumServantType type = null;
         if (stack.getItem() instanceof ItemServantCharm charm && player.getRandom().nextFloat() <= 0.6 && handler.canSpawnServantClass(charm.type))
             type = ((ItemServantCharm) stack.getItem()).type;
-        else
-            type = spawnableTypes.get(world.random.nextInt(spawnableTypes.size()));
-        List<RegistryEntrySupplier<EntityType<BaseServant>>> entities = ModEntities.getFromType(type)
-                .stream().filter(sup -> handler.canSpawnServantType(sup.getID())).toList();
-        if (entities.isEmpty())
-            return;
-        BaseServant servant = entities.get(world.random.nextInt(entities.size())).get().create(world);
-        summonServant(servant, player, world, pos);
+        BaseServant servant = randomServant(level, Vec3.atCenterOf(pos), player.position(), type);
+        if (servant != null)
+            summonServant(servant, player, level);
+        return servant != null;
     }
 
-    public static BaseServant randomServant(ServerLevel world) {
-        GrailWarHandler handler = GrailWarHandler.get(world.getServer());
-        List<EnumServantType> spawnableTypes = Arrays.stream(EnumServantType.values())
-                .filter(handler::canSpawnServantClass).toList();
-        if (spawnableTypes.isEmpty())
-            return null;
-        EnumServantType type = spawnableTypes.get(world.random.nextInt(spawnableTypes.size()));
-        List<RegistryEntrySupplier<EntityType<BaseServant>>> entities = ModEntities.getFromType(type)
+    public static BaseServant randomServant(ServerLevel level, Vec3 pos, @Nullable Vec3 lookTarget, @Nullable EnumServantType servantType) {
+        GrailWarHandler handler = GrailWarHandler.get(level.getServer());
+        if (servantType == null || !handler.canSpawnServantClass(servantType)) {
+            List<EnumServantType> spawnableTypes = Arrays.stream(EnumServantType.values())
+                    .filter(handler::canSpawnServantClass).toList();
+            if (spawnableTypes.isEmpty())
+                return null;
+            servantType = spawnableTypes.get(level.random.nextInt(spawnableTypes.size()));
+        }
+        List<RegistryEntrySupplier<EntityType<BaseServant>>> entities = ModEntities.getFromType(servantType)
                 .stream().filter(sup -> handler.canSpawnServantType(sup.getID())).toList();
         if (entities.isEmpty())
             return null;
-        return entities.get(world.random.nextInt(entities.size())).get().create(world);
+        BaseServant servant = entities.get(level.random.nextInt(entities.size())).get().create(level);
+        servant.moveTo(pos.x(), pos.y(), pos.z(), level.random.nextFloat() * 360.0F, 0);
+        if (lookTarget != null)
+            servant.lookAt(EntityAnchorArgument.Anchor.EYES, lookTarget);
+        return servant;
     }
 }

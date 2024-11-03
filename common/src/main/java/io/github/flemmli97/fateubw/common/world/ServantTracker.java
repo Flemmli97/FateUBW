@@ -15,6 +15,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Tracks servants in the world for the grailwar to load the chunk for a tick during ServerLevel loading
+ */
 public class ServantTracker {
 
     private final Set<BaseServant> servants = new HashSet<>();

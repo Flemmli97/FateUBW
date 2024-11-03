@@ -230,16 +230,15 @@ public class AltarBlock extends BaseEntityBlock {
             SummonUtils.placeSummoningStructure((ServerLevel) world, pos, altar, state.getValue(FACING).getOpposite());
             return InteractionResult.SUCCESS;
         } else if (!altar.addItem(player, stack) && stack.getItem() == ModItems.CRYSTAL_CLUSTER.get()) {
-            return Platform.INSTANCE.getPlayerData(player).map(cap -> {
+            return Platform.INSTANCE.getPlayerData(player).map(data -> {
                 GrailWarHandler tracker = GrailWarHandler.get(world.getServer());
-                if (cap.getServant(player) == null) {
+                if (data.getServant(player) == null) {
                     if (altar.isComplete()) {
                         if (!altar.isSummoning()) {
                             if (tracker.canJoin((ServerPlayer) player) && tracker.canSpawnMoreServants()) {
                                 if (!player.isCreative())
                                     stack.shrink(1);
                                 altar.setSummoning(player);
-                                cap.setCommandSeals(player, 3);
                                 AdvancementRegister.GRAIL_WAR_TRIGGER.trigger((ServerPlayer) player, true);
                                 return InteractionResult.CONSUME;
                             } else {
