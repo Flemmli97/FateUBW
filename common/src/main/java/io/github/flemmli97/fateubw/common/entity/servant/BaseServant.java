@@ -339,8 +339,9 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     public Player getOwner() {
         if (this.owner != null && this.owner.isAlive())
             return this.owner;
-        if (this.hasOwner())
-            this.owner = this.level.getPlayerByUUID(this.entityData.get(OWNER_UUID).get());
+        if (this.hasOwner()) {
+            this.setOwner(this.level.getPlayerByUUID(this.entityData.get(OWNER_UUID).get()));
+        }
         return this.owner;
     }
 
@@ -356,7 +357,8 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     public void setOwner(Player player) {
         if (player != null) {
             this.entityData.set(OWNER_UUID, Optional.of(player.getUUID()));
-            Platform.INSTANCE.getPlayerData(player).ifPresent(data -> data.setServant(this));
+            if (this.getServer() != null && GrailWarHandler.get(this.getServer()).isParticipant(this))
+                Platform.INSTANCE.getPlayerData(player).ifPresent(data -> data.setServant(this));
         } else
             this.entityData.set(OWNER_UUID, Optional.empty());
         this.owner = player;

@@ -91,7 +91,7 @@ public record C2SServantCommand(EnumServantUpdate command) implements Packet {
                 break;
             case FORFEIT: //Unused
                 GrailWarHandler track = GrailWarHandler.get(sender.getServer());
-                if (track.hasPlayer(sender)) {
+                if (track.isParticipant(sender)) {
                     track.removePlayer(sender);
                     servant.onForfeit(sender);
                 }

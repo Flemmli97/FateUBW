@@ -109,7 +109,7 @@ public class GrailWarHandler extends SavedData {
      * Removes the player only
      */
     public boolean removePlayer(ServerPlayer player) {
-        if (this.hasPlayer(player)) {
+        if (this.isParticipant(player)) {
             this.players.remove(player.getUUID());
             Platform.INSTANCE.getPlayerData(player).ifPresent(data -> {
                 data.setCommandSeals(player, 0);
@@ -146,8 +146,12 @@ public class GrailWarHandler extends SavedData {
         }
     }
 
-    public boolean hasPlayer(ServerPlayer player) {
+    public boolean isParticipant(ServerPlayer player) {
         return this.players.contains(player.getUUID());
+    }
+
+    public boolean isParticipant(BaseServant servant) {
+        return this.activeServants.contains(servant.getUUID());
     }
 
     public boolean removeConnection(ServerPlayer player) {
