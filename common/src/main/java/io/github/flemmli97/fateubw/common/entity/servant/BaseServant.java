@@ -10,9 +10,7 @@ import io.github.flemmli97.fateubw.common.entity.ai.HurtByTargetPredicateGoal;
 import io.github.flemmli97.fateubw.common.entity.servant.ai.FollowMasterGoal;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.registry.ModAttributes;
-import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModParticles;
-import io.github.flemmli97.fateubw.common.utils.EnumServantType;
 import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
@@ -113,7 +111,6 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
      */
     protected EnumServantUpdate commandBehaviour = EnumServantUpdate.NORMAL;
 
-    private final EnumServantType servantType;
     //PlayerUUID
     private Player owner;
 
@@ -166,7 +163,6 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
             this.goals();
             this.updateAttributes();
         }
-        this.servantType = ModEntities.get(id);
         this.hogou = new TranslatableComponent(id + ".hogou");
     }
 
@@ -190,10 +186,6 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
 
     public Component nobelPhantasm() {
         return this.hogou;
-    }
-
-    public EnumServantType getServantType() {
-        return this.servantType;
     }
 
     @Override

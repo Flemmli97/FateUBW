@@ -1,10 +1,11 @@
 {
-  "health": 350.0,
+  "class": "fateubw:caster",
   "strength": 9.5,
   "armor": 5.0,
   "projectileProt": 4.0,
+  "nobelPhantasmCost": 100,
+  "health": 350.0,
   "magicProt": 17.5,
   "moveSpeed": 0.2,
-  "projectileBlockChance": 0.0,
-  "nobelPhantasmCost": 100
+  "projectileBlockChance": 0.0
 }

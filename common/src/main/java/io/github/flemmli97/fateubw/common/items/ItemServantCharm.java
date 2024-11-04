@@ -1,7 +1,8 @@
 package io.github.flemmli97.fateubw.common.items;
 
+import io.github.flemmli97.fateubw.common.lib.BuiltinServantClasses;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
-import io.github.flemmli97.fateubw.common.utils.EnumServantType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -12,9 +13,9 @@ import net.minecraft.world.level.Level;
 
 public class ItemServantCharm extends Item {
 
-    public final EnumServantType type;
+    public final ResourceLocation type;
 
-    public ItemServantCharm(EnumServantType type, Properties props) {
+    public ItemServantCharm(ResourceLocation type, Properties props) {
         super(props);
         this.type = type;
     }
@@ -22,7 +23,7 @@ public class ItemServantCharm extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        if (this.type == EnumServantType.NOTASSIGNED) {
+        if (this.type == BuiltinServantClasses.NONE) {
             if (!world.isClientSide) {
                 if (!player.isCreative())
                     stack.shrink(1);

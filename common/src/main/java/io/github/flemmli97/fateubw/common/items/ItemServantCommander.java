@@ -1,5 +1,6 @@
 package io.github.flemmli97.fateubw.common.items;
 
+import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.network.S2COpenGui;
 import io.github.flemmli97.fateubw.platform.NetworkCalls;
@@ -16,7 +17,7 @@ import java.util.UUID;
 
 public class ItemServantCommander extends Item {
 
-    public static final String KEY = "fate:InteractionUUID";
+    public static final String KEY = Fate.MODID + ":InteractionUUID";
 
     public ItemServantCommander(Properties props) {
         super(props);

@@ -1,8 +1,10 @@
 package io.github.flemmli97.fateubw.forge.data;
 
 import io.github.flemmli97.fateubw.Fate;
+import io.github.flemmli97.fateubw.common.lib.FateTags;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.tenshilib.TenshiLib;
+import io.github.flemmli97.tenshilib.platform.registry.RegistryEntrySupplier;
 import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.TagsProvider;
@@ -19,6 +21,9 @@ public class EntityTagGen extends TagsProvider<EntityType<?>> {
 
     @Override
     protected void addTags() {
+        for (RegistryEntrySupplier<EntityType<?>> type : ModEntities.getServants()) {
+            this.tag(FateTags.SERVANT).add(type.get());
+        }
         this.tag(TenshiLib.MULTIPART_ENTITY)
                 .add(ModEntities.MULTIPART.get());
     }

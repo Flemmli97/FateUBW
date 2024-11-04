@@ -235,7 +235,7 @@ public class AltarBlock extends BaseEntityBlock {
                 if (tracker.getServant(serverPlayer) == null) {
                     if (altar.isComplete()) {
                         if (!altar.isSummoning()) {
-                            if (tracker.canJoin((ServerPlayer) player) && tracker.canSpawnMoreServants()) {
+                            if (tracker.canJoin((ServerPlayer) player) && tracker.canSpawnMoreServants(serverPlayer.getLevel())) {
                                 if (!player.isCreative())
                                     stack.shrink(1);
                                 altar.setSummoning(player);

@@ -2,12 +2,12 @@ package io.github.flemmli97.fateubw.common.world;
 
 import com.google.common.collect.ImmutableSet;
 import io.github.flemmli97.fateubw.common.config.Config;
+import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
+import io.github.flemmli97.fateubw.common.datapack.ServantPropManager;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.network.S2CWarData;
 import io.github.flemmli97.fateubw.common.registry.AdvancementRegister;
-import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
-import io.github.flemmli97.fateubw.common.utils.EnumServantType;
 import io.github.flemmli97.fateubw.common.utils.SummonUtils;
 import io.github.flemmli97.fateubw.platform.NetworkCalls;
 import io.github.flemmli97.fateubw.platform.Platform;
@@ -59,7 +59,7 @@ public class GrailWarHandler extends SavedData {
      * Tracking what servants and classes spawned in the grailwar
      */
     private final Set<ResourceLocation> servantsTypes = new HashSet<>();
-    private final Set<EnumServantType> servantClasses = new HashSet<>();
+    private final Set<ResourceLocation> servantClasses = new HashSet<>();
     private int spawnedServants;
 
     private State state = State.NOTHING;
@@ -112,7 +112,7 @@ public class GrailWarHandler extends SavedData {
         Participant participant = new Participant(servant, player);
         if (!this.participants.containsValue(participant) && this.canSpawnServant(servant)) {
             this.participants.put(participant.getUuid(), participant);
-            this.servantClasses.add(servant.getServantType());
+            this.servantClasses.add(servant.props().getServantClass());
             this.servantsTypes.add(PlatformUtils.INSTANCE.entities().getIDFrom(servant.getType()));
             this.spawnedServants++;
             return true;
@@ -279,11 +279,11 @@ public class GrailWarHandler extends SavedData {
         this.setDirty();
     }
 
-    public boolean canSpawnMoreServants() {
-        for (ResourceLocation loc : ModEntities.registeredServants()) {
-            if (!Config.Common.allowDuplicateServant && this.servantsTypes.contains(loc))
+    public boolean canSpawnMoreServants(ServerLevel level) {
+        for (ServantPropManager.EntityTypeAndID entry : DatapackHandler.SERVANT_PROPS.getServants(level)) {
+            if (!Config.Common.allowDuplicateServant && this.servantsTypes.contains(entry.id()))
                 return false;
-            if (!Config.Common.allowDuplicateClass && this.servantClasses.contains(ModEntities.get(loc)))
+            if (!Config.Common.allowDuplicateClass && this.servantClasses.contains(DatapackHandler.SERVANT_PROPS.get(entry.id()).getServantClass()))
                 return false;
         }
         return true;
@@ -292,15 +292,15 @@ public class GrailWarHandler extends SavedData {
     public boolean canSpawnServant(BaseServant servant) {
         if (!this.canSpawnServantType(PlatformUtils.INSTANCE.entities().getIDFrom(servant.getType())))
             return false;
-        return this.canSpawnServantClass(servant.getServantType());
+        return this.canSpawnServantClass(servant.props().getServantClass());
     }
 
     public boolean canSpawnServantType(ResourceLocation entityType) {
         return Config.Common.allowDuplicateServant || !this.servantsTypes.contains(entityType);
     }
 
-    public boolean canSpawnServantClass(EnumServantType type) {
-        return Config.Common.allowDuplicateClass || !this.servantClasses.contains(type);
+    public boolean canSpawnServantClass(ResourceLocation servantClass) {
+        return Config.Common.allowDuplicateClass || !this.servantClasses.contains(servantClass);
     }
 
     private void trySpawnNPCServant(ServerLevel level) {
@@ -360,7 +360,7 @@ public class GrailWarHandler extends SavedData {
         ListTag list = compound.getList("Servants", Tag.TAG_STRING);
         list.forEach(s -> this.servantsTypes.add(new ResourceLocation(s.getAsString())));
         ListTag list2 = compound.getList("ServantClasses", Tag.TAG_STRING);
-        list2.forEach(s -> this.servantClasses.add(EnumServantType.valueOf(s.getAsString())));
+        list2.forEach(s -> this.servantClasses.add(new ResourceLocation(s.getAsString())));
         ListTag list3 = compound.getList("ToRemove", Tag.TAG_INT_ARRAY);
         list3.forEach(s -> this.sheduledPlayerRemoval.add(NbtUtils.loadUUID(s)));
         this.joinTime = compound.getInt("Ticker");

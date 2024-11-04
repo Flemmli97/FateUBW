@@ -1,10 +1,11 @@
 {
-  "health": 250.0,
+  "class": "fateubw:archer",
   "strength": 7.5,
   "armor": 8.0,
   "projectileProt": 15.5,
+  "nobelPhantasmCost": 66,
+  "health": 250.0,
   "magicProt": 7.0,
   "moveSpeed": 0.33,
-  "projectileBlockChance": 0.0,
-  "nobelPhantasmCost": 66
+  "projectileBlockChance": 0.0
 }

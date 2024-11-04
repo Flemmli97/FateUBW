@@ -1,10 +1,11 @@
 {
-  "health": 450.0,
+  "class": "fateubw:berserker",
   "strength": 9.0,
   "armor": 14.0,
   "projectileProt": 19.0,
+  "nobelPhantasmCost": 0,
+  "health": 450.0,
   "magicProt": 4.0,
   "moveSpeed": 0.2,
-  "projectileBlockChance": 0.4,
-  "nobelPhantasmCost": 0
+  "projectileBlockChance": 0.4
 }

@@ -2,21 +2,21 @@ package io.github.flemmli97.fateubw.common.utils;
 
 import io.github.flemmli97.fateubw.common.blocks.ChalkBlock;
 import io.github.flemmli97.fateubw.common.blocks.tile.AltarBlockEntity;
+import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
+import io.github.flemmli97.fateubw.common.datapack.ServantPropManager;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.items.ItemServantCharm;
 import io.github.flemmli97.fateubw.common.registry.ModBlocks;
-import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
-import io.github.flemmli97.tenshilib.platform.registry.RegistryEntrySupplier;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -25,7 +25,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class SummonUtils {
@@ -110,29 +109,29 @@ public class SummonUtils {
 
     public static boolean summonRandomServant(ItemStack stack, ServerPlayer player, BlockPos pos, ServerLevel level) {
         GrailWarHandler handler = GrailWarHandler.get(level.getServer());
-        EnumServantType type = null;
+        ResourceLocation servantClass = null;
         if (stack.getItem() instanceof ItemServantCharm charm && player.getRandom().nextFloat() <= 0.6 && handler.canSpawnServantClass(charm.type))
-            type = ((ItemServantCharm) stack.getItem()).type;
-        BaseServant servant = randomServant(level, Vec3.atCenterOf(pos), player.position(), type);
+            servantClass = ((ItemServantCharm) stack.getItem()).type;
+        BaseServant servant = randomServant(level, Vec3.atCenterOf(pos), player.position(), servantClass);
         if (servant != null)
             summonServant(servant, player, level);
         return servant != null;
     }
 
-    public static BaseServant randomServant(ServerLevel level, Vec3 pos, @Nullable Vec3 lookTarget, @Nullable EnumServantType servantType) {
+    public static BaseServant randomServant(ServerLevel level, Vec3 pos, @Nullable Vec3 lookTarget, @Nullable ResourceLocation servantType) {
         GrailWarHandler handler = GrailWarHandler.get(level.getServer());
         if (servantType == null || !handler.canSpawnServantClass(servantType)) {
-            List<EnumServantType> spawnableTypes = Arrays.stream(EnumServantType.values())
+            List<ResourceLocation> spawnableTypes = DatapackHandler.SERVANT_PROPS.getServantClasses().stream()
                     .filter(handler::canSpawnServantClass).toList();
             if (spawnableTypes.isEmpty())
                 return null;
             servantType = spawnableTypes.get(level.random.nextInt(spawnableTypes.size()));
         }
-        List<RegistryEntrySupplier<EntityType<BaseServant>>> entities = ModEntities.getFromType(servantType)
-                .stream().filter(sup -> handler.canSpawnServantType(sup.getID())).toList();
+        List<ServantPropManager.EntityTypeAndID> entities = DatapackHandler.SERVANT_PROPS.getServantsFromClass(level, servantType)
+                .stream().filter(entry -> handler.canSpawnServantType(entry.id())).toList();
         if (entities.isEmpty())
             return null;
-        BaseServant servant = entities.get(level.random.nextInt(entities.size())).get().create(level);
+        BaseServant servant = entities.get(level.random.nextInt(entities.size())).type().create(level);
         servant.moveTo(pos.x(), pos.y(), pos.z(), level.random.nextFloat() * 360.0F, 0);
         if (lookTarget != null)
             servant.lookAt(EntityAnchorArgument.Anchor.EYES, lookTarget);

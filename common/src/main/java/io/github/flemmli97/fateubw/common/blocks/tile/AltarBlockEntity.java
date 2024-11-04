@@ -1,10 +1,10 @@
 package io.github.flemmli97.fateubw.common.blocks.tile;
 
 import io.github.flemmli97.fateubw.common.items.ItemServantCharm;
+import io.github.flemmli97.fateubw.common.lib.BuiltinServantClasses;
 import io.github.flemmli97.fateubw.common.network.S2CAltarUpdate;
 import io.github.flemmli97.fateubw.common.registry.ModBlocks;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
-import io.github.flemmli97.fateubw.common.utils.EnumServantType;
 import io.github.flemmli97.fateubw.common.utils.SummonUtils;
 import io.github.flemmli97.fateubw.platform.NetworkCalls;
 import io.github.flemmli97.fateubw.platform.Platform;
@@ -53,7 +53,7 @@ public class AltarBlockEntity extends BlockEntity {
     }
 
     public boolean addItem(Player player, ItemStack stack) {
-        if (stack.getItem() instanceof ItemServantCharm && ((ItemServantCharm) stack.getItem()).type != EnumServantType.NOTASSIGNED) {
+        if (stack.getItem() instanceof ItemServantCharm && ((ItemServantCharm) stack.getItem()).type != BuiltinServantClasses.NONE) {
             if (this.inventoryCharm.isEmpty()) {
                 ItemStack stackToAdd = stack.copy();
                 stackToAdd.setCount(1);
