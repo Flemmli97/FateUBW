@@ -4,6 +4,8 @@ import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.attachment.PlayerData;
 import io.github.flemmli97.fateubw.common.config.Config;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
+import io.github.flemmli97.fateubw.common.items.ItemServantCommander;
+import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
@@ -17,9 +19,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.EntityHitResult;
+
+import java.util.UUID;
 
 public record C2SServantCommand(EnumServantUpdate command) implements Packet {
 
@@ -42,7 +48,7 @@ public record C2SServantCommand(EnumServantUpdate command) implements Packet {
     public static void handle(C2SServantCommand pkt, ServerPlayer sender) {
         PlayerData cap;
         BaseServant servant;
-        if (sender == null || (cap = Platform.INSTANCE.getPlayerData(sender).orElse(null)) == null || (servant = cap.getServant(sender)) == null)
+        if (sender == null || (cap = Platform.INSTANCE.getPlayerData(sender).orElse(null)) == null || (servant = getServant(sender)) == null)
             return;
         switch (pkt.command) {
             case NORMAL:
@@ -92,7 +98,7 @@ public record C2SServantCommand(EnumServantUpdate command) implements Packet {
             case FORFEIT: //Unused
                 GrailWarHandler track = GrailWarHandler.get(sender.getServer());
                 if (track.isParticipant(sender)) {
-                    track.removePlayer(sender);
+                    track.removePlayer(sender, false);
                     servant.onForfeit(sender);
                 }
                 break;
@@ -132,5 +138,18 @@ public record C2SServantCommand(EnumServantUpdate command) implements Packet {
                 }
                 break;
         }
+    }
+
+    public static BaseServant getServant(ServerPlayer player) {
+        ItemStack stack = player.getMainHandItem();
+        if (stack.getItem() == ModItems.COMMANDER.get()) {
+            UUID uuid = ItemServantCommander.getInteractionEntity(stack);
+            if (uuid != null) {
+                Entity entity = player.getLevel().getEntity(uuid);
+                if (entity instanceof BaseServant servant)
+                    return servant;
+            }
+        }
+        return GrailWarHandler.get(player.getServer()).getServant(player);
     }
 }

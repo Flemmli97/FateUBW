@@ -78,21 +78,22 @@ public class TruceHandler extends SavedData {
                     .add(request);
             this.truceMap.computeIfAbsent(request, o -> new HashSet<>())
                     .add(player.getUUID());
-            Player other = player.level.getPlayerByUUID(request);
+            ServerPlayer other = player.getServer().getPlayerList().getPlayer(request);
             GameProfile rec = other != null ? player.getGameProfile() : player.getServer().getProfileCache().get(request).orElse(null);
             if (rec == null)
                 return;
             player.sendMessage(new TranslatableComponent("fateubw.chat.truce.accept", rec.getName()).withStyle(ChatFormatting.GOLD), Util.NIL_UUID);
             // Reset the servants targeting so it doesn't target other players servant
+            GrailWarHandler tracker = GrailWarHandler.get(player.getServer());
             Platform.INSTANCE.getPlayerData(player).ifPresent(data -> {
-                if (data.getServant(player) != null)
-                    data.getServant(player).setTarget(null);
+                if (tracker.getServant(player) != null)
+                    tracker.getServant(player).setTarget(null);
             });
             if (other != null) {
                 other.sendMessage(new TranslatableComponent("fateubw.chat.truce.requestsuccess", player.getName(), ChatFormatting.GOLD), Util.NIL_UUID);
                 Platform.INSTANCE.getPlayerData(other).ifPresent(data -> {
-                    if (data.getServant(other) != null)
-                        data.getServant(other).setTarget(null);
+                    if (tracker.getServant(other) != null)
+                        tracker.getServant(other).setTarget(null);
                 });
             }
             this.setDirty();
@@ -131,7 +132,7 @@ public class TruceHandler extends SavedData {
     }
 
     public Set<UUID> get(UUID player) {
-        return this.truceMap.get(player);
+        return this.truceMap.getOrDefault(player, Set.of());
     }
 
     public void load(CompoundTag nbt) {

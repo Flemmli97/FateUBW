@@ -37,10 +37,11 @@ public class CommandGui extends Screen {
     private int command2 = this.rand.nextInt(3);
     private int command3 = this.rand.nextInt(3);
     private ButtonValue<UUID> request, accept, remove;
+    private final BaseServant servant;
 
-    public CommandGui() {
+    public CommandGui(BaseServant servant) {
         super(new TranslatableComponent("fateubw.gui.command"));
-        NetworkCalls.INSTANCE.sendToServer(new C2SMessageGui(C2SMessageGui.Type.ALL));
+        this.servant = servant;
     }
 
     @Override
@@ -48,7 +49,6 @@ public class CommandGui extends Screen {
         this.renderBackground(stack);
         Player player = this.minecraft.player;
         PlayerData capSync = Platform.INSTANCE.getPlayerData(player).orElse(null);
-        BaseServant servant = capSync.getServant(player);
         if (capSync == null)
             return;
         if (this.currentPage != Pages.TRUCE) {
@@ -60,21 +60,21 @@ public class CommandGui extends Screen {
             this.minecraft.font.draw(stack, "§4Damage:", this.width / 2 - 90, this.height / 2 + 15, 1);
             this.minecraft.font.draw(stack, "§4Armor:", this.width / 2 - 90, this.height / 2 + 35, 1);
             this.minecraft.font.draw(stack, "§4Nobel Phantasm:", this.width / 2 - 90, this.height / 2 + 55, 1);
-            if (servant != null) {
-                this.minecraft.font.draw(stack, servant.getRealName(), this.width / 2 - 90, this.height / 2 + 5, 1);
-                this.minecraft.font.draw(stack, String.valueOf(servant.props().strength()), this.width / 2 - 90, this.height / 2 + 25, 1);
-                this.minecraft.font.draw(stack, String.valueOf(servant.props().armor()), this.width / 2 - 90, this.height / 2 + 45, 1);
-                this.minecraft.font.draw(stack, servant.nobelPhantasm(), this.width / 2 - 90, this.height / 2 + 65, 1);
+            if (this.servant != null) {
+                this.minecraft.font.draw(stack, this.servant.getRealName(), this.width / 2 - 90, this.height / 2 + 5, 1);
+                this.minecraft.font.draw(stack, String.valueOf(this.servant.props().strength()), this.width / 2 - 90, this.height / 2 + 25, 1);
+                this.minecraft.font.draw(stack, String.valueOf(this.servant.props().armor()), this.width / 2 - 90, this.height / 2 + 45, 1);
+                this.minecraft.font.draw(stack, this.servant.nobelPhantasm(), this.width / 2 - 90, this.height / 2 + 65, 1);
             }
         } else {
             RenderSystem.setShaderTexture(0, GUI_TRUCE);
             this.blit(stack, this.width / 2 - 100, this.height / 2 - 100, 0, 0, 201, 210);
             this.drawCommand(stack, capSync.getCommandSeals());
         }
-        if (servant != null) {
+        if (this.servant != null) {
             float mouseXNew = (float) ((this.width - 200) / 2 + 51) - mouseX;
             float mouseYNew = (float) ((this.height - 180) / 2 + 75 - 50) - mouseY;
-            InventoryScreen.renderEntityInInventory(this.width / 2 - 50, this.height / 2 - 20, 29, mouseXNew, mouseYNew, servant);
+            InventoryScreen.renderEntityInInventory(this.width / 2 - 50, this.height / 2 - 20, 29, mouseXNew, mouseYNew, this.servant);
         }
         super.render(stack, mouseX, mouseY, partialTicks);
     }
@@ -128,9 +128,8 @@ public class CommandGui extends Screen {
                 NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(EnumServantUpdate.KILL));
                 NetworkCalls.INSTANCE.sendToServer(new C2SMessageGui(C2SMessageGui.Type.SERVANT));
             }));
-            BaseServant servant = Platform.INSTANCE.getPlayerData(this.minecraft.player).map(data -> data.getServant(this.minecraft.player)).orElse(null);
-            if (servant != null) {
-                if (servant.specialCommands() != null)
+            if (this.servant != null) {
+                if (this.servant.specialCommands() != null)
                     this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 + 38, 80, 20
                             , new TranslatableComponent("fateubw.gui.command.special"), b -> {
                         this.currentPage = Pages.SPECIAL;
@@ -160,10 +159,9 @@ public class CommandGui extends Screen {
         } else if (this.currentPage == Pages.SPECIAL) {
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 82, 80, 20
                     , new TranslatableComponent("fateubw.gui.command.back"), this::backButton));
-            BaseServant servant = Platform.INSTANCE.getPlayerData(this.minecraft.player).map(data -> data.getServant(this.minecraft.player)).orElse(null);
-            if (servant != null)
-                for (int i = 0; i < servant.specialCommands().length; i++)
-                    this.addRenderableWidget(new ButtonSpecial(this.width / 2 + 10, this.height / 2 - 52, 80, 20, servant.specialCommands()[i]));
+            if (this.servant != null)
+                for (int i = 0; i < this.servant.specialCommands().length; i++)
+                    this.addRenderableWidget(new ButtonSpecial(this.width / 2 + 10, this.height / 2 - 52, 80, 20, this.servant.specialCommands()[i]));
         } else if (this.currentPage == Pages.TRUCE) {
             List<GameProfile> players = ClientHandler.grailPlayers;
             for (int i = 0; i < 7; i++) {

@@ -15,7 +15,7 @@ public class EventCalls {
     public static void joinWorld(ServerPlayer player) {
         GrailWarHandler handler = GrailWarHandler.get(player.getServer());
         if (handler.removeConnection(player))
-            handler.removePlayer(player);
+            handler.removePlayer(player, true);
         Platform.INSTANCE.getPlayerData(player).ifPresent(data -> NetworkCalls.INSTANCE.sendToClient(new S2CPlayerCap(data), player));
         TruceHandler.get(player.getServer()).pending(player).forEach(uuid -> player.getServer().getProfileCache().get(uuid)
                 .ifPresent(prof ->

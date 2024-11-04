@@ -215,7 +215,7 @@ public class AltarBlock extends BaseEntityBlock {
         ItemStack stack = player.getItemInHand(hand);
         if (!(blockEntity instanceof AltarBlockEntity altar))
             return InteractionResult.PASS;
-        if (world.isClientSide) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
             if (player.isShiftKeyDown() || stack.getItem() == ModItems.CHALK.get() || stack.getItem() == ModItems.CRYSTAL_CLUSTER.get() || stack.getItem() instanceof ItemServantCharm)
                 return InteractionResult.SUCCESS;
             return InteractionResult.PASS;
@@ -231,8 +231,8 @@ public class AltarBlock extends BaseEntityBlock {
             return InteractionResult.SUCCESS;
         } else if (!altar.addItem(player, stack) && stack.getItem() == ModItems.CRYSTAL_CLUSTER.get()) {
             return Platform.INSTANCE.getPlayerData(player).map(data -> {
-                GrailWarHandler tracker = GrailWarHandler.get(world.getServer());
-                if (data.getServant(player) == null) {
+                GrailWarHandler tracker = GrailWarHandler.get(serverPlayer.getServer());
+                if (tracker.getServant(serverPlayer) == null) {
                     if (altar.isComplete()) {
                         if (!altar.isSummoning()) {
                             if (tracker.canJoin((ServerPlayer) player) && tracker.canSpawnMoreServants()) {

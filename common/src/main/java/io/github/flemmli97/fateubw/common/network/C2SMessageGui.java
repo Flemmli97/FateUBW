@@ -1,9 +1,8 @@
 package io.github.flemmli97.fateubw.common.network;
 
 import io.github.flemmli97.fateubw.Fate;
-import io.github.flemmli97.fateubw.common.attachment.PlayerData;
+import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import io.github.flemmli97.fateubw.platform.NetworkCalls;
-import io.github.flemmli97.fateubw.platform.Platform;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -30,14 +29,12 @@ public record C2SMessageGui(C2SMessageGui.Type message) implements Packet {
         if (sender == null)
             return;
         if (pkt.message == Type.SERVANT || pkt.message == Type.ALL) {
-            PlayerData cap = Platform.INSTANCE.getPlayerData(sender).orElse(null);
-            if (cap == null)
-                return;
-            if (cap.getServant(sender) != null)
-                NetworkCalls.INSTANCE.sendToClient(new S2CServantSync(cap.getServant(sender)), sender);
+            GrailWarHandler grailWar = GrailWarHandler.get(sender.getServer());
+            if (grailWar.getServant(sender) != null)
+                NetworkCalls.INSTANCE.sendToClient(new S2COpenGui(grailWar.getServant(sender)), sender);
         }
         if (pkt.message == Type.GRAIL || pkt.message == Type.ALL)
-            NetworkCalls.INSTANCE.sendToClient(new S2CWarData(sender.getLevel()), sender);
+            NetworkCalls.INSTANCE.sendToClient(new S2CWarData(sender.getServer()), sender);
         if (pkt.message == Type.TRUCE || pkt.message == Type.ALL)
             NetworkCalls.INSTANCE.sendToClient(new S2CTruceData(sender.getLevel(), sender), sender);
     }

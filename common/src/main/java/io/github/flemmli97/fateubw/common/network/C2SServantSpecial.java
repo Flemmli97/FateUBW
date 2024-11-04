@@ -1,7 +1,7 @@
 package io.github.flemmli97.fateubw.common.network;
 
 import io.github.flemmli97.fateubw.Fate;
-import io.github.flemmli97.fateubw.platform.Platform;
+import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -27,9 +27,8 @@ public record C2SServantSpecial(String specialID) implements Packet {
     public static void handle(C2SServantSpecial pkt, ServerPlayer sender) {
         if (sender == null)
             return;
-        Platform.INSTANCE.getPlayerData(sender).ifPresent(data -> {
-            if (data.getServant(sender) != null)
-                data.getServant(sender).doSpecialCommand(pkt.specialID);
-        });
+        BaseServant servant = C2SServantCommand.getServant(sender);
+        if (servant != null)
+            servant.doSpecialCommand(pkt.specialID);
     }
 }

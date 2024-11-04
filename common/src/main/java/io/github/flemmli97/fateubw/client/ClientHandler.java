@@ -6,6 +6,7 @@ import com.mojang.authlib.GameProfile;
 import io.github.flemmli97.fateubw.client.gui.CommandGui;
 import io.github.flemmli97.fateubw.client.gui.GuiHolyGrail;
 import io.github.flemmli97.fateubw.client.gui.ManaBar;
+import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -47,8 +48,8 @@ public class ClientHandler {
         return Minecraft.getInstance().isPaused() ? 0 : Minecraft.getInstance().getFrameTime();
     }
 
-    public static void displayCommandGui() {
-        Minecraft.getInstance().setScreen(new CommandGui());
+    public static void displayCommandGui(BaseServant servant) {
+        Minecraft.getInstance().setScreen(new CommandGui(servant));
     }
 
     public static void openGrailGui(Map<ResourceLocation, Component> rewards) {

@@ -50,7 +50,7 @@ public class CommandHandler {
     }
 
     private static int resetWar(CommandContext<CommandSourceStack> ctx) {
-        GrailWarHandler.get(ctx.getSource().getServer()).reset(ctx.getSource().getLevel());
+        GrailWarHandler.get(ctx.getSource().getServer()).reset(ctx.getSource().getServer());
         return Command.SINGLE_SUCCESS;
     }
 

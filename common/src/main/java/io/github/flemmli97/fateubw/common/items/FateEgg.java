@@ -27,13 +27,15 @@ public class FateEgg extends SpawnEgg {
 
     @Override
     public boolean onEntitySpawned(Entity e, ItemStack stack, Player player) {
-        if (player instanceof ServerPlayer && stack.hasCustomHoverName() && "Summon".equals(stack.getHoverName().getContents())) {
+        if (player instanceof ServerPlayer serverPlayer && stack.hasCustomHoverName() && "Summon".equals(stack.getHoverName().getContents())) {
             Platform.INSTANCE.getPlayerData(player).ifPresent(data -> {
-                if (data.getServantUUID() == null) {
-                    data.setServant((BaseServant) e);
-                    ((BaseServant) e).setOwner(player);
-                    GrailWarHandler track = GrailWarHandler.get(player.getServer());
-                    track.join((ServerPlayer) player);
+                GrailWarHandler track = GrailWarHandler.get(serverPlayer.getLevel().getServer());
+                if (track.getServant(serverPlayer) == null) {
+                    BaseServant servant = (BaseServant) e;
+                    servant.setOwner(player);
+                    GrailWarHandler.JoinResult res = track.join((ServerPlayer) player, servant);
+                    if (res != GrailWarHandler.JoinResult.SUCCESS)
+                        player.sendMessage(new TranslatableComponent(res.translationKey).withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 } else {
                     player.sendMessage(new TranslatableComponent("fateubw.chat.item.spawn").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 }

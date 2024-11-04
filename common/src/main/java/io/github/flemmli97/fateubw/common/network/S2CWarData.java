@@ -6,7 +6,7 @@ import io.github.flemmli97.fateubw.client.ClientHandler;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.HashSet;
@@ -22,9 +22,9 @@ public class S2CWarData implements Packet {
         this.grailWarPlayers = war;
     }
 
-    public S2CWarData(ServerLevel world) {
+    public S2CWarData(MinecraftServer server) {
         this.grailWarPlayers = new HashSet<>();
-        GrailWarHandler.get(world.getServer()).players().forEach(uuid -> world.getServer().getProfileCache().get(uuid).ifPresent(this.grailWarPlayers::add));
+        GrailWarHandler.get(server).players().forEach(uuid -> server.getProfileCache().get(uuid).ifPresent(this.grailWarPlayers::add));
     }
 
     @Override

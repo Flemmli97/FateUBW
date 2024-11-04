@@ -105,7 +105,7 @@ public class SummonUtils {
         servant.setOwner(player);
         servant.finalizeSpawn(level, level.getCurrentDifficultyAt(servant.blockPosition()), MobSpawnType.TRIGGERED, null, null);
         level.addFreshEntity(servant);
-        GrailWarHandler.get(level.getServer()).join(player);
+        GrailWarHandler.get(level.getServer()).join(player, servant);
     }
 
     public static boolean summonRandomServant(ItemStack stack, ServerPlayer player, BlockPos pos, ServerLevel level) {

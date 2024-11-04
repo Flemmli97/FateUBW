@@ -3,25 +3,24 @@ package io.github.flemmli97.fateubw.common.network;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.client.ClientHandler;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
-import io.github.flemmli97.fateubw.platform.Platform;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
-public class S2CServantSync implements Packet {
+public class S2COpenGui implements Packet {
 
     public static final ResourceLocation ID = new ResourceLocation(Fate.MODID, "s2c_servant_update");
 
     private final boolean none;
     private int entityID;
 
-    private S2CServantSync(boolean none, int id) {
+    private S2COpenGui(boolean none, int id) {
         this.entityID = id;
         this.none = none;
     }
 
-    public S2CServantSync(BaseServant servant) {
+    public S2COpenGui(BaseServant servant) {
         this.none = servant == null;
         if (servant != null)
             this.entityID = servant.getId();
@@ -38,18 +37,17 @@ public class S2CServantSync implements Packet {
         return ID;
     }
 
-    public static S2CServantSync read(FriendlyByteBuf buf) {
-        return new S2CServantSync(buf.readBoolean(), buf.readInt());
+    public static S2COpenGui read(FriendlyByteBuf buf) {
+        return new S2COpenGui(buf.readBoolean(), buf.readInt());
     }
 
-    public static void handle(S2CServantSync pkt) {
+    public static void handle(S2COpenGui pkt) {
         Player player = ClientHandler.clientPlayer();
         if (player != null) {
+            //TODO: If servant in different dimension it will be null always. but still display some additional information
             Entity fromId = pkt.none ? null : player.level.getEntity(pkt.entityID);
-            if (fromId instanceof BaseServant)
-                Platform.INSTANCE.getPlayerData(player).ifPresent(data -> data.setServant((BaseServant) fromId));
-            else
-                Platform.INSTANCE.getPlayerData(player).ifPresent(data -> data.setServant(null));
+            BaseServant servant = fromId instanceof BaseServant s ? s : null;
+            ClientHandler.displayCommandGui(servant);
         }
     }
 }
