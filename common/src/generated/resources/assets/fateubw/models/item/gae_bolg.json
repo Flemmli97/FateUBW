@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:item/handheld",
+  "parent": "fateubw:item/spear_item",
   "textures": {
     "layer0": "fateubw:items/gae_bolg"
   }

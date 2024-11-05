@@ -20,7 +20,7 @@ public class ServantProperties {
                     ResourceLocation.CODEC.fieldOf("class").forGetter(d -> d.servantClass),
                     Codec.DOUBLE.fieldOf("strength").forGetter(d -> d.strength),
                     Codec.DOUBLE.fieldOf("armor").forGetter(d -> d.armor)
-            ).apply(instance, (health, magic, move, block,  proj, mana, clss, strength, armor) ->
+            ).apply(instance, (health, magic, move, block, proj, mana, clss, strength, armor) ->
                     new ServantProperties(health, strength, armor, block, proj, magic, move, mana, clss)));
 
     public static final ServantProperties DEFAULT = new ServantProperties(20, 1, 0, 0, 0, 0.2, 0.2, 0, BuiltinServantClasses.NONE);

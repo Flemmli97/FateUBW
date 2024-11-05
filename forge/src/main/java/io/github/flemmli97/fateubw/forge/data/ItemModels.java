@@ -93,6 +93,9 @@ public class ItemModels extends ItemModelProvider {
                         .translation(1.13f, 3.2f, 1.13f)
                         .scale(0.68f, 0.68f, 0.68f)
                         .end();
+            } else if (reg == ModItems.GAEBOLG) {
+                this.withExistingParent(reg.getID().getPath(), new ResourceLocation(Fate.MODID, "item/spear_item"))
+                        .texture("0", this.itemTexture(reg.getID()));
             } else if (reg.get() instanceof SpawnEgg)
                 this.withExistingParent(reg.getID().getPath(), ModelLocationUtils.decorateItemModelLocation("template_spawn_egg"));
             else if (reg == ModItems.EXCALIBUR) {

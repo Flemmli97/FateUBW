@@ -2,7 +2,6 @@
 
 uniform mat4 ModelViewMat;
 uniform mat4 ProjMat;
-uniform sampler2D Sampler1;
 
 in vec3 Position;
 in vec4 Color;

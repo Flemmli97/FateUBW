@@ -9,11 +9,6 @@
   "attributes": [
     "Position", "Color", "UV0", "Time"
   ],
-  "samplers": [
-    {
-      "name": "Sampler1"
-    }
-  ],
   "uniforms": [
     {
       "name": "ModelViewMat",
