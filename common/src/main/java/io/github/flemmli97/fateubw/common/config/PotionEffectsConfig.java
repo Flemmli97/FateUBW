@@ -12,11 +12,8 @@ import java.util.List;
 
 public class PotionEffectsConfig implements IConfigListValue<PotionEffectsConfig> {
 
-    private List<EffectInstance> potions = new ArrayList<>();
+    private List<EffectInstance> potions;
     private List<String> confVal;
-
-    public PotionEffectsConfig() {
-    }
 
     public PotionEffectsConfig(List<EffectInstance> potions) {
         this.potions = potions;
@@ -33,7 +30,7 @@ public class PotionEffectsConfig implements IConfigListValue<PotionEffectsConfig
     public List<String> writeToString() {
         if (this.confVal == null) {
             if (this.potions != null)
-                this.confVal = this.potions.stream().map(eff -> String.format("%s,%s,%s", Registry.MOB_EFFECT.getKey(eff.effect), eff.amplifier, eff.duration)).toList();
+                this.confVal = this.potions.stream().map(eff -> String.format("%s,%s,%s", Registry.MOB_EFFECT.getKey(eff.effect), eff.duration, eff.amplifier)).toList();
             else
                 this.confVal = new ArrayList<>();
         }
