@@ -42,37 +42,38 @@ public class EntityCuchulainn extends BaseServant {
     public static final AnimatedAction SPEAR_STAB_2 = new AnimatedAction(0.68, 0.32, "spear_stab_2");
 
     private static final AnimatedAction GAE_BOLG = new AnimatedAction(0.92, 0.6, "gae_bolg");
-    private static final AnimatedAction[] ANIMS = {SPEAR_1, SPEAR_2, SPEAR_3, SPEAR_STAB, SPEAR_STAB_2, GAE_BOLG};
+    public static final AnimatedAction SUMMON = new AnimatedAction(2., 0, "summon");
+    private static final AnimatedAction[] ANIMS = {SPEAR_1, SPEAR_2, SPEAR_3, SPEAR_STAB, SPEAR_STAB_2, GAE_BOLG, SUMMON};
 
     public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityCuchulainn>>> ATTACKS = List.of(
             WeightedEntry.wrap(new GoalAttackAction<EntityCuchulainn>(EntityCuchulainn.SPEAR_1)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
                     .chain(GoalAttackAction.<EntityCuchulainn>chainBuilder(EntityCuchulainn.SPEAR_2)
-                            .withPredicate(e -> e.getRandom().nextFloat() < 0.5))
+                            .chain(EntityCuchulainn.SPEAR_3).withPredicate(e -> e.getRandom().nextFloat() < 0.5))
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 5),
             WeightedEntry.wrap(new GoalAttackAction<EntityCuchulainn>(EntityCuchulainn.SPEAR_2)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .chain(GoalAttackAction.<EntityCuchulainn>chainBuilder(
-                                    List.of(new GoalAttackAction.ChainedAction<>(EntityCuchulainn.SPEAR_1, e -> 0),
-                                            new GoalAttackAction.ChainedAction<>(EntityCuchulainn.SPEAR_3, e -> 0)))
-                            .withPredicate(e -> e.getRandom().nextFloat() < 0.5))
+                    .chain(GoalAttackAction.<EntityCuchulainn>chainBuilder(EntityCuchulainn.SPEAR_1)
+                            .chain(EntityCuchulainn.SPEAR_3).withPredicate(e -> e.getRandom().nextFloat() < 0.5))
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 5),
             WeightedEntry.wrap(new GoalAttackAction<EntityCuchulainn>(EntityCuchulainn.SPEAR_3)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 5),
+                    .chain(GoalAttackAction.<EntityCuchulainn>chainBuilder(EntityCuchulainn.SPEAR_1)
+                            .chain(EntityCuchulainn.SPEAR_2).withPredicate(e -> e.getRandom().nextFloat() < 0.3))
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 4),
             WeightedEntry.wrap(new GoalAttackAction<EntityCuchulainn>(EntityCuchulainn.SPEAR_STAB)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 5),
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(3, 5))), 6),
             WeightedEntry.wrap(new GoalAttackAction<EntityCuchulainn>(EntityCuchulainn.SPEAR_STAB_2)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 5),
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(3, 5))), 6),
             WeightedEntry.wrap(new GoalAttackAction<EntityCuchulainn>(EntityCuchulainn.GAE_BOLG)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
                     .withCondition(Utils.npCheck())
                     .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(4, 7, 1.1))), 8)
     );
     public static final List<WeightedEntry.Wrapper<IdleAction<EntityCuchulainn>>> IDLE_ACTIONS = List.of(
-            WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1, 1)), 6)
+            WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1, 0.5)), 6)
     );
 
     public final AnimatedAttackGoal<EntityCuchulainn> attack = new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS);
@@ -154,8 +155,19 @@ public class EntityCuchulainn extends BaseServant {
                 this.forcedNP = false;
             }
 
-        } else
+        } else {
+            boolean step = anim.is(SPEAR_1) && anim.isAtTick(0.36);
+            if (step) {
+                Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(0.35);
+                this.setDeltaMovement(this.getDeltaMovement().add(dir));
+            }
             super.handleAttack(anim);
+        }
+    }
+
+    @Override
+    public double maxAttackRange(AnimatedAction anim) {
+        return 3;
     }
 
     public void attackWithNP(Vec3 pos) {
@@ -182,5 +194,10 @@ public class EntityCuchulainn extends BaseServant {
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
         this.gaeBolgThrowTick = tag.getInt("GaeBolgTick");
+    }
+
+    @Override
+    protected AnimatedAction getSummonAnimation() {
+        return SUMMON;
     }
 }

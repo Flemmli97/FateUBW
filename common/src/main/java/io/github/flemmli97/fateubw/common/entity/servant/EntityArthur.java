@@ -79,7 +79,7 @@ public class EntityArthur extends BaseServant {
                     .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(3, 8, 1.1))), 8)
     );
     public static final List<WeightedEntry.Wrapper<IdleAction<EntityArthur>>> IDLE_ACTIONS = List.of(
-            WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1, 1)), 6),
+            WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1, 0.5)), 6),
             WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(1, 1, 6)), 2)
     );
 
@@ -195,7 +195,6 @@ public class EntityArthur extends BaseServant {
         } else if (anim.is(INVISIBLE_BURST)) {
             if (anim.isAtTick(0.2)) {
                 Vec3 dir = this.getTarget() != null ? this.getTarget().position().subtract(this.position()) : this.position().add(this.getLookAngle());
-
                 this.burstDir = dir.normalize().scale(0.95);
                 this.lookAt(EntityAnchorArgument.Anchor.EYES, this.position().add(dir));
                 this.entityData.set(LOCKED_YAW, this.getYHeadRot());
@@ -216,8 +215,21 @@ public class EntityArthur extends BaseServant {
                     this.getAnimationHandler().setAnimation(INVISIBLE_BURST_HIT);
                 }
             }
-        } else
+        } else {
+            boolean step = anim.is(SWING_1) && anim.isAtTick(0.28) ||
+                    anim.is(SWING_1_VAR_1) && anim.isAtTick(0.2) ||
+                    anim.is(SWING_1_VAR_2) && anim.isAtTick(0.08);
+            if (step) {
+                Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(anim.is(SWING_1_VAR_2) ? 0.25 : 0.3);
+                this.setDeltaMovement(this.getDeltaMovement().add(dir));
+            }
             super.handleAttack(anim);
+        }
+    }
+
+    @Override
+    public double maxAttackRange(AnimatedAction anim) {
+        return 2;
     }
 
     private boolean duringBurst() {

@@ -6,8 +6,8 @@ import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.api.datapack.ServantProperties;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.entity.IServantMinion;
+import io.github.flemmli97.fateubw.common.entity.ai.FollowMasterGoal;
 import io.github.flemmli97.fateubw.common.entity.ai.HurtByTargetPredicateGoal;
-import io.github.flemmli97.fateubw.common.entity.servant.ai.FollowMasterGoal;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.registry.ModAttributes;
 import io.github.flemmli97.fateubw.common.registry.ModParticles;
@@ -641,7 +641,8 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     public void mobAttack(AnimatedAction anim, LivingEntity target, Consumer<LivingEntity> cons) {
         AABB aabb = this.calculateAttackAABB(anim, this.targetPosition != null || target == null ? this.targetPosition : target.position(), 0.2);
         this.level.getEntitiesOfClass(LivingEntity.class, aabb, this.targetPred).forEach(e -> {
-            e.hurtTime = 10;
+            if (e.getLastHurtMob() == this)
+                e.hurtTime = 0;
             cons.accept(e);
         });
         if (!this.level.isClientSide)

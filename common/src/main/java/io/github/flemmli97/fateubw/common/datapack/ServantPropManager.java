@@ -10,6 +10,7 @@ import com.mojang.serialization.JsonOps;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.api.datapack.ServantProperties;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
+import io.github.flemmli97.fateubw.common.lib.BuiltinServantClasses;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -65,7 +66,7 @@ public class ServantPropManager extends SimpleJsonResourceReloadListener {
             this.props.forEach((id, prop) -> {
                 EntityType<?> type = Registry.ENTITY_TYPE.get(id);
                 Entity entity = type.create(level);
-                if (entity instanceof BaseServant) {
+                if (!prop.getServantClass().equals(BuiltinServantClasses.NONE) && entity instanceof BaseServant) {
                     EntityTypeAndID entry = new EntityTypeAndID((EntityType<? extends BaseServant>) type, id);
                     classes.merge(prop.getServantClass(), Lists.newArrayList(entry), (old, val) -> {
                         old.add(entry);

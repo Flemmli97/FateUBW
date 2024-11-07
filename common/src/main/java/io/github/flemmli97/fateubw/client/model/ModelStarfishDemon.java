@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.entity.minions.LesserMonster;
-import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.client.AnimationManager;
 import io.github.flemmli97.tenshilib.client.model.BlockBenchAnimations;
 import io.github.flemmli97.tenshilib.client.model.ExtendedModel;
@@ -139,13 +138,13 @@ public class ModelStarfishDemon<T extends LesserMonster> extends EntityModel<T> 
     public void setupAnim(T monster, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.model.resetPoses();
         float partialTicks = Minecraft.getInstance().getFrameTime();
-        AnimatedAction anim = monster.getAnimationHandler().getAnimation();
-        if (anim != null)
-            this.anim.doAnimation(this, anim.getID(), anim.getTick(), partialTicks);
-        else if (monster.getDeltaMovement().x != 0 || monster.getDeltaMovement().z != 0)
-            this.anim.doAnimation(this, "walk", monster.tickCount, partialTicks);
-        else
+        if (monster.deathTime <= 0) {
             this.anim.doAnimation(this, "idle", monster.tickCount, partialTicks);
+            float moveTick = monster.interpolatedMoveTick(partialTicks);
+            if (moveTick > 0)
+                this.anim.doAnimation(this, "walk", monster.tickCount, partialTicks, moveTick);
+        }
+        this.anim.doAnimation(this, monster.getAnimationHandler(), partialTicks);
     }
 
     @Override

@@ -912,6 +912,53 @@
 					}
 				}
 			}
+		},
+		"summon": {
+			"loop": true,
+			"bones": {
+				"Body": {
+					"rotation": [0, 0, 0],
+					"position": [0, 0, 0]
+				},
+				"LeftArm": {
+					"rotation": [0, 0, -17.5],
+					"position": [0, 0, 0],
+					"scale": 1
+				},
+				"LeftArmDown": {
+					"rotation": [0, 0, 27.5],
+					"position": [0, 0, -0.125],
+					"scale": 1
+				},
+				"RightArm": {
+					"rotation": [-97.37872, 47.2626, -5.43327],
+					"position": [0, 0, 0],
+					"scale": 1
+				},
+				"RightArmDown": {
+					"rotation": [-107.75313, 9.53274, -3.03513],
+					"position": [0, 0, 1],
+					"scale": 1
+				},
+				"RightItem": {
+					"rotation": [0, -25, 0],
+					"position": [0, 0, 0]
+				},
+				"LeftLeg": {
+					"rotation": [0, 0, 0],
+					"position": [0, 0, 0]
+				},
+				"LeftLegDown": {
+					"rotation": [0, 0, 0]
+				},
+				"RightLeg": {
+					"rotation": [0, 0, 0],
+					"position": [0, 0, 0]
+				},
+				"RightLegDown": {
+					"rotation": [0, 0, 0]
+				}
+			}
 		}
 	}
 }

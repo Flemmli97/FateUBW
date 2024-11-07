@@ -175,6 +175,10 @@ public class EntityEmiya extends BaseServant {
                 this.targetPosition = this.getTarget().position();
             }
             boolean first = anim.canAttack();
+            if (anim.isAtTick(0.24) || anim.isAtTick(0.6)) {
+                Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(0.32);
+                this.setDeltaMovement(this.getDeltaMovement().add(dir));
+            }
             if (first || anim.isAtTick(0.76)) {
                 this.mobAttack(anim, this.getTarget(), e -> {
                     this.doHurtTarget(e);
@@ -192,8 +196,19 @@ public class EntityEmiya extends BaseServant {
                 this.setDeltaMovement(dir);
             }
             super.handleAttack(anim);
-        } else
+        } else {
+            boolean step = anim.is(MELEE_1) && anim.isAtTick(0.24);
+            if (step) {
+                Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(0.25);
+                this.setDeltaMovement(this.getDeltaMovement().add(dir));
+            }
             super.handleAttack(anim);
+        }
+    }
+
+    @Override
+    public double maxAttackRange(AnimatedAction anim) {
+        return 1.7;
     }
 
     public void attackWithRangedAttack(LivingEntity target) {

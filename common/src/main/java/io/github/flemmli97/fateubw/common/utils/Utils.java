@@ -6,6 +6,8 @@ import io.github.flemmli97.fateubw.common.world.TruceHandler;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.GoalAttackAction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,6 +24,17 @@ public class Utils {
         return var1.size() > 1 && var2.size() < 2;
     }
 
+    public static Vec3 fromRelativeVector(Entity entity, Vec3 relative) {
+        return fromRelativeVector(entity.getYRot(), relative);
+    }
+
+    public static Vec3 fromRelativeVector(float yRot, Vec3 relative) {
+        Vec3 vec3 = relative.normalize();
+        float f = Mth.sin(yRot * Mth.DEG_TO_RAD);
+        float g = Mth.cos(yRot * Mth.DEG_TO_RAD);
+        return new Vec3(vec3.x * g - vec3.z * f, vec3.y, vec3.z * g + vec3.x * f);
+    }
+
     public static float getDamageAfterMagicAbsorb(BaseServant servant, float damage) {
         return (float) (damage * servant.getAttribute(ModAttributes.MAGIC_RESISTANCE.get()).getValue());
     }
@@ -32,10 +45,14 @@ public class Utils {
     }
 
     public static boolean inSameTeam(ServerPlayer player, UUID other) {
+        if (player.getServer() == null)
+            return false;
         return TruceHandler.get(player.getServer()).get(player.getUUID()).contains(other);
     }
 
     public static boolean inSameTeam(ServerPlayer player, BaseServant servant) {
+        if (player.getServer() == null)
+            return false;
         UUID other = servant.getOwnerUUID();
         return other != null && TruceHandler.get(player.getServer()).get(player.getUUID()).contains(other);
     }
@@ -45,6 +62,6 @@ public class Utils {
             return false;
         UUID first = servant.getOwnerUUID();
         UUID second = other.getOwnerUUID();
-        return first != null && other != null && TruceHandler.get(servant.getServer()).get(first).contains(second);
+        return first != null && second != null && TruceHandler.get(servant.getServer()).get(first).contains(second);
     }
 }

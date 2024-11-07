@@ -3,14 +3,22 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 
 import io.github.flemmli97.fateubw.common.config.Config;
 import io.github.flemmli97.fateubw.common.entity.minions.LesserMonster;
-import io.github.flemmli97.fateubw.common.entity.servant.ai.GillesAttackGoal;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
+import io.github.flemmli97.tenshilib.common.entity.ai.animated.AnimatedAttackGoal;
+import io.github.flemmli97.tenshilib.common.entity.ai.animated.GoalAttackAction;
+import io.github.flemmli97.tenshilib.common.entity.ai.animated.IdleAction;
+import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.DoNothingRunner;
+import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.KeepDistanceRunner;
+import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveAwayRunner;
+import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.StrafingRunner;
+import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.WrappedRunner;
 import io.github.flemmli97.tenshilib.common.utils.RayTraceUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
@@ -19,20 +27,44 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import java.util.List;
+
 public class EntityGilles extends BaseServant {
 
-    private static final AnimatedAction RANGED_ATTACK = new AnimatedAction(32, 25, "cast");
-    private static final AnimatedAction NP_ATTACK = new AnimatedAction(20, 0, "np");
-    private static final AnimatedAction[] ANIMS = {RANGED_ATTACK, NP_ATTACK};
+    public static final AnimatedAction CAST_1 = new AnimatedAction(1.6, 0.95, "cast");
+    public static final AnimatedAction CAST_2 = new AnimatedAction(1.3, 0.74, "cast_2");
 
-    public final GillesAttackGoal attackAI = new GillesAttackGoal(this, 16);
+    public static final AnimatedAction NP_ATTACK = new AnimatedAction(20, 0, "np");
+    public static final AnimatedAction SUMMON = new AnimatedAction(2., 0, "summon");
+    private static final AnimatedAction[] ANIMS = {CAST_1, CAST_2, NP_ATTACK, SUMMON};
+
+    public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityGilles>>> ATTACKS = List.of(
+            WeightedEntry.wrap(new GoalAttackAction<EntityGilles>(EntityGilles.CAST_1)
+                    .cooldown(e -> e.getRandom().nextInt(70) + 30)
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 10, 1.1))), 10),
+            WeightedEntry.wrap(new GoalAttackAction<EntityGilles>(EntityGilles.CAST_1)
+                    .cooldown(e -> e.getRandom().nextInt(70) + 30)
+                    .prepare(() -> new WrappedRunner<>(new DoNothingRunner<>(true))), 8),
+            WeightedEntry.wrap(new GoalAttackAction<EntityGilles>(EntityGilles.CAST_2)
+                    .cooldown(e -> e.getRandom().nextInt(70) + 30)
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 10, 1.1))), 10),
+            WeightedEntry.wrap(new GoalAttackAction<EntityGilles>(EntityGilles.CAST_2)
+                    .cooldown(e -> e.getRandom().nextInt(70) + 30)
+                    .prepare(() -> new WrappedRunner<>(new DoNothingRunner<>(true))), 8)
+    );
+    public static final List<WeightedEntry.Wrapper<IdleAction<EntityGilles>>> IDLE_ACTIONS = List.of(
+            WeightedEntry.wrap(new IdleAction<>(() -> new StrafingRunner<>(12, 7, 1, 0.3f)), 6),
+            WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(1, 1, 6)), 4)
+    );
+
+    public final AnimatedAttackGoal<EntityGilles> attack = new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS);
 
     private final AnimationHandler<EntityGilles> animationHandler = new AnimationHandler<>(this, ANIMS);
 
     public EntityGilles(EntityType<? extends EntityGilles> entityType, Level level) {
         super(entityType, level);
         if (!level.isClientSide)
-            this.goalSelector.addGoal(0, this.attackAI);
+            this.goalSelector.addGoal(0, this.attack);
     }
 
     @Override
@@ -41,29 +73,30 @@ public class EntityGilles extends BaseServant {
     }
 
     @Override
-    public boolean canUse(AnimatedAction anim, AttackType type) {
-        if (type == AttackType.NP)
-            return anim.getID().equals(NP_ATTACK.getID());
-        return anim.getID().equals(RANGED_ATTACK.getID());
-    }
-
-    @Override
     public AnimationHandler<EntityGilles> getAnimationHandler() {
         return this.animationHandler;
-    }
-
-    @Override
-    public int attackCooldown(AnimatedAction anim) {
-        return 90;
     }
 
     @Override
     public void updateAI(EnumServantUpdate behaviour) {
         super.updateAI(behaviour);
         if (this.commandBehaviour == EnumServantUpdate.STAY)
-            this.goalSelector.removeGoal(this.attackAI);
+            this.goalSelector.removeGoal(this.attack);
         else
-            this.goalSelector.addGoal(0, this.attackAI);
+            this.goalSelector.addGoal(0, this.attack);
+    }
+
+    @Override
+    public void handleAttack(AnimatedAction anim) {
+        if (anim.is(CAST_1, CAST_2)) {
+            LivingEntity target = this.getTarget();
+            if (target != null) {
+                this.getLookControl().setLookAt(target, 30.0F, 30.0F);
+            }
+            if (anim.canAttack()) {
+                this.attackWithRangedAttack();
+            }
+        }
     }
 
     @Override
@@ -82,9 +115,9 @@ public class EntityGilles extends BaseServant {
         }
     }
 
-    public void attackWithRangedAttack(LivingEntity target) {
+    public void attackWithRangedAttack() {
         if (!this.level.isClientSide) {
-            if (this.level.getEntitiesOfClass(LesserMonster.class, this.getBoundingBox().inflate(16), monster -> monster.getOwnerUUID().equals(this.getUUID())).size() < Config.Common.gillesMinionAmount) {
+            if (this.level.getEntitiesOfClass(LesserMonster.class, this.getBoundingBox().inflate(16), monster -> this.getUUID().equals(monster.getOwnerUUID())).size() < Config.Common.gillesMinionAmount) {
                 LesserMonster minion = new LesserMonster(this.level, this);
                 BlockPos pos = RayTraceUtils.randomPosAround(this.level, minion, this.blockPosition(), 9, true, this.getRandom());
                 if (pos != null) {
@@ -95,5 +128,10 @@ public class EntityGilles extends BaseServant {
                 }
             }
         }
+    }
+
+    @Override
+    protected AnimatedAction getSummonAnimation() {
+        return SUMMON;
     }
 }

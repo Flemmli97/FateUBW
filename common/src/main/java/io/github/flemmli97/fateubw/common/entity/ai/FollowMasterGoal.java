@@ -1,4 +1,4 @@
-package io.github.flemmli97.fateubw.common.entity.servant.ai;
+package io.github.flemmli97.fateubw.common.entity.ai;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;

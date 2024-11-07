@@ -191,8 +191,21 @@ public class EntityGilgamesh extends BaseServant {
                     this.attackWithRangedAttack(target);
                 }
             }
-        } else
+        } else {
+            boolean step = anim.is(MELEE_2) && anim.isAtTick(0.28) ||
+                    anim.is(MELEE_3) && anim.isAtTick(0.24) ||
+                    anim.is(MELEE_4) && anim.isAtTick(0.24);
+            if (step) {
+                Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(anim.is(MELEE_4) ? 0.25 : 0.3);
+                this.setDeltaMovement(this.getDeltaMovement().add(dir));
+            }
             super.handleAttack(anim);
+        }
+    }
+
+    @Override
+    public double maxAttackRange(AnimatedAction anim) {
+        return 1.9;
     }
 
     @Override
