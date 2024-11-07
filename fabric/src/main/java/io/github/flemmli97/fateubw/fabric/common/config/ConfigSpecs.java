@@ -74,6 +74,8 @@ public class ConfigSpecs {
         public final CommentedJsonConfig.IntVal gillesMinionAmount;
         public final CommentedJsonConfig.DoubleVal smallMonsterDamage;
         public final CommentedJsonConfig.DoubleVal babylonScale;
+        public final CommentedJsonConfig.CommentedVal<List<String>> babylonWeaponsBlacklist;
+        public final CommentedJsonConfig.CommentedVal<Boolean> babylonWeaponsWhitelist;
         public final CommentedJsonConfig.DoubleVal eaDamage;
         public final CommentedJsonConfig.DoubleVal excaliburDamage;
         public final CommentedJsonConfig.DoubleVal caladBolgDmg;
@@ -116,11 +118,14 @@ public class ConfigSpecs {
             this.hassanCopies = builder.comment("Amount of copies hassan can call").defineInRange("Hassan Copies", Config.Common.hassanCopies, 0, Integer.MAX_VALUE);
             builder.pop();
 
-            builder.push("minions");
+            builder.push("misc");
             this.gillesMinionDuration = builder.comment("Living duration of gilles monster in ticks").defineInRange("Gilles Monster", Config.Common.gillesMinionDuration, 0, Integer.MAX_VALUE);
             this.gillesMinionAmount = builder.comment("Max amount gilles can have at once").defineInRange("Gilles Monster Max Amount", Config.Common.gillesMinionAmount, 0, Integer.MAX_VALUE);
             this.smallMonsterDamage = builder.comment("Damage by gilles small monsters").defineInRange("Small Monster Damage", Config.Common.smallMonsterDamage, 0, Double.MAX_VALUE);
             this.babylonScale = builder.comment("Damage scaling for projectiles from the gate of babylon").defineInRange("Babylon Dmg Scale", Config.Common.babylonScale, 0, Double.MAX_VALUE);
+            this.babylonWeaponsBlacklist = builder.comment("Blacklist weapons for the gate of babylon here. You can also use the modid for a whole mod").define("Babylon Blacklist",
+                    Config.Common.babylonWeapons.writeToString());
+            this.babylonWeaponsWhitelist = builder.comment("Turn the blacklist into a whitelist").define("Babylon Whitelist", Config.Common.babylonWeapons.isWhiteList());
             this.eaDamage = builder.comment("Damage of EA").defineInRange("EA Dmg", Config.Common.eaDamage, 0, Double.MAX_VALUE);
             this.excaliburDamage = builder.comment("Damage of excalibur").defineInRange("Excalibur Dmg", Config.Common.excaliburDamage, 0, Double.MAX_VALUE);
             this.caladBolgDmg = builder.comment("Caladbolg damage").defineInRange("Caladbolg Dmg", Config.Common.caladBolgDmg, 0, Double.MAX_VALUE);

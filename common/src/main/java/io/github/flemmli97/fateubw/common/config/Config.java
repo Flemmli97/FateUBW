@@ -2,6 +2,7 @@ package io.github.flemmli97.fateubw.common.config;
 
 import com.google.common.collect.Lists;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
+import io.github.flemmli97.fateubw.common.registry.ModItems;
 import net.minecraft.world.effect.MobEffects;
 
 import java.util.List;
@@ -45,6 +46,7 @@ public class Config {
         public static int gillesMinionAmount = 6;
         public static float smallMonsterDamage = 14;
         public static float babylonScale = 1.5f;
+        public static WeaponList babylonWeapons = new WeaponList(ModItems.ENUMAELISH.getID().toString());
         public static float eaDamage = 21;
         public static float excaliburDamage = 19;
         public static float caladBolgDmg = 18;

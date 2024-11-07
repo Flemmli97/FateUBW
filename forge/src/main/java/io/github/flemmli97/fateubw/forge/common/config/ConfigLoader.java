@@ -35,6 +35,8 @@ public class ConfigLoader {
         Config.Common.gillesMinionAmount = ConfigSpecs.COMMON_CONF.gillesMinionAmount.get();
         Config.Common.smallMonsterDamage = ConfigSpecs.COMMON_CONF.smallMonsterDamage.get().floatValue();
         Config.Common.babylonScale = ConfigSpecs.COMMON_CONF.babylonScale.get().floatValue();
+        Config.Common.babylonWeapons.readFromString(ConfigSpecs.COMMON_CONF.babylonWeaponsBlacklist.get());
+        Config.Common.babylonWeapons.setWhiteList(ConfigSpecs.COMMON_CONF.babylonWeaponsWhitelist.get());
         Config.Common.eaDamage = ConfigSpecs.COMMON_CONF.eaDamage.get().floatValue();
         Config.Common.excaliburDamage = ConfigSpecs.COMMON_CONF.excaliburDamage.get().floatValue();
         Config.Common.caladBolgDmg = ConfigSpecs.COMMON_CONF.caladBolgDmg.get().floatValue();

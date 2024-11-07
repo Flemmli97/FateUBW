@@ -55,7 +55,7 @@ public class ModItems {
     public static final RegistryEntrySupplier<Item> ENUMAELISH = ITEMS.register("enuma_elish", () -> Platform.INSTANCE.createEA(new Item.Properties().tab(Fate.TAB)));
     public static final RegistryEntrySupplier<Item> STAFF = ITEMS.register("medeas_staff", () -> new ItemStaff(new Item.Properties().tab(Fate.TAB)));
     public static final RegistryEntrySupplier<Item> RULE_BREAKER = ITEMS.register("rule_breaker", () -> new SwordItem(ItemTiers.RULE_BREAKER, 0, -2.4f, new Item.Properties().tab(Fate.TAB)));
-    public static final RegistryEntrySupplier<Item> GRIMOIRE = ITEMS.register("prelatis_spellbook", () -> new ItemGrimoire(new Item.Properties().tab(Fate.TAB)));
+    public static final RegistryEntrySupplier<Item> GRIMOIRE = ITEMS.register("prelatis_spellbook", () -> new ItemGrimoire(new Item.Properties().tab(Fate.TAB).stacksTo(1)));
     public static final RegistryEntrySupplier<Item> HERACLES_AXE = ITEMS.register("heracles_axe", () -> Platform.INSTANCE.createAxe(ItemTiers.HERACLES_AXE, 0, -2.9f, new Item.Properties().tab(Fate.TAB)));
     public static final RegistryEntrySupplier<Item> ARONDIGHT = ITEMS.register("arondight", () -> new SwordItem(ItemTiers.ARONDIGHT, 0, -2.4f, new Item.Properties().tab(Fate.TAB)));
     public static final RegistryEntrySupplier<Item> KUPRIOTS = ITEMS.register("kupriots", () -> new SwordItem(ItemTiers.KUPRIOTS, 0, -2.4f, new Item.Properties().tab(Fate.TAB)));

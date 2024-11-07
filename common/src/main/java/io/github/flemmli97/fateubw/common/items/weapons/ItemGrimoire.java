@@ -19,16 +19,14 @@ public class ItemGrimoire extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
-        if (!world.isClientSide) {
-            LesserMonster monster = new LesserMonster(world, player);
-
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        if (!level.isClientSide) {
             if (player.isCreative()) {
-                this.spawn(player, monster, player.getItemInHand(hand));
+                this.spawn(player, player.getItemInHand(hand));
                 return InteractionResultHolder.success(player.getItemInHand(hand));
             } else {
                 if (Platform.INSTANCE.getPlayerData(player).map(mana -> mana.useMana(player, 30)).orElse(false)) {
-                    this.spawn(player, monster, player.getItemInHand(hand));
+                    this.spawn(player, player.getItemInHand(hand));
                     player.sendMessage(new TranslatableComponent("fateubw.mana.use").withStyle(ChatFormatting.AQUA), Util.NIL_UUID);
                     return InteractionResultHolder.success(player.getItemInHand(hand));
                 } else {
@@ -40,7 +38,25 @@ public class ItemGrimoire extends Item {
         return InteractionResultHolder.pass(player.getItemInHand(hand));
     }
 
-    private void spawn(Player player, LesserMonster monster, ItemStack stack) {
+    private void spawn(Player player, ItemStack stack) {
+        LesserMonster monster = new LesserMonster(player.level, player);
+        double x = player.getX() + player.getRandom().nextInt(8) - 4.0;
+        double y = player.getY() + player.getRandom().nextInt(2) - 1.0;
+        double z = player.getZ() + player.getRandom().nextInt(8) - 4.0;
+        monster.setPos(x, y, z);
+        int tries = 0;
+        while (tries < 10) {
+            if (player.level.noCollision(monster)) {
+                break;
+            }
+            x = player.getX() + player.getRandom().nextInt(8) - 4.0;
+            y = player.getY() + player.getRandom().nextInt(2) - 1.0;
+            z = player.getZ() + player.getRandom().nextInt(8) - 4.0;
+            monster.setPos(x, y, z);
+            tries++;
+        }
+        if (tries == 10 && !player.level.noCollision(monster))
+            return;
         player.level.addFreshEntity(monster);
         if (player.getLastHurtMob() != null)
             monster.setTarget(player.getLastHurtMob());

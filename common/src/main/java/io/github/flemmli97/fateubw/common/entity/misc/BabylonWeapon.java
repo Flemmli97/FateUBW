@@ -4,7 +4,6 @@ import com.mojang.datafixers.util.Pair;
 import io.github.flemmli97.fateubw.common.config.Config;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModParticles;
-import io.github.flemmli97.fateubw.common.utils.CachedWeaponList;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.tenshilib.common.entity.EntityProjectile;
 import io.github.flemmli97.tenshilib.common.particle.ColoredParticleData;
@@ -276,7 +275,7 @@ public class BabylonWeapon extends EntityProjectile {
             weapon.shoot(thrower, 0, 180 + thrower.getYRot(), 0, 0.5F, 0);
             Vec3 area = pos.add(hor.scale(offset.getFirst() * 2)).add(vert.scale(offset.getSecond() * 2 + 1));
             weapon.setPos(area.x, area.y, area.z);
-            weapon.setWeapon(CachedWeaponList.getRandomWeapon(weapon.random));
+            weapon.setWeapon(Config.Common.babylonWeapons.getRandomWeapon(weapon.random));
             weapon.level.addFreshEntity(weapon);
         }
     }
@@ -313,7 +312,7 @@ public class BabylonWeapon extends EntityProjectile {
             weapon.shoot(thrower, offset.getSecond(), offset.getFirst(), 0, 0.5F, 0);
             Vec3 area = pos.add(Vec3.directionFromRotation(-offset.getSecond(), offset.getFirst()).scale(range));
             weapon.setPos(area.x, area.y, area.z);
-            weapon.setWeapon(CachedWeaponList.getRandomWeapon(weapon.random));
+            weapon.setWeapon(Config.Common.babylonWeapons.getRandomWeapon(weapon.random));
             weapon.level.addFreshEntity(weapon);
         }
     }
