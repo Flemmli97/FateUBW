@@ -1,14 +1,19 @@
 package io.github.flemmli97.fateubw.common.items;
 
+import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
+import io.github.flemmli97.fateubw.common.network.S2CSpawnEggScreen;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
-import io.github.flemmli97.fateubw.platform.Platform;
+import io.github.flemmli97.fateubw.platform.NetworkCalls;
 import io.github.flemmli97.tenshilib.common.item.SpawnEgg;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
@@ -21,40 +26,68 @@ import java.util.function.Supplier;
 
 public class FateEgg extends SpawnEgg {
 
+    public static final String MASTER = Fate.MODID + ":Master";
+    public static final String WAR = Fate.MODID + ":JoinWar";
+
     public FateEgg(Supplier<? extends EntityType<? extends BaseServant>> type, int primary, int secondary, Properties props) {
         super(type, primary, secondary, props);
     }
 
     @Override
     public boolean onEntitySpawned(Entity e, ItemStack stack, Player player) {
-        if (player instanceof ServerPlayer serverPlayer && stack.hasCustomHoverName() && "Summon".equals(stack.getHoverName().getContents())) {
-            Platform.INSTANCE.getPlayerData(player).ifPresent(data -> {
-                GrailWarHandler track = GrailWarHandler.get(serverPlayer.getLevel().getServer());
-                if (track.getServant(serverPlayer) == null) {
-                    BaseServant servant = (BaseServant) e;
-                    servant.setOwner(player);
-                    GrailWarHandler.JoinResult res = track.join((ServerPlayer) player, servant);
-                    if (res != GrailWarHandler.JoinResult.SUCCESS)
-                        player.sendMessage(new TranslatableComponent(res.translationKey).withStyle(ChatFormatting.RED), Util.NIL_UUID);
-                } else {
-                    player.sendMessage(new TranslatableComponent("fateubw.chat.item.spawn").withStyle(ChatFormatting.RED), Util.NIL_UUID);
-                }
-            });
+        if (player instanceof ServerPlayer serverPlayer && e instanceof BaseServant servant) {
+            GrailWarHandler track = GrailWarHandler.get(serverPlayer.getLevel().getServer());
+            boolean owned = spawnOwned(stack);
+            if (owned) {
+                servant.setOwner(player);
+            }
+            if (owned && track.getServant(serverPlayer) == null && joinGrailwar(stack)) {
+                GrailWarHandler.JoinResult res = track.join((ServerPlayer) player, servant);
+                if (res != GrailWarHandler.JoinResult.SUCCESS)
+                    player.sendMessage(new TranslatableComponent(res.translationKey).withStyle(ChatFormatting.RED), Util.NIL_UUID);
+            }
         }
         return super.onEntitySpawned(e, stack, player);
     }
 
     @Override
-    public Component getEntityName(ItemStack stack) {
-        Component comp = super.getEntityName(stack);
-        if (comp != null && "Summon".equals(comp.getContents()))
-            return null;
-        return comp;
+    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+        InteractionResultHolder<ItemStack> res = super.use(world, player, hand);
+        if (res.getResult() == InteractionResult.PASS) {
+            if (player instanceof ServerPlayer serverPlayer)
+                NetworkCalls.INSTANCE.sendToClient(new S2CSpawnEggScreen(hand), serverPlayer);
+            return InteractionResultHolder.consume(player.getItemInHand(hand));
+        }
+        return res;
     }
 
     @Override
     public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag flag) {
         tooltip.add(new TranslatableComponent("fateubw.tooltip.item.spawn").withStyle(ChatFormatting.GOLD));
         super.appendHoverText(stack, world, tooltip, flag);
+    }
+
+    public static boolean spawnOwned(ItemStack stack) {
+        boolean withMaster = false;
+        if (stack.hasTag() && stack.getTag().contains(MASTER)) {
+            withMaster = stack.getTag().getBoolean(MASTER);
+        }
+        return withMaster;
+    }
+
+    public static void withMaster(ItemStack stack, boolean master) {
+        stack.getOrCreateTag().putBoolean(MASTER, master);
+    }
+
+    public static boolean joinGrailwar(ItemStack stack) {
+        boolean joinWar = false;
+        if (stack.hasTag() && stack.getTag().contains(WAR)) {
+            joinWar = stack.getTag().getBoolean(WAR);
+        }
+        return joinWar;
+    }
+
+    public static void setJoinWar(ItemStack stack, boolean join) {
+        stack.getOrCreateTag().putBoolean(WAR, join);
     }
 }

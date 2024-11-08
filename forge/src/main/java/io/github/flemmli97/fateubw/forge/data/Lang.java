@@ -179,6 +179,10 @@ public class Lang implements DataProvider {
         this.add("fateubw.gui.truce.request", "Request");
         this.add("fateubw.gui.truce.accept", "Accept");
         this.add("fateubw.gui.truce.remove", "Remove/Deny");
+        this.add("fateubw.gui.spawn.master", "Master");
+        this.add("fateubw.gui.spawn.war", "Create/Join grailwar");
+        this.add("fateubw.gui.spawn.war.help", "Requires being master");
+        this.add("fateubw.gui.save", "Save");
 
         this.add("death.attack.excalibur", "%1$s was vaporized by %2$s with excalibur");
         this.add("death.attack.babylon", "%1$s was impaled by %2$s with the gate of babylon");
@@ -201,7 +205,7 @@ public class Lang implements DataProvider {
         this.add("fateubw.command.spells.take", "Took %2$s command spells from %1$s");
         this.add("fateubw.command.spells.add", "Gave %2$s command spells to %1$s");
 
-        this.add("fateubw.tooltip.item.spawn", "Rename to \"Summon\" to spawn as your servant");
+        this.add("fateubw.tooltip.item.spawn", "Right click in air to change data");
 
         this.add("fateubw_book", "Fate Guidebook");
         this.add("fateubw.patchouli.landing", "");

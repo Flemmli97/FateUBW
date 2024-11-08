@@ -6,11 +6,13 @@ import com.mojang.authlib.GameProfile;
 import io.github.flemmli97.fateubw.client.gui.CommandGui;
 import io.github.flemmli97.fateubw.client.gui.GuiHolyGrail;
 import io.github.flemmli97.fateubw.client.gui.ManaBar;
+import io.github.flemmli97.fateubw.client.gui.SpawnEggScreen;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.Comparator;
@@ -64,5 +66,9 @@ public class ClientHandler {
         truce = ImmutableSet.copyOf(t.stream().sorted(SORT_NAME).iterator());
         pending = ImmutableSet.copyOf(p.stream().sorted(SORT_NAME).iterator());
         requests = ImmutableSet.copyOf(r.stream().sorted(SORT_NAME).iterator());
+    }
+
+    public static void openSpawneggGui(InteractionHand hand) {
+        Minecraft.getInstance().setScreen(new SpawnEggScreen(hand));
     }
 }

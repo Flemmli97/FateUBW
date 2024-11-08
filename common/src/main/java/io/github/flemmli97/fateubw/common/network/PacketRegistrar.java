@@ -17,6 +17,7 @@ public class PacketRegistrar {
         register.registerMessage(id++, C2SServantSpecial.ID, C2SServantSpecial.class, C2SServantSpecial::write, C2SServantSpecial::read, C2SServantSpecial::handle);
         register.registerMessage(id++, C2STruceMessage.ID, C2STruceMessage.class, C2STruceMessage::write, C2STruceMessage::read, C2STruceMessage::handle);
         register.registerMessage(id++, C2SGuiOpenRequest.ID, C2SGuiOpenRequest.class, C2SGuiOpenRequest::write, C2SGuiOpenRequest::read, C2SGuiOpenRequest::handle);
+        register.registerMessage(id++, C2SSpawnEgg.ID, C2SSpawnEgg.class, C2SSpawnEgg::write, C2SSpawnEgg::read, C2SSpawnEgg::handle);
         return id;
     }
 
@@ -32,6 +33,7 @@ public class PacketRegistrar {
         register.registerMessage(id++, S2CWarData.ID, S2CWarData.class, S2CWarData::write, S2CWarData::read, S2CWarData::handle);
         register.registerMessage(id++, S2CScreenShake.ID, S2CScreenShake.class, S2CScreenShake::write, S2CScreenShake::read, S2CScreenShake::handle);
         register.registerMessage(id++, S2CAttackDebug.ID, S2CAttackDebug.class, S2CAttackDebug::write, S2CAttackDebug::read, S2CAttackDebug::handle);
+        register.registerMessage(id++, S2CSpawnEggScreen.ID, S2CSpawnEggScreen.class, S2CSpawnEggScreen::write, S2CSpawnEggScreen::read, S2CSpawnEggScreen::handle);
         return id;
     }
 
