@@ -29,6 +29,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -166,8 +167,16 @@ public class EntityCuchulainn extends BaseServant {
     }
 
     @Override
+    public AABB attackBB(AnimatedAction anim) {
+        if (anim.is(SPEAR_3, SPEAR_STAB, SPEAR_STAB_2)) {
+            return new AABB(-0.7, -0.02, 0, 0.7, this.getBbHeight() + 0.02, anim.is(SPEAR_3) ? 2.7 : 3);
+        }
+        return super.attackBB(anim);
+    }
+
+    @Override
     public double maxAttackRange(AnimatedAction anim) {
-        return 3;
+        return 2.5;
     }
 
     public void attackWithNP(Vec3 pos) {

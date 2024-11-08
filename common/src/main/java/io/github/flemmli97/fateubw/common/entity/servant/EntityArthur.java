@@ -15,9 +15,9 @@ import io.github.flemmli97.tenshilib.common.entity.ai.animated.GoalAttackAction;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.IdleAction;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.KeepDistanceRunner;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveAwayRunner;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTargetAttackRunner;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTargetRunner;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.WrappedRunner;
+import io.github.flemmli97.tenshilib.common.utils.OrientedBoundingBox;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
@@ -61,17 +61,17 @@ public class EntityArthur extends BaseServant {
     protected static final EntityDataAccessor<Float> LOCKED_YAW = SynchedEntityData.defineId(EntityArthur.class, EntityDataSerializers.FLOAT);
 
     public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityArthur>>> ATTACKS = List.of(
-            WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.SWING_1)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .chain(GoalAttackAction.<EntityArthur>chainBuilder(EntityArthur.SWING_1_VAR_1)
-                            .chain(EntityArthur.SWING_1_VAR_2).withPredicate(e -> e.getRandom().nextFloat() < 0.5))
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 5),
-            WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.SWING_2)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 4),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.SWING_1)
+//                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
+//                    .chain(GoalAttackAction.<EntityArthur>chainBuilder(EntityArthur.SWING_1_VAR_1)
+//                            .chain(EntityArthur.SWING_1_VAR_2).withPredicate(e -> e.getRandom().nextFloat() < 0.5))
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 5),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.SWING_2)
+//                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 4),
             WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.INVISIBLE_BURST)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .withCondition(((goal, target, previous) -> goal.distanceToTargetSq > 25))
+//                    .withCondition(((goal, target, previous) -> goal.distanceToTargetSq > 25))
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetRunner<>(1, 14))), 6),
             WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.EXCALIBAA)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
@@ -228,6 +228,14 @@ public class EntityArthur extends BaseServant {
     }
 
     @Override
+    public AABB attackBB(AnimatedAction anim) {
+        if (anim.is(SWING_2)) {
+            return new AABB(-0.8, -0.02, 0, 0.8, this.getBbHeight() + 0.02, this.maxAttackRange(anim));
+        }
+        return super.attackBB(anim);
+    }
+
+    @Override
     public double maxAttackRange(AnimatedAction anim) {
         return 2;
     }
@@ -249,11 +257,13 @@ public class EntityArthur extends BaseServant {
     }
 
     @Override
-    public AABB calculateAttackAABB(AnimatedAction anim, Vec3 target, double grow) {
+    public OrientedBoundingBox calculateAttackAABB(AnimatedAction anim, Vec3 target, double grow) {
         if (!anim.is(INVISIBLE_BURST))
             return super.calculateAttackAABB(anim, target, grow);
-        Vec3 dir = this.getDeltaMovement().scale(0.5);
-        return this.getBoundingBox().move(dir.x, dir.y, dir.z);
+        double width = this.getBbWidth();
+        double speed = Math.max(width, this.getDeltaMovement().length() - width);
+        return new OrientedBoundingBox(OrientedBoundingBox.originAABB(this)
+                .inflate(grow, 0, grow).expandTowards(0, 0, speed), this.getYRot(), this.getXRot(), this.position());
     }
 
     public void attackWithNP(Vec3 pos) {

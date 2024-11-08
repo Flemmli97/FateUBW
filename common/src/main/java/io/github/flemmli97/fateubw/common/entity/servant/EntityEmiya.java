@@ -30,6 +30,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -204,6 +205,14 @@ public class EntityEmiya extends BaseServant {
             }
             super.handleAttack(anim);
         }
+    }
+
+    @Override
+    public AABB attackBB(AnimatedAction anim) {
+        if (anim.is(MELEE_2, MELEE_3)) {
+            return new AABB(-0.65, -0.02, 0, 0.65, this.getBbHeight() + 0.02, this.maxAttackRange(anim));
+        }
+        return super.attackBB(anim);
     }
 
     @Override

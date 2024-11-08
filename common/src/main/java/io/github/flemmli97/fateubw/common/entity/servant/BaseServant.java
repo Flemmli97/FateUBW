@@ -22,6 +22,7 @@ import io.github.flemmli97.tenshilib.common.entity.ai.MoveControllerPlus;
 import io.github.flemmli97.tenshilib.common.item.SpawnEgg;
 import io.github.flemmli97.tenshilib.common.particle.ColoredParticleData;
 import io.github.flemmli97.tenshilib.common.utils.NBTUtils;
+import io.github.flemmli97.tenshilib.common.utils.OrientedBoundingBox;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.Registry;
@@ -621,10 +622,14 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     }
 
     public void handleAttack(AnimatedAction anim) {
+        if (anim.is(this.getSummonAnimation()))
+            return;
         this.getNavigation().stop();
-        if (anim.getTick() == 1 && this.getTarget() != null) {
-            this.lookAtNow(this.getTarget(), 360, 90);
-            this.targetPosition = this.getTarget().position();
+        if (this.getTarget() != null) {
+            this.lookAtNow(this.getTarget(), 60, 90);
+            if (anim.getTick() == 1) {
+                this.targetPosition = this.getTarget().position();
+            }
         }
         if (anim.canAttack()) {
             this.mobAttack(anim, this.getTarget(), this::doHurtTarget);
@@ -639,43 +644,48 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     }
 
     public void mobAttack(AnimatedAction anim, LivingEntity target, Consumer<LivingEntity> cons) {
-        AABB aabb = this.calculateAttackAABB(anim, this.targetPosition != null || target == null ? this.targetPosition : target.position(), 0.2);
-        this.level.getEntitiesOfClass(LivingEntity.class, aabb, this.targetPred).forEach(e -> {
-            if (e.getLastHurtMob() == this)
-                e.hurtTime = 0;
+        OrientedBoundingBox obb = this.calculateAttackAABB(anim, this.targetPosition != null || target == null ? this.targetPosition : target.position(), 0.2);
+        this.level.getEntitiesOfClass(LivingEntity.class, obb.getEncompassingBox(),
+                entity -> this.targetPred.test(entity) && obb.intersects(entity.getBoundingBox())).forEach(e -> {
+            if (e.getLastHurtByMob() == this)
+                e.invulnerableTime = 0;
             cons.accept(e);
         });
         if (!this.level.isClientSide)
-            S2CAttackDebug.sendDebugPacket(aabb, S2CAttackDebug.EnumAABBType.ATTACK, this);
+            S2CAttackDebug.sendDebugPacket(obb, S2CAttackDebug.EnumAABBType.ATTACK, this);
     }
 
-    public AABB calculateAttackAABB(AnimatedAction anim, Vec3 target, double grow) {
-        double reach = this.maxAttackRange(anim) * 0.5 + this.getBbWidth();
+    public OrientedBoundingBox calculateAttackAABB(AnimatedAction anim, Vec3 target, double grow) {
+        float yRot = this.getYRot();
+        float xRot = this.getXRot();
         Vec3 dir;
         if (target != null && !this.canBeControlledByRider()) {
-            reach = Math.min(reach, this.position().distanceTo(target));
             dir = target.subtract(this.position()).normalize();
-        } else {
-            if (this.getControllingPassenger() instanceof Player player)
-                dir = player.getLookAngle();
-            else
-                dir = Vec3.directionFromRotation(this.getXRot(), this.getYRot());
+            double f = Math.sqrt(dir.x * dir.x + dir.z * dir.z);
+            yRot = -((float) (Mth.atan2(dir.x, dir.z) * Mth.RAD_TO_DEG));
+            xRot = ((float) (Mth.atan2(dir.y, f) * Mth.RAD_TO_DEG));
+        } else if (this.getControllingPassenger() instanceof Player player) {
+            yRot = player.getYRot();
+            xRot = player.getXRot();
         }
-        Vec3 attackPos = this.position().add(dir.scale(reach));
-        return this.attackAABB(anim).inflate(grow, 0, grow).move(attackPos.x, attackPos.y, attackPos.z);
+        double off = this.getBbHeight() * 0.5;
+        return new OrientedBoundingBox(this.attackBB(anim)
+                .inflate(grow, 0, grow)
+                .move(0, -off, grow)
+                .expandTowards(0, 0, -this.getBbWidth() * 0.3), yRot, Mth.clamp(xRot, -15, 15), this.position().add(0, off, 0));
     }
 
     @Override
-    public AABB prepareAttackBox(AnimatedAction anim, LivingEntity target, double grow, boolean debug) {
-        AABB aabb = this.calculateAttackAABB(anim, target.position(), grow);
+    public OrientedBoundingBox prepareAttackBox(AnimatedAction anim, LivingEntity target, double grow, boolean debug) {
+        OrientedBoundingBox obb = this.calculateAttackAABB(anim, target.position(), grow);
         if (debug)
-            S2CAttackDebug.sendDebugPacket(aabb, S2CAttackDebug.EnumAABBType.ATTEMPT, this);
-        return aabb;
+            S2CAttackDebug.sendDebugPacket(obb, S2CAttackDebug.EnumAABBType.ATTEMPT, this);
+        return obb;
     }
 
-    public AABB attackAABB(AnimatedAction anim) {
-        double range = this.maxAttackRange(anim) * 0.5;
-        return new AABB(-range, -0.02, -range, range, this.getBbHeight() + 0.02, range);
+    public AABB attackBB(AnimatedAction anim) {
+        double range = this.maxAttackRange(anim);
+        return new AABB(-range * 0.5, -0.02, 0, range * 0.5, this.getBbHeight() + 0.02, range);
     }
 
     public double maxAttackRange(AnimatedAction anim) {

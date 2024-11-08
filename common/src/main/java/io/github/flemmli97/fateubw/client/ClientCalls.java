@@ -34,7 +34,7 @@ public class ClientCalls {
 
     public static void worldRender(PoseStack stack) {
         if (Config.Common.debugAttack) {
-            AttackAABBRender.INST.render(stack, Minecraft.getInstance().renderBuffers().crumblingBufferSource());
+            AttackBBRender.INST.render(stack, Minecraft.getInstance().renderBuffers().crumblingBufferSource());
         }
     }
 }
