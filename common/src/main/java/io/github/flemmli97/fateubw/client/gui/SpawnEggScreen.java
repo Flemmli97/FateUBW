@@ -106,7 +106,7 @@ public class SpawnEggScreen extends Screen {
             }
         };
         this.addRenderableWidget(this.warCheckBox);
-        yOff += 16 + 20 + 60;
+        yOff += 16 + 20 + 44;
         this.addRenderableWidget(new Button(this.leftPos + this.sizeX / 2 - 50, this.topPos + yOff, 100, 20, new TranslatableComponent("fateubw.gui.save"), b -> {
             NetworkCalls.INSTANCE.sendToServer(new C2SSpawnEgg(this.hand, this.withMasterCheckbox.selected(), this.warCheckBox.selected()));
             this.minecraft.setScreen(null);
@@ -116,5 +116,14 @@ public class SpawnEggScreen extends Screen {
     @Override
     public boolean isPauseScreen() {
         return false;
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (this.minecraft.options.keyInventory.matches(keyCode, scanCode)) {
+            this.onClose();
+            return true;
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 }

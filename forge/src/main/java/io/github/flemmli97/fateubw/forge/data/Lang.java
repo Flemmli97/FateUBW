@@ -162,6 +162,7 @@ public class Lang implements DataProvider {
         this.add("fateubw.chat.command.spellsuccess", "You buffed your servant using a command spell");
         this.add("fateubw.chat.command.spellfail", "You don't have any command spells anymore");
         this.add("fateubw.chat.medea.circle.spawn", "Medea created a magic circle");
+        this.add("fateubw.chat.item.command.fail", "What are you doing???");
 
         this.add("fateubw.gui.command.attack", "Attack");
         this.add("fateubw.gui.command.movement", "Movement");
@@ -206,6 +207,7 @@ public class Lang implements DataProvider {
         this.add("fateubw.command.spells.add", "Gave %2$s command spells to %1$s");
 
         this.add("fateubw.tooltip.item.spawn", "Right click in air to change data");
+        this.add("fateubw.tooltip.item.command", "Allows commanding your servant");
 
         this.add("fateubw_book", "Fate Guidebook");
         this.add("fateubw.patchouli.landing", "");

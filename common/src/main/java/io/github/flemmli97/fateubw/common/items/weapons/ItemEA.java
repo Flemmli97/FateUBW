@@ -46,7 +46,7 @@ public class ItemEA extends SwordItem {
                     world.addFreshEntity(ea);
                     player.sendMessage(new TranslatableComponent("fateubw.mana.use").withStyle(ChatFormatting.AQUA), Util.NIL_UUID);
                 } else {
-                    player.sendMessage(new TranslatableComponent("fateubw.mana.no").withStyle(ChatFormatting.AQUA), Util.NIL_UUID);
+                    player.sendMessage(new TranslatableComponent("fateubw.chat.mana.missing").withStyle(ChatFormatting.AQUA), Util.NIL_UUID);
                 }
             }
         }

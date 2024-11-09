@@ -86,7 +86,7 @@ public class ModItems {
     public static final RegistryEntrySupplier<Item> CHALK = ITEMS.register("chalk", () -> new ItemChalk(new Item.Properties().tab(Fate.TAB).defaultDurability(32)));
     public static final RegistryEntrySupplier<Item> MANA_BOTTLE = ITEMS.register("mana_bottle", () -> new ItemManaBottle(new Item.Properties().tab(Fate.TAB)));
     public static final RegistryEntrySupplier<Item> GRAIL = ITEMS.register("holy_grail", () -> new ItemHolyGrail(new Item.Properties().tab(Fate.TAB)));
-    public static final RegistryEntrySupplier<Item> COMMANDER = ITEMS.register("command_staff", () -> new ItemServantCommander(new Item.Properties().tab(Fate.TAB)));
+    public static final RegistryEntrySupplier<Item> COMMANDER = ITEMS.register("command_seal", () -> new ItemServantCommander(new Item.Properties().tab(Fate.TAB)));
 
     public static final RegistryEntrySupplier<Item> ICON_0 = ITEMS.register("icon_0", () -> new Item(new Item.Properties()));
     public static final RegistryEntrySupplier<Item> ICON_1 = ITEMS.register("icon_1", () -> new Item(new Item.Properties()));

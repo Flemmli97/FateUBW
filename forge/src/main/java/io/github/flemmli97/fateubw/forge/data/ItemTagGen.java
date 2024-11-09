@@ -33,6 +33,9 @@ public class ItemTagGen extends ItemTagsProvider {
         TagAppender<Item> dyes = this.tag(FateTags.FABRIC_DYE_TAG)
                 .addOptional(Tags.Items.DYES.location());
         this.add(dyes::add);
+        this.tag(FateTags.FABRIC_DYE_RED)
+                .add(Items.RED_DYE)
+                .addOptional(Tags.Items.DYES_RED.location());
         this.tag(FateTags.FABRIC_STICK_TAG)
                 .add(Items.STICK)
                 .addOptional(Tags.Items.RODS_WOODEN.location());

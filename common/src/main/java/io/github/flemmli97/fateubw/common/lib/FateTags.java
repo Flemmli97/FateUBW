@@ -12,6 +12,7 @@ public class FateTags {
 
     public static final TagKey<Item> CRYSTALS = PlatformUtils.INSTANCE.itemTag(new ResourceLocation(Fate.MODID, "crystals"));
     public static final TagKey<Item> FABRIC_DYE_TAG = PlatformUtils.INSTANCE.itemTag(new ResourceLocation("c", "dye_any"));
+    public static final TagKey<Item> FABRIC_DYE_RED = PlatformUtils.INSTANCE.itemTag(new ResourceLocation("c", "dye_red"));
     public static final TagKey<Item> FABRIC_STICK_TAG = PlatformUtils.INSTANCE.itemTag(new ResourceLocation("c", "wood_sticks"));
     public static final TagKey<Item> FABRIC_LAPIS_BLOCK = PlatformUtils.INSTANCE.itemTag(new ResourceLocation("c", "lapis_blocks"));
     public static final TagKey<Item> FABRIC_DIAMOND_BLOCK = PlatformUtils.INSTANCE.itemTag(new ResourceLocation("c", "diamond_blocks"));

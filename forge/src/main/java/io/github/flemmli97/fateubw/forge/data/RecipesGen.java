@@ -50,6 +50,11 @@ public class RecipesGen extends RecipeProvider {
                 .define('C', FateTags.CRYSTALS)
                 .pattern("  B").pattern(" S ").pattern("C  ")
                 .unlockedBy("dummy", new ImpossibleTrigger.TriggerInstance()).save(consumer);
+        ShapedRecipeBuilder.shaped(ModItems.COMMANDER.get())
+                .define('D', FateTags.FABRIC_DYE_RED)
+                .define('T', Items.NAME_TAG)
+                .pattern("DDD").pattern("DTD").pattern("DDD")
+                .unlockedBy("dummy", new ImpossibleTrigger.TriggerInstance()).save(consumer);
         consumer.accept(new FinishedRecipe() {
             @Override
             public void serializeRecipeData(JsonObject json) {

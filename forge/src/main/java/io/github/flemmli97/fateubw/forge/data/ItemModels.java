@@ -27,7 +27,7 @@ public class ItemModels extends ItemModelProvider {
         int sealid = 1;
         for (RegistryEntrySupplier<Item> reg : ModItems.ITEMS.getEntries()) {
             //TODO
-            if (reg == ModItems.ENUMAELISH || reg == ModItems.HERACLES_AXE || reg == ModItems.COMMANDER)
+            if (reg == ModItems.ENUMAELISH || reg == ModItems.HERACLES_AXE)
                 continue;
             if (reg == ModItems.MEDUSA_DAGGER) {
                 this.withExistingParent(reg.getID().getPath(), ModelLocationUtils.decorateItemModelLocation("handheld"))
@@ -95,7 +95,7 @@ public class ItemModels extends ItemModelProvider {
                         .end();
             } else if (reg == ModItems.GAEBOLG) {
                 this.withExistingParent(reg.getID().getPath(), new ResourceLocation(Fate.MODID, "item/spear_item"))
-                        .texture("0", this.itemTexture(reg.getID()));
+                        .texture("layer0", this.itemTexture(reg.getID()));
             } else if (reg.get() instanceof SpawnEgg)
                 this.withExistingParent(reg.getID().getPath(), ModelLocationUtils.decorateItemModelLocation("template_spawn_egg"));
             else if (reg == ModItems.EXCALIBUR) {
@@ -111,6 +111,9 @@ public class ItemModels extends ItemModelProvider {
                 this.withExistingParent(reg.getID().getPath(), ModelLocationUtils.decorateItemModelLocation("generated"))
                         .texture("layer0", new ResourceLocation(reg.getID().getNamespace(), "gui/command_seal_" + sealid));
                 sealid++;
+            } else if (reg == ModItems.COMMANDER) {
+                this.withExistingParent(reg.getID().getPath(), ModelLocationUtils.decorateItemModelLocation("generated"))
+                        .texture("layer0", new ResourceLocation(reg.getID().getNamespace(), "gui/command_seal_1"));
             } else if (reg == ModItems.CRYSTAL_RED || reg == ModItems.CRYSTAL_YELLOW || reg == ModItems.CRYSTAL_BLACK || reg == ModItems.CRYSTAL_BLUE || reg == ModItems.CRYSTAL_GREEN) {
                 this.withExistingParent(reg.getID().getPath(), new ResourceLocation(Fate.MODID, "item/gem_shard"))
                         .texture("layer0", this.itemTexture(reg.getID()));

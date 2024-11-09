@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "DDD",
+    "DTD",
+    "DDD"
+  ],
+  "key": {
+    "D": {
+      "tag": "c:dye_red"
+    },
+    "T": {
+      "item": "minecraft:name_tag"
+    }
+  },
+  "result": {
+    "item": "fateubw:command_seal"
+  }
+}
