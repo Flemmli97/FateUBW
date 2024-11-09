@@ -13,6 +13,7 @@ import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModFeatures;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.registry.ModParticles;
+import io.github.flemmli97.fateubw.common.registry.ModSounds;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import io.github.flemmli97.fateubw.fabric.common.config.ConfigLoader;
 import io.github.flemmli97.fateubw.fabric.common.config.ConfigSpecs;
@@ -90,6 +91,7 @@ public class FateUBWFabric implements ModInitializer {
         ModParticles.PARTICLES.registerContent();
         ModAttributes.ATTRIBUTES.registerContent();
         ModFeatures.register();
+        ModSounds.SOUND_EVENTS.registerContent();
         ModFeatures.registerToBiomes((dec, holder) -> BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), dec, holder.unwrapKey().orElseThrow()));
     }
 

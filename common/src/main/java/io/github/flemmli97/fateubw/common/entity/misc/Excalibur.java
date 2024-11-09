@@ -5,6 +5,7 @@ import io.github.flemmli97.fateubw.client.ShakeHandler;
 import io.github.flemmli97.fateubw.common.config.Config;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModParticles;
+import io.github.flemmli97.fateubw.common.registry.ModSounds;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.tenshilib.common.entity.EntityBeam;
 import io.github.flemmli97.tenshilib.common.particle.ColoredParticleData;
@@ -66,6 +67,8 @@ public class Excalibur extends EntityBeam {
             if (this.tickCount % 3 == 1) {
                 ShakeHandler.shakeScreen(this.position(), this.getRange() + 4, 3, 1.5f);
             }
+        } else if (this.livingTicks == 1) {
+            this.playSound(ModSounds.ENTITY_EXCALIBUR_SHOOT.get(), 0.8f, (this.random.nextFloat() - this.random.nextFloat()) * 0.2f + 0.4f);
         }
     }
 

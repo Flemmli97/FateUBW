@@ -2,9 +2,16 @@ package io.github.flemmli97.fateubw.forge.data;
 
 import io.github.flemmli97.fateubw.Fate;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
+
+import java.io.IOException;
+import java.util.Collections;
 
 @Mod.EventBusSubscriber(modid = Fate.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class DataEvent {
@@ -17,6 +24,7 @@ public class DataEvent {
             data.addProvider(new ItemModels(data, event.getExistingFileHelper()));
             data.addProvider(new Lang(data, event.getExistingFileHelper()));
             data.addProvider(new ParticleGen(data));
+            data.addProvider(new SoundGen(data, new IgnoreFileHelper(event.getExistingFileHelper(), true)));
         }
         if (event.includeServer()) {
             data.addProvider(new Loottables(data));
@@ -32,4 +40,33 @@ public class DataEvent {
         }
     }
 
+
+    protected static class IgnoreFileHelper extends ExistingFileHelper {
+
+        private final ExistingFileHelper wrapper;
+        private final boolean vanillaOnly;
+
+        public IgnoreFileHelper(ExistingFileHelper wrapper, boolean vanillaOnly) {
+            super(Collections.emptySet(), Collections.emptySet(), false, null, null);
+            this.wrapper = wrapper;
+            this.vanillaOnly = vanillaOnly;
+        }
+
+        @Override
+        public boolean exists(ResourceLocation loc, PackType type, String pathSuffix, String pathPrefix) {
+            if (!this.vanillaOnly || loc.getNamespace().equals("minecraft"))
+                return true;
+            return this.wrapper.exists(loc, type, pathSuffix, pathPrefix);
+        }
+
+        @Override
+        public Resource getResource(ResourceLocation loc, PackType type, String pathSuffix, String pathPrefix) throws IOException {
+            return this.wrapper.getResource(loc, type, pathSuffix, pathPrefix);
+        }
+
+        @Override
+        public boolean isEnabled() {
+            return this.wrapper.isEnabled();
+        }
+    }
 }

@@ -10,6 +10,7 @@ import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModFeatures;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.registry.ModParticles;
+import io.github.flemmli97.fateubw.common.registry.ModSounds;
 import io.github.flemmli97.fateubw.forge.client.ClientEvents;
 import io.github.flemmli97.fateubw.forge.common.capability.CapabilityInsts;
 import io.github.flemmli97.fateubw.forge.common.config.ConfigLoader;
@@ -67,6 +68,7 @@ public class FateUBWForge {
         GrailLootSerializer.SERIALIZER.registerContent();
         ModParticles.PARTICLES.registerContent();
         ModAttributes.ATTRIBUTES.registerContent();
+        ModSounds.SOUND_EVENTS.registerContent();
     }
 
     public void setup(FMLCommonSetupEvent event) {

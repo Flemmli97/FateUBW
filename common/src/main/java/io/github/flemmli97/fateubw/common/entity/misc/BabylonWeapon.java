@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Pair;
 import io.github.flemmli97.fateubw.common.config.Config;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModParticles;
+import io.github.flemmli97.fateubw.common.registry.ModSounds;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.tenshilib.common.entity.EntityProjectile;
 import io.github.flemmli97.tenshilib.common.particle.ColoredParticleData;
@@ -106,6 +107,7 @@ public class BabylonWeapon extends EntityProjectile {
                 } else if (this.target != null) {
                     this.shootAtEntity(this.target, 1.f, 3);
                 }
+                this.playSound(ModSounds.ENTITY_BABYLON_SHOOT.get(), 0.8f, (this.random.nextFloat() - this.random.nextFloat()) * 0.2f + 0.5f);
             }
         } else if (this.getPreShootTick() > this.entityData.get(SHOOT_TIME)) {
             this.idle = false;
@@ -172,6 +174,9 @@ public class BabylonWeapon extends EntityProjectile {
         this.entityData.set(PRE_SHOOT_TICK, this.getPreShootTick() + 1);
         if (this.level.isClientSide) {
             this.level.addParticle(new ColoredParticleData(ModParticles.LIGHT.get(), 235 / 255F, 235 / 255F, 0 / 255F, 1, 0.15f), this.getX(), this.getY(), this.getZ(), this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01);
+        } else {
+            if (this.tickCount == 1)
+                this.playSound(ModSounds.ENTITY_BABYLON_SPAWN.get(), 0.7f, (this.random.nextFloat() - this.random.nextFloat()) * 0.2f + 0.9f);
         }
     }
 

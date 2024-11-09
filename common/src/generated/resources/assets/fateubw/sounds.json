@@ -1,0 +1,38 @@
+{
+  "entity.babylon.spawn": {
+    "subtitle": "fateubw:entity.babylon.spawn",
+    "sounds": [
+      "block/beacon/activate"
+    ]
+  },
+  "entity.babylon.shoot": {
+    "subtitle": "fateubw:entity.babylon.shoot",
+    "sounds": [
+      "entity/player/attack/sweep1",
+      "entity/player/attack/sweep2",
+      "entity/player/attack/sweep3",
+      "entity/player/attack/sweep4",
+      "entity/player/attack/sweep5",
+      "entity/player/attack/sweep6",
+      "entity/player/attack/sweep7"
+    ]
+  },
+  "entity.excalibur.shoot": {
+    "subtitle": "fateubw:entity.excalibur.shoot",
+    "sounds": [
+      "random/explode1",
+      "random/explode2",
+      "random/explode3",
+      "random/explode4"
+    ]
+  },
+  "entity.ea.shoot": {
+    "subtitle": "fateubw:entity.ea.shoot",
+    "sounds": [
+      "random/explode1",
+      "random/explode2",
+      "random/explode3",
+      "random/explode4"
+    ]
+  }
+}
