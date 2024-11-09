@@ -3,7 +3,6 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 
 import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.common.entity.SwitchableWeapon;
-import io.github.flemmli97.fateubw.common.entity.ai.DoNothingWithoutSightRun;
 import io.github.flemmli97.fateubw.common.entity.misc.BabylonWeapon;
 import io.github.flemmli97.fateubw.common.entity.misc.EnumaElish;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
@@ -82,7 +81,7 @@ public class EntityGilgamesh extends BaseServant {
             WeightedEntry.wrap(new GoalAttackAction<EntityGilgamesh>(EntityGilgamesh.BABYLON_1)
                     .cooldown(e -> e.getRandom().nextInt(20) + 30)
                     .withCondition((goal, target, previous) -> goal.attacker.useRanged())
-                    .prepare(() -> new WrappedRunner<>(e -> 40, new DoNothingWithoutSightRun<>())), 3),
+                    .prepare(() -> new WrappedRunner<>(e -> 40, new MoveToTargetRunner<>(1, 18))), 3),
             WeightedEntry.wrap(new GoalAttackAction<EntityGilgamesh>(EntityGilgamesh.BABYLON_2)
                     .cooldown(e -> e.getRandom().nextInt(20) + 30)
                     .withCondition((goal, target, previous) -> goal.attacker.useRanged())
@@ -90,7 +89,7 @@ public class EntityGilgamesh extends BaseServant {
             WeightedEntry.wrap(new GoalAttackAction<EntityGilgamesh>(EntityGilgamesh.BABYLON_2)
                     .cooldown(e -> e.getRandom().nextInt(20) + 30)
                     .withCondition((goal, target, previous) -> goal.attacker.useRanged())
-                    .prepare(() -> new WrappedRunner<>(e -> 40, new DoNothingWithoutSightRun<>())), 3),
+                    .prepare(() -> new WrappedRunner<>(e -> 40, new MoveToTargetRunner<>(1, 18))), 3),
             WeightedEntry.wrap(new GoalAttackAction<EntityGilgamesh>(EntityGilgamesh.BABYLON_3)
                     .cooldown(e -> e.getRandom().nextInt(20) + 30)
                     .withCondition((goal, target, previous) -> goal.attacker.useRanged())
@@ -98,7 +97,7 @@ public class EntityGilgamesh extends BaseServant {
             WeightedEntry.wrap(new GoalAttackAction<EntityGilgamesh>(EntityGilgamesh.BABYLON_3)
                     .cooldown(e -> e.getRandom().nextInt(20) + 30)
                     .withCondition((goal, target, previous) -> goal.attacker.useRanged())
-                    .prepare(() -> new WrappedRunner<>(e -> 40, new DoNothingWithoutSightRun<>())), 3),
+                    .prepare(() -> new WrappedRunner<>(e -> 40, new MoveToTargetRunner<>(1, 18))), 3),
             WeightedEntry.wrap(new GoalAttackAction<EntityGilgamesh>(EntityGilgamesh.EA)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
                     .withCondition(Utils.npCheck())

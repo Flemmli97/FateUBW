@@ -15,6 +15,7 @@ import io.github.flemmli97.tenshilib.common.entity.ai.animated.GoalAttackAction;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.IdleAction;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.KeepDistanceRunner;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveAwayRunner;
+import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTargetAttackRunner;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTargetRunner;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.WrappedRunner;
 import io.github.flemmli97.tenshilib.common.utils.OrientedBoundingBox;
@@ -61,17 +62,17 @@ public class EntityArthur extends BaseServant {
     protected static final EntityDataAccessor<Float> LOCKED_YAW = SynchedEntityData.defineId(EntityArthur.class, EntityDataSerializers.FLOAT);
 
     public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityArthur>>> ATTACKS = List.of(
-//            WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.SWING_1)
-//                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
-//                    .chain(GoalAttackAction.<EntityArthur>chainBuilder(EntityArthur.SWING_1_VAR_1)
-//                            .chain(EntityArthur.SWING_1_VAR_2).withPredicate(e -> e.getRandom().nextFloat() < 0.5))
-//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 5),
-//            WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.SWING_2)
-//                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
-//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 4),
+            WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.SWING_1)
+                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
+                    .chain(GoalAttackAction.<EntityArthur>chainBuilder(EntityArthur.SWING_1_VAR_1)
+                            .chain(EntityArthur.SWING_1_VAR_2).withPredicate(e -> e.getRandom().nextFloat() < 0.5))
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 5),
+            WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.SWING_2)
+                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 4),
             WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.INVISIBLE_BURST)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
-//                    .withCondition(((goal, target, previous) -> goal.distanceToTargetSq > 25))
+                    .withCondition(((goal, target, previous) -> goal.distanceToTargetSq > 25))
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetRunner<>(1, 14))), 6),
             WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.EXCALIBAA)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
