@@ -5,7 +5,10 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.entity.servant.EntityHeracles;
 import io.github.flemmli97.tenshilib.api.entity.IAnimated;
+import io.github.flemmli97.tenshilib.client.AnimationManager;
+import io.github.flemmli97.tenshilib.client.model.BlockBenchAnimations;
 import io.github.flemmli97.tenshilib.client.model.ModelPartHandler;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -14,14 +17,21 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 
-public class ModelHeracles<T extends EntityHeracles & IAnimated> extends ModelServant<T> {
+import java.util.ArrayList;
+import java.util.HashMap;
+
+public class ModelHeracles<T extends EntityHeracles & IAnimated> extends BaseServantModel<T> {
 
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(Fate.MODID, "heracles"), "main");
+
+    protected final ModelPartHandler model;
+    protected final BlockBenchAnimations anim;
 
     private ModelPartHandler.ModelPartExtended upperTorso;
     private ModelPartHandler.ModelPartExtended head;
@@ -40,8 +50,14 @@ public class ModelHeracles<T extends EntityHeracles & IAnimated> extends ModelSe
     private ModelPartHandler.ModelPartExtended rightLowerArm;
     private ModelPartHandler.ModelPartExtended rightWrist;
 
+    protected final ModelPart dummyHead = new ModelPart(new ArrayList<>(), new HashMap<>());
+
+    public int heldItemMain, heldItemOff;
+
     public ModelHeracles(ModelPart root) {
-        super(root, "heracles");
+        super(RenderType::entityTranslucent);
+        this.model = new ModelPartHandler(root);
+        this.anim = AnimationManager.getInstance().getAnimation(new ResourceLocation(Fate.MODID, "heracles"));
         this.upperTorso = this.model.getPart("upperTorso");
         this.head = this.model.getPart("head");
         this.rightArmUp = this.model.getPart("rightArmUp");
@@ -60,11 +76,10 @@ public class ModelHeracles<T extends EntityHeracles & IAnimated> extends ModelSe
         this.rightElbow = this.model.getPart("rightElbow");
         this.rightLowerArm = this.model.getPart("rightLowerArm");
         this.rightWrist = this.model.getPart("rightWrist");
-        this.body.visible = false;
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition meshdefinition = ModelServant.mesh(new CubeDeformation(0));
+        MeshDefinition meshdefinition = ModelServantO.mesh(new CubeDeformation(0));
         PartDefinition partdefinition = meshdefinition.getRoot();
 
         PartDefinition upperTorso = partdefinition.addOrReplaceChild("upperTorso", CubeListBuilder.create().texOffs(23, 65).mirror().addBox(-6.0F, -2.5F, -3.0F, 12.0F, 5.0F, 6.0F, new CubeDeformation(0.0F)).mirror(false)
@@ -228,6 +243,17 @@ public class ModelHeracles<T extends EntityHeracles & IAnimated> extends ModelSe
     }
 
     @Override
+    public void update(T obj) {
+        this.heldItemMain = obj.getMainHandItem().isEmpty() ? 0 : 1;
+        this.heldItemOff = obj.getOffhandItem().isEmpty() ? 0 : 1;
+    }
+
+    @Override
+    public ModelPartHandler getHandler() {
+        return this.model;
+    }
+
+    @Override
     public void transform(HumanoidArm humanoidArm, PoseStack poseStack) {
         if (humanoidArm == HumanoidArm.LEFT) {
             this.rotate(poseStack, this.upperTorso, this.leftArmUp, this.leftBiceps, this.leftBicepsJoint, this.leftElbow, this.leftLowerArm, this.leftWrist);
@@ -241,8 +267,23 @@ public class ModelHeracles<T extends EntityHeracles & IAnimated> extends ModelSe
         stack.translate(0, 0, -2 / 16d);
     }
 
+    protected void rotate(PoseStack stack, ModelPartHandler.ModelPartExtended... models) {
+        for (ModelPartHandler.ModelPartExtended render : models)
+            render.translateAndRotate(stack);
+    }
+
     @Override
-    public void preAnimSetup(T servant, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setupAnim(T servant, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.preAnimSetup(servant, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+        float partialTicks = Minecraft.getInstance().getFrameTime();
+        if (servant.isStaying()) {
+            this.anim.doAnimation(this, "stay", servant.tickCount, partialTicks);
+        } else {
+            this.anim.doAnimation(this, servant.getAnimationHandler(), partialTicks, 5, servant.flipAnimation());
+        }
+    }
+
+    public void preAnimSetup(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.upperTorso.visible = true;
 
         this.model.resetPoses();
@@ -307,7 +348,6 @@ public class ModelHeracles<T extends EntityHeracles & IAnimated> extends ModelSe
 
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        super.renderToBuffer(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
         this.upperTorso.render(poseStack, buffer, packedLight, packedOverlay);
     }
 }

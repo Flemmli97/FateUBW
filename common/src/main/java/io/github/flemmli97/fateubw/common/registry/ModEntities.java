@@ -73,7 +73,7 @@ public class ModEntities {
             new ResourceLocation(Fate.MODID, "cuchulainn"), 0x0038ff, 0xb6c0c1,
             new ServantProperties(275, 7.5, 10, 0, 14, 6, 0.35, 75, BuiltinServantClasses.LANCER));
     public static final RegistryEntrySupplier<EntityType<EntityDiarmuid>> DIARMUID = regServant(EntityType.Builder.of(EntityDiarmuid::new, MobCategory.MISC),
-            new ResourceLocation(Fate.MODID, "diarmuid"), 0x000000, 0x2a079a,
+            new ResourceLocation(Fate.MODID, "diarmuid"), 0x2d5554, 0x302f34,
             new ServantProperties(310, 8.5, 12, 0, 13, 7, 0.35, 80, BuiltinServantClasses.LANCER));
 
     public static final RegistryEntrySupplier<EntityType<EntityEmiya>> EMIYA = regServant(EntityType.Builder.of(EntityEmiya::new, MobCategory.MISC),

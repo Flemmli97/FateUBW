@@ -27,10 +27,9 @@ import net.minecraft.world.entity.HumanoidArm;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ModelServant<T extends BaseServant & IAnimated> extends BaseServantModel<T> {
+public class ModelServantO<T extends BaseServant & IAnimated> extends BaseServantModel<T> {
 
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(Fate.MODID, "servant"), "main");
-    public static final ModelLayerLocation LAYER_LOCATION_SLIM = new ModelLayerLocation(new ResourceLocation(Fate.MODID, "servant_slim"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(Fate.MODID, "servant_o"), "main");
 
     protected final ModelPartHandler model;
     protected final BlockBenchAnimations anim;
@@ -56,7 +55,7 @@ public class ModelServant<T extends BaseServant & IAnimated> extends BaseServant
 
     public int heldItemMain, heldItemOff;
 
-    public ModelServant(ModelPart root, String animFileName) {
+    public ModelServantO(ModelPart root, String animFileName) {
         super(RenderType::entityTranslucent);
         this.model = new ModelPartHandler(root);
         this.anim = AnimationManager.getInstance().getAnimation(new ResourceLocation(Fate.MODID, animFileName));
@@ -79,86 +78,45 @@ public class ModelServant<T extends BaseServant & IAnimated> extends BaseServant
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition partdefinition = meshdefinition.getRoot();
 
-        PartDefinition Body = partdefinition.addOrReplaceChild("Body", CubeListBuilder.create().texOffs(0, 32).addBox(-4.0F, 0.0F, -2.0F, 8.0F, 12.0F, 4.0F, deform)
-                .texOffs(32, 0).addBox(-4.0F, 0.0F, -2.0F, 8.0F, 12.0F, 4.0F, deform.extend(0.5f)), PartPose.offset(0.0F, 0.0F, 0.0F));
+        PartDefinition Body = partdefinition.addOrReplaceChild("Body", CubeListBuilder.create().texOffs(16, 16).addBox(-4.0F, 0.0F, -2.0F, 8.0F, 12.0F, 4.0F, deform)
+                .texOffs(16, 32).addBox(-4.0F, 0.0F, -2.0F, 8.0F, 12.0F, 4.0F, deform.extend(0.5f)), PartPose.offset(0.0F, 0.0F, 0.0F));
 
         PartDefinition Head = Body.addOrReplaceChild("Head", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, deform)
-                .texOffs(0, 16).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, deform.extend(0.5f)), PartPose.offset(0.0F, 0.0F, 0.0F));
+                .texOffs(32, 0).mirror().addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, deform.extend(0.5f)).mirror(false), PartPose.offset(0.0F, 0.0F, 0.0F));
 
-        PartDefinition LeftArm = Body.addOrReplaceChild("LeftArm", CubeListBuilder.create().texOffs(32, 16).addBox(-1.0F, -2.0F, -2.0F, 4.0F, 6.0F, 4.0F, deform)
-                .texOffs(24, 32).addBox(-1.0F, -2.0F, -2.0F, 4.0F, 6.0F, 4.0F, deform.extend(0.5f)), PartPose.offset(5.0F, 2.0F, 0.0F));
+        PartDefinition LeftArm = Body.addOrReplaceChild("LeftArm", CubeListBuilder.create().texOffs(40, 16).mirror().addBox(-1.0F, -2.0F, -2.0F, 4.0F, 6.0F, 4.0F, deform).mirror(false)
+                .texOffs(40, 32).mirror().addBox(-1.0F, -2.0F, -2.0F, 4.0F, 6.0F, 4.0F, deform.extend(0.5f)).mirror(false), PartPose.offset(5.0F, 2.0F, 0.0F));
 
-        PartDefinition LeftArmDown = LeftArm.addOrReplaceChild("LeftArmDown", CubeListBuilder.create().texOffs(40, 26).addBox(-4.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F, deform)
-                .texOffs(40, 36).addBox(-4.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F, deform.extend(0.5f)), PartPose.offset(3.0F, 4.0F, 0.0F));
+        PartDefinition LeftArmDown = LeftArm.addOrReplaceChild("LeftArmDown", CubeListBuilder.create().texOffs(32, 54).mirror().addBox(-4.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F, deform).mirror(false)
+                .texOffs(48, 54).mirror().addBox(-4.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F, deform.extend(0.5f)).mirror(false), PartPose.offset(3.0F, 4.0F, 0.0F));
 
         PartDefinition LeftItem = LeftArmDown.addOrReplaceChild("LeftItem", CubeListBuilder.create(), PartPose.offset(-2.0F, 3.0F, 0.0F));
 
-        PartDefinition RightArm = Body.addOrReplaceChild("RightArm", CubeListBuilder.create().texOffs(24, 42).addBox(-3.0F, -2.0F, -2.0F, 4.0F, 6.0F, 4.0F, deform)
-                .texOffs(40, 46).addBox(-3.0F, -2.0F, -2.0F, 4.0F, 6.0F, 4.0F, deform.extend(0.5f)), PartPose.offset(-5.0F, 2.0F, 0.0F));
+        PartDefinition RightArm = Body.addOrReplaceChild("RightArm", CubeListBuilder.create().texOffs(40, 16).addBox(-3.0F, -2.0F, -2.0F, 4.0F, 6.0F, 4.0F, deform)
+                .texOffs(40, 32).addBox(-3.0F, -2.0F, -2.0F, 4.0F, 6.0F, 4.0F, deform.extend(0.5f)), PartPose.offset(-5.0F, 2.0F, 0.0F));
 
-        PartDefinition RightArmDown = RightArm.addOrReplaceChild("RightArmDown", CubeListBuilder.create().texOffs(0, 48).addBox(0.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F, deform)
-                .texOffs(48, 16).addBox(0.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F, deform.extend(0.5f)), PartPose.offset(-3.0F, 4.0F, 0.0F));
+        PartDefinition RightArmDown = RightArm.addOrReplaceChild("RightArmDown", CubeListBuilder.create().texOffs(32, 54).addBox(0.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F, deform)
+                .texOffs(48, 54).addBox(0.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F, deform.extend(0.5f)), PartPose.offset(-3.0F, 4.0F, 0.0F));
 
         PartDefinition RightItem = RightArmDown.addOrReplaceChild("RightItem", CubeListBuilder.create(), PartPose.offset(2.0F, 3.0F, 0.0F));
 
-        PartDefinition LeftLeg = Body.addOrReplaceChild("LeftLeg", CubeListBuilder.create().texOffs(16, 52).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F, deform)
-                .texOffs(56, 0).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F, deform.extend(0.5f)), PartPose.offset(2.0F, 12.0F, 0.0F));
+        PartDefinition LeftLeg = Body.addOrReplaceChild("LeftLeg", CubeListBuilder.create().texOffs(0, 16).mirror().addBox(-2.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F, deform).mirror(false)
+                .texOffs(0, 32).mirror().addBox(-2.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F, deform.extend(0.5f)).mirror(false), PartPose.offset(2.0F, 12.0F, 0.0F));
 
-        PartDefinition LeftLegDown = LeftLeg.addOrReplaceChild("LeftLegDown", CubeListBuilder.create().texOffs(56, 26).addBox(-2.0F, 0.0F, 0.0F, 4.0F, 6.0F, 4.0F, deform)
-                .texOffs(32, 56).addBox(-2.0F, 0.0F, 0.0F, 4.0F, 6.0F, 4.0F, deform.extend(0.5f)), PartPose.offset(0.0F, 6.0F, -2.0F));
+        PartDefinition LeftLegDown = LeftLeg.addOrReplaceChild("LeftLegDown", CubeListBuilder.create().texOffs(16, 54).mirror().addBox(-2.0F, 0.0F, 0.0F, 4.0F, 6.0F, 4.0F, deform).mirror(false)
+                .texOffs(0, 54).mirror().addBox(-2.0F, 0.0F, 0.0F, 4.0F, 6.0F, 4.0F, deform.extend(0.5f)).mirror(false), PartPose.offset(0.0F, 6.0F, -2.0F));
 
-        PartDefinition RightLeg = Body.addOrReplaceChild("RightLeg", CubeListBuilder.create().texOffs(56, 36).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F, deform)
-                .texOffs(56, 46).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F, deform.extend(0.5f)), PartPose.offset(-2.0F, 12.0F, 0.0F));
+        PartDefinition RightLeg = Body.addOrReplaceChild("RightLeg", CubeListBuilder.create().texOffs(0, 16).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F, deform)
+                .texOffs(0, 32).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F, deform.extend(0.5f)), PartPose.offset(-2.0F, 12.0F, 0.0F));
 
-        PartDefinition RightLegDown = RightLeg.addOrReplaceChild("RightLegDown", CubeListBuilder.create().texOffs(48, 56).addBox(-2.0F, 0.0F, 0.0F, 4.0F, 6.0F, 4.0F, deform)
-                .texOffs(0, 58).addBox(-2.0F, 0.0F, 0.0F, 4.0F, 6.0F, 4.0F, deform.extend(0.5f)), PartPose.offset(0.0F, 6.0F, -2.0F));
-
-        return meshdefinition;
-    }
-
-    public static MeshDefinition meshSlim(CubeDeformation deform) {
-        MeshDefinition meshdefinition = new MeshDefinition();
-        PartDefinition partdefinition = meshdefinition.getRoot();
-
-        PartDefinition Body = partdefinition.addOrReplaceChild("Body", CubeListBuilder.create().texOffs(0, 32).addBox(-4.0F, 0.0F, -2.0F, 8.0F, 12.0F, 4.0F, new CubeDeformation(0.0F))
-                .texOffs(32, 0).addBox(-4.0F, 0.0F, -2.0F, 8.0F, 12.0F, 4.0F, new CubeDeformation(0.5F)), PartPose.offset(0.0F, 0.0F, 0.0F));
-
-        PartDefinition Head = Body.addOrReplaceChild("Head", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F))
-                .texOffs(0, 16).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.5F)), PartPose.offset(0.0F, 0.0F, 0.0F));
-
-        PartDefinition LeftArm = Body.addOrReplaceChild("LeftArm", CubeListBuilder.create().texOffs(16, 52).addBox(-1.0F, -2.0F, -2.0F, 3.0F, 6.0F, 4.0F, new CubeDeformation(0.0F))
-                .texOffs(56, 0).addBox(-1.0F, -2.0F, -2.0F, 3.0F, 6.0F, 4.0F, new CubeDeformation(0.5F)), PartPose.offset(5.0F, 2.0F, 0.0F));
-
-        PartDefinition LeftArmDown = LeftArm.addOrReplaceChild("LeftArmDown", CubeListBuilder.create().texOffs(56, 26).addBox(-4.0F, 0.0F, -2.0F, 3.0F, 6.0F, 4.0F, new CubeDeformation(0.0F))
-                .texOffs(30, 56).addBox(-4.0F, 0.0F, -2.0F, 3.0F, 6.0F, 4.0F, new CubeDeformation(0.5F)), PartPose.offset(3.0F, 4.0F, 0.0F));
-
-        PartDefinition LeftItem = LeftArmDown.addOrReplaceChild("LeftItem", CubeListBuilder.create(), PartPose.offset(-2.5F, 3.0F, 0.0F));
-
-        PartDefinition RightArm = Body.addOrReplaceChild("RightArm", CubeListBuilder.create().texOffs(56, 36).addBox(-2.0F, -2.0F, -2.0F, 3.0F, 6.0F, 4.0F, new CubeDeformation(0.0F))
-                .texOffs(44, 56).addBox(-2.0F, -2.0F, -2.0F, 3.0F, 6.0F, 4.0F, new CubeDeformation(0.5F)), PartPose.offset(-5.0F, 2.0F, 0.0F));
-
-        PartDefinition RightArmDown = RightArm.addOrReplaceChild("RightArmDown", CubeListBuilder.create().texOffs(56, 46).addBox(1.0F, 0.0F, -2.0F, 3.0F, 6.0F, 4.0F, new CubeDeformation(0.0F))
-                .texOffs(0, 58).addBox(1.0F, 0.0F, -2.0F, 3.0F, 6.0F, 4.0F, new CubeDeformation(0.5F)), PartPose.offset(-3.0F, 4.0F, 0.0F));
-
-        PartDefinition RightItem = RightArmDown.addOrReplaceChild("RightItem", CubeListBuilder.create(), PartPose.offset(2.5F, 3.0F, 0.0F));
-
-        PartDefinition LeftLeg = Body.addOrReplaceChild("LeftLeg", CubeListBuilder.create().texOffs(32, 16).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F, new CubeDeformation(0.0F))
-                .texOffs(24, 32).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F, new CubeDeformation(0.5F)), PartPose.offset(2.0F, 12.0F, 0.0F));
-
-        PartDefinition LeftLegDown = LeftLeg.addOrReplaceChild("LeftLegDown", CubeListBuilder.create().texOffs(40, 26).addBox(-2.0F, 0.0F, 0.0F, 4.0F, 6.0F, 4.0F, new CubeDeformation(0.0F))
-                .texOffs(40, 36).addBox(-2.0F, 0.0F, 0.0F, 4.0F, 6.0F, 4.0F, new CubeDeformation(0.5F)), PartPose.offset(0.0F, 6.0F, -2.0F));
-
-        PartDefinition RightLeg = Body.addOrReplaceChild("RightLeg", CubeListBuilder.create().texOffs(24, 42).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F, new CubeDeformation(0.0F))
-                .texOffs(40, 46).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F, new CubeDeformation(0.5F)), PartPose.offset(-2.0F, 12.0F, 0.0F));
-
-        PartDefinition RightLegDown = RightLeg.addOrReplaceChild("RightLegDown", CubeListBuilder.create().texOffs(0, 48).addBox(-2.0F, 0.0F, 0.0F, 4.0F, 6.0F, 4.0F, new CubeDeformation(0.0F))
-                .texOffs(48, 16).addBox(-2.0F, 0.0F, 0.0F, 4.0F, 6.0F, 4.0F, new CubeDeformation(0.5F)), PartPose.offset(0.0F, 6.0F, -2.0F));
+        PartDefinition RightLegDown = RightLeg.addOrReplaceChild("RightLegDown", CubeListBuilder.create().texOffs(16, 54).addBox(-2.0F, 0.0F, 0.0F, 4.0F, 6.0F, 4.0F, deform)
+                .texOffs(0, 54).addBox(-2.0F, 0.0F, 0.0F, 4.0F, 6.0F, 4.0F, deform.extend(0.5f)), PartPose.offset(0.0F, 6.0F, -2.0F));
 
         return meshdefinition;
     }
 
-    public static LayerDefinition createBodyLayer(CubeDeformation deform, boolean slim) {
-        return LayerDefinition.create(slim ? meshSlim(deform) : mesh(deform), 128, 128);
+    public static LayerDefinition createBodyLayer(CubeDeformation deform) {
+        return LayerDefinition.create(mesh(deform), 64, 64);
     }
 
     @Override
@@ -276,7 +234,7 @@ public class ModelServant<T extends BaseServant & IAnimated> extends BaseServant
     @Override
     public void copyPropertiesTo(EntityModel<T> model) {
         super.copyPropertiesTo(model);
-        if (model instanceof ModelServant<?> other) {
+        if (model instanceof ModelServantO<?> other) {
             this.heldItemMain = other.heldItemMain;
             this.heldItemOff = other.heldItemOff;
         }

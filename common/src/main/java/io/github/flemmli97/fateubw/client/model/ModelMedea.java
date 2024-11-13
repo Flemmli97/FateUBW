@@ -18,7 +18,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 
-public class ModelMedea<T extends EntityMedea & IAnimated> extends ModelServant<T> {
+public class ModelMedea<T extends EntityMedea & IAnimated> extends ModelServantO<T> {
 
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(Fate.MODID, "medea"), "main");
 
@@ -37,7 +37,7 @@ public class ModelMedea<T extends EntityMedea & IAnimated> extends ModelServant<
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition meshdefinition = ModelServant.mesh(new CubeDeformation(0));
+        MeshDefinition meshdefinition = ModelServantO.mesh(new CubeDeformation(0));
         PartDefinition partdefinition = meshdefinition.getRoot();
 
         PartDefinition body = partdefinition.addOrReplaceChild("body", CubeListBuilder.create().texOffs(16, 16).addBox(-4.0F, 0.0F, -2.0F, 8.0F, 12.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));

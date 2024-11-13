@@ -6,7 +6,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.client.model.BaseServantModel;
-import io.github.flemmli97.fateubw.client.model.ModelServant;
+import io.github.flemmli97.fateubw.client.model.ModelServantO;
 import io.github.flemmli97.fateubw.common.entity.NonSitVehicle;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.platform.ClientPlatform;
@@ -26,19 +26,21 @@ import net.minecraft.world.entity.Pose;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class ServantRenderer<T extends BaseServant, M extends BaseServantModel<T>> extends LivingEntityRenderer<T, BaseServantModel<T>> {
+public class ServantRenderer<T extends BaseServant, M extends BaseServantModel<T>> extends LivingEntityRenderer<T, BaseServantModel<T>> {
 
     private static boolean DEBUG_RENDER = true;
     private static final ResourceLocation DEFAULT_RES_LOC = new ResourceLocation("textures/entity/steve.png");
 
     private static final MultiBufferSource.BufferSource SEP = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
 
-    private final ModelServant<T> defaultModel;
+    private final BaseServantModel<T> defaultModel;
     private final M servantModel;
+    private final ResourceLocation texture;
 
-    public ServantRenderer(EntityRendererProvider.Context ctx, M model) {
-        super(ctx, model, 0.5f);
-        this.defaultModel = new ModelServant<>(ctx.bakeLayer(ModelServant.LAYER_LOCATION), "default_servant");
+    public ServantRenderer(EntityRendererProvider.Context ctx, M model, ResourceLocation texture, float shadow) {
+        super(ctx, model, shadow);
+        this.texture = texture;
+        this.defaultModel = new ModelServantO<>(ctx.bakeLayer(ModelServantO.LAYER_LOCATION), "default_servant");
         this.servantModel = model;
         this.addLayer(new LayerHand<>(this));
         this.addLayer(new CustomHeadLayer<>(this, ctx.getModelSet()));
@@ -185,5 +187,7 @@ public abstract class ServantRenderer<T extends BaseServant, M extends BaseServa
         return DEBUG_RENDER || servant.isDeadOrDying() || servant.showServant() || Minecraft.getInstance().player.equals(servant.getOwner());
     }
 
-    public abstract ResourceLocation servantTexture(T servant);
+    public ResourceLocation servantTexture(T servant) {
+        return this.texture;
+    }
 }
