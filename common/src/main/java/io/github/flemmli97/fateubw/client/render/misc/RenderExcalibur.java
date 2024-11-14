@@ -20,7 +20,7 @@ public class RenderExcalibur extends RenderBeam<Excalibur> {
     private static final Random RANDOM = new Random();
 
     public RenderExcalibur(EntityRendererProvider.Context ctx) {
-        super(ctx, Excalibur.RADIUS, 4);
+        super(ctx, 1, 4);
     }
 
     @Override
