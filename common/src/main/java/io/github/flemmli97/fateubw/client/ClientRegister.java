@@ -7,7 +7,6 @@ import io.github.flemmli97.fateubw.client.model.ModelEA;
 import io.github.flemmli97.fateubw.client.model.ModelGordiusWheel;
 import io.github.flemmli97.fateubw.client.model.ModelHassanClone;
 import io.github.flemmli97.fateubw.client.model.ModelHeracles;
-import io.github.flemmli97.fateubw.client.model.ModelMedea;
 import io.github.flemmli97.fateubw.client.model.ModelPegasus;
 import io.github.flemmli97.fateubw.client.model.ModelServant;
 import io.github.flemmli97.fateubw.client.model.ModelServantO;
@@ -94,7 +93,7 @@ public class ClientRegister {
         //consumer.register(ModEntities.MEDEA.get(), getServantRenderer(ModelMedea::new, ModelMedea.LAYER_LOCATION, servantTexture(ModEntities.MEDEA), 0.5f));
         registerServant(consumer, ModEntities.GILLES);
         consumer.register(ModEntities.HERACLES.get(), getServantRenderer(ModelHeracles::new, ModelHeracles.LAYER_LOCATION, servantTexture(ModEntities.HERACLES), 1f));
-        registerServantOld(consumer, ModEntities.LANCELOT);
+        registerServant(consumer, ModEntities.LANCELOT);
         registerServant(consumer, ModEntities.ISKANDER);
         registerServant(consumer, ModEntities.MEDUSA, true);
         registerServantOld(consumer, ModEntities.HASSAN);

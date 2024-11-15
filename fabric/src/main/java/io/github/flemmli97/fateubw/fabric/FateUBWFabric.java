@@ -4,6 +4,7 @@ import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.client.ClientCalls;
 import io.github.flemmli97.fateubw.common.commands.CommandHandler;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
+import io.github.flemmli97.fateubw.common.entity.servant.ai.LancelotAttackAI;
 import io.github.flemmli97.fateubw.common.event.EventCalls;
 import io.github.flemmli97.fateubw.common.registry.AdvancementRegister;
 import io.github.flemmli97.fateubw.common.registry.GrailLootSerializer;
@@ -28,6 +29,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.PackType;
@@ -79,6 +81,7 @@ public class FateUBWFabric implements ModInitializer {
             }
         });
         ConfigSpecs.initCommonConfig();
+        LancelotAttackAI.register(FabricLoader.getInstance()::isModLoaded);
     }
 
     public static void registerContent() {

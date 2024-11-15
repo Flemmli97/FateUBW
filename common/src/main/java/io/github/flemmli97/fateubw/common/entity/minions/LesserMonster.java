@@ -96,7 +96,7 @@ public class LesserMonster extends PathfinderMob implements IServantMinion, IAni
             AnimatedAction anim = this.getAnimationHandler().getAnimation();
             if (anim != null && anim.is(ATTACK) && anim.canAttack()) {
                 LivingEntity target = this.getTarget();
-                if (this.distanceToSqr(target) <= this.getMeleeAttackRangeSqr(target)) {
+                if (target != null && this.distanceToSqr(target) <= this.getMeleeAttackRangeSqr(target)) {
                     this.doHurtTarget(target);
                 }
             }

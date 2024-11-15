@@ -27,8 +27,11 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -221,14 +224,23 @@ public class EntityEmiya extends BaseServant {
     }
 
     public void attackWithRangedAttack(LivingEntity target) {
-        ArcherArrow arrow = new ArcherArrow(this.level, this);
+        ItemStack stack = this.getItemInHand(this.bowHand());
         if (!this.level.isClientSide) {
+            ArcherArrow arrow = new ArcherArrow(this.level, this);
             double dX = target.getX() - this.getX();
             double dY = target.getY(0.3333333333333333) - arrow.getY();
             double dZ = target.getZ() - this.getZ();
             double l = Math.sqrt(dX * dX + dZ * dZ);
+            arrow.setCritArrow(true);
+            int j;
+            if ((j = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack)) > 0) {
+                arrow.setBaseDamage(arrow.getBaseDamage() + (double) j * 0.5 + 0.5);
+            }
+            if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FLAMING_ARROWS, stack) > 0) {
+                arrow.setSecondsOnFire(100);
+            }
             arrow.shoot(dX, dY + l * 0.13, dZ, 2.2F, 2);
-            arrow.setBaseDamage(arrow.getBaseDamage() + 5.0);
+            arrow.setBaseDamage(arrow.getBaseDamage() + this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.7);
             arrow.setKnockback(0);
             this.playSound(SoundEvents.SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
             this.level.addFreshEntity(arrow);
@@ -236,15 +248,24 @@ public class EntityEmiya extends BaseServant {
     }
 
     public void attackWithRangedAttackBarrage(LivingEntity target) {
+        ItemStack stack = this.getItemInHand(this.bowHand());
         for (int i = 0; i < 6; i++) {
             ArcherArrow arrow = new ArcherArrow(this.level, this);
             if (!this.level.isClientSide) {
                 double dX = target.getX() - this.getX();
-                double dY = target.getY(0.3333333333333333) - arrow.getY();
+                double dY = target.getY(0.33) - arrow.getY();
                 double dZ = target.getZ() - this.getZ();
                 double l = Math.sqrt(dX * dX + dZ * dZ);
+                arrow.setCritArrow(true);
+                int j;
+                if ((j = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack)) > 0) {
+                    arrow.setBaseDamage(arrow.getBaseDamage() + (double) j * 0.5 + 0.5);
+                }
+                if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FLAMING_ARROWS, stack) > 0) {
+                    arrow.setSecondsOnFire(100);
+                }
                 arrow.shoot(dX, dY + l * 0.13, dZ, 2.2F, 7);
-                arrow.setBaseDamage(arrow.getBaseDamage() + 5.0);
+                arrow.setBaseDamage(arrow.getBaseDamage() + this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.7);
                 arrow.setKnockback(0);
                 this.playSound(SoundEvents.SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
                 this.level.addFreshEntity(arrow);

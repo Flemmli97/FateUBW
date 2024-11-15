@@ -2,6 +2,7 @@ package io.github.flemmli97.fateubw.forge;
 
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
+import io.github.flemmli97.fateubw.common.entity.servant.ai.LancelotAttackAI;
 import io.github.flemmli97.fateubw.common.registry.AdvancementRegister;
 import io.github.flemmli97.fateubw.common.registry.GrailLootSerializer;
 import io.github.flemmli97.fateubw.common.registry.ModAttributes;
@@ -24,6 +25,7 @@ import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -58,6 +60,8 @@ public class FateUBWForge {
         forgeBus.addListener(this::biomeLoadEvent);
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ConfigSpecs.CLIENT_SPEC, Fate.MODID + "/client.toml");
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigSpecs.COMMON_SPEC, Fate.MODID + "/common.toml");
+
+        LancelotAttackAI.register(ModList.get()::isLoaded);
     }
 
     public static void registerContent() {

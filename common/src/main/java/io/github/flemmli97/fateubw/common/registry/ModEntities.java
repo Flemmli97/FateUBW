@@ -85,17 +85,17 @@ public class ModEntities {
 
     public static final RegistryEntrySupplier<EntityType<EntityMedea>> MEDEA = regServant(EntityType.Builder.of(EntityMedea::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "medea"), 0x6f086b, 0x4a8be5,
-            new ServantProperties(350, 9.5, 5, 0, 4, 17.5, 0.2, 100, BuiltinServantClasses.CASTER));
+            new ServantProperties(350, 9.5, 5, 0, 4, 17.5, 0.27, 100, BuiltinServantClasses.CASTER));
     public static final RegistryEntrySupplier<EntityType<EntityGilles>> GILLES = regServant(EntityType.Builder.of(EntityGilles::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "gilles"), 0x100460, 0x600453,
-            new ServantProperties(350, 5.5, 7, 0, 5, 14, 0.3, 80, BuiltinServantClasses.CASTER));
+            new ServantProperties(350, 5.5, 7, 0, 5, 14, 0.29, 80, BuiltinServantClasses.CASTER));
 
     public static final RegistryEntrySupplier<EntityType<EntityHeracles>> HERACLES = regServant(EntityType.Builder.of(EntityHeracles::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "heracles"), 0x3c1d06, 0x5e3c22,
-            new ServantProperties(100, 7.5, 10, 0, 17, 9.5, 0.22, 0, BuiltinServantClasses.BERSERKER));
+            new ServantProperties(100, 7.5, 10, 0, 17, 9.5, 0.25, 0, BuiltinServantClasses.BERSERKER));
     public static final RegistryEntrySupplier<EntityType<EntityLancelot>> LANCELOT = regServant(EntityType.Builder.of(EntityLancelot::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "lancelot"), 0x071a33, 0x1d4f94,
-            new ServantProperties(450, 9, 14, 0.4f, 19, 4, 0.2, 0, BuiltinServantClasses.BERSERKER));
+            new ServantProperties(450, 9, 14, 0.4f, 19, 4, 0.26, 0, BuiltinServantClasses.BERSERKER));
 
     public static final RegistryEntrySupplier<EntityType<EntityIskander>> ISKANDER = regServant(EntityType.Builder.of(EntityIskander::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "iskander"), 0xd40000, 0x8d0101,

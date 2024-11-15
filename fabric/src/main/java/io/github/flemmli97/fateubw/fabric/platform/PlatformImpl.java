@@ -17,7 +17,9 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.level.BaseSpawner;
@@ -89,6 +91,11 @@ public class PlatformImpl implements Platform {
     @Override
     public DamageSource setBypassArmor(DamageSource source) {
         return ((DamageSourceAccessor) source).setBypassArmor();
+    }
+
+    @Override
+    public AbstractArrow customBowArrow(BowItem item, AbstractArrow def) {
+        return def;
     }
 
     private static AxeItem createNewAxe(Tier tier, float baseAttack, float speed, Item.Properties props) {

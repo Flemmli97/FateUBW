@@ -363,7 +363,8 @@ public class ModelGordiusWheel extends EntityModel<Gordius> implements ExtendedM
         this.footLeftRear2.xRot = Mth.cos(limbSwing * 0.6662F) * limbSwingAmount;
         this.footRightRear2.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * limbSwingAmount;
         float partialTicks = Minecraft.getInstance().getFrameTime();
-        entity.getAnimationHandler().runIfNotNull(anim -> this.anim.doAnimation(this, anim.getAnimationClient(), anim.getTick(), partialTicks));
+        this.anim.doAnimation(this, "idle", entity.tickCount, partialTicks);
+        this.anim.doAnimation(this, entity.getAnimationHandler(), partialTicks);
     }
 
     @Override

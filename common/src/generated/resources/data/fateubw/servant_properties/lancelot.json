@@ -6,6 +6,6 @@
   "nobelPhantasmCost": 0,
   "health": 450.0,
   "magicProt": 4.0,
-  "moveSpeed": 0.2,
+  "moveSpeed": 0.26,
   "projectileBlockChance": 0.4
 }

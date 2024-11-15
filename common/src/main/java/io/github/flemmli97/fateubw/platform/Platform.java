@@ -11,7 +11,9 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.level.BaseSpawner;
@@ -52,4 +54,6 @@ public interface Platform {
     AxeItem createAxe(Tier tier, float baseAttack, float speed, Item.Properties props);
 
     DamageSource setBypassArmor(DamageSource source);
+
+    AbstractArrow customBowArrow(BowItem item, AbstractArrow def);
 }

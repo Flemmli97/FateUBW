@@ -44,7 +44,6 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class EntityArthur extends BaseServant {
 
@@ -244,17 +243,6 @@ public class EntityArthur extends BaseServant {
     private boolean duringBurst() {
         AnimatedAction anim = this.getAnimationHandler().getAnimation();
         return anim != null && anim.is(INVISIBLE_BURST) && anim.isPastTick(0.28) && !anim.isPastTick(0.8);
-    }
-
-    @Override
-    public void mobAttack(AnimatedAction anim, LivingEntity target, Consumer<LivingEntity> cons) {
-        if (anim.is(INVISIBLE_BURST_HIT)) {
-            super.mobAttack(anim, target, e -> {
-                e.invulnerableTime -= 10;
-                cons.accept(e);
-            });
-        }
-        super.mobAttack(anim, target, cons);
     }
 
     @Override
