@@ -6,7 +6,6 @@ import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
 import io.github.flemmli97.fateubw.common.utils.Utils;
-import io.github.flemmli97.fateubw.platform.NetworkCalls;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
 import io.github.flemmli97.tenshilib.common.entity.EntityUtil;
@@ -210,7 +209,7 @@ public class EntityArthur extends BaseServant {
                     }
                 });
                 if (!this.hitEntity.isEmpty()) {
-                    NetworkCalls.INSTANCE.sendToTracking(new S2CScreenShake(6, 1), this);
+                    S2CScreenShake.sendAround(this, 12, 6, 1);
                     this.setDeltaMovement(this.getDeltaMovement().scale(0.05));
                     this.getAnimationHandler().setAnimation(INVISIBLE_BURST_HIT);
                 }

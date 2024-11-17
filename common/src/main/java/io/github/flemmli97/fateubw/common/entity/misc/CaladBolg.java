@@ -4,11 +4,9 @@ import io.github.flemmli97.fateubw.common.config.Config;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
-import io.github.flemmli97.fateubw.platform.NetworkCalls;
 import io.github.flemmli97.tenshilib.common.entity.EntityProjectile;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -57,14 +55,7 @@ public class CaladBolg extends EntityProjectile {
         this.doExplosion(hit);
         this.level.playSound(null, x, y, z, SoundEvents.GENERIC_EXPLODE, this.getSoundSource(), 1.0f, 1.0f);
         this.discard();
-        if (this.level instanceof ServerLevel serverLevel) {
-            AABB area = new AABB(x - 0.5, y - 0.5, z + 0.5, x + 0.5, y + 0.5, z + 0.5).inflate(9);
-            for (ServerPlayer player : serverLevel.players()) {
-                if (!area.contains(player.getX(), player.getY(), player.getZ()))
-                    continue;
-                NetworkCalls.INSTANCE.sendToClient(new S2CScreenShake(8, 2), player);
-            }
-        }
+        S2CScreenShake.sendAround(this, 9, 8, 2);
     }
 
     protected void doExplosion(Entity hit) {

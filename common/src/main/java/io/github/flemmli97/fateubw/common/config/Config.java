@@ -57,7 +57,7 @@ public class Config {
                         new PotionEffectsConfig.EffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 200, 7),
                         new PotionEffectsConfig.EffectInstance(MobEffects.JUMP, 200, 128))
         );
-        public static double gordiusHealth = 53;
+        public static double gordiusHealth = 100;
         public static float gordiusDmg = 10;
         public static double pegasusHealth = 50;
         public static float pegasusDamage = 14;

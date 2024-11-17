@@ -6,6 +6,7 @@ import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.api.datapack.ServantProperties;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.entity.IServantMinion;
+import io.github.flemmli97.fateubw.common.entity.NonSitVehicle;
 import io.github.flemmli97.fateubw.common.entity.ai.FollowMasterGoal;
 import io.github.flemmli97.fateubw.common.entity.ai.HurtByTargetPredicateGoal;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
@@ -119,9 +120,11 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
 
     private final ServantProperties prop;
 
-    private final Predicate<LivingEntity> targetPred = (target) -> {
-        if (target == this)
+    public final Predicate<LivingEntity> targetPred = (target) -> {
+        if (target == this || !this.canAttack(target))
             return false;
+        if (target == this.getTarget())
+            return true;
         if (target instanceof BaseServant)
             return !Utils.inSameTeam(BaseServant.this, (BaseServant) target);
         if (target instanceof Mob mob && this == mob.getTarget())
@@ -131,7 +134,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         return target instanceof Enemy;
     };
 
-    private final Predicate<LivingEntity> retaliatePred = (target) -> {
+    public final Predicate<LivingEntity> retaliatePred = (target) -> {
         if (target == this)
             return false;
         if (target instanceof BaseServant)
@@ -500,6 +503,11 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     public void stopSeenByPlayer(ServerPlayer player) {
         this.tracked.remove(player);
         this.addToOwner = false;
+    }
+
+    @Override
+    public double getMyRidingOffset() {
+        return this.getVehicle() instanceof NonSitVehicle ? 0 : -0.35;
     }
 
     private void addEntityOwner(ServerPlayer serverPlayer) {

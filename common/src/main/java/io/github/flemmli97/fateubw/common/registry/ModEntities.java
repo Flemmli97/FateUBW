@@ -5,7 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.api.datapack.ServantProperties;
 import io.github.flemmli97.fateubw.common.entity.MultiPartEntity;
-import io.github.flemmli97.fateubw.common.entity.minions.Gordius;
+import io.github.flemmli97.fateubw.common.entity.minions.GordiusWheel;
 import io.github.flemmli97.fateubw.common.entity.minions.HassanClone;
 import io.github.flemmli97.fateubw.common.entity.minions.LesserMonster;
 import io.github.flemmli97.fateubw.common.entity.minions.Pegasus;
@@ -120,7 +120,7 @@ public class ModEntities {
     public static final RegistryEntrySupplier<EntityType<MagicBeam>> MAGIC_BEAM = reg(EntityType.Builder.of(MagicBeam::new, MobCategory.MISC), new ResourceLocation(Fate.MODID, "magic_beam"));
     public static final RegistryEntrySupplier<EntityType<MagicBufCircle>> MEDEA_CIRCLE = reg(EntityType.Builder.of(MagicBufCircle::new, MobCategory.MISC), new ResourceLocation(Fate.MODID, "medea_circle"));
     public static final RegistryEntrySupplier<EntityType<LesserMonster>> LESSER_MONSTER = regWithEgg(EntityType.Builder.<LesserMonster>of(LesserMonster::new, MobCategory.MONSTER).clientTrackingRange(8), new ResourceLocation(Fate.MODID, "starfish_monster"), 0x171c3f, 0x00ff00);
-    public static final RegistryEntrySupplier<EntityType<Gordius>> GORDIUS_WHEEL = regWithEgg(EntityType.Builder.of(Gordius::new, MobCategory.CREATURE).sized(2, 1.5f), new ResourceLocation(Fate.MODID, "gordius_wheel"), 0x87595c, 0x981a24);
+    public static final RegistryEntrySupplier<EntityType<GordiusWheel>> GORDIUS_WHEEL = regWithEgg(EntityType.Builder.of(GordiusWheel::new, MobCategory.CREATURE).sized(2, 1.5f), new ResourceLocation(Fate.MODID, "gordius_wheel"), 0x87595c, 0x981a24);
 
     public static final RegistryEntrySupplier<EntityType<HassanClone>> HASSAN_COPY = reg(EntityType.Builder.of(HassanClone::new, MobCategory.MISC), new ResourceLocation(Fate.MODID, "hassan_copy"));
     public static final RegistryEntrySupplier<EntityType<Pegasus>> PEGASUS = regWithEgg(EntityType.Builder.of(Pegasus::new, MobCategory.MONSTER).sized(1.35f, 1.65f), new ResourceLocation(Fate.MODID, "pegasus"), 0xffffff, 0xdde0e1);
@@ -128,7 +128,8 @@ public class ModEntities {
 
     public static final RegistryEntrySupplier<EntityType<ThrownGem>> GEM = reg(EntityType.Builder.<ThrownGem>of(ThrownGem::new, MobCategory.MISC).sized(0.25F, 0.25F), new ResourceLocation(Fate.MODID, "entity_gem"));
 
-    public static final RegistryEntrySupplier<EntityType<MultiPartEntity>> MULTIPART = reg(EntityType.Builder.<MultiPartEntity>of(MultiPartEntity::new, MobCategory.MISC).sized(0.25F, 0.25F), new ResourceLocation(Fate.MODID, "multi_part"));
+    public static final RegistryEntrySupplier<EntityType<MultiPartEntity>> MULTIPART = reg(EntityType.Builder.<MultiPartEntity>of(MultiPartEntity::new, MobCategory.MISC)
+            .noSave().noSummon().sized(0.25F, 0.25F), new ResourceLocation(Fate.MODID, "multi_part"));
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static <V extends BaseServant> RegistryEntrySupplier<EntityType<V>> regServant(EntityType.Builder<V> entity, ResourceLocation name, int primary, int secondary, ServantProperties props) {
@@ -182,7 +183,8 @@ public class ModEntities {
         map.put(ModEntities.SASAKI.get(), BaseServant.createMobAttributes());
 
         map.put(ModEntities.LESSER_MONSTER.get(), BaseServant.createMobAttributes().add(Attributes.MOVEMENT_SPEED, 0.25));
-        map.put(ModEntities.GORDIUS_WHEEL.get(), Monster.createMonsterAttributes().add(Attributes.MOVEMENT_SPEED, 0.3)
+        map.put(ModEntities.GORDIUS_WHEEL.get(), Monster.createMonsterAttributes().add(Attributes.MOVEMENT_SPEED, 0.37)
+                .add(Attributes.ARMOR, 4)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1));
         map.put(ModEntities.PEGASUS.get(), BaseServant.createMobAttributes().add(Attributes.MOVEMENT_SPEED, 0.3));
         map.put(ModEntities.HASSAN_COPY.get(), BaseServant.createMobAttributes());

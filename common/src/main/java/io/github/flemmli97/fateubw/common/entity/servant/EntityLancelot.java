@@ -10,7 +10,6 @@ import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
 import io.github.flemmli97.fateubw.common.utils.Utils;
-import io.github.flemmli97.fateubw.platform.NetworkCalls;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.AnimatedAttackGoal;
@@ -394,7 +393,7 @@ public class EntityLancelot extends BaseServant {
                 this.setDeltaMovement(this.getDeltaMovement().add(dir));
             }
             if (anim.canAttack() && anim.is(JUMP_LAND)) {
-                NetworkCalls.INSTANCE.sendToTracking(new S2CScreenShake(8, 3), this);
+                S2CScreenShake.sendAround(this, 16, 8, 3);
                 this.playSound(SoundEvents.GENERIC_EXPLODE, 1.0f, 0.9f);
             }
             super.handleAttack(anim);

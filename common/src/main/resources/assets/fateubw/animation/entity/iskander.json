@@ -711,7 +711,7 @@
 				}
 			}
 		},
-		"slash__mounted_standing_2": {
+		"slash_mounted_standing_2": {
 			"loop": "hold_on_last_frame",
 			"animation_length": 0.48,
 			"bones": {
@@ -874,7 +874,7 @@
 				}
 			}
 		},
-		"slash__mounted_2": {
+		"slash_mounted_2": {
 			"loop": "hold_on_last_frame",
 			"animation_length": 0.48,
 			"bones": {

@@ -56,7 +56,7 @@ public class ServantRenderer<T extends BaseServant, M extends BaseServantModel<T
         matrixStack.pushPose();
         this.model.attackTime = this.getAttackAnim(entity, partialTicks);
 
-        boolean shouldSit = entity.isPassenger() && (entity.getVehicle() != null && entity.getVehicle() instanceof NonSitVehicle);
+        boolean shouldSit = entity.getVehicle() != null && !(entity.getVehicle() instanceof NonSitVehicle);
         this.model.riding = shouldSit;
         this.model.young = entity.isBaby();
         float yawOffset = Mth.rotLerp(partialTicks, entity.yBodyRotO, entity.yBodyRot);

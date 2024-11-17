@@ -1,13 +1,18 @@
 package io.github.flemmli97.fateubw.common.entity;
 
+import io.github.flemmli97.fateubw.common.network.S2CMultipartDataPkt;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
+import io.github.flemmli97.fateubw.platform.NetworkCalls;
 import io.github.flemmli97.tenshilib.common.entity.EntityUtil;
+import io.github.flemmli97.tenshilib.common.utils.MathUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -34,13 +39,21 @@ public class MultiPartEntity extends Entity {
     private EntityDimensions dimensions = EntityDimensions.fixed(1, 1);
     private boolean addedToLevel, isHead;
 
+    private boolean smoothMovement;
+    private Position offset = Position.DEFAULT;
+
+    // Vanilla is not lerping correctly
+    public float viewYRot, viewYRotO, viewXRot, viewXRotO;
+
     public MultiPartEntity(EntityType<MultiPartEntity> multipartType, Level level) {
         super(multipartType, level);
+        this.setNoGravity(true);
     }
 
-    public MultiPartEntity(Level level, float width, float height) {
-        super(ModEntities.MULTIPART.get(), level);
+    public MultiPartEntity(Level level, float width, float height, Position offset) {
+        this(ModEntities.MULTIPART.get(), level);
         this.setSize(width, height);
+        this.offset = offset;
     }
 
     public void setParent(Entity parent) {
@@ -51,6 +64,20 @@ public class MultiPartEntity extends Entity {
     public MultiPartEntity setHeadPart() {
         this.isHead = true;
         return this;
+    }
+
+    public MultiPartEntity smoothMovement() {
+        this.smoothMovement = true;
+        return this;
+    }
+
+    public MultiPartEntity gravity() {
+        this.setNoGravity(false);
+        return this;
+    }
+
+    public void setOffset(Position offset) {
+        this.offset = offset;
     }
 
     @Override
@@ -80,15 +107,51 @@ public class MultiPartEntity extends Entity {
 
     @Override
     public void tick() {
-        if (!this.level.isClientSide)
-            if (this.getParent() == null || !this.getParent().isAlive())
+        if (this.getParent() == null || !this.getParent().isAlive()) {
+            if (!this.level.isClientSide) {
                 this.remove(RemovalReason.KILLED);
+            }
+            return;
+        }
+        this.viewXRotO = this.viewXRot;
+        this.viewYRotO = this.viewYRot;
         super.tick();
+        float parentRotY = Mth.wrapDegrees(this.getParent().getYHeadRot());
+        Vec3 anchorOffset = MathUtils.rotate(new Vec3(0, 1, 0), this.offset.anchorOffset, -parentRotY * Mth.DEG_TO_RAD);
+        Vec3 anchor = this.getParent().position().add(anchorOffset);
+        Vec3 dir = anchor.subtract(this.position());
+        Vec3 delta = this.getDeltaMovement().scale(0.3);
+        if (this.smoothMovement) {
+            double dirLen = dir.lengthSqr();
+            double offLen = this.offset.positionOffset.lengthSqr();
+            if (dirLen > offLen * 5) {
+                Vec3 offset = MathUtils.rotate(new Vec3(0, 1, 0), this.offset.positionOffset, -parentRotY * Mth.DEG_TO_RAD);
+                this.updatePositionTo(anchor.x() + offset.x, anchor.y(), anchor.z() + offset.z, true);
+            } else {
+                if (dirLen > offLen || Math.abs(this.getParent().getY() - this.getY()) > 1.5) {
+                    this.setOldPosAndRot();
+                    delta = dir.scale(0.2).add(0, -0.08, 0);
+                }
+            }
+        } else {
+            Vec3 offset = MathUtils.rotate(new Vec3(0, 1, 0), this.offset.positionOffset, -parentRotY * Mth.DEG_TO_RAD);
+            this.updatePositionTo(anchor.x() + offset.x, anchor.y(), anchor.z() + offset.z, true);
+        }
+        this.hasImpulse = true;
+        double d = dir.horizontalDistance();
+        float yRot = -(float) (Mth.atan2(dir.x, dir.z) * Mth.RAD_TO_DEG);
+        yRot = Mth.wrapDegrees(yRot - this.getYRot());
+        this.setRot(this.getYRot() + Mth.clamp(yRot, -8, 8), -(float) (Mth.atan2(dir.y, d) * Mth.RAD_TO_DEG));
+        this.setViewRotation(this.getYRot(), this.getXRot());
+        this.setDeltaMovement(delta);
+        this.move(MoverType.SELF, this.getDeltaMovement());
     }
 
-    @Override
-    public void baseTick() {
-        super.baseTick();
+    public void forceUpdatePosition() {
+        Vec3 offset = MathUtils.rotate(new Vec3(0, 1, 0), this.offset.positionOffset, -this.getParent().getYRot() * Mth.DEG_TO_RAD);
+        Vec3 anchorOffset = MathUtils.rotate(new Vec3(0, 1, 0), this.offset.anchorOffset, -this.getParent().getYRot() * Mth.DEG_TO_RAD);
+        Vec3 anchor = this.getParent().position().add(anchorOffset);
+        this.updatePositionTo(anchor.x() + offset.x, anchor.y(), anchor.z() + offset.z, true);
     }
 
     @Override
@@ -118,7 +181,6 @@ public class MultiPartEntity extends Entity {
         return source == DamageSource.FALL || source == DamageSource.DROWN || (!this.isHead && source == DamageSource.IN_WALL) || super.isInvulnerableTo(source);
     }
 
-    @SuppressWarnings("unchecked")
     public Entity getParent() {
         if (this.parent != null && this.parent.isAlive())
             return this.parent;
@@ -169,11 +231,6 @@ public class MultiPartEntity extends Entity {
         return this.addedToLevel;
     }
 
-    @Override
-    public boolean isNoGravity() {
-        return true;
-    }
-
     public void updatePositionTo(double x, double y, double z, boolean simple) {
         Vec3 old = this.position();
         this.setOldPosAndRot();
@@ -190,5 +247,20 @@ public class MultiPartEntity extends Entity {
             }
             this.move(MoverType.SELF, new Vec3(x - old.x, vy, z - old.z));
         }
+    }
+
+    @Override
+    public void startSeenByPlayer(ServerPlayer serverPlayer) {
+        super.startSeenByPlayer(serverPlayer);
+        NetworkCalls.INSTANCE.sendToClient(new S2CMultipartDataPkt(this.getId(), this.offset, this.smoothMovement), serverPlayer);
+    }
+
+    public void setViewRotation(float rotY, float rotX) {
+        this.viewYRot = rotY % 360;
+        this.viewXRot = rotX % 360;
+    }
+
+    public record Position(Vec3 anchorOffset, Vec3 positionOffset) {
+        public static final Position DEFAULT = new Position(Vec3.ZERO, Vec3.ZERO);
     }
 }

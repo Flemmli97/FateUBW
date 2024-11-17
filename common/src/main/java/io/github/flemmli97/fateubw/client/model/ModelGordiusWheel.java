@@ -3,11 +3,12 @@ package io.github.flemmli97.fateubw.client.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.flemmli97.fateubw.Fate;
-import io.github.flemmli97.fateubw.common.entity.minions.Gordius;
+import io.github.flemmli97.fateubw.common.entity.minions.GordiusWheel;
 import io.github.flemmli97.tenshilib.client.AnimationManager;
 import io.github.flemmli97.tenshilib.client.model.BlockBenchAnimations;
 import io.github.flemmli97.tenshilib.client.model.ExtendedModel;
 import io.github.flemmli97.tenshilib.client.model.ModelPartHandler;
+import io.github.flemmli97.tenshilib.client.model.RideableModel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -18,15 +19,18 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 
 /**
  * Gordius Wheel - Black_Saturn
  * Created using Tabula 6.0.0
  */
 
-public class ModelGordiusWheel extends EntityModel<Gordius> implements ExtendedModel {
+public class ModelGordiusWheel extends EntityModel<GordiusWheel> implements ExtendedModel, RideableModel<GordiusWheel> {
 
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(Fate.MODID, "gordius"), "main");
 
@@ -44,6 +48,13 @@ public class ModelGordiusWheel extends EntityModel<Gordius> implements ExtendedM
     private ModelPartHandler.ModelPartExtended footRightRear;
     private ModelPartHandler.ModelPartExtended footLeftRear2;
     private ModelPartHandler.ModelPartExtended footRightRear2;
+    private ModelPartHandler.ModelPartExtended centerBeam;
+    private ModelPartHandler.ModelPartExtended backBeam;
+
+    private ModelPartHandler.ModelPartExtended[] mountComponents;
+    private ModelPartHandler.ModelPartExtended backBeamJoint;
+    private ModelPartHandler.ModelPartExtended chariotFloorJoint;
+    private ModelPartHandler.ModelPartExtended mountPos;
 
     public ModelGordiusWheel(ModelPart root) {
         super();
@@ -61,7 +72,18 @@ public class ModelGordiusWheel extends EntityModel<Gordius> implements ExtendedM
         this.footRightRear = this.model.getPart("footRightRear");
         this.footLeftRear2 = this.model.getPart("footLeftRear2");
         this.footRightRear2 = this.model.getPart("footRightRear2");
+        this.centerBeam = this.model.getPart("centerBeam");
+        this.backBeam = this.model.getPart("backBeam");
 
+        this.mountComponents = new ModelPartHandler.ModelPartExtended[]{
+                this.model.getPart("root"),
+                this.centerBeam,
+                this.backBeam,
+                this.getHandler().getPart("chariotFloor"),
+                this.model.getPart("backBeamJoint"),
+                this.model.getPart("chariotFloorJoint"),
+                this.model.getPart("mountPos")
+        };
     }
 
     public static LayerDefinition createBodyLayer() {
@@ -138,12 +160,12 @@ public class ModelGordiusWheel extends EntityModel<Gordius> implements ExtendedM
 
         PartDefinition leadFront8 = leadFront7.addOrReplaceChild("leadFront8", CubeListBuilder.create().texOffs(68, 104).addBox(0.0F, -0.5F, 0.0F, 0.0F, 1.0F, 9.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 6.0F, 0.0F, 1.2217F, 0.5236F));
 
-        PartDefinition centerBeam = root.addOrReplaceChild("centerBeam", CubeListBuilder.create().texOffs(0, 0).addBox(-1.5F, -1.5F, -30.0F, 3.0F, 3.0F, 30.0F, new CubeDeformation(0.0F))
-                .texOffs(144, 104).addBox(-2.0F, -2.0F, -28.5F, 4.0F, 4.0F, 1.0F, new CubeDeformation(0.0F))
-                .texOffs(144, 104).addBox(-2.0F, -2.0F, -30.5F, 4.0F, 4.0F, 1.0F, new CubeDeformation(0.0F))
-                .texOffs(0, 59).addBox(-15.0F, -1.0F, -7.5F, 30.0F, 2.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -16.0F, -4.0F));
+        PartDefinition centerBeam = root.addOrReplaceChild("centerBeam", CubeListBuilder.create().texOffs(0, 0).addBox(-1.5F, -1.5F, -7.0F, 3.0F, 3.0F, 30.0F, new CubeDeformation(0.0F))
+                .texOffs(144, 104).addBox(-2.0F, -2.0F, -5.5F, 4.0F, 4.0F, 1.0F, new CubeDeformation(0.0F))
+                .texOffs(144, 104).addBox(-2.0F, -2.0F, -7.5F, 4.0F, 4.0F, 1.0F, new CubeDeformation(0.0F))
+                .texOffs(0, 59).addBox(-15.0F, -1.0F, 15.5F, 30.0F, 2.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -16.0F, -27.0F));
 
-        PartDefinition backBeam = centerBeam.addOrReplaceChild("backBeam", CubeListBuilder.create().texOffs(88, 82).addBox(-1.5F, -1.0F, 0.0F, 3.0F, 2.0F, 12.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 1.0F, -2.0F, -0.1396F, 0.0F, 0.0F));
+        PartDefinition backBeam = centerBeam.addOrReplaceChild("backBeam", CubeListBuilder.create().texOffs(88, 82).addBox(-1.5F, -1.0F, 0.0F, 3.0F, 2.0F, 12.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 1.0F, 21.0F, -0.1396F, 0.0F, 0.0F));
 
         PartDefinition backBeamJoint = backBeam.addOrReplaceChild("backBeamJoint", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0873F, 0.0F, 0.0F));
 
@@ -173,6 +195,8 @@ public class ModelGordiusWheel extends EntityModel<Gordius> implements ExtendedM
         PartDefinition chariotWall3Decor = chariotFloor3.addOrReplaceChild("chariotWall3Decor", CubeListBuilder.create().texOffs(0, 115).addBox(-14.0F, -1.5F, 0.0F, 14.0F, 3.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(9.5F, -7.5F, 0.0F, 0.0F, 1.5708F, 0.0F));
 
         PartDefinition chariotWall4Decor = chariotFloor3.addOrReplaceChild("chariotWall4Decor", CubeListBuilder.create().texOffs(0, 115).addBox(-14.0F, -1.5F, 0.0F, 14.0F, 3.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-9.5F, -7.5F, 0.0F, 0.0F, 1.5708F, 0.0F));
+
+        PartDefinition mountPos = chariotFloorJoint.addOrReplaceChild("mountPos", CubeListBuilder.create(), PartPose.offset(0.0F, -1.0F, 19.0F));
 
         PartDefinition chariotCenter = backBeam.addOrReplaceChild("chariotCenter", CubeListBuilder.create().texOffs(164, 59).addBox(-3.5F, -1.5F, -6.0F, 7.0F, 3.0F, 12.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 17.0F, 0.1745F, 0.0F, 0.0F));
 
@@ -348,12 +372,13 @@ public class ModelGordiusWheel extends EntityModel<Gordius> implements ExtendedM
     }
 
     @Override
-    public void setupAnim(Gordius entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setupAnim(GordiusWheel entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.model.resetPoses();
-        this.frontAxel.xRot = Mth.cos(limbSwing * 0.3F) * (float) Math.PI;
-        this.backAxel.xRot = Mth.cos(limbSwing * 0.4f) * (float) Math.PI;
+        this.frontAxel.xRot = limbSwing * 0.3F;
+        this.backAxel.xRot = limbSwing * 0.45f;
         this.leftWheelWeaponMain.xRot = this.frontAxel.xRot;
         this.rightWheelWeaponMain.xRot = -this.frontAxel.xRot;
+
         this.footLeftFront.xRot = Mth.cos(limbSwing * 0.6662F) * limbSwingAmount;
         this.footRightFront.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * limbSwingAmount;
         this.footLeftFront2.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * limbSwingAmount;
@@ -362,9 +387,41 @@ public class ModelGordiusWheel extends EntityModel<Gordius> implements ExtendedM
         this.footRightRear.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * limbSwingAmount;
         this.footLeftRear2.xRot = Mth.cos(limbSwing * 0.6662F) * limbSwingAmount;
         this.footRightRear2.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * limbSwingAmount;
+
         float partialTicks = Minecraft.getInstance().getFrameTime();
         this.anim.doAnimation(this, "idle", entity.tickCount, partialTicks);
         this.anim.doAnimation(this, entity.getAnimationHandler(), partialTicks);
+        if (entity.getWheelEntity() != null) {
+            float yRot = lerpClamped(partialTicks, entity.getWheelEntity().viewYRotO, entity.getWheelEntity().viewYRot);
+            yRot -= lerpClamped(partialTicks, entity.yRotO, entity.getYRot());
+            float xRot = Mth.lerp(partialTicks, entity.getWheelEntity().viewXRotO, entity.getWheelEntity().viewXRot);
+
+            float chariotY = Mth.clamp(yRot, -5, 5);
+            float chariotX = Mth.clamp(xRot, -15, 15);
+            this.centerBeam.yRot += chariotY * Mth.DEG_TO_RAD;
+            this.centerBeam.xRot += chariotX * Mth.DEG_TO_RAD;
+            chariotY = yRot - chariotY;
+            this.backBeam.yRot += chariotY * Mth.DEG_TO_RAD;
+            chariotX = xRot - chariotX;
+            this.backBeam.xRot += chariotX * Mth.DEG_TO_RAD;
+        }
+    }
+
+    private static float lerpClamped(float partialTicks, float start, float end) {
+        while (start < 0) {
+            start += 360;
+        }
+        while (end < 0) {
+            end += 360;
+        }
+        start = start % 360;
+        end = end % 360;
+        float diff1 = end - start;
+        float diff2 = (Math.min(start, end) + 360) - Math.max(start, end);
+        if (Math.abs(diff2) > Math.abs(diff1)) {
+            return start + partialTicks * diff1;
+        }
+        return start + partialTicks * diff2;
     }
 
     @Override
@@ -375,5 +432,19 @@ public class ModelGordiusWheel extends EntityModel<Gordius> implements ExtendedM
     @Override
     public ModelPartHandler getHandler() {
         return this.model;
+    }
+
+    @Override
+    public boolean transform(GordiusWheel entity, EntityRenderer<GordiusWheel> entityRenderer, Entity rider, EntityRenderer<?> ridingEntityRenderer, PoseStack poseStack, int riderNum) {
+        for (ModelPartHandler.ModelPartExtended component : this.mountComponents) {
+            component.translateAndRotate(poseStack);
+        }
+        if (rider instanceof LivingEntity living && entity.getWheelEntity() != null) {
+            living.setYRot(entity.getWheelEntity().getYRot());
+            living.yRotO = entity.getWheelEntity().yRotO;
+            living.yBodyRot = entity.getWheelEntity().getYRot();
+            living.yBodyRotO = entity.getWheelEntity().yRotO;
+        }
+        return true;
     }
 }

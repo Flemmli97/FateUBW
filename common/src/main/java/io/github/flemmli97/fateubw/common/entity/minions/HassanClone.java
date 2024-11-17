@@ -50,7 +50,7 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
     private UUID ownerUUID;
     private EntityHassan owner;
 
-    private final AnimationHandler<HassanClone> animationHandler = new AnimationHandler<>(this, AnimatedAction.vanillaAttackOnly);
+    private final AnimationHandler<HassanClone> animationHandler = new AnimationHandler<>(this, AnimatedAction.VANILLA_ATTACK_ONLY);
 
     public HassanClone(EntityType<? extends HassanClone> type, Level level) {
         super(type, level);
@@ -83,7 +83,7 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
 
     @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(0, new AnimatedMeleeGoal<>(this, m -> AnimatedAction.vanillaAttack));
+        this.goalSelector.addGoal(0, new AnimatedMeleeGoal<>(this, m -> AnimatedAction.VANILLA_ATTACK));
         this.goalSelector.addGoal(1, new FollowMasterGoal<>(this, 16.0D, 9.0F, 3.0F));
         this.goalSelector.addGoal(3, new WaterAvoidingRandomStrollGoal(this, 1.0D));
         this.goalSelector.addGoal(4, new FloatGoal(this));

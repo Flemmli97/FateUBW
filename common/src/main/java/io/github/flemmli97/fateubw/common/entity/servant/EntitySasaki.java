@@ -17,7 +17,7 @@ import net.minecraft.world.level.Level;
 public class EntitySasaki extends BaseServant {
 
     private static final AnimatedAction NP_ATTACK = new AnimatedAction(40, 0, "np");
-    private static final AnimatedAction[] ANIMS = {AnimatedAction.vanillaAttack, NP_ATTACK};
+    private static final AnimatedAction[] ANIMS = {AnimatedAction.VANILLA_ATTACK, NP_ATTACK};
 
     public final SasakiAttackGoal attackAI = new SasakiAttackGoal(this);
 
@@ -38,7 +38,7 @@ public class EntitySasaki extends BaseServant {
     public boolean canUse(AnimatedAction anim, AttackType type) {
         if (type == AttackType.NP)
             return anim.getID().equals(NP_ATTACK.getID());
-        return anim.getID().equals(AnimatedAction.vanillaAttack.getID());
+        return anim.getID().equals(AnimatedAction.VANILLA_ATTACK.getID());
     }
 
     @Override

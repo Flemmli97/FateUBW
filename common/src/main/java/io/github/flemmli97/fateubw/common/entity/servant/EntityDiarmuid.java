@@ -20,7 +20,7 @@ import net.minecraft.world.level.Level;
 public class EntityDiarmuid extends BaseServant {
 
     private static final AnimatedAction NP_ATTACK = new AnimatedAction(20, 0, "np");
-    private static final AnimatedAction[] ANIMS = {AnimatedAction.vanillaAttack, NP_ATTACK};
+    private static final AnimatedAction[] ANIMS = {AnimatedAction.VANILLA_ATTACK, NP_ATTACK};
 
     public final DiarmuidAttackGoal attackAI = new DiarmuidAttackGoal(this);
 
@@ -42,7 +42,7 @@ public class EntityDiarmuid extends BaseServant {
     public boolean canUse(AnimatedAction anim, AttackType type) {
         if (type == AttackType.NP)
             return anim.getID().equals(NP_ATTACK.getID());
-        return anim.getID().equals(AnimatedAction.vanillaAttack.getID());
+        return anim.getID().equals(AnimatedAction.VANILLA_ATTACK.getID());
     }
 
     @Override

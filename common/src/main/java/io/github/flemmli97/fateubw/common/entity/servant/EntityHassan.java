@@ -34,7 +34,7 @@ import java.util.UUID;
 public class EntityHassan extends BaseServant {
 
     private static final AnimatedAction NP_ATTACK = new AnimatedAction(20, 1, "np");
-    private static final AnimatedAction[] ANIMS = {AnimatedAction.vanillaAttack, NP_ATTACK};
+    private static final AnimatedAction[] ANIMS = {AnimatedAction.VANILLA_ATTACK, NP_ATTACK};
 
     public final HassanAttackGoal attackAI = new HassanAttackGoal(this);
 
@@ -57,7 +57,7 @@ public class EntityHassan extends BaseServant {
     public boolean canUse(AnimatedAction anim, AttackType type) {
         if (type == AttackType.NP)
             return anim.getID().equals(NP_ATTACK.getID());
-        return anim.getID().equals(AnimatedAction.vanillaAttack.getID());
+        return anim.getID().equals(AnimatedAction.VANILLA_ATTACK.getID());
     }
 
     @Override

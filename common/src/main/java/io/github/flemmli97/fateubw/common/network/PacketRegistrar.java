@@ -34,6 +34,7 @@ public class PacketRegistrar {
         register.registerMessage(id++, S2CScreenShake.ID, S2CScreenShake.class, S2CScreenShake::write, S2CScreenShake::read, S2CScreenShake::handle);
         register.registerMessage(id++, S2CAttackDebug.ID, S2CAttackDebug.class, S2CAttackDebug::write, S2CAttackDebug::read, S2CAttackDebug::handle);
         register.registerMessage(id++, S2CSpawnEggScreen.ID, S2CSpawnEggScreen.class, S2CSpawnEggScreen::write, S2CSpawnEggScreen::read, S2CSpawnEggScreen::handle);
+        register.registerMessage(id++, S2CMultipartDataPkt.ID, S2CMultipartDataPkt.class, S2CMultipartDataPkt::write, S2CMultipartDataPkt::read, S2CMultipartDataPkt::handle);
         return id;
     }
 

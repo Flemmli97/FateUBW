@@ -1,6 +1,6 @@
 package io.github.flemmli97.fateubw.common.utils;
 
-import io.github.flemmli97.fateubw.common.entity.minions.Gordius;
+import io.github.flemmli97.fateubw.common.entity.minions.GordiusWheel;
 import io.github.flemmli97.fateubw.common.entity.minions.Pegasus;
 import io.github.flemmli97.fateubw.platform.Platform;
 import net.minecraft.world.damagesource.DamageSource;
@@ -39,7 +39,7 @@ public class CustomDamageSource {
         return Platform.INSTANCE.setBypassArmor(new EntityDamageSource("tsubame", sourceEntity));
     }
 
-    public static DamageSource gordiusTrample(Gordius source, LivingEntity sourceEntity) {
+    public static DamageSource gordiusTrample(GordiusWheel source, LivingEntity sourceEntity) {
         return (new EntityDamageSource("gordius", source));
     }
 

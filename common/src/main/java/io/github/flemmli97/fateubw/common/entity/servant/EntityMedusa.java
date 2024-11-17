@@ -33,7 +33,7 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
     public static final AnimatedAction DAGGER_ATTACK = new AnimatedAction(20, 7, "dagger");
     public static final AnimatedAction DAGGER_RETRACT = new AnimatedAction(20, 7, "dagger_retract");
     private static final AnimatedAction NP_ATTACK = new AnimatedAction(20, 5, "np");
-    private static final AnimatedAction[] ANIMS = {AnimatedAction.vanillaAttack, DAGGER_ATTACK, DAGGER_RETRACT, NP_ATTACK};
+    private static final AnimatedAction[] ANIMS = {AnimatedAction.VANILLA_ATTACK, DAGGER_ATTACK, DAGGER_RETRACT, NP_ATTACK};
 
     public final MedusaAttackGoal attackAI = new MedusaAttackGoal(this);
 
@@ -69,7 +69,7 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
             return anim.getID().equals(NP_ATTACK.getID());
         if (type == AttackType.RANGED)
             return this.canThrow() && anim.getID().equals(DAGGER_ATTACK.getID());
-        return anim.getID().equals(AnimatedAction.vanillaAttack.getID());
+        return anim.getID().equals(AnimatedAction.VANILLA_ATTACK.getID());
     }
 
     public boolean canThrow() {
