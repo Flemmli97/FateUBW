@@ -34,10 +34,6 @@ public class ChainDagger extends EntityProjectile {
         super(type, world);
     }
 
-    public ChainDagger(Level world, double x, double y, double z) {
-        super(ModEntities.DAGGER_HOOK.get(), world, x, y, z);
-    }
-
     public ChainDagger(Level world, LivingEntity shooter, boolean mainHand) {
         super(ModEntities.DAGGER_HOOK.get(), world, shooter);
         this.getEntityData().set(MAINHAND, mainHand);
@@ -84,6 +80,7 @@ public class ChainDagger extends EntityProjectile {
         if (this.hookedEntity != null) {
             if (!this.hookedEntity.isAlive()) {
                 this.hookedEntity = null;
+                this.retractHook();
             } else {
                 this.setDeltaMovement(Vec3.ZERO);
                 this.setPos(this.hookedEntity.getX(), this.hookedEntity.getY(0.5D), this.hookedEntity.getZ());
@@ -167,11 +164,13 @@ public class ChainDagger extends EntityProjectile {
         Entity entity = this.getOwner();
         if (entity != null) {
             if (this.hookedEntity != null) {
-                Vec3 vector3d = new Vec3(entity.getX() - this.getX(), 0, entity.getZ() - this.getZ()).scale(0.18D);
-                vector3d = vector3d.add(0, 1, 0);
+                Vec3 vector3d = entity.position().subtract(this.hookedEntity.position()).scale(0.18);
+                vector3d = vector3d.add(0, 0.5, 0);
                 if (entity instanceof LivingEntity living)
                     this.hookedEntity.hurt(DamageSource.indirectMobAttack(this, living), (float) living.getAttributeValue(Attributes.ATTACK_DAMAGE));
                 this.hookedEntity.setDeltaMovement(vector3d);
+                //this.hookedEntity.push(vector3d.x(), vector3d.y(), vector3d.z());
+                this.hookedEntity.hurtMarked = true;
             }
             this.hookedEntity = null;
             this.getEntityData().set(HOOKED_ENTITY, -1);

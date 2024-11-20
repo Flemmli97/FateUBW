@@ -4,7 +4,7 @@ import io.github.flemmli97.fateubw.common.config.Config;
 import io.github.flemmli97.fateubw.common.entity.ChargingHandler;
 import io.github.flemmli97.fateubw.common.entity.IServantMinion;
 import io.github.flemmli97.fateubw.common.entity.MultiPartEntity;
-import io.github.flemmli97.fateubw.common.entity.NonSitVehicle;
+import io.github.flemmli97.fateubw.common.entity.StandingVehicle;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
@@ -55,7 +55,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class GordiusWheel extends PathfinderMob implements IServantMinion, IAnimated, NonSitVehicle, AoeAttackEntity {
+public class GordiusWheel extends PathfinderMob implements IServantMinion, IAnimated, StandingVehicle, AoeAttackEntity {
 
     private static final EntityDataAccessor<Float> LOCKED_YAW = SynchedEntityData.defineId(GordiusWheel.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> WHEEL = SynchedEntityData.defineId(GordiusWheel.class, EntityDataSerializers.INT);

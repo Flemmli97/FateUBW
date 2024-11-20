@@ -7,6 +7,7 @@ import io.github.flemmli97.fateubw.client.model.ModelPegasus;
 import io.github.flemmli97.fateubw.client.render.FateRenders;
 import io.github.flemmli97.fateubw.client.render.PortalLayerRenderer;
 import io.github.flemmli97.fateubw.common.entity.minions.Pegasus;
+import io.github.flemmli97.tenshilib.client.render.RiderLayerRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -28,6 +29,7 @@ public class RenderPegasus extends MobRenderer<Pegasus, ModelPegasus> {
         this.layers.add(new PortalLayerRenderer<>(this, e -> e.getAnimationHandler().isCurrent(Pegasus.SUMMON),
                 stack -> stack.translate(0, 0, this.portalOffset()), new ResourceLocation(Fate.MODID, "textures/misc/magic_circle.png"),
                 Pegasus.PORTAL_SIZE));
+        this.layers.add(new RiderLayerRenderer<>(this));
     }
 
     @Override

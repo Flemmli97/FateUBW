@@ -6,6 +6,13 @@
   "overrides": [
     {
       "predicate": {
+        "fateubw:thrown": 0.0,
+        "fateubw:held": 1.0
+      },
+      "model": "fateubw:item/medusas_dagger_held"
+    },
+    {
+      "predicate": {
         "fateubw:thrown": 1.0
       },
       "model": "fateubw:item/medusas_dagger_thrown"

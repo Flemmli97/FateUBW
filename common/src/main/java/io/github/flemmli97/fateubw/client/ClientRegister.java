@@ -68,10 +68,11 @@ public class ClientRegister {
     }
 
     public static void registerItemProps(ItemModelPropsRegister register) {
-        register.register(ModItems.EXCALIBUR.get(), new ResourceLocation(Fate.MODID, "active"), ItemModelProps.ACTIVE_ITEM_PROP);
-        register.register(ModItems.MEDUSA_DAGGER.get(), new ResourceLocation(Fate.MODID, "thrown"), ItemModelProps.THROWN_DAGGER_PROP);
-        register.register(ModItems.ARCHBOW.get(), new ResourceLocation(Fate.MODID, "pull"), ItemModelProps.BOW_PULL_PROP);
-        register.register(ModItems.ARCHBOW.get(), new ResourceLocation(Fate.MODID, "caladbolg"), ItemModelProps.CALADBOLG_CHARGE);
+        register.register(ModItems.EXCALIBUR.get(), ItemModelProps.ACTIVE_ID, ItemModelProps.ACTIVE_ITEM_PROP);
+        register.register(ModItems.MEDUSA_DAGGER.get(), ItemModelProps.HELD_ID, ItemModelProps.HELD_MAIN_PROP);
+        register.register(ModItems.MEDUSA_DAGGER.get(), ItemModelProps.THROWN_DAGGER_ID, ItemModelProps.THROWN_DAGGER_PROP);
+        register.register(ModItems.ARCHBOW.get(), ItemModelProps.BOW_PULL_ID, ItemModelProps.BOW_PULL_PROP);
+        register.register(ModItems.ARCHBOW.get(), ItemModelProps.CALADBOLG_ID, ItemModelProps.CALADBOLG_CHARGE);
     }
 
     public static void setupRenderLayers(BiConsumer<Block, RenderType> consumer) {

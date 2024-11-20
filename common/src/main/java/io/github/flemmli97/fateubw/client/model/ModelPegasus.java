@@ -9,8 +9,11 @@ import io.github.flemmli97.tenshilib.client.AnimationManager;
 import io.github.flemmli97.tenshilib.client.model.BlockBenchAnimations;
 import io.github.flemmli97.tenshilib.client.model.ExtendedModel;
 import io.github.flemmli97.tenshilib.client.model.ModelPartHandler;
+import io.github.flemmli97.tenshilib.client.model.RideableModel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.IllagerModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -19,10 +22,14 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 
-public class ModelPegasus extends EntityModel<Pegasus> implements ExtendedModel {
+public class ModelPegasus extends EntityModel<Pegasus> implements ExtendedModel, RideableModel<Pegasus> {
 
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(Fate.MODID, "pegasus"), "main");
 
@@ -30,11 +37,15 @@ public class ModelPegasus extends EntityModel<Pegasus> implements ExtendedModel 
     protected final BlockBenchAnimations anim;
 
     public ModelPartHandler.ModelPartExtended head;
+    public ModelPartHandler.ModelPartExtended body;
+    public ModelPartHandler.ModelPartExtended mountPos;
 
     public ModelPegasus(ModelPart root) {
         super();
-        this.model = new ModelPartHandler(root.getChild("body"), "body");
+        this.model = new ModelPartHandler(root);
         this.head = this.model.getPart("head");
+        this.body = this.model.getPart("body");
+        this.mountPos = this.model.getPart("mountPos");
         this.anim = AnimationManager.getInstance().getAnimation(new ResourceLocation(Fate.MODID, "pegasus"));
     }
 
@@ -113,6 +124,8 @@ public class ModelPegasus extends EntityModel<Pegasus> implements ExtendedModel 
                 .texOffs(0, 0).mirror().addBox(-33.0F, 0.52F, -1.0F, 33.0F, 0.0F, 24.0F, new CubeDeformation(0.0F)).mirror(false)
                 .texOffs(0, 0).mirror().addBox(-33.0F, -0.48F, -1.0F, 33.0F, 0.0F, 24.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(-18.5F, 0.0F, 0.0F));
 
+        PartDefinition mountPos = body.addOrReplaceChild("mountPos", CubeListBuilder.create(), PartPose.offset(0.0F, -5.0F, 2.0F));
+
         return LayerDefinition.create(meshdefinition, 128, 128);
     }
 
@@ -131,11 +144,9 @@ public class ModelPegasus extends EntityModel<Pegasus> implements ExtendedModel 
         if (anim == null) {
             if (!entity.isOnGround() || entity.canFly())
                 this.anim.doAnimation(this, "fly", entity.tickCount, partialTicks);
-            else if (entity.isSprinting())
-                this.anim.doAnimation(this, "run", entity.tickCount, partialTicks);
-            else if (limbSwingAmount > 0.1)
-                this.anim.doAnimation(this, "walk", entity.tickCount, partialTicks);
-            else
+            else if (entity.getMovement() != Pegasus.MoveType.NONE) {
+                this.anim.doAnimation(this, entity.getMovement() == Pegasus.MoveType.RUN ? "run" : "walk", entity.tickCount, partialTicks, entity.interpolatedMoveTick(partialTicks));
+            } else
                 this.anim.doAnimation(this, "idle", entity.tickCount, partialTicks);
         } else
             this.anim.doAnimation(this, entity.getAnimationHandler(), partialTicks);
@@ -144,5 +155,23 @@ public class ModelPegasus extends EntityModel<Pegasus> implements ExtendedModel 
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         this.model.getMainPart().render(poseStack, buffer, packedLight, packedOverlay);
+    }
+
+    @Override
+    public boolean transform(Pegasus entity, EntityRenderer<Pegasus> entityRenderer, Entity rider, EntityRenderer<?> ridingEntityRenderer, PoseStack poseStack, int riderNum) {
+        this.body.translateAndRotate(poseStack);
+        this.mountPos.translateAndRotate(poseStack);
+        if (ridingEntityRenderer instanceof LivingEntityRenderer<?, ?> lR) {
+            EntityModel<?> model = lR.getModel();
+            if (model instanceof HumanoidModel<?> || model instanceof IllagerModel<?> || model instanceof BaseServantModel<?>) {
+                float amount = 11;
+                if (rider instanceof LivingEntity living && living.isBaby()) {
+                    amount = 5;
+                }
+                amount *= entity.interpolatedStandingick(Minecraft.getInstance().getFrameTime());
+                poseStack.translate(0, amount / 16d, 0);
+            }
+        }
+        return true;
     }
 }

@@ -6,7 +6,7 @@ import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.api.datapack.ServantProperties;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.entity.IServantMinion;
-import io.github.flemmli97.fateubw.common.entity.NonSitVehicle;
+import io.github.flemmli97.fateubw.common.entity.StandingVehicle;
 import io.github.flemmli97.fateubw.common.entity.ai.FollowMasterGoal;
 import io.github.flemmli97.fateubw.common.entity.ai.HurtByTargetPredicateGoal;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
@@ -507,7 +507,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
 
     @Override
     public double getMyRidingOffset() {
-        return this.getVehicle() instanceof NonSitVehicle ? 0 : -0.35;
+        return StandingVehicle.stand(this.getVehicle()) ? 0 : -0.35;
     }
 
     private void addEntityOwner(ServerPlayer serverPlayer) {

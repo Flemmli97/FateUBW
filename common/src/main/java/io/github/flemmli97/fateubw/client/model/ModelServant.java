@@ -205,6 +205,14 @@ public class ModelServant<T extends BaseServant & IAnimated> extends BaseServant
         } else {
             this.anim.doAnimation(this, servant.getAnimationHandler(), partialTicks, 5, servant.flipAnimation());
         }
+        if (this.riding) {
+            this.rightLeg.resetAll();
+            this.leftLeg.resetAll();
+            this.rightLeg.xRot = -((float) Math.PI * 2F / 5F);
+            this.leftLeg.xRot = -((float) Math.PI * 2F / 5F);
+            this.rightLeg.yRot = ((float) Math.PI / 10F);
+            this.leftLeg.yRot = -((float) Math.PI / 10F);
+        }
     }
 
     public void preAnimSetup(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {

@@ -2,7 +2,7 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 
 
 import com.mojang.math.Vector4f;
-import io.github.flemmli97.fateubw.common.entity.NonSitVehicle;
+import io.github.flemmli97.fateubw.common.entity.StandingVehicle;
 import io.github.flemmli97.fateubw.common.entity.minions.GordiusWheel;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
@@ -10,7 +10,6 @@ import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
-import io.github.flemmli97.tenshilib.common.entity.EntityUtil;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.AnimatedAttackGoal;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.GoalAttackAction;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.IdleAction;
@@ -118,11 +117,11 @@ public class EntityIskander extends BaseServant {
     }
 
     protected boolean useStandingAnim() {
-        return this.getVehicle() != null && this.getVehicle() instanceof NonSitVehicle;
+        return StandingVehicle.stand(this.getVehicle());
     }
 
     protected boolean useSittingAnim() {
-        return this.getVehicle() != null && !(this.getVehicle() instanceof NonSitVehicle);
+        return this.getVehicle() != null && !(this.getVehicle() instanceof StandingVehicle);
     }
 
     @Override
@@ -161,11 +160,6 @@ public class EntityIskander extends BaseServant {
             LivingEntity target = this.getTarget();
             if (target != null && !anim.isPastTick(0.28)) {
                 this.lookAtNow(target, 60, 30);
-            }
-            if (anim.isAtTick(0.4)) {
-                this.targetPosition = target != null ? EntityUtil.getStraightProjectileTarget(this.position()
-                        .add(0, this.getEyeHeight() - 0.1, 0), target) :
-                        this.position().add(this.getLookAngle().scale(8));
             }
             this.level.getEntities(EntityTypeTest.forClass(LivingEntity.class),
                             this.getBoundingBox().inflate(12, 8, 12),

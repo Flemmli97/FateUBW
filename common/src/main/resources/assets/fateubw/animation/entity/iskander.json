@@ -945,21 +945,28 @@
 			}
 		},
 		"summon": {
-			"animation_length": 0.2,
+			"animation_length": 2,
 			"bones": {
 				"LeftArm": {
-					"rotation": [-59.07059, -21.55828, -30.25932],
-					"position": [0, -1, -2]
+					"rotation": [0, 0, -20],
+					"position": [0, -1, 0]
 				},
 				"LeftArmDown": {
-					"rotation": [-15, 0, 0]
+					"rotation": [-13.06431, 7.43547, 29.14743]
 				},
 				"RightArm": {
-					"rotation": [-59.07059, 21.55828, 30.25932],
-					"position": [0, -1, -2]
+					"rotation": [0, 0, 20],
+					"position": [0, -1, 0]
 				},
 				"RightArmDown": {
-					"rotation": [-15, 0, 0]
+					"rotation": [-13.06431, -7.43547, -29.14743]
+				},
+				"Head": {
+					"rotation": {
+						"0.0": ["math.sin(time * 360*6) * 2", 0, 0],
+						"0.56": ["math.sin(time * 360*6) * 2", 0, 0],
+						"0.72": [0, 0, 0]
+					}
 				}
 			}
 		}

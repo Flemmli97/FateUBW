@@ -7,7 +7,7 @@ import com.mojang.math.Vector3f;
 import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.client.model.BaseServantModel;
 import io.github.flemmli97.fateubw.client.model.ModelServantO;
-import io.github.flemmli97.fateubw.common.entity.NonSitVehicle;
+import io.github.flemmli97.fateubw.common.entity.StandingVehicle;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.platform.ClientPlatform;
 import net.minecraft.client.Minecraft;
@@ -56,7 +56,7 @@ public class ServantRenderer<T extends BaseServant, M extends BaseServantModel<T
         matrixStack.pushPose();
         this.model.attackTime = this.getAttackAnim(entity, partialTicks);
 
-        boolean shouldSit = entity.getVehicle() != null && !(entity.getVehicle() instanceof NonSitVehicle);
+        boolean shouldSit = !StandingVehicle.stand(entity.getVehicle());
         this.model.riding = shouldSit;
         this.model.young = entity.isBaby();
         float yawOffset = Mth.rotLerp(partialTicks, entity.yBodyRotO, entity.yBodyRot);

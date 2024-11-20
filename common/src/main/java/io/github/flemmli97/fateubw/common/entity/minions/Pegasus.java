@@ -2,6 +2,7 @@ package io.github.flemmli97.fateubw.common.entity.minions;
 
 import io.github.flemmli97.fateubw.common.entity.ChargingHandler;
 import io.github.flemmli97.fateubw.common.entity.IServantMinion;
+import io.github.flemmli97.fateubw.common.entity.StandingVehicle;
 import io.github.flemmli97.fateubw.common.entity.ai.PegasusAttackGoal;
 import io.github.flemmli97.fateubw.common.entity.ai.PegasusFlyingAttackGoal;
 import io.github.flemmli97.fateubw.common.registry.ModParticles;
@@ -38,13 +39,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Predicate;
 
 
-public class Pegasus extends PathfinderMob implements IAnimated, IServantMinion {
+public class Pegasus extends PathfinderMob implements IAnimated, IServantMinion, StandingVehicle {
 
     public static float PORTAL_SIZE = 2;
     public static float PORTAL_OFFSET = 1.3f;
 
     private static final EntityDataAccessor<Float> LOCKED_YAW = SynchedEntityData.defineId(Pegasus.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Boolean> FLYING = SynchedEntityData.defineId(Pegasus.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Byte> MOVE_FLAGS = SynchedEntityData.defineId(Pegasus.class, EntityDataSerializers.BYTE);
 
     public static final AnimatedAction CHARGING = new AnimatedAction(1.6, 0.36, "charge");
     public static final AnimatedAction STOMP = new AnimatedAction(0.56, 0.4, "stomp");
@@ -62,12 +64,18 @@ public class Pegasus extends PathfinderMob implements IAnimated, IServantMinion 
 
     public final ChargingHandler<Pegasus> chargingHandler = new ChargingHandler<>(this, LOCKED_YAW, CHARGING_ANIM);
 
-    public Pegasus(EntityType<? extends Pegasus> type, Level world) {
-        super(type, world);
-        if (!world.isClientSide)
+    private int moveTick;
+
+    public static final int MOVE_TICK_MAX = 3;
+
+    private int standInterpolation;
+
+    public Pegasus(EntityType<? extends Pegasus> type, Level level) {
+        super(type, level);
+        if (!level.isClientSide)
             this.goalSelector.addGoal(0, this.attackAI);
-        this.flyingNavigator = new FlyingPathNavigation(this, world);
-        this.moveControl = new MoveHelperController(this);
+        this.flyingNavigator = new FlyingPathNavigation(this, level);
+        this.moveControl = new PegasusMoveController(this);
     }
 
     @Override
@@ -75,6 +83,7 @@ public class Pegasus extends PathfinderMob implements IAnimated, IServantMinion 
         super.defineSynchedData();
         this.entityData.define(LOCKED_YAW, 0f);
         this.entityData.define(FLYING, false);
+        this.entityData.define(MOVE_FLAGS, (byte) 0);
     }
 
     @Override
@@ -106,7 +115,21 @@ public class Pegasus extends PathfinderMob implements IAnimated, IServantMinion 
                 this.level.addParticle(new ColoredParticleData(ModParticles.LIGHT.get(), 245 / 255F, 10 / 255F, 10 / 255F, 1, 0.5f), pos.x(), pos.y(), pos.z(), this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01);
             }
         }
+        this.standInterpolation++;
+        if (this.shouldStand())
+            this.standInterpolation = -1;
+        if (this.getMovement() != MoveType.NONE) {
+            this.moveTick = Math.min(MOVE_TICK_MAX, ++this.moveTick);
+        } else {
+            this.moveTick = Math.max(0, --this.moveTick);
+        }
         if (!this.level.isClientSide) {
+            double speed = this.getDeltaMovement().lengthSqr();
+            if (speed > 0.01) {
+                this.setMovingFlag(this.moveControl.getSpeedModifier() > 1 ? MoveType.RUN : MoveType.WALK);
+            } else {
+                this.setMovingFlag(MoveType.NONE);
+            }
             if (this.tickCount % 10 == 0 && this.getControllingPassenger() instanceof Mob mob) {
                 this.setTarget(mob.getTarget());
             }
@@ -125,6 +148,27 @@ public class Pegasus extends PathfinderMob implements IAnimated, IServantMinion 
                 }
             }
         }
+    }
+
+    public void setMovingFlag(MoveType type) {
+        this.entityData.set(MOVE_FLAGS, (byte) type.ordinal());
+    }
+
+    public MoveType getMovement() {
+        return MoveType.values()[this.entityData.get(MOVE_FLAGS)];
+    }
+
+    public float interpolatedMoveTick(float partialTicks) {
+        return Mth.clamp((this.moveTick + (this.getMovement() != MoveType.NONE ? partialTicks : -partialTicks)) / (float) MOVE_TICK_MAX, 0, 1);
+    }
+
+    public float interpolatedStandingick(float partialTicks) {
+        return Mth.clamp((this.standInterpolation + partialTicks) / (float) 3, 0, 1);
+    }
+
+    @Override
+    protected boolean isImmobile() {
+        return super.isImmobile() | this.getAnimationHandler().isCurrent(SUMMON);
     }
 
     @Override
@@ -181,7 +225,6 @@ public class Pegasus extends PathfinderMob implements IAnimated, IServantMinion 
 
     public void setCanFly(boolean flag) {
         this.entityData.set(FLYING, flag);
-        this.getAnimationHandler().setAnimation(null);
         if (flag) {
             this.goalSelector.removeGoal(this.attackAI);
             this.goalSelector.addGoal(0, this.flyingAttackAI);
@@ -197,6 +240,8 @@ public class Pegasus extends PathfinderMob implements IAnimated, IServantMinion 
 
     @Override
     public boolean hurt(DamageSource damageSource, float damage) {
+        if (this.getAnimationHandler().isCurrent(SUMMON))
+            return false;
         if (damageSource != DamageSource.OUT_OF_WORLD && this.isCharging())
             damage *= 0.5f;
         return super.hurt(damageSource, damage);
@@ -214,7 +259,7 @@ public class Pegasus extends PathfinderMob implements IAnimated, IServantMinion 
 
     @Override
     public double getPassengersRidingOffset() {
-        return (double) this.getBbHeight() * 0.6D;
+        return this.getBbHeight() * 0.85D;
     }
 
     @Override
@@ -229,33 +274,30 @@ public class Pegasus extends PathfinderMob implements IAnimated, IServantMinion 
         this.setCanFly(compound.getBoolean("Flying"));
     }
 
-    class MoveHelperController extends MoveControl {
+    @Override
+    public boolean shouldStand() {
+        AnimatedAction anim = this.getAnimationHandler().getAnimation();
+        return anim != null && anim.is(SUMMON) && !anim.isPastTick(1.);
+    }
 
-        public MoveHelperController(Pegasus vex) {
-            super(vex);
+    class PegasusMoveController extends MoveControl {
+
+        public PegasusMoveController(Pegasus pegasus) {
+            super(pegasus);
         }
 
         @Override
         public void tick() {
-            if (this.operation == MoveControl.Operation.MOVE_TO && Pegasus.this.isCharging()) {
-                Vec3 vector3d = new Vec3(this.wantedX - Pegasus.this.getX(), this.wantedY - Pegasus.this.getY(), this.wantedZ - Pegasus.this.getZ());
-                double d0 = vector3d.length();
-                if (d0 < Pegasus.this.getBoundingBox().getSize()) {
-                    this.operation = MoveControl.Operation.WAIT;
-                    Pegasus.this.setDeltaMovement(Pegasus.this.getDeltaMovement().scale(0.5D));
-                } else {
-                    Pegasus.this.setDeltaMovement(Pegasus.this.getDeltaMovement().add(vector3d.scale(this.speedModifier * 0.05D / d0)));
-                    if (Pegasus.this.getTarget() == null) {
-                        Vec3 vector3d1 = Pegasus.this.getDeltaMovement();
-                        Pegasus.this.setYRot(-((float) Mth.atan2(vector3d1.x, vector3d1.z)) * (180F / (float) Math.PI));
-                    } else {
-                        double d2 = Pegasus.this.getTarget().getX() - Pegasus.this.getX();
-                        double d1 = Pegasus.this.getTarget().getZ() - Pegasus.this.getZ();
-                        Pegasus.this.setYRot(-((float) Mth.atan2(d2, d1)) * (180F / (float) Math.PI));
-                    }
-                    Pegasus.this.yBodyRot = Pegasus.this.getYRot();
-                }
-            } else super.tick();
+            if (this.operation == Operation.MOVE_TO && Pegasus.this.canFly() && Pegasus.this.getTarget() != null) {
+
+            } else
+                super.tick();
         }
+    }
+
+    public enum MoveType {
+        NONE,
+        WALK,
+        RUN
     }
 }
