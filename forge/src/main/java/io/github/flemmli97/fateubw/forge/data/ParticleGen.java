@@ -34,6 +34,7 @@ public class ParticleGen implements DataProvider {
 
     public void add() {
         this.addTo(ModParticles.LIGHT.get());
+        this.addTo(ModParticles.TRAIL.get(), new ResourceLocation[0]);
     }
 
     @Override

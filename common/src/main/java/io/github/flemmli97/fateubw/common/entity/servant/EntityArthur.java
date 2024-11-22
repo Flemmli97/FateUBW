@@ -3,10 +3,7 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 import io.github.flemmli97.fateubw.common.entity.SwitchableWeapon;
 import io.github.flemmli97.fateubw.common.entity.misc.Excalibur;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
-import io.github.flemmli97.fateubw.common.particles.TrailInfo;
-import io.github.flemmli97.fateubw.common.particles.TrailParticleData;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
-import io.github.flemmli97.fateubw.common.registry.ModParticles;
 import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
@@ -30,7 +27,6 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
@@ -225,9 +221,6 @@ public class EntityArthur extends BaseServant {
             if (step) {
                 Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(anim.is(SWING_1_VAR_2) ? 0.25 : 0.3);
                 this.setDeltaMovement(this.getDeltaMovement().add(dir));
-            }
-            if (anim.canAttack()) {
-                ((ServerLevel)this.level).sendParticles(new TrailParticleData(ModParticles.TRAIL.get(), TrailInfo.DEFAULT), this.getX(), this.getY(), this.getZ(), 0, 0, 0, 0, 0);
             }
             super.handleAttack(anim);
         }
