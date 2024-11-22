@@ -22,6 +22,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -116,6 +117,12 @@ public class EntityMedea extends BaseServant {
             if (this.getOwner() != null)
                 this.getOwner().sendMessage(new TranslatableComponent("fateubw.chat.medea.circle.spawn"), Util.NIL_UUID);
         }
+    }
+
+
+    @Override
+    public PathNavigation getNavigation() {
+        return this.navigation;
     }
 
     @Override

@@ -66,19 +66,19 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
     public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityMedusa>>> ATTACKS = List.of(
             WeightedEntry.wrap(new GoalAttackAction<EntityMedusa>(EntityMedusa.MELEE_1)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .withCondition((goal, target, previous) -> !goal.attacker.isPassenger())
+                    .withCondition(meleeCondition(EntityMedusa.MELEE_1))
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
             WeightedEntry.wrap(new GoalAttackAction<EntityMedusa>(EntityMedusa.MELEE_1_R)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .withCondition((goal, target, previous) -> !goal.attacker.isPassenger() && !goal.attacker.getOffhandItem().isEmpty())
+                    .withCondition((goal, target, previous) -> meleeCondition(EntityMedusa.MELEE_1).test(goal, target, previous) && !goal.attacker.getOffhandItem().isEmpty())
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
             WeightedEntry.wrap(new GoalAttackAction<EntityMedusa>(EntityMedusa.MELEE_2)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .withCondition((goal, target, previous) -> !goal.attacker.isPassenger())
+                    .withCondition(meleeCondition(EntityMedusa.MELEE_1))
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
             WeightedEntry.wrap(new GoalAttackAction<EntityMedusa>(EntityMedusa.MELEE_2_R)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .withCondition((goal, target, previous) -> !goal.attacker.isPassenger() && !goal.attacker.getOffhandItem().isEmpty())
+                    .withCondition((goal, target, previous) -> meleeCondition(EntityMedusa.MELEE_1).test(goal, target, previous) && !goal.attacker.getOffhandItem().isEmpty())
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
             WeightedEntry.wrap(new GoalAttackAction<EntityMedusa>(EntityMedusa.JUMP)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
@@ -88,14 +88,14 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
                     .cooldown(e -> e.getRandom().nextInt(30) + 15)
                     .withCondition((goal, target, previous) -> goal.attacker.canThrow() && (goal.distanceToTargetSq > 25 || goal.attacker.getRandom().nextFloat() < 0.4))
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetRunner<>(1, 14))), 10),
-            WeightedEntry.wrap(new GoalAttackAction<EntityMedusa>(EntityMedusa.EYE)
-                    .cooldown(e -> e.getRandom().nextInt(25) + 15)
-                    .withCondition(((goal, target, previous) -> goal.attacker.eyeCooldown <= 0))
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetRunner<>(1, 9))), 2),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityMedusa>(EntityMedusa.EYE) // TODO
+//                    .cooldown(e -> e.getRandom().nextInt(25) + 15)
+//                    .withCondition(((goal, target, previous) -> goal.attacker.eyeCooldown <= 0))
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetRunner<>(1, 9))), 2),
             WeightedEntry.wrap(new GoalAttackAction<EntityMedusa>(EntityMedusa.IDLE) // This should be a do nothing action when riding
                     .cooldown(e -> e.getRandom().nextInt(15) + 10)
                     .withCondition((goal, target, previous) -> goal.attacker.isPassenger())
-                    .prepare(() -> new WrappedRunner<>(e -> e.getRandom().nextInt(50) + 30, new DoNothingRunner<>())), 25),
+                    .prepare(() -> new WrappedRunner<>(e -> e.getRandom().nextInt(10) + 15, new DoNothingRunner<>())), 18),
             WeightedEntry.wrap(new GoalAttackAction<EntityMedusa>(EntityMedusa.BELLEROPHON)
                     .cooldown(e -> e.getRandom().nextInt(25) + 10)
                     .withCondition((goal, target, prev) -> !goal.attacker.isPassenger() && (goal.attacker.canUseNP() && goal.attacker.getOwner() == null && goal.attacker.getMana() >= goal.attacker.props().hogouMana()) || goal.attacker.forcedNP)
@@ -110,6 +110,11 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
             WeightedEntry.wrap(new IdleAction<>(() -> new DoNothingRunner<EntityMedusa>())
                     .withCondition(((goal, target) -> goal.attacker.isPassenger())), 3)
     );
+
+    private static GoalAttackAction.Condition<EntityMedusa> meleeCondition(AnimatedAction anim) {
+        return (goal, target, previous) -> !goal.attacker.isPassenger() ||
+                goal.attacker.prepareAttackBox(anim, target, -0.2f, false).intersects(target.getBoundingBox());
+    }
 
     public final AnimatedAttackGoal<EntityMedusa> attack = new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS);
 

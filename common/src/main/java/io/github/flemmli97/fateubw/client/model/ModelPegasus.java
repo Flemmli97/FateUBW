@@ -141,13 +141,21 @@ public class ModelPegasus extends EntityModel<Pegasus> implements ExtendedModel,
         this.head.xRot += headPitch * Mth.DEG_TO_RAD * 0.1f;
         AnimatedAction anim = entity.getAnimationHandler().getAnimation();
         float partialTicks = Minecraft.getInstance().getFrameTime();
+
+        this.anim.setVariable("x_rotation", () -> {
+            if (!entity.canFly())
+                return 0;
+            double dY = entity.getDeltaMovement().y();
+            return (float) -(Mth.atan2(dY, entity.getDeltaMovement().horizontalDistance()) * Mth.RAD_TO_DEG);
+        });
         if (anim == null) {
             if (!entity.isOnGround() || entity.canFly())
                 this.anim.doAnimation(this, "fly", entity.tickCount, partialTicks);
-            else if (entity.getMovement() != Pegasus.MoveType.NONE) {
-                this.anim.doAnimation(this, entity.getMovement() == Pegasus.MoveType.RUN ? "run" : "walk", entity.tickCount, partialTicks, entity.interpolatedMoveTick(partialTicks));
-            } else
+            else {
                 this.anim.doAnimation(this, "idle", entity.tickCount, partialTicks);
+                if (entity.getMovement() != Pegasus.MoveType.NONE)
+                    this.anim.doAnimation(this, entity.getMovement() == Pegasus.MoveType.RUN ? "run" : "walk", entity.tickCount, partialTicks, entity.interpolatedMoveTick(partialTicks));
+            }
         } else
             this.anim.doAnimation(this, entity.getAnimationHandler(), partialTicks);
     }

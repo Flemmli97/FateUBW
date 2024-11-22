@@ -44,6 +44,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -68,7 +69,7 @@ public class GordiusWheel extends PathfinderMob implements IServantMinion, IAnim
             WeightedEntry.wrap(new GoalAttackAction<GordiusWheel>(GordiusWheel.STOMP)
                     .cooldown(e -> e.getRandom().nextInt(30) + 10)
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 4),
-            WeightedEntry.wrap(new GoalAttackAction<GordiusWheel>(CHARGING)
+            WeightedEntry.wrap(new GoalAttackAction<GordiusWheel>(GordiusWheel.CHARGING)
                     .cooldown(e -> e.getRandom().nextInt(45) + 25)
                     .withCondition(((goal, target, previous) -> goal.distanceToTargetSq > 25 || goal.attacker.getRandom().nextFloat() < 0.4))
                     .prepare(ChargeTo::new), 5)
@@ -192,7 +193,7 @@ public class GordiusWheel extends PathfinderMob implements IServantMinion, IAnim
                         entity -> this.targetPred.test(entity) && obb.intersects(entity.getBoundingBox()));
                 LivingEntity source = !this.getPassengers().isEmpty() && this.getPassengers().get(0) instanceof LivingEntity passenger ? passenger : this;
                 for (LivingEntity e : list) {
-                    e.hurt(CustomDamageSource.gordiusTrample(this, source), Config.Common.gordiusDmg);
+                    e.hurt(CustomDamageSource.gordiusTrample(this, source), (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE));
                 }
                 this.playSound(SoundEvents.COW_STEP, 0.4F, 0.4F);
                 S2CAttackDebug.sendDebugPacket(obb, S2CAttackDebug.EnumAABBType.ATTACK, this);
@@ -244,6 +245,12 @@ public class GordiusWheel extends PathfinderMob implements IServantMinion, IAnim
     @Override
     public double getPassengersRidingOffset() {
         return this.getBbHeight() * 0.825;
+    }
+
+    @Override
+    @Nullable
+    public Entity getControllingPassenger() {
+        return this.getPassengers().isEmpty() || !(this.getPassengers().get(0) instanceof Player player) ? null : player;
     }
 
     @Override
@@ -312,6 +319,13 @@ public class GordiusWheel extends PathfinderMob implements IServantMinion, IAnim
         Vec3 dir = pos.subtract(this.position());
         dir = new Vec3(dir.x(), 0, dir.z());
         this.chargeMotion = dir.normalize().scale(0.55);
+        float targetYRot = (float) Mth.wrapDegrees((Mth.atan2(dir.z(), dir.x()) * Mth.RAD_TO_DEG)) - 90;
+        float targetXRot = (float) Mth.wrapDegrees((Mth.atan2(dir.y(), dir.horizontalDistance()) * Mth.RAD_TO_DEG));
+        this.setYRot(targetYRot);
+        this.setXRot(targetXRot);
+        this.yHeadRot = this.getYRot();
+        this.yBodyRot = this.getYRot();
+        this.chargingHandler.lockYaw(this.getYRot());
     }
 
     @Nullable
@@ -377,10 +391,6 @@ public class GordiusWheel extends PathfinderMob implements IServantMinion, IAnim
             float diffY = goal.attacker.rotlerpDiff(goal.attacker.getYRot(), h);
             goal.attacker.setXRot(i);
             if (Math.abs(diffY) < 16) {
-                goal.attacker.setYRot(h);
-                goal.attacker.yBodyRot = goal.attacker.getYRot();
-                goal.attacker.yHeadRot = goal.attacker.getYRot();
-                goal.attacker.chargingHandler.lockYaw(goal.attacker.getYRot());
                 goal.attacker.setChargeTo(this.targetPos);
                 return true;
             }
