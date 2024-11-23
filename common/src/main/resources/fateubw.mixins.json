@@ -4,6 +4,7 @@
   "package": "io.github.flemmli97.fateubw.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
+    "Matrix4fMixin"
   ],
   "client": [
     "ItemRendererMixin",

@@ -319,7 +319,7 @@ public class GordiusWheel extends PathfinderMob implements IServantMinion, IAnim
         Vec3 dir = pos.subtract(this.position());
         dir = new Vec3(dir.x(), 0, dir.z());
         this.chargeMotion = dir.normalize().scale(0.55);
-        float targetYRot = (float) Mth.wrapDegrees((Mth.atan2(dir.z(), dir.x()) * Mth.RAD_TO_DEG)) - 90;
+        float targetYRot = (float) Mth.wrapDegrees((Mth.atan2(dir.z(), dir.x()) * Mth.RAD_TO_DEG) - 90);
         float targetXRot = (float) Mth.wrapDegrees((Mth.atan2(dir.y(), dir.horizontalDistance()) * Mth.RAD_TO_DEG));
         this.setYRot(targetYRot);
         this.setXRot(targetXRot);

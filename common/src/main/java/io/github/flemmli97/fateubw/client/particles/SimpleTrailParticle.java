@@ -9,10 +9,12 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
 import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.particles.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.TrailParticleData;
+import io.github.flemmli97.fateubw.mixinhelper.Matrix4fTransformer;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
@@ -33,6 +35,8 @@ public class SimpleTrailParticle extends Particle {
     private final TrailPosition[] lastPos;
     private int index;
 
+    private final PoseStack rotationStack = new PoseStack();
+
     protected SimpleTrailParticle(ClientLevel level, double x, double y, double z, TrailInfo trail) {
         super(level, x, y, z);
         this.lifetime = trail.duration;
@@ -44,9 +48,15 @@ public class SimpleTrailParticle extends Particle {
         this.z = this.zo;
 
         this.lastPos = new TrailPosition[trail.fadeTime + 2]; // Interpolation buffer
-        this.lastPos[this.index] = calculatePos(this.originPos, this.trail, 0);
+        this.lastPos[this.index] = calculatePos(this.trail, 0);
         this.startPos = this.lastPos[this.index];
         this.friction = 0;
+
+        this.rotationStack.mulPose(Vector3f.YP.rotationDegrees(this.trail.yRot));
+        this.rotationStack.mulPose(Vector3f.XP.rotationDegrees(this.trail.xRot));
+        this.rotationStack.mulPose(Vector3f.ZP.rotationDegrees(this.trail.zRot));
+
+        this.bbWidth = this.trail.scale;
     }
 
     @Override
@@ -89,7 +99,17 @@ public class SimpleTrailParticle extends Particle {
 
     protected void translate(PoseStack stack, Camera camera, float partialTicks) {
         Vec3 vec3 = camera.getPosition();
-        stack.translate(-vec3.x(), -vec3.y(), -vec3.z());
+        stack.translate(this.originPos.x() - vec3.x(), this.originPos.y() - vec3.y(), this.originPos.z() - vec3.z());
+        stack.mulPoseMatrix(this.rotationStack.last().pose());
+        if (this.trail.direct) {
+            // Orient to camera
+            double dX = vec3.x - Mth.lerp(partialTicks, this.xo, this.x);
+            double dY = vec3.y - Mth.lerp(partialTicks, this.yo, this.y);
+            double dZ = vec3.z - Mth.lerp(partialTicks, this.zo, this.z);
+            float yRot = (float) Mth.wrapDegrees((Mth.atan2(dZ, dX) * Mth.RAD_TO_DEG) - 90);
+            float targetXRot = (float) Mth.wrapDegrees((Mth.atan2(dY, Math.sqrt(dX * dX + dZ * dZ)) * Mth.RAD_TO_DEG));
+            stack.mulPose(Vector3f.ZP.rotationDegrees(Mth.degreesDifference(yRot, Mth.wrapDegrees(-this.trail.yRot)) < 0 ? -targetXRot : targetXRot));
+        }
     }
 
     protected void draw(VertexConsumer buffer, Vector4f[] vertices, float r, float g, float b, float a, float r2, float g2, float b2, float a2, int light) {
@@ -132,8 +152,9 @@ public class SimpleTrailParticle extends Particle {
             this.remove();
             return;
         }
-        TrailPosition pos = calculatePos(this.originPos, this.trail, (float) this.age / this.lifetime);
-        this.setPos(pos.position.x(), pos.position.y(), pos.position.z());
+        TrailPosition pos = calculatePos(this.trail, (float) this.age / this.lifetime);
+        Vec3 off = Matrix4fTransformer.transformVec(pos.position, this.rotationStack.last().pose());
+        this.setPos(this.originPos.x() + off.x(), this.originPos.y() + off.y(), this.originPos.z() + off.z());
         this.index = this.clampedIndex(this.index + 1);
         this.lastPos[this.index] = pos;
     }
@@ -150,18 +171,18 @@ public class SimpleTrailParticle extends Particle {
         return start.scale(f).add(control.scale(f2)).add(end.scale(f3));
     }
 
-    private static TrailPosition calculatePos(Vec3 origin, TrailInfo info, float progress) {
+    private static TrailPosition calculatePos(TrailInfo info, float progress) {
         if (info.direct) {
             Vec3 off = new Vec3(Mth.lerp(progress, info.start.x(), info.end.x()),
                     Mth.lerp(progress, info.start.y(), info.end.y()),
                     Mth.lerp(progress, info.start.z(), info.end.z()));
-            return new TrailPosition(origin.add(off), info.normalY);
+            return new TrailPosition(off, info.normalY);
         }
         Vec3 off = bezierPos(info.start, info.controlPoint, info.end, progress);
         Vec3 dir = bezierPos(info.start.add(info.normalY), info.controlPoint.add(info.normalY), info.end.add(info.normalY), progress);
         dir = dir.subtract(bezierPos(info.start.subtract(info.normalY), info.controlPoint.subtract(info.normalY), info.end.subtract(info.normalY), progress))
                 .normalize().scale(0.5);
-        return new TrailPosition(origin.add(off), dir);
+        return new TrailPosition(off, dir);
     }
 
     private static Vector4f lerp(float delta, Vec3 start, Vec3 end) {

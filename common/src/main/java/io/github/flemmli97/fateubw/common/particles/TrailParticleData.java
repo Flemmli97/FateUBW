@@ -33,6 +33,12 @@ public class TrailParticleData implements ParticleOptions {
             reader.expect(' ');
             Vec3 control = new Vec3(x, y, reader.readDouble());
             reader.expect(' ');
+            float yRot = reader.readFloat();
+            reader.expect(' ');
+            float xRot = reader.readFloat();
+            reader.expect(' ');
+            float zRot = reader.readFloat();
+            reader.expect(' ');
             int duration = reader.readInt();
             reader.expect(' ');
             int fate = reader.readInt();
@@ -56,7 +62,7 @@ public class TrailParticleData implements ParticleOptions {
             float a2 = reader.readFloat();
             reader.expect(' ');
             float scale2 = reader.readFloat();
-            return new TrailParticleData(type, new TrailInfo(start, end, control, duration, fate, r, g, b, a, scale, r2, g2, b2, a2, scale2));
+            return new TrailParticleData(type, new TrailInfo(start, end, control, yRot, xRot, zRot, duration, fate, r, g, b, a, scale, r2, g2, b2, a2, scale2));
         }
 
         @Override

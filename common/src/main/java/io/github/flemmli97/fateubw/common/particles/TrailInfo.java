@@ -1,5 +1,6 @@
 package io.github.flemmli97.fateubw.common.particles;
 
+import com.mojang.math.Vector4f;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.flemmli97.tenshilib.common.utils.MathUtils;
@@ -7,10 +8,12 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.function.Function;
+
 
 public class TrailInfo {
 
-    public static final TrailInfo DEFAULT = TrailInfo.builder(new Vec3(-1, 0, 0), new Vec3(1, 0, 0)).build();
+    public static final TrailInfo DEFAULT = TrailInfo.builder(new Vec3(0, 0, -1), new Vec3(0, 0, 1)).build();
 
     public static final Codec<Vec3> VEC_CODEC = RecordCodecBuilder.create((builder) -> builder.group(
             Codec.DOUBLE.fieldOf("x").forGetter(Vec3::x),
@@ -18,26 +21,34 @@ public class TrailInfo {
             Codec.DOUBLE.fieldOf("z").forGetter(Vec3::z)
     ).apply(builder, Vec3::new));
 
+    private static final Function<String, Codec<Vector4f>> COLOR = suffix -> RecordCodecBuilder.create((builder) -> builder.group(
+            Codec.FLOAT.fieldOf("r" + suffix).forGetter(Vector4f::x),
+            Codec.FLOAT.fieldOf("g" + suffix).forGetter(Vector4f::y),
+            Codec.FLOAT.fieldOf("b" + suffix).forGetter(Vector4f::z),
+            Codec.FLOAT.fieldOf("a" + suffix).forGetter(Vector4f::w)
+    ).apply(builder, Vector4f::new));
 
     public static final Codec<TrailInfo> CODEC = RecordCodecBuilder.create((builder) -> builder.group(
             VEC_CODEC.fieldOf("start").forGetter(d -> d.start),
             VEC_CODEC.fieldOf("end").forGetter(d -> d.end),
             VEC_CODEC.fieldOf("control").forGetter(d -> d.controlPoint),
+            Codec.FLOAT.fieldOf("yRot").forGetter(d -> d.yRot),
+            Codec.FLOAT.fieldOf("xRot").forGetter(d -> d.xRot),
+            Codec.FLOAT.fieldOf("zRot").forGetter(d -> d.zRot),
             Codec.INT.fieldOf("duration").forGetter(d -> d.duration),
             Codec.INT.fieldOf("fade").forGetter(d -> d.fadeTime),
-            Codec.FLOAT.fieldOf("r").forGetter(d -> d.r),
-            Codec.FLOAT.fieldOf("g").forGetter(d -> d.g),
-            Codec.FLOAT.fieldOf("b").forGetter(d -> d.b),
-            Codec.FLOAT.fieldOf("a").forGetter(d -> d.a),
+            COLOR.apply("").fieldOf("color").forGetter(d -> new Vector4f(d.r, d.g, d.b, d.a)),
             Codec.FLOAT.fieldOf("scale").forGetter(d -> d.scale),
-            Codec.FLOAT.fieldOf("r2").forGetter(d -> d.r2),
-            Codec.FLOAT.fieldOf("g2").forGetter(d -> d.g2),
-            Codec.FLOAT.fieldOf("b2").forGetter(d -> d.b2),
-            Codec.FLOAT.fieldOf("a2").forGetter(d -> d.a2),
-            Codec.FLOAT.fieldOf("scale2").forGetter(d -> d.scale2)
-    ).apply(builder, TrailInfo::new));
+            COLOR.apply("_2").fieldOf("color_2").forGetter(d -> new Vector4f(d.r2, d.g2, d.b2, d.a2)),
+            Codec.FLOAT.fieldOf("scale_2").forGetter(d -> d.scale2)
+    ).apply(builder, (start, end, control, yRot, xRot, zRot, duration, fade, color, scale, color_2, scale_2) ->
+            new TrailInfo(start, end, control, yRot, xRot, zRot, duration, fade, color.x(), color.y(), color.z(), color.w(), scale,
+                    color_2.x(), color_2.y(), color_2.z(), color_2.w(), scale_2)
+    ));
 
     public final Vec3 start, end, controlPoint, normalY;
+
+    public final float yRot, xRot, zRot;
 
     public final boolean direct;
     public final int duration;
@@ -46,10 +57,13 @@ public class TrailInfo {
     public final float r, g, b, a, scale;
     public final float r2, g2, b2, a2, scale2;
 
-    public TrailInfo(Vec3 start, Vec3 end, Vec3 controlPoint, int duration, int fadeTime, float r, float g, float b, float a, float scale, float r2, float g2, float b2, float a2, float scale2) {
+    public TrailInfo(Vec3 start, Vec3 end, Vec3 controlPoint, float yRot, float xRot, float zRot, int duration, int fadeTime, float r, float g, float b, float a, float scale, float r2, float g2, float b2, float a2, float scale2) {
         this.start = start;
         this.end = end;
         this.controlPoint = controlPoint;
+        this.yRot = yRot;
+        this.xRot = xRot;
+        this.zRot = zRot;
         this.duration = duration;
         this.fadeTime = Math.min(duration, fadeTime);
         this.r = r;
@@ -74,6 +88,7 @@ public class TrailInfo {
 
     public TrailInfo(FriendlyByteBuf buf) {
         this(new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble()), new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble()), new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble()),
+                buf.readFloat(), buf.readFloat(), buf.readFloat(),
                 buf.readInt(), buf.readInt(),
                 buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(),
                 buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat());
@@ -89,6 +104,9 @@ public class TrailInfo {
         buf.writeDouble(this.controlPoint.x());
         buf.writeDouble(this.controlPoint.y());
         buf.writeDouble(this.controlPoint.z());
+        buf.writeFloat(this.xRot);
+        buf.writeFloat(this.yRot);
+        buf.writeFloat(this.zRot);
         buf.writeInt(this.duration);
         buf.writeInt(this.fadeTime);
         buf.writeFloat(this.r);
@@ -109,7 +127,10 @@ public class TrailInfo {
 
     public static class Builder {
 
-        private Vec3 start, end, controlPoint;
+        private final Vec3 start, end;
+        private Vec3 controlPoint;
+
+        private float yRot, xRot, zRot;
 
         private int duration = 10;
         private int fadeTime = 5;
@@ -131,15 +152,9 @@ public class TrailInfo {
         }
 
         public Builder rotateBy(float yaw, float pitch, float roll) {
-            yaw *= Mth.DEG_TO_RAD;
-            pitch *= Mth.DEG_TO_RAD;
-            roll *= Mth.DEG_TO_RAD;
-            this.start = this.start.zRot(roll).xRot(pitch)
-                    .yRot(yaw);
-            this.end = this.end.zRot(roll).xRot(pitch)
-                    .yRot(yaw);
-            this.controlPoint = this.controlPoint.zRot(roll).xRot(pitch)
-                    .yRot(yaw);
+            this.yRot = yaw;
+            this.xRot = pitch;
+            this.zRot = roll;
             return this;
         }
 
@@ -180,7 +195,7 @@ public class TrailInfo {
         }
 
         public TrailInfo build() {
-            return new TrailInfo(this.start, this.end, this.controlPoint, this.duration, this.fadeTime,
+            return new TrailInfo(this.start, this.end, this.controlPoint, this.yRot, this.xRot, this.zRot, this.duration, this.fadeTime,
                     this.r, this.g, this.b, this.a, this.scale, this.r2, this.g2, this.b2, this.a2, this.scale2);
         }
     }

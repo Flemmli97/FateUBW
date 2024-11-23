@@ -7,6 +7,8 @@ import io.github.flemmli97.fateubw.common.entity.StandingVehicle;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
+import io.github.flemmli97.fateubw.common.particles.TrailInfo;
+import io.github.flemmli97.fateubw.common.particles.TrailParticleData;
 import io.github.flemmli97.fateubw.common.registry.ModParticles;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
@@ -213,16 +215,28 @@ public class Pegasus extends PathfinderMob implements IAnimated, IServantMinion,
                     this.level.addParticle(new ColoredParticleData(ModParticles.LIGHT.get(), 245 / 255F, 10 / 255F, 10 / 255F, 1, 0.5f), pos.x(), pos.y(), pos.z(), this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01);
                 }
             }
-            if (this.isCharging()) {
-                Vec3 base = Vec3.directionFromRotation(0, this.yBodyRot).scale(-PORTAL_OFFSET);
-                Vec3 base2 = MathUtils.rotate(new Vec3(0, 1, 0), base, (float) Math.toRadians(90)).normalize();
-                for (int i = 0; i < 16; i++) {
+            if (this.getAnimationHandler().isCurrent(CHARGING) && this.getAnimationHandler().getAnimation().isPastTick(0.48)) {
+                Vec3 base = MathUtils.rotate(new Vec3(0, 1, 0), Vec3.directionFromRotation(0, this.yBodyRot), (float) Math.toRadians(90)).normalize();
+                for (int i = 0; i < 8; i++) {
                     double sideScale = ((this.random.nextDouble() * 2) - 1) * 3;
                     double upScale = (this.random.nextDouble() * 2) - 1;
-                    Vec3 pos = this.position().add(base).add(base2.scale(sideScale)).add(new Vec3(0, 1, 0).scale(upScale));
-                    this.level.addParticle(new ColoredParticleData(ModParticles.LIGHT.get(), 245 / 255F, 245 / 255F, 245 / 255F, 0.6f, 0.15f),
-                            pos.x(), pos.y(), pos.z(),
-                            -this.getDeltaMovement().x() * 0.05, -this.getDeltaMovement().y() * 0.05, -this.getDeltaMovement().z() * 0.05);
+                    Vec3 pos = this.position().add(base.scale(sideScale)).add(new Vec3(0, 1, 0).scale(upScale));
+                    Vec3 dir = this.getDeltaMovement();
+                    float targetYRot = (float) Mth.wrapDegrees((Mth.atan2(dir.z(), dir.x()) * Mth.RAD_TO_DEG) - 90);
+                    float targetXRot = (float) Mth.wrapDegrees((Mth.atan2(dir.y(), dir.horizontalDistance()) * Mth.RAD_TO_DEG));
+                    float r = (235 + this.getRandom().nextInt(10)) / 255F;
+                    float g = (235 + this.getRandom().nextInt(10)) / 255F;
+                    float b = 245 / 255F;
+                    float scale = (float) (0.05 + this.getRandom().nextDouble() * 0.1);
+                    this.level.addParticle(new TrailParticleData(ModParticles.TRAIL.get(), TrailInfo.builder(Vec3.ZERO, new Vec3(0, 0, -this.getRandom().nextDouble() * 2 + 3))
+                                    .setColor(r, g, b, 0.6f)
+                                    .setColor2(r, g, b, 0.6f)
+                                    .rotateBy(-targetYRot + 180, targetXRot, 0)
+                                    .duration(10)
+                                    .setScale(scale)
+                                    .setScale2(scale)
+                                    .build()),
+                            pos.x(), pos.y(), pos.z(), 0, 0, 0);
                 }
             }
         }
@@ -278,7 +292,7 @@ public class Pegasus extends PathfinderMob implements IAnimated, IServantMinion,
                 LivingEntity source = !this.getPassengers().isEmpty() && this.getPassengers().get(0) instanceof LivingEntity passenger ? passenger : this;
                 boolean hit = this.canFly() && this.verticalCollision;
                 if (hit) {
-                    this.chargeMotion = new Vec3(this.chargeMotion.x() * 0.4, Math.abs(this.chargeMotion.y()) * 0.8, this.chargeMotion.z() * 0.4);
+                    this.chargeMotion = new Vec3(this.chargeMotion.x() * 0.4, Math.abs(this.chargeMotion.y()) * 0.7, this.chargeMotion.z() * 0.4);
                 }
                 for (LivingEntity e : list) {
                     if (this.hitEntities.contains(e))
@@ -473,7 +487,7 @@ public class Pegasus extends PathfinderMob implements IAnimated, IServantMinion,
             }
         }
         this.chargeMotion = dir;
-        float targetYRot = (float) Mth.wrapDegrees((Mth.atan2(dir.z(), dir.x()) * Mth.RAD_TO_DEG)) - 90;
+        float targetYRot = (float) Mth.wrapDegrees((Mth.atan2(dir.z(), dir.x()) * Mth.RAD_TO_DEG) - 90);
         float targetXRot = (float) Mth.wrapDegrees((Mth.atan2(dir.y(), dir.horizontalDistance()) * Mth.RAD_TO_DEG));
         this.setYRot(targetYRot);
         this.setXRot(targetXRot);
