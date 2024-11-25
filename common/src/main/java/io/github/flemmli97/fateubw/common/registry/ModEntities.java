@@ -96,7 +96,7 @@ public class ModEntities {
             new ServantProperties(100, 7.5, 10, 0, 17, 9.5, 0.25, 0, BuiltinServantClasses.BERSERKER));
     public static final RegistryEntrySupplier<EntityType<EntityLancelot>> LANCELOT = regServant(EntityType.Builder.of(EntityLancelot::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "lancelot"), 0x071a33, 0x1d4f94,
-            new ServantProperties(450, 9, 14, 0.4f, 19, 4, 0.26, 0, BuiltinServantClasses.BERSERKER));
+            new ServantProperties(450, 9, 14, 0.1f, 19, 4, 0.26, 0, BuiltinServantClasses.BERSERKER));
 
     public static final RegistryEntrySupplier<EntityType<EntityIskander>> ISKANDER = regServant(EntityType.Builder.of(EntityIskander::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "iskander"), 0xd40000, 0x8d0101,

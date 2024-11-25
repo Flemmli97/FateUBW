@@ -38,7 +38,7 @@ public class Config {
                         new PotionEffectsConfig.EffectInstance(MobEffects.MOVEMENT_SPEED, 6000, 2))
         );
 
-        public static float lancelotReflectChance = 0.3f;
+        public static float lancelotReflectChance = 0.4f;
         public static int hassanCopies = 5;
 
         //Minions

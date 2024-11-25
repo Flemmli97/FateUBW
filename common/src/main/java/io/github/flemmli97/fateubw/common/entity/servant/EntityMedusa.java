@@ -1,6 +1,7 @@
 package io.github.flemmli97.fateubw.common.entity.servant;
 
 
+import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.common.entity.DaggerHitNotifiable;
 import io.github.flemmli97.fateubw.common.entity.minions.GordiusWheel;
 import io.github.flemmli97.fateubw.common.entity.minions.Pegasus;
@@ -119,6 +120,8 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
     public final AnimatedAttackGoal<EntityMedusa> attack = new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS);
 
     private final AnimationHandler<EntityMedusa> animationHandler = new AnimationHandler<>(this, ANIMS);
+
+    private final Vector4f summonColor = new Vector4f(175 / 255f, 88 / 255f, 142 / 255f, 0.7f);
 
     private ChainDagger dagger;
     private int throwCooldown, eyeCooldown;
@@ -243,15 +246,6 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
     }
 
     @Override
-    public AABB attackBB(AnimatedAction anim) {
-        if (anim.is(LAND)) {
-            double width = this.getBbWidth() * 0.5 + 1;
-            return new AABB(-width, -0.02, -width, width, this.getBbHeight() * 0.5, width);
-        }
-        return super.attackBB(anim);
-    }
-
-    @Override
     public OrientedBoundingBox calculateAttackAABB(AnimatedAction anim, Vec3 target, double grow) {
         if (this.getVehicle() != null) {
             Entity vehicle = this.getVehicle();
@@ -264,6 +258,25 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
             return new OrientedBoundingBox(aabb, vehicle.getYRot(), 0, vehicle.position());
         }
         return super.calculateAttackAABB(anim, target, grow);
+    }
+
+    @Override
+    public AABB attackBB(AnimatedAction anim) {
+        if (anim.is(LAND)) {
+            double width = this.getBbWidth() + 2;
+            return new AABB(-width * 0.5, -0.02, -width * 0.3, width * 0.5, this.getBbHeight() * 0.5, width * 0.7);
+        }
+        double width = this.getBbWidth() + 0.4;
+        double length = 1;
+        if (anim.is(MELEE_1, MELEE_1_R)) {
+            width += 1.3;
+            length += 0.7;
+        }
+        if (anim.is(MELEE_2, MELEE_2_R)) {
+            width += 0.9;
+            length += 0.7;
+        }
+        return new AABB(-width * 0.5, -0.02, 0, width * 0.5, this.getBbHeight() + 0.02, length);
     }
 
     @Override
@@ -323,6 +336,16 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
             this.startRiding(peg, true);
             this.revealServant();
         }
+    }
+
+    @Override
+    protected AnimatedAction getSummonAnimation() {
+        return SUMMON;
+    }
+
+    @Override
+    public Vector4f summonColor() {
+        return this.summonColor;
     }
 
     @Override

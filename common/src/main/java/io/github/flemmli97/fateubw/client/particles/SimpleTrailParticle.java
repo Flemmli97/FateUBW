@@ -14,6 +14,7 @@ import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.particles.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.TrailParticleData;
+import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.mixinhelper.Matrix4fTransformer;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -106,8 +107,9 @@ public class SimpleTrailParticle extends Particle {
             double dX = vec3.x - Mth.lerp(partialTicks, this.xo, this.x);
             double dY = vec3.y - Mth.lerp(partialTicks, this.yo, this.y);
             double dZ = vec3.z - Mth.lerp(partialTicks, this.zo, this.z);
-            float yRot = (float) Mth.wrapDegrees((Mth.atan2(dZ, dX) * Mth.RAD_TO_DEG) - 90);
-            float targetXRot = (float) Mth.wrapDegrees((Mth.atan2(dY, Math.sqrt(dX * dX + dZ * dZ)) * Mth.RAD_TO_DEG));
+            float[] xYRot = MathsHelper.XYRotFrom(dX, dY, dZ);
+            float yRot = xYRot[0];
+            float targetXRot = xYRot[1];
             stack.mulPose(Vector3f.ZP.rotationDegrees(Mth.degreesDifference(yRot, Mth.wrapDegrees(-this.trail.yRot)) < 0 ? -targetXRot : targetXRot));
         }
     }

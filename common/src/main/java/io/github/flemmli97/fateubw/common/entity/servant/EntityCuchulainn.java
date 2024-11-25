@@ -168,15 +168,20 @@ public class EntityCuchulainn extends BaseServant {
 
     @Override
     public AABB attackBB(AnimatedAction anim) {
-        if (anim.is(SPEAR_3, SPEAR_STAB, SPEAR_STAB_2)) {
-            return new AABB(-0.7, -0.02, 0, 0.7, this.getBbHeight() + 0.02, anim.is(SPEAR_3) ? 2.7 : 3);
+        double width = this.getBbWidth() + 0.4;
+        double length = 1;
+        if (anim.is(SPEAR_1)) {
+            width += 1.4;
+            length += 1;
         }
-        return super.attackBB(anim);
-    }
-
-    @Override
-    public double maxAttackRange(AnimatedAction anim) {
-        return 2.5;
+        if (anim.is(SPEAR_2)) {
+            width += 1.3;
+            length += 1;
+        }
+        if (anim.is(SPEAR_3, SPEAR_STAB, SPEAR_STAB_2)) {
+            length += 1.5;
+        }
+        return new AABB(-width * 0.5, -0.02, 0, width * 0.5, this.getBbHeight() + 0.02, length);
     }
 
     public void attackWithNP(Vec3 pos) {

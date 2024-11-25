@@ -58,25 +58,24 @@ public class EntityGilgamesh extends BaseServant {
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
                     .chain(GoalAttackAction.<EntityGilgamesh>chainBuilder(EntityGilgamesh.MELEE_3).withPredicate(e -> e.getRandom().nextFloat() < 0.5))
                     .withCondition((goal, target, previous) -> !goal.attacker.useRanged())
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 5),
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 12),
             WeightedEntry.wrap(new GoalAttackAction<EntityGilgamesh>(EntityGilgamesh.MELEE_2)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
                     .withCondition((goal, target, previous) -> !goal.attacker.useRanged())
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 5),
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 12),
             WeightedEntry.wrap(new GoalAttackAction<EntityGilgamesh>(EntityGilgamesh.MELEE_3)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
                     .chain(GoalAttackAction.<EntityGilgamesh>chainBuilder(EntityGilgamesh.MELEE_1)
                             .chain(EntityGilgamesh.MELEE_2).withPredicate(e -> e.getRandom().nextFloat() < 0.5))
                     .withCondition((goal, target, previous) -> !goal.attacker.useRanged())
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 5),
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 12),
             WeightedEntry.wrap(new GoalAttackAction<EntityGilgamesh>(EntityGilgamesh.MELEE_4)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
                     .chain(GoalAttackAction.<EntityGilgamesh>chainBuilder(EntityGilgamesh.MELEE_2).withPredicate(e -> e.getRandom().nextFloat() < 0.4))
                     .withCondition((goal, target, previous) -> !goal.attacker.useRanged())
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 5),
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
             WeightedEntry.wrap(new GoalAttackAction<EntityGilgamesh>(EntityGilgamesh.BABYLON_1)
                     .cooldown(e -> e.getRandom().nextInt(20) + 30)
-                    .withCondition((goal, target, previous) -> goal.attacker.useRanged())
                     .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(6, 12, 1.2))), 5),
             WeightedEntry.wrap(new GoalAttackAction<EntityGilgamesh>(EntityGilgamesh.BABYLON_1)
                     .cooldown(e -> e.getRandom().nextInt(20) + 30)
@@ -84,7 +83,6 @@ public class EntityGilgamesh extends BaseServant {
                     .prepare(() -> new WrappedRunner<>(e -> 40, new MoveToTargetRunner<>(1, 18))), 3),
             WeightedEntry.wrap(new GoalAttackAction<EntityGilgamesh>(EntityGilgamesh.BABYLON_2)
                     .cooldown(e -> e.getRandom().nextInt(20) + 30)
-                    .withCondition((goal, target, previous) -> goal.attacker.useRanged())
                     .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(6, 12, 1.2))), 5),
             WeightedEntry.wrap(new GoalAttackAction<EntityGilgamesh>(EntityGilgamesh.BABYLON_2)
                     .cooldown(e -> e.getRandom().nextInt(20) + 30)
@@ -92,7 +90,6 @@ public class EntityGilgamesh extends BaseServant {
                     .prepare(() -> new WrappedRunner<>(e -> 40, new MoveToTargetRunner<>(1, 18))), 3),
             WeightedEntry.wrap(new GoalAttackAction<EntityGilgamesh>(EntityGilgamesh.BABYLON_3)
                     .cooldown(e -> e.getRandom().nextInt(20) + 30)
-                    .withCondition((goal, target, previous) -> goal.attacker.useRanged())
                     .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(6, 12, 1.2))), 5),
             WeightedEntry.wrap(new GoalAttackAction<EntityGilgamesh>(EntityGilgamesh.BABYLON_3)
                     .cooldown(e -> e.getRandom().nextInt(20) + 30)
@@ -205,15 +202,20 @@ public class EntityGilgamesh extends BaseServant {
 
     @Override
     public AABB attackBB(AnimatedAction anim) {
+        double width = this.getBbWidth() + 0.4;
+        double length = 1;
         if (anim.is(MELEE_1)) {
-            return new AABB(-0.8, -0.02, 0, 0.8, this.getBbHeight() + 0.02, this.maxAttackRange(anim));
+            length += 0.7;
         }
-        return super.attackBB(anim);
-    }
-
-    @Override
-    public double maxAttackRange(AnimatedAction anim) {
-        return 1.9;
+        if (anim.is(MELEE_2)) {
+            width += 1.3;
+            length += 0.7;
+        }
+        if (anim.is(MELEE_3, MELEE_4)) {
+            width += 1.1;
+            length += 0.7;
+        }
+        return new AABB(-width * 0.5, -0.02, 0, width * 0.5, this.getBbHeight() + 0.02, length);
     }
 
     @Override

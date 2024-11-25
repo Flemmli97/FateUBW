@@ -41,9 +41,9 @@ import java.util.List;
 public class EntityIskander extends BaseServant {
 
     public static final AnimatedAction MELEE_1 = new AnimatedAction(0.56, 0.4, "horizontal_slash");
-    public static final AnimatedAction MELEE_2 = new AnimatedAction(0.48, 0.4, "slash_1");
-    public static final AnimatedAction MELEE_3 = new AnimatedAction(0.48, 0.4, "slash_2");
-    public static final AnimatedAction MELEE_4 = new AnimatedAction(0.44, 0.36, "vertical_slash");
+    public static final AnimatedAction MELEE_2 = new AnimatedAction(0.44, 0.36, "vertical_slash");
+    public static final AnimatedAction MELEE_3 = new AnimatedAction(0.48, 0.4, "slash_1");
+    public static final AnimatedAction MELEE_4 = new AnimatedAction(0.48, 0.4, "slash_2");
 
     public static final AnimatedAction MOUNT_STAND_MELEE_1 = new AnimatedAction(0.48, 0.4, "slash_mounted_standing_1");
     public static final AnimatedAction MOUNT_STAND_MELEE_2 = new AnimatedAction(0.48, 0.4, "slash_mounted_standing_2");
@@ -117,7 +117,7 @@ public class EntityIskander extends BaseServant {
     }
 
     protected boolean useStandingAnim() {
-        return StandingVehicle.stand(this.getVehicle());
+        return this.getVehicle() != null && StandingVehicle.stand(this.getVehicle());
     }
 
     protected boolean useSittingAnim() {
@@ -183,10 +183,10 @@ public class EntityIskander extends BaseServant {
             }
         } else {
             boolean step = anim.is(MELEE_1) && anim.isAtTick(0.28) ||
-                    anim.is(MELEE_2) && anim.isAtTick(0.24) ||
-                    anim.is(MELEE_3) && anim.isAtTick(0.24);
+                    anim.is(MELEE_3) && anim.isAtTick(0.24) ||
+                    anim.is(MELEE_4) && anim.isAtTick(0.24);
             if (step) {
-                Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(anim.is(MELEE_3) ? 0.25 : 0.3);
+                Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(anim.is(MELEE_4) ? 0.25 : 0.3);
                 this.setDeltaMovement(this.getDeltaMovement().add(dir));
             }
             super.handleAttack(anim);
@@ -206,6 +206,24 @@ public class EntityIskander extends BaseServant {
             return new OrientedBoundingBox(aabb, vehicle.getYRot(), 0, vehicle.position());
         }
         return super.calculateAttackAABB(anim, target, grow);
+    }
+
+    @Override
+    public AABB attackBB(AnimatedAction anim) {
+        double width = this.getBbWidth() + 0.4;
+        double length = 1;
+        if (anim.is(MELEE_1)) {
+            width += 1.3;
+            length += 0.7;
+        }
+        if (anim.is(MELEE_2)) {
+            length += 0.7;
+        }
+        if (anim.is(MELEE_3, MELEE_4)) {
+            width += 1.1;
+            length += 0.7;
+        }
+        return new AABB(-width * 0.5, -0.02, 0, width * 0.5, this.getBbHeight() + 0.02, length);
     }
 
     public boolean summonChariot() {

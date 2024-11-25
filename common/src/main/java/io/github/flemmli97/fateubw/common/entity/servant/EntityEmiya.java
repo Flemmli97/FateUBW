@@ -212,15 +212,23 @@ public class EntityEmiya extends BaseServant {
 
     @Override
     public AABB attackBB(AnimatedAction anim) {
-        if (anim.is(MELEE_2, MELEE_3)) {
-            return new AABB(-0.65, -0.02, 0, 0.65, this.getBbHeight() + 0.02, this.maxAttackRange(anim));
+        double width = this.getBbWidth() + 0.4;
+        double length = 1;
+        if (anim.is(MELEE_1)) {
+            width += 0.6;
+            length += 0.6;
         }
-        return super.attackBB(anim);
-    }
-
-    @Override
-    public double maxAttackRange(AnimatedAction anim) {
-        return 1.7;
+        if (anim.is(MELEE_2)) {
+            length += 1.4;
+        }
+        if (anim.is(MELEE_3)) {
+            length += 1.1;
+        }
+        if (anim.is(MELEE_4)) {
+            width += 0.7;
+            length += 0.7;
+        }
+        return new AABB(-width * 0.5, -0.02, 0, width * 0.5, this.getBbHeight() + 0.02, length);
     }
 
     public void attackWithRangedAttack(LivingEntity target) {

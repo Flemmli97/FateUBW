@@ -9,6 +9,7 @@ import io.github.flemmli97.fateubw.common.items.weapons.ClassSpear;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
+import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
@@ -26,7 +27,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.Mth;
 import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
@@ -223,14 +223,22 @@ public class EntityLancelot extends BaseServant {
             if (!(damageSource.getEntity() instanceof BaseServant))
                 damage *= 0.5;
 
-            if (damageSource.isProjectile() && !damageSource.isBypassArmor() && this.projectileBlockChance(damageSource, damage)) {
-                if (!this.level.isClientSide && this.getRandom().nextFloat() < Config.Common.lancelotReflectChance && !(damageSource.getDirectEntity() instanceof LivingEntity)) {
-                    this.reflectProjectile(damageSource.getDirectEntity());
-                    this.level.playSound(null, this.blockPosition(), SoundEvents.ANVIL_PLACE, SoundSource.NEUTRAL, 1, 1);
-                } else
-                    this.level.playSound(null, this.blockPosition(), SoundEvents.SHIELD_BLOCK, SoundSource.NEUTRAL, 1, 1);
-                damageSource.getDirectEntity().remove(RemovalReason.KILLED);
-                return true;
+            if (damageSource.isProjectile() && !damageSource.isBypassArmor()) {
+                boolean blocked = false;
+                if (!this.level.isClientSide) {
+                    if (this.getRandom().nextFloat() < Config.Common.lancelotReflectChance && damageSource.getDirectEntity() != null
+                            && !(damageSource.getDirectEntity() instanceof LivingEntity)) {
+                        this.reflectProjectile(damageSource.getDirectEntity());
+                        blocked = true;
+                        this.level.playSound(null, this.blockPosition(), SoundEvents.ANVIL_PLACE, SoundSource.NEUTRAL, 1, 1);
+                    } else if (this.projectileBlockChance(damageSource, damage)) {
+                        this.level.playSound(null, this.blockPosition(), SoundEvents.SHIELD_BLOCK, SoundSource.NEUTRAL, 1, 1);
+                        blocked = true;
+                    }
+                    if (blocked && damageSource.getDirectEntity() != null)
+                        damageSource.getDirectEntity().remove(RemovalReason.KILLED);
+                }
+                return !blocked;
             }
             return this.preAttackEntityFrom(damageSource, Math.min(50, damage));
         }
@@ -402,22 +410,24 @@ public class EntityLancelot extends BaseServant {
 
     @Override
     public AABB attackBB(AnimatedAction anim) {
+        if (anim.is(JUMP_LAND)) {
+            double width = this.getBbWidth() + 2;
+            return new AABB(-width * 0.5, -0.02, -width * 0.3, width * 0.5, this.getBbHeight() * 0.5, width * 0.7);
+        }
+        double width = this.getBbWidth() + 0.4;
+        double length = 1;
         if (anim.is(STAB)) {
-            return new AABB(-0.7, -0.02, 0, 0.7, this.getBbHeight() + 0.02, 2.7);
+            length += 1.3;
+        }
+        if (anim.is(MELEE_1, MELEE_1_VAR_1, MELEE_1_VAR_2)) {
+            width += 1.25;
+            length += 0.95;
         }
         if (anim.is(MELEE_2)) {
-            return new AABB(-1.2, -0.02, 0, 1.2, this.getBbHeight() + 0.02, this.maxAttackRange(anim));
+            width += 1.3;
+            length += 0.7;
         }
-        if (anim.is(JUMP_LAND)) {
-            double width = this.getBbWidth() * 0.5 + 1;
-            return new AABB(-width, -0.02, -width, width, this.getBbHeight() * 0.5, width);
-        }
-        return super.attackBB(anim);
-    }
-
-    @Override
-    public double maxAttackRange(AnimatedAction anim) {
-        return 2;
+        return new AABB(-width * 0.5, -0.02, 0, width * 0.5, this.getBbHeight() + 0.02, length);
     }
 
     @Override
@@ -454,30 +464,31 @@ public class EntityLancelot extends BaseServant {
         CompoundTag old = new CompoundTag();
         oldProjectile.saveWithoutId(old);
         old.remove("UUID");
-        //Vanilla-fix incompability
-        old.remove("VFAABB");
         if (old.contains("Owner"))
             old.putUUID("Owner", this.getUUID());
         Entity e = oldProjectile.getType().create(this.level);
         if (e instanceof Projectile) {
             e.load(old);
+            float velocity = (float) (e.getDeltaMovement().length() * 0.7);
             if (this.getTarget() != null) {
                 LivingEntity target = this.getTarget();
                 Vec3 dir = new Vec3(target.getX() - e.getX(), (target.getY() + target.getEyeHeight()) - e.getY(), target.getZ() - e.getZ());
-                this.shootProj(e, dir.x, dir.y, dir.z, 1, 1);
+                this.shootProj(e, dir.x, dir.y, dir.z, velocity, 1);
             } else {
-                this.shootProj(e, -e.getDeltaMovement().x, -e.getDeltaMovement().y, -e.getDeltaMovement().z, 1, 1);
+                this.shootProj(e, -e.getDeltaMovement().x, -e.getDeltaMovement().y, -e.getDeltaMovement().z, velocity, 1);
             }
             this.level.addFreshEntity(e);
         }
     }
 
     private void shootProj(Entity e, double dirX, double dirY, double dirZ, float vel, float acc) {
-        Vec3 vector3d = new Vec3(dirX, dirY, dirZ).normalize().add(this.random.nextGaussian() * 0.0075F * acc, this.random.nextGaussian() * 0.0075F * acc, this.random.nextGaussian() * 0.0075F * acc).scale(vel);
-        e.setDeltaMovement(vector3d);
-        float f = Mth.sqrt((float) (vector3d.x * vector3d.x + vector3d.z * vector3d.z));
-        e.setYRot((float) (Mth.atan2(vector3d.x, vector3d.z) * 180F / Math.PI));
-        e.setXRot((float) (Mth.atan2(vector3d.y, f) * 180F / Math.PI));
+        Vec3 dir = new Vec3(dirX, dirY, dirZ).normalize().add(this.random.nextGaussian() * 0.0075F * acc, this.random.nextGaussian() * 0.0075F * acc, this.random.nextGaussian() * 0.0075F * acc).scale(vel);
+        e.setDeltaMovement(dir);
+        float[] xYRot = MathsHelper.XYRotFrom(dir);
+        float targetYRot = xYRot[0];
+        float targetXRot = xYRot[1];
+        e.setYRot(targetYRot);
+        e.setXRot(targetXRot);
         e.yRotO = e.getYRot();
         e.xRotO = e.getXRot();
     }

@@ -8,6 +8,7 @@ import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
+import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
 import io.github.flemmli97.tenshilib.api.entity.AoeAttackEntity;
@@ -318,8 +319,9 @@ public class GordiusWheel extends PathfinderMob implements IAnimated, StandingVe
         Vec3 dir = pos.subtract(this.position());
         dir = new Vec3(dir.x(), 0, dir.z());
         this.chargeMotion = dir.normalize().scale(0.55);
-        float targetYRot = (float) Mth.wrapDegrees((Mth.atan2(dir.z(), dir.x()) * Mth.RAD_TO_DEG) - 90);
-        float targetXRot = (float) Mth.wrapDegrees((Mth.atan2(dir.y(), dir.horizontalDistance()) * Mth.RAD_TO_DEG));
+        float[] xYRot = MathsHelper.XYRotFrom(dir);
+        float targetYRot = xYRot[0];
+        float targetXRot = xYRot[1];
         this.setYRot(targetYRot);
         this.setXRot(targetXRot);
         this.yHeadRot = this.getYRot();
@@ -380,15 +382,15 @@ public class GordiusWheel extends PathfinderMob implements IAnimated, StandingVe
             if (this.targetPos == null) {
                 this.targetPos = target.getEyePosition();
             }
-            double f = this.targetPos.y() - goal.attacker.getEyeY();
-            double d = this.targetPos.x() - goal.attacker.getX();
-            double e = this.targetPos.z() - goal.attacker.getZ();
-            double g = Math.sqrt(d * d + e * e);
-            float h = (float) (Mth.atan2(e, d) * Mth.RAD_TO_DEG) - 90.0f;
-            float i = (float) (-(Mth.atan2(f, g) * Mth.RAD_TO_DEG));
+            double dY = this.targetPos.y() - goal.attacker.getEyeY();
+            double dX = this.targetPos.x() - goal.attacker.getX();
+            double dZ = this.targetPos.z() - goal.attacker.getZ();
+            float[] xYRot = MathsHelper.XYRotFrom(dX, dY, dZ);
+            float yRot = xYRot[0];
+            float xRot = xYRot[1];
 
-            float diffY = goal.attacker.rotlerpDiff(goal.attacker.getYRot(), h);
-            goal.attacker.setXRot(i);
+            float diffY = Mth.degreesDifference(goal.attacker.getYRot(), yRot);
+            goal.attacker.setXRot(xRot);
             if (Math.abs(diffY) < 16) {
                 goal.attacker.setChargeTo(this.targetPos);
                 return true;

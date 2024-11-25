@@ -228,15 +228,16 @@ public class EntityArthur extends BaseServant {
 
     @Override
     public AABB attackBB(AnimatedAction anim) {
+        double width = this.getBbWidth() + 0.4;
+        double length = 1;
         if (anim.is(SWING_2)) {
-            return new AABB(-0.8, -0.02, 0, 0.8, this.getBbHeight() + 0.02, this.maxAttackRange(anim));
+            length += 0.8;
         }
-        return super.attackBB(anim);
-    }
-
-    @Override
-    public double maxAttackRange(AnimatedAction anim) {
-        return 2;
+        if (anim.is(SWING_1, SWING_1_VAR_1, SWING_1_VAR_2)) {
+            width += 1.3;
+            length += 1;
+        }
+        return new AABB(-width * 0.5, -0.02, 0, width * 0.5, this.getBbHeight() + 0.02, length);
     }
 
     private boolean duringBurst() {

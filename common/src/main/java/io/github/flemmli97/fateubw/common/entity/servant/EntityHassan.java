@@ -37,6 +37,7 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.phys.AABB;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -85,7 +86,7 @@ public class EntityHassan extends BaseServant {
                     .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 14, 1.1))), 9),
             WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.DUPE)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .withCondition(Utils.npCheck())
+                    .withCondition((goal, target, prev) -> Utils.<EntityHassan>npCheck().test(goal, target, prev) && goal.attacker.gatherCopies().isEmpty())
                     .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(4, 6, 1.1))), 18)
     );
     public static final List<WeightedEntry.Wrapper<IdleAction<EntityHassan>>> IDLE_ACTIONS = List.of(
@@ -163,6 +164,28 @@ public class EntityHassan extends BaseServant {
         } else {
             super.handleAttack(anim);
         }
+    }
+
+    @Override
+    public AABB attackBB(AnimatedAction anim) {
+        double width = this.getBbWidth() + 0.4;
+        double length = 1;
+        if (anim.is(MELEE_1, MELEE_2_2)) {
+            width += 1.3;
+            length += 0.7;
+        }
+        if (anim.is(MELEE_2, MELEE_1_2)) {
+            width += 1.1;
+            length += 0.6;
+        }
+        if (anim.is(STAB)) {
+            length += 1.1;
+        }
+        if (anim.is(STAB_2)) {
+            width += 0.2;
+            length += 0.8;
+        }
+        return new AABB(-width * 0.5, -0.02, 0, width * 0.5, this.getBbHeight() + 0.02, length);
     }
 
     public void removeCopy(HassanClone copy) {

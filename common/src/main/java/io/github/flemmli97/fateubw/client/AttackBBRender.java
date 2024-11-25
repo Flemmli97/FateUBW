@@ -19,7 +19,7 @@ public class AttackBBRender {
     private final List<RenderOBB> toAdd = new ArrayList<>();
 
     public void addNewAABB(OrientedBoundingBox aabb, int duration, S2CAttackDebug.EnumAABBType type) {
-        this.toAdd.add(new RenderOBB(aabb, duration, type));
+        this.toAdd.add(new RenderOBB(aabb, 50, type));
     }
 
     public void render(PoseStack stack, MultiBufferSource.BufferSource buffer) {

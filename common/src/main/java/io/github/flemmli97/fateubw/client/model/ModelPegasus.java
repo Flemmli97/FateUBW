@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.entity.minions.Pegasus;
+import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.client.AnimationManager;
 import io.github.flemmli97.tenshilib.client.model.BlockBenchAnimations;
@@ -145,8 +146,7 @@ public class ModelPegasus extends EntityModel<Pegasus> implements ExtendedModel,
         this.anim.setVariable("x_rotation", () -> {
             if (!entity.canFly())
                 return 0;
-            double dY = entity.getDeltaMovement().y();
-            return (float) -(Mth.atan2(dY, entity.getDeltaMovement().horizontalDistance()) * Mth.RAD_TO_DEG);
+            return -MathsHelper.XRotFrom(entity.getDeltaMovement());
         });
         if (anim == null) {
             if (!entity.isOnGround() || entity.canFly())

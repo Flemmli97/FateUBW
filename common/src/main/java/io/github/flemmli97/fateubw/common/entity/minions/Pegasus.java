@@ -10,6 +10,7 @@ import io.github.flemmli97.fateubw.common.particles.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.TrailParticleData;
 import io.github.flemmli97.fateubw.common.registry.ModParticles;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
+import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
 import io.github.flemmli97.tenshilib.api.entity.AoeAttackEntity;
@@ -221,8 +222,9 @@ public class Pegasus extends PathfinderMob implements IAnimated, StandingVehicle
                     double upScale = (this.random.nextDouble() * 2) - 1;
                     Vec3 pos = this.position().add(base.scale(sideScale)).add(new Vec3(0, 1, 0).scale(upScale));
                     Vec3 dir = this.getDeltaMovement();
-                    float targetYRot = (float) Mth.wrapDegrees((Mth.atan2(dir.z(), dir.x()) * Mth.RAD_TO_DEG) - 90);
-                    float targetXRot = (float) Mth.wrapDegrees((Mth.atan2(dir.y(), dir.horizontalDistance()) * Mth.RAD_TO_DEG));
+                    float[] xYRot = MathsHelper.XYRotFrom(dir);
+                    float targetYRot = xYRot[0];
+                    float targetXRot = xYRot[1];
                     float r = (235 + this.getRandom().nextInt(10)) / 255F;
                     float g = (235 + this.getRandom().nextInt(10)) / 255F;
                     float b = 245 / 255F;
@@ -486,8 +488,9 @@ public class Pegasus extends PathfinderMob implements IAnimated, StandingVehicle
             }
         }
         this.chargeMotion = dir;
-        float targetYRot = (float) Mth.wrapDegrees((Mth.atan2(dir.z(), dir.x()) * Mth.RAD_TO_DEG) - 90);
-        float targetXRot = (float) Mth.wrapDegrees((Mth.atan2(dir.y(), dir.horizontalDistance()) * Mth.RAD_TO_DEG));
+        float[] xYRot = MathsHelper.XYRotFrom(dir);
+        float targetYRot = xYRot[0];
+        float targetXRot = xYRot[1];
         this.setYRot(targetYRot);
         this.setXRot(targetXRot);
         this.yHeadRot = this.getYRot();
@@ -577,15 +580,15 @@ public class Pegasus extends PathfinderMob implements IAnimated, StandingVehicle
             if (this.targetPos == null) {
                 this.targetPos = target.getEyePosition();
             }
-            double f = this.targetPos.y() - goal.attacker.getEyeY();
-            double d = this.targetPos.x() - goal.attacker.getX();
-            double e = this.targetPos.z() - goal.attacker.getZ();
-            double g = Math.sqrt(d * d + e * e);
-            float h = (float) (Mth.atan2(e, d) * Mth.RAD_TO_DEG) - 90.0f;
-            float i = (float) (-(Mth.atan2(f, g) * Mth.RAD_TO_DEG));
+            double dY = this.targetPos.y() - goal.attacker.getEyeY();
+            double dX = this.targetPos.x() - goal.attacker.getX();
+            double dZ = this.targetPos.z() - goal.attacker.getZ();
+            float[] xYRot = MathsHelper.XYRotFrom(dX, dY, dZ);
+            float yRot = xYRot[0];
+            float xRot = xYRot[1];
 
-            float diffY = Mth.degreesDifference(goal.attacker.getYRot(), h);
-            goal.attacker.setXRot(i);
+            float diffY = Mth.degreesDifference(goal.attacker.getYRot(), yRot);
+            goal.attacker.setXRot(xRot);
             if (Math.abs(diffY) < 8) {
                 goal.attacker.setChargeTo(this.targetPos);
                 return true;
