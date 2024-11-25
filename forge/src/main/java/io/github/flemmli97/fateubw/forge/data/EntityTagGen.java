@@ -24,6 +24,13 @@ public class EntityTagGen extends TagsProvider<EntityType<?>> {
         for (RegistryEntrySupplier<EntityType<?>> type : ModEntities.getServants()) {
             this.tag(FateTags.SERVANT).add(type.get());
         }
+        this.tag(FateTags.STRONG_MOB)
+                .addTag(FateTags.SERVANT)
+                .add(ModEntities.LESSER_MONSTER.get())
+                .add(ModEntities.GORDIUS_WHEEL.get())
+                .add(ModEntities.PEGASUS.get())
+                .add(ModEntities.HASSAN_COPY.get());
+
         this.tag(TenshiLib.MULTIPART_ENTITY)
                 .add(ModEntities.MULTIPART.get());
     }

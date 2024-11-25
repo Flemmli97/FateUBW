@@ -5,10 +5,10 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.api.datapack.ServantProperties;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
-import io.github.flemmli97.fateubw.common.entity.IServantMinion;
 import io.github.flemmli97.fateubw.common.entity.StandingVehicle;
 import io.github.flemmli97.fateubw.common.entity.ai.FollowMasterGoal;
 import io.github.flemmli97.fateubw.common.entity.ai.HurtByTargetPredicateGoal;
+import io.github.flemmli97.fateubw.common.lib.FateTags;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.registry.ModAttributes;
 import io.github.flemmli97.fateubw.common.registry.ModParticles;
@@ -59,6 +59,7 @@ import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
@@ -68,11 +69,9 @@ import net.minecraft.world.entity.ai.goal.OpenDoorGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
@@ -93,6 +92,8 @@ import java.util.function.Predicate;
 public abstract class BaseServant extends PathfinderMob implements IAnimated, OwnableEntity, AoeAttackEntity {
 
     public static final TicketType<ChunkPos> TRACKINGTICKET = TicketType.create("servant", Comparator.comparingLong(ChunkPos::toLong), 5);
+
+    private static final UUID DAMAGE_MODIFIER = UUID.fromString("39c5b245-36d1-4506-bd4a-ee6180b1f0c1");
 
     protected static final EntityDataAccessor<Boolean> SHOW_SERVANT = SynchedEntityData.defineId(BaseServant.class, EntityDataSerializers.BOOLEAN);
     protected static final EntityDataAccessor<Boolean> STATIONARY = SynchedEntityData.defineId(BaseServant.class, EntityDataSerializers.BOOLEAN);
@@ -120,19 +121,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
 
     private final ServantProperties prop;
 
-    public final Predicate<LivingEntity> targetPred = (target) -> {
-        if (target == this || !this.canAttack(target))
-            return false;
-        if (target == this.getTarget())
-            return true;
-        if (target instanceof BaseServant)
-            return !Utils.inSameTeam(BaseServant.this, (BaseServant) target);
-        if (target instanceof Mob mob && this == mob.getTarget())
-            return true;
-        if (target instanceof ServerPlayer)
-            return target != BaseServant.this.getOwner() && !Utils.inSameTeam((ServerPlayer) target, BaseServant.this);
-        return target instanceof Enemy;
-    };
+    public final Predicate<LivingEntity> targetPred = Utils.servantTargetPredicate(this);
 
     public final Predicate<LivingEntity> retaliatePred = (target) -> {
         if (target == this)
@@ -731,7 +720,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         if (damageSource == DamageSource.OUT_OF_WORLD) {
             return this.preAttackEntityFrom(damageSource, damage);
         } else {
-            if (!(damageSource.getEntity() instanceof BaseServant || damageSource.getEntity() instanceof IServantMinion))
+            if (damageSource.getEntity() == null || !damageSource.getEntity().getType().is(FateTags.STRONG_MOB))
                 damage *= 0.5;
 
             if (damageSource.isProjectile() && !damageSource.isBypassArmor() && this.projectileBlockChance(damageSource, damage)) {
@@ -750,35 +739,13 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
 
     @Override
     public boolean doHurtTarget(Entity entity) {
-        float f = (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE);
-        float f1 = (float) this.getAttributeValue(Attributes.ATTACK_KNOCKBACK);
-        if (entity instanceof LivingEntity) {
-            f += EnchantmentHelper.getDamageBonus(this.getMainHandItem(), ((LivingEntity) entity).getMobType());
-            f1 += (float) EnchantmentHelper.getKnockbackBonus(this);
-        }
-
-        int i = EnchantmentHelper.getFireAspect(this);
-        if (i > 0) {
-            entity.setSecondsOnFire(i * 4);
-        }
-        f *= this.damageModifier(entity);
-        boolean flag = entity.hurt(DamageSource.mobAttack(this), f);
-        if (flag) {
-            if (f1 > 0.0F && entity instanceof LivingEntity) {
-                ((LivingEntity) entity).knockback(f1 * 0.5F, Mth.sin(this.getYRot() * ((float) Math.PI / 180F)), -Mth.cos(this.getYRot() * ((float) Math.PI / 180F)));
-                this.setDeltaMovement(this.getDeltaMovement().multiply(0.6D, 1.0D, 0.6D));
-            }
-
-            /*if (entity instanceof PlayerEntity) {
-                PlayerEntity playerentity = (PlayerEntity)entity;
-                this.disablePlayerShield(playerentity, this.getHeldItemMainhand(), playerentity.isHandActive() ? playerentity.getActiveItemStack() : ItemStack.EMPTY);
-            }*/
-
-            this.doEnchantDamageEffects(this, entity);
-            this.setLastHurtMob(entity);
-        }
-
-        return flag;
+        this.getAttribute(Attributes.ATTACK_DAMAGE)
+                .addTransientModifier(new AttributeModifier(DAMAGE_MODIFIER, "fate.dmg.mod", this.damageModifier(entity),
+                        AttributeModifier.Operation.MULTIPLY_TOTAL));
+        boolean hurt = super.doHurtTarget(entity);
+        this.getAttribute(Attributes.ATTACK_DAMAGE)
+                .removeModifier(DAMAGE_MODIFIER);
+        return hurt;
     }
 
     public float damageModifier(Entity target) {

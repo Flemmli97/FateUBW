@@ -1,7 +1,6 @@
 package io.github.flemmli97.fateubw.common.entity.minions;
 
 import io.github.flemmli97.fateubw.common.config.Config;
-import io.github.flemmli97.fateubw.common.entity.IServantMinion;
 import io.github.flemmli97.fateubw.common.entity.ai.TargetOwnerEnemyGoal;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
@@ -31,7 +30,7 @@ import net.minecraft.world.level.Level;
 import java.util.List;
 import java.util.UUID;
 
-public class LesserMonster extends PathfinderMob implements IServantMinion, IAnimated, OwnableEntity {
+public class LesserMonster extends PathfinderMob implements IAnimated, OwnableEntity {
 
     public static final AnimatedAction ATTACK = new AnimatedAction(0.76, 0.52, "attack");
     private static final AnimatedAction[] ANIMS = {ATTACK};

@@ -19,6 +19,7 @@ import io.github.flemmli97.fateubw.common.entity.misc.GaeBolg;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicBeam;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicBufCircle;
 import io.github.flemmli97.fateubw.common.entity.misc.ThrownGem;
+import io.github.flemmli97.fateubw.common.entity.misc.ThrownItemEntity;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.servant.EntityArthur;
 import io.github.flemmli97.fateubw.common.entity.servant.EntityCuchulainn;
@@ -119,14 +120,14 @@ public class ModEntities {
     public static final RegistryEntrySupplier<EntityType<EnumaElish>> EA = reg(EntityType.Builder.<EnumaElish>of(EnumaElish::new, MobCategory.MISC).sized(0.05F, 0.05F), new ResourceLocation(Fate.MODID, "ea"));
     public static final RegistryEntrySupplier<EntityType<MagicBeam>> MAGIC_BEAM = reg(EntityType.Builder.of(MagicBeam::new, MobCategory.MISC), new ResourceLocation(Fate.MODID, "magic_beam"));
     public static final RegistryEntrySupplier<EntityType<MagicBufCircle>> MEDEA_CIRCLE = reg(EntityType.Builder.of(MagicBufCircle::new, MobCategory.MISC), new ResourceLocation(Fate.MODID, "medea_circle"));
+    public static final RegistryEntrySupplier<EntityType<ThrownItemEntity>> THROWN_ITEM = reg(EntityType.Builder.<ThrownItemEntity>of(ThrownItemEntity::new, MobCategory.MISC).sized(0.25F, 0.25F), new ResourceLocation(Fate.MODID, "thrown_item"));
+    public static final RegistryEntrySupplier<EntityType<ChainDagger>> DAGGER_HOOK = reg(EntityType.Builder.<ChainDagger>of(ChainDagger::new, MobCategory.MISC).updateInterval(5).sized(0.25F, 0.25F), new ResourceLocation(Fate.MODID, "medusa_dagger"));
+    public static final RegistryEntrySupplier<EntityType<ThrownGem>> GEM = reg(EntityType.Builder.<ThrownGem>of(ThrownGem::new, MobCategory.MISC).sized(0.25F, 0.25F), new ResourceLocation(Fate.MODID, "entity_gem"));
+
     public static final RegistryEntrySupplier<EntityType<LesserMonster>> LESSER_MONSTER = regWithEgg(EntityType.Builder.<LesserMonster>of(LesserMonster::new, MobCategory.MONSTER).clientTrackingRange(8), new ResourceLocation(Fate.MODID, "starfish_monster"), 0x171c3f, 0x00ff00);
     public static final RegistryEntrySupplier<EntityType<GordiusWheel>> GORDIUS_WHEEL = regWithEgg(EntityType.Builder.of(GordiusWheel::new, MobCategory.CREATURE).sized(2, 1.5f), new ResourceLocation(Fate.MODID, "gordius_wheel"), 0x87595c, 0x981a24);
-
-    public static final RegistryEntrySupplier<EntityType<HassanClone>> HASSAN_COPY = reg(EntityType.Builder.of(HassanClone::new, MobCategory.MISC), new ResourceLocation(Fate.MODID, "hassan_copy"));
+    public static final RegistryEntrySupplier<EntityType<HassanClone>> HASSAN_COPY = hassanClone(new ServantProperties(50, 6, 6.5, 0, 14, 3, 0.34, 0, BuiltinServantClasses.NONE));
     public static final RegistryEntrySupplier<EntityType<Pegasus>> PEGASUS = regWithEgg(EntityType.Builder.of(Pegasus::new, MobCategory.MONSTER).sized(1.35f, 1.65f), new ResourceLocation(Fate.MODID, "pegasus"), 0xffffff, 0xdde0e1);
-    public static final RegistryEntrySupplier<EntityType<ChainDagger>> DAGGER_HOOK = reg(EntityType.Builder.<ChainDagger>of(ChainDagger::new, MobCategory.MISC).updateInterval(5).sized(0.25F, 0.25F), new ResourceLocation(Fate.MODID, "medusa_dagger"));
-
-    public static final RegistryEntrySupplier<EntityType<ThrownGem>> GEM = reg(EntityType.Builder.<ThrownGem>of(ThrownGem::new, MobCategory.MISC).sized(0.25F, 0.25F), new ResourceLocation(Fate.MODID, "entity_gem"));
 
     public static final RegistryEntrySupplier<EntityType<MultiPartEntity>> MULTIPART = reg(EntityType.Builder.<MultiPartEntity>of(MultiPartEntity::new, MobCategory.MISC)
             .noSave().noSummon().sized(0.25F, 0.25F), new ResourceLocation(Fate.MODID, "multi_part"));
@@ -145,6 +146,14 @@ public class ModEntities {
     public static <V extends Mob> RegistryEntrySupplier<EntityType<V>> regWithEgg(EntityType.Builder<V> entity, ResourceLocation name, int primary, int secondary) {
         RegistryEntrySupplier<EntityType<V>> reg = reg(entity.clientTrackingRange(10), name);
         ModItems.ITEMS.register(name.getPath() + "_spawn_egg", () -> new SpawnEgg(reg, primary, secondary, new Item.Properties().tab(Fate.TAB)));
+        return reg;
+    }
+
+    public static RegistryEntrySupplier<EntityType<HassanClone>> hassanClone(ServantProperties props) {
+        RegistryEntrySupplier<EntityType<HassanClone>> reg = reg(EntityType.Builder.of(HassanClone::new, MobCategory.MISC), new ResourceLocation(Fate.MODID, "hassan_copy"));
+        if (Platform.INSTANCE.isDatagen()) {
+            DEFAULT_PROPERTIES.put(reg.getID(), props);
+        }
         return reg;
     }
 

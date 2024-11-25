@@ -18,4 +18,6 @@ public class FateTags {
     public static final TagKey<Item> FABRIC_DIAMOND_BLOCK = PlatformUtils.INSTANCE.itemTag(new ResourceLocation("c", "diamond_blocks"));
 
     public static final TagKey<EntityType<?>> SERVANT = TagKey.create(Registry.ENTITY_TYPE_REGISTRY, new ResourceLocation(Fate.MODID, "servant"));
+
+    public static final TagKey<EntityType<?>> STRONG_MOB = TagKey.create(Registry.ENTITY_TYPE_REGISTRY, new ResourceLocation(Fate.MODID, "strong_mob"));
 }

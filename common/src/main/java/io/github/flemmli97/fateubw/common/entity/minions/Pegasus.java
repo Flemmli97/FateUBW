@@ -2,7 +2,6 @@ package io.github.flemmli97.fateubw.common.entity.minions;
 
 import io.github.flemmli97.fateubw.common.config.Config;
 import io.github.flemmli97.fateubw.common.entity.ChargingHandler;
-import io.github.flemmli97.fateubw.common.entity.IServantMinion;
 import io.github.flemmli97.fateubw.common.entity.StandingVehicle;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
@@ -63,7 +62,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 
-public class Pegasus extends PathfinderMob implements IAnimated, IServantMinion, StandingVehicle, AoeAttackEntity {
+public class Pegasus extends PathfinderMob implements IAnimated, StandingVehicle, AoeAttackEntity {
 
     public static float PORTAL_SIZE = 2;
     public static float PORTAL_OFFSET = 1.3f;

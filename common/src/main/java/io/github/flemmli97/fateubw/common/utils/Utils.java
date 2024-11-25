@@ -7,10 +7,15 @@ import io.github.flemmli97.tenshilib.common.entity.ai.animated.GoalAttackAction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.OwnableEntity;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 public class Utils {
 
@@ -35,12 +40,16 @@ public class Utils {
         return new Vec3(vec3.x * g - vec3.z * f, vec3.y, vec3.z * g + vec3.x * f);
     }
 
-    public static float getDamageAfterMagicAbsorb(BaseServant servant, float damage) {
-        return (float) (damage * servant.getAttribute(ModAttributes.MAGIC_RESISTANCE.get()).getValue());
+    public static float getDamageAfterMagicAbsorb(LivingEntity entity, float damage) {
+        if (entity.getAttribute(ModAttributes.MAGIC_RESISTANCE.get()) == null)
+            return damage;
+        return (float) (damage * entity.getAttribute(ModAttributes.MAGIC_RESISTANCE.get()).getValue());
     }
 
-    public static float projectileReduce(BaseServant servant, float damage) {
-        float reduceAmount = (float) Mth.clamp(1 - servant.getAttribute(ModAttributes.PROJECTILE_RESISTANCE.get()).getValue() * 0.04, 0.1, 1);
+    public static float projectileReduce(LivingEntity entity, float damage) {
+        if (entity.getAttribute(ModAttributes.PROJECTILE_RESISTANCE.get()) == null)
+            return damage;
+        float reduceAmount = (float) Mth.clamp(1 - entity.getAttribute(ModAttributes.PROJECTILE_RESISTANCE.get()).getValue() * 0.04, 0.1, 1);
         return damage * reduceAmount;
     }
 
@@ -63,5 +72,25 @@ public class Utils {
         UUID first = servant.getOwnerUUID();
         UUID second = other.getOwnerUUID();
         return first != null && second != null && TruceHandler.get(servant.getServer()).get(first).contains(second);
+    }
+
+    public static Predicate<LivingEntity> servantTargetPredicate(Mob entity) {
+        return target -> {
+            if (target == entity || !entity.canAttack(target))
+                return false;
+            if (target == entity.getTarget())
+                return true;
+            if (entity instanceof OwnableEntity ownable && target instanceof OwnableEntity ownable2 && ownable.getOwner() == ownable2.getOwner())
+                return false;
+            if (target instanceof OwnableEntity ownable && ownable.getOwner() == entity)
+                return false;
+            if (entity instanceof BaseServant servant) {
+                if (target instanceof BaseServant)
+                    return !Utils.inSameTeam(servant, (BaseServant) target);
+                if (target instanceof ServerPlayer playerTarget)
+                    return target != servant.getOwner() && !Utils.inSameTeam(playerTarget, servant);
+            }
+            return target instanceof Enemy;
+        };
     }
 }

@@ -19,6 +19,10 @@ public class CustomDamageSource {
         return (new IndirectEntityDamageSource("babylon", source, sourceEntity).setProjectile());
     }
 
+    public static DamageSource assassinDagger(Entity source, Entity sourceEntity) {
+        return (new IndirectEntityDamageSource("dagger", source, sourceEntity).setProjectile());
+    }
+
     public static DamageSource gaeBolg(Entity source, Entity sourceEntity) {
         return Platform.INSTANCE.setBypassArmor(new IndirectEntityDamageSource("gaeBolg", source, sourceEntity)).setMagic();
     }

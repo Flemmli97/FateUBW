@@ -1,19 +1,32 @@
 package io.github.flemmli97.fateubw.common.entity.servant;
 
 
+import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.common.config.Config;
 import io.github.flemmli97.fateubw.common.entity.minions.HassanClone;
-import io.github.flemmli97.fateubw.common.entity.servant.ai.HassanAttackGoal;
+import io.github.flemmli97.fateubw.common.entity.misc.ThrownItemEntity;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
+import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
+import io.github.flemmli97.tenshilib.common.entity.ai.animated.AnimatedAttackGoal;
+import io.github.flemmli97.tenshilib.common.entity.ai.animated.GoalAttackAction;
+import io.github.flemmli97.tenshilib.common.entity.ai.animated.IdleAction;
+import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.KeepDistanceRunner;
+import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveAwayRunner;
+import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTargetAttackRunner;
+import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTargetRunner;
+import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.WrappedRunner;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
+import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -33,31 +46,84 @@ import java.util.UUID;
 
 public class EntityHassan extends BaseServant {
 
-    private static final AnimatedAction NP_ATTACK = new AnimatedAction(20, 1, "np");
-    private static final AnimatedAction[] ANIMS = {AnimatedAction.VANILLA_ATTACK, NP_ATTACK};
+    public static final AnimatedAction MELEE_1 = new AnimatedAction(0.48, 0.36, "slash_1");
+    public static final AnimatedAction MELEE_1_2 = new AnimatedAction(0.48, 0.36, "slash_1_2");
+    public static final AnimatedAction MELEE_2 = new AnimatedAction(0.48, 0.36, "slash_2");
+    public static final AnimatedAction MELEE_2_2 = new AnimatedAction(0.48, 0.36, "slash_2_2");
+    public static final AnimatedAction STAB = new AnimatedAction(0.68, 0.36, "stab");
+    public static final AnimatedAction STAB_2 = new AnimatedAction(0.92, 0.44, "top_stab");
+    public static final AnimatedAction THROW = new AnimatedAction(0.96, 0.32, "dagger_throw");
 
-    public final HassanAttackGoal attackAI = new HassanAttackGoal(this);
+    private static final AnimatedAction DUPE = new AnimatedAction(1.4, 0.84, "dupe");
+    public static final AnimatedAction SUMMON = new AnimatedAction(2., 0, "summon");
+    private static final AnimatedAction[] ANIMS = {MELEE_1, MELEE_1_2, MELEE_2, MELEE_2_2, STAB, STAB_2, THROW, DUPE, SUMMON};
 
-    private final AnimationHandler<EntityHassan> animationHandler = new AnimationHandler<>(this, ANIMS);
+    public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityHassan>>> ATTACKS = List.of(
+            WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.MELEE_1)
+                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
+                    .chain(GoalAttackAction.<EntityHassan>chainBuilder(EntityHassan.MELEE_1_2)
+                            .chain(List.of(new GoalAttackAction.ChainedAction<>(EntityHassan.MELEE_1_2, e -> 0),
+                                    new GoalAttackAction.ChainedAction<>(EntityHassan.MELEE_2_2, e -> 0)))
+                            .withPredicate(e -> e.getRandom().nextFloat() < 0.6))
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 11),
+            WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.MELEE_2)
+                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
+                    .chain(GoalAttackAction.<EntityHassan>chainBuilder(EntityHassan.MELEE_2_2)
+                            .chain(List.of(new GoalAttackAction.ChainedAction<>(EntityHassan.MELEE_2_2, e -> 0),
+                                    new GoalAttackAction.ChainedAction<>(EntityHassan.MELEE_1_2, e -> 0)))
+                            .withPredicate(e -> e.getRandom().nextFloat() < 0.6))
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 11),
+            WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.STAB)
+                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
+            WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.STAB_2)
+                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
+            WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.THROW)
+                    .cooldown(e -> e.getRandom().nextInt(15) + 10)
+                    .withCondition(((goal, target, previous) -> goal.distanceToTargetSq > 25 || goal.attacker.getRandom().nextFloat() < 0.5))
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 14, 1.1))), 9),
+            WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.DUPE)
+                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
+                    .withCondition(Utils.npCheck())
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(4, 6, 1.1))), 18)
+    );
+    public static final List<WeightedEntry.Wrapper<IdleAction<EntityHassan>>> IDLE_ACTIONS = List.of(
+            WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1, 0.5)), 6),
+            WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(1, 1, 6)), 2)
+    );
+
+    public final AnimatedAttackGoal<EntityHassan> attack = new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS);
+
+    private final AnimationHandler<EntityHassan> animationHandler = new AnimationHandler<>(this, ANIMS).setAnimationChangeCons(anim -> {
+        if (!SUMMON.is(anim)) {
+            if (!this.offHandCache.isEmpty()) {
+                this.setItemInHand(InteractionHand.OFF_HAND, this.offHandCache);
+                this.offHandCache = ItemStack.EMPTY;
+            }
+            if (!this.mainHandCache.isEmpty()) {
+                this.setItemInHand(InteractionHand.MAIN_HAND, this.mainHandCache);
+                this.mainHandCache = ItemStack.EMPTY;
+            }
+        }
+    });
+
+    private ItemStack mainHandCache = ItemStack.EMPTY;
+    private ItemStack offHandCache = ItemStack.EMPTY;
+
+    private final Vector4f summonColor = new Vector4f(28 / 255f, 29 / 255f, 31 / 255f, 0.8f);
 
     private final Set<UUID> copies = new HashSet<>();
 
-    public EntityHassan(EntityType<? extends EntityHassan> entityType, Level world) {
-        super(entityType, world);
-        if (world != null && !world.isClientSide)
-            this.goalSelector.addGoal(0, this.attackAI);
+    public EntityHassan(EntityType<? extends EntityHassan> entityType, Level level) {
+        super(entityType, level);
+        if (!level.isClientSide)
+            this.goalSelector.addGoal(0, this.attack);
     }
 
     @Override
     protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
         this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.ASSASSIN_DAGGER.get()));
-    }
-
-    @Override
-    public boolean canUse(AnimatedAction anim, AttackType type) {
-        if (type == AttackType.NP)
-            return anim.getID().equals(NP_ATTACK.getID());
-        return anim.getID().equals(AnimatedAction.VANILLA_ATTACK.getID());
     }
 
     @Override
@@ -74,9 +140,29 @@ public class EntityHassan extends BaseServant {
     public void updateAI(EnumServantUpdate behaviour) {
         super.updateAI(behaviour);
         if (this.commandBehaviour == EnumServantUpdate.STAY)
-            this.goalSelector.removeGoal(this.attackAI);
+            this.goalSelector.removeGoal(this.attack);
         else
-            this.goalSelector.addGoal(0, this.attackAI);
+            this.goalSelector.addGoal(0, this.attack);
+    }
+
+    @Override
+    public void handleAttack(AnimatedAction anim) {
+        if (anim.is(DUPE)) {
+            if (anim.canAttack()) {
+                if (!this.forcedNP)
+                    this.useMana(this.props().hogouMana());
+                this.attackWithNP();
+                this.forcedNP = false;
+            }
+        } else if (anim.is(THROW)) {
+            if (anim.canAttack()) {
+                this.throwItem(true);
+            } else if (anim.isAtTick(0.84)) {
+                this.throwItem(false);
+            }
+        } else {
+            super.handleAttack(anim);
+        }
     }
 
     public void removeCopy(HassanClone copy) {
@@ -120,12 +206,41 @@ public class EntityHassan extends BaseServant {
                 this.level.addFreshEntity(hassan);
                 this.addCopy(hassan);
             }
-            this.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 3600, 1, true, false));
+            this.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 300, 1, true, false));
             this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 100, 2, true, false));
             if (this.getTarget() instanceof Mob)
                 ((Mob) this.getTarget()).setTarget(null);
             this.revealServant();
         }
+    }
+
+    public void throwItem(boolean main) {
+        ThrownItemEntity item = new ThrownItemEntity(this.level, this);
+        item.setWeapon(this.getWeaponToThrowAndReplace(main));
+        if (this.getTarget() != null) {
+            item.shootAtEntity(this.getTarget(), 1.2f, 7 - this.level.getDifficulty().getId() * 2);
+        } else {
+            item.shootFromRotation(this, this.getXRot() + 5, this.getYRot(), 0.0F, 1.2f, 1.0F);
+        }
+        this.playSound(SoundEvents.FISHING_BOBBER_THROW, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
+        this.level.addFreshEntity(item);
+    }
+
+    private ItemStack getWeaponToThrowAndReplace(boolean main) {
+        ItemStack weapon;
+        if (!main) {
+            if (!this.getOffhandItem().isEmpty()) {
+                this.offHandCache = this.getOffhandItem();
+                this.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
+                weapon = this.offHandCache;
+            } else
+                weapon = this.getMainHandItem().isEmpty() ? this.mainHandCache.copy() : this.getMainHandItem();
+        } else {
+            this.mainHandCache = this.getMainHandItem();
+            this.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+            weapon = this.mainHandCache;
+        }
+        return weapon.isEmpty() ? new ItemStack(ModItems.ASSASSIN_DAGGER.get()) : weapon.copy();
     }
 
     @Override
@@ -134,11 +249,25 @@ public class EntityHassan extends BaseServant {
         ListTag copies = new ListTag();
         this.copies.forEach(hassan -> copies.add(NbtUtils.createUUID(hassan)));
         tag.put("Copies", copies);
+        tag.put("MainHandCache", this.mainHandCache.save(new CompoundTag()));
+        tag.put("OffHandCache", this.offHandCache.save(new CompoundTag()));
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
         tag.getList("Copies", Tag.TAG_INT_ARRAY).forEach(nbt -> this.copies.add(NbtUtils.loadUUID(nbt)));
+        this.mainHandCache = ItemStack.of(tag.getCompound("MainHandCache"));
+        this.offHandCache = ItemStack.of(tag.getCompound("OffHandCache"));
+    }
+
+    @Override
+    protected AnimatedAction getSummonAnimation() {
+        return SUMMON;
+    }
+
+    @Override
+    public Vector4f summonColor() {
+        return this.summonColor;
     }
 }

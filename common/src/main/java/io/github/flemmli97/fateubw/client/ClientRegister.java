@@ -28,6 +28,7 @@ import io.github.flemmli97.fateubw.client.render.misc.RenderHassanCopy;
 import io.github.flemmli97.fateubw.client.render.misc.RenderMagicBeam;
 import io.github.flemmli97.fateubw.client.render.misc.RenderPegasus;
 import io.github.flemmli97.fateubw.client.render.misc.RenderStarfish;
+import io.github.flemmli97.fateubw.client.render.misc.RenderThrownItem;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.registry.ModBlocks;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
@@ -98,7 +99,7 @@ public class ClientRegister {
         registerServant(consumer, ModEntities.LANCELOT);
         registerServant(consumer, ModEntities.ISKANDER);
         registerServant(consumer, ModEntities.MEDUSA, true);
-        registerServantOld(consumer, ModEntities.HASSAN);
+        registerServant(consumer, ModEntities.HASSAN);
         registerServantOld(consumer, ModEntities.SASAKI);
 
         consumer.register(ModEntities.EXCALIBUR.get(), RenderExcalibur::new);
@@ -110,6 +111,7 @@ public class ClientRegister {
         consumer.register(ModEntities.MAGIC_BEAM.get(), RenderMagicBeam::new);
         consumer.register(ModEntities.MEDEA_CIRCLE.get(), RenderEmpty::new);
         consumer.register(ModEntities.GORDIUS_WHEEL.get(), RenderGordius::new);
+        consumer.register(ModEntities.THROWN_ITEM.get(), RenderThrownItem::new);
 
         consumer.register(ModEntities.LESSER_MONSTER.get(), RenderStarfish::new);
         consumer.register(ModEntities.HASSAN_COPY.get(), RenderHassanCopy::new);
