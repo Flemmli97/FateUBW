@@ -47,20 +47,20 @@ public class ModItems {
     });
     public static final RegistryEntrySupplier<Item> EXCALIBUR = ITEMS.register("excalibur", () -> Platform.INSTANCE.createExcalibur(new Item.Properties().tab(Fate.TAB)));
     public static final RegistryEntrySupplier<Item> GAEBOLG = ITEMS.register("gae_bolg", () -> new ItemGaeBolg(new Item.Properties().tab(Fate.TAB)));
-    public static final RegistryEntrySupplier<Item> GAEDEARG = ITEMS.register("gae_dearg", () -> new ClassSpear(ItemTiers.GAE_DEARG, new Item.Properties().tab(Fate.TAB), -1.5f, 3.5f));
-    public static final RegistryEntrySupplier<Item> GAEBUIDHE = ITEMS.register("gae_buidhe", () -> new ClassSpear(ItemTiers.GAE_BUIDHE, new Item.Properties().tab(Fate.TAB), -1.5f, 3.5f));
+    public static final RegistryEntrySupplier<Item> GAEDEARG = ITEMS.register("gae_dearg", () -> new ClassSpear(ItemTiers.GAE_DEARG, new Item.Properties().tab(Fate.TAB), -1.5f, 4));
+    public static final RegistryEntrySupplier<Item> GAEBUIDHE = ITEMS.register("gae_buidhe", () -> new ClassSpear(ItemTiers.GAE_BUIDHE, new Item.Properties().tab(Fate.TAB), -1.5f, 3f));
     public static final RegistryEntrySupplier<Item> KANSHOU = ITEMS.register("kanshou", ModItems::kanshou);
     public static final RegistryEntrySupplier<Item> BAKUYA = ITEMS.register("bakuya", () -> new ItemKanshouBakuya(ItemTiers.KANSHOU_BAKUYA, 0, -2f, new Item.Properties().tab(Fate.TAB), KANSHOU));
     public static final RegistryEntrySupplier<Item> ARCHBOW = ITEMS.register("emiyas_bow", () -> new ItemArcherBow(new Item.Properties().tab(Fate.TAB)));
     public static final RegistryEntrySupplier<Item> ENUMAELISH = ITEMS.register("enuma_elish", () -> Platform.INSTANCE.createEA(new Item.Properties().tab(Fate.TAB)));
-    public static final RegistryEntrySupplier<Item> STAFF = ITEMS.register("medeas_staff", () -> new ItemStaff(new Item.Properties().tab(Fate.TAB)));
+    public static final RegistryEntrySupplier<Item> STAFF = ITEMS.register("medeas_staff", () -> new ItemStaff(new Item.Properties().tab(Fate.TAB).stacksTo(1)));
     public static final RegistryEntrySupplier<Item> RULE_BREAKER = ITEMS.register("rule_breaker", () -> new SwordItem(ItemTiers.RULE_BREAKER, 0, -2.4f, new Item.Properties().tab(Fate.TAB)));
     public static final RegistryEntrySupplier<Item> GRIMOIRE = ITEMS.register("prelatis_spellbook", () -> new ItemGrimoire(new Item.Properties().tab(Fate.TAB).stacksTo(1)));
-    public static final RegistryEntrySupplier<Item> HERACLES_AXE = ITEMS.register("heracles_axe", () -> Platform.INSTANCE.createAxe(ItemTiers.HERACLES_AXE, 0, -2.9f, new Item.Properties().tab(Fate.TAB)));
+    public static final RegistryEntrySupplier<Item> HERACLES_AXE = ITEMS.register("heracles_axe", () -> Platform.INSTANCE.createAxe(ItemTiers.HERACLES_AXE, 0, -3.2f, new Item.Properties().tab(Fate.TAB)));
     public static final RegistryEntrySupplier<Item> ARONDIGHT = ITEMS.register("arondight", () -> new SwordItem(ItemTiers.ARONDIGHT, 0, -2.4f, new Item.Properties().tab(Fate.TAB)));
     public static final RegistryEntrySupplier<Item> KUPRIOTS = ITEMS.register("kupriots", () -> new SwordItem(ItemTiers.KUPRIOTS, 0, -2.4f, new Item.Properties().tab(Fate.TAB)));
     public static final RegistryEntrySupplier<Item> MEDUSA_DAGGER = ITEMS.register("medusas_dagger", () -> new ItemMedusaDagger(ItemTiers.DAGGER, 0, -2.0f, new Item.Properties().tab(Fate.TAB)));
-    public static final RegistryEntrySupplier<Item> ASSASSIN_DAGGER = ITEMS.register("assassin_dagger", () -> new ItemDagger(ItemTiers.ASSASSIN_DAGGER, 0, -1.8f, new Item.Properties().tab(Fate.TAB)));
+    public static final RegistryEntrySupplier<Item> ASSASSIN_DAGGER = ITEMS.register("assassin_dagger", () -> new ItemDagger(ItemTiers.ASSASSIN_DAGGER, 0, -1.5f, new Item.Properties().tab(Fate.TAB)));
     public static final RegistryEntrySupplier<Item> KATANA = ITEMS.register("katana", () -> new ItemKatana(ItemTiers.KATANA, 0, -2.6f, new Item.Properties().tab(Fate.TAB)));
 
     public static final RegistryEntrySupplier<Item> ALTAR = ITEMS.register("summoning_altar", () -> new BlockItem(ModBlocks.ALTAR.get(), new Item.Properties().tab(Fate.TAB)));

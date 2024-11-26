@@ -50,6 +50,15 @@ public class ConfigLoader {
         Config.Common.medeaCircleSpan = ConfigSpecs.COMMON_CONFIG.medeaCircleSpan.get();
         Config.Common.medeaCircleRange = ConfigSpecs.COMMON_CONFIG.medeaCircleRange.get().floatValue();
 
+        Config.Common.excaliburMana = ConfigSpecs.COMMON_CONFIG.excaliburMana.get();
+        Config.Common.eaMana = ConfigSpecs.COMMON_CONFIG.eaMana.get();
+        Config.Common.archerBowMana = ConfigSpecs.COMMON_CONFIG.archerBowMana.get();
+        Config.Common.caladbolgMana = ConfigSpecs.COMMON_CONFIG.caladbolgMana.get();
+        Config.Common.gaeBolgMana = ConfigSpecs.COMMON_CONFIG.gaeBolgMana.get();
+        Config.Common.grimoireMana = ConfigSpecs.COMMON_CONFIG.grimoireMana.get();
+        Config.Common.chainMana = ConfigSpecs.COMMON_CONFIG.chainMana.get();
+        Config.Common.daggerThrowMana = ConfigSpecs.COMMON_CONFIG.daggerThrowMana.get();
+
         Config.Common.debugAttack = ConfigSpecs.COMMON_CONFIG.debugAttack.get();
     }
 }

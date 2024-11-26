@@ -1,11 +1,15 @@
 package io.github.flemmli97.fateubw.common.items.weapons;
 
 import io.github.flemmli97.fateubw.Fate;
+import io.github.flemmli97.fateubw.common.config.Config;
 import io.github.flemmli97.fateubw.common.entity.misc.ArcherArrow;
 import io.github.flemmli97.fateubw.common.entity.misc.CaladBolg;
 import io.github.flemmli97.fateubw.common.items.SwingItem;
 import io.github.flemmli97.fateubw.platform.Platform;
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
@@ -15,16 +19,28 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class ItemArcherBow extends BowItem implements SwingItem {
 
-    private final int arrowMana = 10, specialMana = 80;
 
     public ItemArcherBow(Properties props) {
         super(props);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+        if (Config.Common.archerBowMana > 0)
+            tooltipComponents.add(new TranslatableComponent("fateubw.tooltip.item.bow.arrow", Config.Common.archerBowMana).withStyle(ChatFormatting.AQUA));
+        if (Config.Common.caladbolgMana > 0)
+            tooltipComponents.add(new TranslatableComponent("fateubw.tooltip.item.caladbolg", Config.Common.caladbolgMana).withStyle(ChatFormatting.AQUA));
     }
 
     @Override
@@ -33,7 +49,7 @@ public class ItemArcherBow extends BowItem implements SwingItem {
             if (player.isCreative())
                 this.setCharged(stack, true);
             else {
-                if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).map(cap -> cap.useMana(player, this.specialMana)).orElse(false)) {
+                if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).map(cap -> cap.useMana(player, Config.Common.caladbolgMana)).orElse(false)) {
                     this.setCharged(stack, true);
                 }
             }
@@ -52,7 +68,7 @@ public class ItemArcherBow extends BowItem implements SwingItem {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
-        if (player.isCreative() || this.charged(player.getItemInHand(hand)) || Platform.INSTANCE.getPlayerData(player).map(cap -> cap.getMana() >= this.arrowMana).orElse(false)) {
+        if (player.isCreative() || this.charged(player.getItemInHand(hand)) || Platform.INSTANCE.getPlayerData(player).map(cap -> cap.getMana() >= Config.Common.archerBowMana).orElse(false)) {
             player.startUsingItem(hand);
             return InteractionResultHolder.consume(player.getItemInHand(hand));
         } else {
@@ -81,7 +97,7 @@ public class ItemArcherBow extends BowItem implements SwingItem {
     public void spawnNormalArrow(ItemStack stack, Level world, LivingEntity entity, int timeLeft) {
         if (entity instanceof Player player) {
             boolean flag = player.getAbilities().instabuild || EnchantmentHelper.getItemEnchantmentLevel(Enchantments.INFINITY_ARROWS, stack) > 0
-                    || Platform.INSTANCE.getPlayerData(player).map(cap -> cap.useMana(player, this.arrowMana)).orElse(false);
+                    || Platform.INSTANCE.getPlayerData(player).map(cap -> cap.useMana(player, Config.Common.archerBowMana)).orElse(false);
             int i = this.getUseDuration(stack) - timeLeft;
 
             if (flag) {

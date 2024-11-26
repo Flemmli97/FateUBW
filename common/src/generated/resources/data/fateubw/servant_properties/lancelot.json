@@ -7,5 +7,5 @@
   "health": 450.0,
   "magicProt": 4.0,
   "moveSpeed": 0.26,
-  "projectileBlockChance": 0.4
+  "projectileBlockChance": 0.1
 }

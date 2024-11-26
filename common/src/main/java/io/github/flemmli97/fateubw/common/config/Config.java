@@ -44,25 +44,35 @@ public class Config {
         //Minions
         public static int gillesMinionDuration = 6000;
         public static int gillesMinionAmount = 6;
-        public static float smallMonsterDamage = 14;
+        public static float smallMonsterDamage = 13;
         public static float babylonScale = 1.5f;
         public static WeaponList babylonWeapons = new WeaponList(ModItems.ENUMAELISH.getID().toString());
-        public static float eaDamage = 21;
-        public static float excaliburDamage = 19;
-        public static float caladBolgDmg = 18;
-        public static float magicBeam = 6;
-        public static float gaeBolgDmg = 10;
+        public static float eaDamage = 30;
+        public static float excaliburDamage = 25;
+        public static float caladBolgDmg = 20;
+        public static float magicBeam = 9;
+        public static float gaeBolgDmg = 15;
         public static PotionEffectsConfig gaeBolgEffect = new PotionEffectsConfig(
                 List.of(new PotionEffectsConfig.EffectInstance(MobEffects.WITHER, 400, 2),
                         new PotionEffectsConfig.EffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 200, 7),
                         new PotionEffectsConfig.EffectInstance(MobEffects.JUMP, 200, 128))
         );
         public static double gordiusHealth = 100;
-        public static float gordiusDmg = 10;
-        public static double pegasusHealth = 50;
+        public static float gordiusDmg = 11;
+        public static double pegasusHealth = 70;
         public static float pegasusDamage = 14;
         public static int medeaCircleSpan = 12000;
         public static float medeaCircleRange = 32;
+
+        //Items
+        public static int excaliburMana = 70;
+        public static int eaMana = 70;
+        public static int archerBowMana = 3;
+        public static int caladbolgMana = 40;
+        public static int gaeBolgMana = 15;
+        public static int grimoireMana = 30;
+        public static int chainMana = 0;
+        public static int daggerThrowMana = 5;
 
         public static boolean debugAttack = false;
     }

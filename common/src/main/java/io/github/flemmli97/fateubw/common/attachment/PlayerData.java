@@ -21,6 +21,8 @@ public class PlayerData {
     private static final Predicate<BaseServant> NOT_DEAD = t -> !t.isDeadOrDying();
 
     private int currentMana, commandSeals = 0;
+    private int manaRegenCooldown = 100;
+    private float manaRegenAccel = 1;
 
     private CompoundTag savedServant;
 
@@ -47,10 +49,20 @@ public class PlayerData {
         boolean flag = this.currentMana >= amount;
         if (flag) {
             this.currentMana -= amount;
+            this.manaRegenAccel = 1;
+            this.manaRegenCooldown = 160;
             if (player instanceof ServerPlayer serverPlayer)
                 NetworkCalls.INSTANCE.sendToClient(new S2CMana(this), serverPlayer);
         }
         return flag;
+    }
+
+    public void tick(ServerPlayer player) {
+        if (--this.manaRegenCooldown <= 0) {
+            this.addMana(player, 1);
+            this.manaRegenCooldown = (int) (80 / this.manaRegenAccel);
+            this.manaRegenAccel = Math.min(this.manaRegenAccel + 0.5f, 10);
+        }
     }
 
     public void saveServant(ServerPlayer player) {

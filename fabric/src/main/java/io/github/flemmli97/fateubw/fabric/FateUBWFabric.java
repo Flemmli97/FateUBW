@@ -105,6 +105,7 @@ public class FateUBWFabric implements ModInitializer {
     }
 
     public static void entityTick(LivingEntity entity) {
+        EventCalls.tick(entity);
         if (entity.level.isClientSide)
             ClientCalls.tick(entity);
     }

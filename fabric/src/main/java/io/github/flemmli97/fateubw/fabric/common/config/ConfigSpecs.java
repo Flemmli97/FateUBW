@@ -89,6 +89,15 @@ public class ConfigSpecs {
         public final CommentedJsonConfig.IntVal medeaCircleSpan;
         public final CommentedJsonConfig.DoubleVal medeaCircleRange;
 
+        public final CommentedJsonConfig.IntVal excaliburMana;
+        public final CommentedJsonConfig.IntVal eaMana;
+        public final CommentedJsonConfig.IntVal archerBowMana;
+        public final CommentedJsonConfig.IntVal caladbolgMana;
+        public final CommentedJsonConfig.IntVal gaeBolgMana;
+        public final CommentedJsonConfig.IntVal grimoireMana;
+        public final CommentedJsonConfig.IntVal chainMana;
+        public final CommentedJsonConfig.IntVal daggerThrowMana;
+
         public final CommentedJsonConfig.CommentedVal<Boolean> debugAttack;
 
         public Common(CommentedJsonConfig.Builder builder) {
@@ -139,6 +148,17 @@ public class ConfigSpecs {
             this.pegasusDamage = builder.comment("Damage of Pegasus").defineInRange("Pegasus Damage", Config.Common.pegasusDamage, 0, Double.MAX_VALUE);
             this.medeaCircleSpan = builder.comment("Time in ticks for medeas magic circle").defineInRange("Magic Circle Duration", Config.Common.medeaCircleSpan, 0, Integer.MAX_VALUE);
             this.medeaCircleRange = builder.comment("Range of medeas magic circle").defineInRange("Magic Circle Range", Config.Common.medeaCircleRange, 0, Double.MAX_VALUE);
+            builder.pop();
+
+            builder.push("weapons");
+            this.excaliburMana = builder.comment("Mana cost for using excalibur").defineInRange("Excalibur Mana", Config.Common.excaliburMana, 0, Integer.MAX_VALUE);
+            this.eaMana = builder.comment("Mana cost for using EA").defineInRange("EA Mana", Config.Common.eaMana, 0, Integer.MAX_VALUE);
+            this.archerBowMana = builder.comment("Mana cost shooting arrows with archers bow").defineInRange("Archer Arrow Cost", Config.Common.archerBowMana, 0, Integer.MAX_VALUE);
+            this.caladbolgMana = builder.comment("Mana cost charging archers bow with caladbolg").defineInRange("Caladbolg Mana", Config.Common.caladbolgMana, 0, Integer.MAX_VALUE);
+            this.gaeBolgMana = builder.comment("Mana cost for throwing gae bolg").defineInRange("Gae Bolg Mana", Config.Common.gaeBolgMana, 0, Integer.MAX_VALUE);
+            this.grimoireMana = builder.comment("Mana cost for summoning a monster using the spellbook").defineInRange("Monster Summon Mana", Config.Common.grimoireMana, 0, Integer.MAX_VALUE);
+            this.chainMana = builder.comment("Mana cost for throwing the chain dagger").defineInRange("Chain Throw Mana", Config.Common.chainMana, 0, Integer.MAX_VALUE);
+            this.daggerThrowMana = builder.comment("Mana cost for throwing hassans dagger").defineInRange("Dagger Throw Mana", Config.Common.daggerThrowMana, 0, Integer.MAX_VALUE);
             builder.pop();
 
             this.debugAttack = builder.comment("Turn on attack bounding box debugging").define("Debug Attack", Config.Common.debugAttack);

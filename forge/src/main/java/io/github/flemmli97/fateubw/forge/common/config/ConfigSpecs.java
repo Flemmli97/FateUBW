@@ -10,10 +10,10 @@ import java.util.List;
 public class ConfigSpecs {
 
     public static final ForgeConfigSpec CLIENT_SPEC;
-    public static final Client CLIENT_CONF;
+    public static final Client CLIENT_CONFIG;
 
     public static final ForgeConfigSpec COMMON_SPEC;
-    public static final Common COMMON_CONF;
+    public static final Common COMMON_CONFIG;
 
     public static class Client {
 
@@ -71,6 +71,15 @@ public class ConfigSpecs {
         public final ForgeConfigSpec.IntValue medeaCircleSpan;
         public final ForgeConfigSpec.DoubleValue medeaCircleRange;
 
+        public final ForgeConfigSpec.IntValue excaliburMana;
+        public final ForgeConfigSpec.IntValue eaMana;
+        public final ForgeConfigSpec.IntValue archerBowMana;
+        public final ForgeConfigSpec.IntValue caladbolgMana;
+        public final ForgeConfigSpec.IntValue gaeBolgMana;
+        public final ForgeConfigSpec.IntValue grimoireMana;
+        public final ForgeConfigSpec.IntValue chainMana;
+        public final ForgeConfigSpec.IntValue daggerThrowMana;
+
         public final ForgeConfigSpec.BooleanValue debugAttack;
 
         public Common(ForgeConfigSpec.Builder builder) {
@@ -123,6 +132,17 @@ public class ConfigSpecs {
             this.medeaCircleRange = builder.comment("Range of medeas magic circle").defineInRange("Magic Circle Range", Config.Common.medeaCircleRange, 0, Double.MAX_VALUE);
             builder.pop();
 
+            builder.push("weapons");
+            this.excaliburMana = builder.comment("Mana cost for using excalibur").defineInRange("Excalibur Mana", Config.Common.excaliburMana, 0, Integer.MAX_VALUE);
+            this.eaMana = builder.comment("Mana cost for using EA").defineInRange("EA Mana", Config.Common.eaMana, 0, Integer.MAX_VALUE);
+            this.archerBowMana = builder.comment("Mana cost shooting arrows with archers bow").defineInRange("Archer Arrow Cost", Config.Common.archerBowMana, 0, Integer.MAX_VALUE);
+            this.caladbolgMana = builder.comment("Mana cost charging archers bow with caladbolg").defineInRange("Caladbolg Mana", Config.Common.caladbolgMana, 0, Integer.MAX_VALUE);
+            this.gaeBolgMana = builder.comment("Mana cost for throwing gae bolg").defineInRange("Gae Bolg Mana", Config.Common.gaeBolgMana, 0, Integer.MAX_VALUE);
+            this.grimoireMana = builder.comment("Mana cost for summoning a monster using the spellbook").defineInRange("Monster Summon Mana", Config.Common.grimoireMana, 0, Integer.MAX_VALUE);
+            this.chainMana = builder.comment("Mana cost for throwing the chain dagger").defineInRange("Chain Throw Mana", Config.Common.chainMana, 0, Integer.MAX_VALUE);
+            this.daggerThrowMana = builder.comment("Mana cost for throwing hassans dagger").defineInRange("Dagger Throw Mana", Config.Common.daggerThrowMana, 0, Integer.MAX_VALUE);
+            builder.pop();
+
             this.debugAttack = builder.comment("Turn on attack bounding box debugging").define("Debug Attack", Config.Common.debugAttack);
         }
     }
@@ -130,10 +150,10 @@ public class ConfigSpecs {
     static {
         Pair<Client, ForgeConfigSpec> specPair1 = new ForgeConfigSpec.Builder().configure(Client::new);
         CLIENT_SPEC = specPair1.getRight();
-        CLIENT_CONF = specPair1.getLeft();
+        CLIENT_CONFIG = specPair1.getLeft();
 
         Pair<Common, ForgeConfigSpec> specPair2 = new ForgeConfigSpec.Builder().configure(Common::new);
         COMMON_SPEC = specPair2.getRight();
-        COMMON_CONF = specPair2.getLeft();
+        COMMON_CONFIG = specPair2.getLeft();
     }
 }

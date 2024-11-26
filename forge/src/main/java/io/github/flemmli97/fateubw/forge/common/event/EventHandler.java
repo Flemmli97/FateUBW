@@ -67,6 +67,7 @@ public class EventHandler {
 
     @SubscribeEvent
     public static void updateLivingTick(LivingEvent.LivingUpdateEvent event) {
+        EventCalls.tick(event.getEntityLiving());
         if (event.getEntityLiving().level.isClientSide)
             ClientCalls.tick(event.getEntityLiving());
     }

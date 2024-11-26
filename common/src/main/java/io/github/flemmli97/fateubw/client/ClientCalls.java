@@ -27,7 +27,7 @@ public class ClientCalls {
     }
 
     public static void tick(Entity entity) {
-        if (entity == Minecraft.getInstance().player) {
+        if (entity == Minecraft.getInstance().cameraEntity) {
             ShakeHandler.shakeTick--;
         }
     }

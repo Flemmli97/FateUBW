@@ -102,7 +102,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
 
     protected static final Vector4f SUMMON_COLOR = new Vector4f(60 / 255f, 118 / 255f, 199 / 255f, 0.8f);
     //Mana
-    private int servantMana, antiRegen, counter;
+    private int servantMana, manaRegenCounter;
     private boolean died = false;
     protected int combatTick;
     protected boolean canUseNP, critHealth;
@@ -296,15 +296,15 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
             return false;
         } else {
             this.servantMana -= amount;
-            this.antiRegen = 30;
+            this.manaRegenCounter = 40;
             return true;
         }
     }
 
     private void regenMana() {
-        if (this.canUseNP && this.servantMana < 100 && --this.antiRegen <= 0 && ++this.counter >= 20) {
+        if (this.canUseNP && this.servantMana < 100 && --this.manaRegenCounter <= 0) {
             this.servantMana += 1;
-            this.counter = 0;
+            this.manaRegenCounter = 10;
         }
     }
 

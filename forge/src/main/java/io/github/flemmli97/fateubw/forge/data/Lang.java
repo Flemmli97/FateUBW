@@ -208,6 +208,9 @@ public class Lang implements DataProvider {
 
         this.add("fateubw.tooltip.item.spawn", "Right click in air to change data");
         this.add("fateubw.tooltip.item.command", "Allows commanding your servant");
+        this.add("fateubw.tooltip.item.mana", "Consumes %s mana on use");
+        this.add("fateubw.tooltip.item.bow.arrow", "Consumes %s mana per arrow");
+        this.add("fateubw.tooltip.item.caladbolg", "Left click to charge an explosive shot. Consumes %s mana");
 
         this.add("fateubw_book", "Fate Guidebook");
         this.add("fateubw.patchouli.landing", "");

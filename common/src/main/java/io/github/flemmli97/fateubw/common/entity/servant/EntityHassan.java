@@ -65,14 +65,14 @@ public class EntityHassan extends BaseServant {
                     .chain(GoalAttackAction.<EntityHassan>chainBuilder(EntityHassan.MELEE_1_2)
                             .chain(List.of(new GoalAttackAction.ChainedAction<>(EntityHassan.MELEE_1_2, e -> 0),
                                     new GoalAttackAction.ChainedAction<>(EntityHassan.MELEE_2_2, e -> 0)))
-                            .withPredicate(e -> e.getRandom().nextFloat() < 0.6))
+                            .withPredicate(e -> e.getRandom().nextFloat() < 0.7))
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 11),
             WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.MELEE_2)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
                     .chain(GoalAttackAction.<EntityHassan>chainBuilder(EntityHassan.MELEE_2_2)
                             .chain(List.of(new GoalAttackAction.ChainedAction<>(EntityHassan.MELEE_2_2, e -> 0),
                                     new GoalAttackAction.ChainedAction<>(EntityHassan.MELEE_1_2, e -> 0)))
-                            .withPredicate(e -> e.getRandom().nextFloat() < 0.6))
+                            .withPredicate(e -> e.getRandom().nextFloat() < 0.7))
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 11),
             WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.STAB)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
