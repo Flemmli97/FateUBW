@@ -101,4 +101,9 @@ public class PlatformImpl implements Platform {
     public AbstractArrow customBowArrow(BowItem item, AbstractArrow def) {
         return item.customArrow(def);
     }
+
+    @Override
+    public boolean shouldSit(Entity entity) {
+        return entity.getVehicle() != null && entity.getVehicle().shouldRiderSit();
+    }
 }

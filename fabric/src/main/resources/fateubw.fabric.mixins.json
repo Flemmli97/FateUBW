@@ -14,7 +14,8 @@
   ],
   "client": [
     "CameraAccessor",
-    "GameRendererMixin"
+    "GameRendererMixin",
+    "ParticleEngineMixin"
   ],
   "injectors": {
     "defaultRequire": 1

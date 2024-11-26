@@ -497,7 +497,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
 
     @Override
     public double getMyRidingOffset() {
-        return StandingVehicle.stand(this.getVehicle()) ? 0 : -0.35;
+        return StandingVehicle.shouldSit(this) ? -0.35 : 0;
     }
 
     private void addEntityOwner(ServerPlayer serverPlayer) {

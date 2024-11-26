@@ -117,11 +117,11 @@ public class EntityIskander extends BaseServant {
     }
 
     protected boolean useStandingAnim() {
-        return this.getVehicle() != null && StandingVehicle.stand(this.getVehicle());
+        return this.getVehicle() != null && !StandingVehicle.shouldSit(this.getVehicle());
     }
 
     protected boolean useSittingAnim() {
-        return this.getVehicle() != null && !(this.getVehicle() instanceof StandingVehicle);
+        return StandingVehicle.shouldSit(this);
     }
 
     @Override

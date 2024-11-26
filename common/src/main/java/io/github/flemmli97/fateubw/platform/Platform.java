@@ -2,6 +2,8 @@ package io.github.flemmli97.fateubw.platform;
 
 import io.github.flemmli97.fateubw.common.attachment.ItemStackData;
 import io.github.flemmli97.fateubw.common.attachment.PlayerData;
+import io.github.flemmli97.fateubw.common.entity.StandingVehicle;
+import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.platform.InitUtil;
 import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.world.damagesource.DamageSource;
@@ -56,4 +58,8 @@ public interface Platform {
     DamageSource setBypassArmor(DamageSource source);
 
     AbstractArrow customBowArrow(BowItem item, AbstractArrow def);
+
+    default boolean shouldSit(Entity entity) {
+        return entity.getVehicle() != null;
+    }
 }

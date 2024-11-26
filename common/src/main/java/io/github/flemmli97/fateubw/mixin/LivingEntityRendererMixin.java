@@ -20,7 +20,7 @@ public class LivingEntityRendererMixin<T extends LivingEntity, M extends EntityM
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;isBaby()Z", ordinal = 0))
     private void nonSit(T entity, float entityYaw, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int packedLight, CallbackInfo info) {
-        if (StandingVehicle.stand(entity.getVehicle()))
+        if (!StandingVehicle.shouldSit(entity))
             this.model.riding = false;
     }
 }
