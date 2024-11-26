@@ -69,8 +69,8 @@ public class LesserMonster extends PathfinderMob implements IAnimated, OwnableEn
     }
 
     protected void setAttributes() {
+        this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(Config.Common.smallMonsterHealth);
         this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(Config.Common.smallMonsterDamage);
-        this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(18);
         this.getAttribute(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
     }
 

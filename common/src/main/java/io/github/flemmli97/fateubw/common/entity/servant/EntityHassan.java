@@ -18,6 +18,7 @@ import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveAwayRunn
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTargetAttackRunner;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTargetRunner;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.WrappedRunner;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
@@ -58,6 +59,8 @@ public class EntityHassan extends BaseServant {
     private static final AnimatedAction DUPE = new AnimatedAction(1.4, 0.84, "dupe");
     public static final AnimatedAction SUMMON = new AnimatedAction(2., 0, "summon");
     private static final AnimatedAction[] ANIMS = {MELEE_1, MELEE_1_2, MELEE_2, MELEE_2_2, STAB, STAB_2, THROW, DUPE, SUMMON};
+
+    private static final byte SMOKE = 64;
 
     public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityHassan>>> ATTACKS = List.of(
             WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.MELEE_1)
@@ -129,7 +132,7 @@ public class EntityHassan extends BaseServant {
 
     @Override
     public boolean canUseNP() {
-        return super.canUseNP() && this.copies.isEmpty();
+        return super.canUseNP() && this.gatherCopies().isEmpty();
     }
 
     @Override
@@ -149,10 +152,13 @@ public class EntityHassan extends BaseServant {
     @Override
     public void handleAttack(AnimatedAction anim) {
         if (anim.is(DUPE)) {
+            if (anim.isAtTick(0.72)) {
+                this.level.broadcastEntityEvent(this, SMOKE);
+            }
             if (anim.canAttack()) {
                 if (!this.forcedNP)
                     this.useMana(this.props().hogouMana());
-                this.attackWithNP();
+                this.summonClones();
                 this.forcedNP = false;
             }
         } else if (anim.is(THROW)) {
@@ -212,6 +218,19 @@ public class EntityHassan extends BaseServant {
     }
 
     @Override
+    public void handleEntityEvent(byte id) {
+        if (id == SMOKE) {
+            for (int i = 0; i < 32; i++) {
+                this.level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE,
+                        this.getX((this.getRandom().nextDouble() * 2 - 1) * 1.2), this.getY(this.getRandom().nextDouble() * 1.2), this.getZ((this.getRandom().nextDouble() * 2 - 1) * 1.2),
+                        this.getRandom().nextGaussian() * 0.02, this.getRandom().nextGaussian() * 0.02, this.getRandom().nextGaussian() * 0.02);
+            }
+        } else {
+            super.handleEntityEvent(id);
+        }
+    }
+
+    @Override
     protected void actuallyHurt(DamageSource damageSrc, float damageAmount) {
         super.actuallyHurt(damageSrc, damageAmount);
         if (!this.dead && this.getHealth() < 0.5 * this.getMaxHealth()) {
@@ -219,7 +238,7 @@ public class EntityHassan extends BaseServant {
         }
     }
 
-    public void attackWithNP() {
+    public void summonClones() {
         if (this.gatherCopies().isEmpty()) {
             this.copies.clear();
             for (int i = 0; i < Config.Common.hassanCopies; i++) {
@@ -231,8 +250,10 @@ public class EntityHassan extends BaseServant {
             }
             this.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 300, 1, true, false));
             this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 100, 2, true, false));
-            if (this.getTarget() instanceof Mob)
-                ((Mob) this.getTarget()).setTarget(null);
+            for (Mob mob : this.level.getEntitiesOfClass(Mob.class, this.getBoundingBox().inflate(32))) {
+                if (mob.getTarget() == this)
+                    mob.setTarget(null);
+            }
             this.revealServant();
         }
     }

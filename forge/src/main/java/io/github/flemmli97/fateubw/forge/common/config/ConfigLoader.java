@@ -33,6 +33,7 @@ public class ConfigLoader {
         //Minions
         Config.Common.gillesMinionDuration = ConfigSpecs.COMMON_CONFIG.gillesMinionDuration.get();
         Config.Common.gillesMinionAmount = ConfigSpecs.COMMON_CONFIG.gillesMinionAmount.get();
+        Config.Common.smallMonsterHealth = ConfigSpecs.COMMON_CONFIG.smallMonsterHealth.get().floatValue();
         Config.Common.smallMonsterDamage = ConfigSpecs.COMMON_CONFIG.smallMonsterDamage.get().floatValue();
         Config.Common.babylonScale = ConfigSpecs.COMMON_CONFIG.babylonScale.get().floatValue();
         Config.Common.babylonWeapons.readFromString(ConfigSpecs.COMMON_CONFIG.babylonWeaponsBlacklist.get());

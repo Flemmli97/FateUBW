@@ -736,7 +736,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     @Override
     public boolean doHurtTarget(Entity entity) {
         this.getAttribute(Attributes.ATTACK_DAMAGE)
-                .addTransientModifier(new AttributeModifier(DAMAGE_MODIFIER, "fate.dmg.mod", this.damageModifier(entity),
+                .addTransientModifier(new AttributeModifier(DAMAGE_MODIFIER, "fate.dmg.mod", this.damageModifier(entity) - 1,
                         AttributeModifier.Operation.MULTIPLY_TOTAL));
         boolean hurt = super.doHurtTarget(entity);
         this.getAttribute(Attributes.ATTACK_DAMAGE)

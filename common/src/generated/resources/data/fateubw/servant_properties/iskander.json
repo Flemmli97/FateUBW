@@ -1,11 +1,11 @@
 {
   "class": "fateubw:rider",
-  "strength": 5.5,
+  "strength": 7.0,
   "armor": 10.0,
   "projectileProt": 9.0,
-  "nobelPhantasmCost": 100,
+  "nobelPhantasmCost": 70,
   "health": 400.0,
   "magicProt": 9.5,
-  "moveSpeed": 0.3,
+  "moveSpeed": 0.35,
   "projectileBlockChance": 0.0
 }

@@ -54,6 +54,7 @@ public class ConfigSpecs {
         //Minions
         public final ForgeConfigSpec.IntValue gillesMinionDuration;
         public final ForgeConfigSpec.IntValue gillesMinionAmount;
+        public final ForgeConfigSpec.DoubleValue smallMonsterHealth;
         public final ForgeConfigSpec.DoubleValue smallMonsterDamage;
         public final ForgeConfigSpec.DoubleValue babylonScale;
         public final ForgeConfigSpec.ConfigValue<List<String>> babylonWeaponsBlacklist;
@@ -112,6 +113,7 @@ public class ConfigSpecs {
             builder.push("misc");
             this.gillesMinionDuration = builder.comment("Living duration of gilles monster in ticks").defineInRange("Gilles Monster", Config.Common.gillesMinionDuration, 0, Integer.MAX_VALUE);
             this.gillesMinionAmount = builder.comment("Max amount gilles can have at once").defineInRange("Gilles Monster Max Amount", Config.Common.gillesMinionAmount, 0, Integer.MAX_VALUE);
+            this.smallMonsterHealth = builder.comment("Health for gilles summoned monsters").defineInRange("Monster Health", Config.Common.smallMonsterHealth, 0, Double.MAX_VALUE);
             this.smallMonsterDamage = builder.comment("Damage by gilles small monsters").defineInRange("Small Monster Damage", Config.Common.smallMonsterDamage, 0, Double.MAX_VALUE);
             this.babylonScale = builder.comment("Damage scaling for projectiles from the gate of babylon").defineInRange("Babylon Dmg Scale", Config.Common.babylonScale, 0, Double.MAX_VALUE);
             this.babylonWeaponsBlacklist = builder.comment("Blacklist weapons for the gate of babylon here. You can also use the modid for a whole mod").define("Babylon Blacklist",
