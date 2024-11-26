@@ -191,11 +191,16 @@ public class ModEntities {
         map.put(ModEntities.HASSAN.get(), BaseServant.createMobAttributes());
         map.put(ModEntities.SASAKI.get(), BaseServant.createMobAttributes());
 
-        map.put(ModEntities.LESSER_MONSTER.get(), BaseServant.createMobAttributes().add(Attributes.MOVEMENT_SPEED, 0.25));
-        map.put(ModEntities.GORDIUS_WHEEL.get(), Monster.createMonsterAttributes().add(Attributes.MOVEMENT_SPEED, 0.37)
+        map.put(ModEntities.LESSER_MONSTER.get(), Monster.createMonsterAttributes()
                 .add(Attributes.ARMOR, 4)
+                .add(Attributes.KNOCKBACK_RESISTANCE, 1)
+                .add(Attributes.MOVEMENT_SPEED, 0.28));
+        map.put(ModEntities.GORDIUS_WHEEL.get(), Monster.createMonsterAttributes().add(Attributes.MOVEMENT_SPEED, 0.37)
+                .add(Attributes.ARMOR, 6)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1));
-        map.put(ModEntities.PEGASUS.get(), BaseServant.createMobAttributes().add(Attributes.MOVEMENT_SPEED, 0.3));
+        map.put(ModEntities.PEGASUS.get(), Monster.createMonsterAttributes()
+                .add(Attributes.ARMOR, 5)
+                .add(Attributes.MOVEMENT_SPEED, 0.34));
         map.put(ModEntities.HASSAN_COPY.get(), BaseServant.createMobAttributes());
         return map;
     }
