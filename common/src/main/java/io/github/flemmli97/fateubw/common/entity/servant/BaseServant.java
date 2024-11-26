@@ -102,7 +102,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
 
     protected static final Vector4f SUMMON_COLOR = new Vector4f(60 / 255f, 118 / 255f, 199 / 255f, 0.8f);
     //Mana
-    private int servantMana, manaRegenCounter;
+    private int servantMana = 100, manaRegenCounter;
     private boolean died = false;
     protected int combatTick;
     protected boolean canUseNP, critHealth;
