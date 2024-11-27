@@ -56,14 +56,14 @@ public class EnumaElish extends EntityBeam {
         if (this.level.isClientSide) {
             if (this.livingTicks <= this.livingTickMax() - 15)
                 for (int i = 0; i < 2; i++)
-                    this.level.addParticle(new ColoredParticleData(ModParticles.LIGHT.get(), 230 / 255F, 90 / 255F, 90 / 255F, 0.6f, 2), this.hitVec.x(), this.hitVec.y() - 0.15, this.hitVec.z(), this.random.nextGaussian() * 0.007, this.random.nextGaussian() * 0.007 + 0.003, this.random.nextGaussian() * 0.007);
+                    this.level.addParticle(new ColoredParticleData(ModParticles.LIGHT.get(), 162 / 255F, 12 / 255F, 12 / 255F, 0.6f, 2), this.hitVec.x(), this.hitVec.y() - 0.15, this.hitVec.z(), this.random.nextGaussian() * 0.007, this.random.nextGaussian() * 0.007 + 0.003, this.random.nextGaussian() * 0.007);
             Vec3 pos = this.position();
             for (int i = 0; i < 4; i++) {
                 double upScale = this.random.nextDouble() * 2 - 1 + 0.3;
                 double sideScale = this.random.nextDouble() * 2.2 - 1.1;
                 double lenScale = this.random.nextDouble();
                 Vec3 ppos = pos.add(this.up.scale(upScale)).add(this.side.scale(sideScale)).add(this.dir.scale(lenScale));
-                this.level.addParticle(new ColoredParticleData(ModParticles.LIGHT.get(), 230 / 255F, 90 / 255F, 90 / 255F, 1, 0.15f), ppos.x(), ppos.y(), ppos.z(), this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01);
+                this.level.addParticle(new ColoredParticleData(ModParticles.LIGHT.get(), 162 / 255F, 12 / 255F, 12 / 255F, 1, 0.15f), ppos.x(), ppos.y(), ppos.z(), this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01);
             }
             if (this.tickCount % 3 == 1) {
                 ShakeHandler.shakeScreen(this.position(), this.getRange() + 4, 3, 1.5f);
