@@ -18,6 +18,7 @@ import io.github.flemmli97.fateubw.common.entity.misc.Excalibur;
 import io.github.flemmli97.fateubw.common.entity.misc.GaeBolg;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicBeam;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicBufCircle;
+import io.github.flemmli97.fateubw.common.entity.misc.MagicShot;
 import io.github.flemmli97.fateubw.common.entity.misc.ThrownGem;
 import io.github.flemmli97.fateubw.common.entity.misc.ThrownItemEntity;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
@@ -119,10 +120,11 @@ public class ModEntities {
     public static final RegistryEntrySupplier<EntityType<BabylonWeapon>> BABYLON = reg(EntityType.Builder.<BabylonWeapon>of(BabylonWeapon::new, MobCategory.MISC).sized(0.25F, 0.25F), new ResourceLocation(Fate.MODID, "babylon"));
     public static final RegistryEntrySupplier<EntityType<EnumaElish>> EA = reg(EntityType.Builder.<EnumaElish>of(EnumaElish::new, MobCategory.MISC).sized(0.05F, 0.05F), new ResourceLocation(Fate.MODID, "ea"));
     public static final RegistryEntrySupplier<EntityType<MagicBeam>> MAGIC_BEAM = reg(EntityType.Builder.of(MagicBeam::new, MobCategory.MISC), new ResourceLocation(Fate.MODID, "magic_beam"));
-    public static final RegistryEntrySupplier<EntityType<MagicBufCircle>> MEDEA_CIRCLE = reg(EntityType.Builder.of(MagicBufCircle::new, MobCategory.MISC), new ResourceLocation(Fate.MODID, "medea_circle"));
+    public static final RegistryEntrySupplier<EntityType<MagicBufCircle>> MEDEA_CIRCLE = reg(EntityType.Builder.of(MagicBufCircle::new, MobCategory.MISC), new ResourceLocation(Fate.MODID, "medeas_circle"));
     public static final RegistryEntrySupplier<EntityType<ThrownItemEntity>> THROWN_ITEM = reg(EntityType.Builder.<ThrownItemEntity>of(ThrownItemEntity::new, MobCategory.MISC).sized(0.25F, 0.25F), new ResourceLocation(Fate.MODID, "thrown_item"));
-    public static final RegistryEntrySupplier<EntityType<ChainDagger>> DAGGER_HOOK = reg(EntityType.Builder.<ChainDagger>of(ChainDagger::new, MobCategory.MISC).updateInterval(5).sized(0.25F, 0.25F), new ResourceLocation(Fate.MODID, "medusa_dagger"));
-    public static final RegistryEntrySupplier<EntityType<ThrownGem>> GEM = reg(EntityType.Builder.<ThrownGem>of(ThrownGem::new, MobCategory.MISC).sized(0.25F, 0.25F), new ResourceLocation(Fate.MODID, "entity_gem"));
+    public static final RegistryEntrySupplier<EntityType<ChainDagger>> DAGGER_HOOK = reg(EntityType.Builder.<ChainDagger>of(ChainDagger::new, MobCategory.MISC).updateInterval(5).sized(0.25F, 0.25F), new ResourceLocation(Fate.MODID, "medusas_dagger"));
+    public static final RegistryEntrySupplier<EntityType<ThrownGem>> GEM = reg(EntityType.Builder.<ThrownGem>of(ThrownGem::new, MobCategory.MISC).sized(0.25F, 0.25F), new ResourceLocation(Fate.MODID, "thrown_gem"));
+    public static final RegistryEntrySupplier<EntityType<MagicShot>> MAGIC_SHOT = reg(EntityType.Builder.<MagicShot>of(MagicShot::new, MobCategory.MISC).sized(0.25F, 0.25F), new ResourceLocation(Fate.MODID, "magic_shot"));
 
     public static final RegistryEntrySupplier<EntityType<LesserMonster>> LESSER_MONSTER = regWithEgg(EntityType.Builder.<LesserMonster>of(LesserMonster::new, MobCategory.MONSTER).clientTrackingRange(8), new ResourceLocation(Fate.MODID, "starfish_monster"), 0x171c3f, 0x00ff00);
     public static final RegistryEntrySupplier<EntityType<GordiusWheel>> GORDIUS_WHEEL = regWithEgg(EntityType.Builder.of(GordiusWheel::new, MobCategory.CREATURE).sized(2, 1.5f), new ResourceLocation(Fate.MODID, "gordius_wheel"), 0x87595c, 0x981a24);
@@ -200,7 +202,8 @@ public class ModEntities {
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1));
         map.put(ModEntities.PEGASUS.get(), Monster.createMonsterAttributes()
                 .add(Attributes.ARMOR, 5)
-                .add(Attributes.MOVEMENT_SPEED, 0.34));
+                .add(Attributes.MOVEMENT_SPEED, 0.34)
+                .add(Attributes.FLYING_SPEED, 0.44));
         map.put(ModEntities.HASSAN_COPY.get(), BaseServant.createMobAttributes());
         return map;
     }

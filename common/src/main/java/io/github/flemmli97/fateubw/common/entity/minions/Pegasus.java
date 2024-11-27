@@ -87,7 +87,7 @@ public class Pegasus extends PathfinderMob implements IAnimated, StandingVehicle
                     .withCondition(((goal, target, previous) -> !goal.attacker.canFly() && (goal.distanceToTargetSq > 25 || goal.attacker.getRandom().nextFloat() < 0.5)))
                     .prepare(ChargeTo::new), 5),
             WeightedEntry.wrap(new GoalAttackAction<Pegasus>(Pegasus.CHARGING)
-                    .cooldown(e -> e.getRandom().nextInt(125) + 90)
+                    .cooldown(e -> e.getRandom().nextInt(100) + 100)
                     .withCondition(((goal, target, previous) -> goal.attacker.canFly()))
                     .prepare(ChargeTo::new), 5)
     );
@@ -510,7 +510,7 @@ public class Pegasus extends PathfinderMob implements IAnimated, StandingVehicle
                 BlockPos targetPos = this.mob.getNavigation().getTargetPos();
                 if (targetPos == null)
                     return;
-                float speed = (float) (this.speedModifier * this.mob.getAttributeValue(Attributes.MOVEMENT_SPEED));
+                float speed = (float) (this.speedModifier * this.mob.getAttributeValue(Attributes.FLYING_SPEED));
                 Vec3 target = Vec3.atCenterOf(targetPos);
                 double dX = target.x() - this.mob.getX();
                 double dY = target.y() - this.mob.getY();

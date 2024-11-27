@@ -6,8 +6,9 @@ import net.minecraft.world.entity.Entity;
 public interface StandingVehicle {
 
     static boolean shouldSit(Entity entity) {
-        return entity.getVehicle() != null && (entity.getVehicle() instanceof StandingVehicle stand && !stand.shouldStand()
-                || Platform.INSTANCE.shouldSit(entity));
+        if (entity.getVehicle() instanceof StandingVehicle stand && stand.shouldStand())
+            return false;
+        return entity.getVehicle() != null && Platform.INSTANCE.shouldSit(entity);
     }
 
     default boolean shouldStand() {
