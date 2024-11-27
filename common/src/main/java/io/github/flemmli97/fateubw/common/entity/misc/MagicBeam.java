@@ -4,6 +4,7 @@ import io.github.flemmli97.fateubw.common.config.Config;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModParticles;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
+import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.particle.ColoredParticleData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -72,7 +73,7 @@ public class MagicBeam extends BaseBeam {
 
     @Override
     public void onImpact(EntityHitResult result) {
-        result.getEntity().hurt(CustomDamageSource.magicBeam(this, this.getOwner()), Config.Common.magicBeam);
+        result.getEntity().hurt(CustomDamageSource.magicBeam(this, this.getOwner()), Utils.magicDamage(this.getOwner()) + Config.Common.magicBeam);
     }
 
     private int getPreShootTick() {

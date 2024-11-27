@@ -1,11 +1,12 @@
 {
   "class": "fateubw:saber",
+  "health": 400.0,
   "strength": 10.0,
+  "magic": 0.0,
   "armor": 16.0,
   "projectileProt": 12.0,
-  "nobelPhantasmCost": 80,
-  "health": 400.0,
   "magicProt": 10.0,
   "moveSpeed": 0.32,
-  "projectileBlockChance": 0.15
+  "projectileBlockChance": 0.15,
+  "nobelPhantasmCost": 80
 }

@@ -4,6 +4,7 @@ import com.mojang.math.Vector3f;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModParticles;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
+import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.particle.ColoredParticleData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -22,7 +23,6 @@ public class MagicShot extends BaseProjectile {
 
     private ColorType colorType = ColorType.PURPLE;
 
-    protected float damage;
 
     public MagicShot(EntityType<? extends MagicShot> type, Level world) {
         super(type, world);
@@ -30,10 +30,6 @@ public class MagicShot extends BaseProjectile {
 
     public MagicShot(Level world, LivingEntity shootingEntity) {
         super(ModEntities.MAGIC_SHOT.get(), world, shootingEntity);
-    }
-
-    public void setDamage(float damage) {
-        this.damage = damage;
     }
 
     @Override
@@ -94,7 +90,7 @@ public class MagicShot extends BaseProjectile {
     @Override
     protected boolean entityRayTraceHit(EntityHitResult result) {
         this.discard();
-        return result.getEntity().hurt(CustomDamageSource.babylon(this, this.getOwner()), this.damage);
+        return result.getEntity().hurt(CustomDamageSource.babylon(this, this.getOwner()), Utils.magicDamage(this.getOwner()));
     }
 
     @Override
@@ -106,13 +102,11 @@ public class MagicShot extends BaseProjectile {
     protected void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
         compound.putInt("Color", this.colorType.ordinal());
-        compound.putFloat("Damage", this.damage);
     }
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        this.damage = compound.getFloat("Damage");
         this.setType(ColorType.values()[compound.getInt("Color")]);
     }
 

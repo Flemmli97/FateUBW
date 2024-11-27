@@ -12,6 +12,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.UUID;
@@ -51,6 +52,12 @@ public class Utils {
             return damage;
         float reduceAmount = (float) Mth.clamp(1 - entity.getAttribute(ModAttributes.PROJECTILE_RESISTANCE.get()).getValue() * 0.04, 0.1, 1);
         return damage * reduceAmount;
+    }
+
+    public static float magicDamage(@Nullable Entity entity) {
+        if (!(entity instanceof LivingEntity living) || living.getAttribute(ModAttributes.MAGIC_ATTACK.get()) == null)
+            return 0;
+        return (float) living.getAttributeValue(ModAttributes.MAGIC_ATTACK.get());
     }
 
     public static boolean inSameTeam(ServerPlayer player, UUID other) {

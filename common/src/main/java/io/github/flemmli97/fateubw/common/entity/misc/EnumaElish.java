@@ -7,6 +7,7 @@ import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModParticles;
 import io.github.flemmli97.fateubw.common.registry.ModSounds;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
+import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.particle.ColoredParticleData;
 import io.github.flemmli97.tenshilib.common.utils.RayTraceUtils;
 import net.minecraft.world.entity.EntityType;
@@ -84,6 +85,6 @@ public class EnumaElish extends BaseBeam {
 
     @Override
     public void onImpact(EntityHitResult result) {
-        result.getEntity().hurt(CustomDamageSource.excalibur(this, this.getOwner()), Config.Common.eaDamage);
+        result.getEntity().hurt(CustomDamageSource.excalibur(this, this.getOwner()), Utils.magicDamage(this.getOwner()) + Config.Common.eaDamage);
     }
 }

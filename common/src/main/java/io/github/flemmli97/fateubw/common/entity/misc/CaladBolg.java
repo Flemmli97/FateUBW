@@ -4,6 +4,7 @@ import io.github.flemmli97.fateubw.common.config.Config;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
+import io.github.flemmli97.fateubw.common.utils.Utils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -58,8 +59,9 @@ public class CaladBolg extends BaseProjectile {
     }
 
     protected void doExplosion(Entity hit) {
+        float dmg = Utils.magicDamage(this.getOwner()) + Config.Common.caladBolgDmg;
         if (hit != null)
-            hit.hurt(CustomDamageSource.caladBolg(this, this.getOwner()), Config.Common.caladBolgDmg);
+            hit.hurt(CustomDamageSource.caladBolg(this, this.getOwner()), dmg);
         Vec3 pos = hit != null ? hit.position() : this.position();
         List<Entity> list = this.level.getEntities(this, new AABB(-6, -6, -6, 6, 6, 6).move(pos));
         for (Entity e : list) {
@@ -68,7 +70,7 @@ public class CaladBolg extends BaseProjectile {
                 continue;
             dist -= 8;
             float dmgPerc = (float) Mth.clamp(1 - (dist / 26f), 0.15f, 1);
-            e.hurt(CustomDamageSource.caladBolg(this, this.getOwner()), Config.Common.caladBolgDmg * dmgPerc);
+            e.hurt(CustomDamageSource.caladBolg(this, this.getOwner()), dmg * dmgPerc);
         }
         if (this.level instanceof ServerLevel serverLevel)
             serverLevel.sendParticles(ParticleTypes.EXPLOSION_EMITTER, pos.x(), pos.y(), pos.z(), 2, 1.0, 0.0, 0.0, 1);

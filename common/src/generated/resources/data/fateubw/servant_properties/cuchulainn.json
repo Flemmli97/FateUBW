@@ -1,11 +1,12 @@
 {
   "class": "fateubw:lancer",
+  "health": 300.0,
   "strength": 8.0,
+  "magic": 0.0,
   "armor": 11.0,
   "projectileProt": 14.0,
-  "nobelPhantasmCost": 50,
-  "health": 300.0,
   "magicProt": 6.0,
   "moveSpeed": 0.37,
-  "projectileBlockChance": 0.0
+  "projectileBlockChance": 0.0,
+  "nobelPhantasmCost": 50
 }

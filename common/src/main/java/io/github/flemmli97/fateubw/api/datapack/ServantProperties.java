@@ -9,36 +9,39 @@ public class ServantProperties {
 
     public static final Codec<ServantProperties> CODEC = RecordCodecBuilder.create((instance) ->
             instance.group(
-                    Codec.DOUBLE.fieldOf("health").forGetter(d -> d.health),
-                    Codec.DOUBLE.fieldOf("magicProt").forGetter(d -> d.magic),
-                    Codec.DOUBLE.fieldOf("moveSpeed").forGetter(d -> d.move),
                     Codec.FLOAT.fieldOf("projectileBlockChance").forGetter(d -> d.block),
+                    Codec.INT.fieldOf("nobelPhantasmCost").forGetter(d -> d.manaCost),
 
                     Codec.DOUBLE.fieldOf("projectileProt").forGetter(d -> d.proj),
-                    Codec.INT.fieldOf("nobelPhantasmCost").forGetter(d -> d.mana),
+                    Codec.DOUBLE.fieldOf("magicProt").forGetter(d -> d.magicProt),
+                    Codec.DOUBLE.fieldOf("moveSpeed").forGetter(d -> d.move),
+
+                    Codec.DOUBLE.fieldOf("magic").forGetter(d -> d.magic),
+                    Codec.DOUBLE.fieldOf("armor").forGetter(d -> d.armor),
 
                     ResourceLocation.CODEC.fieldOf("class").forGetter(d -> d.servantClass),
-                    Codec.DOUBLE.fieldOf("strength").forGetter(d -> d.strength),
-                    Codec.DOUBLE.fieldOf("armor").forGetter(d -> d.armor)
-            ).apply(instance, (health, magic, move, block, proj, mana, clss, strength, armor) ->
-                    new ServantProperties(health, strength, armor, block, proj, magic, move, mana, clss)));
+                    Codec.DOUBLE.fieldOf("health").forGetter(d -> d.health),
+                    Codec.DOUBLE.fieldOf("strength").forGetter(d -> d.strength)
+            ).apply(instance, (block, manaCost, proj, magicProt, move, magic, armor, clss, health, strength) ->
+                    new ServantProperties(health, strength, armor, block, proj, magic, magicProt, move, manaCost, clss)));
 
-    public static final ServantProperties DEFAULT = new ServantProperties(20, 1, 0, 0, 0, 0.2, 0.2, 0, BuiltinServantClasses.NONE);
+    public static final ServantProperties DEFAULT = new ServantProperties(20, 1, 0, 0, 0, 1, 0.2, 0.2, 0, BuiltinServantClasses.NONE);
 
-    private final double health, strength, armor, proj, magic, move;
+    private final double health, strength, armor, proj, magic, magicProt, move;
     private final float block;
-    private final int mana;
+    private final int manaCost;
     private final ResourceLocation servantClass;
 
-    public ServantProperties(double health, double strength, double armor, float block, double projProt, double magic, double moveSpeed, int hogouMana, ResourceLocation servantClass) {
+    public ServantProperties(double health, double strength, double armor, float block, double projProt, double magic, double magicProt, double moveSpeed, int hogouMana, ResourceLocation servantClass) {
         this.health = health;
         this.strength = strength;
         this.armor = armor;
         this.proj = projProt;
         this.magic = magic;
+        this.magicProt = magicProt;
         this.move = moveSpeed;
         this.block = block;
-        this.mana = hogouMana;
+        this.manaCost = hogouMana;
         this.servantClass = servantClass;
     }
 
@@ -63,7 +66,7 @@ public class ServantProperties {
     }
 
     public double magicRes() {
-        return this.magic;
+        return this.magicProt;
     }
 
     public double moveSpeed() {
@@ -71,7 +74,7 @@ public class ServantProperties {
     }
 
     public int hogouMana() {
-        return this.mana;
+        return this.manaCost;
     }
 
     public ResourceLocation getServantClass() {

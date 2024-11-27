@@ -5,6 +5,7 @@ import io.github.flemmli97.fateubw.common.entity.servant.EntityCuchulainn;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
+import io.github.flemmli97.fateubw.common.utils.Utils;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -34,7 +35,7 @@ public class GaeBolg extends BaseProjectile {
 
     @Override
     protected boolean entityRayTraceHit(EntityHitResult res) {
-        res.getEntity().hurt(CustomDamageSource.gaeBolg(this, this.getOwner()), Config.Common.gaeBolgDmg);
+        res.getEntity().hurt(CustomDamageSource.gaeBolg(this, this.getOwner()), Utils.magicDamage(this.getOwner()) + Config.Common.gaeBolgDmg);
         if (res.getEntity() instanceof LivingEntity && (!(res.getEntity() instanceof Player) || !((Player) res.getEntity()).getAbilities().invulnerable)) {
             for (MobEffectInstance effect : Config.Common.gaeBolgEffect.potions()) {
                 //The no jump effect from jump boost doesnt seem to affect entities

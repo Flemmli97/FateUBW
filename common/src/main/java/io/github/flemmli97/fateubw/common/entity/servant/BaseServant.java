@@ -277,7 +277,8 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
 
     public static AttributeSupplier.Builder createMobAttributes() {
         return Monster.createMonsterAttributes()
-                .add(Attributes.KNOCKBACK_RESISTANCE, 1).add(ModAttributes.MAGIC_RESISTANCE.get())
+                .add(Attributes.KNOCKBACK_RESISTANCE, 1)
+                .add(ModAttributes.MAGIC_ATTACK.get()).add(ModAttributes.MAGIC_RESISTANCE.get())
                 .add(ModAttributes.PROJECTILE_BLOCK_CHANCE.get()).add(ModAttributes.PROJECTILE_RESISTANCE.get());
     }
 

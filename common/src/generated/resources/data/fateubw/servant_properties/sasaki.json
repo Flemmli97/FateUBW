@@ -1,11 +1,12 @@
 {
   "class": "fateubw:assassin",
+  "health": 350.0,
   "strength": 9.5,
+  "magic": 0.0,
   "armor": 9.0,
   "projectileProt": 8.0,
-  "nobelPhantasmCost": 30,
-  "health": 350.0,
   "magicProt": 8.5,
   "moveSpeed": 0.31,
-  "projectileBlockChance": 0.0
+  "projectileBlockChance": 0.0,
+  "nobelPhantasmCost": 30
 }
