@@ -4,7 +4,6 @@ import io.github.flemmli97.fateubw.common.config.Config;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
-import io.github.flemmli97.tenshilib.common.entity.EntityProjectile;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -20,7 +19,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
-public class CaladBolg extends EntityProjectile {
+public class CaladBolg extends BaseProjectile {
 
     public CaladBolg(EntityType<? extends CaladBolg> type, Level worldIn) {
         super(type, worldIn);

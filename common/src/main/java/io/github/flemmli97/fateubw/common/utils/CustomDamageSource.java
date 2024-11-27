@@ -36,6 +36,10 @@ public class CustomDamageSource {
     }
 
     public static DamageSource magicBeam(Entity source, Entity sourceEntity) {
+        return (new IndirectEntityDamageSource("magic_beam", source, sourceEntity));
+    }
+
+    public static DamageSource magicShot(Entity source, Entity sourceEntity) {
         return (new IndirectEntityDamageSource("beam", source, sourceEntity));
     }
 

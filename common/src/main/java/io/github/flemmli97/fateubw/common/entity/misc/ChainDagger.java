@@ -3,7 +3,6 @@ package io.github.flemmli97.fateubw.common.entity.misc;
 import io.github.flemmli97.fateubw.common.entity.DaggerHitNotifiable;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.platform.Platform;
-import io.github.flemmli97.tenshilib.common.entity.EntityProjectile;
 import io.github.flemmli97.tenshilib.common.utils.RayTraceUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -22,7 +21,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 
-public class ChainDagger extends EntityProjectile {
+public class ChainDagger extends BaseProjectile {
 
     private static final EntityDataAccessor<Boolean> RETRACTING = SynchedEntityData.defineId(ChainDagger.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> MAINHAND = SynchedEntityData.defineId(ChainDagger.class, EntityDataSerializers.BOOLEAN);
@@ -30,7 +29,7 @@ public class ChainDagger extends EntityProjectile {
 
     private Entity hookedEntity;
 
-    public ChainDagger(EntityType<? extends EntityProjectile> type, Level world) {
+    public ChainDagger(EntityType<? extends ChainDagger> type, Level world) {
         super(type, world);
     }
 

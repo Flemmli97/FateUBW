@@ -1,11 +1,8 @@
 package io.github.flemmli97.fateubw.common.entity.misc;
 
 import io.github.flemmli97.fateubw.common.config.Config;
-import io.github.flemmli97.fateubw.common.entity.minions.HassanClone;
-import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
-import io.github.flemmli97.tenshilib.common.entity.EntityProjectile;
 import io.github.flemmli97.tenshilib.common.utils.ItemUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -18,7 +15,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 
-public class ThrownItemEntity extends EntityProjectile {
+public class ThrownItemEntity extends BaseProjectile {
 
     protected static final EntityDataAccessor<ItemStack> WEAPON_TYPE = SynchedEntityData.defineId(ThrownItemEntity.class, EntityDataSerializers.ITEM_STACK);
 
@@ -55,14 +52,6 @@ public class ThrownItemEntity extends EntityProjectile {
 
     @Override
     protected boolean entityRayTraceHit(EntityHitResult result) {
-        if (result.getEntity() instanceof LivingEntity target) {
-            if (this.getOwner() instanceof BaseServant servant && !servant.targetPred.test(target)) {
-                return false;
-            }
-            if (this.getOwner() instanceof HassanClone hassan && !hassan.targetPred.test(target)) {
-                return false;
-            }
-        }
         boolean res = result.getEntity().hurt(CustomDamageSource.assassinDagger(this, this.getOwner()), (float) this.dmg);
         this.discard();
         return res;

@@ -3,6 +3,7 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 
 import io.github.flemmli97.fateubw.common.config.Config;
 import io.github.flemmli97.fateubw.common.entity.minions.LesserMonster;
+import io.github.flemmli97.fateubw.common.entity.misc.MagicShot;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
@@ -33,24 +34,36 @@ public class EntityGilles extends BaseServant {
 
     public static final AnimatedAction CAST_1 = new AnimatedAction(1.6, 0.95, "cast");
     public static final AnimatedAction CAST_2 = new AnimatedAction(1.3, 0.74, "cast_2");
+    public static final AnimatedAction CAST_3 = AnimatedAction.copyOf(CAST_1, "cast_3");
+    public static final AnimatedAction CAST_4 = AnimatedAction.copyOf(CAST_2, "cast_4");
 
     public static final AnimatedAction NP_ATTACK = new AnimatedAction(20, 0, "np");
     public static final AnimatedAction SUMMON = new AnimatedAction(2., 0, "summon");
-    private static final AnimatedAction[] ANIMS = {CAST_1, CAST_2, NP_ATTACK, SUMMON};
+    private static final AnimatedAction[] ANIMS = {CAST_1, CAST_2, CAST_3, CAST_4, NP_ATTACK, SUMMON};
 
     public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityGilles>>> ATTACKS = List.of(
             WeightedEntry.wrap(new GoalAttackAction<EntityGilles>(EntityGilles.CAST_1)
                     .cooldown(e -> e.getRandom().nextInt(70) + 30)
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 10, 1.1))), 10),
+                    .withCondition(((goal, target, previous) -> goal.attacker.canSummonMore()))
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 10, 1.1))), 11),
             WeightedEntry.wrap(new GoalAttackAction<EntityGilles>(EntityGilles.CAST_1)
                     .cooldown(e -> e.getRandom().nextInt(70) + 30)
+                    .withCondition(((goal, target, previous) -> goal.attacker.canSummonMore()))
                     .prepare(() -> new WrappedRunner<>(new DoNothingRunner<>(true))), 8),
             WeightedEntry.wrap(new GoalAttackAction<EntityGilles>(EntityGilles.CAST_2)
                     .cooldown(e -> e.getRandom().nextInt(70) + 30)
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 10, 1.1))), 10),
+                    .withCondition(((goal, target, previous) -> goal.attacker.canSummonMore()))
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 10, 1.1))), 11),
             WeightedEntry.wrap(new GoalAttackAction<EntityGilles>(EntityGilles.CAST_2)
                     .cooldown(e -> e.getRandom().nextInt(70) + 30)
-                    .prepare(() -> new WrappedRunner<>(new DoNothingRunner<>(true))), 8)
+                    .withCondition(((goal, target, previous) -> goal.attacker.canSummonMore()))
+                    .prepare(() -> new WrappedRunner<>(new DoNothingRunner<>(true))), 8),
+            WeightedEntry.wrap(new GoalAttackAction<EntityGilles>(EntityGilles.CAST_3)
+                    .cooldown(e -> e.getRandom().nextInt(70) + 30)
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 10, 1.1))), 9),
+            WeightedEntry.wrap(new GoalAttackAction<EntityGilles>(EntityGilles.CAST_4)
+                    .cooldown(e -> e.getRandom().nextInt(70) + 30)
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 10, 1.1))), 9)
     );
     public static final List<WeightedEntry.Wrapper<IdleAction<EntityGilles>>> IDLE_ACTIONS = List.of(
             WeightedEntry.wrap(new IdleAction<>(() -> new StrafingRunner<>(12, 7, 1, 0.3f)), 6),
@@ -96,6 +109,14 @@ public class EntityGilles extends BaseServant {
             if (anim.canAttack()) {
                 this.attackWithRangedAttack();
             }
+        } else if (anim.is(CAST_3, CAST_4)) {
+            LivingEntity target = this.getTarget();
+            if (target != null) {
+                this.getLookControl().setLookAt(target, 30.0F, 30.0F);
+            }
+            if (anim.canAttack()) {
+                this.shoot();
+            }
         }
     }
 
@@ -107,7 +128,7 @@ public class EntityGilles extends BaseServant {
         }
     }
 
-    public void attackWithNP() {
+    public void cthulhu() {
         if (!this.level.isClientSide) {
             //EntityMonster minion = new EntityMonster(this.world, this);
             //this.world.spawnEntity(minion);
@@ -115,19 +136,38 @@ public class EntityGilles extends BaseServant {
         }
     }
 
+    protected boolean canSummonMore() {
+        return this.level.getEntitiesOfClass(LesserMonster.class, this.getBoundingBox().inflate(16), monster -> this.getUUID().equals(monster.getOwnerUUID())).size() < Config.Common.gillesMinionAmount;
+    }
+
     public void attackWithRangedAttack() {
         if (!this.level.isClientSide) {
-            if (this.level.getEntitiesOfClass(LesserMonster.class, this.getBoundingBox().inflate(16), monster -> this.getUUID().equals(monster.getOwnerUUID())).size() < Config.Common.gillesMinionAmount) {
-                LesserMonster minion = new LesserMonster(this.level, this);
-                BlockPos pos = RayTraceUtils.randomPosAround(this.level, minion, this.blockPosition(), 9, true, this.getRandom());
-                if (pos != null) {
-                    minion.moveTo(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5, Mth.wrapDegrees(this.level.random.nextFloat() * 360.0F), 0.0F);
-                    this.level.addFreshEntity(minion);
-                    minion.setTarget(this.getTarget());
-                    this.revealServant();
+            if (this.canSummonMore()) {
+                int amount = 1;
+                if (this.getHealth() < 0.5 * this.getMaxHealth())
+                    amount = 1 + this.getRandom().nextInt(3);
+                for (int i = 0; i < amount; i++) {
+                    LesserMonster minion = new LesserMonster(this.level, this);
+                    BlockPos pos = RayTraceUtils.randomPosAround(this.level, minion, this.blockPosition(), 9, true, this.getRandom());
+                    if (pos != null) {
+                        minion.moveTo(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5, Mth.wrapDegrees(this.level.random.nextFloat() * 360.0F), 0.0F);
+                        this.level.addFreshEntity(minion);
+                        minion.setTarget(this.getTarget());
+                        this.revealServant();
+                    }
                 }
             }
         }
+    }
+
+    public void shoot() {
+        MagicShot proj = new MagicShot(this.level, this);
+        if (this.getTarget() != null) {
+            proj.shootAtEntity(this.getTarget(), 1, 0);
+        } else {
+            proj.shoot(this, this.getXRot(), this.getYRot(), 0, 1, 0);
+        }
+        this.level.addFreshEntity(proj);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package io.github.flemmli97.fateubw.common.entity.misc;
 
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
-import io.github.flemmli97.tenshilib.common.entity.EntityProjectile;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Explosion;
@@ -9,7 +8,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 
-public class ThrownGem extends EntityProjectile {
+public class ThrownGem extends BaseProjectile {
 
     public ThrownGem(EntityType<? extends ThrownGem> type, Level world) {
         super(type, world);

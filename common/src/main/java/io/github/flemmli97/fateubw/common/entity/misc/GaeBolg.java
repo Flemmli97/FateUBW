@@ -5,7 +5,6 @@ import io.github.flemmli97.fateubw.common.entity.servant.EntityCuchulainn;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
-import io.github.flemmli97.tenshilib.common.entity.EntityProjectile;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -18,9 +17,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 
-public class GaeBolg extends EntityProjectile {
+public class GaeBolg extends BaseProjectile {
 
-    public GaeBolg(EntityType<? extends EntityProjectile> type, Level world) {
+    public GaeBolg(EntityType<? extends GaeBolg> type, Level world) {
         super(type, world);
     }
 

@@ -6,6 +6,7 @@ import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.api.datapack.ServantProperties;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.entity.StandingVehicle;
+import io.github.flemmli97.fateubw.common.entity.TargetableOpponent;
 import io.github.flemmli97.fateubw.common.entity.ai.FollowMasterGoal;
 import io.github.flemmli97.fateubw.common.entity.ai.HurtByTargetPredicateGoal;
 import io.github.flemmli97.fateubw.common.lib.FateTags;
@@ -90,7 +91,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public abstract class BaseServant extends PathfinderMob implements IAnimated, OwnableEntity, AoeAttackEntity {
+public abstract class BaseServant extends PathfinderMob implements IAnimated, OwnableEntity, AoeAttackEntity, TargetableOpponent {
 
     public static final TicketType<ChunkPos> TRACKINGTICKET = TicketType.create("servant", Comparator.comparingLong(ChunkPos::toLong), 5);
 
@@ -685,6 +686,11 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     public AABB attackBB(AnimatedAction anim) {
         double range = 1;
         return new AABB(-range * 0.5, -0.02, 0, range * 0.5, this.getBbHeight() + 0.02, range);
+    }
+
+    @Override
+    public Predicate<LivingEntity> validTargetPredicate() {
+        return this.targetPred;
     }
 
     @Override

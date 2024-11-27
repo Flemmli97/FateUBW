@@ -6,7 +6,6 @@ import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModParticles;
 import io.github.flemmli97.fateubw.common.registry.ModSounds;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
-import io.github.flemmli97.tenshilib.common.entity.EntityProjectile;
 import io.github.flemmli97.tenshilib.common.particle.ColoredParticleData;
 import io.github.flemmli97.tenshilib.common.utils.ItemUtils;
 import io.github.flemmli97.tenshilib.common.utils.RayTraceUtils;
@@ -39,7 +38,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class BabylonWeapon extends EntityProjectile {
+public class BabylonWeapon extends BaseProjectile {
 
     protected static final EntityDataAccessor<ItemStack> WEAPON_TYPE = SynchedEntityData.defineId(BabylonWeapon.class, EntityDataSerializers.ITEM_STACK);
     protected static final EntityDataAccessor<Integer> SHOOT_TIME = SynchedEntityData.defineId(BabylonWeapon.class, EntityDataSerializers.INT);

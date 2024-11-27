@@ -15,6 +15,7 @@ import io.github.flemmli97.fateubw.client.particles.SimpleTrailParticle;
 import io.github.flemmli97.fateubw.client.render.RenderEmpty;
 import io.github.flemmli97.fateubw.client.render.RenderMultiPartEntity;
 import io.github.flemmli97.fateubw.client.render.ServantRenderer;
+import io.github.flemmli97.fateubw.client.render.misc.EmptyRender;
 import io.github.flemmli97.fateubw.client.render.misc.RenderArcherArrow;
 import io.github.flemmli97.fateubw.client.render.misc.RenderBabylon;
 import io.github.flemmli97.fateubw.client.render.misc.RenderCaladbolg;
@@ -112,13 +113,13 @@ public class ClientRegister {
         consumer.register(ModEntities.MEDEA_CIRCLE.get(), RenderEmpty::new);
         consumer.register(ModEntities.GORDIUS_WHEEL.get(), RenderGordius::new);
         consumer.register(ModEntities.THROWN_ITEM.get(), RenderThrownItem::new);
+        consumer.register(ModEntities.GEM.get(), RenderGem::new);
+        consumer.register(ModEntities.MAGIC_SHOT.get(), EmptyRender::new);
 
         consumer.register(ModEntities.LESSER_MONSTER.get(), RenderStarfish::new);
         consumer.register(ModEntities.HASSAN_COPY.get(), RenderHassanCopy::new);
         consumer.register(ModEntities.PEGASUS.get(), RenderPegasus::new);
         consumer.register(ModEntities.DAGGER_HOOK.get(), RenderChainDagger::new);
-
-        consumer.register(ModEntities.GEM.get(), RenderGem::new);
 
         consumer.register(ModEntities.MULTIPART.get(), RenderMultiPartEntity::new);
     }

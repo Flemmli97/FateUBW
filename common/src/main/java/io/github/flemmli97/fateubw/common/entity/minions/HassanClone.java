@@ -2,6 +2,7 @@ package io.github.flemmli97.fateubw.common.entity.minions;
 
 import io.github.flemmli97.fateubw.api.datapack.ServantProperties;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
+import io.github.flemmli97.fateubw.common.entity.TargetableOpponent;
 import io.github.flemmli97.fateubw.common.entity.ai.FollowMasterGoal;
 import io.github.flemmli97.fateubw.common.entity.ai.TargetOwnerEnemyGoal;
 import io.github.flemmli97.fateubw.common.entity.misc.ThrownItemEntity;
@@ -70,7 +71,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class HassanClone extends PathfinderMob implements IAnimated, OwnableEntity, AoeAttackEntity {
+public class HassanClone extends PathfinderMob implements IAnimated, OwnableEntity, AoeAttackEntity, TargetableOpponent {
 
     public static final AnimatedAction MELEE_1 = new AnimatedAction(0.48, 0.36, "slash_1");
     public static final AnimatedAction MELEE_1_2 = new AnimatedAction(0.48, 0.36, "slash_1_2");
@@ -447,5 +448,10 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
         width *= 0.95;
         length *= 0.95;
         return new AABB(-width * 0.5, -0.02, 0, width * 0.5, this.getBbHeight() + 0.02, length);
+    }
+
+    @Override
+    public Predicate<LivingEntity> validTargetPredicate() {
+        return this.targetPred;
     }
 }
