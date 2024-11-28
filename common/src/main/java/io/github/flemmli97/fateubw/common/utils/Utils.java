@@ -87,7 +87,7 @@ public class Utils {
                 return false;
             if (target == entity.getTarget())
                 return true;
-            if (entity instanceof OwnableEntity ownable && target instanceof OwnableEntity ownable2 && ownable.getOwner() == ownable2.getOwner())
+            if (entity instanceof OwnableEntity ownable && target instanceof OwnableEntity ownable2 && ownable.getOwnerUUID() != null && ownable.getOwnerUUID().equals(ownable2.getOwnerUUID()))
                 return false;
             if (target instanceof OwnableEntity ownable && ownable.getOwner() == entity)
                 return false;

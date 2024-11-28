@@ -158,6 +158,11 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
     }
 
     @Override
+    public boolean causeFallDamage(float distance, float damageMultiplier, DamageSource source) {
+        return false;
+    }
+
+    @Override
     public void tick() {
         super.tick();
         if (!this.level.isClientSide && this.dagger != null) {

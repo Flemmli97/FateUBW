@@ -9,6 +9,8 @@ import io.github.flemmli97.fateubw.common.entity.StandingVehicle;
 import io.github.flemmli97.fateubw.common.entity.TargetableOpponent;
 import io.github.flemmli97.fateubw.common.entity.ai.FollowMasterGoal;
 import io.github.flemmli97.fateubw.common.entity.ai.HurtByTargetPredicateGoal;
+import io.github.flemmli97.fateubw.common.entity.ai.StandStillGoal;
+import io.github.flemmli97.fateubw.common.entity.ai.TargetNoneGoal;
 import io.github.flemmli97.fateubw.common.lib.FateTags;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.registry.ModAttributes;
@@ -108,12 +110,8 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     protected int combatTick;
     protected boolean canUseNP, critHealth;
     protected boolean disableChunkload = true, chunkTracked;
-    /*private int , attackTimer, , ;*/
     public boolean forcedNP;
 
-    /**
-     * 0 = normal, 1 = aggressive, 2 = defensive, 3 = follow, 4 = stay, 5 = guard an area
-     */
     protected EnumServantUpdate commandBehaviour = EnumServantUpdate.NORMAL;
 
     //PlayerUUID
@@ -136,7 +134,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     };
 
     public NearestAttackableTargetGoal<BaseServant> targetServant = new NearestAttackableTargetGoal<>(this, BaseServant.class, 10, true, true, this.targetPred);
-    public NearestAttackableTargetGoal<Player> targetPlayer = new NearestAttackableTargetGoal<>(this, Player.class, 0, true, true, this.targetPred);
+    public NearestAttackableTargetGoal<Player> targetPlayer = new NearestAttackableTargetGoal<>(this, Player.class, 20, true, true, this.targetPred);
     public NearestAttackableTargetGoal<Mob> targetMob = new NearestAttackableTargetGoal<>(this, Mob.class, 10, true, true, this.targetPred);
 
     public FollowMasterGoal<BaseServant> follow = new FollowMasterGoal<>(this, 16.0D, 9.0F, 3.0F, BaseServant::isStaying);
@@ -162,16 +160,18 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     }
 
     protected void goals() {
-        this.goalSelector.addGoal(1, this.follow);
-        this.goalSelector.addGoal(2, this.restrictArea);
-        this.goalSelector.addGoal(3, this.wander);
-        this.goalSelector.addGoal(4, new FloatGoal(this));
+        this.goalSelector.addGoal(0, new FloatGoal(this));
+        this.goalSelector.addGoal(1, new StandStillGoal(this));
+        this.goalSelector.addGoal(2, this.follow);
+        this.goalSelector.addGoal(3, this.restrictArea);
+        this.goalSelector.addGoal(4, this.wander);
         this.goalSelector.addGoal(5, new RandomLookAroundGoal(this));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(7, new OpenDoorGoal(this, true));
-        this.targetSelector.addGoal(0, this.targetHurt);
-        this.targetSelector.addGoal(1, this.targetServant);
-        this.targetSelector.addGoal(2, this.targetPlayer);
+        this.targetSelector.addGoal(0, new TargetNoneGoal(this));
+        this.targetSelector.addGoal(1, this.targetHurt);
+        this.targetSelector.addGoal(2, this.targetServant);
+        this.targetSelector.addGoal(3, this.targetPlayer);
     }
 
     //=========Servant specific data
@@ -192,10 +192,6 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
 
     public Component getRealName() {
         return super.getTypeName();
-    }
-
-    public boolean attacksFromMount() {
-        return true;
     }
 
     /**
@@ -277,6 +273,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
 
     public static AttributeSupplier.Builder createMobAttributes() {
         return Monster.createMonsterAttributes()
+                .add(Attributes.FOLLOW_RANGE, 24.0)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1)
                 .add(ModAttributes.MAGIC_ATTACK.get()).add(ModAttributes.MAGIC_RESISTANCE.get())
                 .add(ModAttributes.PROJECTILE_BLOCK_CHANCE.get()).add(ModAttributes.PROJECTILE_RESISTANCE.get());
@@ -390,50 +387,40 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
 
     //=====Entity AI updating
 
-    /**
-     * @param behaviour 0 = normal, 1 = aggressive, 2 = defensive, 3 = follow, 4 = stay, 5 = guard an area
-     */
     public void updateAI(EnumServantUpdate behaviour) {
         this.commandBehaviour = behaviour;
         switch (behaviour) {
             case NORMAL -> {
                 this.targetSelector.removeGoal(this.targetMob);
-                this.targetSelector.addGoal(0, this.targetHurt);
-                this.targetSelector.addGoal(1, this.targetServant);
+                this.targetSelector.addGoal(1, this.targetHurt);
+                this.targetSelector.addGoal(2, this.targetServant);
+                this.targetSelector.addGoal(3, this.targetPlayer);
             }
             case AGGRESSIVE -> {
-                this.targetSelector.addGoal(0, this.targetHurt);
-                this.targetSelector.addGoal(1, this.targetServant);
-                this.targetSelector.addGoal(3, this.targetMob);
+                this.targetSelector.addGoal(1, this.targetHurt);
+                this.targetSelector.addGoal(2, this.targetServant);
+                this.targetSelector.addGoal(3, this.targetPlayer);
+                this.targetSelector.addGoal(4, this.targetMob);
             }
             case DEFENSIVE -> {
-                this.targetSelector.addGoal(0, this.targetHurt);
+                this.targetSelector.addGoal(1, this.targetHurt);
                 this.targetSelector.removeGoal(this.targetServant);
+                this.targetSelector.removeGoal(this.targetPlayer);
                 this.targetSelector.removeGoal(this.targetMob);
             }
             case FOLLOW -> {
-                this.targetSelector.addGoal(0, this.targetHurt);
-                this.targetSelector.addGoal(1, this.targetServant);
-                this.goalSelector.addGoal(1, this.follow);
-                this.goalSelector.addGoal(3, this.wander);
+                this.goalSelector.addGoal(2, this.follow);
                 this.setStaying(false);
-                this.hasRestriction();
+                this.clearRestriction();
             }
             case STAY -> {
-                this.targetSelector.removeGoal(this.targetHurt);
-                this.targetSelector.removeGoal(this.targetServant);
-                this.targetSelector.removeGoal(this.targetMob);
-                this.goalSelector.removeGoal(this.follow);
-                this.goalSelector.removeGoal(this.wander);
                 this.setStaying(true);
                 this.getNavigation().stop();
                 this.setTarget(null);
-                this.hasRestriction();
             }
             case GUARD -> {
                 this.setStaying(false);
                 this.goalSelector.removeGoal(this.follow);
-                this.goalSelector.addGoal(3, this.wander);
                 this.restrictTo(this.getOwner().blockPosition(), 8);
             }
         }

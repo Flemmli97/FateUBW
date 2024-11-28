@@ -30,7 +30,12 @@ public class FateEgg extends SpawnEgg {
     public static final String WAR = Fate.MODID + ":JoinWar";
 
     public FateEgg(Supplier<? extends EntityType<? extends BaseServant>> type, int primary, int secondary, Properties props) {
-        super(type, primary, secondary, props);
+        super(new EntityTypeHolder<>(BaseServant.class, type), primary, secondary, props);
+    }
+
+    @Override
+    public boolean addToDefaultSpawneggs() {
+        return false;
     }
 
     @Override

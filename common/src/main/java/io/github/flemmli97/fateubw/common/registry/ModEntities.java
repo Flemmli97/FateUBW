@@ -203,7 +203,7 @@ public class ModEntities {
         map.put(ModEntities.PEGASUS.get(), Monster.createMonsterAttributes()
                 .add(Attributes.ARMOR, 5)
                 .add(Attributes.MOVEMENT_SPEED, 0.34)
-                .add(Attributes.FLYING_SPEED, 0.44));
+                .add(Attributes.FLYING_SPEED, 0.85));
         map.put(ModEntities.HASSAN_COPY.get(), BaseServant.createMobAttributes());
         return map;
     }

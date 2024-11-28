@@ -267,11 +267,6 @@ public class EntityIskander extends BaseServant {
     }
 
     @Override
-    public boolean attacksFromMount() {
-        return false;
-    }
-
-    @Override
     protected AnimatedAction getSummonAnimation() {
         return SUMMON;
     }

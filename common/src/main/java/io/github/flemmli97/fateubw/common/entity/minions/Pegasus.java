@@ -229,10 +229,10 @@ public class Pegasus extends PathfinderMob implements IAnimated, StandingVehicle
                     float g = (235 + this.getRandom().nextInt(10)) / 255F;
                     float b = 245 / 255F;
                     float scale = (float) (0.05 + this.getRandom().nextDouble() * 0.1);
-                    this.level.addParticle(new TrailParticleData(ModParticles.TRAIL.get(), TrailInfo.builder(Vec3.ZERO, new Vec3(0, 0, -this.getRandom().nextDouble() * 2 + 3))
+                    this.level.addParticle(new TrailParticleData(ModParticles.TRAIL.get(), TrailInfo.builder(new Vec3(0, 0, -this.getRandom().nextDouble() * 2 + 3), Vec3.ZERO)
                                     .setColor(r, g, b, 0.6f)
                                     .setColor2(r, g, b, 0.6f)
-                                    .rotateBy(-targetYRot + 180, targetXRot, 0)
+                                    .rotateBy(-targetYRot, targetXRot, 0)
                                     .duration(10)
                                     .setScale(scale)
                                     .setScale2(scale)
@@ -267,7 +267,7 @@ public class Pegasus extends PathfinderMob implements IAnimated, StandingVehicle
                 if (--this.flyTimer <= 0) {
                     if (this.canFly()) {
                         this.flyTimer = 400 + this.getRandom().nextInt(300);
-                        this.setCanFly(false);
+                        this.setCanFly(true);
                     } else {
                         this.flyTimer = 250 + this.getRandom().nextInt(350);
                         this.setCanFly(true);
