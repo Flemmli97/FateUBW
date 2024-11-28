@@ -6,6 +6,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 public class ConfigSpecs {
 
@@ -98,7 +99,7 @@ public class ConfigSpecs {
             this.servantMinSpawnDelay = builder.comment("Minimum time between each attempt to spawn masterless servants. (Fill Empty Slots needs to be true)").defineInRange("Servant Spawn Delay (Min)", Config.Common.servantMinSpawnDelay, 0, Integer.MAX_VALUE);
             this.servantMaxSpawnDelay = builder.comment("Maximum time between each attempt to spawn masterless servants. (Fill Empty Slots needs to be true)").defineInRange("Servant Spawn Delay (Max)", Config.Common.servantMaxSpawnDelay, 0, Integer.MAX_VALUE);
             this.punishTeleport = builder.comment("Should teleporting servants to the owner during a fight be punished").define("Punish Teleport", Config.Common.punishTeleport);
-            this.notifyBlackList = builder.comment("Servants that dont notify players when spawned (from filling missing slots)").define("Servant notification", Config.Common.notifyBlackList);
+            this.notifyBlackList = builder.comment("Servants that dont notify players when spawned (from filling missing slots)").define("Servant notification", Config.Common.notifyBlackList, stringList());
             this.whiteList = builder.comment("Turn servant notification list into a whitelist").define("Notify Whitelist", Config.Common.notificationWhitelist);
             this.notifyAll = builder.comment("Notify everyone if a servant spawns. Else only the player the servant spawned on will be notified").define("Notify Everyone", Config.Common.notifyAll);
             this.npBoostEffect = builder.comment("Potions applied when boostin servants using a command seal. Usage: " + PotionEffectsConfig.usage()).define("NP Effects",
@@ -117,7 +118,7 @@ public class ConfigSpecs {
             this.smallMonsterDamage = builder.comment("Damage by gilles small monsters").defineInRange("Small Monster Damage", Config.Common.smallMonsterDamage, 0, Double.MAX_VALUE);
             this.babylonScale = builder.comment("Damage scaling for projectiles from the gate of babylon").defineInRange("Babylon Dmg Scale", Config.Common.babylonScale, 0, Double.MAX_VALUE);
             this.babylonWeaponsBlacklist = builder.comment("Blacklist weapons for the gate of babylon here. You can also use the modid for a whole mod").define("Babylon Blacklist",
-                    Config.Common.babylonWeapons.writeToString());
+                    Config.Common.babylonWeapons.writeToString(), stringList());
             this.babylonWeaponsWhitelist = builder.comment("Turn the blacklist into a whitelist").define("Babylon Whitelist", Config.Common.babylonWeapons.isWhiteList());
             this.eaDamage = builder.comment("Damage of EA").defineInRange("EA Dmg", Config.Common.eaDamage, 0, Double.MAX_VALUE);
             this.excaliburDamage = builder.comment("Damage of excalibur").defineInRange("Excalibur Dmg", Config.Common.excaliburDamage, 0, Double.MAX_VALUE);
@@ -147,6 +148,10 @@ public class ConfigSpecs {
 
             this.debugAttack = builder.comment("Turn on attack bounding box debugging").define("Debug Attack", Config.Common.debugAttack);
         }
+    }
+
+    private static Predicate<Object> stringList() {
+        return p -> p instanceof List<?> list && list.stream().allMatch(e -> e instanceof String);
     }
 
     static {
