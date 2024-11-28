@@ -52,7 +52,7 @@ public class ThrownItemEntity extends BaseProjectile {
 
     @Override
     protected boolean entityRayTraceHit(EntityHitResult result) {
-        boolean res = result.getEntity().hurt(CustomDamageSource.assassinDagger(this, this.getOwner()), (float) this.dmg);
+        boolean res = result.getEntity().hurt(CustomDamageSource.thrownItem(this, this.getOwner()), (float) this.dmg);
         this.discard();
         return res;
     }

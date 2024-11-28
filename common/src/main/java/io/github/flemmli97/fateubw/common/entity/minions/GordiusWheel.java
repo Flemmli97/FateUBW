@@ -191,9 +191,8 @@ public class GordiusWheel extends PathfinderMob implements IAnimated, StandingVe
                 OrientedBoundingBox obb = this.prepareAttackBox(anim, null, 0.2, false);
                 List<LivingEntity> list = this.level.getEntitiesOfClass(LivingEntity.class, obb.getEncompassingBox(),
                         entity -> this.targetPred.test(entity) && obb.intersects(entity.getBoundingBox()));
-                LivingEntity source = !this.getPassengers().isEmpty() && this.getPassengers().get(0) instanceof LivingEntity passenger ? passenger : this;
                 for (LivingEntity e : list) {
-                    e.hurt(CustomDamageSource.gordiusTrample(this, source), (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE));
+                    e.hurt(CustomDamageSource.gordiusTrample(this), (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE));
                 }
                 this.playSound(SoundEvents.COW_STEP, 0.4F, 0.4F);
                 S2CAttackDebug.sendDebugPacket(obb, S2CAttackDebug.EnumAABBType.ATTACK, this);

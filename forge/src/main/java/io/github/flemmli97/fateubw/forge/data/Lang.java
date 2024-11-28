@@ -3,9 +3,11 @@ package io.github.flemmli97.fateubw.forge.data;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.github.flemmli97.fateubw.Fate;
+import io.github.flemmli97.fateubw.common.registry.ModAttributes;
 import io.github.flemmli97.fateubw.common.registry.ModBlocks;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
+import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.tenshilib.common.item.SpawnEgg;
 import io.github.flemmli97.tenshilib.platform.registry.RegistryEntrySupplier;
 import net.minecraft.data.DataGenerator;
@@ -14,13 +16,13 @@ import net.minecraft.data.HashCache;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.translate.JavaUnicodeEscaper;
 
 import java.io.BufferedWriter;
@@ -33,6 +35,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Same as LanguageProvider but with a linked hashmap and reading from old lang file
@@ -86,12 +89,9 @@ public class Lang implements DataProvider {
             SpawnEgg.fromType(type.get()).ifPresent(egg -> this.add(egg, "%s" + " Spawn Egg"));
         }
 
-        this.add(ModBlocks.ALTAR.get(), "Summoning Altar");
-        this.add(ModBlocks.GEM_ORE.get(), "Gem Ore");
-        this.add(ModBlocks.ARTIFACT_ORE.get(), "Artifact Ore");
-        this.add(ModBlocks.DEEP_SLATE_GEM_ORE.get(), "Deepslate Gem Ore");
-        this.add(ModBlocks.DEEP_SLATE_ARTIFACT_ORE.get(), "Deepslate Artifact Ore");
-        this.add(ModBlocks.CHALK.get(), "Chalk Line");
+        for (RegistryEntrySupplier<Block> type : ModBlocks.BLOCKS.getEntries()) {
+            this.add(type.get(), this.simpleOfRegName(type.getID()));
+        }
 
         this.add(ModEntities.ARTHUR.get(), "King Arthur");
         this.add(ModEntities.ARTHUR.getID() + ".hogou", "Excalibur");
@@ -125,6 +125,16 @@ public class Lang implements DataProvider {
         this.add(ModEntities.GORDIUS_WHEEL.get(), "Gordius Wheel");
         this.add(ModEntities.HASSAN_COPY.get(), "Hassan-i-Sabbah");
         this.add(ModEntities.PEGASUS.get(), "Pegasus");
+
+        for (RegistryEntrySupplier<EntityType<?>> reg : ModEntities.ENTITIES.getEntries()) {
+            if (!this.data.containsKey(reg.get().getDescriptionId())) {
+                this.add(reg.get(), this.simpleOfRegName(reg.getID()));
+            }
+        }
+
+        for (RegistryEntrySupplier<Attribute> reg : ModAttributes.ATTRIBUTES.getEntries()) {
+            this.add(reg.get().getDescriptionId(), this.simpleOfRegName(reg.getID()));
+        }
 
         this.add("itemGroup." + Fate.MODID + ".tab", "The Fate Universe");
 
@@ -185,10 +195,7 @@ public class Lang implements DataProvider {
         this.add("fateubw.gui.spawn.war.help", "Requires being master");
         this.add("fateubw.gui.save", "Save");
 
-        this.add("death.attack.excalibur", "%1$s was vaporized by %2$s with excalibur");
-        this.add("death.attack.babylon", "%1$s was impaled by %2$s with the gate of babylon");
-        this.add("death.attack.gaeBolg", "%1$s's heart was pierced with gae bolg");
-        this.add("death.attack.arrow", "%1$s was shoot by %2$s");
+        CustomDamageSource.defaultTranslations().forEach(this::add);
 
         this.add("fateubw.advancements.title", "Welcome to the §k__§r grailwar");
         this.add("fateubw.advancements.description", "Mine some gem shards to start");
@@ -249,7 +256,11 @@ public class Lang implements DataProvider {
     }
 
     private String simpleOfRegName(ResourceLocation res) {
-        return StringUtils.capitalize(res.getPath().replace("_", " "));
+        String s = res.getPath();
+        return Stream.of(s.trim().split("_"))
+                .filter(word -> !word.isEmpty())
+                .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1))
+                .collect(Collectors.joining(" "));
     }
 
     @Override
@@ -287,7 +298,8 @@ public class Lang implements DataProvider {
     }
 
     public void add(Block key, String name) {
-        this.add(key.getDescriptionId(), name);
+        if (!key.getDescriptionId().equals(key.asItem().getDescriptionId()))
+            this.add(key.getDescriptionId(), name);
     }
 
     public void addItem(Supplier<? extends Item> key, String name) {

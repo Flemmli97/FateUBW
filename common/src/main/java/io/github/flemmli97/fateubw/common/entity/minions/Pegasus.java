@@ -298,7 +298,7 @@ public class Pegasus extends PathfinderMob implements IAnimated, StandingVehicle
                 for (LivingEntity e : list) {
                     if (this.hitEntities.contains(e))
                         continue;
-                    if (e.hurt(CustomDamageSource.pegasusCharge(this, source), (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE))) {
+                    if (e.hurt(CustomDamageSource.pegasusCharge(this), (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE))) {
                         if (this.hitEntities.isEmpty()) {
                             hit = true;
                         }
