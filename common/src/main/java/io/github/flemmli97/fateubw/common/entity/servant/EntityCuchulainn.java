@@ -71,7 +71,7 @@ public class EntityCuchulainn extends BaseServant {
             WeightedEntry.wrap(new GoalAttackAction<EntityCuchulainn>(EntityCuchulainn.GAE_BOLG)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
                     .withCondition(Utils.npCheck())
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(4, 7, 1.1))), 8)
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(4, 7, 1.1))), 15)
     );
     public static final List<WeightedEntry.Wrapper<IdleAction<EntityCuchulainn>>> IDLE_ACTIONS = List.of(
             WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1, 0.5)), 6)

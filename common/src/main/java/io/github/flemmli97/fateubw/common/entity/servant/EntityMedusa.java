@@ -100,7 +100,7 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
             WeightedEntry.wrap(new GoalAttackAction<EntityMedusa>(EntityMedusa.BELLEROPHON)
                     .cooldown(e -> e.getRandom().nextInt(25) + 10)
                     .withCondition((goal, target, prev) -> !goal.attacker.isPassenger() && (goal.attacker.canUseNP() && goal.attacker.getOwner() == null && goal.attacker.getMana() >= goal.attacker.props().hogouMana()) || goal.attacker.forcedNP)
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(5, 8, 1.1))), 14)
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(5, 8, 1.1))), 15)
     );
     public static final List<WeightedEntry.Wrapper<IdleAction<EntityMedusa>>> IDLE_ACTIONS = List.of(
             WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<EntityMedusa>(1, 0.5))

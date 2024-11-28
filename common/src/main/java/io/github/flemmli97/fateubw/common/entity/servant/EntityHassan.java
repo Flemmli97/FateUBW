@@ -86,11 +86,11 @@ public class EntityHassan extends BaseServant {
             WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.THROW)
                     .cooldown(e -> e.getRandom().nextInt(15) + 10)
                     .withCondition(((goal, target, previous) -> goal.distanceToTargetSq > 25 || goal.attacker.getRandom().nextFloat() < 0.5))
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 14, 1.1))), 9),
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 14, 1.1))), 12),
             WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.DUPE)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
                     .withCondition((goal, target, prev) -> Utils.<EntityHassan>npCheck().test(goal, target, prev) && goal.attacker.gatherCopies().isEmpty())
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(4, 6, 1.1))), 18)
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(4, 6, 1.1))), 15)
     );
     public static final List<WeightedEntry.Wrapper<IdleAction<EntityHassan>>> IDLE_ACTIONS = List.of(
             WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1, 0.5)), 6),

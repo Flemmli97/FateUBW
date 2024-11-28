@@ -267,7 +267,7 @@ public class Pegasus extends PathfinderMob implements IAnimated, StandingVehicle
                 if (--this.flyTimer <= 0) {
                     if (this.canFly()) {
                         this.flyTimer = 400 + this.getRandom().nextInt(300);
-                        this.setCanFly(true);
+                        this.setCanFly(false);
                     } else {
                         this.flyTimer = 250 + this.getRandom().nextInt(350);
                         this.setCanFly(true);

@@ -269,7 +269,7 @@ public class EntityLancelot extends BaseServant {
 
     @Override
     public boolean equipItemIfPossible(ItemStack stack) {
-        if(this.pickupDelay > 0)
+        if (this.pickupDelay > 0)
             return false;
         EquipmentSlot equipmentSlot = Mob.getEquipmentSlotForItem(stack);
         boolean special = this.specialWeapons(stack);
@@ -483,7 +483,7 @@ public class EntityLancelot extends BaseServant {
     @Override
     public void doSpecialCommand(String s) {
         if (s.equals(ModEntities.LANCELOT.getID() + ".drop")) {
-           this.swapWithInventory(true);
+            this.swapWithInventory(true);
             for (int i = 0; i < this.inventory.getContainerSize(); i++) {
                 this.spawnAtLocation(this.inventory.getItem(i));
             }

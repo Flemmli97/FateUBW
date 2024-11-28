@@ -146,7 +146,7 @@ public class ModelPegasus extends EntityModel<Pegasus> implements ExtendedModel,
         this.anim.setVariable("x_rotation", () -> {
             if (!entity.canFly())
                 return 0;
-            return -MathsHelper.XRotFrom(entity.getDeltaMovement());
+            return MathsHelper.XRotFrom(entity.getDeltaMovement());
         });
         if (anim == null) {
             if (!entity.isOnGround() || entity.canFly())

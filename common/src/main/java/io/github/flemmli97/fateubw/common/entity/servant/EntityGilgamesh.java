@@ -98,7 +98,7 @@ public class EntityGilgamesh extends BaseServant {
             WeightedEntry.wrap(new GoalAttackAction<EntityGilgamesh>(EntityGilgamesh.EA)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
                     .withCondition(Utils.npCheck())
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(4, 8, 1.1))), 10)
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(4, 8, 1.1))), 15)
     );
     public static final List<WeightedEntry.Wrapper<IdleAction<EntityGilgamesh>>> IDLE_ACTIONS = List.of(
             WeightedEntry.wrap(new IdleAction<EntityGilgamesh>(DoNothingRunner::new)
