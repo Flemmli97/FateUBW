@@ -190,10 +190,11 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
         this.setHealth(this.getMaxHealth());
         this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(props.strength());
         this.getAttribute(Attributes.ARMOR).setBaseValue(props.armor());
+        this.getAttribute(ModAttributes.MAGIC_ATTACK.get()).setBaseValue(props.magic());
         this.getAttribute(ModAttributes.MAGIC_RESISTANCE.get()).setBaseValue(props.magicRes());
         this.getAttribute(ModAttributes.PROJECTILE_BLOCK_CHANCE.get()).setBaseValue(props.projectileBlockChance());
         this.getAttribute(ModAttributes.PROJECTILE_RESISTANCE.get()).setBaseValue(props.projectileProt());
-        this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(props.moveSpeed());//default 0.3
+        this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(props.moveSpeed());
     }
 
     @Override

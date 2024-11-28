@@ -53,6 +53,10 @@ public class ServantProperties {
         return this.strength;
     }
 
+    public double magic() {
+        return this.magic;
+    }
+
     public double armor() {
         return this.armor;
     }

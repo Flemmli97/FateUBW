@@ -287,6 +287,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         this.setHealth(this.getMaxHealth());
         this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(this.prop.strength());
         this.getAttribute(Attributes.ARMOR).setBaseValue(this.prop.armor());
+        this.getAttribute(ModAttributes.MAGIC_ATTACK.get()).setBaseValue(this.prop.magic());
         this.getAttribute(ModAttributes.MAGIC_RESISTANCE.get()).setBaseValue(this.prop.magicRes());
         this.getAttribute(ModAttributes.PROJECTILE_BLOCK_CHANCE.get()).setBaseValue(this.prop.projectileBlockChance());
         this.getAttribute(ModAttributes.PROJECTILE_RESISTANCE.get()).setBaseValue(this.prop.projectileProt());

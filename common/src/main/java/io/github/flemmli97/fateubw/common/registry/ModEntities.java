@@ -87,10 +87,10 @@ public class ModEntities {
 
     public static final RegistryEntrySupplier<EntityType<EntityMedea>> MEDEA = regServant(EntityType.Builder.of(EntityMedea::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "medea"), 0x6f086b, 0x4a8be5,
-            new ServantProperties(350, 9.5, 5, 0, 4, 11, 17.5, 0.27, 100, BuiltinServantClasses.CASTER));
+            new ServantProperties(350, 9.5, 5, 0, 4, 16, 16, 0.27, 100, BuiltinServantClasses.CASTER));
     public static final RegistryEntrySupplier<EntityType<EntityGilles>> GILLES = regServant(EntityType.Builder.of(EntityGilles::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "gilles"), 0x100460, 0x600453,
-            new ServantProperties(325, 5, 7, 0, 8, 10, 14, 0.31, 80, BuiltinServantClasses.CASTER));
+            new ServantProperties(325, 5, 12, 0, 8, 14, 17, 0.31, 80, BuiltinServantClasses.CASTER));
 
     public static final RegistryEntrySupplier<EntityType<EntityHeracles>> HERACLES = regServant(EntityType.Builder.of(EntityHeracles::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "heracles"), 0x3c1d06, 0x5e3c22,
