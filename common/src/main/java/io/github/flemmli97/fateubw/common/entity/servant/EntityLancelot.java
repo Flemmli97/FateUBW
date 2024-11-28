@@ -7,6 +7,7 @@ import io.github.flemmli97.fateubw.common.config.Config;
 import io.github.flemmli97.fateubw.common.entity.servant.ai.LancelotAttackAI;
 import io.github.flemmli97.fateubw.common.items.weapons.ClassSpear;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
+import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
@@ -103,7 +104,7 @@ public class EntityLancelot extends BaseServant {
             WeightedEntry.wrap(new GoalAttackAction<EntityLancelot>(EntityLancelot.STAB)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
                     .withCondition((goal, target, previous) -> goal.attacker.canUseAttack(EntityLancelot.STAB))
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(3, 5))), 10)
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(2, 4))), 10)
     );
     public static final List<WeightedEntry.Wrapper<IdleAction<EntityLancelot>>> IDLE_ACTIONS = List.of(
             WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1, 0.5)), 6),
@@ -127,6 +128,7 @@ public class EntityLancelot extends BaseServant {
     private final SimpleContainer inventory = new SimpleContainer(5);
     private final SimpleContainer swapped = new SimpleContainer(1);
     private int inventorySlotForAttack = -1;
+    private int pickupDelay;
 
     public EntityLancelot(EntityType<? extends EntityLancelot> entityType, Level level) {
         super(entityType, level);
@@ -182,10 +184,8 @@ public class EntityLancelot extends BaseServant {
         if (this.inventorySlotForAttack > 1) {
             int slot = this.inventorySlotForAttack - 2;
             if (back) {
-                if (!this.swapped.getItem(0).isEmpty()) {
-                    this.setItemInHand(InteractionHand.OFF_HAND, this.swapped.getItem(0));
-                    this.swapped.setItem(0, ItemStack.EMPTY);
-                }
+                this.setItemInHand(InteractionHand.OFF_HAND, this.swapped.getItem(0));
+                this.swapped.setItem(0, ItemStack.EMPTY);
             } else if (!this.inventory.getItem(slot).isEmpty()) {
                 ItemStack current = this.getItemInHand(InteractionHand.OFF_HAND);
                 this.swapped.setItem(0, current);
@@ -247,6 +247,7 @@ public class EntityLancelot extends BaseServant {
     @Override
     public void tick() {
         super.tick();
+        --this.pickupDelay;
         if (this.level.isClientSide) {
             for (int x = 0; x < 2; x++) {
                 this.level.addParticle(
@@ -268,6 +269,8 @@ public class EntityLancelot extends BaseServant {
 
     @Override
     public boolean equipItemIfPossible(ItemStack stack) {
+        if(this.pickupDelay > 0)
+            return false;
         EquipmentSlot equipmentSlot = Mob.getEquipmentSlotForItem(stack);
         boolean special = this.specialWeapons(stack);
         if (special) {
@@ -276,7 +279,7 @@ public class EntityLancelot extends BaseServant {
         ItemStack current = this.getItemBySlot(equipmentSlot);
         if (current.getItem() == ModItems.ARONDIGHT.get() && equipmentSlot == EquipmentSlot.MAINHAND)
             return false;
-        boolean bl = (!special || current.isEmpty()) && this.canReplaceCurrentItem(stack, current);
+        boolean bl = !special;
         int slot = -1;
         if (!bl) {
             for (int i = 0; i < this.inventory.getContainerSize(); i++) {
@@ -290,6 +293,9 @@ public class EntityLancelot extends BaseServant {
                     break;
                 }
             }
+        }
+        if (slot == -1) {
+            bl = current.isEmpty() || this.canReplaceCurrentItem(stack, current);
         }
         if (bl && this.canHoldItem(stack)) {
             double d = slot == -1 ? this.getEquipmentDropChance(equipmentSlot) : 1;
@@ -331,7 +337,7 @@ public class EntityLancelot extends BaseServant {
     }
 
     protected boolean specialWeapons(ItemStack stack) {
-        return stack.getItem() instanceof BowItem || stack.getItem() instanceof CrossbowItem || stack.getItem() instanceof TridentItem
+        return LancelotAttackAI.getFor(stack) != null
                 || stack.getItem() instanceof ClassSpear
                 || stack.getItem().getDescriptionId().contains("spear")
                 || stack.getItem() instanceof ArrowItem || stack.getItem() instanceof FireworkRocketItem;
@@ -438,6 +444,15 @@ public class EntityLancelot extends BaseServant {
     }
 
     @Override
+    protected void dropEquipment() {
+        super.dropEquipment();
+        for (int i = 0; i < this.inventory.getContainerSize(); i++) {
+            this.spawnAtLocation(this.inventory.getItem(i));
+        }
+        this.inventory.clearContent();
+    }
+
+    @Override
     public ItemEntity spawnAtLocation(ItemStack stack) {
         if (stack.hasTag())
             stack.getTag().remove(CORRUPTED_ITEM);
@@ -458,6 +473,23 @@ public class EntityLancelot extends BaseServant {
         this.inventory.fromTag(tag.getList("Inventory", Tag.TAG_COMPOUND));
         this.swapped.fromTag(tag.getList("Swapped", Tag.TAG_COMPOUND));
         this.inventorySlotForAttack = tag.getInt("SelectedSlot");
+    }
+
+    @Override
+    public String[] specialCommands() {
+        return new String[]{ModEntities.LANCELOT.getID() + ".drop"};
+    }
+
+    @Override
+    public void doSpecialCommand(String s) {
+        if (s.equals(ModEntities.LANCELOT.getID() + ".drop")) {
+           this.swapWithInventory(true);
+            for (int i = 0; i < this.inventory.getContainerSize(); i++) {
+                this.spawnAtLocation(this.inventory.getItem(i));
+            }
+            this.inventory.clearContent();
+            this.pickupDelay = 100;
+        }
     }
 
     private void reflectProjectile(Entity oldProjectile) {
@@ -505,7 +537,8 @@ public class EntityLancelot extends BaseServant {
 
     @Override
     public boolean flipAnimation() {
-        return this.toUseHand() == InteractionHand.OFF_HAND;
+        return this.toUseHand() == InteractionHand.OFF_HAND
+                || (this.inventorySlotFor(STAB) == 1);
     }
 
     @Override

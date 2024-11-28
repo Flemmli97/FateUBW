@@ -112,6 +112,7 @@ public class Lang implements DataProvider {
         this.add(ModEntities.HERACLES.getID() + ".hogou", "God Hand");
         this.add(ModEntities.LANCELOT.get(), "Sir Lancelot");
         this.add(ModEntities.LANCELOT.getID() + ".hogou", "Knight of Owner");
+        this.add(ModEntities.LANCELOT.getID() + ".drop", "Drop Inventory");
         this.add(ModEntities.ISKANDER.get(), "Alexander the Great");
         this.add(ModEntities.ISKANDER.getID() + ".hogou", "Gordius Bulls");
         this.add(ModEntities.MEDUSA.get(), "Medusa");
