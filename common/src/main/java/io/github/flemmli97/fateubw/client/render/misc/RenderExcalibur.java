@@ -19,8 +19,12 @@ public class RenderExcalibur extends RenderBeam<Excalibur> {
     public static final ResourceLocation TEX = new ResourceLocation(Fate.MODID, "textures/entity/excalibur.png");
     private static final Random RANDOM = new Random();
 
+    private final float widthMod;
+
     public RenderExcalibur(EntityRendererProvider.Context ctx) {
-        super(ctx, 1, 4);
+        super(ctx, 1, 0.9f, 4);
+        // For 4 sided polygon. Radius is diagonal so this is modifier to width
+        this.widthMod = Mth.sqrt(0.9f * 0.9f / 2) * 2;
     }
 
     @Override
@@ -40,6 +44,11 @@ public class RenderExcalibur extends RenderBeam<Excalibur> {
         }
         super.render(entity, entityYaw, partialTicks, matrixStack, buffer, packedLight);
         matrixStack.popPose();
+    }
+
+    @Override
+    public float widthFunc(Excalibur entity) {
+        return super.widthFunc(entity) / this.widthMod;
     }
 
     @Override

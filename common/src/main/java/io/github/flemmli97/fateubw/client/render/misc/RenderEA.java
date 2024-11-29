@@ -5,13 +5,22 @@ import io.github.flemmli97.fateubw.common.entity.misc.EnumaElish;
 import io.github.flemmli97.tenshilib.client.render.RenderBeam;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
 public class RenderEA extends RenderBeam<EnumaElish> {
 
     public static final ResourceLocation TEX = new ResourceLocation(Fate.MODID, "textures/entity/ea.png");
 
+    private final float widthMod;
+
     public RenderEA(EntityRendererProvider.Context ctx) {
-        super(ctx, 1, 4);
+        super(ctx, 1, 0.9f, 4);
+        this.widthMod = Mth.sqrt(0.9f * 0.9f / 2) * 2;
+    }
+
+    @Override
+    public float widthFunc(EnumaElish entity) {
+        return super.widthFunc(entity) / this.widthMod;
     }
 
     @Override

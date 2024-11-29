@@ -18,8 +18,11 @@ public class RenderMagicBeam extends RenderBeam<MagicBeam> {
 
     private final RenderUtils.TextureBuilder textureBuilder = new RenderUtils.TextureBuilder();
 
+    private final float widthMod;
+
     public RenderMagicBeam(EntityRendererProvider.Context ctx) {
-        super(ctx, 0.3f, 0.25f, 4);
+        super(ctx, 1, 0.8f, 4);
+        this.widthMod = Mth.sqrt(0.8f * 0.8f / 2) * 2;
     }
 
     @Override
@@ -33,6 +36,11 @@ public class RenderMagicBeam extends RenderBeam<MagicBeam> {
             stack.popPose();
         } else
             super.render(projectile, rotation, partialTicks, stack, buffer, packedLight);
+    }
+
+    @Override
+    public float widthFunc(MagicBeam entity) {
+        return super.widthFunc(entity) / this.widthMod;
     }
 
     @Override
