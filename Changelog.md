@@ -1,3 +1,15 @@
+FateUBW 1.1.1
+================
+- Updated ai for:
+  - iskander, lancelot, medusa, hassan
+- Updated and fixed some textures
+- Adjusted attack range for some attacks
+- Update attributes of servants
+- Update stats of various items
+- Add a ranged attack for gilles
+- Add magic attack attribute. Only few servants make use of that
+- Updated various translation stuff
+
 FateUBW 1.1.0
 ================
 - Start of combat update. Other servants will follow
