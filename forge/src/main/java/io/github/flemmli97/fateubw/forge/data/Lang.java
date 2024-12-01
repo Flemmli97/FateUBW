@@ -17,7 +17,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -58,7 +57,7 @@ public class Lang implements DataProvider {
 
     protected void addTranslations() {
         for (RegistryEntrySupplier<Item> reg : ModItems.ITEMS.getEntries()) {
-            if (reg.get() instanceof BlockItem || reg.get() instanceof SpawnEgg || reg.getID().getPath().startsWith("gem") || reg.getID().getPath().startsWith("artifact"))
+            if (reg.get() instanceof SpawnEgg || reg.getID().getPath().startsWith("gem") || reg.getID().getPath().startsWith("artifact"))
                 continue;
             if (reg == ModItems.EXCALIBUR)
                 this.add(reg.get(), "Holy Sword Excalibur");
@@ -299,7 +298,7 @@ public class Lang implements DataProvider {
     }
 
     public void add(Block key, String name) {
-        if (!key.getDescriptionId().equals(key.asItem().getDescriptionId()))
+        if (!this.data.containsKey(key.getDescriptionId()))
             this.add(key.getDescriptionId(), name);
     }
 
