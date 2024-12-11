@@ -203,8 +203,11 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
             LivingEntity target = this.getTarget();
             if (anim.isAtTick(0.12)) {
                 Vec3 dir = target != null ? target.position().subtract(this.position()) : this.position().add(this.getLookAngle());
-                dir = new Vec3(dir.x(), 0, dir.z()).scale(0.13).add(0, 0.8, 0);
-                this.setDeltaMovement(dir);
+                dir = new Vec3(dir.x(), 0, dir.z()).scale(0.13);
+                if (dir.lengthSqr() > 3.5 * 3.5) {
+                    dir.normalize().scale(3.5);
+                }
+                this.setDeltaMovement(dir.add(0, 0.8, 0));
             }
             if (anim.isPastTick(0.12)) {
                 this.fallDistance = 0;

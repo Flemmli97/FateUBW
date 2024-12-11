@@ -19,7 +19,6 @@ import io.github.flemmli97.tenshilib.common.entity.ai.animated.GoalAttackAction;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.IdleAction;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.KeepDistanceRunner;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveAwayRunner;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTargetAttackRunner;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTargetRunner;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.WrappedRunner;
 import io.github.flemmli97.tenshilib.common.utils.ItemUtils;
@@ -77,17 +76,17 @@ public class EntityLancelot extends BaseServant {
     public static final AnimatedAction[] ANIMS = {MELEE_1, MELEE_1_VAR_1, MELEE_1_VAR_2, MELEE_2, JUMP, JUMP_LAND, TRIDENT, BOW, STAB, CROSSBOW, GUN_SMALL, GUN_BIG, SUMMON};
 
     public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityLancelot>>> ATTACKS = List.of(
-            WeightedEntry.wrap(new GoalAttackAction<EntityLancelot>(EntityLancelot.MELEE_1)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .chain(GoalAttackAction.<EntityLancelot>chainBuilder(EntityLancelot.MELEE_1_VAR_1)
-                            .chain(EntityLancelot.MELEE_1_VAR_2).withPredicate(e -> e.getRandom().nextFloat() < 0.5))
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 11),
-            WeightedEntry.wrap(new GoalAttackAction<EntityLancelot>(EntityLancelot.MELEE_2)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 11),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityLancelot>(EntityLancelot.MELEE_1)
+//                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
+//                    .chain(GoalAttackAction.<EntityLancelot>chainBuilder(EntityLancelot.MELEE_1_VAR_1)
+//                            .chain(EntityLancelot.MELEE_1_VAR_2).withPredicate(e -> e.getRandom().nextFloat() < 0.5))
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 11),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityLancelot>(EntityLancelot.MELEE_2)
+//                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 11),
             WeightedEntry.wrap(new GoalAttackAction<EntityLancelot>(EntityLancelot.JUMP)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .withCondition(((goal, target, previous) -> goal.distanceToTargetSq > 25))
+                    //.withCondition(((goal, target, previous) -> goal.distanceToTargetSq > 25))
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetRunner<>(1, 7))), 13),
             WeightedEntry.wrap(new GoalAttackAction<EntityLancelot>(EntityLancelot.BOW)
                     .cooldown(e -> e.getRandom().nextInt(15) + 10)
@@ -364,8 +363,11 @@ public class EntityLancelot extends BaseServant {
             LivingEntity target = this.getTarget();
             if (anim.isAtTick(0.12)) {
                 Vec3 dir = target != null ? target.position().subtract(this.position()) : this.position().add(this.getLookAngle());
-                dir = new Vec3(dir.x(), 0, dir.z()).scale(0.16).add(0, 0.9, 0);
-                this.setDeltaMovement(dir);
+                dir = new Vec3(dir.x(), 0, dir.z()).normalize().scale(0.16);
+                if (dir.lengthSqr() > 4.5 * 4.5) {
+                    dir.normalize().scale(4.5);
+                }
+                this.setDeltaMovement(dir.add(0, 0.9, 0));
             }
             if (anim.isPastTick(0.12)) {
                 this.fallDistance = 0;
@@ -407,7 +409,7 @@ public class EntityLancelot extends BaseServant {
                 this.setDeltaMovement(this.getDeltaMovement().add(dir));
             }
             if (anim.canAttack() && anim.is(JUMP_LAND)) {
-                S2CScreenShake.sendAround(this, 16, 8, 3);
+                S2CScreenShake.sendAround(this, 10, 8, 3);
                 this.playSound(SoundEvents.GENERIC_EXPLODE, 1.0f, 0.9f);
             }
             super.handleAttack(anim);
