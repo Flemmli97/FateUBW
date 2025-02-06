@@ -51,7 +51,7 @@ public class ModItems {
     public static final RegistryEntrySupplier<Item> GAEBUIDHE = ITEMS.register("gae_buidhe", () -> new ClassSpear(ItemTiers.GAE_BUIDHE, new Item.Properties().tab(Fate.TAB), -1.5f, 3f));
     public static final RegistryEntrySupplier<Item> KANSHOU = ITEMS.register("kanshou", ModItems::kanshou);
     public static final RegistryEntrySupplier<Item> BAKUYA = ITEMS.register("bakuya", () -> new ItemKanshouBakuya(ItemTiers.KANSHOU_BAKUYA, 0, -2f, new Item.Properties().tab(Fate.TAB), KANSHOU));
-    public static final RegistryEntrySupplier<Item> ARCHBOW = ITEMS.register("emiyas_bow", () -> new ItemArcherBow(new Item.Properties().tab(Fate.TAB)));
+    public static final RegistryEntrySupplier<Item> ARCHBOW = ITEMS.register("emiyas_bow", () -> new ItemArcherBow(new Item.Properties().tab(Fate.TAB).stacksTo(1)));
     public static final RegistryEntrySupplier<Item> ENUMAELISH = ITEMS.register("enuma_elish", () -> Platform.INSTANCE.createEA(new Item.Properties().tab(Fate.TAB)));
     public static final RegistryEntrySupplier<Item> STAFF = ITEMS.register("medeas_staff", () -> new ItemStaff(new Item.Properties().tab(Fate.TAB).stacksTo(1)));
     public static final RegistryEntrySupplier<Item> RULE_BREAKER = ITEMS.register("rule_breaker", () -> new SwordItem(ItemTiers.RULE_BREAKER, 0, -2.4f, new Item.Properties().tab(Fate.TAB)));
