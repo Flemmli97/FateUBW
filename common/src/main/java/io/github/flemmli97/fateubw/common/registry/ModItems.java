@@ -61,7 +61,7 @@ public class ModItems {
     public static final RegistryEntrySupplier<Item> KUPRIOTS = ITEMS.register("kupriots", () -> new SwordItem(ItemTiers.KUPRIOTS, 0, -2.4f, new Item.Properties().tab(Fate.TAB)));
     public static final RegistryEntrySupplier<Item> MEDUSA_DAGGER = ITEMS.register("medusas_dagger", () -> new ItemMedusaDagger(ItemTiers.DAGGER, 0, -2.0f, new Item.Properties().tab(Fate.TAB)));
     public static final RegistryEntrySupplier<Item> ASSASSIN_DAGGER = ITEMS.register("assassin_dagger", () -> new ItemDagger(ItemTiers.ASSASSIN_DAGGER, 0, -1.5f, new Item.Properties().tab(Fate.TAB)));
-    public static final RegistryEntrySupplier<Item> KATANA = ITEMS.register("katana", () -> new ItemKatana(ItemTiers.KATANA, 0, -2.6f, new Item.Properties().tab(Fate.TAB)));
+    public static final RegistryEntrySupplier<Item> MONOHOSHI_ZAO = ITEMS.register("monohoshi_zao", () -> new ItemKatana(ItemTiers.KATANA, 0, -2.6f, new Item.Properties().tab(Fate.TAB)));
 
     public static final RegistryEntrySupplier<Item> ALTAR = ITEMS.register("summoning_altar", () -> new BlockItem(ModBlocks.ALTAR.get(), new Item.Properties().tab(Fate.TAB)));
     public static final RegistryEntrySupplier<Item> GEM_ORE = ITEMS.register("gem_ore", () -> new BlockItem(ModBlocks.GEM_ORE.get(), new Item.Properties().tab(Fate.TAB)));

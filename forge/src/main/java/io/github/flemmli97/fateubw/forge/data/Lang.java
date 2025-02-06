@@ -59,12 +59,8 @@ public class Lang implements DataProvider {
         for (RegistryEntrySupplier<Item> reg : ModItems.ITEMS.getEntries()) {
             if (reg.get() instanceof SpawnEgg || reg.getID().getPath().startsWith("gem") || reg.getID().getPath().startsWith("artifact"))
                 continue;
-            if (reg == ModItems.EXCALIBUR)
-                this.add(reg.get(), "Holy Sword Excalibur");
-            else if (reg == ModItems.ENUMAELISH)
+            if (reg == ModItems.ENUMAELISH)
                 this.add(reg.get(), "EA");
-            else if (reg == ModItems.KATANA)
-                this.add(reg.get(), "Monohoshi Zao");
             else
                 this.add(reg.get(), this.simpleOfRegName(reg.getID()));
         }

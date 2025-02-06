@@ -76,7 +76,7 @@ public class Loottables extends LootTableProvider {
             this.registerLootTable(ModEntities.ISKANDER.get(), this.getDefault(ModItems.KUPRIOTS.get()));
             this.registerLootTable(ModEntities.MEDUSA.get(), this.getDefault(ModItems.MEDUSA_DAGGER.get()));
             this.registerLootTable(ModEntities.HASSAN.get(), this.getDefault(ModItems.ASSASSIN_DAGGER.get()));
-            this.registerLootTable(ModEntities.SASAKI.get(), this.getDefault(ModItems.KATANA.get()));
+            this.registerLootTable(ModEntities.SASAKI.get(), this.getDefault(ModItems.MONOHOSHI_ZAO.get()));
         }
 
         private LootTable.Builder getDefault(ItemLike... items) {

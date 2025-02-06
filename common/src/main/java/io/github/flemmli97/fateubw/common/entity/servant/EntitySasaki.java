@@ -31,7 +31,7 @@ public class EntitySasaki extends BaseServant {
 
     @Override
     protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.KATANA.get()));
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.MONOHOSHI_ZAO.get()));
     }
 
     @Override

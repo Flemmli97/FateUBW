@@ -27,7 +27,6 @@ public class ItemModels extends ItemModelProvider {
     protected void registerModels() {
         int sealid = 1;
         for (RegistryEntrySupplier<Item> reg : ModItems.ITEMS.getEntries()) {
-            //TODO
             if (reg == ModItems.ENUMAELISH || reg == ModItems.HERACLES_AXE)
                 continue;
             if (reg == ModItems.MEDUSA_DAGGER) {
@@ -98,13 +97,17 @@ public class ItemModels extends ItemModelProvider {
                         .translation(1.13f, 3.2f, 1.13f)
                         .scale(0.68f, 0.68f, 0.68f)
                         .end();
-            } else if (reg == ModItems.GAEBOLG) {
+            } else if (reg == ModItems.GAEBOLG || reg == ModItems.GAEBUIDHE
+                    || reg == ModItems.GAEDEARG) {
                 this.withExistingParent(reg.getID().getPath(), new ResourceLocation(Fate.MODID, "item/spear_item"))
+                        .texture("layer0", this.itemTexture(reg.getID()));
+            } else if (reg == ModItems.ARONDIGHT || reg == ModItems.MONOHOSHI_ZAO || reg == ModItems.STAFF) {
+                this.withExistingParent(reg.getID().getPath(), new ResourceLocation(Fate.MODID, "item/32x32_weapon"))
                         .texture("layer0", this.itemTexture(reg.getID()));
             } else if (reg.get() instanceof SpawnEgg)
                 this.withExistingParent(reg.getID().getPath(), ModelLocationUtils.decorateItemModelLocation("template_spawn_egg"));
             else if (reg == ModItems.EXCALIBUR) {
-                this.withExistingParent(reg.getID().getPath(), ModelLocationUtils.decorateItemModelLocation("handheld"))
+                this.withExistingParent(reg.getID().getPath(), new ResourceLocation(Fate.MODID, "item/32x32_weapon"))
                         .texture("layer0", "fateubw:items/excalibur")
                         .override().predicate(ItemModelProps.ACTIVE_ID, 1).model(this.getExistingFile(new ResourceLocation(Fate.MODID, "active_item_handheld")));
             } else if (reg.get() instanceof BlockItem blockItem) {

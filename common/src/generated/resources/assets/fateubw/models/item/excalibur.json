@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:item/handheld",
+  "parent": "fateubw:item/32x32_weapon",
   "textures": {
     "layer0": "fateubw:items/excalibur"
   },
