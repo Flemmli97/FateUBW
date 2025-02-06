@@ -37,20 +37,18 @@ public class RenderExcaliburItem extends BlockEntityWithoutLevelRenderer {
         return beam;
     }
 
-    public static void render(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay, RenderUtils.BeamBuilder beam) {
+    public static void render(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay, RenderUtils.BeamBuilder beam) {
         ItemRenderer renderer = Minecraft.getInstance().getItemRenderer();
         BakedModel model = renderer.getItemModelShaper().getItemModel(stack);
-        if (model == null)
-            model = renderer.getItemModelShaper().getModelManager().getMissingModel();
         RenderType rendertype = ItemBlockRenderTypes.getRenderType(stack, true);
         VertexConsumer ivertexbuilder = ItemRenderer.getFoilBufferDirect(buffer, rendertype, true, stack.hasFoil());
-        ClientPlatform.INSTANCE.renderModelList(renderer, model, stack, combinedLight, combinedOverlay, matrixStack, ivertexbuilder);
+        ClientPlatform.INSTANCE.renderModelList(renderer, model, stack, combinedLight, combinedOverlay, poseStack, ivertexbuilder);
 
         if (transformType != ItemTransforms.TransformType.GUI) {
-            matrixStack.pushPose();
-            matrixStack.translate(0.5, 0.5, 0.5);
-            RenderUtils.renderGradientBeams3d(matrixStack, buffer, 1.5f, 0.5f, ClientHandler.clientTick, ClientHandler.getPartialTicks(), 90 / 200f, 20, beam);
-            matrixStack.popPose();
+            poseStack.pushPose();
+            poseStack.translate(0.5, 0.5, 0.5);
+            RenderUtils.renderGradientBeams3d(poseStack, buffer, 1.5f, 0.5f, ClientHandler.clientTick, ClientHandler.getPartialTicks(), 90 / 200f, 20, beam);
+            poseStack.popPose();
         }
     }
 }

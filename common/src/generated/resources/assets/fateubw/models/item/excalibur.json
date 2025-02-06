@@ -8,7 +8,7 @@
       "predicate": {
         "fateubw:active": 1.0
       },
-      "model": "fateubw:item/active_item_handheld"
+      "model": "fateubw:item/excalibur_active"
     }
   ]
 }

@@ -109,7 +109,7 @@ public class ItemModels extends ItemModelProvider {
             else if (reg == ModItems.EXCALIBUR) {
                 this.withExistingParent(reg.getID().getPath(), new ResourceLocation(Fate.MODID, "item/32x32_weapon"))
                         .texture("layer0", "fateubw:items/excalibur")
-                        .override().predicate(ItemModelProps.ACTIVE_ID, 1).model(this.getExistingFile(new ResourceLocation(Fate.MODID, "active_item_handheld")));
+                        .override().predicate(ItemModelProps.ACTIVE_ID, 1).model(this.getExistingFile(new ResourceLocation(Fate.MODID, "excalibur_active")));
             } else if (reg.get() instanceof BlockItem blockItem) {
                 this.getBuilder(reg.getID().getPath()).parent(new ModelFile.UncheckedModelFile(new ResourceLocation(blockItem.getBlock().getRegistryName().getNamespace(), "block/" + blockItem.getBlock().getRegistryName().getPath())));
             } else if (reg.get() instanceof SwordItem || reg.get() instanceof ClassSpear || reg == ModItems.STAFF) {

@@ -41,7 +41,7 @@ public class ItemEA extends SwordItem {
             if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).map(mana -> mana.getMana() >= Config.Common.eaMana).orElse(false)) {
                 player.startUsingItem(hand);
                 Platform.INSTANCE.getItemStackData(stack).ifPresent(data -> data.setInUse(player, true, hand == InteractionHand.MAIN_HAND));
-                return InteractionResultHolder.success(stack);
+                return InteractionResultHolder.consume(stack);
             }
             player.sendMessage(new TranslatableComponent("fateubw.chat.mana.missing").withStyle(ChatFormatting.AQUA), Util.NIL_UUID);
             return InteractionResultHolder.fail(player.getItemInHand(hand));

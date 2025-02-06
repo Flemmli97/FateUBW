@@ -45,7 +45,7 @@ public class ItemExcalibur extends SwordItem {
             player.sendMessage(new TranslatableComponent("fateubw.chat.mana.missing").withStyle(ChatFormatting.AQUA), Util.NIL_UUID);
             return InteractionResultHolder.fail(player.getItemInHand(hand));
         }
-        return InteractionResultHolder.success(stack);
+        return InteractionResultHolder.consume(stack);
     }
 
     @Override
