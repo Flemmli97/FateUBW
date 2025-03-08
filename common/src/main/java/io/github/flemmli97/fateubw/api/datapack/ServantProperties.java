@@ -9,12 +9,12 @@ public class ServantProperties {
 
     public static final Codec<ServantProperties> CODEC = RecordCodecBuilder.create((instance) ->
             instance.group(
-                    Codec.FLOAT.fieldOf("projectileBlockChance").forGetter(d -> d.block),
-                    Codec.INT.fieldOf("nobelPhantasmCost").forGetter(d -> d.manaCost),
+                    Codec.FLOAT.fieldOf("projectile_block_chance").forGetter(d -> d.block),
+                    Codec.INT.fieldOf("nobel_phantasm_cost").forGetter(d -> d.manaCost),
 
-                    Codec.DOUBLE.fieldOf("projectileProt").forGetter(d -> d.proj),
-                    Codec.DOUBLE.fieldOf("magicProt").forGetter(d -> d.magicProt),
-                    Codec.DOUBLE.fieldOf("moveSpeed").forGetter(d -> d.move),
+                    Codec.DOUBLE.fieldOf("projectile_prot").forGetter(d -> d.proj),
+                    Codec.DOUBLE.fieldOf("magic_prot").forGetter(d -> d.magicProt),
+                    Codec.DOUBLE.fieldOf("move_speed").forGetter(d -> d.move),
 
                     Codec.DOUBLE.fieldOf("magic").forGetter(d -> d.magic),
                     Codec.DOUBLE.fieldOf("armor").forGetter(d -> d.armor),

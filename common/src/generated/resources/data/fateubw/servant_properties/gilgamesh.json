@@ -4,9 +4,9 @@
   "strength": 9.0,
   "magic": 0.0,
   "armor": 9.0,
-  "projectileProt": 12.5,
-  "magicProt": 5.0,
-  "moveSpeed": 0.3,
-  "projectileBlockChance": 0.0,
-  "nobelPhantasmCost": 80
+  "projectile_prot": 12.5,
+  "magic_prot": 5.0,
+  "move_speed": 0.3,
+  "projectile_block_chance": 0.0,
+  "nobel_phantasm_cost": 80
 }
