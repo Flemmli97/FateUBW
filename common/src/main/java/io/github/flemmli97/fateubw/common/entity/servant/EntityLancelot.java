@@ -19,6 +19,7 @@ import io.github.flemmli97.tenshilib.common.entity.ai.animated.GoalAttackAction;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.IdleAction;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.KeepDistanceRunner;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveAwayRunner;
+import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTargetAttackRunner;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTargetRunner;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.WrappedRunner;
 import io.github.flemmli97.tenshilib.common.utils.ItemUtils;
@@ -76,17 +77,17 @@ public class EntityLancelot extends BaseServant {
     public static final AnimatedAction[] ANIMS = {MELEE_1, MELEE_1_VAR_1, MELEE_1_VAR_2, MELEE_2, JUMP, JUMP_LAND, TRIDENT, BOW, STAB, CROSSBOW, GUN_SMALL, GUN_BIG, SUMMON};
 
     public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityLancelot>>> ATTACKS = List.of(
-//            WeightedEntry.wrap(new GoalAttackAction<EntityLancelot>(EntityLancelot.MELEE_1)
-//                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
-//                    .chain(GoalAttackAction.<EntityLancelot>chainBuilder(EntityLancelot.MELEE_1_VAR_1)
-//                            .chain(EntityLancelot.MELEE_1_VAR_2).withPredicate(e -> e.getRandom().nextFloat() < 0.5))
-//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 11),
-//            WeightedEntry.wrap(new GoalAttackAction<EntityLancelot>(EntityLancelot.MELEE_2)
-//                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
-//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 11),
+            WeightedEntry.wrap(new GoalAttackAction<EntityLancelot>(EntityLancelot.MELEE_1)
+                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
+                    .chain(GoalAttackAction.<EntityLancelot>chainBuilder(EntityLancelot.MELEE_1_VAR_1)
+                            .chain(EntityLancelot.MELEE_1_VAR_2).withPredicate(e -> e.getRandom().nextFloat() < 0.5))
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 11),
+            WeightedEntry.wrap(new GoalAttackAction<EntityLancelot>(EntityLancelot.MELEE_2)
+                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 11),
             WeightedEntry.wrap(new GoalAttackAction<EntityLancelot>(EntityLancelot.JUMP)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    //.withCondition(((goal, target, previous) -> goal.distanceToTargetSq > 25))
+                    .withCondition(((goal, target, previous) -> goal.distanceToTargetSq > 25))
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetRunner<>(1, 7))), 13),
             WeightedEntry.wrap(new GoalAttackAction<EntityLancelot>(EntityLancelot.BOW)
                     .cooldown(e -> e.getRandom().nextInt(15) + 10)
