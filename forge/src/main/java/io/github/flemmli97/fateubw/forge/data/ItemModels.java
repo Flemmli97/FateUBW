@@ -106,7 +106,10 @@ public class ItemModels extends ItemModelProvider {
                         .texture("layer0", this.itemTexture(reg.getID()));
             } else if (reg.get() instanceof SpawnEgg)
                 this.withExistingParent(reg.getID().getPath(), ModelLocationUtils.decorateItemModelLocation("template_spawn_egg"));
-            else if (reg == ModItems.EXCALIBUR) {
+            else if (reg == ModItems.INVISEXCALIBUR) {
+                this.withExistingParent(reg.getID().getPath(), new ResourceLocation(Fate.MODID, "item/32x32_weapon"))
+                        .texture("layer0", this.itemTexture(reg.getID()));
+            }else if (reg == ModItems.EXCALIBUR) {
                 this.withExistingParent(reg.getID().getPath(), new ResourceLocation(Fate.MODID, "item/32x32_weapon"))
                         .texture("layer0", "fateubw:items/excalibur")
                         .override().predicate(ItemModelProps.ACTIVE_ID, 1).model(this.getExistingFile(new ResourceLocation(Fate.MODID, "excalibur_active")));
