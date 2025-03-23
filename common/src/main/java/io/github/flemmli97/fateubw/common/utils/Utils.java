@@ -63,8 +63,41 @@ public class Utils {
         return (float) living.getAttributeValue(ModAttributes.MAGIC_ATTACK.get());
     }
 
+    public static boolean alliedTo(Entity entity, Entity other) {
+        if (entity.getServer() == null)
+            return false;
+        return false; // TODO
+//        if (entity instanceof ServerPlayer player) {
+//            if (other instanceof OwnableEntity ownable) {
+//                if (ownable.getOwnerUUID() == null) {
+//                    return false;
+//                }
+//                Entity owner = ownable.getOwner();
+//                return player.getUUID().equals(ownable.getOwnerUUID())
+//                        || (owner == null ? inSameTeam(player, ownable.getOwnerUUID()) : alliedTo(player, owner));
+//            }
+//            return inSameTeam(player, other.getUUID());
+//        }
+//        if (entity instanceof OwnableEntity ownable) {
+//            if (ownable.getOwnerUUID() == null) {
+//                return false;
+//            }
+//            if (other.getUUID().equals(ownable.getOwnerUUID()))
+//                return true;
+//            if (other instanceof OwnableEntity ownable2) {
+//                if(ownable2.getOwner() != null && alliedTo(entity, ownable2.getOwner()))
+//                    return true;
+//                else if(ownable2.getOwnerUUID() != null && TruceHandler.get(entity.getServer()).get(ownable2.getOwnerUUID()).contains(entity.getUUID()))
+//                    return true;
+//            }
+//            Entity owner = ownable.getOwner();
+//            return owner != null ? alliedTo(owner, other) : TruceHandler.get(entity.getServer()).get(ownable.getOwnerUUID()).contains(entity.getUUID());
+//        }
+//        return false;
+    }
+
     public static boolean inSameTeam(ServerPlayer player, UUID other) {
-        if (player.getServer() == null)
+        if (player.getServer() == null || other == null)
             return false;
         return TruceHandler.get(player.getServer()).get(player.getUUID()).contains(other);
     }

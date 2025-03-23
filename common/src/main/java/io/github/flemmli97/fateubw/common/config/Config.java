@@ -51,7 +51,7 @@ public class Config {
         public static float eaDamage = 35;
         public static float excaliburDamage = 27;
         public static float caladBolgDmg = 22;
-        public static float magicBeam = 11;
+        public static float magicBeam = 5;
         public static float gaeBolgDmg = 17;
         public static PotionEffectsConfig gaeBolgEffect = new PotionEffectsConfig(
                 List.of(new PotionEffectsConfig.EffectInstance(MobEffects.WITHER, 400, 2),
@@ -63,8 +63,8 @@ public class Config {
         public static float gordiusDmg = 13;
         public static double pegasusHealth = 70;
         public static float pegasusDamage = 16;
-        public static int medeaCircleSpan = 12000;
-        public static float medeaCircleRange = 32;
+        public static int medeaCircleSpan = 2400;
+        public static float medeaCircleRange = 24;
 
         //Items
         public static int excaliburMana = 70;

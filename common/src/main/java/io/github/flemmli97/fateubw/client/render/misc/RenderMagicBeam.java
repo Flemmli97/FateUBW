@@ -1,6 +1,7 @@
 package io.github.flemmli97.fateubw.client.render.misc;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicBeam;
 import io.github.flemmli97.tenshilib.client.render.RenderBeam;
@@ -29,8 +30,9 @@ public class RenderMagicBeam extends RenderBeam<MagicBeam> {
     public void render(MagicBeam projectile, float rotation, float partialTicks, PoseStack stack, MultiBufferSource buffer, int packedLight) {
         if (projectile.idle) {
             stack.pushPose();
-            RenderUtils.applyYawPitch(stack, Mth.lerp(partialTicks, projectile.yRotO, projectile.getYRot()),
-                    Mth.lerp(partialTicks, projectile.xRotO, projectile.getXRot()));
+            stack.scale(1.6f, 1.6f, 1.6f);
+            stack.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(partialTicks, projectile.yRotO, projectile.getYRot()) + 90));
+            stack.mulPose(Vector3f.XP.rotationDegrees(Mth.lerp(partialTicks, projectile.xRotO, projectile.getXRot())));
             this.textureBuilder.setLight(0xf000f0);
             RenderUtils.renderTexture(stack, buffer.getBuffer(RenderType.entityCutoutNoCull(TEX_CIRCLE)), 1, 1, this.textureBuilder);
             stack.popPose();
@@ -40,7 +42,8 @@ public class RenderMagicBeam extends RenderBeam<MagicBeam> {
 
     @Override
     public float widthFunc(MagicBeam entity) {
-        return super.widthFunc(entity) / this.widthMod;
+        float width = (float) (entity.radius() * 2.0F * Math.sin((double) entity.livingTicks() / entity.livingTickMax() * Math.PI));
+        return width / this.widthMod;
     }
 
     @Override

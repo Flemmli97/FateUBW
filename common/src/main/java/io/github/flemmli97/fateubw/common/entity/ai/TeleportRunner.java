@@ -1,0 +1,41 @@
+package io.github.flemmli97.fateubw.common.entity.ai;
+
+import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
+import io.github.flemmli97.tenshilib.api.entity.IAnimated;
+import io.github.flemmli97.tenshilib.common.entity.ai.animated.ActionRun;
+import io.github.flemmli97.tenshilib.common.entity.ai.animated.AnimatedAttackGoal;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.util.DefaultRandomPos;
+import net.minecraft.world.phys.Vec3;
+
+public class TeleportRunner<T extends PathfinderMob & IAnimated> implements ActionRun<T> {
+
+    private final double minDistSqr, maxDistSqr;
+    private final int teleportMin, teleportMax;
+
+    private boolean teleported;
+
+    public TeleportRunner(double minDist, double maxDist, int teleportMin, int teleportMax) {
+        this.minDistSqr = minDist * minDist;
+        this.maxDistSqr = maxDist * maxDist;
+        this.teleportMin = teleportMin;
+        this.teleportMax = teleportMax;
+    }
+
+    @Override
+    public boolean run(AnimatedAttackGoal<T> goal, LivingEntity target, AnimatedAction anim) {
+        if (!this.teleported) {
+            for (int i = 0; i < 32; ++i) {
+                Vec3 posAway = goal.distanceToTargetSq > this.maxDistSqr ? DefaultRandomPos.getPosTowards(goal.attacker, goal.attacker.getRandom().nextInt(this.teleportMax - this.teleportMin) + this.teleportMin, 8, target.position(), 1)
+                        : DefaultRandomPos.getPosAway(goal.attacker, goal.attacker.getRandom().nextInt(this.teleportMax - this.teleportMin) + this.teleportMin, 8, target.position());
+                if (posAway != null && target.distanceToSqr(posAway) >= this.minDistSqr) {
+                    goal.attacker.teleportTo(posAway.x(), posAway.y(), posAway.z());
+                    this.teleported = true;
+                    return true;
+                }
+            }
+        }
+        return true;
+    }
+}

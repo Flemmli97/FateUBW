@@ -1,8 +1,8 @@
 package io.github.flemmli97.fateubw.common.entity.misc;
 
 import io.github.flemmli97.fateubw.common.config.Config;
-import io.github.flemmli97.fateubw.common.entity.servant.EntityMedea;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
+import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.entity.EntityUtil;
 import io.github.flemmli97.tenshilib.common.utils.MathUtils;
 import net.minecraft.core.particles.ParticleTypes;
@@ -12,8 +12,11 @@ import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.level.Level;
 
@@ -24,7 +27,7 @@ public class MagicBufCircle extends Entity implements OwnableEntity {
 
     protected static final EntityDataAccessor<Float> RANGE = SynchedEntityData.defineId(MagicBufCircle.class, EntityDataSerializers.FLOAT);
 
-    private EntityMedea owner;
+    private LivingEntity owner;
     private UUID ownerUUID;
     private int livingTick;
     private List<float[]> circlePoints;
@@ -33,7 +36,7 @@ public class MagicBufCircle extends Entity implements OwnableEntity {
         super(entityTypeIn, worldIn);
     }
 
-    public MagicBufCircle(Level world, EntityMedea owner, float r) {
+    public MagicBufCircle(Level world, LivingEntity owner, float r) {
         this(ModEntities.MEDEA_CIRCLE.get(), world);
         this.setPos(owner.getX(), owner.getY(), owner.getZ());
         this.owner = owner;
@@ -53,12 +56,27 @@ public class MagicBufCircle extends Entity implements OwnableEntity {
                     this.level.addParticle(ParticleTypes.WITCH, this.getX() + f[0], this.getY() + 0.2, this.getZ() + f[1], 0, 0.12, 0);
         }
         if (!this.level.isClientSide) {
-            float r = this.entityData.get(RANGE);
-            if (this.getOwner() != null && this.getOwner().position().distanceToSqr(this.position()) < r * r)
-                this.getOwner().buff();
+            if (this.tickCount % 5 == 0 && this.getOwner() != null) {
+                float r = this.entityData.get(RANGE);
+                for (LivingEntity entity : this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(r),
+                        entity -> entity == this.getOwner())) { // TODO other entities
+                    entity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 1, 2, true, false));
+                    if (!entity.hasEffect(MobEffects.REGENERATION))
+                        entity.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 50, 1, true, false));
+                    entity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 1, 2, true, false));
+                }
+            }
             if (this.livingTick > Config.Common.medeaCircleSpan || this.getOwner() == null || this.getOwner().isDeadOrDying())
                 this.discard();
         }
+    }
+
+    private boolean canApplyTo(LivingEntity entity) {
+        if (this.getOwner() == null)
+            return false;
+        if (entity == this.getOwner())
+            return true;
+        return Utils.alliedTo(this.getOwner(), entity);
     }
 
     @Override
@@ -91,9 +109,9 @@ public class MagicBufCircle extends Entity implements OwnableEntity {
     }
 
     @Override
-    public EntityMedea getOwner() {
+    public LivingEntity getOwner() {
         if (this.owner == null && this.ownerUUID != null)
-            this.owner = EntityUtil.findFromUUID(EntityMedea.class, this.level, this.ownerUUID);
+            this.owner = EntityUtil.findFromUUID(LivingEntity.class, this.level, this.ownerUUID);
         return this.owner;
     }
 }

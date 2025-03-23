@@ -1,5 +1,7 @@
 package io.github.flemmli97.fateubw.client.model;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.entity.servant.EntityMedea;
 import io.github.flemmli97.tenshilib.api.entity.IAnimated;
@@ -19,9 +21,9 @@ public class ModelMedea<T extends EntityMedea & IAnimated> extends ModelServant<
 
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(Fate.MODID, "medea"), "main");
 
-    private ModelPartHandler.ModelPartExtended cloak;
-    private ModelPartHandler.ModelPartExtended hat;
-    private ModelPartHandler.ModelPartExtended cloakBack;
+    private final ModelPartHandler.ModelPartExtended cloak;
+    private final ModelPartHandler.ModelPartExtended hat;
+    private final ModelPartHandler.ModelPartExtended cloakBack;
 
     public ModelMedea(ModelPart root) {
         super(root, "medea");
@@ -106,5 +108,16 @@ public class ModelMedea<T extends EntityMedea & IAnimated> extends ModelServant<
     @Override
     public ModelPartHandler.ModelPartExtended getHand(InteractionHand side) {
         return side == InteractionHand.MAIN_HAND ? this.rightArm : this.leftArm;
+    }
+
+    @Override
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        super.renderToBuffer(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+    }
+
+    public void toggleCloak(boolean show) {
+        this.cloak.visible = show;
+        this.cloakBack.visible = show;
+        this.hat.visible = show;
     }
 }

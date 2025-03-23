@@ -15,6 +15,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
+import org.jetbrains.annotations.Nullable;
 
 public class MagicBeam extends BaseBeam {
 
@@ -22,7 +23,7 @@ public class MagicBeam extends BaseBeam {
     protected static final EntityDataAccessor<Integer> PRE_SHOOT_TICK = SynchedEntityData.defineId(MagicBeam.class, EntityDataSerializers.INT);
 
     private LivingEntity target;
-    private int strengthMod;
+    private float damageMultiplier = 1;
     public boolean idle = true;
 
     public MagicBeam(EntityType<? extends MagicBeam> type, Level world) {
@@ -33,16 +34,34 @@ public class MagicBeam extends BaseBeam {
         super(ModEntities.MAGIC_BEAM.get(), world, shooter);
     }
 
-    public MagicBeam(Level world, LivingEntity shootingEntity, LivingEntity target, int strength) {
+    public MagicBeam(Level world, LivingEntity shootingEntity, @Nullable LivingEntity target) {
         this(world, shootingEntity);
         this.target = target;
-        this.strengthMod = strength;
+    }
+
+    public void setDamageMultiplier(float multiplier) {
+        this.damageMultiplier = multiplier;
+    }
+
+    @Override
+    public float radius() {
+        return 0.3f;
+    }
+
+    @Override
+    public float getRange() {
+        return 16;
+    }
+
+    @Override
+    public boolean piercing() {
+        return super.piercing();
     }
 
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-        this.entityData.define(SHOOT_TIME, this.random.nextInt(20) + 25);
+        this.entityData.define(SHOOT_TIME, this.random.nextInt(15) + 10);
         this.entityData.define(PRE_SHOOT_TICK, 0);
     }
 
@@ -73,7 +92,7 @@ public class MagicBeam extends BaseBeam {
 
     @Override
     public void onImpact(EntityHitResult result) {
-        result.getEntity().hurt(CustomDamageSource.magicBeam(this, this.getOwner()), Utils.magicDamage(this.getOwner()) + Config.Common.magicBeam);
+        result.getEntity().hurt(CustomDamageSource.magicBeam(this, this.getOwner()), (Utils.magicDamage(this.getOwner()) + Config.Common.magicBeam) * this.damageMultiplier);
     }
 
     private int getPreShootTick() {
@@ -88,11 +107,13 @@ public class MagicBeam extends BaseBeam {
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
         compound.putInt("PreShoot", this.getPreShootTick());
+        compound.putFloat("DamageMultiplier", this.damageMultiplier);
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
         this.entityData.set(PRE_SHOOT_TICK, compound.getInt("PreShoot"));
+        this.damageMultiplier = compound.getFloat("DamageMultieier");
     }
 }
