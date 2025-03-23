@@ -169,7 +169,7 @@ public class EntityEmiya extends BaseServant {
                 this.startUsingItem(this.bowHand());
             if (anim.isAt("attack")) {
                 if (target != null && this.getSensing().hasLineOfSight(target))
-                    this.attackWithNP(target);
+                    this.caladBolg(target);
                 this.stopUsingItem();
             }
         } else if (anim.is(BOW_1)) {
@@ -306,14 +306,17 @@ public class EntityEmiya extends BaseServant {
         }
     }
 
-    public void attackWithNP(LivingEntity target) {
-        if (target != null) {
-            CaladBolg bolg = new CaladBolg(this.level, this);
+    public void caladBolg(LivingEntity target) {
+        if (!this.forcedNP && !this.useMana(this.props().hogouMana()))
+            return;
+        CaladBolg bolg = new CaladBolg(this.level, this);
+        if (target != null)
             bolg.shootAtEntity(target, 2F, 0);
-            this.level.addFreshEntity(bolg);
-            this.revealServant();
-            this.switchableWeapon.switchItems(true);
-        }
+        else
+            bolg.shoot(this, this.getXRot(), this.getYRot(), 0, 2, 0);
+        this.level.addFreshEntity(bolg);
+        this.revealServant();
+        this.switchableWeapon.switchItems(true);
     }
 
     @Override

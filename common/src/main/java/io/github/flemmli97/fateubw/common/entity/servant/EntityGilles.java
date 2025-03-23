@@ -35,7 +35,7 @@ public class EntityGilles extends BaseServant {
     public static final AnimatedAction CAST_1 = AnimatedAction.builder(1.6, "cast").marker("attack", 0.95).build();
     public static final AnimatedAction CAST_2 = AnimatedAction.builder(1.2, "cast_2").marker("attack", 0.8).build();
 
-    public static final AnimatedAction NP_ATTACK = AnimatedAction.builder(20, "np").build();
+    public static final AnimatedAction NP_ATTACK = AnimatedAction.builder(1, "np").build();
     public static final AnimatedAction SUMMON = AnimatedAction.builder(2., "summon").build();
     private static final AnimatedAction[] ANIMS = {CAST_1, CAST_2, NP_ATTACK, SUMMON};
 

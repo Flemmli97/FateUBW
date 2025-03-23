@@ -155,10 +155,7 @@ public class EntityCuchulainn extends BaseServant {
                 this.setDeltaMovement(dir);
             }
             if (anim.isAt("attack")) {
-                if (!this.forcedNP)
-                    this.useMana(this.props().hogouMana());
-                this.attackWithNP(this.targetPosition);
-                this.forcedNP = false;
+                this.gaeBolg(this.targetPosition);
             }
 
         } else {
@@ -189,7 +186,10 @@ public class EntityCuchulainn extends BaseServant {
         return new AABB(-width * 0.5, -0.02, 0, width * 0.5, this.getBbHeight() + 0.02, length);
     }
 
-    public void attackWithNP(Vec3 pos) {
+    public void gaeBolg(Vec3 pos) {
+        if (!this.forcedNP && !this.useMana(this.props().hogouMana()))
+            return;
+        this.forcedNP = false;
         GaeBolg gaeBolg = new GaeBolg(this.level, this);
         gaeBolg.shootAtPosition(pos.x(), pos.y(), pos.z(), 1.5F, 0);
         this.level.addFreshEntity(gaeBolg);

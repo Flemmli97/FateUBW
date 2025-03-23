@@ -174,10 +174,7 @@ public class EntityHassan extends BaseServant {
                 this.level.broadcastEntityEvent(this, SMOKE);
             }
             if (anim.isAt("attack")) {
-                if (!this.forcedNP)
-                    this.useMana(this.props().hogouMana());
                 this.summonClones();
-                this.forcedNP = false;
             }
         } else if (anim.is(THROW)) {
             if (anim.isAt("attack_1")) {
@@ -281,6 +278,8 @@ public class EntityHassan extends BaseServant {
 
     public void summonClones() {
         if (this.gatherCopies().isEmpty()) {
+            if (!this.forcedNP && !this.useMana(this.props().hogouMana()))
+                return;
             this.copies.clear();
             for (int i = 0; i < Config.Common.hassanCopies; i++) {
                 HassanClone hassan = new HassanClone(this.level, this);

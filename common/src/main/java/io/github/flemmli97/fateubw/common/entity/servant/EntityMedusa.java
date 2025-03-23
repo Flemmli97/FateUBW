@@ -242,10 +242,7 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
                         e.hurtMarked = true;
                     });
             if (anim.isAt("attack")) {
-                if (!this.forcedNP)
-                    this.useMana(this.props().hogouMana());
                 this.summonPegasus();
-                this.forcedNP = false;
             }
         } else {
             if (anim.isAt("step")) {
@@ -335,6 +332,8 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
 
     public void summonPegasus() {
         if (this.level instanceof ServerLevel serverLevel) {
+            if (!this.forcedNP && !this.useMana(this.props().hogouMana()))
+                return;
             Pegasus peg = ModEntities.PEGASUS.get().create(serverLevel, null, null, null, this.blockPosition(), MobSpawnType.MOB_SUMMONED, false, false);
             peg.setPos(this.position());
             peg.setYRot(this.getYRot());

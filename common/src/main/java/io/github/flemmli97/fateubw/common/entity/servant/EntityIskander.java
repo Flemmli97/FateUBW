@@ -171,10 +171,7 @@ public class EntityIskander extends BaseServant {
                 if (anim.is(SUMMON_HORSE)) {
                     this.summonHorse();
                 } else {
-                    if (!this.forcedNP)
-                        this.useMana(this.props().hogouMana());
                     this.summonChariot();
-                    this.forcedNP = false;
                 }
             }
         } else {
@@ -225,6 +222,8 @@ public class EntityIskander extends BaseServant {
     }
 
     public boolean summonChariot() {
+        if (!this.forcedNP && !this.useMana(this.props().hogouMana()))
+            return false;
         if (this.isPassenger() || this.level.isClientSide)
             return false;
         GordiusWheel wheel = ModEntities.GORDIUS_WHEEL.get().create(this.level);

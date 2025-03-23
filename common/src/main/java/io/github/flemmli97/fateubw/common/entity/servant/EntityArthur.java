@@ -222,10 +222,7 @@ public class EntityArthur extends BaseServant {
                         this.position().add(this.getLookAngle().scale(8));
             }
             if (anim.isAt(0.72)) {
-                if (!this.forcedNP)
-                    this.useMana(this.props().hogouMana());
-                this.attackWithNP(this.targetPosition);
-                this.forcedNP = false;
+                this.excalibur(this.targetPosition);
             }
 
         } else if (anim.is(INVISIBLE_BURST)) {
@@ -298,7 +295,10 @@ public class EntityArthur extends BaseServant {
                 .inflate(grow, 0, grow).expandTowards(0, 0, speed), this.getYRot(), this.getXRot(), this.position());
     }
 
-    public void attackWithNP(Vec3 pos) {
+    public void excalibur(Vec3 pos) {
+        if (!this.forcedNP && !this.useMana(this.props().hogouMana()))
+            return;
+        this.forcedNP = false;
         Excalibur excalibur = new Excalibur(this.level, this);
         if (pos != null)
             excalibur.setRotationTo(pos.x(), pos.y(), pos.z(), 0);

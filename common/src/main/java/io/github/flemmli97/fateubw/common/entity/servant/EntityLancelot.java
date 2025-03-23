@@ -71,7 +71,7 @@ public class EntityLancelot extends BaseServant {
     public static final AnimatedAction ONE_HAND_1 = AnimatedAction.builder(0.56, "one_hand_1")
             .marker("attack", 0.4).marker("step", 0.48).build();
     public static final AnimatedAction STAB_1 = AnimatedAction.builder(0.76, "stab_1").marker("attack", 0.44).build();
-    public static final AnimatedAction JUMP = AnimatedAction.builder(0.36, "jump").marker("step", 0.2).infinite().build();
+    public static final AnimatedAction JUMP = AnimatedAction.builder(0.36, "jump").marker("jump", 0.2).infinite().build();
     public static final AnimatedAction JUMP_LAND = AnimatedAction.builder(0.8, "jump_land").marker("attack", 0.24).build();
     public static final AnimatedAction TRIDENT = AnimatedAction.builder(1.08, "trident").marker("attack", 0.76).build();
     public static final AnimatedAction BOW = AnimatedAction.builder(1.24, "bow").marker("attack", 1).build();
@@ -382,7 +382,7 @@ public class EntityLancelot extends BaseServant {
     public void handleAttack(AnimatedAction anim) {
         if (anim.is(JUMP)) {
             LivingEntity target = this.getTarget();
-            if (anim.isAt(0.12)) {
+            if (anim.isAt("jump")) {
                 Vec3 dir = target != null ? target.position().subtract(this.position()) : this.position().add(this.getLookAngle());
                 dir = new Vec3(dir.x(), 0, dir.z()).normalize().scale(0.16);
                 if (dir.lengthSqr() > 4.5 * 4.5) {
@@ -390,9 +390,9 @@ public class EntityLancelot extends BaseServant {
                 }
                 this.setDeltaMovement(dir.add(0, 0.9, 0));
             }
-            if (anim.isPast(0.12)) {
+            if (anim.isPast("jump")) {
                 this.fallDistance = 0;
-                if (anim.isPast(anim.getLength())) {
+                if (anim.done(0)) {
                     if (this.isOnGround()) {
                         this.getAnimationHandler().setAnimation(JUMP_LAND);
                     }

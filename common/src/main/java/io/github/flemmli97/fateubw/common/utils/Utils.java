@@ -1,5 +1,6 @@
 package io.github.flemmli97.fateubw.common.utils;
 
+import com.mojang.datafixers.util.Pair;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.registry.ModAttributes;
 import io.github.flemmli97.fateubw.common.world.TruceHandler;
@@ -14,7 +15,9 @@ import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 
@@ -101,5 +104,36 @@ public class Utils {
             }
             return target instanceof Enemy;
         };
+    }
+
+    public static List<Vec3> randomSidedPositions(LivingEntity thrower, int amount, int range) {
+        Vec3 pos = thrower.position();
+        Vec3 look = thrower.getLookAngle();
+        Vec3 vert = new Vec3(0, 1, 0);
+        if (-20 < thrower.getXRot() && thrower.getXRot() > 20)
+            vert.xRot(thrower.getXRot());
+        if (-20 > thrower.getXRot())
+            vert.xRot(-20);
+        if (20 < thrower.getXRot())
+            vert.xRot(20);
+        Vec3 hor = look.cross(vert);
+        vert.normalize();
+        hor.normalize();
+        float rangeSq = (range - 1f) / 2 * (range - 1f) / 2;
+        Set<Pair<Integer, Integer>> offsets = new HashSet<>();
+        for (int i = 0; i < amount; i++) {
+            Pair<Integer, Integer> offset = Pair.of(thrower.getRandom().nextInt(range) - (range - 1) / 2, thrower.getRandom().nextInt((range + 1) / 2));
+            double distance = (offset.getFirst() * offset.getFirst() + offset.getSecond() * offset.getSecond());
+            int retry = 0;
+            while (distance > rangeSq || offsets.contains(offset) || (offset.getFirst() == 0 && offset.getSecond() == 0)) {
+                offset = Pair.of(thrower.getRandom().nextInt(range) - (range - 1) / 2, thrower.getRandom().nextInt((range + 1) / 2));
+                distance = (offset.getFirst() * offset.getFirst() + offset.getSecond() * offset.getSecond());
+                if (++retry > 10)
+                    break;
+            }
+            offsets.add(offset);
+        }
+        return offsets.stream().map(p -> pos.add(hor.scale(p.getFirst() * 2)).add(vert.scale(p.getSecond() * 2 + 1)))
+                .toList();
     }
 }

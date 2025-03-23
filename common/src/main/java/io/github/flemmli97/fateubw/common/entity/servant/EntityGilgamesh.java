@@ -184,7 +184,7 @@ public class EntityGilgamesh extends BaseServant {
             if (anim.isAt("attack")) {
                 if (!this.forcedNP)
                     this.useMana(this.props().hogouMana());
-                this.attackWithNP(this.targetPosition);
+                this.ea(this.targetPosition);
                 this.forcedNP = false;
             }
 
@@ -243,7 +243,9 @@ public class EntityGilgamesh extends BaseServant {
         }
     }
 
-    public void attackWithNP(Vec3 pos) {
+    public void ea(Vec3 pos) {
+        if (!this.forcedNP && !this.useMana(this.props().hogouMana()))
+            return;
         EnumaElish ea = new EnumaElish(this.level, this);
         if (pos != null)
             ea.setRotationTo(pos.x(), pos.y(), pos.z(), 0);
