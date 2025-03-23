@@ -2,7 +2,6 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 
 import io.github.flemmli97.fateubw.common.entity.misc.GaeBolg;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
-import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
@@ -27,6 +26,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -99,6 +99,11 @@ public class EntityCuchulainn extends BaseServant {
     }
 
     @Override
+    public Goal getAttackAI() {
+        return this.attack;
+    }
+
+    @Override
     public AnimationHandler<EntityCuchulainn> getAnimationHandler() {
         return this.animationHandler;
     }
@@ -106,15 +111,6 @@ public class EntityCuchulainn extends BaseServant {
     @Override
     public boolean causeFallDamage(float distance, float damageMultiplier, DamageSource source) {
         return false;
-    }
-
-    @Override
-    public void updateAI(EnumServantUpdate behaviour) {
-        super.updateAI(behaviour);
-        if (this.commandBehaviour == EnumServantUpdate.STAY)
-            this.goalSelector.removeGoal(this.attack);
-        else
-            this.goalSelector.addGoal(0, this.attack);
     }
 
     @Override

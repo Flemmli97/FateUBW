@@ -9,7 +9,6 @@ import io.github.flemmli97.fateubw.common.items.weapons.ClassSpear;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
-import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
@@ -38,6 +37,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ArrowItem;
@@ -162,6 +162,11 @@ public class EntityLancelot extends BaseServant {
     }
 
     @Override
+    public Goal getAttackAI() {
+        return this.attack;
+    }
+
+    @Override
     public AnimationHandler<EntityLancelot> getAnimationHandler() {
         return this.animationHandler;
     }
@@ -212,15 +217,6 @@ public class EntityLancelot extends BaseServant {
                 this.setItemInHand(InteractionHand.OFF_HAND, this.inventory.getItem(slot).copy());
             }
         }
-    }
-
-    @Override
-    public void updateAI(EnumServantUpdate behaviour) {
-        super.updateAI(behaviour);
-        if (this.commandBehaviour == EnumServantUpdate.STAY)
-            this.goalSelector.removeGoal(this.attack);
-        else
-            this.goalSelector.addGoal(0, this.attack);
     }
 
     @Override

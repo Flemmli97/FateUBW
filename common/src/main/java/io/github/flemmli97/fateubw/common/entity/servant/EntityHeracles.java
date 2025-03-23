@@ -15,6 +15,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
@@ -43,8 +44,8 @@ public class EntityHeracles extends BaseServant {
     }
 
     @Override
-    public boolean canUse(AnimatedAction anim, AttackType type) {
-        return type == AttackType.MELEE && anim.getID().equals(SWING_1.getID());
+    public Goal getAttackAI() {
+        return null;
     }
 
     @Override
@@ -137,10 +138,5 @@ public class EntityHeracles extends BaseServant {
         super.readAdditionalSaveData(tag);
         this.setDeathNumber(tag.getInt("Deaths"));
         this.voidDeath = tag.getBoolean("DeathType");
-    }
-
-    @Override
-    public int attackCooldown(AnimatedAction anim) {
-        return 7;
     }
 }

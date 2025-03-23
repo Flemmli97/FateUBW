@@ -6,7 +6,6 @@ import io.github.flemmli97.fateubw.common.config.Config;
 import io.github.flemmli97.fateubw.common.entity.minions.HassanClone;
 import io.github.flemmli97.fateubw.common.entity.misc.ThrownItemEntity;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
-import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
@@ -40,6 +39,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -154,17 +154,13 @@ public class EntityHassan extends BaseServant {
     }
 
     @Override
-    public AnimationHandler<EntityHassan> getAnimationHandler() {
-        return this.animationHandler;
+    public Goal getAttackAI() {
+        return this.attack;
     }
 
     @Override
-    public void updateAI(EnumServantUpdate behaviour) {
-        super.updateAI(behaviour);
-        if (this.commandBehaviour == EnumServantUpdate.STAY)
-            this.goalSelector.removeGoal(this.attack);
-        else
-            this.goalSelector.addGoal(0, this.attack);
+    public AnimationHandler<EntityHassan> getAnimationHandler() {
+        return this.animationHandler;
     }
 
     @Override

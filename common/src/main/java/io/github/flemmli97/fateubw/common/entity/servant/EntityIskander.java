@@ -6,7 +6,6 @@ import io.github.flemmli97.fateubw.common.entity.StandingVehicle;
 import io.github.flemmli97.fateubw.common.entity.minions.GordiusWheel;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
-import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
@@ -29,6 +28,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.animal.horse.Horse;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -126,17 +126,13 @@ public class EntityIskander extends BaseServant {
     }
 
     @Override
-    public AnimationHandler<EntityIskander> getAnimationHandler() {
-        return this.animationHandler;
+    public Goal getAttackAI() {
+        return this.attack;
     }
 
     @Override
-    public void updateAI(EnumServantUpdate behaviour) {
-        super.updateAI(behaviour);
-        if (this.commandBehaviour == EnumServantUpdate.STAY)
-            this.goalSelector.removeGoal(this.attack);
-        else
-            this.goalSelector.addGoal(0, this.attack);
+    public AnimationHandler<EntityIskander> getAnimationHandler() {
+        return this.animationHandler;
     }
 
     @Override

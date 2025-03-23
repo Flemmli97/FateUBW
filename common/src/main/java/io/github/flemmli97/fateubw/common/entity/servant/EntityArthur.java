@@ -5,7 +5,6 @@ import io.github.flemmli97.fateubw.common.entity.misc.Excalibur;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.particles.ParticleUtils;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
-import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
@@ -37,6 +36,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -157,17 +157,13 @@ public class EntityArthur extends BaseServant {
     }
 
     @Override
-    public AnimationHandler<EntityArthur> getAnimationHandler() {
-        return this.animationHandler;
+    public Goal getAttackAI() {
+        return this.attack;
     }
 
     @Override
-    public void updateAI(EnumServantUpdate behaviour) {
-        super.updateAI(behaviour);
-        if (this.commandBehaviour == EnumServantUpdate.STAY)
-            this.goalSelector.removeGoal(this.attack);
-        else
-            this.goalSelector.addGoal(0, this.attack);
+    public AnimationHandler<EntityArthur> getAnimationHandler() {
+        return this.animationHandler;
     }
 
     @Override
@@ -261,13 +257,13 @@ public class EntityArthur extends BaseServant {
     public AABB attackBB(AnimatedAction anim) {
         double width = this.getBbWidth() + 0.3;
         double length = 1;
-        if (anim.is(ONE_HAND_1)) {
-            width += 0.3;
-            length += 1.25;
-        }
         if (anim.is(TWO_HAND_1, TWO_HAND_2, TWO_HAND_3, TWO_HAND_4)) {
             width += 1.5;
             length += 1.1;
+        }
+        if (anim.is(ONE_HAND_1)) {
+            width += 0.3;
+            length += 1.25;
         }
         if (anim.is(STAB_1)) {
             width += 0.3;

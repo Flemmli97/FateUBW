@@ -66,6 +66,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.MoveTowardsRestrictionGoal;
 import net.minecraft.world.entity.ai.goal.OpenDoorGoal;
@@ -219,14 +220,6 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
 
     public void revealServant() {
         this.entityData.set(SHOW_SERVANT, true);
-    }
-
-    /**
-     * Cooldown between each attack. (The time after an attack has fully finished)
-     */
-    // TODO: Remove once ai all updated
-    public int attackCooldown(AnimatedAction anim) {
-        return 0;
     }
 
     //=====Init
@@ -389,8 +382,11 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
 
     //=====Entity AI updating
 
+    public abstract Goal getAttackAI();
+
     public void updateAI(EnumServantUpdate behaviour) {
         this.commandBehaviour = behaviour;
+        this.goalSelector.addGoal(0, this.getAttackAI());
         switch (behaviour) {
             case NORMAL -> {
                 this.targetSelector.removeGoal(this.targetMob);
@@ -416,6 +412,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
                 this.clearRestriction();
             }
             case STAY -> {
+                this.goalSelector.removeGoal(this.getAttackAI());
                 this.setStaying(true);
                 this.getNavigation().stop();
                 this.setTarget(null);
@@ -595,23 +592,6 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     }
 
     //=====Entity attack etc.
-
-    // TODO: Remove once ai all updated
-    public boolean canUse(AnimatedAction anim, AttackType type) {
-        return false;
-    }
-
-    // TODO: Remove once ai all updated
-    public AnimatedAction getRandomAttack(AttackType type) {
-        List<AnimatedAction> matching = new ArrayList<>();
-        for (AnimatedAction anim : this.getAnimationHandler().getAnimations()) {
-            if (this.canUse(anim, type))
-                matching.add(anim);
-        }
-        if (matching.isEmpty())
-            return null;
-        return matching.get(this.random.nextInt(matching.size()));
-    }
 
     public void handleAttack(AnimatedAction anim) {
         if (anim.is(this.getSummonAnimation()))

@@ -8,7 +8,6 @@ import io.github.flemmli97.fateubw.common.entity.minions.Pegasus;
 import io.github.flemmli97.fateubw.common.entity.misc.ChainDagger;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
-import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
@@ -35,6 +34,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -155,6 +155,11 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
 
     public boolean canThrow() {
         return this.dagger == null && this.throwCooldown <= 0;
+    }
+
+    @Override
+    public Goal getAttackAI() {
+        return this.attack;
     }
 
     @Override
@@ -285,15 +290,6 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
             length += 0.7;
         }
         return new AABB(-width * 0.5, -0.02, 0, width * 0.5, this.getBbHeight() + 0.02, length);
-    }
-
-    @Override
-    public void updateAI(EnumServantUpdate behaviour) {
-        super.updateAI(behaviour);
-        if (this.commandBehaviour == EnumServantUpdate.STAY)
-            this.goalSelector.removeGoal(this.attack);
-        else
-            this.goalSelector.addGoal(0, this.attack);
     }
 
     @Override

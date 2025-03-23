@@ -9,7 +9,6 @@ import io.github.flemmli97.fateubw.common.entity.misc.MagicBeam;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicBufCircle;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
-import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
@@ -33,10 +32,13 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -126,17 +128,13 @@ public class EntityMedea extends BaseServant {
     }
 
     @Override
-    public AnimationHandler<EntityMedea> getAnimationHandler() {
-        return this.animationHandler;
+    public Goal getAttackAI() {
+        return this.attack;
     }
 
     @Override
-    public void updateAI(EnumServantUpdate behaviour) {
-        super.updateAI(behaviour);
-        if (this.commandBehaviour == EnumServantUpdate.STAY)
-            this.goalSelector.removeGoal(this.attack);
-        else
-            this.goalSelector.addGoal(0, this.attack);
+    public AnimationHandler<EntityMedea> getAnimationHandler() {
+        return this.animationHandler;
     }
 
     @Override
@@ -229,12 +227,19 @@ public class EntityMedea extends BaseServant {
             if (target != null) {
                 this.lookAtNow(target, 60, 30);
             }
-            if (this.getTarget() != null && anim.isAt(0.8)) {
-                this.teleportPre = this.position();
-                this.gravityPre = this.isNoGravity();
-                Vec3 dir = this.getTarget().position().subtract(this.position());
+            if (anim.isAt("teleport_start")) {
+                Vec3 dir;
+                if (this.getTarget() != null) {
+                    dir = this.getTarget().position().subtract(this.position());
+                } else {
+                    Vec3 look = Vec3.directionFromRotation(0, this.getYHeadRot()).scale(11);
+                    HitResult res = this.level.clip(new ClipContext(this.getEyePosition(), look, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+                    dir = res.getLocation().subtract(this.getEyePosition());
+                }
                 Vec3 off = dir.normalize();
                 dir = dir.subtract(off);
+                this.teleportPre = this.position();
+                this.gravityPre = this.isNoGravity();
                 this.teleportTo(this.getX() + dir.x(), this.getY() + dir.y(), this.getZ() + dir.z());
                 this.teleportPos = this.position();
             }

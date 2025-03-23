@@ -13,6 +13,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
@@ -35,10 +36,8 @@ public class EntityDiarmuid extends BaseServant {
     }
 
     @Override
-    public boolean canUse(AnimatedAction anim, AttackType type) {
-        if (type == AttackType.NP)
-            return anim.getID().equals(NP_ATTACK.getID());
-        return false;
+    public Goal getAttackAI() {
+        return null;
     }
 
     @Override
