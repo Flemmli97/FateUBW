@@ -40,42 +40,66 @@ import java.util.List;
 
 public class EntityEmiya extends BaseServant {
 
-    public static final AnimatedAction MELEE_1 = new AnimatedAction(0.68, 0.36, "dual_slash_1");
-    public static final AnimatedAction MELEE_2 = new AnimatedAction(0.64, 0.32, "dual_slash_2");
-    public static final AnimatedAction MELEE_3 = new AnimatedAction(1., 0.4, "dual_slash_3");
-    public static final AnimatedAction MELEE_4 = new AnimatedAction(0.84, 0.48, "dual_slash_4");
+    public static final AnimatedAction DUAL_SLASH_1 = AnimatedAction.builder(1.4, "dual_slash_1")
+            .marker("attack", 0.52, 1).marker("step", 0.52, 1).build();
+    public static final AnimatedAction DUAL_SLASH_2 = AnimatedAction.builder(1, "dual_slash_2")
+            .marker("attack", 0.4, 0.76).marker("step", 0.4, 0.76).build();
+    public static final AnimatedAction DUAL_SLASH_3 = AnimatedAction.builder(0.76, "dual_slash_3").marker("attack", 0.44).build();
+    public static final AnimatedAction DUAL_SLASH_4 = AnimatedAction.builder(0.84, "dual_slash_4")
+            .marker("attack", 0.4).marker("step", 0.52).build();
+    public static final AnimatedAction DUAL_SLASH_5 = AnimatedAction.builder(0.84, "dual_slash_5")
+            .marker("attack", 0.4).marker("step", 0.52).build();
+    public static final AnimatedAction DUAL_SLASH_6 = AnimatedAction.builder(0.92, "dual_slash_6")
+            .marker("attack", 0.48).marker("leap", 0.12).build();
 
-    public static final AnimatedAction BOW = new AnimatedAction(1, 0.76, "bow");
-    public static final AnimatedAction JUMP_SHOT = new AnimatedAction(1.28, 0.92, "jump_shot");
-    public static final AnimatedAction CALADBOLG = new AnimatedAction(1.28, 1.04, "caladbolg");
-    public static final AnimatedAction SUMMON = new AnimatedAction(2., 0, "summon");
-    private static final AnimatedAction[] ANIMS = {MELEE_1, MELEE_2, MELEE_3, MELEE_4, BOW, JUMP_SHOT, CALADBOLG, SUMMON};
+    public static final AnimatedAction BOW_1 = AnimatedAction.builder(1.24, "bow_1").marker("attack", 1).build();
+    public static final AnimatedAction BOW_2 = AnimatedAction.builder(1.44, "bow_2")
+            .marker("attack", 1).marker("leap", 0.2).build();
+    public static final AnimatedAction CALADBOLG = AnimatedAction.builder(2.48, "caladbolg").marker("attack", 2.16).build();
+    public static final AnimatedAction SUMMON = AnimatedAction.builder(2., "summon").build();
+    private static final AnimatedAction[] ANIMS = {DUAL_SLASH_1, DUAL_SLASH_2, DUAL_SLASH_3, DUAL_SLASH_4, DUAL_SLASH_5, DUAL_SLASH_6, BOW_1, BOW_2, CALADBOLG, SUMMON};
 
     public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityEmiya>>> ATTACKS = List.of(
-            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.MELEE_1)
+            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.DUAL_SLASH_1)
                     .cooldown(e -> e.getRandom().nextInt(15) + 7)
                     .withCondition((goal, target, previous) -> goal.distanceToTargetSq < 40)
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 8),
-            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.MELEE_2)
+            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.DUAL_SLASH_2)
                     .cooldown(e -> e.getRandom().nextInt(15) + 7)
                     .withCondition((goal, target, previous) -> goal.distanceToTargetSq < 40)
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 8),
-            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.MELEE_3)
+            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.DUAL_SLASH_3)
                     .cooldown(e -> e.getRandom().nextInt(15) + 7)
                     .withCondition((goal, target, previous) -> goal.distanceToTargetSq < 40)
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 8),
-            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.MELEE_4)
+            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.DUAL_SLASH_4)
                     .cooldown(e -> e.getRandom().nextInt(15) + 7)
                     .withCondition((goal, target, previous) -> goal.distanceToTargetSq < 40)
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(5, 6, 1.1))), 8),
-            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.BOW)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 10)
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 8),
+            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.DUAL_SLASH_5)
+                    .cooldown(e -> e.getRandom().nextInt(15) + 7)
+                    .withCondition((goal, target, previous) -> goal.distanceToTargetSq < 40)
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 8),
+            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.DUAL_SLASH_6)
+                    .cooldown(e -> e.getRandom().nextInt(15) + 7)
+                    .withCondition((goal, target, previous) -> goal.distanceToTargetSq < 40)
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 8),
+            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.BOW_1)
+                    .cooldown(e -> e.getRandom().nextInt(25) + 10)
                     .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 14, 1.1))), 10),
-            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.JUMP_SHOT)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 10)
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(4, 10, 1.1))), 6),
+            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.BOW_2)
+                    .cooldown(e -> e.getRandom().nextInt(25) + 10)
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(4, 10, 1.1))), 7),
+            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.BOW_1)
+                    .cooldown(e -> e.getRandom().nextInt(25) + 10)
+                    .withCondition((goal, target, previous) -> goal.distanceToTargetSq > 25)
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(6, 14, 1.1))), 13),
+            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.BOW_2)
+                    .cooldown(e -> e.getRandom().nextInt(25) + 10)
+                    .withCondition((goal, target, previous) -> goal.distanceToTargetSq > 25)
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(4, 10, 1.1))), 9),
             WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.CALADBOLG)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
+                    .cooldown(e -> e.getRandom().nextInt(30) + 10)
                     .withCondition(Utils.npCheck())
                     .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(8, 14, 1.2))), 15)
     );
@@ -87,16 +111,17 @@ public class EntityEmiya extends BaseServant {
     public final AnimatedAttackGoal<EntityEmiya> attack = new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS);
 
     private final AnimationHandler<EntityEmiya> animationHandler = new AnimationHandler<>(this, ANIMS)
-            .setAnimationChangeCons(anim -> {
+            .withChangeListener(anim -> {
                 if (anim != null) {
-                    if (anim.is(BOW, JUMP_SHOT, CALADBOLG) && !this.hasBow()) {
+                    if (anim.is(BOW_1, BOW_2, CALADBOLG) && !this.hasBow()) {
                         this.switchableWeapon.switchItems(false);
                     }
                 } else {
-                    if (this.getAnimationHandler().isCurrent(BOW, JUMP_SHOT, CALADBOLG)) {
+                    if (this.getAnimationHandler().isCurrent(BOW_1, BOW_2, CALADBOLG)) {
                         this.switchableWeapon.switchItems(true);
                     }
                 }
+                return false;
             });
 
     public final SwitchableWeapon<EntityEmiya> switchableWeapon = new SwitchableWeapon<>(this, ItemStack.EMPTY, new ItemStack(ModItems.ARCHBOW.get()));
@@ -112,7 +137,6 @@ public class EntityEmiya extends BaseServant {
     @Override
     protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
         this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.KANSHOU.get()));
-        //this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(ModItems.bakuya.get()));
     }
 
     @Override
@@ -141,68 +165,67 @@ public class EntityEmiya extends BaseServant {
     public void handleAttack(AnimatedAction anim) {
         if (anim.is(CALADBOLG)) {
             LivingEntity target = this.getTarget();
-            if (anim.isAtTick(0.24))
+            if (anim.isAt(0.24))
                 this.startUsingItem(this.bowHand());
-            if (anim.canAttack()) {
+            if (anim.isAt("attack")) {
                 if (target != null && this.getSensing().hasLineOfSight(target))
                     this.attackWithNP(target);
                 this.stopUsingItem();
             }
-        } else if (anim.is(BOW)) {
+        } else if (anim.is(BOW_1)) {
             LivingEntity target = this.getTarget();
-            if (anim.isAtTick(0.2))
+            if (anim.isAt(0.2))
                 this.startUsingItem(this.bowHand());
-            if (anim.canAttack()) {
+            if (anim.isAt("attack")) {
                 if (target != null && this.getSensing().hasLineOfSight(target))
                     this.attackWithRangedAttack(target);
                 this.stopUsingItem();
             }
-        } else if (anim.is(JUMP_SHOT)) {
+        } else if (anim.is(BOW_2)) {
             LivingEntity target = this.getTarget();
-            if (anim.isAtTick(0.12)) {
+            if (anim.isAt("leap")) {
                 Vec3 dir = target != null ? target.position().subtract(this.position()) : this.position().add(this.getLookAngle());
                 dir = new Vec3(dir.x(), 0, dir.z()).normalize().scale(-1).add(0, 0.9, 0);
                 this.setDeltaMovement(dir);
             }
-            if (anim.isAtTick(0.36))
+            if (anim.isAt(0.36))
                 this.startUsingItem(this.bowHand());
-            if (anim.canAttack()) {
+            if (anim.isAt("attack")) {
                 if (target != null && this.getSensing().hasLineOfSight(target))
                     this.attackWithRangedAttackBarrage(target);
                 this.stopUsingItem();
             }
             this.fallDistance = 0;
-        } else if (anim.is(MELEE_3)) {
+        } else if (anim.is(DUAL_SLASH_1, DUAL_SLASH_2)) {
             this.getNavigation().stop();
-            if (anim.getTick() == 1 && this.getTarget() != null) {
+            if (anim.isAt(0) && this.getTarget() != null) {
                 this.lookAtNow(this.getTarget(), 360, 90);
                 this.targetPosition = this.getTarget().position();
             }
-            boolean first = anim.canAttack();
-            if (anim.isAtTick(0.24) || anim.isAtTick(0.6)) {
+            if (anim.isAt("step")) {
                 Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(0.32);
                 this.setDeltaMovement(this.getDeltaMovement().add(dir));
             }
-            if (first || anim.isAtTick(0.76)) {
+            if (anim.isAt("attack")) {
                 this.mobAttack(anim, this.getTarget(), e -> {
+                    e.invulnerableTime = 10;
                     this.doHurtTarget(e);
-                    if (first)
-                        e.invulnerableTime = 10;
                 });
                 this.targetPosition = null;
+                if (this.getTarget() != null)
+                    this.targetPosition = this.getTarget().position();
             }
-        } else if (anim.is(MELEE_4)) {
+        } else if (anim.is(DUAL_SLASH_6)) {
             this.getNavigation().stop();
             LivingEntity target = this.getTarget();
-            if (anim.isAtTick(0.12)) {
+            if (anim.isAt("leap")) {
                 Vec3 dir = target != null ? target.position().subtract(this.position()) : this.position().add(this.getLookAngle());
                 dir = new Vec3(dir.x(), 0, dir.z()).normalize().add(0, 0.24, 0);
                 this.setDeltaMovement(dir);
             }
             super.handleAttack(anim);
         } else {
-            boolean step = anim.is(MELEE_1) && anim.isAtTick(0.24);
-            if (step) {
+            if (anim.isAt("step")) {
                 Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(0.25);
                 this.setDeltaMovement(this.getDeltaMovement().add(dir));
             }
@@ -212,21 +235,23 @@ public class EntityEmiya extends BaseServant {
 
     @Override
     public AABB attackBB(AnimatedAction anim) {
-        double width = this.getBbWidth() + 0.4;
+        double width = this.getBbWidth() + 0.3;
         double length = 1;
-        if (anim.is(MELEE_1)) {
-            width += 0.6;
-            length += 0.6;
+        if (anim.is(DUAL_SLASH_1, DUAL_SLASH_2)) {
+            width += 0.4;
+            length += 0.5;
         }
-        if (anim.is(MELEE_2)) {
-            length += 1.4;
+        if (anim.is(DUAL_SLASH_3)) {
+            width += 0.2;
+            length += 0.8;
         }
-        if (anim.is(MELEE_3)) {
-            length += 1.1;
+        if (anim.is(DUAL_SLASH_4)) {
+            width += 0.8;
+            length += 0.4;
         }
-        if (anim.is(MELEE_4)) {
-            width += 0.7;
-            length += 0.7;
+        if (anim.is(DUAL_SLASH_5, DUAL_SLASH_6)) {
+            width += 1;
+            length += 0.5;
         }
         return new AABB(-width * 0.5, -0.02, 0, width * 0.5, this.getBbHeight() + 0.02, length);
     }
@@ -313,7 +338,7 @@ public class EntityEmiya extends BaseServant {
 
     @Override
     public boolean flipAnimation() {
-        return this.getAnimationHandler().isCurrent(BOW, JUMP_SHOT, CALADBOLG)
+        return this.getAnimationHandler().isCurrent(BOW_1, BOW_2, CALADBOLG)
                 && this.getMainHandItem().getItem() instanceof BowItem;
     }
 

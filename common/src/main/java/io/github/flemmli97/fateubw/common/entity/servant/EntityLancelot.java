@@ -60,51 +60,70 @@ public class EntityLancelot extends BaseServant {
 
     public static final String CORRUPTED_ITEM = Fate.MODID + ":Corrupted";
 
-    public static final AnimatedAction MELEE_1 = new AnimatedAction(0.64, 0.52, "long_sword_1");
-    public static final AnimatedAction MELEE_1_VAR_1 = new AnimatedAction(0.64, 0.52, "long_sword_1_2");
-    public static final AnimatedAction MELEE_1_VAR_2 = new AnimatedAction(0.6, 0.24, "long_sword_1_3");
-    public static final AnimatedAction MELEE_2 = new AnimatedAction(0.56, 0.4, "horizontal_slash");
-    public static final AnimatedAction JUMP = AnimatedAction.builder((int) Math.ceil(0.32 * 20), "jump").infinite().build();
-    public static final AnimatedAction JUMP_LAND = new AnimatedAction(0.72, 0.24, "jump_land");
-    public static final AnimatedAction TRIDENT = new AnimatedAction(0.88, 0.52, "trident");
-    public static final AnimatedAction BOW = new AnimatedAction(1, 0.76, "bow");
-    public static final AnimatedAction CROSSBOW = new AnimatedAction(1.64, 1.2, "crossbow");
-    public static final AnimatedAction STAB = new AnimatedAction(0.68, 0.32, "stab");
-    public static final AnimatedAction GUN_SMALL = new AnimatedAction(0.8, 0.48, "gun_small");
-    public static final AnimatedAction GUN_BIG = new AnimatedAction(1.08, 0.4, "gun_big");
+    public static final AnimatedAction TWO_HAND_1 = AnimatedAction.builder(0.78, "two_hand_1")
+            .marker("attack", 0.64).marker("step", 0.64).build();
+    public static final AnimatedAction TWO_HAND_2 = AnimatedAction.builder(0.7, "two_hand_2")
+            .marker("attack", 0.52).marker("step", 0.52).build();
+    public static final AnimatedAction TWO_HAND_3 = AnimatedAction.builder(0.7, "two_hand_3")
+            .marker("attack", 0.48).marker("step", 0.48).build();
+    public static final AnimatedAction TWO_HAND_4 = AnimatedAction.builder(0.7, "two_hand_4")
+            .marker("attack", 0.56).marker("step", 0.56).build();
+    public static final AnimatedAction ONE_HAND_1 = AnimatedAction.builder(0.56, "one_hand_1")
+            .marker("attack", 0.4).marker("step", 0.48).build();
+    public static final AnimatedAction STAB_1 = AnimatedAction.builder(0.76, "stab_1").marker("attack", 0.44).build();
+    public static final AnimatedAction JUMP = AnimatedAction.builder(0.36, "jump").marker("step", 0.2).infinite().build();
+    public static final AnimatedAction JUMP_LAND = AnimatedAction.builder(0.8, "jump_land").marker("attack", 0.24).build();
+    public static final AnimatedAction TRIDENT = AnimatedAction.builder(1.08, "trident").marker("attack", 0.76).build();
+    public static final AnimatedAction BOW = AnimatedAction.builder(1.24, "bow").marker("attack", 1).build();
+    public static final AnimatedAction CROSSBOW = AnimatedAction.builder(1.88, "crossbow").marker("attack", 1.4).build();
+    public static final AnimatedAction GUN_SMALL = AnimatedAction.builder(0.8, "gun_small").marker("attack", 0.48).build();
+    public static final AnimatedAction GUN_BIG = AnimatedAction.builder(1.28, "gun_big").marker("attack", 0.4).build();
 
-    public static final AnimatedAction SUMMON = new AnimatedAction(2., 0, "summon");
-    public static final AnimatedAction[] ANIMS = {MELEE_1, MELEE_1_VAR_1, MELEE_1_VAR_2, MELEE_2, JUMP, JUMP_LAND, TRIDENT, BOW, STAB, CROSSBOW, GUN_SMALL, GUN_BIG, SUMMON};
+    public static final AnimatedAction SUMMON = AnimatedAction.builder(2., "summon").build();
+    public static final AnimatedAction[] ANIMS = {TWO_HAND_1, TWO_HAND_2, TWO_HAND_3, TWO_HAND_4, ONE_HAND_1, JUMP, JUMP_LAND, TRIDENT, BOW, STAB_1, CROSSBOW, GUN_SMALL, GUN_BIG, SUMMON};
 
     public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityLancelot>>> ATTACKS = List.of(
-            WeightedEntry.wrap(new GoalAttackAction<EntityLancelot>(EntityLancelot.MELEE_1)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .chain(GoalAttackAction.<EntityLancelot>chainBuilder(EntityLancelot.MELEE_1_VAR_1)
-                            .chain(EntityLancelot.MELEE_1_VAR_2).withPredicate(e -> e.getRandom().nextFloat() < 0.5))
+            WeightedEntry.wrap(new GoalAttackAction<EntityLancelot>(EntityLancelot.TWO_HAND_1)
+                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
+                    .chain(GoalAttackAction.<EntityLancelot>chainBuilder(EntityLancelot.TWO_HAND_2, 2, 0.24f, 1)
+                            .or(EntityLancelot.TWO_HAND_3, 2, 0.24f, 1).withChance(0.5f))
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 11),
-            WeightedEntry.wrap(new GoalAttackAction<EntityLancelot>(EntityLancelot.MELEE_2)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
+            WeightedEntry.wrap(new GoalAttackAction<EntityLancelot>(EntityLancelot.TWO_HAND_2)
+                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
+                    .chain(GoalAttackAction.<EntityLancelot>chainBuilder(EntityLancelot.TWO_HAND_1, 2, 0.24f, 1)
+                            .chain(EntityLancelot.ONE_HAND_1).withChance(0.3f))
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 11),
+            WeightedEntry.wrap(new GoalAttackAction<EntityLancelot>(EntityLancelot.TWO_HAND_4)
+                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
+                    .chain(GoalAttackAction.<EntityLancelot>chainBuilder(EntityLancelot.TWO_HAND_2)
+                            .or(EntityLancelot.TWO_HAND_3, 2, 0.24f, 1).withChance(0.5f))
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 11),
+            WeightedEntry.wrap(new GoalAttackAction<EntityLancelot>(EntityLancelot.ONE_HAND_1)
+                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 11),
+            WeightedEntry.wrap(new GoalAttackAction<EntityLancelot>(EntityLancelot.STAB_1)
+                    .cooldown(e -> e.getRandom().nextInt(20) + 8)
+                    .withCondition((goal, target, previous) -> goal.attacker.canUseAttack(EntityLancelot.STAB_1))
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(2, 4))), 10),
             WeightedEntry.wrap(new GoalAttackAction<EntityLancelot>(EntityLancelot.JUMP)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
+                    .cooldown(e -> e.getRandom().nextInt(25) + 15)
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetRunner<>(1, 7))), 4),
+            WeightedEntry.wrap(new GoalAttackAction<EntityLancelot>(EntityLancelot.JUMP)
+                    .cooldown(e -> e.getRandom().nextInt(25) + 15)
                     .withCondition(((goal, target, previous) -> goal.distanceToTargetSq > 25))
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetRunner<>(1, 7))), 13),
             WeightedEntry.wrap(new GoalAttackAction<EntityLancelot>(EntityLancelot.BOW)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 10)
+                    .cooldown(e -> e.getRandom().nextInt(25) + 10)
                     .withCondition((goal, target, previous) -> goal.attacker.canUseAttack(EntityLancelot.BOW))
                     .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 14, 1.1))), 9),
             WeightedEntry.wrap(new GoalAttackAction<EntityLancelot>(EntityLancelot.TRIDENT)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 10)
+                    .cooldown(e -> e.getRandom().nextInt(25) + 10)
                     .withCondition((goal, target, previous) -> goal.attacker.canUseAttack(EntityLancelot.TRIDENT))
                     .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 14, 1.1))), 9),
             WeightedEntry.wrap(new GoalAttackAction<EntityLancelot>(EntityLancelot.CROSSBOW)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 10)
+                    .cooldown(e -> e.getRandom().nextInt(25) + 10)
                     .withCondition((goal, target, previous) -> goal.attacker.canUseAttack(EntityLancelot.CROSSBOW))
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 14, 1.1))), 9),
-            WeightedEntry.wrap(new GoalAttackAction<EntityLancelot>(EntityLancelot.STAB)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .withCondition((goal, target, previous) -> goal.attacker.canUseAttack(EntityLancelot.STAB))
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(2, 4))), 10)
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 14, 1.1))), 9)
     );
     public static final List<WeightedEntry.Wrapper<IdleAction<EntityLancelot>>> IDLE_ACTIONS = List.of(
             WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1, 0.5)), 6),
@@ -114,13 +133,14 @@ public class EntityLancelot extends BaseServant {
     public final AnimatedAttackGoal<EntityLancelot> attack = new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS);
 
     private final AnimationHandler<EntityLancelot> animationHandler = new AnimationHandler<>(this, ANIMS)
-            .setAnimationChangeCons(anim -> {
+            .withChangeListener(anim -> {
                 if (anim != null) {
                     this.inventorySlotForAttack = this.inventorySlotFor(anim);
                     this.swapWithInventory(false);
                 } else {
                     this.swapWithInventory(true);
                 }
+                return false;
             });
 
     private final Vector4f summonColor = new Vector4f(28 / 255f, 28 / 255f, 33 / 255f, 0.7f);
@@ -168,7 +188,7 @@ public class EntityLancelot extends BaseServant {
         if (anim.is(EntityLancelot.CROSSBOW)) {
             pred = stack -> stack.getItem() instanceof CrossbowItem;
         }
-        if (anim.is(EntityLancelot.STAB)) {
+        if (anim.is(EntityLancelot.STAB_1)) {
             pred = stack -> stack.getItem() instanceof TridentItem || stack.getItem() instanceof ClassSpear
                     || stack.getItem().getDescriptionId().contains("spear");
         }
@@ -362,7 +382,7 @@ public class EntityLancelot extends BaseServant {
     public void handleAttack(AnimatedAction anim) {
         if (anim.is(JUMP)) {
             LivingEntity target = this.getTarget();
-            if (anim.isAtTick(0.12)) {
+            if (anim.isAt(0.12)) {
                 Vec3 dir = target != null ? target.position().subtract(this.position()) : this.position().add(this.getLookAngle());
                 dir = new Vec3(dir.x(), 0, dir.z()).normalize().scale(0.16);
                 if (dir.lengthSqr() > 4.5 * 4.5) {
@@ -370,23 +390,23 @@ public class EntityLancelot extends BaseServant {
                 }
                 this.setDeltaMovement(dir.add(0, 0.9, 0));
             }
-            if (anim.isPastTick(0.12)) {
+            if (anim.isPast(0.12)) {
                 this.fallDistance = 0;
-                if (anim.isPastTick(anim.getLength())) {
+                if (anim.isPast(anim.getLength())) {
                     if (this.isOnGround()) {
                         this.getAnimationHandler().setAnimation(JUMP_LAND);
                     }
                 }
                 // Stuck check. Or e.g. if in water
-                if (anim.isPastTick(6.0) && (!this.getFeetBlockState().is(Blocks.AIR) || !this.getBlockStateOn().is(Blocks.AIR))) {
+                if (anim.isPast(6.0) && (!this.getFeetBlockState().is(Blocks.AIR) || !this.getBlockStateOn().is(Blocks.AIR))) {
                     this.getAnimationHandler().setAnimation(JUMP_LAND);
                 }
             }
         } else if (anim.is(CROSSBOW, BOW, TRIDENT)) {
             LivingEntity target = this.getTarget();
-            if (anim.isAtTick(0.2))
+            if (anim.isAt(0.2))
                 this.startUsingItem(this.toUseHand());
-            if (anim.canAttack()) {
+            if (anim.isAt("attack")) {
                 if (target != null && this.getSensing().hasLineOfSight(target)) {
                     LancelotAttackAI.ItemAI ai = LancelotAttackAI.getFor(this.getUseItem());
                     if (ai != null) {
@@ -402,14 +422,14 @@ public class EntityLancelot extends BaseServant {
                 this.stopUsingItem();
             }
         } else {
-            boolean step = anim.is(MELEE_1) && anim.isAtTick(0.28) ||
-                    anim.is(MELEE_1_VAR_1) && anim.isAtTick(0.2) ||
-                    anim.is(MELEE_1_VAR_2) && anim.isAtTick(0.08);
+            boolean step = anim.is(TWO_HAND_1) && anim.isAt(0.28) ||
+                    anim.is(TWO_HAND_2) && anim.isAt(0.2) ||
+                    anim.is(TWO_HAND_3) && anim.isAt(0.08);
             if (step) {
-                Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(anim.is(MELEE_1_VAR_2) ? 0.25 : 0.3);
+                Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(anim.is(TWO_HAND_3) ? 0.25 : 0.3);
                 this.setDeltaMovement(this.getDeltaMovement().add(dir));
             }
-            if (anim.canAttack() && anim.is(JUMP_LAND)) {
+            if (anim.isAt("attack") && anim.is(JUMP_LAND)) {
                 S2CScreenShake.sendAround(this, 10, 8, 3);
                 this.playSound(SoundEvents.GENERIC_EXPLODE, 1.0f, 0.9f);
             }
@@ -423,18 +443,23 @@ public class EntityLancelot extends BaseServant {
             double width = this.getBbWidth() + 2;
             return new AABB(-width * 0.5, -0.02, -width * 0.3, width * 0.5, this.getBbHeight() * 0.5, width * 0.7);
         }
-        double width = this.getBbWidth() + 0.4;
+        double width = this.getBbWidth() + 0.3;
         double length = 1;
-        if (anim.is(STAB)) {
-            length += 1.3;
+        if (anim.is(TWO_HAND_1, TWO_HAND_2)) {
+            width += 1.1;
+            length += 0.8;
         }
-        if (anim.is(MELEE_1, MELEE_1_VAR_1, MELEE_1_VAR_2)) {
-            width += 1.25;
-            length += 0.95;
-        }
-        if (anim.is(MELEE_2)) {
+        if (anim.is(TWO_HAND_3, TWO_HAND_4)) {
             width += 1.3;
             length += 0.7;
+        }
+        if (anim.is(ONE_HAND_1)) {
+            width += 1.5;
+            length += 0.75;
+        }
+        if (anim.is(STAB_1)) {
+            width += 0.1;
+            length += 1.6;
         }
         return new AABB(-width * 0.5, -0.02, 0, width * 0.5, this.getBbHeight() + 0.02, length);
     }
@@ -541,7 +566,7 @@ public class EntityLancelot extends BaseServant {
     @Override
     public boolean flipAnimation() {
         return this.toUseHand() == InteractionHand.OFF_HAND
-                || (this.inventorySlotFor(STAB) == 1);
+                || (this.inventorySlotFor(STAB_1) == 1);
     }
 
     @Override

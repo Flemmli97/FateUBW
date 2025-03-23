@@ -6,7 +6,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.client.model.BaseServantModel;
-import io.github.flemmli97.fateubw.client.model.ModelServantO;
+import io.github.flemmli97.fateubw.client.model.ModelServant;
 import io.github.flemmli97.fateubw.common.entity.StandingVehicle;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.platform.ClientPlatform;
@@ -40,7 +40,7 @@ public class ServantRenderer<T extends BaseServant, M extends BaseServantModel<T
     public ServantRenderer(EntityRendererProvider.Context ctx, M model, ResourceLocation texture, float shadow) {
         super(ctx, model, shadow);
         this.texture = texture;
-        this.defaultModel = new ModelServantO<>(ctx.bakeLayer(ModelServantO.LAYER_LOCATION), "default_servant");
+        this.defaultModel = new ModelServant<>(ctx.bakeLayer(ModelServant.LAYER_LOCATION), "default_servant");
         this.servantModel = model;
         this.addLayer(new LayerHand<>(this));
         this.addLayer(new CustomHeadLayer<>(this, ctx.getModelSet()));

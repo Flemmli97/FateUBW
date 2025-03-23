@@ -199,7 +199,7 @@ public class BabylonWeapon extends BaseProjectile {
         boolean res = result.getEntity().hurt(CustomDamageSource.babylon(this, this.getOwner()), (float) this.dmg * 1.5F);
         if (res && result.getEntity() instanceof LivingEntity entity) {
             entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 30));
-            entity.invulnerableTime = 15;
+            entity.invulnerableTime = 14;
         }
         this.discard();
         return true;

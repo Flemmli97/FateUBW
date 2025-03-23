@@ -61,8 +61,8 @@ public class GordiusWheel extends PathfinderMob implements IAnimated, StandingVe
     private static final EntityDataAccessor<Float> LOCKED_YAW = SynchedEntityData.defineId(GordiusWheel.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> WHEEL = SynchedEntityData.defineId(GordiusWheel.class, EntityDataSerializers.INT);
 
-    public static final AnimatedAction STOMP = new AnimatedAction(0.52, 0.28, "stomp");
-    public static final AnimatedAction CHARGING = new AnimatedAction(1.4, 0.25, "charge");
+    public static final AnimatedAction STOMP = AnimatedAction.builder(0.52, "stomp").marker("attack", 0.28).build();
+    public static final AnimatedAction CHARGING = AnimatedAction.builder(1.4, "charge").marker("attack", 0.25).build();
     public static final AnimatedAction[] ANIMS = {STOMP, CHARGING};
 
     private static final List<WeightedEntry.Wrapper<GoalAttackAction<GordiusWheel>>> ATTACKS = List.of(
@@ -152,7 +152,7 @@ public class GordiusWheel extends PathfinderMob implements IAnimated, StandingVe
         if (this.getAnimationHandler() == null)
             return false;
         AnimatedAction anim = this.getAnimationHandler().getAnimation();
-        return anim != null && CHARGING.is(anim) && anim.isPastTick(anim.getAttackTime());
+        return anim != null && CHARGING.is(anim) && anim.isPast("attack");
     }
 
     @Override
@@ -186,7 +186,7 @@ public class GordiusWheel extends PathfinderMob implements IAnimated, StandingVe
 
     public void handleAttack(AnimatedAction anim) {
         if (anim.is(CHARGING)) {
-            if (anim.getTick() >= anim.getAttackTime()) {
+            if (anim.isPast("attack")) {
                 this.setDeltaMovement(this.chargeMotion.x(), this.getDeltaMovement().y(), this.chargeMotion.z());
                 OrientedBoundingBox obb = this.prepareAttackBox(anim, null, 0.2, false);
                 List<LivingEntity> list = this.level.getEntitiesOfClass(LivingEntity.class, obb.getEncompassingBox(),
@@ -200,7 +200,7 @@ public class GordiusWheel extends PathfinderMob implements IAnimated, StandingVe
             }
         } else {
             this.getNavigation().stop();
-            if (anim.canAttack()) {
+            if (anim.isAt("attack")) {
                 this.mobAttack(anim, this.getTarget(), this::doHurtTarget);
                 S2CScreenShake.sendAround(this, 6, 4, 1);
             }

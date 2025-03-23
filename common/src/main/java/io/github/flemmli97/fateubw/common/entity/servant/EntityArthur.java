@@ -3,6 +3,7 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 import io.github.flemmli97.fateubw.common.entity.SwitchableWeapon;
 import io.github.flemmli97.fateubw.common.entity.misc.Excalibur;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
+import io.github.flemmli97.fateubw.common.particles.ParticleUtils;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
 import io.github.flemmli97.fateubw.common.utils.Utils;
@@ -46,34 +47,65 @@ import java.util.List;
 
 public class EntityArthur extends BaseServant {
 
-    public static final AnimatedAction SWING_1 = new AnimatedAction(0.64, 0.52, "long_sword_1");
-    public static final AnimatedAction SWING_1_VAR_1 = new AnimatedAction(0.64, 0.52, "long_sword_1_2");
-    public static final AnimatedAction SWING_1_VAR_2 = new AnimatedAction(0.6, 0.24, "long_sword_1_3");
-    public static final AnimatedAction SWING_2 = new AnimatedAction(0.44, 0.36, "vertical_slash");
-    public static final AnimatedAction INVISIBLE_BURST = new AnimatedAction(0.8, 0.28, "invisible_burst");
-    public static final AnimatedAction INVISIBLE_BURST_HIT = new AnimatedAction(0.64, 0.36, "invisible_burst_hit");
+    public static final AnimatedAction TWO_HAND_1 = AnimatedAction.builder(0.78, "two_hand_1")
+            .marker("attack", 0.64).marker("step", 0.68).build();
+    public static final AnimatedAction TWO_HAND_2 = AnimatedAction.builder(0.7, "two_hand_2")
+            .marker("attack", 0.56).marker("step", 0.6).build();
+    public static final AnimatedAction TWO_HAND_3 = AnimatedAction.builder(0.7, "two_hand_3")
+            .marker("attack", 0.56).marker("step", 0.6).build();
+    public static final AnimatedAction TWO_HAND_4 = AnimatedAction.builder(0.7, "two_hand_4")
+            .marker("attack", 0.56).marker("step", 0.6).build();
+    public static final AnimatedAction ONE_HAND_1 = AnimatedAction.builder(0.68, "one_hand_1")
+            .marker("attack", 0.48).marker("step", 0.48).build();
+    public static final AnimatedAction STAB_1 = AnimatedAction.builder(1.02, "stab_1").marker("attack", 0.56).build();
+    public static final AnimatedAction INVISIBLE_BURST = AnimatedAction.builder(0.8, "invisible_burst").marker("attack", 0.28).build();
+    public static final AnimatedAction INVISIBLE_BURST_HIT = AnimatedAction.builder(0.76, "invisible_burst_hit").marker("attack", 0.44).build();
 
-    public static final AnimatedAction EXCALIBAA = new AnimatedAction(1.6, 0.6, "excalibur");
-    public static final AnimatedAction SUMMON = new AnimatedAction(2., 0, "summon");
-    public static final AnimatedAction[] ANIMS = {SWING_1, SWING_1_VAR_1, SWING_1_VAR_2, SWING_2, INVISIBLE_BURST, INVISIBLE_BURST_HIT, EXCALIBAA, SUMMON};
+    public static final AnimatedAction EXCALIBAA = AnimatedAction.builder(1.68, "excalibur").marker("attack", 0.72).build();
+    public static final AnimatedAction SUMMON = new AnimatedAction(2., "summon");
+    public static final AnimatedAction[] ANIMS = {TWO_HAND_1, TWO_HAND_2, TWO_HAND_3, TWO_HAND_4, ONE_HAND_1, STAB_1, INVISIBLE_BURST, INVISIBLE_BURST_HIT, EXCALIBAA, SUMMON};
 
     protected static final EntityDataAccessor<Float> LOCKED_YAW = SynchedEntityData.defineId(EntityArthur.class, EntityDataSerializers.FLOAT);
 
     public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityArthur>>> ATTACKS = List.of(
-            WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.SWING_1)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .chain(GoalAttackAction.<EntityArthur>chainBuilder(EntityArthur.SWING_1_VAR_1)
-                            .chain(EntityArthur.SWING_1_VAR_2).withPredicate(e -> e.getRandom().nextFloat() < 0.5))
+            WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.TWO_HAND_1)
+                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
+                    .chain(GoalAttackAction.<EntityArthur>chainBuilder(EntityArthur.TWO_HAND_2, 2, 0.24f, 1)
+                            .or(EntityArthur.TWO_HAND_3, 2, 0.24f, 1)
+                            .withChance(0.5f))
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 5),
-            WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.SWING_2)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
+            WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.TWO_HAND_2)
+                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
+                    .chain(GoalAttackAction.<EntityArthur>chainBuilder(EntityArthur.TWO_HAND_4, 2, 0.24f, 1)
+                            .or(EntityArthur.TWO_HAND_1, 2, 0.24f, 1)
+                            .or(EntityArthur.TWO_HAND_1, 2, 0.24f, 1)
+                            .chain(EntityArthur.STAB_1, 2, 6.4f)
+                            .withChance(0.5f))
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 5),
+            WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.TWO_HAND_3)
+                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
+                    .chain(GoalAttackAction.<EntityArthur>chainBuilder(EntityArthur.TWO_HAND_1, 2, 0.24f, 1)
+                            .or(EntityArthur.ONE_HAND_1, 2, 0.24f, 1)
+                            .withChance(0.5f))
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 5),
+            WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.TWO_HAND_4)
+                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
+                    .chain(GoalAttackAction.<EntityArthur>chainBuilder(EntityArthur.TWO_HAND_2, 2, 0.24f, 1)
+                            .or(EntityArthur.TWO_HAND_3, 2, 0.24f, 1)
+                            .withChance(0.5f))
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 5),
+            WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.ONE_HAND_1)
+                    .cooldown(e -> e.getRandom().nextInt(20) + 5)
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 4),
+            WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.STAB_1)
+                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 4),
             WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.INVISIBLE_BURST)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
+                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
                     .withCondition(((goal, target, previous) -> goal.distanceToTargetSq > 25))
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetRunner<>(1, 14))), 6),
             WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.EXCALIBAA)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
+                    .cooldown(e -> e.getRandom().nextInt(25) + 20)
                     .withCondition(Utils.npCheck())
                     .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(3, 8, 1.1))), 15)
     );
@@ -84,24 +116,23 @@ public class EntityArthur extends BaseServant {
 
     public final AnimatedAttackGoal<EntityArthur> attack = new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS);
 
-    private final AnimationHandler<EntityArthur> animationHandler = new AnimationHandler<>(this, ANIMS)
-            .setAnimationChangeFunc(anim -> {
-                if (!this.level.isClientSide()) {
-                    if (anim == null) {
-                        this.burstDir = null;
-                        if (this.getAnimationHandler().isCurrent(EXCALIBAA)) {
-                            this.switchableWeapon.switchItems(true);
-                        }
-                    } else if (anim.is(EXCALIBAA)) {
-                        this.switchableWeapon.switchItems(false);
-                        this.startUsingItem(InteractionHand.MAIN_HAND);
-                    } else if (anim.is(INVISIBLE_BURST)) {
-                        this.hitEntity = null;
-                        this.burstDir = null;
-                    }
+    private final AnimationHandler<EntityArthur> animationHandler = new AnimationHandler<>(this, ANIMS).withChangeListener(anim -> {
+        if (!this.level.isClientSide()) {
+            if (anim == null) {
+                this.burstDir = null;
+                if (this.getAnimationHandler().isCurrent(EXCALIBAA)) {
+                    this.switchableWeapon.switchItems(true);
                 }
-                return false;
-            });
+            } else if (anim.is(EXCALIBAA)) {
+                this.switchableWeapon.switchItems(false);
+                this.startUsingItem(InteractionHand.MAIN_HAND);
+            } else if (anim.is(INVISIBLE_BURST)) {
+                this.hitEntity = null;
+                this.burstDir = null;
+            }
+        }
+        return false;
+    });
 
     public final SwitchableWeapon<EntityArthur> switchableWeapon = new SwitchableWeapon<>(this, new ItemStack(ModItems.EXCALIBUR.get()), ItemStack.EMPTY);
 
@@ -160,15 +191,21 @@ public class EntityArthur extends BaseServant {
             if (!this.hasEffect(MobEffects.REGENERATION))
                 this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 50, 1, false, false));
         }
-        if (this.level.isClientSide && this.duringBurst()) {
-            this.setXRot(0);
-            float yRot = this.entityData.get(LOCKED_YAW);
-            this.yBodyRotO = yRot;
-            this.yBodyRot = yRot;
-            this.yRotO = yRot;
-            this.setYRot(yRot);
-            for (int i = 0; i < 8; i++)
-                this.level.addParticle(ParticleTypes.ENTITY_EFFECT, this.getX(this.getRandom().nextGaussian() * 0.5), this.getY(this.getRandom().nextGaussian() * 0.5), this.getZ(this.getRandom().nextGaussian() * 0.5), 1, 1, 1);
+        if (this.level.isClientSide) {
+            if (this.duringBurst()) {
+                this.setXRot(0);
+                float yRot = this.entityData.get(LOCKED_YAW);
+                this.yBodyRotO = yRot;
+                this.yBodyRot = yRot;
+                this.yRotO = yRot;
+                this.setYRot(yRot);
+                for (int i = 0; i < 8; i++)
+                    this.level.addParticle(ParticleTypes.ENTITY_EFFECT, this.getX(this.getRandom().nextGaussian() * 0.5), this.getY(this.getRandom().nextGaussian() * 0.5), this.getZ(this.getRandom().nextGaussian() * 0.5), 1, 1, 1);
+            }
+            if (this.getAnimationHandler().isCurrent(TWO_HAND_1, TWO_HAND_2, TWO_HAND_3, TWO_HAND_4, ONE_HAND_1)
+                    && this.getAnimationHandler().getAnimation().isAt("attack")) {
+                ParticleUtils.createSlashTrailParticle(this, 0, 0, 0, 0);
+            }
         }
     }
 
@@ -176,15 +213,15 @@ public class EntityArthur extends BaseServant {
     public void handleAttack(AnimatedAction anim) {
         if (anim.is(EXCALIBAA)) {
             LivingEntity target = this.getTarget();
-            if (target != null && !anim.isPastTick(0.28)) {
+            if (target != null && !anim.isPast(0.28)) {
                 this.lookAtNow(target, 60, 30);
             }
-            if (anim.isAtTick(0.4)) {
+            if (anim.isAt(0.4)) {
                 this.targetPosition = target != null ? EntityUtil.getStraightProjectileTarget(this.position()
                         .add(0, this.getEyeHeight() - 0.1, 0), target) :
                         this.position().add(this.getLookAngle().scale(8));
             }
-            if (anim.canAttack()) {
+            if (anim.isAt(0.72)) {
                 if (!this.forcedNP)
                     this.useMana(this.props().hogouMana());
                 this.attackWithNP(this.targetPosition);
@@ -192,7 +229,7 @@ public class EntityArthur extends BaseServant {
             }
 
         } else if (anim.is(INVISIBLE_BURST)) {
-            if (anim.isAtTick(0.2)) {
+            if (anim.isAt(0.2)) {
                 Vec3 dir = this.getTarget() != null ? this.getTarget().position().subtract(this.position()) : this.position().add(this.getLookAngle());
                 this.burstDir = dir.normalize().scale(0.95);
                 this.lookAt(EntityAnchorArgument.Anchor.EYES, this.position().add(dir));
@@ -215,11 +252,8 @@ public class EntityArthur extends BaseServant {
                 }
             }
         } else {
-            boolean step = anim.is(SWING_1) && anim.isAtTick(0.28) ||
-                    anim.is(SWING_1_VAR_1) && anim.isAtTick(0.2) ||
-                    anim.is(SWING_1_VAR_2) && anim.isAtTick(0.08);
-            if (step) {
-                Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(anim.is(SWING_1_VAR_2) ? 0.25 : 0.3);
+            if (anim.isAt("step")) {
+                Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(0.3);
                 this.setDeltaMovement(this.getDeltaMovement().add(dir));
             }
             super.handleAttack(anim);
@@ -228,13 +262,22 @@ public class EntityArthur extends BaseServant {
 
     @Override
     public AABB attackBB(AnimatedAction anim) {
-        double width = this.getBbWidth() + 0.4;
+        double width = this.getBbWidth() + 0.3;
         double length = 1;
-        if (anim.is(SWING_2)) {
-            length += 0.8;
+        if (anim.is(ONE_HAND_1)) {
+            width += 0.3;
+            length += 1.25;
         }
-        if (anim.is(SWING_1, SWING_1_VAR_1, SWING_1_VAR_2)) {
-            width += 1.3;
+        if (anim.is(TWO_HAND_1, TWO_HAND_2, TWO_HAND_3, TWO_HAND_4)) {
+            width += 1.5;
+            length += 1.1;
+        }
+        if (anim.is(STAB_1)) {
+            width += 0.3;
+            length += 1.4;
+        }
+        if (anim.is(INVISIBLE_BURST_HIT)) {
+            width += 1.4;
             length += 1;
         }
         return new AABB(-width * 0.5, -0.02, 0, width * 0.5, this.getBbHeight() + 0.02, length);
@@ -242,7 +285,7 @@ public class EntityArthur extends BaseServant {
 
     private boolean duringBurst() {
         AnimatedAction anim = this.getAnimationHandler().getAnimation();
-        return anim != null && anim.is(INVISIBLE_BURST) && anim.isPastTick(0.28) && !anim.isPastTick(0.8);
+        return anim != null && anim.is(INVISIBLE_BURST) && anim.isPast(0.28) && !anim.isPast(0.8);
     }
 
     @Override

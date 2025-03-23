@@ -83,10 +83,12 @@ public class Utils {
 
     public static Predicate<LivingEntity> servantTargetPredicate(Mob entity) {
         return target -> {
-            if (target == entity || !entity.canAttack(target))
+            if (target == entity || !entity.canAttack(target) || !target.canBeSeenAsEnemy())
                 return false;
             if (target == entity.getTarget())
                 return true;
+            if (entity.hasPassenger(target) || entity.getVehicle() == target)
+                return false;
             if (entity instanceof OwnableEntity ownable && target instanceof OwnableEntity ownable2 && ownable.getOwnerUUID() != null && ownable.getOwnerUUID().equals(ownable2.getOwnerUUID()))
                 return false;
             if (target instanceof OwnableEntity ownable && ownable.getOwner() == entity)

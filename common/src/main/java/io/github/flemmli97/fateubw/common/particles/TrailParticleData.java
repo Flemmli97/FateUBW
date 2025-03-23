@@ -11,6 +11,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class TrailParticleData implements ParticleOptions {
 
+    @SuppressWarnings("deprecation")
     public static final Deserializer<TrailParticleData> DESERIALIZER = new Deserializer<>() {
         @Override
         public TrailParticleData fromCommand(ParticleType<TrailParticleData> type, StringReader reader) throws CommandSyntaxException {

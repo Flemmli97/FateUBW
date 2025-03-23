@@ -1,7 +1,6 @@
 package io.github.flemmli97.fateubw.common.entity.servant;
 
 
-import io.github.flemmli97.fateubw.common.entity.servant.ai.DiarmuidAttackGoal;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
@@ -19,17 +18,14 @@ import net.minecraft.world.level.Level;
 
 public class EntityDiarmuid extends BaseServant {
 
-    private static final AnimatedAction NP_ATTACK = new AnimatedAction(20, 0, "np");
-    private static final AnimatedAction[] ANIMS = {AnimatedAction.VANILLA_ATTACK, NP_ATTACK};
-
-    public final DiarmuidAttackGoal attackAI = new DiarmuidAttackGoal(this);
+    private static final AnimatedAction NP_ATTACK = AnimatedAction.builder(20, "np").build();
+    private static final AnimatedAction[] ANIMS = {NP_ATTACK};
 
     private final AnimationHandler<EntityDiarmuid> animationHandler = new AnimationHandler<>(this, ANIMS);
 
     public EntityDiarmuid(EntityType<? extends EntityDiarmuid> entityType, Level world) {
         super(entityType, world);
-        if (world != null && !world.isClientSide)
-            this.goalSelector.addGoal(0, this.attackAI);
+
     }
 
     @Override
@@ -42,7 +38,7 @@ public class EntityDiarmuid extends BaseServant {
     public boolean canUse(AnimatedAction anim, AttackType type) {
         if (type == AttackType.NP)
             return anim.getID().equals(NP_ATTACK.getID());
-        return anim.getID().equals(AnimatedAction.VANILLA_ATTACK.getID());
+        return false;
     }
 
     @Override
@@ -58,10 +54,6 @@ public class EntityDiarmuid extends BaseServant {
     @Override
     public void updateAI(EnumServantUpdate behaviour) {
         super.updateAI(behaviour);
-        if (this.commandBehaviour == EnumServantUpdate.STAY)
-            this.goalSelector.removeGoal(this.attackAI);
-        else
-            this.goalSelector.addGoal(0, this.attackAI);
     }
 
     @Override

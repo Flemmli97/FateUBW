@@ -23,6 +23,7 @@ import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTarget
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.StrafingRunner;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.WrappedRunner;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
 import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
@@ -38,75 +39,84 @@ import java.util.List;
 
 public class EntityGilgamesh extends BaseServant {
 
-    public static final AnimatedAction MELEE_1 = new AnimatedAction(0.52, 0.4, "vertical_slash");
-    public static final AnimatedAction MELEE_2 = new AnimatedAction(0.56, 0.4, "horizontal_slash");
-    public static final AnimatedAction MELEE_3 = new AnimatedAction(0.48, 0.36, "slash_1");
-    public static final AnimatedAction MELEE_4 = new AnimatedAction(0.48, 0.36, "slash_2");
+    public static final AnimatedAction ONE_HAND_1 = AnimatedAction.builder(0.62, "one_hand_1")
+            .marker("attack", 0.52).marker("step", 0.52).build();
+    public static final AnimatedAction ONE_HAND_2 = AnimatedAction.builder(0.62, "one_hand_2")
+            .marker("attack", 0.48).marker("step", 0.52).build();
+    public static final AnimatedAction ONE_HAND_3 = AnimatedAction.builder(0.58, "one_hand_3")
+            .marker("attack", 0.44).marker("step", 0.48).build();
+    public static final AnimatedAction ONE_HAND_4 = AnimatedAction.builder(0.58, "one_hand_4")
+            .marker("attack", 0.48).marker("step", 0.48).build();
+    public static final AnimatedAction STAB_1 = AnimatedAction.builder(0.86, "stab_1")
+            .marker("attack", 0.6).build();
 
-    public static final AnimatedAction BABYLON_1 = new AnimatedAction(0.92, 0.28, "babylon_1");
-    public static final AnimatedAction BABYLON_2 = new AnimatedAction(0.8, 0.2, "babylon_2");
-    public static final AnimatedAction BABYLON_3 = new AnimatedAction(0.88, 0.24, "babylon_3");
-    public static final AnimatedAction EA = new AnimatedAction(1.6, 0.72, "ea");
-    public static final AnimatedAction SUMMON = new AnimatedAction(2., 0, "summon");
+    public static final AnimatedAction BABYLON_1 = AnimatedAction.builder(0.96, "babylon_1").marker("attack", 0.24).build();
+    public static final AnimatedAction BABYLON_2 = AnimatedAction.builder(0.96, "babylon_2").marker("attack", 0.24).build();
+    public static final AnimatedAction BABYLON_3 = AnimatedAction.builder(0.96, "babylon_3").marker("attack", 0.28).build();
+    public static final AnimatedAction EA = AnimatedAction.builder(1.68, "ea").marker("attack", 0.76).build();
+    public static final AnimatedAction SUMMON = AnimatedAction.builder(2., "summon").build();
 
-    private static final AnimatedAction[] ANIMS = {MELEE_1, MELEE_2, MELEE_3, MELEE_4, BABYLON_1, BABYLON_2, BABYLON_3, EA, SUMMON};
+    private static final AnimatedAction[] ANIMS = {ONE_HAND_1, ONE_HAND_2, ONE_HAND_3, ONE_HAND_4, STAB_1, BABYLON_1, BABYLON_2, BABYLON_3, EA, SUMMON};
 
     private final Vector4f summonColor = new Vector4f(1.0f, 0.85f, 0.3f, 0.7f);
 
     public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityGilgamesh>>> ATTACKS = List.of(
-            WeightedEntry.wrap(new GoalAttackAction<EntityGilgamesh>(EntityGilgamesh.MELEE_1)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .chain(GoalAttackAction.<EntityGilgamesh>chainBuilder(EntityGilgamesh.MELEE_3).withPredicate(e -> e.getRandom().nextFloat() < 0.5))
+            WeightedEntry.wrap(new GoalAttackAction<EntityGilgamesh>(EntityGilgamesh.ONE_HAND_1)
+                    .cooldown(e -> e.getRandom().nextInt(23) + 10)
+                    .chain(GoalAttackAction.<EntityGilgamesh>chainBuilder(EntityGilgamesh.ONE_HAND_2, 2, 0.2f, 1)
+                            .or(EntityGilgamesh.ONE_HAND_3, 2, 0.2f, 1)
+                            .withChance(0.4f))
                     .withCondition((goal, target, previous) -> !goal.attacker.useRanged())
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 12),
-            WeightedEntry.wrap(new GoalAttackAction<EntityGilgamesh>(EntityGilgamesh.MELEE_2)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
+            WeightedEntry.wrap(new GoalAttackAction<EntityGilgamesh>(EntityGilgamesh.ONE_HAND_2)
+                    .cooldown(e -> e.getRandom().nextInt(23) + 10)
+                    .chain(GoalAttackAction.<EntityGilgamesh>chainBuilder(EntityGilgamesh.ONE_HAND_1, 2, 0.2f, 1)
+                            .withChance(0.4f))
                     .withCondition((goal, target, previous) -> !goal.attacker.useRanged())
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 12),
-            WeightedEntry.wrap(new GoalAttackAction<EntityGilgamesh>(EntityGilgamesh.MELEE_3)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .chain(GoalAttackAction.<EntityGilgamesh>chainBuilder(EntityGilgamesh.MELEE_1)
-                            .chain(EntityGilgamesh.MELEE_2).withPredicate(e -> e.getRandom().nextFloat() < 0.5))
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
+            WeightedEntry.wrap(new GoalAttackAction<EntityGilgamesh>(EntityGilgamesh.ONE_HAND_3)
+                    .cooldown(e -> e.getRandom().nextInt(23) + 10)
+                    .chain(GoalAttackAction.<EntityGilgamesh>chainBuilder(EntityGilgamesh.ONE_HAND_4, 2, 0.2f, 1)
+                            .withChance(0.4f))
                     .withCondition((goal, target, previous) -> !goal.attacker.useRanged())
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 12),
-            WeightedEntry.wrap(new GoalAttackAction<EntityGilgamesh>(EntityGilgamesh.MELEE_4)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .chain(GoalAttackAction.<EntityGilgamesh>chainBuilder(EntityGilgamesh.MELEE_2).withPredicate(e -> e.getRandom().nextFloat() < 0.4))
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
+            WeightedEntry.wrap(new GoalAttackAction<EntityGilgamesh>(EntityGilgamesh.ONE_HAND_4)
+                    .cooldown(e -> e.getRandom().nextInt(23) + 10)
                     .withCondition((goal, target, previous) -> !goal.attacker.useRanged())
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
             WeightedEntry.wrap(new GoalAttackAction<EntityGilgamesh>(EntityGilgamesh.BABYLON_1)
                     .cooldown(e -> e.getRandom().nextInt(20) + 30)
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(6, 12, 1.2))), 5),
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(6, 12, 1.2))), 15),
             WeightedEntry.wrap(new GoalAttackAction<EntityGilgamesh>(EntityGilgamesh.BABYLON_1)
                     .cooldown(e -> e.getRandom().nextInt(20) + 30)
                     .withCondition((goal, target, previous) -> goal.attacker.useRanged())
-                    .prepare(() -> new WrappedRunner<>(e -> 40, new MoveToTargetRunner<>(1, 18))), 3),
+                    .prepare(() -> new WrappedRunner<>(e -> 40, new MoveToTargetRunner<>(1, 18))), 13),
             WeightedEntry.wrap(new GoalAttackAction<EntityGilgamesh>(EntityGilgamesh.BABYLON_2)
                     .cooldown(e -> e.getRandom().nextInt(20) + 30)
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(6, 12, 1.2))), 5),
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(6, 12, 1.2))), 15),
             WeightedEntry.wrap(new GoalAttackAction<EntityGilgamesh>(EntityGilgamesh.BABYLON_2)
                     .cooldown(e -> e.getRandom().nextInt(20) + 30)
                     .withCondition((goal, target, previous) -> goal.attacker.useRanged())
-                    .prepare(() -> new WrappedRunner<>(e -> 40, new MoveToTargetRunner<>(1, 18))), 3),
+                    .prepare(() -> new WrappedRunner<>(e -> 40, new MoveToTargetRunner<>(1, 18))), 13),
             WeightedEntry.wrap(new GoalAttackAction<EntityGilgamesh>(EntityGilgamesh.BABYLON_3)
                     .cooldown(e -> e.getRandom().nextInt(20) + 30)
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(6, 12, 1.2))), 5),
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(6, 12, 1.2))), 15),
             WeightedEntry.wrap(new GoalAttackAction<EntityGilgamesh>(EntityGilgamesh.BABYLON_3)
                     .cooldown(e -> e.getRandom().nextInt(20) + 30)
                     .withCondition((goal, target, previous) -> goal.attacker.useRanged())
-                    .prepare(() -> new WrappedRunner<>(e -> 40, new MoveToTargetRunner<>(1, 18))), 3),
+                    .prepare(() -> new WrappedRunner<>(e -> 40, new MoveToTargetRunner<>(1, 18))), 13),
             WeightedEntry.wrap(new GoalAttackAction<EntityGilgamesh>(EntityGilgamesh.EA)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
+                    .cooldown(e -> e.getRandom().nextInt(23) + 10)
                     .withCondition(Utils.npCheck())
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(4, 8, 1.1))), 15)
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(4, 8, 1.1))), 18)
     );
     public static final List<WeightedEntry.Wrapper<IdleAction<EntityGilgamesh>>> IDLE_ACTIONS = List.of(
             WeightedEntry.wrap(new IdleAction<EntityGilgamesh>(DoNothingRunner::new)
-                    .withCondition((goal, target) -> goal.attacker.useRanged()), 2),
+                    .withCondition((goal, target) -> goal.attacker.useRanged() || goal.attacker.getRandom().nextFloat() < 0.7f), 2),
             WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<EntityGilgamesh>(6, 1.1, 2))
-                    .withCondition((goal, target) -> goal.attacker.useRanged()), 6),
+                    .withCondition((goal, target) -> goal.attacker.useRanged() || goal.attacker.getRandom().nextFloat() < 0.7f), 6),
             WeightedEntry.wrap(new IdleAction<>(() -> new StrafingRunner<EntityGilgamesh>(14, 6, 1, 0.3f))
-                    .withCondition((goal, target) -> goal.attacker.useRanged()), 6),
+                    .withCondition((goal, target) -> goal.attacker.useRanged() || goal.attacker.getRandom().nextFloat() < 0.7f), 6),
             WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<EntityGilgamesh>(1, 1))
                     .withCondition((goal, target) -> !goal.attacker.useRanged()), 6),
             WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<EntityGilgamesh>(1, 1, 6))
@@ -116,7 +126,7 @@ public class EntityGilgamesh extends BaseServant {
     public final AnimatedAttackGoal<EntityGilgamesh> attack = new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS);
 
     private final AnimationHandler<EntityGilgamesh> animationHandler = new AnimationHandler<>(this, ANIMS)
-            .setAnimationChangeFunc(anim -> {
+            .withChangeListener(anim -> {
                 if (!this.level.isClientSide()) {
                     if (anim == null) {
                         if (this.getAnimationHandler().isCurrent(EA)) {
@@ -166,12 +176,12 @@ public class EntityGilgamesh extends BaseServant {
             if (target != null) {
                 this.lookAtNow(target, 360, 90);
             }
-            if (anim.isAtTick(0.4)) {
+            if (anim.isAt(0.4)) {
                 this.targetPosition = target != null ? EntityUtil.getStraightProjectileTarget(this.position()
                         .add(0, this.getEyeHeight() - 0.1, 0), target) :
                         this.position().add(this.getLookAngle().scale(8));
             }
-            if (anim.canAttack()) {
+            if (anim.isAt("attack")) {
                 if (!this.forcedNP)
                     this.useMana(this.props().hogouMana());
                 this.attackWithNP(this.targetPosition);
@@ -180,20 +190,17 @@ public class EntityGilgamesh extends BaseServant {
 
         } else if (anim.is(BABYLON_1, BABYLON_2, BABYLON_3)) {
             LivingEntity target = this.getTarget();
-            if (!anim.isPastTick(anim.getAttackTime()) && target != null) {
+            if (!anim.isPast("attack") && target != null) {
                 this.lookAtNow(target, 60.0F, 30.0F);
             }
-            if (anim.canAttack()) {
+            if (anim.isAt("attack")) {
                 if (target != null) {
                     this.attackWithRangedAttack(target);
                 }
             }
         } else {
-            boolean step = anim.is(MELEE_2) && anim.isAtTick(0.28) ||
-                    anim.is(MELEE_3) && anim.isAtTick(0.24) ||
-                    anim.is(MELEE_4) && anim.isAtTick(0.24);
-            if (step) {
-                Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(anim.is(MELEE_4) ? 0.25 : 0.3);
+            if (anim.isAt("step")) {
+                Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(0.3);
                 this.setDeltaMovement(this.getDeltaMovement().add(dir));
             }
             super.handleAttack(anim);
@@ -202,17 +209,26 @@ public class EntityGilgamesh extends BaseServant {
 
     @Override
     public AABB attackBB(AnimatedAction anim) {
-        double width = this.getBbWidth() + 0.4;
+        double width = this.getBbWidth() + 0.3;
         double length = 1;
-        if (anim.is(MELEE_1)) {
-            length += 0.7;
+        if (anim.is(ONE_HAND_1)) {
+            width += 0.4;
+            length += 0.6;
         }
-        if (anim.is(MELEE_2)) {
-            width += 1.3;
-            length += 0.7;
+        if (anim.is(ONE_HAND_2)) {
+            width += 1;
+            length += 0.6;
         }
-        if (anim.is(MELEE_3, MELEE_4)) {
+        if (anim.is(ONE_HAND_3)) {
             width += 1.1;
+            length += 0.6;
+        }
+        if (anim.is(ONE_HAND_4)) {
+            width += 0.2;
+            length += 0.6;
+        }
+        if (anim.is(STAB_1)) {
+            width += 0.1;
             length += 0.7;
         }
         return new AABB(-width * 0.5, -0.02, 0, width * 0.5, this.getBbHeight() + 0.02, length);
@@ -239,7 +255,10 @@ public class EntityGilgamesh extends BaseServant {
     }
 
     public void attackWithRangedAttack(LivingEntity target) {
-        int weaponAmount = this.getRandom().nextInt(12) + 6;
+        double perc = Mth.clamp(1 - this.getHealth() / this.getMaxHealth(), 0.1, 1);
+        int randAmount = (int) (20 * perc);
+        int base = 6 + (int) (5 * perc);
+        int weaponAmount = this.getRandom().nextInt(Math.max(1, randAmount)) + base;
         if (this.getAnimationHandler().getAnimation() == null)
             this.spawnBehind(target, weaponAmount);
         else if (this.getAnimationHandler().isCurrent(BABYLON_1, BABYLON_2, BABYLON_3)) {

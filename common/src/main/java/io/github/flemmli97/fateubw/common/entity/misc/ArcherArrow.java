@@ -37,6 +37,8 @@ public class ArcherArrow extends AbstractArrow {
     @Override
     protected void onHitEntity(EntityHitResult result) {
         Entity entity = result.getEntity();
+        if (entity == this.getOwner())
+            return;
         float f = (float) this.getDeltaMovement().length();
         int i = Mth.ceil(Mth.clamp((double) f * this.getBaseDamage() + 10, 0.0D, 2.147483647E9D));
 

@@ -1,7 +1,6 @@
 package io.github.flemmli97.fateubw.common.entity.servant;
 
 
-import io.github.flemmli97.fateubw.common.entity.servant.ai.SasakiAttackGoal;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
@@ -16,17 +15,14 @@ import net.minecraft.world.level.Level;
 
 public class EntitySasaki extends BaseServant {
 
-    private static final AnimatedAction NP_ATTACK = new AnimatedAction(40, 0, "np");
-    private static final AnimatedAction[] ANIMS = {AnimatedAction.VANILLA_ATTACK, NP_ATTACK};
+    private static final AnimatedAction NP_ATTACK = AnimatedAction.builder(40, "np").build();
+    private static final AnimatedAction[] ANIMS = {NP_ATTACK};
 
-    public final SasakiAttackGoal attackAI = new SasakiAttackGoal(this);
 
     private final AnimationHandler<EntitySasaki> animationHandler = new AnimationHandler<>(this, ANIMS);
 
     public EntitySasaki(EntityType<? extends BaseServant> entityType, Level world) {
         super(entityType, world);
-        if (world != null && !world.isClientSide)
-            this.goalSelector.addGoal(0, this.attackAI);
     }
 
     @Override
@@ -38,7 +34,7 @@ public class EntitySasaki extends BaseServant {
     public boolean canUse(AnimatedAction anim, AttackType type) {
         if (type == AttackType.NP)
             return anim.getID().equals(NP_ATTACK.getID());
-        return anim.getID().equals(AnimatedAction.VANILLA_ATTACK.getID());
+        return false;
     }
 
     @Override
@@ -49,10 +45,6 @@ public class EntitySasaki extends BaseServant {
     @Override
     public void updateAI(EnumServantUpdate behaviour) {
         super.updateAI(behaviour);
-        if (this.commandBehaviour == EnumServantUpdate.STAY)
-            this.goalSelector.removeGoal(this.attackAI);
-        else
-            this.goalSelector.addGoal(0, this.attackAI);
     }
 
     @Override
@@ -79,7 +71,7 @@ public class EntitySasaki extends BaseServant {
         AnimatedAction anim = this.getAnimationHandler().getAnimation();
         if (anim == null || !this.canUse(anim, AttackType.NP))
             return false;
-        int i = anim.getTick();
+        int i = 0;
         return i == 30 || i == 20 || i == 10;
     }
 }

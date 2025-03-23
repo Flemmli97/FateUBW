@@ -1,0 +1,77 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"idle": {
+			"loop": true,
+			"bones": {
+				"LeftArm": {
+					"rotation": ["-math.sin(time*60)*-3 ", 0, "-(math.cos(time*90)*-3+3)"]
+				},
+				"RightArm": {
+					"rotation": ["math.sin(time*60)*-3 ", 0, "math.cos(time*90)*-3+3"]
+				}
+			}
+		},
+		"head_look": {
+			"loop": true,
+			"bones": {
+				"Head": {
+					"rotation": ["query.head_x_rotation", "query.head_y_rotation", 0]
+				}
+			}
+		},
+		"item_holding": {
+			"loop": true,
+			"bones": {
+				"LeftArm": {
+					"rotation": ["left_held*(-20)", 0, 0]
+				},
+				"RightArm": {
+					"rotation": ["right_held*(-20)", 0, 0]
+				}
+			}
+		},
+		"riding": {
+			"loop": true,
+			"bones": {
+				"LeftLeg": {
+					"rotation": [-72, -18, 0],
+					"scale": 0
+				},
+				"RightLeg": {
+					"rotation": [-72, 18, 0],
+					"scale": 0
+				},
+				"RidingLegs": {
+					"scale": 1
+				},
+				"LeftLeg2": {
+					"rotation": [-72, -18, 0]
+				},
+				"RightLeg2": {
+					"rotation": [-72, 18, 0]
+				}
+			}
+		},
+		"riding_standing": {
+			"loop": true,
+			"bones": {
+				"LeftLeg": {
+					"scale": 0
+				},
+				"RightLeg": {
+					"scale": 0
+				},
+				"RidingLegs": {
+					"scale": 1
+				}
+			}
+		},
+		"walk": {
+			"loop": true
+		},
+		"run": {
+			"loop": true
+		}
+	}
+}

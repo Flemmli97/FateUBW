@@ -34,6 +34,7 @@ import io.github.flemmli97.tenshilib.common.utils.OrientedBoundingBox;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.Registry;
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -55,6 +56,7 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.OpenDoorGoal;
@@ -73,46 +75,35 @@ import java.util.function.Predicate;
 
 public class HassanClone extends PathfinderMob implements IAnimated, OwnableEntity, AoeAttackEntity, TargetableOpponent {
 
-    public static final AnimatedAction MELEE_1 = new AnimatedAction(0.48, 0.36, "slash_1");
-    public static final AnimatedAction MELEE_1_2 = new AnimatedAction(0.48, 0.36, "slash_1_2");
-    public static final AnimatedAction MELEE_2 = new AnimatedAction(0.48, 0.36, "slash_2");
-    public static final AnimatedAction MELEE_2_2 = new AnimatedAction(0.48, 0.36, "slash_2_2");
-    public static final AnimatedAction STAB = new AnimatedAction(0.68, 0.36, "stab");
-    public static final AnimatedAction STAB_2 = new AnimatedAction(0.92, 0.44, "top_stab");
-    public static final AnimatedAction THROW = new AnimatedAction(0.96, 0.32, "dagger_throw");
-
-    public static final AnimatedAction SUMMON = new AnimatedAction(2., 0, "summon");
-    private static final AnimatedAction[] ANIMS = {MELEE_1, MELEE_1_2, MELEE_2, MELEE_2_2, STAB, STAB_2, THROW, SUMMON};
+    private static final AnimatedAction[] ANIMS = {EntityHassan.DAGGER_1, EntityHassan.DAGGER_2, EntityHassan.DAGGER_3, EntityHassan.DAGGER_4, EntityHassan.TOP_STAB, EntityHassan.THROW, EntityHassan.SUMMON};
 
     public static final List<WeightedEntry.Wrapper<GoalAttackAction<HassanClone>>> ATTACKS = List.of(
-            WeightedEntry.wrap(new GoalAttackAction<HassanClone>(HassanClone.MELEE_1)
+            WeightedEntry.wrap(new GoalAttackAction<HassanClone>(EntityHassan.DAGGER_1)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .chain(GoalAttackAction.<HassanClone>chainBuilder(HassanClone.MELEE_1_2)
-                            .chain(List.of(new GoalAttackAction.ChainedAction<>(HassanClone.MELEE_1_2, e -> 0),
-                                    new GoalAttackAction.ChainedAction<>(HassanClone.MELEE_2_2, e -> 0)))
-                            .withPredicate(e -> e.getRandom().nextFloat() < 0.6))
+                    .chain(GoalAttackAction.<HassanClone>chainBuilder(EntityHassan.DAGGER_2, 2, 0.2f, 1)
+                            .or(EntityHassan.DAGGER_3, 2, 0.2f, 1)
+                            .or(EntityHassan.DAGGER_4, 2, 0.16f, 1)
+                            .withChance(0.6f))
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 11),
-            WeightedEntry.wrap(new GoalAttackAction<HassanClone>(HassanClone.MELEE_2)
+            WeightedEntry.wrap(new GoalAttackAction<HassanClone>(EntityHassan.DAGGER_3)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .chain(GoalAttackAction.<HassanClone>chainBuilder(HassanClone.MELEE_2_2)
-                            .chain(List.of(new GoalAttackAction.ChainedAction<>(HassanClone.MELEE_2_2, e -> 0),
-                                    new GoalAttackAction.ChainedAction<>(HassanClone.MELEE_1_2, e -> 0)))
-                            .withPredicate(e -> e.getRandom().nextFloat() < 0.6))
+                    .chain(GoalAttackAction.<HassanClone>chainBuilder(EntityHassan.DAGGER_1, 2, 0.2f, 1)
+                            .chain(EntityHassan.DAGGER_2, 2, 0.2f)
+                            .or(EntityHassan.DAGGER_1, 2, 0.2f, 1)
+                            .chain(EntityHassan.DAGGER_4, 2, 0.16f)
+                            .withChance(0.6f))
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 11),
-            WeightedEntry.wrap(new GoalAttackAction<HassanClone>(HassanClone.STAB)
+            WeightedEntry.wrap(new GoalAttackAction<HassanClone>(EntityHassan.TOP_STAB)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 9),
-            WeightedEntry.wrap(new GoalAttackAction<HassanClone>(HassanClone.STAB_2)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 9),
-            WeightedEntry.wrap(new GoalAttackAction<HassanClone>(HassanClone.THROW)
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
+            WeightedEntry.wrap(new GoalAttackAction<HassanClone>(EntityHassan.THROW)
                     .cooldown(e -> e.getRandom().nextInt(15) + 10)
                     .withCondition(((goal, target, previous) -> goal.distanceToTargetSq > 25 || goal.attacker.getRandom().nextFloat() < 0.5))
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 14, 1.1))), 10)
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 14, 1.1))), 12)
     );
     public static final List<WeightedEntry.Wrapper<IdleAction<HassanClone>>> IDLE_ACTIONS = List.of(
             WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1, 0.5)), 6),
-            WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(1, 1, 6)), 4)
+            WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(1, 1, 6)), 2)
     );
 
     private UUID ownerUUID;
@@ -120,8 +111,8 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
 
     public final Predicate<LivingEntity> targetPred = Utils.servantTargetPredicate(this);
 
-    private final AnimationHandler<HassanClone> animationHandler = new AnimationHandler<>(this, ANIMS).setAnimationChangeCons(anim -> {
-        if (!SUMMON.is(anim)) {
+    private final AnimationHandler<HassanClone> animationHandler = new AnimationHandler<>(this, ANIMS).withChangeListener(anim -> {
+        if (!EntityHassan.SUMMON.is(anim)) {
             if (!this.offHandCache.isEmpty()) {
                 this.setItemInHand(InteractionHand.OFF_HAND, this.offHandCache);
                 this.offHandCache = ItemStack.EMPTY;
@@ -131,6 +122,7 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
                 this.mainHandCache = ItemStack.EMPTY;
             }
         }
+        return false;
     });
     public final AnimatedAttackGoal<HassanClone> attack = new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS);
 
@@ -164,7 +156,7 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
         for (EquipmentSlot type : EquipmentSlot.values())
             this.setDropChance(type, 0);
         if (reason == MobSpawnType.SPAWN_EGG || reason == MobSpawnType.MOB_SUMMONED) {
-            this.getAnimationHandler().setAnimation(SUMMON);
+            this.getAnimationHandler().setAnimation(EntityHassan.SUMMON);
         }
         return data;
     }
@@ -234,23 +226,23 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
     }
 
     public void handleAttack(AnimatedAction anim) {
-        if (anim.is(THROW)) {
-            if (anim.canAttack()) {
+        if (anim.is(EntityHassan.THROW)) {
+            if (anim.isAt("attack")) {
                 this.throwItem(true);
-            } else if (anim.isAtTick(0.84)) {
+            } else if (anim.isAt(0.84)) {
                 this.throwItem(false);
             }
         } else {
-            if (anim.is(SUMMON))
+            if (anim.is(EntityHassan.SUMMON))
                 return;
             this.getNavigation().stop();
             if (this.getTarget() != null) {
                 this.lookAt(this.getTarget(), 60, 90);
-                if (anim.getTick() == 1) {
+                if (anim.isAt(0)) {
                     this.targetPosition = this.getTarget().position();
                 }
             }
-            if (anim.canAttack()) {
+            if (anim.isAt("attack")) {
                 this.mobAttack(anim, this.getTarget(), this::doHurtTarget);
                 this.targetPosition = null;
             }
@@ -264,7 +256,24 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
             if (target == this.getOwner())
                 ((Mob) entity).setTarget(this);
         }
-        return super.doHurtTarget(entity);
+        boolean behind = EntityHassan.behind(this, entity);
+        if (behind) {
+            this.getAttribute(Attributes.ATTACK_DAMAGE)
+                    .addTransientModifier(new AttributeModifier(EntityHassan.BACKSTAB_MODIFIER, "fate.backstab.mod", 0.5,
+                            AttributeModifier.Operation.MULTIPLY_TOTAL));
+        }
+        boolean hurt = super.doHurtTarget(entity);
+        if (behind) {
+            this.getAttribute(Attributes.ATTACK_DAMAGE).removeModifier(EntityHassan.BACKSTAB_MODIFIER);
+            if (hurt) {
+                this.level.playSound(null, this, SoundEvents.PLAYER_ATTACK_CRIT, this.getSoundSource(), 0.7f, 0.9f);
+                if (this.level instanceof ServerLevel serverLevel) {
+                    for (int i = 0; i < 15; i++)
+                        serverLevel.sendParticles(DustParticleOptions.REDSTONE, entity.getRandomX(1.4), entity.getRandomY(), entity.getRandomZ(1.4), 0, 0, 0, 0, 0);
+                }
+            }
+        }
+        return hurt;
     }
 
     @Override
@@ -429,25 +438,24 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
     }
 
     public AABB attackBB(AnimatedAction anim) {
-        double width = this.getBbWidth() + 0.4;
+        double width = this.getBbWidth() + 0.3;
         double length = 1;
-        if (anim.is(MELEE_1, MELEE_2_2)) {
-            width += 1.3;
-            length += 0.7;
+        if (anim.is(EntityHassan.DAGGER_1)) {
+            width += 0.5;
+            length += 0.4;
         }
-        if (anim.is(MELEE_2, MELEE_1_2)) {
-            width += 1.1;
-            length += 0.6;
+        if (anim.is(EntityHassan.DAGGER_2, EntityHassan.DAGGER_3)) {
+            width += 0.7;
+            length += 0.4;
         }
-        if (anim.is(STAB)) {
-            length += 1.1;
+        if (anim.is(EntityHassan.DAGGER_4)) {
+            width += 0.3;
+            length += 0.8;
         }
-        if (anim.is(STAB_2)) {
+        if (anim.is(EntityHassan.TOP_STAB)) {
             width += 0.2;
             length += 0.8;
         }
-        width *= 0.95;
-        length *= 0.95;
         return new AABB(-width * 0.5, -0.02, 0, width * 0.5, this.getBbHeight() + 0.02, length);
     }
 

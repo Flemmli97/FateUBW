@@ -4,7 +4,6 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 import io.github.flemmli97.fateubw.common.config.Config;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicBeam;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicBufCircle;
-import io.github.flemmli97.fateubw.common.entity.servant.ai.MedeaAttackGoal;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
@@ -29,12 +28,11 @@ import net.minecraft.world.phys.Vec3;
 
 public class EntityMedea extends BaseServant {
 
-    private static final AnimatedAction NP_ATTACK = new AnimatedAction(20, 0, "np");
-    private static final AnimatedAction RANGED = new AnimatedAction(30, 5, "beam");
+    private static final AnimatedAction NP_ATTACK = AnimatedAction.builder(20, "np").build();
+    private static final AnimatedAction RANGED = AnimatedAction.builder(30, "beam").marker("attack", 5).build();
 
     private static final AnimatedAction[] ANIMS = {RANGED, NP_ATTACK};
 
-    public final MedeaAttackGoal attackAI = new MedeaAttackGoal(this, 16);
 
     private final AnimationHandler<EntityMedea> animationHandler = new AnimationHandler<>(this, ANIMS);
 
@@ -44,8 +42,6 @@ public class EntityMedea extends BaseServant {
 
     public EntityMedea(EntityType<? extends BaseServant> entityType, Level world) {
         super(entityType, world);
-        if (world != null && !world.isClientSide)
-            this.goalSelector.addGoal(0, this.attackAI);
     }
 
     @Override
@@ -68,10 +64,6 @@ public class EntityMedea extends BaseServant {
     @Override
     public void updateAI(EnumServantUpdate behaviour) {
         super.updateAI(behaviour);
-        if (this.commandBehaviour == EnumServantUpdate.STAY)
-            this.goalSelector.removeGoal(this.attackAI);
-        else
-            this.goalSelector.addGoal(0, this.attackAI);
     }
 
     @Override
@@ -100,7 +92,7 @@ public class EntityMedea extends BaseServant {
             strength = eff.getAmplifier();
         for (int i = 0; i < 3; i++) {
             MagicBeam beam = new MagicBeam(this.level, this, target, strength);
-            Vec3 side = MathUtils.rotate(MathUtils.normalY, MathUtils.normalX, -this.getYRot() * Mth.DEG_TO_RAD);
+            Vec3 side = MathUtils.rotate(MathUtils.NORMAL_Y, MathUtils.NORMAL_X, -this.getYRot() * Mth.DEG_TO_RAD);
             int[] offset = castOffsets[this.random.nextInt(castOffsets.length)];
             Vec3 area = this.position().add(side.scale(offset[0])).add(0, this.getBbHeight() + offset[1], 0);
             beam.setPos(area.x, area.y, area.z);

@@ -32,7 +32,7 @@ import java.util.UUID;
 
 public class LesserMonster extends PathfinderMob implements IAnimated, OwnableEntity {
 
-    public static final AnimatedAction ATTACK = new AnimatedAction(0.76, 0.52, "attack");
+    public static final AnimatedAction ATTACK = AnimatedAction.builder(0.76, "attack").marker("attack", 0.52).build();
     private static final AnimatedAction[] ANIMS = {ATTACK};
 
     public static final List<WeightedEntry.Wrapper<GoalAttackAction<LesserMonster>>> ATTACKS = List.of(
@@ -92,7 +92,7 @@ public class LesserMonster extends PathfinderMob implements IAnimated, OwnableEn
             if (this.livingTicks > Config.Common.gillesMinionDuration)
                 this.remove(RemovalReason.KILLED);
             AnimatedAction anim = this.getAnimationHandler().getAnimation();
-            if (anim != null && anim.is(ATTACK) && anim.canAttack()) {
+            if (anim != null && anim.is(ATTACK) && anim.isAt("attack")) {
                 LivingEntity target = this.getTarget();
                 if (target != null && this.distanceToSqr(target) <= this.getMeleeAttackRangeSqr(target)) {
                     this.doHurtTarget(target);

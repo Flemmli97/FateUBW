@@ -49,44 +49,49 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
 
     protected static final EntityDataAccessor<Boolean> THROWN_DAGGER = SynchedEntityData.defineId(EntityMedusa.class, EntityDataSerializers.BOOLEAN);
 
-    public static final AnimatedAction MELEE_1 = new AnimatedAction(0.56, 0.4, "horizontal_slash");
-    public static final AnimatedAction MELEE_1_R = AnimatedAction.copyOf(MELEE_1, "horizontal_slash_2");
-    public static final AnimatedAction MELEE_2 = new AnimatedAction(0.48, 0.36, "slash_1");
-    public static final AnimatedAction MELEE_2_R = AnimatedAction.copyOf(MELEE_2, "slash_2");
-    public static final AnimatedAction THROW = new AnimatedAction(0.64, 0.48, "chain_throw");
-    public static final AnimatedAction RETRIEVE = new AnimatedAction(0.48, 0.28, "chain_retrieve");
-    public static final AnimatedAction EYE = new AnimatedAction(1.96, 0.96, "eye");
-    public static final AnimatedAction JUMP = AnimatedAction.builder((int) Math.ceil(0.32 * 20), "jump").infinite().build();
-    public static final AnimatedAction LAND = new AnimatedAction(0.72, 0.2, "land");
+    public static final AnimatedAction DUAL_REVERSE_1 = AnimatedAction.builder(0.58, "dual_reverse_1")
+            .marker("attack", 0.4).build();
+    public static final AnimatedAction DUAL_REVERSE_2 = AnimatedAction.copyOf(DUAL_REVERSE_1, "dual_reverse_2");
+    public static final AnimatedAction DUAL_REVERSE_3 = AnimatedAction.builder(0.54, "dual_reverse_3")
+            .marker("attack", 0.4).build();
+    public static final AnimatedAction DUAL_REVERSE_4 = AnimatedAction.copyOf(DUAL_REVERSE_3, "dual_reverse_4");
+    public static final AnimatedAction THROW = AnimatedAction.builder(0.72, "chain_throw").marker("attack", 0.48).build();
+    public static final AnimatedAction RETRIEVE = AnimatedAction.builder(0.8, "chain_retrieve").marker("attack", 0.48).build();
+    public static final AnimatedAction EYE = AnimatedAction.builder(1.96, "eye").marker("attack", 0.96).build();
+    public static final AnimatedAction JUMP = AnimatedAction.builder(0.32, "jump").marker("jump", 0.2).infinite().build();
+    public static final AnimatedAction LAND = AnimatedAction.builder(0.68, "land").marker("attack", 0.12).build();
 
-    public static final AnimatedAction IDLE = new AnimatedAction(1., 0, "idle");
-    public static final AnimatedAction BELLEROPHON = new AnimatedAction(2.04, 0.36, "bellerophon");
-    public static final AnimatedAction SUMMON = new AnimatedAction(2.04, 0, "summon");
-    private static final AnimatedAction[] ANIMS = {MELEE_1, MELEE_1_R, MELEE_2, MELEE_2_R, THROW, RETRIEVE, EYE, JUMP, LAND, IDLE, BELLEROPHON, SUMMON};
+    public static final AnimatedAction IDLE = AnimatedAction.builder(1., "idle").build();
+    public static final AnimatedAction BELLEROPHON = AnimatedAction.builder(2.2, "bellerophon").marker("attack", 0.36).build();
+    public static final AnimatedAction SUMMON = AnimatedAction.builder(2.04, "summon").build();
+    private static final AnimatedAction[] ANIMS = {DUAL_REVERSE_1, DUAL_REVERSE_2, DUAL_REVERSE_3, DUAL_REVERSE_4, THROW, RETRIEVE, EYE, JUMP, LAND, IDLE, BELLEROPHON, SUMMON};
 
     public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityMedusa>>> ATTACKS = List.of(
-            WeightedEntry.wrap(new GoalAttackAction<EntityMedusa>(EntityMedusa.MELEE_1)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .withCondition(meleeCondition(EntityMedusa.MELEE_1))
+            WeightedEntry.wrap(new GoalAttackAction<EntityMedusa>(EntityMedusa.DUAL_REVERSE_1)
+                    .cooldown(e -> e.getRandom().nextInt(15) + 10)
+                    .withCondition(meleeCondition(EntityMedusa.DUAL_REVERSE_1))
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
-            WeightedEntry.wrap(new GoalAttackAction<EntityMedusa>(EntityMedusa.MELEE_1_R)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .withCondition((goal, target, previous) -> meleeCondition(EntityMedusa.MELEE_1).test(goal, target, previous) && !goal.attacker.getOffhandItem().isEmpty())
+            WeightedEntry.wrap(new GoalAttackAction<EntityMedusa>(EntityMedusa.DUAL_REVERSE_2)
+                    .cooldown(e -> e.getRandom().nextInt(15) + 10)
+                    .withCondition((goal, target, previous) -> meleeCondition(EntityMedusa.DUAL_REVERSE_1).test(goal, target, previous) && !goal.attacker.getOffhandItem().isEmpty())
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
-            WeightedEntry.wrap(new GoalAttackAction<EntityMedusa>(EntityMedusa.MELEE_2)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .withCondition(meleeCondition(EntityMedusa.MELEE_1))
+            WeightedEntry.wrap(new GoalAttackAction<EntityMedusa>(EntityMedusa.DUAL_REVERSE_3)
+                    .cooldown(e -> e.getRandom().nextInt(15) + 10)
+                    .withCondition(meleeCondition(EntityMedusa.DUAL_REVERSE_1))
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
-            WeightedEntry.wrap(new GoalAttackAction<EntityMedusa>(EntityMedusa.MELEE_2_R)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .withCondition((goal, target, previous) -> meleeCondition(EntityMedusa.MELEE_1).test(goal, target, previous) && !goal.attacker.getOffhandItem().isEmpty())
+            WeightedEntry.wrap(new GoalAttackAction<EntityMedusa>(EntityMedusa.DUAL_REVERSE_4)
+                    .cooldown(e -> e.getRandom().nextInt(15) + 10)
+                    .withCondition((goal, target, previous) -> meleeCondition(EntityMedusa.DUAL_REVERSE_1).test(goal, target, previous) && !goal.attacker.getOffhandItem().isEmpty())
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
             WeightedEntry.wrap(new GoalAttackAction<EntityMedusa>(EntityMedusa.JUMP)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
                     .withCondition(((goal, target, previous) -> !goal.attacker.isPassenger() && goal.distanceToTargetSq > 9))
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetRunner<>(1, 7))), 13),
+            WeightedEntry.wrap(new GoalAttackAction<EntityMedusa>(EntityMedusa.JUMP)
+                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetRunner<>(1, 7))), 4),
             WeightedEntry.wrap(new GoalAttackAction<EntityMedusa>(EntityMedusa.THROW)
-                    .cooldown(e -> e.getRandom().nextInt(30) + 15)
+                    .cooldown(e -> e.getRandom().nextInt(30) + 20)
                     .withCondition((goal, target, previous) -> goal.attacker.canThrow() && (goal.distanceToTargetSq > 25 || goal.attacker.getRandom().nextFloat() < 0.4))
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetRunner<>(1, 14))), 10),
 //            WeightedEntry.wrap(new GoalAttackAction<EntityMedusa>(EntityMedusa.EYE) // TODO
@@ -182,7 +187,7 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
             if (target != null) {
                 this.lookAtNow(target, 60, 30);
             }
-            if (anim.canAttack()) {
+            if (anim.isAt("attack")) {
                 this.throwDaggerAt(target);
             }
         } else if (anim.is(RETRIEVE)) {
@@ -196,12 +201,12 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
             if (target != null) {
                 this.lookAtNow(target, 60, 30);
             }
-            if (anim.canAttack()) {
+            if (anim.isAt("attack")) {
                 this.eyeCooldown = this.random.nextInt(150) + 250;
             }
         } else if (anim.is(JUMP)) {
             LivingEntity target = this.getTarget();
-            if (anim.isAtTick(0.12)) {
+            if (anim.isAt("jump")) {
                 Vec3 dir = target != null ? target.position().subtract(this.position()) : this.position().add(this.getLookAngle());
                 dir = new Vec3(dir.x(), 0, dir.z()).scale(0.13);
                 if (dir.lengthSqr() > 3.5 * 3.5) {
@@ -209,21 +214,21 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
                 }
                 this.setDeltaMovement(dir.add(0, 0.8, 0));
             }
-            if (anim.isPastTick(0.12)) {
+            if (anim.isPast("jump")) {
                 this.fallDistance = 0;
-                if (anim.isPastTick(anim.getLength())) {
+                if (anim.done(0)) {
                     if (this.isOnGround()) {
                         this.getAnimationHandler().setAnimation(LAND);
                     }
                 }
                 // Stuck check. Or e.g. if in water
-                if (anim.isPastTick(6.0) && (!this.getFeetBlockState().is(Blocks.AIR) || !this.getBlockStateOn().is(Blocks.AIR))) {
+                if (anim.isPast(6.0) && (!this.getFeetBlockState().is(Blocks.AIR) || !this.getBlockStateOn().is(Blocks.AIR))) {
                     this.getAnimationHandler().setAnimation(LAND);
                 }
             }
         } else if (anim.is(BELLEROPHON)) {
             LivingEntity target = this.getTarget();
-            if (target != null && !anim.isPastTick(0.28)) {
+            if (target != null && !anim.isPast(0.28)) {
                 this.lookAtNow(target, 60, 30);
             }
             this.level.getEntities(EntityTypeTest.forClass(LivingEntity.class),
@@ -236,16 +241,14 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
                         e.setDeltaMovement(e.getDeltaMovement().add(dir));
                         e.hurtMarked = true;
                     });
-            if (anim.canAttack()) {
+            if (anim.isAt("attack")) {
                 if (!this.forcedNP)
                     this.useMana(this.props().hogouMana());
                 this.summonPegasus();
                 this.forcedNP = false;
             }
         } else {
-            boolean step = anim.is(MELEE_1, MELEE_1_R) && anim.isAtTick(0.28) ||
-                    anim.is(MELEE_2, MELEE_2_R) && anim.isAtTick(0.24);
-            if (step) {
+            if (anim.isAt("step")) {
                 Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(0.3);
                 this.setDeltaMovement(this.getDeltaMovement().add(dir));
             }
@@ -274,14 +277,14 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
             double width = this.getBbWidth() + 2;
             return new AABB(-width * 0.5, -0.02, -width * 0.3, width * 0.5, this.getBbHeight() * 0.5, width * 0.7);
         }
-        double width = this.getBbWidth() + 0.4;
+        double width = this.getBbWidth() + 0.3;
         double length = 1;
-        if (anim.is(MELEE_1, MELEE_1_R)) {
-            width += 1.3;
-            length += 0.7;
+        if (anim.is(DUAL_REVERSE_1, DUAL_REVERSE_2)) {
+            width += 1;
+            length += 0.6;
         }
-        if (anim.is(MELEE_2, MELEE_2_R)) {
-            width += 0.9;
+        if (anim.is(DUAL_REVERSE_3, DUAL_REVERSE_4)) {
+            width += 0.8;
             length += 0.7;
         }
         return new AABB(-width * 0.5, -0.02, 0, width * 0.5, this.getBbHeight() + 0.02, length);

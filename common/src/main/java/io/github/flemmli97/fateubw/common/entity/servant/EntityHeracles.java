@@ -1,7 +1,6 @@
 package io.github.flemmli97.fateubw.common.entity.servant;
 
 
-import io.github.flemmli97.fateubw.common.entity.servant.ai.HeraclesAttackGoal;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
@@ -23,13 +22,12 @@ public class EntityHeracles extends BaseServant {
 
     protected static final EntityDataAccessor<Integer> DEATH_COUNT = SynchedEntityData.defineId(EntityHeracles.class, EntityDataSerializers.INT);
 
-    private static final AnimatedAction SWING_1 = new AnimatedAction(12, 8, "swing_1");
-    private static final AnimatedAction DEATH = new AnimatedAction(59, 1, "death");
-    private static final AnimatedAction DEATH_FAKE = new AnimatedAction((int) (4.56 * 20), 58, "death_fake");
+    private static final AnimatedAction SWING_1 = AnimatedAction.builder(12, "swing_1").marker("attack", 8).build();
+    private static final AnimatedAction DEATH = AnimatedAction.builder(59, "death").marker("attack", 1).build();
+    private static final AnimatedAction DEATH_FAKE = new AnimatedAction(4.56, "death_fake");
 
     private static final AnimatedAction[] ANIMS = {SWING_1, DEATH, DEATH_FAKE};
 
-    public final HeraclesAttackGoal attackAI = new HeraclesAttackGoal(this);
 
     private boolean voidDeath;
 
@@ -37,8 +35,6 @@ public class EntityHeracles extends BaseServant {
 
     public EntityHeracles(EntityType<? extends BaseServant> entityType, Level world) {
         super(entityType, world);
-        if (world != null && !world.isClientSide)
-            this.goalSelector.addGoal(0, this.attackAI);
     }
 
     @Override
@@ -65,10 +61,6 @@ public class EntityHeracles extends BaseServant {
     @Override
     public void updateAI(EnumServantUpdate behaviour) {
         super.updateAI(behaviour);
-        if (this.commandBehaviour == EnumServantUpdate.STAY)
-            this.goalSelector.removeGoal(this.attackAI);
-        else
-            this.goalSelector.addGoal(0, this.attackAI);
     }
 
     public void setDeathNumber(int death) {
@@ -109,7 +101,7 @@ public class EntityHeracles extends BaseServant {
                     this.getAnimationHandler().setAnimation(DEATH_FAKE);
                 }
                 AnimatedAction anim = this.getAnimationHandler().getAnimation();
-                if (anim == null || !anim.getID().equals(DEATH_FAKE.getID()) || anim.canAttack()) {
+                if (anim == null || !anim.getID().equals(DEATH_FAKE.getID())) {
                     this.setDeathNumber(this.getDeaths() + 1);
                     double heal = 1 - this.getDeaths() * 0.04;
                     this.setHealth((float) (heal * this.getMaxHealth()));

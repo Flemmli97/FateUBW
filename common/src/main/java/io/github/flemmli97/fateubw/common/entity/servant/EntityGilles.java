@@ -32,36 +32,33 @@ import java.util.List;
 
 public class EntityGilles extends BaseServant {
 
-    public static final AnimatedAction CAST_1 = new AnimatedAction(1.6, 0.95, "cast");
-    public static final AnimatedAction CAST_2 = new AnimatedAction(1.3, 0.74, "cast_2");
-    public static final AnimatedAction CAST_3 = AnimatedAction.copyOf(CAST_1, "cast_3");
-    public static final AnimatedAction CAST_4 = AnimatedAction.copyOf(CAST_2, "cast_4");
+    public static final AnimatedAction CAST_1 = AnimatedAction.builder(1.6, "cast").marker("attack", 0.95).build();
+    public static final AnimatedAction CAST_2 = AnimatedAction.builder(1.2, "cast_2").marker("attack", 0.8).build();
 
-    public static final AnimatedAction NP_ATTACK = new AnimatedAction(20, 0, "np");
-    public static final AnimatedAction SUMMON = new AnimatedAction(2., 0, "summon");
-    private static final AnimatedAction[] ANIMS = {CAST_1, CAST_2, CAST_3, CAST_4, NP_ATTACK, SUMMON};
+    public static final AnimatedAction NP_ATTACK = AnimatedAction.builder(20, "np").build();
+    public static final AnimatedAction SUMMON = AnimatedAction.builder(2., "summon").build();
+    private static final AnimatedAction[] ANIMS = {CAST_1, CAST_2, NP_ATTACK, SUMMON};
 
     public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityGilles>>> ATTACKS = List.of(
             WeightedEntry.wrap(new GoalAttackAction<EntityGilles>(EntityGilles.CAST_1)
                     .cooldown(e -> e.getRandom().nextInt(70) + 30)
                     .withCondition(((goal, target, previous) -> goal.attacker.canSummonMore()))
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 10, 1.1))), 11),
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 10, 1.1))), 13),
             WeightedEntry.wrap(new GoalAttackAction<EntityGilles>(EntityGilles.CAST_1)
                     .cooldown(e -> e.getRandom().nextInt(70) + 30)
                     .withCondition(((goal, target, previous) -> goal.attacker.canSummonMore()))
-                    .prepare(() -> new WrappedRunner<>(new DoNothingRunner<>(true))), 8),
+                    .prepare(() -> new WrappedRunner<>(new DoNothingRunner<>(true))), 10),
             WeightedEntry.wrap(new GoalAttackAction<EntityGilles>(EntityGilles.CAST_2)
                     .cooldown(e -> e.getRandom().nextInt(70) + 30)
-                    .withCondition(((goal, target, previous) -> goal.attacker.canSummonMore()))
                     .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 10, 1.1))), 11),
             WeightedEntry.wrap(new GoalAttackAction<EntityGilles>(EntityGilles.CAST_2)
                     .cooldown(e -> e.getRandom().nextInt(70) + 30)
-                    .withCondition(((goal, target, previous) -> goal.attacker.canSummonMore()))
                     .prepare(() -> new WrappedRunner<>(new DoNothingRunner<>(true))), 8),
-            WeightedEntry.wrap(new GoalAttackAction<EntityGilles>(EntityGilles.CAST_3)
+            WeightedEntry.wrap(new GoalAttackAction<EntityGilles>(EntityGilles.CAST_1)
                     .cooldown(e -> e.getRandom().nextInt(70) + 30)
+                    .withCondition(((goal, target, previous) -> goal.attacker.canSummonMore()))
                     .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 10, 1.1))), 9),
-            WeightedEntry.wrap(new GoalAttackAction<EntityGilles>(EntityGilles.CAST_4)
+            WeightedEntry.wrap(new GoalAttackAction<EntityGilles>(EntityGilles.CAST_2)
                     .cooldown(e -> e.getRandom().nextInt(70) + 30)
                     .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 10, 1.1))), 9)
     );
@@ -101,20 +98,21 @@ public class EntityGilles extends BaseServant {
 
     @Override
     public void handleAttack(AnimatedAction anim) {
-        if (anim.is(CAST_1, CAST_2)) {
+        if (anim.is(CAST_1)) {
             LivingEntity target = this.getTarget();
             if (target != null) {
                 this.getLookControl().setLookAt(target, 30.0F, 30.0F);
             }
-            if (anim.canAttack()) {
+            if (anim.isAt("attack")) {
                 this.attackWithRangedAttack();
             }
-        } else if (anim.is(CAST_3, CAST_4)) {
+        }
+        if (anim.is(CAST_2)) {
             LivingEntity target = this.getTarget();
             if (target != null) {
                 this.getLookControl().setLookAt(target, 30.0F, 30.0F);
             }
-            if (anim.canAttack()) {
+            if (anim.isAt("attack")) {
                 this.shoot();
             }
         }

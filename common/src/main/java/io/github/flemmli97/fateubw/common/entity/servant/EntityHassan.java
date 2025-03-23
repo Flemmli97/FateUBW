@@ -18,11 +18,13 @@ import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveAwayRunn
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTargetAttackRunner;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTargetRunner;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.WrappedRunner;
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.util.random.WeightedEntry;
@@ -31,14 +33,18 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -48,39 +54,43 @@ import java.util.UUID;
 
 public class EntityHassan extends BaseServant {
 
-    public static final AnimatedAction MELEE_1 = new AnimatedAction(0.48, 0.36, "slash_1");
-    public static final AnimatedAction MELEE_1_2 = new AnimatedAction(0.48, 0.36, "slash_1_2");
-    public static final AnimatedAction MELEE_2 = new AnimatedAction(0.48, 0.36, "slash_2");
-    public static final AnimatedAction MELEE_2_2 = new AnimatedAction(0.48, 0.36, "slash_2_2");
-    public static final AnimatedAction STAB = new AnimatedAction(0.68, 0.36, "stab");
-    public static final AnimatedAction STAB_2 = new AnimatedAction(0.92, 0.44, "top_stab");
-    public static final AnimatedAction THROW = new AnimatedAction(0.96, 0.32, "dagger_throw");
+    public static final UUID BACKSTAB_MODIFIER = UUID.fromString("12c5b245-36d1-4506-bd4a-ee6180b1f0c1");
 
-    private static final AnimatedAction DUPE = new AnimatedAction(1.4, 0.84, "dupe");
-    public static final AnimatedAction SUMMON = new AnimatedAction(2., 0, "summon");
-    private static final AnimatedAction[] ANIMS = {MELEE_1, MELEE_1_2, MELEE_2, MELEE_2_2, STAB, STAB_2, THROW, DUPE, SUMMON};
+    public static final AnimatedAction DAGGER_1 = AnimatedAction.builder(0.58, "dagger_1")
+            .marker("attack", 0.44).marker("step", 0.4).build();
+    public static final AnimatedAction DAGGER_2 = AnimatedAction.builder(0.54, "dagger_2")
+            .marker("attack", 0.4).marker("step", 0.4).build();
+    public static final AnimatedAction DAGGER_3 = AnimatedAction.builder(0.58, "dagger_3")
+            .marker("attack", 0.48).marker("step", 0.44).build();
+    public static final AnimatedAction DAGGER_4 = AnimatedAction.builder(0.58, "dagger_4")
+            .marker("attack", 0.32).marker("step", 0.32).build();
+    public static final AnimatedAction TOP_STAB = AnimatedAction.builder(0.7, "top_stab").marker("attack", 0.36).build();
+    public static final AnimatedAction THROW = AnimatedAction.builder(1.16, "dagger_throw")
+            .marker("attack_1", 0.28).marker("attack_2", 0.84).build();
+
+    public static final AnimatedAction DUPE = AnimatedAction.builder(1.4, "dupe").marker("attack", 0.84).build();
+    public static final AnimatedAction SUMMON = AnimatedAction.builder(2., "summon").build();
+    private static final AnimatedAction[] ANIMS = {DAGGER_1, DAGGER_2, DAGGER_3, DAGGER_4, TOP_STAB, THROW, DUPE, SUMMON};
 
     private static final byte SMOKE = 64;
 
     public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityHassan>>> ATTACKS = List.of(
-            WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.MELEE_1)
+            WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.DAGGER_1)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .chain(GoalAttackAction.<EntityHassan>chainBuilder(EntityHassan.MELEE_1_2)
-                            .chain(List.of(new GoalAttackAction.ChainedAction<>(EntityHassan.MELEE_1_2, e -> 0),
-                                    new GoalAttackAction.ChainedAction<>(EntityHassan.MELEE_2_2, e -> 0)))
-                            .withPredicate(e -> e.getRandom().nextFloat() < 0.7))
+                    .chain(GoalAttackAction.<EntityHassan>chainBuilder(EntityHassan.DAGGER_2, 2, 0.2f, 1)
+                            .or(EntityHassan.DAGGER_3, 2, 0.2f, 1)
+                            .or(EntityHassan.DAGGER_4, 2, 0.16f, 1)
+                            .withChance(0.6f))
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 11),
-            WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.MELEE_2)
+            WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.DAGGER_3)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .chain(GoalAttackAction.<EntityHassan>chainBuilder(EntityHassan.MELEE_2_2)
-                            .chain(List.of(new GoalAttackAction.ChainedAction<>(EntityHassan.MELEE_2_2, e -> 0),
-                                    new GoalAttackAction.ChainedAction<>(EntityHassan.MELEE_1_2, e -> 0)))
-                            .withPredicate(e -> e.getRandom().nextFloat() < 0.7))
+                    .chain(GoalAttackAction.<EntityHassan>chainBuilder(EntityHassan.DAGGER_1, 2, 0.2f, 1)
+                            .chain(EntityHassan.DAGGER_2, 2, 0.2f)
+                            .or(EntityHassan.DAGGER_1, 2, 0.2f, 1)
+                            .chain(EntityHassan.DAGGER_4, 2, 0.16f)
+                            .withChance(0.6f))
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 11),
-            WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.STAB)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
-            WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.STAB_2)
+            WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.TOP_STAB)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
             WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.THROW)
@@ -99,7 +109,7 @@ public class EntityHassan extends BaseServant {
 
     public final AnimatedAttackGoal<EntityHassan> attack = new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS);
 
-    private final AnimationHandler<EntityHassan> animationHandler = new AnimationHandler<>(this, ANIMS).setAnimationChangeCons(anim -> {
+    private final AnimationHandler<EntityHassan> animationHandler = new AnimationHandler<>(this, ANIMS).withChangeListener(anim -> {
         if (!SUMMON.is(anim)) {
             if (!this.offHandCache.isEmpty()) {
                 this.setItemInHand(InteractionHand.OFF_HAND, this.offHandCache);
@@ -110,6 +120,7 @@ public class EntityHassan extends BaseServant {
                 this.mainHandCache = ItemStack.EMPTY;
             }
         }
+        return false;
     });
 
     private ItemStack mainHandCache = ItemStack.EMPTY;
@@ -123,6 +134,13 @@ public class EntityHassan extends BaseServant {
         super(entityType, level);
         if (!level.isClientSide)
             this.goalSelector.addGoal(0, this.attack);
+    }
+
+    public static boolean behind(Entity source, Entity target) {
+        Vec3 vec3 = target.getViewVector(1.0f);
+        Vec3 vec31 = source.position().vectorTo(target.position()).normalize();
+        vec31 = new Vec3(vec31.x, 0.0, vec31.z);
+        return vec31.dot(vec3) > 0.0;
     }
 
     @Override
@@ -152,50 +170,73 @@ public class EntityHassan extends BaseServant {
     @Override
     public void handleAttack(AnimatedAction anim) {
         if (anim.is(DUPE)) {
-            if (anim.isAtTick(0.72)) {
+            if (anim.isAt(0.72)) {
                 this.level.broadcastEntityEvent(this, SMOKE);
             }
-            if (anim.canAttack()) {
+            if (anim.isAt("attack")) {
                 if (!this.forcedNP)
                     this.useMana(this.props().hogouMana());
                 this.summonClones();
                 this.forcedNP = false;
             }
         } else if (anim.is(THROW)) {
-            if (anim.canAttack()) {
+            if (anim.isAt("attack_1")) {
                 this.throwItem(true);
-            } else if (anim.isAtTick(0.84)) {
+            } else if (anim.isAt("attack_2")) {
                 this.throwItem(false);
             }
         } else {
+            if (anim.isAt("step")) {
+                Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(0.25);
+                this.setDeltaMovement(this.getDeltaMovement().add(dir));
+            }
             super.handleAttack(anim);
         }
     }
 
     @Override
     public AABB attackBB(AnimatedAction anim) {
-        double width = this.getBbWidth() + 0.4;
+        double width = this.getBbWidth() + 0.3;
         double length = 1;
-        if (anim.is(MELEE_1, MELEE_2_2)) {
-            width += 1.3;
-            length += 0.7;
+        if (anim.is(DAGGER_1)) {
+            width += 0.5;
+            length += 0.4;
         }
-        if (anim.is(MELEE_2, MELEE_1_2)) {
-            width += 1.1;
-            length += 0.6;
+        if (anim.is(DAGGER_2, DAGGER_3)) {
+            width += 0.7;
+            length += 0.4;
         }
-        if (anim.is(STAB)) {
-            length += 1.1;
+        if (anim.is(DAGGER_4)) {
+            width += 0.3;
+            length += 0.8;
         }
-        if (anim.is(STAB_2)) {
+        if (anim.is(TOP_STAB)) {
             width += 0.2;
             length += 0.8;
         }
         return new AABB(-width * 0.5, -0.02, 0, width * 0.5, this.getBbHeight() + 0.02, length);
     }
 
-    public void removeCopy(HassanClone copy) {
-        this.copies.remove(copy.getUUID());
+    @Override
+    public boolean doHurtTarget(Entity entity) {
+        boolean behind = EntityHassan.behind(this, entity);
+        if (behind) {
+            this.getAttribute(Attributes.ATTACK_DAMAGE)
+                    .addTransientModifier(new AttributeModifier(EntityHassan.BACKSTAB_MODIFIER, "fate.backstab.mod", 0.5,
+                            AttributeModifier.Operation.MULTIPLY_TOTAL));
+        }
+        boolean hurt = super.doHurtTarget(entity);
+        if (behind) {
+            this.getAttribute(Attributes.ATTACK_DAMAGE).removeModifier(EntityHassan.BACKSTAB_MODIFIER);
+            if (hurt) {
+                this.level.playSound(null, this, SoundEvents.PLAYER_ATTACK_CRIT, this.getSoundSource(), 0.7f, 0.9f);
+                if (this.level instanceof ServerLevel serverLevel) {
+                    for (int i = 0; i < 15; i++)
+                        serverLevel.sendParticles(DustParticleOptions.REDSTONE, entity.getRandomX(1.4), entity.getRandomY(), entity.getRandomZ(1.4), 0, 0, 0, 0, 0);
+                }
+            }
+        }
+        return hurt;
     }
 
     public boolean addCopy(HassanClone copy) {

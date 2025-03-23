@@ -7,9 +7,9 @@ import io.github.flemmli97.fateubw.client.model.ModelEA;
 import io.github.flemmli97.fateubw.client.model.ModelGordiusWheel;
 import io.github.flemmli97.fateubw.client.model.ModelHassanClone;
 import io.github.flemmli97.fateubw.client.model.ModelHeracles;
+import io.github.flemmli97.fateubw.client.model.ModelMedea;
 import io.github.flemmli97.fateubw.client.model.ModelPegasus;
 import io.github.flemmli97.fateubw.client.model.ModelServant;
-import io.github.flemmli97.fateubw.client.model.ModelServantO;
 import io.github.flemmli97.fateubw.client.model.ModelStarfishDemon;
 import io.github.flemmli97.fateubw.client.particles.SimpleTrailParticle;
 import io.github.flemmli97.fateubw.client.render.RenderEmpty;
@@ -93,15 +93,15 @@ public class ClientRegister {
         registerServant(consumer, ModEntities.DIARMUID);
         registerServant(consumer, ModEntities.EMIYA);
         registerServant(consumer, ModEntities.GILGAMESH);
-        registerServantOld(consumer, ModEntities.MEDEA);
-        //consumer.register(ModEntities.MEDEA.get(), getServantRenderer(ModelMedea::new, ModelMedea.LAYER_LOCATION, servantTexture(ModEntities.MEDEA), 0.5f));
+        registerServant(consumer, ModEntities.MEDEA);
+        consumer.register(ModEntities.MEDEA.get(), getServantRenderer(ModelMedea::new, ModelMedea.LAYER_LOCATION, servantTexture(ModEntities.MEDEA), 0.5f));
         registerServant(consumer, ModEntities.GILLES);
         consumer.register(ModEntities.HERACLES.get(), getServantRenderer(ModelHeracles::new, ModelHeracles.LAYER_LOCATION, servantTexture(ModEntities.HERACLES), 1f));
         registerServant(consumer, ModEntities.LANCELOT);
         registerServant(consumer, ModEntities.ISKANDER);
         registerServant(consumer, ModEntities.MEDUSA, true);
         registerServant(consumer, ModEntities.HASSAN);
-        registerServantOld(consumer, ModEntities.SASAKI);
+        registerServant(consumer, ModEntities.SASAKI);
 
         consumer.register(ModEntities.EXCALIBUR.get(), RenderExcalibur::new);
         consumer.register(ModEntities.GAEBOLG.get(), RenderGaeBolg::new);
@@ -128,10 +128,6 @@ public class ClientRegister {
         return manager -> new ServantRenderer<>(manager, model.apply(manager.bakeLayer(layerLocation)), texture, shadow);
     }
 
-    private static <T extends BaseServant> void registerServantOld(EntityRendererRegister consumer, RegistryEntrySupplier<EntityType<T>> reg) {
-        consumer.register(reg.get(), getServantRenderer(root -> new ModelServantO<>(root, reg.getID().getPath()), ModelServantO.LAYER_LOCATION, servantTexture(reg), 0.5f));
-    }
-
     private static <T extends BaseServant> void registerServant(EntityRendererRegister consumer, RegistryEntrySupplier<EntityType<T>> reg) {
         registerServant(consumer, reg, false);
     }
@@ -145,11 +141,10 @@ public class ClientRegister {
     }
 
     public static void layerRegister(BiConsumer<ModelLayerLocation, Supplier<LayerDefinition>> cons) {
-        cons.accept(ModelServantO.LAYER_LOCATION, () -> ModelServantO.createBodyLayer(new CubeDeformation(0)));
         cons.accept(ModelServant.LAYER_LOCATION, () -> ModelServant.createBodyLayer(new CubeDeformation(0), false));
         cons.accept(ModelServant.LAYER_LOCATION_SLIM, () -> ModelServant.createBodyLayer(new CubeDeformation(0), true));
         cons.accept(ModelHeracles.LAYER_LOCATION, ModelHeracles::createBodyLayer);
-        //cons.accept(ModelMedea.LAYER_LOCATION, ModelMedea::createBodyLayer);
+        cons.accept(ModelMedea.LAYER_LOCATION, ModelMedea::createBodyLayer);
         cons.accept(ModelCaladBolg.LAYER_LOCATION, ModelCaladBolg::createBodyLayer);
         cons.accept(ModelGordiusWheel.LAYER_LOCATION, ModelGordiusWheel::createBodyLayer);
         cons.accept(ModelHassanClone.LAYER_LOCATION, ModelHassanClone::createBodyLayer);

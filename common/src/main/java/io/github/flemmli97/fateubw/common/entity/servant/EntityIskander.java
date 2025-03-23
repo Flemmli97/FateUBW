@@ -40,54 +40,50 @@ import java.util.List;
 
 public class EntityIskander extends BaseServant {
 
-    public static final AnimatedAction MELEE_1 = new AnimatedAction(0.56, 0.4, "horizontal_slash");
-    public static final AnimatedAction MELEE_2 = new AnimatedAction(0.44, 0.36, "vertical_slash");
-    public static final AnimatedAction MELEE_3 = new AnimatedAction(0.48, 0.4, "slash_1");
-    public static final AnimatedAction MELEE_4 = new AnimatedAction(0.48, 0.4, "slash_2");
+    public static final AnimatedAction ONE_HAND_1 = AnimatedAction.builder(0.62, "one_hand_1")
+            .marker("attack", 0.48).marker("step", 0.44).build();
+    public static final AnimatedAction ONE_HAND_2 = AnimatedAction.builder(0.62, "one_hand_2")
+            .marker("attack", 0.4).marker("step", 0.44).build();
+    public static final AnimatedAction ONE_HAND_3 = AnimatedAction.builder(0.58, "one_hand_3")
+            .marker("attack", 0.44).marker("step", 0.44).build();
+    public static final AnimatedAction ONE_HAND_4 = AnimatedAction.builder(0.54, "one_hand_4")
+            .marker("attack", 0.44).marker("step", 0.4).build();
+    public static final AnimatedAction ONE_HAND_5 = AnimatedAction.builder(0.58, "one_hand_5")
+            .marker("attack", 0.4).marker("step", 0.4).build();
+    public static final AnimatedAction ONE_HAND_6 = AnimatedAction.builder(0.58, "one_hand_6")
+            .marker("attack", 0.48).marker("step", 0.44).build();
+    public static final AnimatedAction ONE_HAND_7 = AnimatedAction.builder(0.58, "one_hand_7")
+            .marker("attack", 0.48).marker("step", 0.4).build();
 
-    public static final AnimatedAction MOUNT_STAND_MELEE_1 = new AnimatedAction(0.48, 0.4, "slash_mounted_standing_1");
-    public static final AnimatedAction MOUNT_STAND_MELEE_2 = new AnimatedAction(0.48, 0.4, "slash_mounted_standing_2");
-    public static final AnimatedAction MOUNT_MELEE_1 = new AnimatedAction(0.48, 0.4, "slash_mounted_1");
-    public static final AnimatedAction MOUNT_MELEE_2 = new AnimatedAction(0.48, 0.4, "slash_mounted_2");
-
-    private static final AnimatedAction CHARIOT = new AnimatedAction(1.48, 0.68, "chariot_summon");
+    private static final AnimatedAction CHARIOT = AnimatedAction.builder(1.64, "chariot_summon").marker("attack", 0.68).build();
     private static final AnimatedAction SUMMON_HORSE = AnimatedAction.copyOf(CHARIOT, "horse");
-    public static final AnimatedAction SUMMON = new AnimatedAction(2., 0, "summon");
-    private static final AnimatedAction[] ANIMS = {MELEE_1, MELEE_2, MELEE_3, MELEE_4, MOUNT_STAND_MELEE_1, MOUNT_STAND_MELEE_2, MOUNT_MELEE_1, MOUNT_MELEE_2, CHARIOT, SUMMON_HORSE, SUMMON};
+    public static final AnimatedAction SUMMON = AnimatedAction.builder(2., "summon").build();
+    private static final AnimatedAction[] ANIMS = {ONE_HAND_1, ONE_HAND_2, ONE_HAND_3, ONE_HAND_4, ONE_HAND_5, ONE_HAND_6, ONE_HAND_7, CHARIOT, SUMMON_HORSE, SUMMON};
 
     public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityIskander>>> ATTACKS = List.of(
-            WeightedEntry.wrap(new GoalAttackAction<EntityIskander>(EntityIskander.MELEE_1)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .withCondition((goal, target, previous) -> !goal.attacker.isPassenger())
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
-            WeightedEntry.wrap(new GoalAttackAction<EntityIskander>(EntityIskander.MELEE_2)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .withCondition((goal, target, previous) -> !goal.attacker.isPassenger())
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
-            WeightedEntry.wrap(new GoalAttackAction<EntityIskander>(EntityIskander.MELEE_3)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .withCondition((goal, target, previous) -> !goal.attacker.isPassenger())
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
-            WeightedEntry.wrap(new GoalAttackAction<EntityIskander>(EntityIskander.MELEE_4)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .withCondition((goal, target, previous) -> !goal.attacker.isPassenger())
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
-            WeightedEntry.wrap(new GoalAttackAction<EntityIskander>(EntityIskander.MOUNT_STAND_MELEE_1)
+            WeightedEntry.wrap(new GoalAttackAction<EntityIskander>(EntityIskander.ONE_HAND_1)
                     .cooldown(e -> e.getRandom().nextInt(20) + 10)
-                    .withCondition((goal, target, previous) -> goal.attacker.useStandingAnim())
-                    .prepare(() -> new WrappedRunner<>(e -> e.getRandom().nextInt(10) + 10, new MoveToTargetAttackRunner<>(1))), 10),
-            WeightedEntry.wrap(new GoalAttackAction<EntityIskander>(EntityIskander.MOUNT_STAND_MELEE_2)
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
+            WeightedEntry.wrap(new GoalAttackAction<EntityIskander>(EntityIskander.ONE_HAND_2)
                     .cooldown(e -> e.getRandom().nextInt(20) + 10)
-                    .withCondition((goal, target, previous) -> goal.attacker.useStandingAnim())
-                    .prepare(() -> new WrappedRunner<>(e -> e.getRandom().nextInt(10) + 10, new MoveToTargetAttackRunner<>(1))), 10),
-            WeightedEntry.wrap(new GoalAttackAction<EntityIskander>(EntityIskander.MOUNT_MELEE_1)
-                    .cooldown(e -> e.getRandom().nextInt(25) + 15)
-                    .withCondition((goal, target, previous) -> goal.attacker.useSittingAnim())
-                    .prepare(() -> new WrappedRunner<>(e -> e.getRandom().nextInt(10) + 10, new MoveToTargetAttackRunner<>(1))), 10),
-            WeightedEntry.wrap(new GoalAttackAction<EntityIskander>(EntityIskander.MOUNT_MELEE_2)
-                    .cooldown(e -> e.getRandom().nextInt(25) + 15)
-                    .withCondition((goal, target, previous) -> goal.attacker.useSittingAnim())
-                    .prepare(() -> new WrappedRunner<>(e -> e.getRandom().nextInt(10) + 10, new MoveToTargetAttackRunner<>(1))), 10),
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
+            WeightedEntry.wrap(new GoalAttackAction<EntityIskander>(EntityIskander.ONE_HAND_3)
+                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
+            WeightedEntry.wrap(new GoalAttackAction<EntityIskander>(EntityIskander.ONE_HAND_4)
+                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
+            WeightedEntry.wrap(new GoalAttackAction<EntityIskander>(EntityIskander.ONE_HAND_5)
+                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
+                    .withCondition((goal, target, previous) -> !goal.attacker.isPassenger())
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
+            WeightedEntry.wrap(new GoalAttackAction<EntityIskander>(EntityIskander.ONE_HAND_6)
+                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
+                    .withCondition((goal, target, previous) -> !goal.attacker.isPassenger())
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
+            WeightedEntry.wrap(new GoalAttackAction<EntityIskander>(EntityIskander.ONE_HAND_7)
+                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
             WeightedEntry.wrap(new GoalAttackAction<EntityIskander>(EntityIskander.SUMMON_HORSE)
                     .cooldown(e -> e.getRandom().nextInt(20) + 10)
                     .withCondition((goal, target, prev) -> !goal.attacker.isPassenger())
@@ -158,7 +154,7 @@ public class EntityIskander extends BaseServant {
     public void handleAttack(AnimatedAction anim) {
         if (anim.is(CHARIOT, SUMMON_HORSE)) {
             LivingEntity target = this.getTarget();
-            if (target != null && !anim.isPastTick(0.28)) {
+            if (target != null && !anim.isPast(0.28)) {
                 this.lookAtNow(target, 60, 30);
             }
             this.level.getEntities(EntityTypeTest.forClass(LivingEntity.class),
@@ -171,7 +167,7 @@ public class EntityIskander extends BaseServant {
                         e.setDeltaMovement(e.getDeltaMovement().add(dir));
                         e.hurtMarked = true;
                     });
-            if (anim.canAttack()) {
+            if (anim.isAt("attack")) {
                 if (anim.is(SUMMON_HORSE)) {
                     this.summonHorse();
                 } else {
@@ -182,11 +178,8 @@ public class EntityIskander extends BaseServant {
                 }
             }
         } else {
-            boolean step = anim.is(MELEE_1) && anim.isAtTick(0.28) ||
-                    anim.is(MELEE_3) && anim.isAtTick(0.24) ||
-                    anim.is(MELEE_4) && anim.isAtTick(0.24);
-            if (step) {
-                Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(anim.is(MELEE_4) ? 0.25 : 0.3);
+            if (anim.isAt("step")) {
+                Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(anim.is(ONE_HAND_4) ? 0.25 : 0.3);
                 this.setDeltaMovement(this.getDeltaMovement().add(dir));
             }
             super.handleAttack(anim);
@@ -210,18 +203,23 @@ public class EntityIskander extends BaseServant {
 
     @Override
     public AABB attackBB(AnimatedAction anim) {
-        double width = this.getBbWidth() + 0.4;
+        double width = this.getBbWidth() + 0.3;
         double length = 1;
-        if (anim.is(MELEE_1)) {
+        if (anim.is(ONE_HAND_1)) {
+            width += 0.7;
+            length += 0.7;
+        }
+        if (anim.is(ONE_HAND_2, ONE_HAND_3, ONE_HAND_4)) {
             width += 1.3;
+            length += 0.6;
+        }
+        if (anim.is(ONE_HAND_5, ONE_HAND_6)) {
+            width += 1.5;
             length += 0.7;
         }
-        if (anim.is(MELEE_2)) {
-            length += 0.7;
-        }
-        if (anim.is(MELEE_3, MELEE_4)) {
-            width += 1.1;
-            length += 0.7;
+        if (anim.is(ONE_HAND_7)) {
+            width += 0.6;
+            length += 0.9;
         }
         return new AABB(-width * 0.5, -0.02, 0, width * 0.5, this.getBbHeight() + 0.02, length);
     }

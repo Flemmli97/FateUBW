@@ -26,7 +26,6 @@ import io.github.flemmli97.tenshilib.api.entity.IAnimated;
 import io.github.flemmli97.tenshilib.common.entity.ai.MoveControllerPlus;
 import io.github.flemmli97.tenshilib.common.item.SpawnEgg;
 import io.github.flemmli97.tenshilib.common.particle.ColoredParticleData;
-import io.github.flemmli97.tenshilib.common.utils.NBTUtils;
 import io.github.flemmli97.tenshilib.common.utils.OrientedBoundingBox;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
@@ -262,7 +261,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     public float getSummonProgress(float partialTicks) {
         AnimatedAction summon = this.getSummonAnimation();
         if (summon != null && this.getAnimationHandler().isCurrent(summon)) {
-            return Math.min(1, (this.getAnimationHandler().getAnimation().getTickRaw() + partialTicks) / summon.getLength());
+            return this.getAnimationHandler().getAnimation().progress(partialTicks);
         }
         return -1;
     }
@@ -378,7 +377,10 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         this.canUseNP = tag.getBoolean("CanUseNP");
         this.deathTime = tag.getInt("Death");
         this.died = tag.getBoolean("IsDead");
-        this.updateAI(NBTUtils.get(EnumServantUpdate.class, tag, "Command", EnumServantUpdate.NORMAL));
+        try {
+            this.updateAI(EnumServantUpdate.valueOf(tag.getString("Command")));
+        } catch (IllegalArgumentException ignored) {
+        }
         this.servantMana = tag.getInt("Mana");
         this.critHealth = tag.getBoolean("HealthMessage");
         this.entityData.set(SHOW_SERVANT, tag.getBoolean("Revealed"));
@@ -567,7 +569,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
                 }
             }
             AnimatedAction anim = this.getAnimationHandler().getAnimation();
-            if (this.deathTime >= this.maxDeathTick() && (anim == null || anim.getTick() >= anim.getLength())) {
+            if (this.deathTime >= this.maxDeathTick() && (anim == null || anim.done(0))) {
                 this.remove(RemovalReason.KILLED);
             }
         }
@@ -617,11 +619,11 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         this.getNavigation().stop();
         if (this.getTarget() != null) {
             this.lookAtNow(this.getTarget(), 60, 90);
-            if (anim.getTick() == 1) {
+            if (anim.isAt(0)) {
                 this.targetPosition = this.getTarget().position();
             }
         }
-        if (anim.canAttack()) {
+        if (anim.isAt("attack")) {
             this.mobAttack(anim, this.getTarget(), this::doHurtTarget);
             this.targetPosition = null;
         }

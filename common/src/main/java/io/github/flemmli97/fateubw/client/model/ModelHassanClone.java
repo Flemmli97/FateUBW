@@ -2,6 +2,7 @@ package io.github.flemmli97.fateubw.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.entity.minions.HassanClone;
 import io.github.flemmli97.tenshilib.api.entity.IAnimated;
@@ -33,6 +34,7 @@ public class ModelHassanClone<T extends HassanClone & IAnimated> extends BaseSer
 
     protected final ModelPartHandler model;
     protected final BlockBenchAnimations anim;
+    protected final BlockBenchAnimations servantAnim;
 
     public ModelPartHandler.ModelPartExtended head;
     public ModelPartHandler.ModelPartExtended body;
@@ -51,6 +53,11 @@ public class ModelHassanClone<T extends HassanClone & IAnimated> extends BaseSer
     public ModelPartHandler.ModelPartExtended leftLeg;
     public ModelPartHandler.ModelPartExtended leftLegDown;
 
+    // All parts are normally children of the body. Sometimes animating that is not ideal though
+    public ModelPartHandler.ModelPartExtended ridingLegs;
+    public ModelPartHandler.ModelPartExtended leftItemDetached;
+    public ModelPartHandler.ModelPartExtended rightItemDetached;
+
     protected final ModelPart dummyHead = new ModelPart(new ArrayList<>(), new HashMap<>());
 
     public int heldItemMain, heldItemOff;
@@ -59,6 +66,7 @@ public class ModelHassanClone<T extends HassanClone & IAnimated> extends BaseSer
         super(RenderType::entityTranslucent);
         this.model = new ModelPartHandler(root);
         this.anim = AnimationManager.getInstance().getAnimation(new ResourceLocation(Fate.MODID, "hassan"));
+        this.servantAnim = AnimationManager.getInstance().getAnimation(new ResourceLocation(Fate.MODID, "humanoid_servant"));
         this.head = this.model.getPart("Head");
         this.body = this.model.getPart("Body");
         this.rightArm = this.model.getPart("RightArm");
@@ -72,6 +80,13 @@ public class ModelHassanClone<T extends HassanClone & IAnimated> extends BaseSer
 
         this.leftItem = this.model.getPart("LeftItem");
         this.rightItem = this.model.getPart("RightItem");
+
+        this.ridingLegs = this.model.getPart("RidingLegs");
+        this.ridingLegs.updateDefaultPose(this.ridingLegs.getDefaultPose().withScale(0, 0, 0));
+        this.leftItemDetached = this.model.getPart("LeftItemDetached");
+        this.leftItemDetached.updateDefaultPose(this.leftItemDetached.getDefaultPose().withScale(0, 0, 0));
+        this.rightItemDetached = this.model.getPart("RightItemDetached");
+        this.rightItemDetached.updateDefaultPose(this.rightItemDetached.getDefaultPose().withScale(0, 0, 0));
     }
 
     public static LayerDefinition createBodyLayer() {
@@ -113,6 +128,24 @@ public class ModelHassanClone<T extends HassanClone & IAnimated> extends BaseSer
         PartDefinition RightLegDown = RightLeg.addOrReplaceChild("RightLegDown", CubeListBuilder.create().texOffs(48, 56).addBox(-2.0F, 0.0F, 0.0F, 4.0F, 6.0F, 4.0F, deform)
                 .texOffs(0, 58).addBox(-2.0F, 0.0F, 0.0F, 4.0F, 6.0F, 4.0F, deform.extend(0.5f)), PartPose.offset(0.0F, 6.0F, -2.0F));
 
+        PartDefinition RidingLegs = partdefinition.addOrReplaceChild("RidingLegs", CubeListBuilder.create(), PartPose.offset(2.0F, 12.0F, 0.0F));
+
+        PartDefinition LeftLeg2 = RidingLegs.addOrReplaceChild("LeftLeg2", CubeListBuilder.create().texOffs(16, 52).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F, deform)
+                .texOffs(56, 0).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F, deform.extend(0.5f)), PartPose.offset(0.0F, 0.0F, 0.0F));
+
+        PartDefinition LeftLegDown2 = LeftLeg2.addOrReplaceChild("LeftLegDown2", CubeListBuilder.create().texOffs(56, 26).addBox(-2.0F, 0.0F, 0.0F, 4.0F, 6.0F, 4.0F, deform)
+                .texOffs(32, 56).addBox(-2.0F, 0.0F, 0.0F, 4.0F, 6.0F, 4.0F, deform.extend(0.5f)), PartPose.offset(0.0F, 6.0F, -2.0F));
+
+        PartDefinition RightLeg2 = RidingLegs.addOrReplaceChild("RightLeg2", CubeListBuilder.create().texOffs(56, 36).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F, deform)
+                .texOffs(56, 46).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F, deform.extend(0.5f)), PartPose.offset(-4.0F, 0.0F, 0.0F));
+
+        PartDefinition RightLegDown2 = RightLeg2.addOrReplaceChild("RightLegDown2", CubeListBuilder.create().texOffs(48, 56).addBox(-2.0F, 0.0F, 0.0F, 4.0F, 6.0F, 4.0F, deform)
+                .texOffs(0, 58).addBox(-2.0F, 0.0F, 0.0F, 4.0F, 6.0F, 4.0F, deform.extend(0.5f)), PartPose.offset(0.0F, 6.0F, -2.0F));
+
+        PartDefinition LeftItemDetached = partdefinition.addOrReplaceChild("LeftItemDetached", CubeListBuilder.create(), PartPose.offset(6.0F, 9.0F, 0.0F));
+
+        PartDefinition RightItemDetached = partdefinition.addOrReplaceChild("RightItemDetached", CubeListBuilder.create(), PartPose.offset(-6.0F, 9.0F, -2.0F));
+
         return LayerDefinition.create(meshdefinition, 128, 128);
     }
 
@@ -143,7 +176,7 @@ public class ModelHassanClone<T extends HassanClone & IAnimated> extends BaseSer
 
     @Override
     public void postTransform(boolean leftSide, PoseStack stack) {
-        stack.translate(0, 0.125, -3 / 16d);
+        stack.translate(0, 2 / 16d, -3 / 16d);
     }
 
     protected void rotate(PoseStack stack, ModelPartHandler.ModelPartExtended... models) {
@@ -153,23 +186,27 @@ public class ModelHassanClone<T extends HassanClone & IAnimated> extends BaseSer
 
     @Override
     public void setupAnim(T servant, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        this.preAnimSetup(servant, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         float partialTicks = Minecraft.getInstance().getFrameTime();
-        this.anim.doAnimation(this, servant.getAnimationHandler(), partialTicks, 5, false);
-        if (this.riding) {
-            this.rightLeg.resetAll();
-            this.leftLeg.resetAll();
-            this.rightLeg.xRot = -((float) Math.PI * 2F / 5F);
-            this.leftLeg.xRot = -((float) Math.PI * 2F / 5F);
-            this.rightLeg.yRot = ((float) Math.PI / 10F);
-            this.leftLeg.yRot = -((float) Math.PI / 10F);
+        this.preAnimSetup(servant, limbSwing, limbSwingAmount, netHeadYaw, headPitch, partialTicks);
+        this.anim.doAnimation(this, servant.getAnimationHandler(), partialTicks, false);
+        // Move the body to match the (detached) legs
+        if (servant.isPassenger() && servant.getVehicle() != null) {
+            this.body.x = this.body.getDefaultPose().x;
+            this.body.y = this.body.getDefaultPose().y;
+            this.body.z = this.body.getDefaultPose().z;
+            PoseStack stack = new PoseStack();
+            this.body.translateAndRotate(stack);
+            float bodyLength = -12;
+            Vector3f v = new Vector3f(0, bodyLength, 0);
+            v.transform(stack.last().normal());
+            this.body.x += v.x();
+            this.body.y += v.y() - bodyLength;
+            this.body.z += v.z();
         }
     }
 
-    public void preAnimSetup(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void preAnimSetup(T entity, float limbSwing, float limbSwingAmount, float netHeadYaw, float headPitch, float partialTicks) {
         this.model.resetPoses();
-        this.head.yRot = netHeadYaw / (180F / (float) Math.PI);
-        this.head.xRot = headPitch / (180F / (float) Math.PI);
 
         this.rightArm.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 2.0F * limbSwingAmount * 0.5F;
         this.leftArm.xRot = Mth.cos(limbSwing * 0.6662F) * 2.0F * limbSwingAmount * 0.5F;
@@ -180,45 +217,25 @@ public class ModelHassanClone<T extends HassanClone & IAnimated> extends BaseSer
         this.rightLeg.yRot = 0;
         this.leftLeg.yRot = 0;
 
-        if (this.riding) {
-            this.rightArm.xRot -= ((float) Math.PI / 5F);
-            this.leftArm.xRot -= ((float) Math.PI / 5F);
-            this.rightLeg.xRot = -((float) Math.PI * 2F / 5F);
-            this.leftLeg.xRot = -((float) Math.PI * 2F / 5F);
-            this.rightLeg.yRot = ((float) Math.PI / 10F);
-            this.leftLeg.yRot = -((float) Math.PI / 10F);
+        this.servantAnim.setVariable("query.head_x_rotation", () -> headPitch);
+        this.servantAnim.setVariable("query.head_y_rotation", () -> netHeadYaw);
+        this.servantAnim.setVariable("left_held", () -> this.heldItemOff);
+        this.servantAnim.setVariable("left_arm_x_rot", () -> this.leftArm.xRot * Mth.RAD_TO_DEG);
+        this.servantAnim.setVariable("right_held", () -> this.heldItemMain);
+        this.servantAnim.setVariable("right_arm_x_rot", () -> this.rightArm.xRot * Mth.RAD_TO_DEG);
+
+        this.servantAnim.doAnimation(this, "idle", entity.tickCount, partialTicks, 1, false, true);
+        this.servantAnim.doAnimation(this, "head_look", entity.tickCount, partialTicks, 1, false, true);
+        this.servantAnim.doAnimation(this, "item_holding", entity.tickCount, partialTicks, 1, false, true);
+//        this.servantAnim.doAnimation(this, "walk", entity.tickCount, partialTicks, 1, false, true);
+//        this.servantAnim.doAnimation(this, "run", entity.tickCount, partialTicks, 1, false, true);
+        if (entity.isPassenger() && entity.getVehicle() != null) {
+            if (this.riding) {
+                this.servantAnim.doAnimation(this, "riding", entity.tickCount, partialTicks, 1, false, true);
+            } else {
+                this.servantAnim.doAnimation(this, "riding_standing", entity.tickCount, partialTicks, 1, false, true);
+            }
         }
-
-        if (this.heldItemOff == 1)
-            this.leftArm.xRot = this.leftArm.xRot * 0.5F - ((float) Math.PI / 10F);
-        if (this.heldItemMain == 1)
-            this.rightArm.xRot = this.rightArm.xRot * 0.5F - ((float) Math.PI / 10F);
-
-        this.rightArm.yRot = 0;
-        this.leftArm.yRot = 0;
-        if (this.attackTime > -9990) {
-            float swingProgress = this.attackTime;
-            this.body.yRot = Mth.sin(Mth.sqrt(swingProgress) * (float) Math.PI * 2.0F) * 0.2F;
-            this.rightArm.yRot += this.body.yRot;
-            this.leftArm.yRot += this.body.yRot;
-            this.leftArm.xRot += this.body.yRot;
-            swingProgress = 1.0F - this.attackTime;
-            swingProgress *= swingProgress;
-            swingProgress *= swingProgress;
-            swingProgress = 1.0F - swingProgress;
-            float var9 = Mth.sin(swingProgress * (float) Math.PI);
-            float var10 = Mth.sin(this.attackTime * (float) Math.PI) * -(this.head.xRot - 0.7F) * 0.75F;
-            this.rightArm.xRot = (float) ((double) this.rightArm.xRot - ((double) var9 * 1.2D + (double) var10));
-            this.rightArm.yRot += this.body.yRot * 2.0F;
-            this.rightArm.zRot = Mth.sin(this.attackTime * (float) Math.PI) * -0.4F;
-        }
-
-        this.body.xRot = 0;
-
-        this.rightArm.zRot += Mth.cos(ageInTicks * 0.09F) * 0.05F + 0.05F;
-        this.leftArm.zRot -= Mth.cos(ageInTicks * 0.09F) * 0.05F + 0.05F;
-        this.rightArm.xRot += Mth.sin(ageInTicks * 0.067F) * 0.05F;
-        this.leftArm.xRot -= Mth.sin(ageInTicks * 0.067F) * 0.05F;
     }
 
     @Override
@@ -230,6 +247,9 @@ public class ModelHassanClone<T extends HassanClone & IAnimated> extends BaseSer
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         this.body.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+        this.ridingLegs.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+        this.leftItemDetached.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+        this.rightItemDetached.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
     }
 
     @Override

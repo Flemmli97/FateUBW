@@ -72,9 +72,9 @@ public class Pegasus extends PathfinderMob implements IAnimated, StandingVehicle
     private static final EntityDataAccessor<Boolean> FLYING = SynchedEntityData.defineId(Pegasus.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Byte> MOVE_FLAGS = SynchedEntityData.defineId(Pegasus.class, EntityDataSerializers.BYTE);
 
-    public static final AnimatedAction CHARGING = new AnimatedAction(1.4, 0.36, "charge");
-    public static final AnimatedAction STOMP = new AnimatedAction(0.56, 0.4, "stomp");
-    public static final AnimatedAction SUMMON = new AnimatedAction(2.04, 0, "summon");
+    public static final AnimatedAction CHARGING = AnimatedAction.builder(1.4, "charge").marker("attack", 0.36).build();
+    public static final AnimatedAction STOMP = AnimatedAction.builder(0.56, "stomp").marker("attack", 0.4).build();
+    public static final AnimatedAction SUMMON = AnimatedAction.builder(2.04, "summon").build();
     private static final AnimatedAction[] ANIMS = {CHARGING, SUMMON, STOMP};
 
     private static final List<WeightedEntry.Wrapper<GoalAttackAction<Pegasus>>> ATTACKS = List.of(
@@ -118,10 +118,11 @@ public class Pegasus extends PathfinderMob implements IAnimated, StandingVehicle
     public final AnimatedAttackGoal<Pegasus> attack = new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS);
 
     private final AnimationHandler<Pegasus> animationHandler = new AnimationHandler<>(this, ANIMS)
-            .setAnimationChangeCons(anim -> {
+            .withChangeListener(anim -> {
                 if (!this.level.isClientSide && CHARGING.is(anim)) {
                     this.hitEntities = new ArrayList<>();
                 }
+                return false;
             });
 
     private final PathNavigation main;
@@ -190,7 +191,7 @@ public class Pegasus extends PathfinderMob implements IAnimated, StandingVehicle
         if (this.getAnimationHandler() == null)
             return false;
         AnimatedAction anim = this.getAnimationHandler().getAnimation();
-        return anim != null && CHARGING.is(anim) && anim.isPastTick(anim.getAttackTime());
+        return anim != null && CHARGING.is(anim) && anim.isPast("attack");
     }
 
     @Override
@@ -215,7 +216,7 @@ public class Pegasus extends PathfinderMob implements IAnimated, StandingVehicle
                     this.level.addParticle(new ColoredParticleData(ModParticles.LIGHT.get(), 245 / 255F, 10 / 255F, 10 / 255F, 1, 0.5f), pos.x(), pos.y(), pos.z(), this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01);
                 }
             }
-            if (this.getAnimationHandler().isCurrent(CHARGING) && this.getAnimationHandler().getAnimation().isPastTick(0.48)) {
+            if (this.getAnimationHandler().isCurrent(CHARGING) && this.getAnimationHandler().getAnimation().isPast(0.48)) {
                 Vec3 base = MathUtils.rotate(new Vec3(0, 1, 0), Vec3.directionFromRotation(0, this.yBodyRot), (float) Math.toRadians(90)).normalize();
                 for (int i = 0; i < 8; i++) {
                     double sideScale = ((this.random.nextDouble() * 2) - 1) * 3;
@@ -285,12 +286,11 @@ public class Pegasus extends PathfinderMob implements IAnimated, StandingVehicle
 
     public void handleAttack(AnimatedAction anim) {
         if (anim.is(CHARGING)) {
-            if (anim.getTick() >= anim.getAttackTime()) {
+            if (anim.isPast("attack")) {
                 this.setDeltaMovement(this.chargeMotion);
                 OrientedBoundingBox obb = this.prepareAttackBox(anim, null, 0.2, false);
                 List<LivingEntity> list = this.level.getEntitiesOfClass(LivingEntity.class, obb.getEncompassingBox(),
                         entity -> this.targetPred.test(entity) && obb.intersects(entity.getBoundingBox()));
-                LivingEntity source = !this.getPassengers().isEmpty() && this.getPassengers().get(0) instanceof LivingEntity passenger ? passenger : this;
                 boolean hit = this.canFly() && this.verticalCollision;
                 if (hit) {
                     this.chargeMotion = new Vec3(this.chargeMotion.x() * 0.4, Math.abs(this.chargeMotion.y()) * 0.7, this.chargeMotion.z() * 0.4);
@@ -311,7 +311,7 @@ public class Pegasus extends PathfinderMob implements IAnimated, StandingVehicle
             }
         } else if (!anim.is(SUMMON)) {
             this.getNavigation().stop();
-            if (anim.canAttack()) {
+            if (anim.isAt("attack")) {
                 this.mobAttack(anim, this.getTarget(), this::doHurtTarget);
                 S2CScreenShake.sendAround(this, 6, 4, 1);
             }
@@ -471,7 +471,7 @@ public class Pegasus extends PathfinderMob implements IAnimated, StandingVehicle
     @Override
     public boolean shouldStand() {
         AnimatedAction anim = this.getAnimationHandler().getAnimation();
-        return anim != null && anim.is(SUMMON) && !anim.isPastTick(1.);
+        return anim != null && anim.is(SUMMON) && !anim.isPast(1.);
     }
 
     public void setChargeTo(Vec3 pos) {
