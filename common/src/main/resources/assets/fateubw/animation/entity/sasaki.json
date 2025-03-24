@@ -1087,7 +1087,7 @@
 		},
 		"tsubame_gaeshi": {
 			"loop": "hold_on_last_frame",
-			"animation_length": 1.92,
+			"animation_length": 2,
 			"bones": {
 				"Body": {
 					"rotation": {

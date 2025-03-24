@@ -643,7 +643,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         double off = this.getBbHeight() * 0.5;
         return new OrientedBoundingBox(this.attackBB(anim)
                 .inflate(grow, 0, grow)
-                .move(0, -off, grow), yRot, Mth.clamp(xRot, -15, 15), this.position().add(0, off, 0));
+                .move(0, -off, grow), yRot, -Mth.clamp(xRot, -15, 15), this.position().add(0, off, 0));
     }
 
     @Override

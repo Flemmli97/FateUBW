@@ -164,13 +164,16 @@ public class ModelHeracles<T extends EntityHeracles & IAnimated> extends BaseSer
     }
 
     @Override
-    public void setupAnim(T servant, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.model.resetPoses();
         float partialTicks = Minecraft.getInstance().getFrameTime();
-        if (servant.isStaying()) {
-            this.anim.doAnimation(this, "stay", servant.tickCount, partialTicks);
+        this.anim.doAnimation(this, "idle", entity.tickCount, partialTicks, 1);
+        if (limbSwing > 0)
+            this.anim.doAnimation(this, "walk", entity.tickCount, partialTicks, 1);
+        if (entity.isStaying()) {
+            this.anim.doAnimation(this, "stay", entity.tickCount, partialTicks);
         } else {
-            this.anim.doAnimation(this, servant.getAnimationHandler(), partialTicks, servant.flipAnimation());
+            this.anim.doAnimation(this, entity.getAnimationHandler(), partialTicks, entity.flipAnimation());
         }
     }
 

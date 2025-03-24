@@ -92,7 +92,7 @@ public class ModEntities {
             new ResourceLocation(Fate.MODID, "gilles"), 0x100460, 0x600453,
             new ServantProperties(325, 5, 12, 0, 8, 14, 17, 0.31, 80, BuiltinServantClasses.CASTER));
 
-    public static final RegistryEntrySupplier<EntityType<EntityHeracles>> HERACLES = regServant(EntityType.Builder.of(EntityHeracles::new, MobCategory.MISC),
+    public static final RegistryEntrySupplier<EntityType<EntityHeracles>> HERACLES = regServant(EntityType.Builder.of(EntityHeracles::new, MobCategory.MISC).sized(1.4f, 2.6f),
             new ResourceLocation(Fate.MODID, "heracles"), 0x3c1d06, 0x5e3c22,
             new ServantProperties(250, 7.5, 18, 0, 16, 0, 9, 0.3, 0, BuiltinServantClasses.BERSERKER));
     public static final RegistryEntrySupplier<EntityType<EntityLancelot>> LANCELOT = regServant(EntityType.Builder.of(EntityLancelot::new, MobCategory.MISC),
