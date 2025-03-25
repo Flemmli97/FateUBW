@@ -1,6 +1,7 @@
 package io.github.flemmli97.fateubw.common.event;
 
 import io.github.flemmli97.fateubw.common.network.S2CPlayerCap;
+import io.github.flemmli97.fateubw.common.registry.ModEffects;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import io.github.flemmli97.fateubw.common.world.TruceHandler;
 import io.github.flemmli97.fateubw.platform.NetworkCalls;
@@ -26,5 +27,9 @@ public class EventCalls {
     public static void tick(LivingEntity entity) {
         if (entity instanceof ServerPlayer player)
             Platform.INSTANCE.getPlayerData(player).ifPresent(data -> data.tick(player));
+    }
+
+    public static boolean canHeal(LivingEntity entity) {
+        return !entity.hasEffect(ModEffects.GAE_BUIDHE.get());
     }
 }

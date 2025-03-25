@@ -7,6 +7,7 @@ import io.github.flemmli97.fateubw.common.registry.AdvancementRegister;
 import io.github.flemmli97.fateubw.common.registry.GrailLootSerializer;
 import io.github.flemmli97.fateubw.common.registry.ModAttributes;
 import io.github.flemmli97.fateubw.common.registry.ModBlocks;
+import io.github.flemmli97.fateubw.common.registry.ModEffects;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModFeatures;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
@@ -73,6 +74,7 @@ public class FateUBWForge {
         ModParticles.PARTICLES.registerContent();
         ModAttributes.ATTRIBUTES.registerContent();
         ModSounds.SOUND_EVENTS.registerContent();
+        ModEffects.EFFECTS.registerContent();
     }
 
     public void setup(FMLCommonSetupEvent event) {

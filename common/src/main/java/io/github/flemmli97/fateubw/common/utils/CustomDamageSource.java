@@ -51,6 +51,10 @@ public class CustomDamageSource {
         return Platform.INSTANCE.setBypassArmor(new EntityDamageSource(Fate.MODID + ".tsubame", sourceEntity));
     }
 
+    public static DamageSource gaeDearg(LivingEntity sourceEntity) {
+        return Platform.INSTANCE.setBypassArmor(new EntityDamageSource(Fate.MODID + ".gae_dearg", sourceEntity));
+    }
+
     public static DamageSource gordiusTrample(GordiusWheel source) {
         return new EntityDamageSource(Fate.MODID + ".gordius", source);
     }

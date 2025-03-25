@@ -55,6 +55,8 @@ public interface Platform {
 
     DamageSource setBypassArmor(DamageSource source);
 
+    DamageSource setBypassMagic(DamageSource source);
+
     AbstractArrow customBowArrow(BowItem item, AbstractArrow def);
 
     default boolean shouldSit(Entity entity) {

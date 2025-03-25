@@ -3,6 +3,7 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
+import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
@@ -20,6 +21,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -121,6 +123,7 @@ public class EntitySasaki extends BaseServant {
     private final AnimationHandler<EntitySasaki> animationHandler = new AnimationHandler<>(this, ANIMS);
 
     private Vec3 hikenPos;
+    private boolean hiken;
 
     public EntitySasaki(EntityType<? extends BaseServant> entityType, Level level) {
         super(entityType, level);
@@ -174,7 +177,7 @@ public class EntitySasaki extends BaseServant {
                         dir = dir.normalize().scale(11);
                 } else {
                     Vec3 look = Vec3.directionFromRotation(0, this.getYHeadRot()).scale(11);
-                    HitResult res = this.level.clip(new ClipContext(this.getEyePosition(), look, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+                    HitResult res = this.level.clip(new ClipContext(this.getEyePosition(), this.getEyePosition().add(look), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
                     dir = res.getLocation().subtract(this.getEyePosition());
                 }
                 this.hikenPos = this.position().add(dir);
@@ -183,6 +186,7 @@ public class EntitySasaki extends BaseServant {
                         yRot, 0, this.position());
                 S2CAttackDebug.sendDebugPacket(obb, S2CAttackDebug.EnumAABBType.ATTACK, this);
                 boolean damage = false;
+                this.hiken = true;
                 for (LivingEntity entity : this.level.getEntitiesOfClass(LivingEntity.class, obb.getEncompassingBox(),
                         entity -> this.targetPred.test(entity) && obb.intersects(entity.getBoundingBox()))) {
                     entity.invulnerableTime = 0;
@@ -196,6 +200,7 @@ public class EntitySasaki extends BaseServant {
                         damage = true;
                     entity.invulnerableTime = 0;
                 }
+                this.hiken = false;
                 if (damage) {
                     this.level.playSound(null, this, SoundEvents.PLAYER_ATTACK_CRIT, this.getSoundSource(), 0.7f, 0.9f);
                 }
@@ -242,8 +247,8 @@ public class EntitySasaki extends BaseServant {
     }
 
     @Override
-    public OrientedBoundingBox calculateAttackAABB(AnimatedAction anim, Vec3 target, double grow) {
-        return super.calculateAttackAABB(anim, target, grow);
+    protected DamageSource damageSourceAttack(Entity target) {
+        return this.hiken ? CustomDamageSource.hiKen(this) : DamageSource.mobAttack(this);
     }
 
     @Override

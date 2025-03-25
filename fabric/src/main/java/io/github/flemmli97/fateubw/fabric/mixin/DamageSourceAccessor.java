@@ -9,4 +9,7 @@ public interface DamageSourceAccessor {
 
     @Invoker("bypassArmor")
     DamageSource setBypassArmor();
+
+    @Invoker("bypassMagic")
+    DamageSource setBypassMagic();
 }

@@ -62,7 +62,6 @@ import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
@@ -75,7 +74,10 @@ import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
@@ -96,8 +98,6 @@ import java.util.function.Predicate;
 public abstract class BaseServant extends PathfinderMob implements IAnimated, OwnableEntity, AoeAttackEntity, TargetableOpponent {
 
     public static final TicketType<ChunkPos> TRACKINGTICKET = TicketType.create("servant", Comparator.comparingLong(ChunkPos::toLong), 5);
-
-    private static final UUID DAMAGE_MODIFIER = UUID.fromString("39c5b245-36d1-4506-bd4a-ee6180b1f0c1");
 
     protected static final EntityDataAccessor<Boolean> SHOW_SERVANT = SynchedEntityData.defineId(BaseServant.class, EntityDataSerializers.BOOLEAN);
     protected static final EntityDataAccessor<Boolean> STATIONARY = SynchedEntityData.defineId(BaseServant.class, EntityDataSerializers.BOOLEAN);
@@ -295,7 +295,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         }
     }
 
-    private void regenMana() {
+    protected void regenMana() {
         if (this.canUseNP && this.servantMana < 100 && --this.manaRegenCounter <= 0) {
             this.servantMana += 1;
             this.manaRegenCounter = 10;
@@ -714,17 +714,52 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
 
     @Override
     public boolean doHurtTarget(Entity entity) {
-        this.getAttribute(Attributes.ATTACK_DAMAGE)
-                .addTransientModifier(new AttributeModifier(DAMAGE_MODIFIER, "fate.dmg.mod", this.damageModifier(entity) - 1,
-                        AttributeModifier.Operation.MULTIPLY_TOTAL));
-        boolean hurt = super.doHurtTarget(entity);
-        this.getAttribute(Attributes.ATTACK_DAMAGE)
-                .removeModifier(DAMAGE_MODIFIER);
-        return hurt;
+        return this.mobHurtTarget(entity);
+    }
+
+    protected boolean mobHurtTarget(Entity target) {
+        float damage = (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE);
+        float knockback = (float) this.getAttributeValue(Attributes.ATTACK_KNOCKBACK);
+        if (target instanceof LivingEntity living) {
+            damage += EnchantmentHelper.getDamageBonus(this.getMainHandItem(), living.getMobType());
+            knockback += EnchantmentHelper.getKnockbackBonus(this);
+        }
+        int fireAspect = EnchantmentHelper.getFireAspect(this);
+        if (fireAspect > 0) {
+            target.setSecondsOnFire(fireAspect * 4);
+        }
+        damage *= this.damageModifier(target);
+        boolean bl = target.hurt(this.damageSourceAttack(target), damage);
+        if (bl) {
+            if (knockback > 0.0F && target instanceof LivingEntity) {
+                ((LivingEntity) target).knockback(knockback * 0.5F, Mth.sin(this.getYRot() * Mth.DEG_TO_RAD), -Mth.cos(this.getYRot() * Mth.DEG_TO_RAD));
+                this.setDeltaMovement(this.getDeltaMovement().multiply(0.6, 1.0, 0.6));
+            }
+            if (target instanceof Player player) {
+                this.tryDisableShield(player, this.getMainHandItem(), player.isUsingItem() ? player.getUseItem() : ItemStack.EMPTY);
+            }
+            this.doEnchantDamageEffects(this, target);
+            this.setLastHurtMob(target);
+        }
+        return bl;
     }
 
     public float damageModifier(Entity target) {
         return 1;
+    }
+
+    protected DamageSource damageSourceAttack(Entity target) {
+        return DamageSource.mobAttack(this);
+    }
+
+    protected void tryDisableShield(Player player, ItemStack stack, ItemStack playerUseItem) {
+        if (!stack.isEmpty() && !playerUseItem.isEmpty() && stack.getItem() instanceof AxeItem && playerUseItem.is(Items.SHIELD)) {
+            float f = 0.25F + (float) EnchantmentHelper.getBlockEfficiency(this) * 0.05F;
+            if (this.random.nextFloat() < f) {
+                player.getCooldowns().addCooldown(Items.SHIELD, 100);
+                this.level.broadcastEntityEvent(player, (byte) 30);
+            }
+        }
     }
 
     public void onKillOrder(Player player, boolean success) {

@@ -133,6 +133,7 @@
   "attribute.fateubw.magic_resistance": "Magic Resistance",
   "attribute.fateubw.projectile_resistance": "Projectile Resistance",
   "attribute.fateubw.projectile_block_chance": "Projectile Block Chance",
+  "effect.fateubw.cursed_wounds": "Cursed Wounds",
   "fateubw.chat.item.spawn": "You already have a servant, spawned a masterless one",
   "fateubw.chat.mana.missing": "You don't have enough mana",
   "fateubw.chat.grailwar.init": "A grailwar has been initialized. You have %1$s seconds to join it.",

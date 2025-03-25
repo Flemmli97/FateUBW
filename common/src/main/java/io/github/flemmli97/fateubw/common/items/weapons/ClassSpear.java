@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import io.github.flemmli97.tenshilib.api.item.IExtendedWeapon;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -21,6 +22,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class ClassSpear extends TieredItem implements Vanishable, IExtendedWeapon {
+
+    public static final String FOIL_TAG = "fate:foil";
 
     private final float range;
     private final Multimap<Attribute, AttributeModifier> attributeModifiers;
@@ -47,6 +50,28 @@ public class ClassSpear extends TieredItem implements Vanishable, IExtendedWeapo
     @Override
     public float getRange(LivingEntity entity, ItemStack stack) {
         return this.range;
+    }
+
+    @Override
+    public boolean isFoil(ItemStack stack) {
+        if (super.isFoil(stack))
+            return true;
+        CompoundTag tag = stack.getTag();
+        return tag != null && tag.contains(FOIL_TAG);
+    }
+
+    public static void applyFoil(ItemStack stack, boolean remove) {
+        if (remove) {
+            CompoundTag tag = stack.getTag();
+            if (tag != null) {
+                tag.remove(FOIL_TAG);
+                if (tag.isEmpty())
+                    stack.setTag(null);
+            }
+        } else {
+            CompoundTag tag = stack.getOrCreateTag();
+            tag.putBoolean(FOIL_TAG, true);
+        }
     }
 
     //=====Forge

@@ -75,6 +75,8 @@ import java.util.function.Predicate;
 
 public class HassanClone extends PathfinderMob implements IAnimated, OwnableEntity, AoeAttackEntity, TargetableOpponent {
 
+    public static final UUID BACKSTAB_MODIFIER = UUID.fromString("12c5b245-36d1-4506-bd4a-ee6180b1f0c1");
+
     private static final AnimatedAction[] ANIMS = {EntityHassan.DAGGER_1, EntityHassan.DAGGER_2, EntityHassan.DAGGER_3, EntityHassan.DAGGER_4, EntityHassan.TOP_STAB, EntityHassan.THROW, EntityHassan.SUMMON};
 
     public static final List<WeightedEntry.Wrapper<GoalAttackAction<HassanClone>>> ATTACKS = List.of(
@@ -259,12 +261,12 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
         boolean behind = EntityHassan.behind(this, entity);
         if (behind) {
             this.getAttribute(Attributes.ATTACK_DAMAGE)
-                    .addTransientModifier(new AttributeModifier(EntityHassan.BACKSTAB_MODIFIER, "fate.backstab.mod", 0.5,
+                    .addTransientModifier(new AttributeModifier(HassanClone.BACKSTAB_MODIFIER, "fate.backstab.mod", 0.5,
                             AttributeModifier.Operation.MULTIPLY_TOTAL));
         }
         boolean hurt = super.doHurtTarget(entity);
         if (behind) {
-            this.getAttribute(Attributes.ATTACK_DAMAGE).removeModifier(EntityHassan.BACKSTAB_MODIFIER);
+            this.getAttribute(Attributes.ATTACK_DAMAGE).removeModifier(HassanClone.BACKSTAB_MODIFIER);
             if (hurt) {
                 this.level.playSound(null, this, SoundEvents.PLAYER_ATTACK_CRIT, this.getSoundSource(), 0.7f, 0.9f);
                 if (this.level instanceof ServerLevel serverLevel) {

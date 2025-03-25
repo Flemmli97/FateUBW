@@ -94,6 +94,11 @@ public class PlatformImpl implements Platform {
     }
 
     @Override
+    public DamageSource setBypassMagic(DamageSource source) {
+        return ((DamageSourceAccessor) source).setBypassMagic();
+    }
+
+    @Override
     public AbstractArrow customBowArrow(BowItem item, AbstractArrow def) {
         return def;
     }

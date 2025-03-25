@@ -1,5 +1,6 @@
 package io.github.flemmli97.fateubw.fabric.mixin;
 
+import io.github.flemmli97.fateubw.common.event.EventCalls;
 import io.github.flemmli97.fateubw.fabric.FateUBWFabric;
 import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,5 +14,11 @@ public abstract class LivingEntityMixin {
     @Inject(method = "tick", at = @At("HEAD"))
     private void tickCall(CallbackInfo info) {
         FateUBWFabric.entityTick((LivingEntity) (Object) this);
+    }
+
+    @Inject(method = "heal", at = @At("HEAD"), cancellable = true)
+    private void onHeal(float heal, CallbackInfo info) {
+        if (!EventCalls.canHeal((LivingEntity) (Object) this))
+            info.cancel();
     }
 }

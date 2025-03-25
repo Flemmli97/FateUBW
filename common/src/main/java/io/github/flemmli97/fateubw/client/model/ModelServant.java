@@ -231,9 +231,21 @@ public class ModelServant<T extends BaseServant & IAnimated> extends BaseServant
     @Override
     public void transform(HumanoidArm humanoidArm, PoseStack poseStack) {
         if (humanoidArm == HumanoidArm.LEFT) {
-            this.rotate(poseStack, this.body, this.leftArm, this.leftArmDown, this.leftItem);
+            boolean detached = this.leftItemDetached.xScale != 0 && this.leftItemDetached.yScale != 0
+                    && this.leftItemDetached.zScale != 0 && this.leftItemDetached.visible;
+            if (detached) {
+                this.rotate(poseStack, this.leftItemDetached);
+            } else {
+                this.rotate(poseStack, this.body, this.leftArm, this.leftArmDown, this.leftItem);
+            }
         } else {
-            this.rotate(poseStack, this.body, this.rightArm, this.rightArmDown, this.rightItem);
+            boolean detached = this.rightItemDetached.xScale != 0 && this.rightItemDetached.yScale != 0
+                    && this.rightItemDetached.zScale != 0 && this.rightItemDetached.visible;
+            if (detached) {
+                this.rotate(poseStack, this.rightItemDetached);
+            } else {
+                this.rotate(poseStack, this.body, this.rightArm, this.rightArmDown, this.rightItem);
+            }
         }
     }
 

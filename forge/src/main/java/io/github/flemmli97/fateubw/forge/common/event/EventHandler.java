@@ -20,6 +20,7 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -70,5 +71,11 @@ public class EventHandler {
         EventCalls.tick(event.getEntityLiving());
         if (event.getEntityLiving().level.isClientSide)
             ClientCalls.tick(event.getEntityLiving());
+    }
+
+    @SubscribeEvent
+    public static void healingEvent(LivingHealEvent event) {
+        if (!EventCalls.canHeal(event.getEntityLiving()))
+            event.setCanceled(true);
     }
 }

@@ -84,7 +84,7 @@ public class EntityMedea extends BaseServant {
     );
     public static final List<WeightedEntry.Wrapper<IdleAction<EntityMedea>>> IDLE_ACTIONS = List.of(
             WeightedEntry.wrap(new IdleAction<>(() -> new TeleportRunner<>(5, 12, 6, 12)), 1),
-            WeightedEntry.wrap(new IdleAction<>(() -> new TeleportRunner<EntityMedea>(5, 12, 6, 5))
+            WeightedEntry.wrap(new IdleAction<>(() -> new TeleportRunner<EntityMedea>(5, 12, 6, 12))
                     .withCondition(((goal, target) -> goal.distanceToTargetSq < 25)), 7),
             WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(1, 1, 6)), 20)
     );
@@ -233,14 +233,15 @@ public class EntityMedea extends BaseServant {
                     dir = this.getTarget().position().subtract(this.position());
                 } else {
                     Vec3 look = Vec3.directionFromRotation(0, this.getYHeadRot()).scale(11);
-                    HitResult res = this.level.clip(new ClipContext(this.getEyePosition(), look, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+                    HitResult res = this.level.clip(new ClipContext(this.getEyePosition(), this.getEyePosition().add(look), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
                     dir = res.getLocation().subtract(this.getEyePosition());
                 }
                 Vec3 off = dir.normalize();
                 dir = dir.subtract(off);
                 this.teleportPre = this.position();
                 this.gravityPre = this.isNoGravity();
-                this.teleportTo(this.getX() + dir.x(), this.getY() + dir.y(), this.getZ() + dir.z());
+                Utils.teleportTo(this, this.getX() + dir.x(), this.getY() + dir.y(), this.getZ() + dir.z(),
+                        SoundEvents.ENDERMAN_TELEPORT, ParticleTypes.WITCH);
                 this.teleportPos = this.position();
             }
             if (anim.isAt("teleport_end") && this.teleportPre != null) {

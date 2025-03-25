@@ -1,9 +1,12 @@
 package io.github.flemmli97.fateubw.common.entity.ai;
 
+import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.IAnimated;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.ActionRun;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.AnimatedAttackGoal;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
@@ -20,7 +23,7 @@ public class TeleportRunner<T extends PathfinderMob & IAnimated> implements Acti
         this.minDistSqr = minDist * minDist;
         this.maxDistSqr = maxDist * maxDist;
         this.teleportMin = teleportMin;
-        this.teleportMax = teleportMax;
+        this.teleportMax = Math.max(this.teleportMin + 1, teleportMax);
     }
 
     @Override
@@ -30,7 +33,8 @@ public class TeleportRunner<T extends PathfinderMob & IAnimated> implements Acti
                 Vec3 posAway = goal.distanceToTargetSq > this.maxDistSqr ? DefaultRandomPos.getPosTowards(goal.attacker, goal.attacker.getRandom().nextInt(this.teleportMax - this.teleportMin) + this.teleportMin, 8, target.position(), 1)
                         : DefaultRandomPos.getPosAway(goal.attacker, goal.attacker.getRandom().nextInt(this.teleportMax - this.teleportMin) + this.teleportMin, 8, target.position());
                 if (posAway != null && target.distanceToSqr(posAway) >= this.minDistSqr) {
-                    goal.attacker.teleportTo(posAway.x(), posAway.y(), posAway.z());
+                    Utils.teleportTo(goal.attacker, posAway.x(), posAway.y(), posAway.z(),
+                            SoundEvents.ENDERMAN_TELEPORT, ParticleTypes.WITCH);
                     this.teleported = true;
                     return true;
                 }

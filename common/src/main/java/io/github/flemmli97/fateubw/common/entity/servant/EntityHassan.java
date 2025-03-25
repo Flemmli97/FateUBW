@@ -37,8 +37,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -53,8 +51,6 @@ import java.util.Set;
 import java.util.UUID;
 
 public class EntityHassan extends BaseServant {
-
-    public static final UUID BACKSTAB_MODIFIER = UUID.fromString("12c5b245-36d1-4506-bd4a-ee6180b1f0c1");
 
     public static final AnimatedAction DAGGER_1 = AnimatedAction.builder(0.58, "dagger_1")
             .marker("attack", 0.44).marker("step", 0.4).build();
@@ -129,6 +125,7 @@ public class EntityHassan extends BaseServant {
     private final Vector4f summonColor = new Vector4f(28 / 255f, 29 / 255f, 31 / 255f, 0.8f);
 
     private final Set<UUID> copies = new HashSet<>();
+    private boolean behind;
 
     public EntityHassan(EntityType<? extends EntityHassan> entityType, Level level) {
         super(entityType, level);
@@ -212,24 +209,22 @@ public class EntityHassan extends BaseServant {
 
     @Override
     public boolean doHurtTarget(Entity entity) {
-        boolean behind = EntityHassan.behind(this, entity);
-        if (behind) {
-            this.getAttribute(Attributes.ATTACK_DAMAGE)
-                    .addTransientModifier(new AttributeModifier(EntityHassan.BACKSTAB_MODIFIER, "fate.backstab.mod", 0.5,
-                            AttributeModifier.Operation.MULTIPLY_TOTAL));
-        }
+        this.behind = EntityHassan.behind(this, entity);
         boolean hurt = super.doHurtTarget(entity);
-        if (behind) {
-            this.getAttribute(Attributes.ATTACK_DAMAGE).removeModifier(EntityHassan.BACKSTAB_MODIFIER);
-            if (hurt) {
-                this.level.playSound(null, this, SoundEvents.PLAYER_ATTACK_CRIT, this.getSoundSource(), 0.7f, 0.9f);
-                if (this.level instanceof ServerLevel serverLevel) {
-                    for (int i = 0; i < 15; i++)
-                        serverLevel.sendParticles(DustParticleOptions.REDSTONE, entity.getRandomX(1.4), entity.getRandomY(), entity.getRandomZ(1.4), 0, 0, 0, 0, 0);
-                }
+        if (this.behind && hurt) {
+            this.level.playSound(null, this, SoundEvents.PLAYER_ATTACK_CRIT, this.getSoundSource(), 0.7f, 0.9f);
+            if (this.level instanceof ServerLevel serverLevel) {
+                for (int i = 0; i < 15; i++)
+                    serverLevel.sendParticles(DustParticleOptions.REDSTONE, entity.getRandomX(1.4), entity.getRandomY(), entity.getRandomZ(1.4), 0, 0, 0, 0, 0);
             }
         }
+        this.behind = false;
         return hurt;
+    }
+
+    @Override
+    public float damageModifier(Entity target) {
+        return this.behind ? 1.5f : super.damageModifier(target);
     }
 
     public boolean addCopy(HassanClone copy) {

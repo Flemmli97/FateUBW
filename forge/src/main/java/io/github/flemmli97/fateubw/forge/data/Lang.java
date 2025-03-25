@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.registry.ModAttributes;
 import io.github.flemmli97.fateubw.common.registry.ModBlocks;
+import io.github.flemmli97.fateubw.common.registry.ModEffects;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
@@ -129,6 +130,10 @@ public class Lang implements DataProvider {
         }
 
         for (RegistryEntrySupplier<Attribute> reg : ModAttributes.ATTRIBUTES.getEntries()) {
+            this.add(reg.get().getDescriptionId(), this.simpleOfRegName(reg.getID()));
+        }
+
+        for (RegistryEntrySupplier<MobEffect> reg : ModEffects.EFFECTS.getEntries()) {
             this.add(reg.get().getDescriptionId(), this.simpleOfRegName(reg.getID()));
         }
 

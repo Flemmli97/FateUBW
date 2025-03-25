@@ -107,7 +107,7 @@ public class EntityHeracles extends BaseServant {
     );
     public static final List<WeightedEntry.Wrapper<IdleAction<EntityHeracles>>> IDLE_ACTIONS = List.of(
             WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1, 0.5)), 6),
-            WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(1, 1, 6)), 2)
+            WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(1, 1, 6)), 4)
     );
 
     public final AnimatedAttackGoal<EntityHeracles> attack = new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS);
