@@ -145,6 +145,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
 
     private final List<ServerPlayer> tracked = new ArrayList<>();
     private boolean addToOwner;
+    private boolean initAnim;
 
     public BaseServant(EntityType<? extends BaseServant> entityType, Level level) {
         super(entityType, level);
@@ -429,6 +430,14 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
 
     @Override
     public void tick() {
+        if (!this.initAnim) {
+            this.getAnimationHandler().withChangeListener(anim -> {
+                if (anim != null)
+                    this.setupAttack(anim);
+                return false;
+            });
+            this.initAnim = true;
+        }
         super.tick();
         this.getAnimationHandler().tick();
         if (this.getSummonAnimation() != null && this.getAnimationHandler().isCurrent(this.getSummonAnimation())) {
@@ -593,15 +602,18 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
 
     //=====Entity attack etc.
 
+    public void setupAttack(AnimatedAction anim) {
+        if (this.getTarget() != null) {
+            this.targetPosition = this.getTarget().position();
+        }
+    }
+
     public void handleAttack(AnimatedAction anim) {
         if (anim.is(this.getSummonAnimation()))
             return;
         this.getNavigation().stop();
         if (this.getTarget() != null) {
             this.lookAtNow(this.getTarget(), 60, 90);
-            if (anim.isAt(0)) {
-                this.targetPosition = this.getTarget().position();
-            }
         }
         if (anim.isAt("attack")) {
             this.mobAttack(anim, this.getTarget(), this::doHurtTarget);

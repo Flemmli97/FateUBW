@@ -114,6 +114,8 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
     public final Predicate<LivingEntity> targetPred = Utils.servantTargetPredicate(this);
 
     private final AnimationHandler<HassanClone> animationHandler = new AnimationHandler<>(this, ANIMS).withChangeListener(anim -> {
+        if(anim != null && this.getTarget() != null)
+            this.targetPosition = this.getTarget().position();
         if (!EntityHassan.SUMMON.is(anim)) {
             if (!this.offHandCache.isEmpty()) {
                 this.setItemInHand(InteractionHand.OFF_HAND, this.offHandCache);
@@ -240,9 +242,6 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
             this.getNavigation().stop();
             if (this.getTarget() != null) {
                 this.lookAt(this.getTarget(), 60, 90);
-                if (anim.isAt(0)) {
-                    this.targetPosition = this.getTarget().position();
-                }
             }
             if (anim.isAt("attack")) {
                 this.mobAttack(anim, this.getTarget(), this::doHurtTarget);

@@ -158,6 +158,15 @@ public class EntityEmiya extends BaseServant {
     }
 
     @Override
+    public void setupAttack(AnimatedAction anim) {
+        if (anim.is(DUAL_SLASH_1, DUAL_SLASH_2) && this.getTarget() != null) {
+            this.lookAtNow(this.getTarget(), 360, 90);
+            this.targetPosition = this.getTarget().position();
+        }
+        super.setupAttack(anim);
+    }
+
+    @Override
     public void handleAttack(AnimatedAction anim) {
         if (anim.is(CALADBOLG)) {
             LivingEntity target = this.getTarget();
@@ -194,10 +203,6 @@ public class EntityEmiya extends BaseServant {
             this.fallDistance = 0;
         } else if (anim.is(DUAL_SLASH_1, DUAL_SLASH_2)) {
             this.getNavigation().stop();
-            if (anim.isAt(0) && this.getTarget() != null) {
-                this.lookAtNow(this.getTarget(), 360, 90);
-                this.targetPosition = this.getTarget().position();
-            }
             if (anim.isAt("step")) {
                 Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(0.32);
                 this.setDeltaMovement(this.getDeltaMovement().add(dir));
