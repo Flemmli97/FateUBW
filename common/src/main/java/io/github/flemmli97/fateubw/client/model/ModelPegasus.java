@@ -3,6 +3,7 @@ package io.github.flemmli97.fateubw.client.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.flemmli97.fateubw.Fate;
+import io.github.flemmli97.fateubw.client.ClientHandler;
 import io.github.flemmli97.fateubw.common.entity.minions.Pegasus;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
@@ -11,7 +12,6 @@ import io.github.flemmli97.tenshilib.client.model.BlockBenchAnimations;
 import io.github.flemmli97.tenshilib.client.model.ExtendedModel;
 import io.github.flemmli97.tenshilib.client.model.ModelPartHandler;
 import io.github.flemmli97.tenshilib.client.model.RideableModel;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.IllagerModel;
@@ -141,7 +141,7 @@ public class ModelPegasus extends EntityModel<Pegasus> implements ExtendedModel,
         this.head.yRot += netHeadYaw * Mth.DEG_TO_RAD * 0.3f;
         this.head.xRot += headPitch * Mth.DEG_TO_RAD * 0.1f;
         AnimatedAction anim = entity.getAnimationHandler().getAnimation();
-        float partialTicks = Minecraft.getInstance().getFrameTime();
+        float partialTicks = ClientHandler.getPartialTicks();
 
         this.anim.setVariable("x_rotation", () -> {
             if (!entity.canFly())
@@ -176,7 +176,7 @@ public class ModelPegasus extends EntityModel<Pegasus> implements ExtendedModel,
                 if (rider instanceof LivingEntity living && living.isBaby()) {
                     amount = 5;
                 }
-                amount *= entity.interpolatedStandingick(Minecraft.getInstance().getFrameTime());
+                amount *= entity.interpolatedStandingick(ClientHandler.getPartialTicks());
                 poseStack.translate(0, amount / 16d, 0);
             }
         }

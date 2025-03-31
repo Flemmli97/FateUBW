@@ -33,6 +33,9 @@ public class ClientHandler {
     public static Set<GameProfile> truce = ImmutableSet.of();
     public static int clientTick;
 
+    private static boolean paused;
+    private static float pausedPartial;
+
     private static final Comparator<GameProfile> SORT_NAME = Comparator.comparing(GameProfile::getName);
 
     public static ManaBar getManaBar() {
@@ -47,7 +50,12 @@ public class ClientHandler {
     }
 
     public static float getPartialTicks() {
-        return Minecraft.getInstance().isPaused() ? 0 : Minecraft.getInstance().getFrameTime();
+        boolean isPaused = Minecraft.getInstance().isPaused();
+        if (isPaused && !paused) {
+            pausedPartial =  Minecraft.getInstance().getFrameTime();
+        }
+        paused = isPaused;
+        return isPaused ? pausedPartial : Minecraft.getInstance().getFrameTime();
     }
 
     public static void displayCommandGui(BaseServant servant) {

@@ -295,7 +295,7 @@ public class EntityDiarmuid extends BaseServant {
                     living.removeEffect(MobEffects.REGENERATION);
                     MobEffectInstance eff = living.getEffect(ModEffects.GAE_BUIDHE.get());
                     int amplifier = 0;
-                    if (eff != null && this.getRandom().nextFloat() < 1 - (eff.getAmplifier()* 0.2)) {
+                    if (eff != null && this.getRandom().nextFloat() < 1 - (eff.getAmplifier() * 0.2)) {
                         amplifier = Math.min(4, eff.getAmplifier() + 1);
                     }
                     living.addEffect(new MobEffectInstance(ModEffects.GAE_BUIDHE.get(), 200 + (amplifier * 100), amplifier));

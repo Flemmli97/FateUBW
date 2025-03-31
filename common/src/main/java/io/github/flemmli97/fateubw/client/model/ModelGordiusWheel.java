@@ -3,13 +3,13 @@ package io.github.flemmli97.fateubw.client.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.flemmli97.fateubw.Fate;
+import io.github.flemmli97.fateubw.client.ClientHandler;
 import io.github.flemmli97.fateubw.common.entity.minions.GordiusWheel;
 import io.github.flemmli97.tenshilib.client.AnimationManager;
 import io.github.flemmli97.tenshilib.client.model.BlockBenchAnimations;
 import io.github.flemmli97.tenshilib.client.model.ExtendedModel;
 import io.github.flemmli97.tenshilib.client.model.ModelPartHandler;
 import io.github.flemmli97.tenshilib.client.model.RideableModel;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -388,7 +388,7 @@ public class ModelGordiusWheel extends EntityModel<GordiusWheel> implements Exte
         this.footLeftRear2.xRot = Mth.cos(limbSwing * 0.6662F) * limbSwingAmount;
         this.footRightRear2.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * limbSwingAmount;
 
-        float partialTicks = Minecraft.getInstance().getFrameTime();
+        float partialTicks = ClientHandler.getPartialTicks();
         this.anim.doAnimation(this, "idle", entity.tickCount, partialTicks);
         this.anim.doAnimation(this, entity.getAnimationHandler(), partialTicks);
         if (entity.getWheelEntity() != null) {

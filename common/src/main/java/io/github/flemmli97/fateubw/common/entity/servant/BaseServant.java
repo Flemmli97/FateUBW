@@ -102,6 +102,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     protected static final EntityDataAccessor<Boolean> SHOW_SERVANT = SynchedEntityData.defineId(BaseServant.class, EntityDataSerializers.BOOLEAN);
     protected static final EntityDataAccessor<Boolean> STATIONARY = SynchedEntityData.defineId(BaseServant.class, EntityDataSerializers.BOOLEAN);
     protected static final EntityDataAccessor<Optional<UUID>> OWNER_UUID = SynchedEntityData.defineId(BaseServant.class, EntityDataSerializers.OPTIONAL_UUID);
+    protected static final EntityDataAccessor<Byte> MOVE_FLAGS = SynchedEntityData.defineId(BaseServant.class, EntityDataSerializers.BYTE);
 
     protected static final Vector4f SUMMON_COLOR = new Vector4f(60 / 255f, 118 / 255f, 199 / 255f, 0.8f);
     //Mana
@@ -142,6 +143,10 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     public MoveTowardsRestrictionGoal restrictArea = new MoveTowardsRestrictionGoal(this, 1.0D);
     public WaterAvoidingRandomStrollGoal wander = new WaterAvoidingRandomStrollGoal(this, 1.0D);
     protected Vec3 targetPosition;
+
+    private int moveTick;
+
+    public static final int MOVE_TICK_MAX = 3;
 
     private final List<ServerPlayer> tracked = new ArrayList<>();
     private boolean addToOwner;
@@ -231,6 +236,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         this.entityData.define(STATIONARY, false);
         this.entityData.define(SHOW_SERVANT, false);
         this.entityData.define(OWNER_UUID, Optional.empty());
+        this.entityData.define(MOVE_FLAGS, (byte) 0);
     }
 
     @Override
@@ -470,6 +476,50 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
             if (this.getTarget() != null && this.getTarget().getVehicle() instanceof LivingEntity)
                 this.setTarget((LivingEntity) this.getTarget().getVehicle());
         }
+        if (this.getMoveFlag() != MoveType.NONE) {
+            this.moveTick = Math.min(MOVE_TICK_MAX, ++this.moveTick);
+        } else {
+            this.moveTick = Math.max(0, --this.moveTick);
+        }
+    }
+
+    @Override
+    public void customServerAiStep() {
+        super.customServerAiStep();
+        if (!this.canBeControlledByRider() && this.isMoving()) {
+            double d0 = this.getMoveControl().getSpeedModifier();
+            MoveType move;
+            if (d0 > 1) {
+                move = MoveType.RUN;
+            } else if (d0 <= 0.8) {
+                move = MoveType.SNEAK;
+            } else {
+                move = MoveType.WALK;
+            }
+            if (this.isImmobile())
+                move = MoveType.NONE;
+            this.setMovingFlag(move);
+        } else {
+            this.setMovingFlag(MoveType.NONE);
+            this.setShiftKeyDown(false);
+            this.setSprinting(false);
+        }
+    }
+
+    protected boolean isMoving() {
+        return this.getDeltaMovement().x != 0 || this.getDeltaMovement().z != 0;
+    }
+
+    public float interpolatedMoveTick(float partialTicks) {
+        return Mth.clamp((this.moveTick + (this.getMoveFlag() != MoveType.NONE ? partialTicks : -partialTicks)) / (float) MOVE_TICK_MAX, 0, 1);
+    }
+
+    public void setMovingFlag(MoveType type) {
+        this.entityData.set(MOVE_FLAGS, (byte) type.ordinal());
+    }
+
+    public MoveType getMoveFlag() {
+        return MoveType.values()[this.entityData.get(MOVE_FLAGS)];
     }
 
     @Override
@@ -802,9 +852,10 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         return false;
     }
 
-    public enum AttackType {
-        RANGED,
-        MELEE,
-        NP
+    public enum MoveType {
+        NONE,
+        WALK,
+        RUN,
+        SNEAK
     }
 }

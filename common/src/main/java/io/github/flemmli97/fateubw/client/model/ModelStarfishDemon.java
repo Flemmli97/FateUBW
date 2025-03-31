@@ -3,12 +3,12 @@ package io.github.flemmli97.fateubw.client.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.flemmli97.fateubw.Fate;
+import io.github.flemmli97.fateubw.client.ClientHandler;
 import io.github.flemmli97.fateubw.common.entity.minions.LesserMonster;
 import io.github.flemmli97.tenshilib.client.AnimationManager;
 import io.github.flemmli97.tenshilib.client.model.BlockBenchAnimations;
 import io.github.flemmli97.tenshilib.client.model.ExtendedModel;
 import io.github.flemmli97.tenshilib.client.model.ModelPartHandler;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -137,7 +137,7 @@ public class ModelStarfishDemon<T extends LesserMonster> extends EntityModel<T> 
     @Override
     public void setupAnim(T monster, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.model.resetPoses();
-        float partialTicks = Minecraft.getInstance().getFrameTime();
+        float partialTicks = ClientHandler.getPartialTicks();
         if (monster.deathTime <= 0) {
             this.anim.doAnimation(this, "idle", monster.tickCount, partialTicks);
             float moveTick = monster.interpolatedMoveTick(partialTicks);

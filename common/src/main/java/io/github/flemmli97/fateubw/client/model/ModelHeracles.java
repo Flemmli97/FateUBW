@@ -3,12 +3,13 @@ package io.github.flemmli97.fateubw.client.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.flemmli97.fateubw.Fate;
+import io.github.flemmli97.fateubw.client.ClientHandler;
+import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.servant.EntityHeracles;
 import io.github.flemmli97.tenshilib.api.entity.IAnimated;
 import io.github.flemmli97.tenshilib.client.AnimationManager;
 import io.github.flemmli97.tenshilib.client.model.BlockBenchAnimations;
 import io.github.flemmli97.tenshilib.client.model.ModelPartHandler;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -166,10 +167,14 @@ public class ModelHeracles<T extends EntityHeracles & IAnimated> extends BaseSer
     @Override
     public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.model.resetPoses();
-        float partialTicks = Minecraft.getInstance().getFrameTime();
+        float partialTicks = ClientHandler.getPartialTicks();
         this.anim.doAnimation(this, "idle", entity.tickCount, partialTicks, 1);
-        if (limbSwing > 0)
-            this.anim.doAnimation(this, "walk", entity.tickCount, partialTicks, 1);
+        if (entity.getMoveFlag() != BaseServant.MoveType.NONE) {
+            if (entity.getMoveFlag() == BaseServant.MoveType.RUN)
+                this.anim.doAnimation(this, "run", entity.tickCount, partialTicks, entity.interpolatedMoveTick(partialTicks));
+            else
+                this.anim.doAnimation(this, "walk", entity.tickCount, partialTicks, entity.interpolatedMoveTick(partialTicks));
+        }
         if (entity.isStaying()) {
             this.anim.doAnimation(this, "stay", entity.tickCount, partialTicks);
         } else {
