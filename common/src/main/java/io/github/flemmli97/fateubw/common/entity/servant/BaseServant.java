@@ -486,7 +486,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     @Override
     public void customServerAiStep() {
         super.customServerAiStep();
-        if (!this.canBeControlledByRider() && this.isMoving()) {
+        if (!this.canBeControlledByRider() && this.isMoving() && this.isAlive()) {
             double d0 = this.getMoveControl().getSpeedModifier();
             MoveType move;
             if (d0 > 1) {

@@ -1,6 +1,8 @@
 package io.github.flemmli97.fateubw.common.registry;
 
 import io.github.flemmli97.fateubw.Fate;
+import io.github.flemmli97.fateubw.common.particles.RingParticleData;
+import io.github.flemmli97.fateubw.common.particles.RingParticleType;
 import io.github.flemmli97.fateubw.common.particles.TrailParticleData;
 import io.github.flemmli97.fateubw.common.particles.TrailParticleType;
 import io.github.flemmli97.tenshilib.common.particle.ColoredParticleData;
@@ -17,5 +19,6 @@ public class ModParticles {
 
     public static final RegistryEntrySupplier<ParticleType<ColoredParticleData>> LIGHT = PARTICLES.register("light", () -> new ColoredParticleType(false));
     public static final RegistryEntrySupplier<ParticleType<TrailParticleData>> TRAIL = PARTICLES.register("trail", TrailParticleType::new);
+    public static final RegistryEntrySupplier<ParticleType<RingParticleData>> RING = PARTICLES.register("ring", RingParticleType::new);
 
 }

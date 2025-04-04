@@ -4,6 +4,7 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
+import io.github.flemmli97.fateubw.common.particles.RingParticleData;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
@@ -21,6 +22,7 @@ import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -272,6 +274,11 @@ public class EntityHeracles extends BaseServant {
                             player.connection.send(new ClientboundSetEntityMotionPacket(player));
                     }
                 });
+                if (!this.hits.isEmpty()) {
+                    ((ServerLevel) this.level)
+                            .sendParticles(new RingParticleData(0.9f, 0.9f, 0.9f, 1, 1, this.getYRot(), 40, 3f), this.getX(), this.getY(), this.getZ(),
+                                    0, 0, 0, 0, 1);
+                }
                 this.hits = null;
                 this.setDeltaMovement(this.getDeltaMovement().add(0, -0.1, 0));
             }
