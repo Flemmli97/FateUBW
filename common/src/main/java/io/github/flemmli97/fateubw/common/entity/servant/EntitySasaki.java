@@ -73,7 +73,7 @@ public class EntitySasaki extends BaseServant {
                             .or(EntitySasaki.TWO_HAND_4, 2, 0.24f, 1).chain(EntitySasaki.TWO_HAND_5, 2, 0.24f)
                             .or(EntitySasaki.TWO_HAND_6, 2, 0.24f, 4)
                             .withChance(0.5f))
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 10),
             WeightedEntry.wrap(new GoalAttackAction<EntitySasaki>(EntitySasaki.TWO_HAND_2)
                     .cooldown(e -> e.getRandom().nextInt(20) + 15)
                     .chain(GoalAttackAction.<EntitySasaki>chainBuilder(EntitySasaki.TWO_HAND_1, 2, 0.24f, 1)
@@ -84,38 +84,38 @@ public class EntitySasaki extends BaseServant {
                             .or(EntitySasaki.TWO_HAND_3, 2, 0.24f, 1).chain(EntitySasaki.TWO_HAND_6, 2, 0.24f)
                             .or(EntitySasaki.TWO_HAND_5, 2, 0.24f, 4)
                             .withChance(0.5f))
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 10),
             WeightedEntry.wrap(new GoalAttackAction<EntitySasaki>(EntitySasaki.TWO_HAND_3)
                     .cooldown(e -> e.getRandom().nextInt(20) + 15)
                     .chain(GoalAttackAction.<EntitySasaki>chainBuilder(EntitySasaki.TWO_HAND_6, 2, 0.24f, 1)
                             .chain(EntitySasaki.TWO_HAND_2, 2, 0.24f)
                             .or(EntitySasaki.TWO_HAND_6, 2, 0.24f, 4)
                             .withChance(0.6f))
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 10),
             WeightedEntry.wrap(new GoalAttackAction<EntitySasaki>(EntitySasaki.TWO_HAND_4)
                     .cooldown(e -> e.getRandom().nextInt(20) + 15)
                     .chain(GoalAttackAction.<EntitySasaki>chainBuilder(EntitySasaki.TWO_HAND_5, 2, 0.24f, 1)
                             .chain(EntitySasaki.TWO_HAND_1, 2, 0.24f)
                             .or(EntitySasaki.TWO_HAND_5, 2, 0.24f, 4)
                             .withChance(0.6f))
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 10),
             WeightedEntry.wrap(new GoalAttackAction<EntitySasaki>(EntitySasaki.TWO_HAND_7)
                     .cooldown(e -> e.getRandom().nextInt(20) + 15)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 10),
             WeightedEntry.wrap(new GoalAttackAction<EntitySasaki>(EntitySasaki.KATANA_1)
                     .cooldown(e -> e.getRandom().nextInt(20) + 15)
                     .chain(GoalAttackAction.<EntitySasaki>chainBuilder(EntitySasaki.TWO_HAND_5, 2, 0.24f, 2)
                             .or(EntitySasaki.ONE_HAND_1, 2, 0.24f, 1)
                             .withChance(0.7f))
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 10),
             WeightedEntry.wrap(new GoalAttackAction<EntitySasaki>(EntitySasaki.TSUBAME_GAESHI)
                     .cooldown(e -> e.getRandom().nextInt(25) + 20)
                     .withCondition(Utils.npCheck())
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(4, 8, 1.1))), 25)
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(4, 8, 1.2))), 25)
     );
     public static final List<WeightedEntry.Wrapper<IdleAction<EntitySasaki>>> IDLE_ACTIONS = List.of(
             WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1, 0.5)), 5),
-            WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(1, 1, 6)), 3)
+            WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(1, 1.1, 6)), 3)
     );
 
     public final AnimatedAttackGoal<EntitySasaki> attack = new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS);

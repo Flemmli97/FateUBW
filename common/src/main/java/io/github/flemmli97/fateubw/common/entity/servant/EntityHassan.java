@@ -85,22 +85,22 @@ public class EntityHassan extends BaseServant {
                             .or(EntityHassan.DAGGER_1, 2, 0.2f, 1)
                             .chain(EntityHassan.DAGGER_4, 2, 0.16f)
                             .withChance(0.6f))
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 11),
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.2))), 11),
             WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.TOP_STAB)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.2))), 10),
             WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.THROW)
                     .cooldown(e -> e.getRandom().nextInt(15) + 10)
                     .withCondition(((goal, target, previous) -> goal.distanceToTargetSq > 25 || goal.attacker.getRandom().nextFloat() < 0.5))
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 14, 1.1))), 12),
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 14, 1.3))), 12),
             WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.DUPE)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
                     .withCondition((goal, target, prev) -> Utils.<EntityHassan>npCheck().test(goal, target, prev) && goal.attacker.gatherCopies().isEmpty())
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(4, 6, 1.1))), 15)
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(4, 6, 1.3))), 15)
     );
     public static final List<WeightedEntry.Wrapper<IdleAction<EntityHassan>>> IDLE_ACTIONS = List.of(
             WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1, 0.5)), 6),
-            WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(1, 1, 6)), 2)
+            WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(1, 1.1, 6)), 2)
     );
 
     public final AnimatedAttackGoal<EntityHassan> attack = new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS);

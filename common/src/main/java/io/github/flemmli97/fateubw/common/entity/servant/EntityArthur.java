@@ -107,7 +107,7 @@ public class EntityArthur extends BaseServant {
             WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.EXCALIBAA)
                     .cooldown(e -> e.getRandom().nextInt(25) + 20)
                     .withCondition(Utils.npCheck())
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(3, 8, 1.1))), 15)
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(3, 8, 1.2))), 15)
     );
     public static final List<WeightedEntry.Wrapper<IdleAction<EntityArthur>>> IDLE_ACTIONS = List.of(
             WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1, 0.5)), 6),

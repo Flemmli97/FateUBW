@@ -52,7 +52,7 @@ public class ClientHandler {
     public static float getPartialTicks() {
         boolean isPaused = Minecraft.getInstance().isPaused();
         if (isPaused && !paused) {
-            pausedPartial =  Minecraft.getInstance().getFrameTime();
+            pausedPartial = Minecraft.getInstance().getFrameTime();
         }
         paused = isPaused;
         return isPaused ? pausedPartial : Minecraft.getInstance().getFrameTime();

@@ -71,7 +71,7 @@ public class EntityHeracles extends BaseServant {
                     .chain(GoalAttackAction.<EntityHeracles>chainBuilder(EntityHeracles.ONE_HAND_HEAVY_2, 2, 0.24f, 5)
                             .or(EntityHeracles.ONE_HAND_HEAVY_3, 2, 0.24f, 5)
                             .withChance(0.5f))
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 12),
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 12),
             WeightedEntry.wrap(new GoalAttackAction<EntityHeracles>(EntityHeracles.ONE_HAND_HEAVY_2)
                     .cooldown(e -> e.getRandom().nextInt(20) + 15)
                     .chain(GoalAttackAction.<EntityHeracles>chainBuilder(EntityHeracles.ONE_HAND_HEAVY_1, 2, 0.24f, 1)
@@ -79,14 +79,14 @@ public class EntityHeracles extends BaseServant {
                             .or(EntityHeracles.TWO_HAND_HEAVY_2, 2, 0.28f, 1)
                             .chain(EntityHeracles.ONE_HAND_HEAVY_3, 2, 0.24f)
                             .withChance(0.5f))
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 12),
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 12),
             WeightedEntry.wrap(new GoalAttackAction<EntityHeracles>(EntityHeracles.TWO_HAND_HEAVY_1)
                     .cooldown(e -> e.getRandom().nextInt(20) + 15)
                     .chain(GoalAttackAction.<EntityHeracles>chainBuilder(EntityHeracles.TWO_HAND_HEAVY_2, 2, 0.28f, 5)
                             .or(EntityHeracles.TWO_HAND_HEAVY_2, 2, 0.28f, 2)
                             .chain(EntityHeracles.ONE_HAND_HEAVY_2, 2, 0.24f)
                             .withChance(0.5f))
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 12),
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 12),
             WeightedEntry.wrap(new GoalAttackAction<EntityHeracles>(EntityHeracles.JUMP)
                     .cooldown(e -> e.getRandom().nextInt(30) + 15)
                     .withCondition(((goal, target, previous) -> {
@@ -103,11 +103,11 @@ public class EntityHeracles extends BaseServant {
                     .prepare(() -> new WrappedRunner<>(new DoNothingRunner<>(true))), 10),
             WeightedEntry.wrap(new GoalAttackAction<EntityHeracles>(EntityHeracles.UPPER_CUT)
                     .cooldown(e -> e.getRandom().nextInt(30) + 20)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 5)
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 5)
     );
     public static final List<WeightedEntry.Wrapper<IdleAction<EntityHeracles>>> IDLE_ACTIONS = List.of(
-            WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1, 0.5)), 6),
-            WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(1, 1, 6)), 4)
+            WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1.1, 0.5)), 6),
+            WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(1.1, 1, 6)), 4)
     );
 
     public final AnimatedAttackGoal<EntityHeracles> attack = new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS);

@@ -16,10 +16,12 @@ import io.github.flemmli97.tenshilib.common.entity.ai.animated.AnimatedAttackGoa
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.GoalAttackAction;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.IdleAction;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.DoNothingRunner;
+import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.JumpEvadeAction;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.KeepDistanceRunner;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveAwayRunner;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.WrappedRunner;
 import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -63,16 +65,24 @@ public class EntityMedea extends BaseServant {
     public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityMedea>>> ATTACKS = List.of(
             WeightedEntry.wrap(new GoalAttackAction<EntityMedea>(EntityMedea.CAST_1)
                     .cooldown(e -> e.getRandom().nextInt(25) + 20)
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(6, 15))), 20),
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(6, 15, 1.1))), 20),
             WeightedEntry.wrap(new GoalAttackAction<EntityMedea>(EntityMedea.CAST_2)
                     .cooldown(e -> e.getRandom().nextInt(25) + 20)
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(6, 15))), 20),
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(6, 15, 1.1))), 20),
             WeightedEntry.wrap(new GoalAttackAction<EntityMedea>(EntityMedea.CAST_3)
                     .cooldown(e -> e.getRandom().nextInt(25) + 20)
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(6, 15))), 12),
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(6, 15, 1.1))), 12),
             WeightedEntry.wrap(new GoalAttackAction<EntityMedea>(EntityMedea.CAST_4)
                     .cooldown(e -> e.getRandom().nextInt(25) + 20)
                     .prepare(() -> new WrappedRunner<>(new DoNothingRunner<>(true))), 6),
+            WeightedEntry.wrap(new GoalAttackAction<EntityMedea>(EntityMedea.CAST_1)
+                    .cooldown(e -> e.getRandom().nextInt(25) + 20)
+                    .withCondition((goal, target, prev) -> goal.distanceToTargetSq < 9)
+                    .prepare(() -> new WrappedRunner<>(new JumpEvadeAction<>(3, 2, 1, 1, 0, new DoNothingRunner<>(true)))), 23),
+            WeightedEntry.wrap(new GoalAttackAction<EntityMedea>(EntityMedea.CAST_3)
+                    .cooldown(e -> e.getRandom().nextInt(25) + 20)
+                    .withCondition((goal, target, prev) -> goal.distanceToTargetSq < 9)
+                    .prepare(() -> new WrappedRunner<>(new JumpEvadeAction<>(3, 2, 1, 1, 0, new DoNothingRunner<>(true)))), 23),
             WeightedEntry.wrap(new GoalAttackAction<EntityMedea>(EntityMedea.MAGIC_CIRCLE)
                     .cooldown(e -> e.getRandom().nextInt(40) + 20)
                     .withCondition(((goal, target, previous) -> goal.attacker.aiCircledelay < 0))
@@ -80,13 +90,13 @@ public class EntityMedea extends BaseServant {
             WeightedEntry.wrap(new GoalAttackAction<EntityMedea>(EntityMedea.RULE_BREAKER)
                     .cooldown(e -> e.getRandom().nextInt(25) + 20)
                     .withCondition(Utils.npCheck())
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 12))), 50)
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 12, 1.2))), 50)
     );
     public static final List<WeightedEntry.Wrapper<IdleAction<EntityMedea>>> IDLE_ACTIONS = List.of(
             WeightedEntry.wrap(new IdleAction<>(() -> new TeleportRunner<>(5, 12, 6, 12)), 1),
             WeightedEntry.wrap(new IdleAction<>(() -> new TeleportRunner<EntityMedea>(5, 12, 6, 12))
                     .withCondition(((goal, target) -> goal.distanceToTargetSq < 25)), 7),
-            WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(1, 1, 6)), 20)
+            WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(1, 1.2, 6)), 20)
     );
 
     public final AnimatedAttackGoal<EntityMedea> attack = new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS);
@@ -113,6 +123,7 @@ public class EntityMedea extends BaseServant {
     private Vec3 teleportPre, teleportPos;
 
     private int circleDelay, aiCircledelay;
+    private Vec3 circlePos;
 
     private final Vector4f summonColor = new Vector4f(59 / 255f, 14 / 255f, 76 / 255f, 0.7f);
 
@@ -153,6 +164,13 @@ public class EntityMedea extends BaseServant {
         if (this.level.isClientSide) {
             if (this.getAnimationHandler().isCurrent(MAGIC_CIRCLE) && this.getAnimationHandler().getAnimation().isAt("attack")) {
                 this.sphereParticles();
+            }
+        } else {
+            if (this.tickCount % 10 == 0 && this.circlePos != null) {
+                if (this.level.getEntities(EntityTypeTest.forClass(MagicBufCircle.class), new AABB(this.circlePos.add(-2, -2, -2),
+                        this.circlePos.add(2, 2, 2)), e -> e.getOwner() == this).isEmpty()) {
+                    this.circlePos = null;
+                }
             }
         }
     }
@@ -307,7 +325,12 @@ public class EntityMedea extends BaseServant {
             MagicBeam beam = new MagicBeam(this.level, this, target);
             beam.setDamageMultiplier(1 + strength * 0.1f);
             beam.setPos(offset.x, offset.y, offset.z);
-            beam.setRotationTo(target, 0);
+            if (target != null)
+                beam.setRotationTo(target, 0);
+            else {
+                Vec3 dir = this.getLookAngle();
+                beam.setRotationToDir(dir.x(), dir.y(), dir.z(), 0);
+            }
             this.level.addFreshEntity(beam);
         }
         this.revealServant();
@@ -315,9 +338,11 @@ public class EntityMedea extends BaseServant {
 
     public void makeCircle() {
         if (!this.level.isClientSide) {
-            this.level.addFreshEntity(new MagicBufCircle(this.level, this, Config.Common.medeaCircleRange));
+            MagicBufCircle circle = new MagicBufCircle(this.level, this, Config.Common.medeaCircleRange);
+            this.level.addFreshEntity(circle);
             this.circleDelay = Config.Common.medeaCircleSpan + this.random.nextInt(100);
             this.aiCircledelay = (int) (this.random.nextInt(400) + Config.Common.medeaCircleSpan * 0.5);
+            this.circlePos = circle.position();
             if (this.getOwner() != null)
                 this.getOwner().sendMessage(new TranslatableComponent("fateubw.chat.medea.circle.spawn"), Util.NIL_UUID);
             this.playSound(SoundEvents.BEACON_POWER_SELECT, 1, 1);
@@ -337,6 +362,25 @@ public class EntityMedea extends BaseServant {
     }
 
     @Override
+    public boolean hasRestriction() {
+        return super.hasRestriction() || this.circlePos != null;
+    }
+
+    @Override
+    public BlockPos getRestrictCenter() {
+        return this.circlePos != null ? new BlockPos(this.circlePos) : super.getRestrictCenter();
+    }
+
+    @Override
+    public boolean isWithinRestriction(BlockPos pos) {
+        if (this.circlePos != null) {
+            if (this.circlePos.distanceToSqr(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5) > Config.Common.medeaCircleRange * Config.Common.medeaCircleRange)
+                return false;
+        }
+        return super.isWithinRestriction(pos);
+    }
+
+    @Override
     public String[] specialCommands() {
         return new String[]{ModEntities.MEDEA.getID() + ".circle"};
     }
@@ -351,12 +395,22 @@ public class EntityMedea extends BaseServant {
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
         tag.putInt("CircleDelay", this.circleDelay);
+        tag.putInt("CircleDelayAI", this.aiCircledelay);
+        if (this.circlePos != null) {
+            tag.putDouble("CircleX", this.circlePos.x());
+            tag.putDouble("CircleY", this.circlePos.y());
+            tag.putDouble("CircleZ", this.circlePos.z());
+        }
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
         this.circleDelay = tag.getInt("CircleDelay");
+        this.aiCircledelay = tag.getInt("CircleDelayAI");
+        if (tag.contains("CircleX")) {
+            this.circlePos = new Vec3(tag.getDouble("CircleX"), tag.getDouble("CircleY"), tag.getDouble("CircleZ"));
+        }
     }
 
     @Override

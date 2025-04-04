@@ -69,16 +69,16 @@ public class EntityDiarmuid extends BaseServant {
     public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityDiarmuid>>> ATTACKS = List.of(
             WeightedEntry.wrap(new GoalAttackAction<EntityDiarmuid>(EntityDiarmuid.DUAL_SPEAR_1)
                     .cooldown(e -> e.getRandom().nextInt(18) + 10)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 10),
             WeightedEntry.wrap(new GoalAttackAction<EntityDiarmuid>(EntityDiarmuid.DUAL_SPEAR_2)
                     .cooldown(e -> e.getRandom().nextInt(18) + 10)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 10),
             WeightedEntry.wrap(new GoalAttackAction<EntityDiarmuid>(EntityDiarmuid.DUAL_SPEAR_3)
                     .cooldown(e -> e.getRandom().nextInt(18) + 10)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 10),
             WeightedEntry.wrap(new GoalAttackAction<EntityDiarmuid>(EntityDiarmuid.DUAL_SPEAR_4)
                     .cooldown(e -> e.getRandom().nextInt(18) + 10)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 10),
             WeightedEntry.wrap(new GoalAttackAction<EntityDiarmuid>(EntityDiarmuid.UNSEAL)
                     .cooldown(e -> e.getRandom().nextInt(25) + 20)
                     .withCondition((goal, target, prev) -> goal.attacker.unsealedDuration < 0
@@ -87,7 +87,7 @@ public class EntityDiarmuid extends BaseServant {
     );
     public static final List<WeightedEntry.Wrapper<IdleAction<EntityDiarmuid>>> IDLE_ACTIONS = List.of(
             WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1, 0.5)), 12),
-            WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(1, 1, 6)), 7),
+            WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(1, 1.2, 6)), 7),
             WeightedEntry.wrap(new IdleAction<EntityDiarmuid>(() -> new AnimationRunner<>(BLINK))
                     .duration(e -> Mth.ceil(BLINK.getLength()) + 1)
                     .withCondition(((goal, target) -> goal.distanceToTargetSq > 49)), 8),

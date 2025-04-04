@@ -58,24 +58,24 @@ public class EntityCuchulainn extends BaseServant {
                     .chain(GoalAttackAction.<EntityCuchulainn>chainBuilder(EntityCuchulainn.SPEAR_2, 2, 0.24f, 1)
                             .or(EntityCuchulainn.SPEAR_3, 2, 0.24f, 1)
                             .withChance(0.6f))
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 5),
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 5),
             WeightedEntry.wrap(new GoalAttackAction<EntityCuchulainn>(EntityCuchulainn.SPEAR_2)
                     .cooldown(e -> e.getRandom().nextInt(18) + 10)
                     .chain(GoalAttackAction.<EntityCuchulainn>chainBuilder(EntityCuchulainn.SPEAR_1, 2, 0.24f, 2)
                             .chain(EntityCuchulainn.SPEAR_3, 2, 0.24f)
                             .or(EntityCuchulainn.SPEAR_1, 2, 0.24f, 1)
                             .withChance(0.6f))
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 5),
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 5),
             WeightedEntry.wrap(new GoalAttackAction<EntityCuchulainn>(EntityCuchulainn.SPEAR_4)
                     .cooldown(e -> e.getRandom().nextInt(18) + 10)
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(3, 5))), 6),
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(3, 5, 1.2))), 6),
             WeightedEntry.wrap(new GoalAttackAction<EntityCuchulainn>(EntityCuchulainn.SPEAR_5)
                     .cooldown(e -> e.getRandom().nextInt(18) + 10)
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(3, 5))), 6),
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(3, 5, 1.2))), 6),
             WeightedEntry.wrap(new GoalAttackAction<EntityCuchulainn>(EntityCuchulainn.GAE_BOLG)
                     .cooldown(e -> e.getRandom().nextInt(18) + 10)
                     .withCondition(Utils.npCheck())
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(4, 7, 1.1))), 15)
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(4, 7, 1.3))), 15)
     );
     public static final List<WeightedEntry.Wrapper<IdleAction<EntityCuchulainn>>> IDLE_ACTIONS = List.of(
             WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1, 0.5)), 6)

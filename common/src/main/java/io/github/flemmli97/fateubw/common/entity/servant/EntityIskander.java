@@ -87,11 +87,11 @@ public class EntityIskander extends BaseServant {
             WeightedEntry.wrap(new GoalAttackAction<EntityIskander>(EntityIskander.SUMMON_HORSE)
                     .cooldown(e -> e.getRandom().nextInt(20) + 10)
                     .withCondition((goal, target, prev) -> !goal.attacker.isPassenger())
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(5, 8, 1.1))), 6),
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(5, 8, 1.2))), 6),
             WeightedEntry.wrap(new GoalAttackAction<EntityIskander>(EntityIskander.CHARIOT)
                     .cooldown(e -> e.getRandom().nextInt(25) + 10)
                     .withCondition((goal, target, prev) -> !goal.attacker.isPassenger() && (goal.attacker.canUseNP() && goal.attacker.getOwner() == null && goal.attacker.getMana() >= goal.attacker.props().hogouMana()) || goal.attacker.forcedNP)
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(5, 8, 1.1))), 14)
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(5, 8, 1.2))), 14)
     );
     public static final List<WeightedEntry.Wrapper<IdleAction<EntityIskander>>> IDLE_ACTIONS = List.of(
             WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1, 0.5)), 6),

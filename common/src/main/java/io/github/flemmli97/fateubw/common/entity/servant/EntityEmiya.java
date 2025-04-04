@@ -86,22 +86,22 @@ public class EntityEmiya extends BaseServant {
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 8),
             WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.BOW_1)
                     .cooldown(e -> e.getRandom().nextInt(25) + 10)
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 14, 1.1))), 10),
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 14, 1.2))), 10),
             WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.BOW_2)
                     .cooldown(e -> e.getRandom().nextInt(25) + 10)
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(4, 10, 1.1))), 7),
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(4, 10, 1.2))), 7),
             WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.BOW_1)
                     .cooldown(e -> e.getRandom().nextInt(25) + 10)
                     .withCondition((goal, target, previous) -> goal.distanceToTargetSq > 25)
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(6, 14, 1.1))), 13),
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(6, 14, 1.2))), 13),
             WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.BOW_2)
                     .cooldown(e -> e.getRandom().nextInt(25) + 10)
                     .withCondition((goal, target, previous) -> goal.distanceToTargetSq > 25)
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(4, 10, 1.1))), 9),
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(4, 10, 1.2))), 9),
             WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.CALADBOLG)
                     .cooldown(e -> e.getRandom().nextInt(30) + 10)
                     .withCondition(Utils.npCheck())
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(8, 14, 1.2))), 15)
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(8, 14, 1.3))), 15)
     );
     public static final List<WeightedEntry.Wrapper<IdleAction<EntityEmiya>>> IDLE_ACTIONS = List.of(
             WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(6, 1.1, 2)), 6),

@@ -70,30 +70,30 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
             WeightedEntry.wrap(new GoalAttackAction<EntityMedusa>(EntityMedusa.DUAL_REVERSE_1)
                     .cooldown(e -> e.getRandom().nextInt(15) + 10)
                     .withCondition(meleeCondition(EntityMedusa.DUAL_REVERSE_1))
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 10),
             WeightedEntry.wrap(new GoalAttackAction<EntityMedusa>(EntityMedusa.DUAL_REVERSE_2)
                     .cooldown(e -> e.getRandom().nextInt(15) + 10)
                     .withCondition((goal, target, previous) -> meleeCondition(EntityMedusa.DUAL_REVERSE_1).test(goal, target, previous) && !goal.attacker.getOffhandItem().isEmpty())
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 10),
             WeightedEntry.wrap(new GoalAttackAction<EntityMedusa>(EntityMedusa.DUAL_REVERSE_3)
                     .cooldown(e -> e.getRandom().nextInt(15) + 10)
                     .withCondition(meleeCondition(EntityMedusa.DUAL_REVERSE_1))
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 10),
             WeightedEntry.wrap(new GoalAttackAction<EntityMedusa>(EntityMedusa.DUAL_REVERSE_4)
                     .cooldown(e -> e.getRandom().nextInt(15) + 10)
                     .withCondition((goal, target, previous) -> meleeCondition(EntityMedusa.DUAL_REVERSE_1).test(goal, target, previous) && !goal.attacker.getOffhandItem().isEmpty())
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 10),
             WeightedEntry.wrap(new GoalAttackAction<EntityMedusa>(EntityMedusa.JUMP)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
                     .withCondition(((goal, target, previous) -> !goal.attacker.isPassenger() && goal.distanceToTargetSq > 9))
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetRunner<>(1, 7))), 13),
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetRunner<>(1.1, 7))), 13),
             WeightedEntry.wrap(new GoalAttackAction<EntityMedusa>(EntityMedusa.JUMP)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetRunner<>(1, 7))), 4),
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetRunner<>(1.1, 7))), 4),
             WeightedEntry.wrap(new GoalAttackAction<EntityMedusa>(EntityMedusa.THROW)
                     .cooldown(e -> e.getRandom().nextInt(30) + 20)
                     .withCondition((goal, target, previous) -> goal.attacker.canThrow() && (goal.distanceToTargetSq > 25 || goal.attacker.getRandom().nextFloat() < 0.4))
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetRunner<>(1, 14))), 10),
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetRunner<>(1.1, 14))), 10),
 //            WeightedEntry.wrap(new GoalAttackAction<EntityMedusa>(EntityMedusa.EYE) // TODO
 //                    .cooldown(e -> e.getRandom().nextInt(25) + 15)
 //                    .withCondition(((goal, target, previous) -> goal.attacker.eyeCooldown <= 0))
@@ -105,12 +105,12 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
             WeightedEntry.wrap(new GoalAttackAction<EntityMedusa>(EntityMedusa.BELLEROPHON)
                     .cooldown(e -> e.getRandom().nextInt(25) + 10)
                     .withCondition((goal, target, prev) -> !goal.attacker.isPassenger() && (goal.attacker.canUseNP() && goal.attacker.getOwner() == null && goal.attacker.getMana() >= goal.attacker.props().hogouMana()) || goal.attacker.forcedNP)
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(5, 8, 1.1))), 15)
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(5, 8, 1.3))), 15)
     );
     public static final List<WeightedEntry.Wrapper<IdleAction<EntityMedusa>>> IDLE_ACTIONS = List.of(
             WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<EntityMedusa>(1, 0.5))
                     .withCondition(((goal, target) -> !goal.attacker.isPassenger())), 6),
-            WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(1, 1, 6)), 2),
+            WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(1, 1.1, 6)), 2),
             WeightedEntry.wrap(new IdleAction<>(() -> new RandomMoveAroundRunner<EntityMedusa>(8, 6))
                     .withCondition(((goal, target) -> goal.attacker.isPassenger())), 7),
             WeightedEntry.wrap(new IdleAction<>(() -> new DoNothingRunner<EntityMedusa>())
