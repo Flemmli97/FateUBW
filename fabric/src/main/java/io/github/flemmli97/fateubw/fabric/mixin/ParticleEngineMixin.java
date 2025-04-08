@@ -1,7 +1,7 @@
 package io.github.flemmli97.fateubw.fabric.mixin;
 
 import com.google.common.collect.ImmutableList;
-import io.github.flemmli97.fateubw.client.particles.SimpleTrailParticle;
+import io.github.flemmli97.fateubw.client.particles.TrailParticle;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.ParticleRenderType;
@@ -27,7 +27,7 @@ public abstract class ParticleEngineMixin {
     @Inject(at = @At("RETURN"), method = "<init>")
     private void customTypes(ClientLevel world, TextureManager textureManager, CallbackInfo ci) {
         RENDER_ORDER = ImmutableList.<ParticleRenderType>builder().addAll(RENDER_ORDER)
-                .add(SimpleTrailParticle.COLOR_PARTICLE)
+                .add(TrailParticle.COLOR_PARTICLE)
                 .build();
     }
 }

@@ -3,8 +3,8 @@ package io.github.flemmli97.fateubw.common.registry;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.particles.RingParticleData;
 import io.github.flemmli97.fateubw.common.particles.RingParticleType;
-import io.github.flemmli97.fateubw.common.particles.TrailParticleData;
-import io.github.flemmli97.fateubw.common.particles.TrailParticleType;
+import io.github.flemmli97.fateubw.common.particles.SelfCodecParticleType;
+import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
 import io.github.flemmli97.tenshilib.common.particle.ColoredParticleData;
 import io.github.flemmli97.tenshilib.common.particle.ColoredParticleType;
 import io.github.flemmli97.tenshilib.platform.PlatformUtils;
@@ -18,7 +18,7 @@ public class ModParticles {
     public static final PlatformRegistry<ParticleType<?>> PARTICLES = PlatformUtils.INSTANCE.of(Registry.PARTICLE_TYPE_REGISTRY, Fate.MODID);
 
     public static final RegistryEntrySupplier<ParticleType<ColoredParticleData>> LIGHT = PARTICLES.register("light", () -> new ColoredParticleType(false));
-    public static final RegistryEntrySupplier<ParticleType<TrailParticleData>> TRAIL = PARTICLES.register("trail", TrailParticleType::new);
+    public static final RegistryEntrySupplier<ParticleType<TrailParticleData>> TRAIL = PARTICLES.register("trail", () -> new SelfCodecParticleType<>(TrailParticleData.DESERIALIZER, TrailParticleData::codec));
     public static final RegistryEntrySupplier<ParticleType<RingParticleData>> RING = PARTICLES.register("ring", RingParticleType::new);
 
 }

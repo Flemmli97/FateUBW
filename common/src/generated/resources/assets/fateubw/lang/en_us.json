@@ -176,7 +176,7 @@
   "fateubw.gui.command.special": "Special",
   "fateubw.gui.command.back": "Back",
   "fateubw.gui.command.aggressive": "Aggressive",
-  "fateubw.gui.command.normal": "Normal",
+  "fateubw.gui.command.end": "Normal",
   "fateubw.gui.command.defensive": "Defensive",
   "fateubw.gui.command.follow": "Follow",
   "fateubw.gui.command.stay": "Stay",

@@ -1,13 +1,13 @@
-package io.github.flemmli97.fateubw.common.particles;
+package io.github.flemmli97.fateubw.common.particles.trail;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.MotionTrailProvider;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.phys.Vec3;
 
 public class TrailParticleData implements ParticleOptions {
 
@@ -15,34 +15,6 @@ public class TrailParticleData implements ParticleOptions {
     public static final Deserializer<TrailParticleData> DESERIALIZER = new Deserializer<>() {
         @Override
         public TrailParticleData fromCommand(ParticleType<TrailParticleData> type, StringReader reader) throws CommandSyntaxException {
-            reader.expect(' ');
-            double x = reader.readDouble();
-            reader.expect(' ');
-            double y = reader.readDouble();
-            reader.expect(' ');
-            Vec3 start = new Vec3(x, y, reader.readDouble());
-            reader.expect(' ');
-            x = reader.readDouble();
-            reader.expect(' ');
-            y = reader.readDouble();
-            reader.expect(' ');
-            Vec3 end = new Vec3(x, y, reader.readDouble());
-            reader.expect(' ');
-            x = reader.readDouble();
-            reader.expect(' ');
-            y = reader.readDouble();
-            reader.expect(' ');
-            Vec3 control = new Vec3(x, y, reader.readDouble());
-            reader.expect(' ');
-            float yRot = reader.readFloat();
-            reader.expect(' ');
-            float xRot = reader.readFloat();
-            reader.expect(' ');
-            float zRot = reader.readFloat();
-            reader.expect(' ');
-            int duration = reader.readInt();
-            reader.expect(' ');
-            int fate = reader.readInt();
             reader.expect(' ');
             float r = reader.readFloat();
             reader.expect(' ');
@@ -63,7 +35,25 @@ public class TrailParticleData implements ParticleOptions {
             float a2 = reader.readFloat();
             reader.expect(' ');
             float scale2 = reader.readFloat();
-            return new TrailParticleData(type, new TrailInfo(start, end, control, yRot, xRot, zRot, duration, fate, r, g, b, a, scale, r2, g2, b2, a2, scale2));
+            reader.expect(' ');
+            TrailInfo.Visual visual;
+            try {
+                visual = TrailInfo.Visual.valueOf(reader.readString());
+            } catch (CommandSyntaxException | IllegalArgumentException e) {
+                visual = TrailInfo.Visual.SOLID;
+            }
+            reader.expect(' ');
+            float x = reader.readFloat();
+            reader.expect(' ');
+            float y = reader.readFloat();
+            reader.expect(' ');
+            float z = reader.readFloat();
+            reader.expect(' ');
+            int frames = reader.readInt();
+            reader.expect(' ');
+            int duration = reader.readInt();
+            return new TrailParticleData(type, new TrailInfo(r, g, b, a, scale, r2, g2, b2, a2, scale2, visual,
+                    new MotionTrailProvider(x, y, z, frames, duration)));
         }
 
         @Override

@@ -12,7 +12,7 @@ import io.github.flemmli97.fateubw.client.model.ModelPegasus;
 import io.github.flemmli97.fateubw.client.model.ModelServant;
 import io.github.flemmli97.fateubw.client.model.ModelStarfishDemon;
 import io.github.flemmli97.fateubw.client.particles.RingParticle;
-import io.github.flemmli97.fateubw.client.particles.SimpleTrailParticle;
+import io.github.flemmli97.fateubw.client.particles.TrailParticle;
 import io.github.flemmli97.fateubw.client.render.RenderEmpty;
 import io.github.flemmli97.fateubw.client.render.RenderMultiPartEntity;
 import io.github.flemmli97.fateubw.client.render.ServantRenderer;
@@ -157,7 +157,7 @@ public class ClientRegister {
 
     public static <T extends ParticleOptions> void registerParticles(PartileRegister consumer) {
         consumer.register(ModParticles.LIGHT.get(), ColoredParticle.NoGravityParticleFactory::new);
-        consumer.register(ModParticles.TRAIL.get(), SimpleTrailParticle.Factory::new);
+        consumer.register(ModParticles.TRAIL.get(), TrailParticle.Factory::new);
         consumer.register(ModParticles.RING.get(), RingParticle.Factory::new);
     }
 

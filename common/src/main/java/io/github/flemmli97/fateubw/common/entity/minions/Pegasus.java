@@ -6,8 +6,9 @@ import io.github.flemmli97.fateubw.common.entity.StandingVehicle;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
-import io.github.flemmli97.fateubw.common.particles.TrailInfo;
-import io.github.flemmli97.fateubw.common.particles.TrailParticleData;
+import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
+import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.MotionTrailProvider;
 import io.github.flemmli97.fateubw.common.registry.ModParticles;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
@@ -218,26 +219,22 @@ public class Pegasus extends PathfinderMob implements IAnimated, StandingVehicle
             }
             if (this.getAnimationHandler().isCurrent(CHARGING) && this.getAnimationHandler().getAnimation().isPast(0.48)) {
                 Vec3 base = MathUtils.rotate(new Vec3(0, 1, 0), Vec3.directionFromRotation(0, this.yBodyRot), (float) Math.toRadians(90)).normalize();
+                Vec3 dir = this.getDeltaMovement().scale(-0.2);
                 for (int i = 0; i < 8; i++) {
                     double sideScale = ((this.random.nextDouble() * 2) - 1) * 3;
                     double upScale = (this.random.nextDouble() * 2) - 1;
                     Vec3 pos = this.position().add(base.scale(sideScale)).add(new Vec3(0, 1, 0).scale(upScale));
-                    Vec3 dir = this.getDeltaMovement();
-                    float[] xYRot = MathsHelper.XYRotFrom(dir);
-                    float targetYRot = xYRot[0];
-                    float targetXRot = xYRot[1];
                     float r = (235 + this.getRandom().nextInt(10)) / 255F;
                     float g = (235 + this.getRandom().nextInt(10)) / 255F;
                     float b = 245 / 255F;
                     float scale = (float) (0.05 + this.getRandom().nextDouble() * 0.1);
-                    this.level.addParticle(new TrailParticleData(ModParticles.TRAIL.get(), TrailInfo.builder(new Vec3(0, 0, -this.getRandom().nextDouble() * 2 + 3), Vec3.ZERO)
-                                    .setColor(r, g, b, 0.6f)
-                                    .setColor2(r, g, b, 0.6f)
-                                    .rotateBy(-targetYRot, targetXRot, 0)
-                                    .duration(10)
-                                    .setScale(scale)
-                                    .setScale2(scale)
-                                    .build()),
+                    this.level.addParticle(new TrailParticleData(ModParticles.TRAIL.get(),
+                                    TrailInfo.builder(new MotionTrailProvider(dir, 6, 10))
+                                            .setColor(r, g, b, 0.6f)
+                                            .setColor2(r, g, b, 0.6f)
+                                            .setWidth(scale)
+                                            .setWidth2(scale)
+                                            .build()),
                             pos.x(), pos.y(), pos.z(), 0, 0, 0);
                 }
             }
