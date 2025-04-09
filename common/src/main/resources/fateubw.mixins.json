@@ -10,7 +10,7 @@
     "ItemRendererMixin",
     "LivingEntityRendererMixin",
     "RenderBuffersMixin",
-    "RenderTypeAccessor"
+    "RenderTypeAccessor", "SpriteSetMixin"
   ],
   "injectors": {
     "defaultRequire": 1

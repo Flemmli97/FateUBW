@@ -37,12 +37,17 @@ public class TrailParticleData implements ParticleOptions {
             float scale2 = reader.readFloat();
             reader.expect(' ');
             TrailInfo.Visual visual;
+            int txtIdx;
             try {
                 visual = TrailInfo.Visual.valueOf(reader.readString());
+                reader.expect(' ');
+                txtIdx = reader.readInt();
             } catch (CommandSyntaxException | IllegalArgumentException e) {
                 visual = TrailInfo.Visual.SOLID;
+                txtIdx = 0;
             }
             reader.expect(' ');
+
             float x = reader.readFloat();
             reader.expect(' ');
             float y = reader.readFloat();
@@ -52,7 +57,7 @@ public class TrailParticleData implements ParticleOptions {
             int frames = reader.readInt();
             reader.expect(' ');
             int duration = reader.readInt();
-            return new TrailParticleData(type, new TrailInfo(r, g, b, a, scale, r2, g2, b2, a2, scale2, visual,
+            return new TrailParticleData(type, new TrailInfo(r, g, b, a, scale, r2, g2, b2, a2, scale2, visual, txtIdx,
                     new MotionTrailProvider(x, y, z, frames, duration)));
         }
 

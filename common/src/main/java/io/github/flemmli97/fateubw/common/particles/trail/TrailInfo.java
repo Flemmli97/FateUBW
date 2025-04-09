@@ -7,6 +7,7 @@ import io.github.flemmli97.fateubw.common.particles.trail.provider.TrailProvider
 import io.github.flemmli97.tenshilib.common.utils.CodecUtils;
 import net.minecraft.network.FriendlyByteBuf;
 
+import java.util.Optional;
 import java.util.function.Function;
 
 
@@ -25,19 +26,21 @@ public class TrailInfo {
             COLOR.apply("_2").fieldOf("color_2").forGetter(d -> new Vector4f(d.r2, d.g2, d.b2, d.a2)),
             Codec.FLOAT.fieldOf("scale_2").forGetter(d -> d.width2),
             CodecUtils.stringEnumCodec(Visual.class, Visual.SOLID).fieldOf("type").forGetter(d -> d.visual),
+            Codec.INT.optionalFieldOf("texture_index").forGetter(d -> d.visual == Visual.SOLID || d.textureIndex == 0 ? Optional.empty() : Optional.of(d.textureIndex)),
             TrailProviderRegistry.CODEC.fieldOf("provider").forGetter(d -> d.provider)
-    ).apply(builder, (color, scale, color_2, scale_2, visual, provider) ->
+    ).apply(builder, (color, scale, color_2, scale_2, visual, text, provider) ->
             new TrailInfo(color.x(), color.y(), color.z(), color.w(), scale,
-                    color_2.x(), color_2.y(), color_2.z(), color_2.w(), scale_2, visual, provider)
+                    color_2.x(), color_2.y(), color_2.z(), color_2.w(), scale_2, visual, text.orElse(0), provider)
     ));
 
     public final float r, g, b, a, width;
     public final float r2, g2, b2, a2, width2;
     public final Visual visual;
+    public final int textureIndex;
 
     public final TrailProvider provider;
 
-    public TrailInfo(float r, float g, float b, float a, float width, float r2, float g2, float b2, float a2, float width2, Visual visual, TrailProvider provider) {
+    public TrailInfo(float r, float g, float b, float a, float width, float r2, float g2, float b2, float a2, float width2, Visual visual, int textureIndex, TrailProvider provider) {
         this.r = r;
         this.g = g;
         this.b = b;
@@ -49,12 +52,13 @@ public class TrailInfo {
         this.a2 = a2;
         this.width2 = width2;
         this.visual = visual;
+        this.textureIndex = textureIndex;
         this.provider = provider;
     }
 
     public TrailInfo(FriendlyByteBuf buf) {
         this(buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(),
-                buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readEnum(Visual.class), TrailProviderRegistry.fromBuffer(buf));
+                buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readEnum(Visual.class), buf.readInt(), TrailProviderRegistry.fromBuffer(buf));
     }
 
     public void toBuffer(FriendlyByteBuf buf) {
@@ -68,6 +72,8 @@ public class TrailInfo {
         buf.writeFloat(this.b2);
         buf.writeFloat(this.a2);
         buf.writeFloat(this.width2);
+        buf.writeEnum(this.visual);
+        buf.writeInt(this.textureIndex);
         TrailProviderRegistry.toBuffer(this.provider, buf);
     }
 
@@ -85,6 +91,7 @@ public class TrailInfo {
         private float width = 1, width2;
 
         private Visual visual = Visual.SOLID;
+        private int textureIndex;
 
         public Builder(TrailProvider provider) {
             this.provider = provider;
@@ -116,13 +123,14 @@ public class TrailInfo {
             return this;
         }
 
-        public Builder setType(Visual visual) {
+        public Builder setType(Visual visual, int index) {
             this.visual = visual;
+            this.textureIndex = index;
             return this;
         }
 
         public TrailInfo build() {
-            return new TrailInfo(this.r, this.g, this.b, this.a, this.width, this.r2, this.g2, this.b2, this.a2, this.width2, this.visual, this.provider);
+            return new TrailInfo(this.r, this.g, this.b, this.a, this.width, this.r2, this.g2, this.b2, this.a2, this.width2, this.visual, this.textureIndex, this.provider);
         }
     }
 

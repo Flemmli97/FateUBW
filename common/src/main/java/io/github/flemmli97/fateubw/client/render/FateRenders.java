@@ -35,11 +35,13 @@ public class FateRenders extends RenderType {
     private static ShaderInstance CLIPPED_SHADER_INSTANCE;
     private static ShaderInstance PULSING_TEXT_SHADER;
     private static ShaderInstance BABYLON_SHADER_INSTANCE;
+    private static ShaderInstance PARTICLE_COLOR_ADD_SHADER_INSTANCE;
 
     public static final ShaderStateShard CORRUPTED_SHADER = new ShaderStateShard(() -> CORRUPTED_SHADER_INSTANCE);
     public static final ShaderStateShard CLIPPED_SHADER = new ShaderStateShard(() -> CLIPPED_SHADER_INSTANCE);
     public static final ShaderStateShard BLOOM_SHADER = new ShaderStateShard(() -> PULSING_TEXT_SHADER);
     public static final ShaderStateShard BABYLON_SHADER = new ShaderStateShard(() -> BABYLON_SHADER_INSTANCE);
+    public static final ShaderStateShard PARTICLE_COLOR_ADD_SHADER = new ShaderStateShard(() -> PARTICLE_COLOR_ADD_SHADER_INSTANCE);
 
     public static final TransparencyStateShard CORRUPTED_OVERLAY_TRANSPARENCY = new TransparencyStateShard("fateubw:corrupted_overlay_transparency", () -> {
         RenderSystem.enableBlend();
@@ -104,6 +106,8 @@ public class FateRenders extends RenderType {
                     shaderInstance -> FateRenders.PULSING_TEXT_SHADER = shaderInstance);
             register.register(new ResourceLocation(Fate.MODID, "babylon"), POSITION_COLOR_TEX_TIME,
                     shaderInstance -> FateRenders.BABYLON_SHADER_INSTANCE = shaderInstance);
+            register.register(new ResourceLocation(Fate.MODID, "particle_color_add"), DefaultVertexFormat.PARTICLE,
+                    shaderInstance -> FateRenders.PARTICLE_COLOR_ADD_SHADER_INSTANCE = shaderInstance);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -134,6 +138,10 @@ public class FateRenders extends RenderType {
         viewPos = viewPos.subtract(from.position());
         double dist = (normal.x() * viewPos.x() + normal.y() * viewPos.y() + normal.z() * viewPos.z()) / Math.sqrt(normal.x() * normal.x() + normal.y() * normal.y() + normal.z() * normal.z());
         return new Vector4f(normal.x(), normal.y(), normal.z(), (float) dist + offset);
+    }
+
+    public static ShaderInstance getParticleColorAddShaderInstance() {
+        return PARTICLE_COLOR_ADD_SHADER_INSTANCE;
     }
 
     private FateRenders(String string, VertexFormat vertexFormat, VertexFormat.Mode mode, int i, boolean bl, boolean bl2, Runnable runnable, Runnable runnable2) {
