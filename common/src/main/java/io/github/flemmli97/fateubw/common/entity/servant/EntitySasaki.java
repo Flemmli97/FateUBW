@@ -18,6 +18,7 @@ import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTarget
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.WrappedRunner;
 import io.github.flemmli97.tenshilib.common.utils.OrientedBoundingBox;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
@@ -249,6 +250,12 @@ public class EntitySasaki extends BaseServant {
     @Override
     protected DamageSource damageSourceAttack(Entity target) {
         return this.hiken ? CustomDamageSource.hiKen(this) : DamageSource.mobAttack(this);
+    }
+
+    @Override
+    public float getSummonProgress(float partialTicks) {
+        float prog = super.getSummonProgress(partialTicks);
+        return prog >= 0 ? Mth.clamp(prog * 2, 0, 1) : prog;
     }
 
     @Override
