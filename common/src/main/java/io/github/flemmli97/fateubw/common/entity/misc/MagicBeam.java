@@ -21,10 +21,13 @@ public class MagicBeam extends BaseBeam {
 
     protected static final EntityDataAccessor<Integer> SHOOT_TIME = SynchedEntityData.defineId(MagicBeam.class, EntityDataSerializers.INT);
     protected static final EntityDataAccessor<Integer> PRE_SHOOT_TICK = SynchedEntityData.defineId(MagicBeam.class, EntityDataSerializers.INT);
+    protected static final EntityDataAccessor<Float> SPAWN_ROT_Y = SynchedEntityData.defineId(MagicBeam.class, EntityDataSerializers.FLOAT);
+    protected static final EntityDataAccessor<Float> SPAWN_ROT_X = SynchedEntityData.defineId(MagicBeam.class, EntityDataSerializers.FLOAT);
 
     private LivingEntity target;
     private float damageMultiplier = 1;
     public boolean idle = true;
+    private boolean setSpawnRot;
 
     public MagicBeam(EntityType<? extends MagicBeam> type, Level world) {
         super(type, world);
@@ -63,12 +66,42 @@ public class MagicBeam extends BaseBeam {
         super.defineSynchedData();
         this.entityData.define(SHOOT_TIME, this.random.nextInt(15) + 10);
         this.entityData.define(PRE_SHOOT_TICK, 0);
+        this.entityData.define(SPAWN_ROT_Y, 0f);
+        this.entityData.define(SPAWN_ROT_X, 0f);
+    }
+
+    public float getSpawnRotY() {
+        return this.entityData.get(SPAWN_ROT_Y);
+    }
+
+    public float getSpawnRotX() {
+        return this.entityData.get(SPAWN_ROT_X);
+    }
+
+    @Override
+    public void setYRot(float yRot) {
+        super.setYRot(yRot);
+        if (!this.setSpawnRot) {
+            this.entityData.set(SPAWN_ROT_Y, this.getYRot());
+        }
+    }
+
+    @Override
+    public void setXRot(float xRot) {
+        super.setXRot(xRot);
+        if (!this.setSpawnRot) {
+            this.entityData.set(SPAWN_ROT_X, this.getXRot());
+        }
     }
 
     @Override
     public void tick() {
         if (this.level.isClientSide) {
             this.level.addParticle(new ColoredParticleData(ModParticles.LIGHT.get(), 205 / 255F, 13 / 255F, 205 / 255F, 1, 0.15f), this.getX(), this.getY(), this.getZ(), this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01);
+        } else if (!this.setSpawnRot) {
+            this.setSpawnRot = true;
+            this.entityData.set(SPAWN_ROT_Y, this.getYRot());
+            this.entityData.set(SPAWN_ROT_X, this.getXRot());
         }
         Entity thrower = this.getOwner();
         if (this.getPreShootTick() <= this.entityData.get(SHOOT_TIME)) {

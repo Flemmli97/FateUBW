@@ -31,8 +31,8 @@ public class RenderMagicBeam extends RenderBeam<MagicBeam> {
         if (projectile.idle) {
             stack.pushPose();
             stack.scale(1.6f, 1.6f, 1.6f);
-            stack.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(partialTicks, projectile.yRotO, projectile.getYRot()) + 90));
-            stack.mulPose(Vector3f.XP.rotationDegrees(Mth.lerp(partialTicks, projectile.xRotO, projectile.getXRot())));
+            stack.mulPose(Vector3f.YP.rotationDegrees(-projectile.getSpawnRotY()));
+            stack.mulPose(Vector3f.XP.rotationDegrees(projectile.getSpawnRotX()));
             this.textureBuilder.setLight(0xf000f0);
             RenderUtils.renderTexture(stack, buffer.getBuffer(RenderType.entityCutoutNoCull(TEX_CIRCLE)), 1, 1, this.textureBuilder);
             stack.popPose();
