@@ -11,87 +11,36 @@ import net.minecraft.world.phys.Vec3;
 
 public class MotionTrailProvider implements TrailProvider {
 
-    public static final Codec<MotionTrailProvider> CODEC = RecordCodecBuilder.create((builder) -> builder.group(
-                    Codec.DOUBLE.fieldOf("x").forGetter(d -> d.motion.x()),
-                    Codec.DOUBLE.fieldOf("y").forGetter(d -> d.motion.y()),
-                    Codec.DOUBLE.fieldOf("z").forGetter(d -> d.motion.z()),
-                    Codec.DOUBLE.fieldOf("x_sweer").forGetter(d -> d.motion.x()),
-                    Codec.DOUBLE.fieldOf("y_sweer").forGetter(d -> d.motion.y()),
-                    Codec.DOUBLE.fieldOf("z_sweer").forGetter(d -> d.motion.z()),
-                    Codec.DOUBLE.fieldOf("period").forGetter(d -> d.motion.z()),
-                    Codec.INT.fieldOf("frames").forGetter(d -> d.position.getLength()),
-                    Codec.INT.fieldOf("duration").forGetter(d -> d.duration)
-            ).apply(builder, MotionTrailProvider::new)
-    );
-
-    private final Vec3 motion, sweerDirection;
-    private final double period;
+    private final MotionTrailData data;
 
     private final TrailPositions position;
-    private final int duration;
 
     private int ticks;
 
-    public MotionTrailProvider(double x, double y, double z, int frames, int duration) {
-        this(new Vec3(x, y, z), Vec3.ZERO, 0, frames, duration);
-    }
-
-    public MotionTrailProvider(double x, double y, double z, double sweerX, double sweerY, double sweerZ, double period, int frames, int duration) {
-        this(new Vec3(x, y, z), new Vec3(sweerX, sweerY, sweerZ), period, frames, duration);
-    }
-
-    public MotionTrailProvider(Vec3 motion, int frames, int duration) {
-        this(motion, Vec3.ZERO, 0, frames, duration);
-    }
-
-    public MotionTrailProvider(Vec3 motion, Vec3 sweerDirection, double period, int frames, int duration) {
-        this.motion = motion;
-        this.sweerDirection = sweerDirection;
-        this.period = period;
-        this.position = new TrailPositions(frames);
-        this.duration = duration + frames;
-    }
-
-    public MotionTrailProvider(FriendlyByteBuf buf) {
-        this.motion = new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
-        this.sweerDirection = new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
-        this.period = buf.readDouble();
-        this.position = new TrailPositions(buf.readInt());
-        this.duration = buf.readInt();
+    public MotionTrailProvider(MotionTrailData data) {
+        this.data = data;
+        this.position = new TrailPositions(data.frames());
     }
 
     @Override
-    public void write(FriendlyByteBuf buf) {
-        buf.writeDouble(this.motion.x());
-        buf.writeDouble(this.motion.x());
-        buf.writeDouble(this.motion.x());
-        buf.writeDouble(this.sweerDirection.x());
-        buf.writeDouble(this.sweerDirection.x());
-        buf.writeDouble(this.sweerDirection.x());
-        buf.writeDouble(this.period);
-        buf.writeInt(this.position.getLength());
-        buf.writeInt(this.duration);
-    }
-
-    @Override
-    public TrailPositions positions(Level level) {
+    public TrailPositions positions() {
         return this.position;
     }
 
     @Override
-    public Vec3 particleTick(Level level) {
+    public Vec3 particleTick() {
         TrailPositions.TrailPosition last = this.position.getLast();
-        float p = (float) this.ticks / (this.duration - this.position.getLength());
+        float p = (float) this.ticks / this.data.duration;
         Vec3 pos;
         if (last == null) {
-            pos = this.motion;
+            pos = this.data.motion;
         } else {
-            if (this.ticks >= this.duration - this.position.getLength()) {
+            if (this.ticks >= this.data.duration) {
                 pos = last.pos();
             } else {
-                Vec3 dir = this.motion;
-                if (this.period > 0 && !this.sweerDirection.equals(Vec3.ZERO)) {
-                    dir = dir.add(this.sweerDirection.scale(Math.sin(p * Math.PI * 2 * this.period)));
+                Vec3 dir = this.data.motion;
+                if (this.data.period > 0 && !this.data.sweerDirection.equals(Vec3.ZERO)) {
+                    dir = dir.add(this.data.sweerDirection.scale(Math.sin(p * Math.PI * 2 * this.data.period)));
                 }
                 pos = last.pos().add(dir);
             }
@@ -101,13 +50,75 @@ public class MotionTrailProvider implements TrailProvider {
         return pos;
     }
 
-    @Override
-    public ResourceLocation id() {
-        return TrailProviderRegistry.MOTION_TRAIL;
+    private int getLifetime() {
+        return this.data.duration + this.data.frames;
     }
 
     @Override
-    public boolean removed(Level level) {
-        return this.ticks >= this.duration;
+    public TrailData data() {
+        return this.data;
+    }
+
+    @Override
+    public boolean removed() {
+        return this.ticks >= this.getLifetime();
+    }
+
+    public record MotionTrailData(Vec3 motion, Vec3 sweerDirection, double period, int frames,
+                                  int duration) implements TrailData {
+
+        public MotionTrailData(double x, double y, double z, int frames, int duration) {
+            this(new Vec3(x, y, z), Vec3.ZERO, 0, frames, duration);
+        }
+
+        public MotionTrailData(double x, double y, double z, double sweerX, double sweerY, double sweerZ, double period, int frames, int duration) {
+            this(new Vec3(x, y, z), new Vec3(sweerX, sweerY, sweerZ), period, frames, duration);
+        }
+
+        public MotionTrailData(Vec3 motion, int frames, int duration) {
+            this(motion, Vec3.ZERO, 0, frames, duration);
+        }
+
+        public MotionTrailData(FriendlyByteBuf buf) {
+            this(new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble()),
+                    new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble()),
+                    buf.readDouble(), buf.readInt(), buf.readInt());
+        }
+
+        public static final Codec<MotionTrailData> CODEC = RecordCodecBuilder.create((builder) -> builder.group(
+                        Codec.DOUBLE.fieldOf("x").forGetter(d -> d.motion.x()),
+                        Codec.DOUBLE.fieldOf("y").forGetter(d -> d.motion.y()),
+                        Codec.DOUBLE.fieldOf("z").forGetter(d -> d.motion.z()),
+                        Codec.DOUBLE.fieldOf("x_sweer").forGetter(d -> d.motion.x()),
+                        Codec.DOUBLE.fieldOf("y_sweer").forGetter(d -> d.motion.y()),
+                        Codec.DOUBLE.fieldOf("z_sweer").forGetter(d -> d.motion.z()),
+                        Codec.DOUBLE.fieldOf("period").forGetter(d -> d.motion.z()),
+                        Codec.INT.fieldOf("frames").forGetter(d -> d.frames),
+                        Codec.INT.fieldOf("duration").forGetter(d -> d.duration)
+                ).apply(builder, MotionTrailData::new)
+        );
+
+        @Override
+        public ResourceLocation id() {
+            return TrailProviderRegistry.MOTION_TRAIL;
+        }
+
+        @Override
+        public void write(FriendlyByteBuf buf) {
+            buf.writeDouble(this.motion.x());
+            buf.writeDouble(this.motion.x());
+            buf.writeDouble(this.motion.x());
+            buf.writeDouble(this.sweerDirection.x());
+            buf.writeDouble(this.sweerDirection.x());
+            buf.writeDouble(this.sweerDirection.x());
+            buf.writeDouble(this.period);
+            buf.writeInt(this.frames);
+            buf.writeInt(this.duration);
+        }
+
+        @Override
+        public TrailProvider createProvider(Level level) {
+            return new MotionTrailProvider(this);
+        }
     }
 }

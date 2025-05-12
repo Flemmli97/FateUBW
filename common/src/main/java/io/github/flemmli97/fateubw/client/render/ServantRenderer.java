@@ -7,6 +7,9 @@ import com.mojang.math.Vector3f;
 import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.client.model.BaseServantModel;
 import io.github.flemmli97.fateubw.client.model.ModelServant;
+import io.github.flemmli97.fateubw.client.render.layer.ItemTrailLayer;
+import io.github.flemmli97.fateubw.client.render.layer.LayerHand;
+import io.github.flemmli97.fateubw.client.render.layer.TrailPoseGetter;
 import io.github.flemmli97.fateubw.common.entity.StandingVehicle;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.platform.ClientPlatform;
@@ -26,7 +29,7 @@ import net.minecraft.world.entity.Pose;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ServantRenderer<T extends BaseServant, M extends BaseServantModel<T>> extends LivingEntityRenderer<T, BaseServantModel<T>> {
+public class ServantRenderer<T extends BaseServant, M extends BaseServantModel<T>> extends LivingEntityRenderer<T, BaseServantModel<T>> implements TrailPoseGetter {
 
     private static boolean DEBUG_RENDER = true;
     private static final ResourceLocation DEFAULT_RES_LOC = new ResourceLocation("textures/entity/steve.png");
@@ -37,6 +40,11 @@ public class ServantRenderer<T extends BaseServant, M extends BaseServantModel<T
     private final M servantModel;
     private final ResourceLocation texture;
 
+    /**
+     * This one does not have transformations such as camera rotations etc. applied
+     */
+    private PoseStack plainPose;
+
     public ServantRenderer(EntityRendererProvider.Context ctx, M model, ResourceLocation texture, float shadow) {
         super(ctx, model, shadow);
         this.texture = texture;
@@ -44,6 +52,7 @@ public class ServantRenderer<T extends BaseServant, M extends BaseServantModel<T
         this.servantModel = model;
         this.addLayer(new LayerHand<>(this));
         this.addLayer(new CustomHeadLayer<>(this, ctx.getModelSet()));
+        this.addLayer(new ItemTrailLayer<>(this));
     }
 
     @Override
@@ -54,6 +63,7 @@ public class ServantRenderer<T extends BaseServant, M extends BaseServantModel<T
         if (ClientPlatform.INSTANCE.renderLivingEvent(entity, this, partialTicks, matrixStack, buffer, light, true))
             return;
         matrixStack.pushPose();
+        this.plainPose = new PoseStack();
         this.model.attackTime = this.getAttackAnim(entity, partialTicks);
 
         boolean shouldSit = StandingVehicle.shouldSit(entity);
@@ -87,15 +97,18 @@ public class ServantRenderer<T extends BaseServant, M extends BaseServantModel<T
             Direction direction = entity.getBedOrientation();
             if (direction != null) {
                 float f4 = entity.getEyeHeight(Pose.STANDING) - 0.1F;
-                matrixStack.translate(-direction.getStepX() * f4, 0.0D, -direction.getStepZ() * f4);
+                this.plainPose.translate(-direction.getStepX() * f4, 0.0D, -direction.getStepZ() * f4);
             }
         }
 
-        float f7 = this.getBob(entity, partialTicks);
-        this.setupRotations(entity, matrixStack, f7, yawOffset, partialTicks);
-        matrixStack.scale(-1.0F, -1.0F, 1.0F);
-        this.scale(entity, matrixStack, partialTicks);
-        matrixStack.translate(0.0D, -1.501F, 0.0D);
+        float ageTicks = this.getBob(entity, partialTicks);
+        this.setupRotations(entity, this.plainPose, ageTicks, yawOffset, partialTicks);
+        this.plainPose.scale(-1.0F, -1.0F, 1.0F);
+        this.scale(entity, this.plainPose, partialTicks);
+        this.plainPose.translate(0.0D, -1.5F, 0.0D);
+        // Apply to the main one
+        matrixStack.last().pose().multiply(this.plainPose.last().pose());
+        matrixStack.last().normal().mul(this.plainPose.last().normal());
         float limgSwingAmount = 0.0F;
         float maxLimbSwing = 0.0F;
         if (!shouldSit && entity.isAlive()) {
@@ -111,7 +124,7 @@ public class ServantRenderer<T extends BaseServant, M extends BaseServantModel<T
         }
 
         this.model.prepareMobModel(entity, maxLimbSwing, limgSwingAmount, partialTicks);
-        this.model.setupAnim(entity, maxLimbSwing, limgSwingAmount, f7, yawHeadAct, pitch);
+        this.model.setupAnim(entity, maxLimbSwing, limgSwingAmount, ageTicks, yawHeadAct, pitch);
         Minecraft minecraft = Minecraft.getInstance();
         boolean visible = this.isBodyVisible(entity);
         boolean transparent = (!visible || entity.isDeadOrDying()) && !entity.isInvisibleTo(minecraft.player) && entity.transparentOnDeath();
@@ -119,7 +132,7 @@ public class ServantRenderer<T extends BaseServant, M extends BaseServantModel<T
         RenderType rendertype = this.getRenderType(entity, visible, transparent, outline);
         float summonProgress = entity.getSummonProgress(partialTicks);
         Vector4f clip;
-        if (summonProgress >= 0) {
+        if (summonProgress >= 0 && summonProgress < 1) {
             Vector3f normal = new Vector3f(0, 0, 1);
             normal.transform(Vector3f.XP.rotationDegrees(-90));
             clip = FateRenders.createClippingPlane(normal, entity, -(entity.getBbHeight() + 0.3f) * (1 - summonProgress));
@@ -145,7 +158,7 @@ public class ServantRenderer<T extends BaseServant, M extends BaseServantModel<T
 
         if (!entity.isSpectator()) {
             for (RenderLayer<T, BaseServantModel<T>> layerrenderer : this.layers) {
-                layerrenderer.render(matrixStack, buf, light, entity, maxLimbSwing, limgSwingAmount, partialTicks, f7, yawHeadAct, pitch);
+                layerrenderer.render(matrixStack, buf, light, entity, maxLimbSwing, limgSwingAmount, partialTicks, ageTicks, yawHeadAct, pitch);
             }
         }
         if (state.get() != 0) // other buffersource was used
@@ -189,5 +202,10 @@ public class ServantRenderer<T extends BaseServant, M extends BaseServantModel<T
 
     public ResourceLocation servantTexture(T servant) {
         return this.texture;
+    }
+
+    @Override
+    public PoseStack getPlainStack() {
+        return this.plainPose;
     }
 }

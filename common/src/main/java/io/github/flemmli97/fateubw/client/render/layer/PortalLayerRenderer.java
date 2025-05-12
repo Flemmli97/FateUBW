@@ -1,8 +1,9 @@
-package io.github.flemmli97.fateubw.client.render;
+package io.github.flemmli97.fateubw.client.render.layer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
+import io.github.flemmli97.fateubw.client.render.FateRenders;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.RenderLayerParent;

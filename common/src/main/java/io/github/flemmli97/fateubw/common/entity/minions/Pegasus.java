@@ -229,7 +229,7 @@ public class Pegasus extends PathfinderMob implements IAnimated, StandingVehicle
                     float b = 245 / 255F;
                     float scale = (float) (0.05 + this.getRandom().nextDouble() * 0.1);
                     this.level.addParticle(new TrailParticleData(ModParticles.TRAIL.get(),
-                                    TrailInfo.builder(new MotionTrailProvider(dir, 6, 10))
+                                    TrailInfo.builder(new MotionTrailProvider.MotionTrailData(dir, 6, 10))
                                             .setColor(r, g, b, 0.6f)
                                             .setColor2(r, g, b, 0.6f)
                                             .setWidth(scale)

@@ -38,8 +38,12 @@ public class TrailPositions {
     }
 
     public void add(Vec3 pos, Vec3 normal) {
+        this.add(pos != null ? new TrailPosition(pos, normal) : null);
+    }
+
+    public void add(@Nullable TrailPosition pos) {
         this.index = this.adjustedIndex(1);
-        this.positions[this.index] = pos != null ? new TrailPosition(pos, normal) : null;
+        this.positions[this.index] = pos;
         this.size = Math.min(this.size + 1, this.length);
         this.calculateBounds(this.lastScale);
     }

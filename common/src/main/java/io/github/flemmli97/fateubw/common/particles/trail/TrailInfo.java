@@ -3,7 +3,7 @@ package io.github.flemmli97.fateubw.common.particles.trail;
 import com.mojang.math.Vector4f;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.flemmli97.fateubw.common.particles.trail.provider.TrailProvider;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.TrailData;
 import io.github.flemmli97.tenshilib.common.utils.CodecUtils;
 import net.minecraft.network.FriendlyByteBuf;
 
@@ -27,7 +27,7 @@ public class TrailInfo {
             Codec.FLOAT.fieldOf("scale_2").forGetter(d -> d.width2),
             CodecUtils.stringEnumCodec(Visual.class, Visual.SOLID).fieldOf("type").forGetter(d -> d.visual),
             Codec.INT.optionalFieldOf("texture_index").forGetter(d -> d.visual == Visual.SOLID || d.textureIndex == 0 ? Optional.empty() : Optional.of(d.textureIndex)),
-            TrailProviderRegistry.CODEC.fieldOf("provider").forGetter(d -> d.provider)
+            TrailProviderRegistry.CODEC.fieldOf("provider").forGetter(d -> d.data)
     ).apply(builder, (color, scale, color_2, scale_2, visual, text, provider) ->
             new TrailInfo(color.x(), color.y(), color.z(), color.w(), scale,
                     color_2.x(), color_2.y(), color_2.z(), color_2.w(), scale_2, visual, text.orElse(0), provider)
@@ -38,9 +38,9 @@ public class TrailInfo {
     public final Visual visual;
     public final int textureIndex;
 
-    public final TrailProvider provider;
+    public final TrailData data;
 
-    public TrailInfo(float r, float g, float b, float a, float width, float r2, float g2, float b2, float a2, float width2, Visual visual, int textureIndex, TrailProvider provider) {
+    public TrailInfo(float r, float g, float b, float a, float width, float r2, float g2, float b2, float a2, float width2, Visual visual, int textureIndex, TrailData data) {
         this.r = r;
         this.g = g;
         this.b = b;
@@ -53,7 +53,7 @@ public class TrailInfo {
         this.width2 = width2;
         this.visual = visual;
         this.textureIndex = textureIndex;
-        this.provider = provider;
+        this.data = data;
     }
 
     public TrailInfo(FriendlyByteBuf buf) {
@@ -74,16 +74,16 @@ public class TrailInfo {
         buf.writeFloat(this.width2);
         buf.writeEnum(this.visual);
         buf.writeInt(this.textureIndex);
-        TrailProviderRegistry.toBuffer(this.provider, buf);
+        TrailProviderRegistry.toBuffer(this.data, buf);
     }
 
-    public static TrailInfo.Builder builder(TrailProvider provider) {
+    public static TrailInfo.Builder builder(TrailData provider) {
         return new TrailInfo.Builder(provider);
     }
 
     public static class Builder {
 
-        private final TrailProvider provider;
+        private final TrailData provider;
 
         private float r = 1, g = 1, b = 1, a = 0.5f;
         private float r2 = 1, g2 = 1, b2 = 1, a2 = 0.5f;
@@ -93,7 +93,7 @@ public class TrailInfo {
         private Visual visual = Visual.SOLID;
         private int textureIndex;
 
-        public Builder(TrailProvider provider) {
+        public Builder(TrailData provider) {
             this.provider = provider;
         }
 

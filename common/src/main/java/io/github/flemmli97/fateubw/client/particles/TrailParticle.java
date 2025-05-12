@@ -15,6 +15,7 @@ import io.github.flemmli97.fateubw.client.render.FateRenders;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailPositions;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.TrailProvider;
 import io.github.flemmli97.fateubw.mixinhelper.SpriteList;
 import io.github.flemmli97.tenshilib.common.utils.MathUtils;
 import net.minecraft.client.Camera;
@@ -28,10 +29,13 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 public class TrailParticle extends TextureSheetParticle {
 
     private final TrailInfo trail;
+    @Nullable
+    private final TrailProvider trailProvider;
     private final Vec3 originPos;
     private final SpriteSet spriteSet;
 
@@ -47,12 +51,15 @@ public class TrailParticle extends TextureSheetParticle {
         this.z = this.zo;
         this.friction = 0;
         this.bbWidth = Math.max(this.trail.width, this.trail.width2) * 2;
-        TrailPositions pos = this.trail.provider.positions(level);
-        if (pos != null)
-            this.setBoundingBox(pos.getBounds(Math.max(this.trail.width, this.trail.width2))
-                    .move(this.originPos.x(), this.originPos.y(), this.originPos.z()));
-        this.pickSprite(spriteSet);
-        this.setSprite(this.trail.textureIndex);
+        this.trailProvider = this.trail.data.createProvider(level);
+        if (this.trailProvider != null) {
+            TrailPositions pos = this.trailProvider.positions();
+            if (pos != null)
+                this.setBoundingBox(pos.getBounds(Math.max(this.trail.width, this.trail.width2))
+                        .move(this.originPos.x(), this.originPos.y(), this.originPos.z()));
+            this.pickSprite(spriteSet);
+            this.setSprite(this.trail.textureIndex);
+        }
     }
 
     private void setSprite(int index) {
@@ -62,9 +69,12 @@ public class TrailParticle extends TextureSheetParticle {
 
     @Override
     public void render(VertexConsumer buffer, Camera camera, float partialTicks) {
-        TrailPositions position = this.trail.provider.positions(this.level);
+        if (this.trailProvider == null)
+            return;
+        TrailPositions position = this.trailProvider.positions();
         if (position == null)
             return;
+        partialTicks = this.trailProvider.adjustedPartialTicks(partialTicks);
         PoseStack stack = new PoseStack();
         this.translate(stack, camera);
         Matrix4f mat = stack.last().pose();
@@ -148,15 +158,15 @@ public class TrailParticle extends TextureSheetParticle {
         this.xo = this.x;
         this.yo = this.y;
         this.zo = this.z;
-        if (this.trail.provider.removed(this.level)) {
+        if (this.trailProvider == null || this.trailProvider.removed()) {
             this.remove();
             return;
         }
-        Vec3 pos = this.trail.provider.particleTick(this.level);
+        Vec3 pos = this.trailProvider.particleTick();
         if (pos != null) {
             this.setPos(this.originPos.x() + pos.x(), this.originPos.y() + pos.y(), this.originPos.z() + pos.z());
         }
-        TrailPositions poss = this.trail.provider.positions(this.level);
+        TrailPositions poss = this.trailProvider.positions();
         if (poss != null) {
             this.sizeO = poss.size();
             this.setBoundingBox(poss.getBounds(Math.max(this.trail.width, this.trail.width2))

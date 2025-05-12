@@ -13,6 +13,8 @@ import io.github.flemmli97.fateubw.common.entity.ai.StandStillGoal;
 import io.github.flemmli97.fateubw.common.entity.ai.TargetNoneGoal;
 import io.github.flemmli97.fateubw.common.lib.FateTags;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailHolder;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailHolderProvider;
 import io.github.flemmli97.fateubw.common.registry.ModAttributes;
 import io.github.flemmli97.fateubw.common.registry.ModParticles;
 import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
@@ -95,7 +97,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public abstract class BaseServant extends PathfinderMob implements IAnimated, OwnableEntity, AoeAttackEntity, TargetableOpponent {
+public abstract class BaseServant extends PathfinderMob implements IAnimated, OwnableEntity, AoeAttackEntity, TargetableOpponent, EntityTrailHolderProvider {
 
     public static final TicketType<ChunkPos> TRACKINGTICKET = TicketType.create("servant", Comparator.comparingLong(ChunkPos::toLong), 5);
 
@@ -151,6 +153,8 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     private final List<ServerPlayer> tracked = new ArrayList<>();
     private boolean addToOwner;
     private boolean initAnim;
+
+    private final EntityTrailHolder<BaseServant> trailHolder = new EntityTrailHolder<>(this);
 
     public BaseServant(EntityType<? extends BaseServant> entityType, Level level) {
         super(entityType, level);
@@ -446,6 +450,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         }
         super.tick();
         this.getAnimationHandler().tick();
+        this.getTrailHolder().tick();
         if (this.getSummonAnimation() != null && this.getAnimationHandler().isCurrent(this.getSummonAnimation())) {
             this.setDeltaMovement(Vec3.ZERO);
             this.getNavigation().stop();
@@ -850,6 +855,11 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
 
     public boolean flipAnimation() {
         return false;
+    }
+
+    @Override
+    public EntityTrailHolder<BaseServant> getTrailHolder() {
+        return this.trailHolder;
     }
 
     public enum MoveType {

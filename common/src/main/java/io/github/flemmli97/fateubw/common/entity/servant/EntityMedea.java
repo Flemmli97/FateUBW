@@ -86,7 +86,7 @@ public class EntityMedea extends BaseServant {
             WeightedEntry.wrap(new GoalAttackAction<EntityMedea>(EntityMedea.MAGIC_CIRCLE)
                     .cooldown(e -> e.getRandom().nextInt(40) + 20)
                     .withCondition(((goal, target, previous) -> goal.attacker.aiCircledelay < 0))
-                    .prepare(() -> new WrappedRunner<>(new DoNothingRunner<>(true))), 2),
+                    .prepare(() -> new WrappedRunner<>(new DoNothingRunner<>(true))), 4),
             WeightedEntry.wrap(new GoalAttackAction<EntityMedea>(EntityMedea.RULE_BREAKER)
                     .cooldown(e -> e.getRandom().nextInt(25) + 20)
                     .withCondition(Utils.npCheck())

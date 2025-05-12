@@ -58,7 +58,7 @@ public class TrailParticleData implements ParticleOptions {
             reader.expect(' ');
             int duration = reader.readInt();
             return new TrailParticleData(type, new TrailInfo(r, g, b, a, scale, r2, g2, b2, a2, scale2, visual, txtIdx,
-                    new MotionTrailProvider(x, y, z, frames, duration)));
+                    new MotionTrailProvider.MotionTrailData(x, y, z, frames, duration)));
         }
 
         @Override
