@@ -3,7 +3,7 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 import io.github.flemmli97.fateubw.common.entity.SwitchableWeapon;
 import io.github.flemmli97.fateubw.common.entity.misc.Excalibur;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
-import io.github.flemmli97.fateubw.common.particles.ParticleUtils;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailProvider;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
@@ -48,15 +48,20 @@ import java.util.List;
 public class EntityArthur extends BaseServant {
 
     public static final AnimatedAction TWO_HAND_1 = AnimatedAction.builder(0.78, "two_hand_1")
-            .marker("attack", 0.64).marker("step", 0.68).build();
+            .marker("attack", 0.64).marker("step", 0.68)
+            .marker(EntityTrailProvider.TRAIL_START, 0.36).build();
     public static final AnimatedAction TWO_HAND_2 = AnimatedAction.builder(0.7, "two_hand_2")
-            .marker("attack", 0.56).marker("step", 0.6).build();
+            .marker("attack", 0.56).marker("step", 0.6)
+            .marker(EntityTrailProvider.TRAIL_START, 0.36).build();
     public static final AnimatedAction TWO_HAND_3 = AnimatedAction.builder(0.7, "two_hand_3")
-            .marker("attack", 0.56).marker("step", 0.6).build();
+            .marker("attack", 0.56).marker("step", 0.6)
+            .marker(EntityTrailProvider.TRAIL_START, 0.4).build();
     public static final AnimatedAction TWO_HAND_4 = AnimatedAction.builder(0.7, "two_hand_4")
-            .marker("attack", 0.56).marker("step", 0.6).build();
+            .marker("attack", 0.56).marker("step", 0.6)
+            .marker(EntityTrailProvider.TRAIL_START, 0.36).build();
     public static final AnimatedAction ONE_HAND_1 = AnimatedAction.builder(0.68, "one_hand_1")
-            .marker("attack", 0.48).marker("step", 0.48).build();
+            .marker("attack", 0.48).marker("step", 0.48)
+            .marker(EntityTrailProvider.TRAIL_START, 0.32).build();
     public static final AnimatedAction STAB_1 = AnimatedAction.builder(1.02, "stab_1").marker("attack", 0.56).build();
     public static final AnimatedAction INVISIBLE_BURST = AnimatedAction.builder(0.8, "invisible_burst").marker("attack", 0.28).build();
     public static final AnimatedAction INVISIBLE_BURST_HIT = AnimatedAction.builder(0.76, "invisible_burst_hit").marker("attack", 0.44).build();
@@ -197,10 +202,6 @@ public class EntityArthur extends BaseServant {
                 this.setYRot(yRot);
                 for (int i = 0; i < 8; i++)
                     this.level.addParticle(ParticleTypes.ENTITY_EFFECT, this.getX(this.getRandom().nextGaussian() * 0.5), this.getY(this.getRandom().nextGaussian() * 0.5), this.getZ(this.getRandom().nextGaussian() * 0.5), 1, 1, 1);
-            }
-            if (this.getAnimationHandler().isCurrent(TWO_HAND_1, TWO_HAND_2, TWO_HAND_3, TWO_HAND_4, ONE_HAND_1)
-                    && this.getAnimationHandler().getAnimation().isAt("attack")) {
-                ParticleUtils.createSlashTrailParticle(this, 0, 0, 0, 0);
             }
         }
     }

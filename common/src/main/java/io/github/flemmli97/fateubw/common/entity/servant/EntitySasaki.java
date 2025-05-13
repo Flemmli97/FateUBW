@@ -1,8 +1,15 @@
 package io.github.flemmli97.fateubw.common.entity.servant;
 
 
+import com.mojang.math.Vector3f;
+import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
+import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
+import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.MotionTrailProvider;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailProvider;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
+import io.github.flemmli97.fateubw.common.registry.ModParticles;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
@@ -17,6 +24,7 @@ import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTarget
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTargetRunner;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.WrappedRunner;
 import io.github.flemmli97.tenshilib.common.utils.OrientedBoundingBox;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.util.random.WeightedEntry;
@@ -39,26 +47,35 @@ import java.util.List;
 public class EntitySasaki extends BaseServant {
 
     public static final AnimatedAction TWO_HAND_1 = AnimatedAction.builder(0.78, "two_hand_1")
-            .marker("attack", 0.64).marker("step", 0.68).build();
+            .marker("attack", 0.64).marker("step", 0.68)
+            .marker(EntityTrailProvider.TRAIL_START, 0.4).build();
     public static final AnimatedAction TWO_HAND_2 = AnimatedAction.builder(0.7, "two_hand_2")
-            .marker("attack", 0.56).marker("step", 0.6).build();
+            .marker("attack", 0.56).marker("step", 0.6)
+            .marker(EntityTrailProvider.TRAIL_START, 0.36).build();
     public static final AnimatedAction TWO_HAND_3 = AnimatedAction.builder(0.7, "two_hand_3")
-            .marker("attack", 0.48).marker("step", 0.56).build();
+            .marker("attack", 0.48).marker("step", 0.56)
+            .marker(EntityTrailProvider.TRAIL_START, 0.36).build();
     public static final AnimatedAction TWO_HAND_4 = AnimatedAction.builder(0.7, "two_hand_4")
-            .marker("attack", 0.48).marker("step", 0.56).build();
+            .marker("attack", 0.48).marker("step", 0.56)
+            .marker(EntityTrailProvider.TRAIL_START, 0.36).build();
     public static final AnimatedAction TWO_HAND_5 = AnimatedAction.builder(0.7, "two_hand_5")
-            .marker("attack", 0.52).marker("step", 0.56).build();
+            .marker("attack", 0.52).marker("step", 0.56)
+            .marker(EntityTrailProvider.TRAIL_START, 0.4).build();
     public static final AnimatedAction TWO_HAND_6 = AnimatedAction.builder(0.7, "two_hand_6")
-            .marker("attack", 0.56).marker("step", 0.6).build();
+            .marker("attack", 0.56).marker("step", 0.6)
+            .marker(EntityTrailProvider.TRAIL_START, 0.4).build();
     public static final AnimatedAction TWO_HAND_7 = AnimatedAction.builder(0.7, "two_hand_7")
-            .marker("attack", 0.6).marker("step", 0.52).build();
+            .marker("attack", 0.6).marker("step", 0.52)
+            .marker(EntityTrailProvider.TRAIL_START, 0.4).build();
     public static final AnimatedAction ONE_HAND_1 = AnimatedAction.builder(0.62, "one_hand_1")
-            .marker("attack", 0.44).marker("step", 0.48).build();
+            .marker("attack", 0.44).marker("step", 0.48)
+            .marker(EntityTrailProvider.TRAIL_START, 0.32).build();
     public static final AnimatedAction KATANA_1 = AnimatedAction.builder(0.78, "katana_1")
             .marker("attack", 0.6).marker("step", 0.64).build();
 
-    private static final AnimatedAction TSUBAME_GAESHI = AnimatedAction.builder(1.92, "tsubame_gaeshi")
-            .marker("attack", 1.24).marker("teleport", 1.24).build();
+    private static final AnimatedAction TSUBAME_GAESHI = AnimatedAction.builder(2, "tsubame_gaeshi")
+            .marker("attack_prepare", 1.2).marker("attack", 1.28)
+            .marker("particle", 1.24).build();
     public static final AnimatedAction SUMMON = new AnimatedAction(4., "summon");
     private static final AnimatedAction[] ANIMS = {TWO_HAND_1, TWO_HAND_2, TWO_HAND_3, TWO_HAND_4, TWO_HAND_5, TWO_HAND_6, TWO_HAND_7, ONE_HAND_1, KATANA_1, TSUBAME_GAESHI, SUMMON};
 
@@ -162,14 +179,75 @@ public class EntitySasaki extends BaseServant {
     }
 
     @Override
+    public void tick() {
+        super.tick();
+        if (this.level.isClientSide) {
+            AnimatedAction anim = this.getAnimationHandler().getAnimation();
+            if (anim != null) {
+                if (anim.isAt(EntityTrailProvider.TRAIL_START)) {
+                    this.level.addParticle(new TrailParticleData(ModParticles.TRAIL.get(),
+                                    TrailInfo.builder(EntityTrailProvider.EntityTrailData.create(this, anim.getID(), false))
+                                            .setColor(37 / 255f, 37 / 255f, 88 / 255f, 0.4f)
+                                            .setColor2(181 / 255f, 189 / 255f, 206 / 255f, 0.1f)
+                                            .setWidth(1)
+                                            .setWidth2(1)
+                                            .setType(TrailInfo.Visual.TEXTURE, 3)
+                                            .build()),
+                            this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+                }
+            }
+        }
+    }
+
+    private void tsubameParticles(Vec3 at) {
+        int duration = 8;
+        Vec3 basePos = new Vec3(3, 0, -1);
+        Vec3 baseDir = new Vec3(-2.8, 0, 2).scale(1f / duration);
+        Vec3 baseSweer = new Vec3(0, 0, 0.4);
+        Vec3 baseNormal = baseDir.add(0, 1, 0).normalize().scale(0.4).yRot(90);
+        float yRot = -this.getYRot() * Mth.DEG_TO_RAD;
+        float[] angles = new float[]{-45, 45, -135};
+        for (int i = 0; i < 3; i++) {
+            float angle = angles[i] * Mth.DEG_TO_RAD;
+            Vec3 pos = basePos.zRot(angle).yRot(yRot);
+            Vec3 dir = baseDir.zRot(angle).yRot(yRot);
+            Vec3 sweer = baseSweer.zRot(angle).yRot(yRot);
+            Vec3 normal = baseNormal.zRot(angle).yRot(yRot);
+            if (this.level instanceof ServerLevel serverLevel) {
+                serverLevel.sendParticles(new TrailParticleData(ModParticles.TRAIL.get(),
+                                TrailInfo.builder(new MotionTrailProvider.MotionTrailData(dir, sweer, normal,
+                                                1, 4, duration))
+                                        .setColor(72 / 255f, 13 / 255f, 161 / 255f, 0.7f)
+                                        .setColor2(146 / 255f, 105 / 255f, 207 / 255f, 0.4f)
+                                        .setWidth(1)
+                                        .setWidth2(1)
+                                        .setType(TrailInfo.Visual.TEXTURE, 0)
+                                        .build()),
+                        at.x() + pos.x(), at.y() + pos.y(), at.z() + pos.z(), 0, 0, 0, 0, 1);
+            } else {
+                this.level.addParticle(new TrailParticleData(ModParticles.TRAIL.get(),
+                                TrailInfo.builder(new MotionTrailProvider.MotionTrailData(dir, sweer, normal,
+                                                1, 4, duration))
+                                        .setColor(72 / 255f, 13 / 255f, 161 / 255f, 0.7f)
+                                        .setColor2(146 / 255f, 105 / 255f, 207 / 255f, 0.4f)
+                                        .setWidth(1)
+                                        .setWidth2(1)
+                                        .setType(TrailInfo.Visual.TEXTURE, 0)
+                                        .build()),
+                        at.x() + pos.x(), at.y() + pos.y(), at.z() + pos.z(), 0, 0, 0);
+            }
+        }
+    }
+
+    @Override
     public void handleAttack(AnimatedAction anim) {
         if (anim.is(TSUBAME_GAESHI)) {
-            if (!anim.isPast("attack")) {
+            if (!anim.isPast("attack_prepare")) {
                 if (this.getTarget() != null) {
                     this.lookAtNow(this.getTarget(), 60, 90);
                 }
             }
-            if (anim.isAt("attack")) {
+            if (anim.isAt("attack_prepare")) {
                 Vec3 dir;
                 if (this.getTarget() != null) {
                     dir = this.getTarget().position().subtract(this.position());
@@ -182,6 +260,9 @@ public class EntitySasaki extends BaseServant {
                     dir = res.getLocation().subtract(this.getEyePosition());
                 }
                 this.hikenPos = this.position().add(dir);
+            }
+            if (anim.isAt("attack") && this.hikenPos != null) {
+                Vec3 dir = this.hikenPos.subtract(this.position());
                 float yRot = MathsHelper.YRotFrom(dir);
                 OrientedBoundingBox obb = new OrientedBoundingBox(new AABB(this.getBbWidth() * 0.5 - 1.5, -0.3, 0, this.getBbWidth() * 0.5 + 1.5, this.getBbHeight() + 0.3, dir.length() + 2),
                         yRot, 0, this.position());
@@ -202,11 +283,10 @@ public class EntitySasaki extends BaseServant {
                     entity.invulnerableTime = 0;
                 }
                 this.hiken = false;
+                this.tsubameParticles(this.position().add(0, this.getEyeHeight(), 0).add(dir.scale(0.5)));
                 if (damage) {
                     this.level.playSound(null, this, SoundEvents.PLAYER_ATTACK_CRIT, this.getSoundSource(), 0.7f, 0.9f);
                 }
-            }
-            if (anim.isAt("teleport") && this.hikenPos != null) {
                 this.teleportTo(this.hikenPos.x(), this.hikenPos.y(), this.hikenPos.z());
             }
         } else {
@@ -261,5 +341,12 @@ public class EntitySasaki extends BaseServant {
     @Override
     protected AnimatedAction getSummonAnimation() {
         return SUMMON;
+    }
+
+    @Override
+    public Vector4f[] weaponTrailEdge(boolean left) {
+        Vector4f[] edge = super.weaponTrailEdge(left);
+        edge[1].mul(new Vector3f(2, 2, 2));
+        return edge;
     }
 }
