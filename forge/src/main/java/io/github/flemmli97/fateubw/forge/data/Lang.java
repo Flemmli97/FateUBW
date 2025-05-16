@@ -175,6 +175,10 @@ public class Lang implements DataProvider {
         this.add("fateubw.chat.medea.circle.spawn", "Medea created a magic circle");
         this.add("fateubw.chat.item.command.fail", "What are you doing???");
 
+        this.add("fateubw.gui.name", "Name:");
+        this.add("fateubw.gui.damage", "Damage");
+        this.add("fateubw.gui.armor", "Armor");
+        this.add("fateubw.gui.nobel_phantasm", "Nobel Phantasm");
         this.add("fateubw.gui.command.attack", "Attack");
         this.add("fateubw.gui.command.movement", "Movement");
         this.add("fateubw.gui.command.truce", "Truce");

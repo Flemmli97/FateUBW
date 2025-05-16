@@ -13,22 +13,30 @@ import io.github.flemmli97.fateubw.common.network.C2STruceMessage;
 import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
 import io.github.flemmli97.fateubw.platform.NetworkCalls;
 import io.github.flemmli97.fateubw.platform.Platform;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class CommandGui extends Screen {
 
     private final static ResourceLocation GUI_BACK_GROUND = new ResourceLocation(Fate.MODID, "textures/gui/command_gui_1.png");
     private final static ResourceLocation GUI_TRUCE = new ResourceLocation(Fate.MODID, "textures/gui/command_gui_2.png");
+
+    private final Map<String, Component> translationCache = new HashMap<>();
 
     private Pages currentPage = Pages.MENU;
     private int trucePage = 0;
@@ -44,6 +52,17 @@ public class CommandGui extends Screen {
         this.servant = servant;
     }
 
+    private Component getComponent(String key, Consumer<MutableComponent> otherwise) {
+        Component cache = this.translationCache.get(key);
+        if (cache == null) {
+            MutableComponent comp = new TranslatableComponent(key).withStyle();
+            otherwise.accept(comp);
+            cache = comp;
+            this.translationCache.put(key, comp);
+        }
+        return cache;
+    }
+
     @Override
     public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(stack);
@@ -56,10 +75,10 @@ public class CommandGui extends Screen {
             this.blit(stack, this.width / 2 - 100, this.height / 2 - 100, 0, 0, 201, 210);
             this.drawCommand(stack, capSync.getCommandSeals());
 
-            this.minecraft.font.draw(stack, "§4Name:", this.width / 2 - 90, this.height / 2 - 5, 1);
-            this.minecraft.font.draw(stack, "§4Damage:", this.width / 2 - 90, this.height / 2 + 15, 1);
-            this.minecraft.font.draw(stack, "§4Armor:", this.width / 2 - 90, this.height / 2 + 35, 1);
-            this.minecraft.font.draw(stack, "§4Nobel Phantasm:", this.width / 2 - 90, this.height / 2 + 55, 1);
+            this.minecraft.font.draw(stack, this.getComponent("fateubw.gui.name", c -> c.withStyle(ChatFormatting.DARK_RED)), this.width / 2 - 90, this.height / 2 - 5, 1);
+            this.minecraft.font.draw(stack, this.getComponent("fateubw.gui.damage", c -> c.withStyle(ChatFormatting.DARK_RED)), this.width / 2 - 90, this.height / 2 + 15, 1);
+            this.minecraft.font.draw(stack, this.getComponent("fateubw.gui.armor", c -> c.withStyle(ChatFormatting.DARK_RED)), this.width / 2 - 90, this.height / 2 + 35, 1);
+            this.minecraft.font.draw(stack, this.getComponent("fateubw.gui.nobel_phantasm", c -> c.withStyle(ChatFormatting.DARK_RED)), this.width / 2 - 90, this.height / 2 + 55, 1);
             if (this.servant != null) {
                 this.minecraft.font.draw(stack, this.servant.getRealName(), this.width / 2 - 90, this.height / 2 + 5, 1);
                 this.minecraft.font.draw(stack, String.valueOf(this.servant.props().strength()), this.width / 2 - 90, this.height / 2 + 25, 1);
@@ -214,19 +233,19 @@ public class CommandGui extends Screen {
 
             this.addRenderableWidget(new Button(this.width / 2 - 90, this.height / 2 - 5, 80, 20
                     , new TranslatableComponent("fateubw.gui.command.back"), this::backButton));
-            this.addRenderableWidget(this.request = new ButtonValue<>(this.width / 2 - 90, this.height / 2 + 25, 80, 20, "fate.gui.truce.request", button -> {
+            this.addRenderableWidget(this.request = new ButtonValue<>(this.width / 2 - 90, this.height / 2 + 25, 80, 20, new TranslatableComponent("fateubw.gui.truce.request"), button -> {
                 if (button.getVal() != null) {
                     NetworkCalls.INSTANCE.sendToServer(new C2STruceMessage(C2STruceMessage.Type.SEND, button.getVal()));
                     this.init(this.minecraft, this.width, this.height);
                 }
             }));
-            this.addRenderableWidget(this.accept = new ButtonValue<>(this.width / 2 - 90, this.height / 2 + 45, 80, 20, "fate.gui.truce.accept", button -> {
+            this.addRenderableWidget(this.accept = new ButtonValue<>(this.width / 2 - 90, this.height / 2 + 45, 80, 20, new TranslatableComponent("fateubw.gui.truce.accept"), button -> {
                 if (button.getVal() != null) {
                     NetworkCalls.INSTANCE.sendToServer(new C2STruceMessage(C2STruceMessage.Type.ACCEPT, button.getVal()));
                     this.init(this.minecraft, this.width, this.height);
                 }
             }));
-            this.addRenderableWidget(this.remove = new ButtonValue<>(this.width / 2 - 90, this.height / 2 + 65, 80, 20, "fate.gui.truce.remove", button -> {
+            this.addRenderableWidget(this.remove = new ButtonValue<>(this.width / 2 - 90, this.height / 2 + 65, 80, 20, new TranslatableComponent("fateubw.gui.truce.remove"), button -> {
                 if (button.getVal() != null) {
                     NetworkCalls.INSTANCE.sendToServer(new C2STruceMessage(C2STruceMessage.Type.DENY, button.getVal()));
                     this.init(this.minecraft, this.width, this.height);
