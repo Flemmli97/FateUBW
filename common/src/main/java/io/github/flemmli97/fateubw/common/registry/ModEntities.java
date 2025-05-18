@@ -69,49 +69,49 @@ public class ModEntities {
 
     public static final RegistryEntrySupplier<EntityType<EntityArthur>> ARTHUR = regServant(EntityType.Builder.of(EntityArthur::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "arthur"), 0x048dd0, 0xecee37,
-            new ServantProperties(400, 10, 16, 0.15f, 12, 0, 10, 0.32, 80, BuiltinServantClasses.SABER));
+            new ServantProperties(400, 15, 16, 0.15f, 3, 15, 0, 0.33, 80, BuiltinServantClasses.SABER));
 
     public static final RegistryEntrySupplier<EntityType<EntityCuchulainn>> CUCHULAINN = regServant(EntityType.Builder.of(EntityCuchulainn::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "cuchulainn"), 0x0038ff, 0xb6c0c1,
-            new ServantProperties(300, 8, 11, 0, 14, 0, 6, 0.37, 50, BuiltinServantClasses.LANCER));
+            new ServantProperties(370, 12, 14, 0.1f, 6, 0, 0, 0.37, 50, BuiltinServantClasses.LANCER));
     public static final RegistryEntrySupplier<EntityType<EntityDiarmuid>> DIARMUID = regServant(EntityType.Builder.of(EntityDiarmuid::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "diarmuid"), 0x2d5554, 0x302f34,
-            new ServantProperties(325, 7, 12, 0, 13, 0, 7, 0.37, 65, BuiltinServantClasses.LANCER));
+            new ServantProperties(380, 10, 14, 0.1f, 5, 0, 0, 0.37, 60, BuiltinServantClasses.LANCER));
 
     public static final RegistryEntrySupplier<EntityType<EntityEmiya>> EMIYA = regServant(EntityType.Builder.of(EntityEmiya::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "emiya"), 0x9f0707, 0x000000,
-            new ServantProperties(300, 8, 9, 0, 16, 0, 7, 0.34, 50, BuiltinServantClasses.ARCHER));
+            new ServantProperties(350, 13, 10, 0, 4, 0, 0, 0.35, 50, BuiltinServantClasses.ARCHER));
     public static final RegistryEntrySupplier<EntityType<EntityGilgamesh>> GILGAMESH = regServant(EntityType.Builder.of(EntityGilgamesh::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "gilgamesh"), 0xfff400, 0xffdb00,
-            new ServantProperties(350, 9, 9, 0, 12.5, 0, 5, 0.3, 80, BuiltinServantClasses.ARCHER));
+            new ServantProperties(450, 10, 12, 0, 5, 0, 0, 0.32, 80, BuiltinServantClasses.ARCHER));
 
     public static final RegistryEntrySupplier<EntityType<EntityMedea>> MEDEA = regServant(EntityType.Builder.of(EntityMedea::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "medea"), 0x6f086b, 0x4a8be5,
-            new ServantProperties(350, 9.5, 5, 0, 4, 16, 16, 0.27, 100, BuiltinServantClasses.CASTER));
+            new ServantProperties(350, 9, 8, 0, 2, 17, 0.4, 0.31, 70, BuiltinServantClasses.CASTER));
     public static final RegistryEntrySupplier<EntityType<EntityGilles>> GILLES = regServant(EntityType.Builder.of(EntityGilles::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "gilles"), 0x100460, 0x600453,
-            new ServantProperties(325, 5, 12, 0, 8, 14, 17, 0.31, 80, BuiltinServantClasses.CASTER));
+            new ServantProperties(370, 5, 16, 0, 2, 15, 0.6, 0.32, 80, BuiltinServantClasses.CASTER));
 
     public static final RegistryEntrySupplier<EntityType<EntityHeracles>> HERACLES = regServant(EntityType.Builder.of(EntityHeracles::new, MobCategory.MISC).sized(1.4f, 2.6f),
             new ResourceLocation(Fate.MODID, "heracles"), 0x3c1d06, 0x5e3c22,
-            new ServantProperties(250, 7.5, 18, 0, 16, 0, 9, 0.3, 0, BuiltinServantClasses.BERSERKER));
+            new ServantProperties(200, 10, 18, 0, 8, 0, 0, 0.3, 0, BuiltinServantClasses.BERSERKER));
     public static final RegistryEntrySupplier<EntityType<EntityLancelot>> LANCELOT = regServant(EntityType.Builder.of(EntityLancelot::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "lancelot"), 0x071a33, 0x1d4f94,
-            new ServantProperties(450, 10, 14, 0.1f, 18, 0, 4, 0.29, 0, BuiltinServantClasses.BERSERKER));
+            new ServantProperties(450, 15, 15, 0.1f, 10, 0, 0.1, 0.3, 0, BuiltinServantClasses.BERSERKER));
 
     public static final RegistryEntrySupplier<EntityType<EntityIskander>> ISKANDER = regServant(EntityType.Builder.of(EntityIskander::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "iskander"), 0xd40000, 0x8d0101,
-            new ServantProperties(400, 7, 10, 0, 9, 0, 9.5, 0.35, 70, BuiltinServantClasses.RIDER));
+            new ServantProperties(450, 12, 14, 0, 4, 0, 0, 0.35, 70, BuiltinServantClasses.RIDER));
     public static final RegistryEntrySupplier<EntityType<EntityMedusa>> MEDUSA = regServant(EntityType.Builder.of(EntityMedusa::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "medusa"), 0x000000, 0xf234ea,
-            new ServantProperties(300, 6, 12, 0, 7, 0, 10, 0.36, 70, BuiltinServantClasses.RIDER));
+            new ServantProperties(350, 11, 12, 0, 6, 0, 0, 0.36, 70, BuiltinServantClasses.RIDER));
 
     public static final RegistryEntrySupplier<EntityType<EntityHassan>> HASSAN = regServant(EntityType.Builder.of(EntityHassan::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "hassan"), 0x000000, 0x3a393a,
-            new ServantProperties(250, 6, 9, 0, 15, 0, 5, 0.34, 50, BuiltinServantClasses.ASSASSIN));
+            new ServantProperties(320, 10, 10, 0, 12, 0, 0, 0.36, 40, BuiltinServantClasses.ASSASSIN));
     public static final RegistryEntrySupplier<EntityType<EntitySasaki>> SASAKI = regServant(EntityType.Builder.of(EntitySasaki::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "sasaki"), 0x4e04c3, 0xa77cec,
-            new ServantProperties(350, 9.5, 9, 0, 8, 0, 8.5, 0.31, 30, BuiltinServantClasses.ASSASSIN));
+            new ServantProperties(300, 13, 10, 0, 5, 0, 0, 0.33, 30, BuiltinServantClasses.ASSASSIN));
 
     public static final RegistryEntrySupplier<EntityType<Excalibur>> EXCALIBUR = reg(EntityType.Builder.<Excalibur>of(Excalibur::new, MobCategory.MISC).sized(0.05F, 0.05F), new ResourceLocation(Fate.MODID, "excalibur"));
     public static final RegistryEntrySupplier<EntityType<GaeBolg>> GAEBOLG = reg(EntityType.Builder.<GaeBolg>of(GaeBolg::new, MobCategory.MISC).sized(0.25F, 0.25F), new ResourceLocation(Fate.MODID, "gae_bolg"));

@@ -15,6 +15,7 @@ public class Config {
     }
 
     public static class Common {
+
         public static int minPlayer = 1;
         public static int maxPlayer = 7;
         public static int joinTime = 12000;
@@ -41,29 +42,29 @@ public class Config {
         public static float lancelotReflectChance = 0.4f;
         public static int hassanCopies = 5;
 
-        //Minions
+        // Misc
         public static int gillesMinionDuration = 6000;
-        public static int gillesMinionAmount = 6;
-        public static float smallMonsterHealth = 25;
+        public static int gillesMinionAmount = 7;
+        public static float smallMonsterHealth = 30;
         public static float smallMonsterDamage = 11;
         public static float babylonScale = 1.5f;
         public static WeaponList babylonWeapons = new WeaponList(ModItems.ENUMAELISH.getID().toString());
         public static float eaDamage = 35;
-        public static float excaliburDamage = 27;
-        public static float caladBolgDmg = 22;
-        public static float magicBeam = 5;
-        public static float gaeBolgDmg = 17;
+        public static float excaliburDamage = 25;
+        public static float caladBolgDmg = 25;
+        public static float magicBeam = 6;
+        public static float gaeBolgDmg = 18;
         public static PotionEffectsConfig gaeBolgEffect = new PotionEffectsConfig(
-                List.of(new PotionEffectsConfig.EffectInstance(MobEffects.WITHER, 400, 2),
-                        new PotionEffectsConfig.EffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 200, 7),
+                List.of(new PotionEffectsConfig.EffectInstance(MobEffects.WITHER, 600, 3),
+                        new PotionEffectsConfig.EffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 300, 7),
                         new PotionEffectsConfig.EffectInstance(MobEffects.JUMP, 200, 128))
         );
 
-        public static double gordiusHealth = 100;
-        public static float gordiusDmg = 13;
-        public static double pegasusHealth = 70;
-        public static float pegasusDamage = 16;
-        public static int medeaCircleSpan = 2400;
+        public static double gordiusHealth = 120;
+        public static float gordiusDmg = 15;
+        public static double pegasusHealth = 80;
+        public static float pegasusDamage = 17;
+        public static int medeaCircleSpan = 2000;
         public static float medeaCircleRange = 24;
 
         //Items

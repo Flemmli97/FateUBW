@@ -1,12 +1,12 @@
 {
   "class": "fateubw:archer",
-  "health": 350.0,
-  "strength": 9.0,
+  "health": 450.0,
+  "strength": 10.0,
   "magic": 0.0,
-  "armor": 9.0,
-  "projectile_prot": 12.5,
-  "magic_prot": 5.0,
-  "move_speed": 0.3,
+  "armor": 12.0,
+  "projectile_prot": 5.0,
+  "magic_prot": 0.0,
+  "move_speed": 0.32,
   "projectile_block_chance": 0.0,
   "nobel_phantasm_cost": 80
 }

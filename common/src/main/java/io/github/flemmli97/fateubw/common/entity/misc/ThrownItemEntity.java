@@ -1,6 +1,5 @@
 package io.github.flemmli97.fateubw.common.entity.misc;
 
-import io.github.flemmli97.fateubw.common.config.Config;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.tenshilib.common.utils.ItemUtils;
@@ -69,7 +68,7 @@ public class ThrownItemEntity extends BaseProjectile {
     public void setWeapon(ItemStack stack) {
         if (!stack.isEmpty()) {
             this.entityData.set(WEAPON_TYPE, stack);
-            this.dmg = ItemUtils.damage(stack) * Config.Common.babylonScale;
+            this.dmg = ItemUtils.damage(stack);
         }
     }
 

@@ -170,7 +170,7 @@ public class EntityHeracles extends BaseServant {
     }
 
     public void setDeathNumber(int death) {
-        this.entityData.set(DEATH_COUNT, death);
+        this.entityData.set(DEATH_COUNT, Mth.clamp(death, 0, MAX_DEATH));
     }
 
     public int getDeaths() {
@@ -179,22 +179,9 @@ public class EntityHeracles extends BaseServant {
 
     @Override
     public boolean hurt(DamageSource damageSource, float damage) {
-        if (damageSource != DamageSource.OUT_OF_WORLD && damage < 4)
+        if (damageSource != DamageSource.OUT_OF_WORLD && (damage -= 3) < 0)
             return false;
         return super.hurt(damageSource, damage);
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-        if (!this.level.isClientSide) {
-            if (this.getDeaths() > 4 && this.getDeaths() <= 8) {
-                this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 1, 1, false, false));
-
-            } else if (this.getDeaths() > 8) {
-                this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 1, 2, false, false));
-            }
-        }
     }
 
     @Override
@@ -231,7 +218,7 @@ public class EntityHeracles extends BaseServant {
         dmg.removeModifier(DEATH_MOD);
         if (mod != 0) {
             att.addPermanentModifier(new AttributeModifier(DEATH_MOD, "fate.death.mod", -mod, AttributeModifier.Operation.MULTIPLY_TOTAL));
-            att.addPermanentModifier(new AttributeModifier(DEATH_MOD, "fate.death.mod", mod * 0.35, AttributeModifier.Operation.MULTIPLY_TOTAL));
+            dmg.addPermanentModifier(new AttributeModifier(DEATH_MOD, "fate.death.mod", mod * 0.35, AttributeModifier.Operation.MULTIPLY_TOTAL));
         }
     }
 

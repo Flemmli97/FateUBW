@@ -1,12 +1,12 @@
 {
   "class": "fateubw:saber",
   "health": 400.0,
-  "strength": 10.0,
-  "magic": 0.0,
+  "strength": 15.0,
+  "magic": 15.0,
   "armor": 16.0,
-  "projectile_prot": 12.0,
-  "magic_prot": 10.0,
-  "move_speed": 0.32,
+  "projectile_prot": 3.0,
+  "magic_prot": 0.0,
+  "move_speed": 0.33,
   "projectile_block_chance": 0.15,
   "nobel_phantasm_cost": 80
 }

@@ -129,7 +129,8 @@ public class EntityTrailProvider<T extends Entity & IAnimated & EntityTrailHolde
         }
     }
 
-    public record EntityTrailData(int entityId, String context, boolean left, String animationEnd) implements TrailData {
+    public record EntityTrailData(int entityId, String context, boolean left,
+                                  String animationEnd) implements TrailData {
 
         public static final Codec<EntityTrailData> CODEC = RecordCodecBuilder.create((builder) -> builder.group(
                         Codec.INT.fieldOf("entity_id").forGetter(d -> d.entityId),

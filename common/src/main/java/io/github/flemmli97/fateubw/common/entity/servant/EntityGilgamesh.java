@@ -178,10 +178,7 @@ public class EntityGilgamesh extends BaseServant {
                         this.position().add(this.getLookAngle().scale(8));
             }
             if (anim.isAt("attack")) {
-                if (!this.forcedNP)
-                    this.useMana(this.props().hogouMana());
                 this.ea(this.targetPosition);
-                this.forcedNP = false;
             }
 
         } else if (anim.is(BABYLON_1, BABYLON_2, BABYLON_3)) {
@@ -250,6 +247,7 @@ public class EntityGilgamesh extends BaseServant {
         this.stopUsingItem();
         Platform.INSTANCE.getItemStackData(this.getMainHandItem()).ifPresent(data -> data.setInUse(this, false, true));
         this.switchableWeapon.switchItems(true);
+        this.forcedNP = false;
     }
 
     public void attackWithRangedAttack(LivingEntity target) {
