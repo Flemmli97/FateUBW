@@ -54,7 +54,7 @@ public class EntityTrailProvider<T extends Entity & IAnimated & EntityTrailHolde
         this.addBatchedData();
         if (this.valid) {
             AnimatedAction anim = this.entity.getAnimationHandler().getAnimation();
-            if (!this.entity.isAlive() || anim == null || anim.isPast(EntityTrailProvider.TRAIL_END)) {
+            if (!this.entity.isAlive() || anim == null || anim.isPast(this.data.animationEnd)) {
                 this.valid = false;
                 this.last = this.position.getLast();
             }
@@ -129,17 +129,22 @@ public class EntityTrailProvider<T extends Entity & IAnimated & EntityTrailHolde
         }
     }
 
-    public record EntityTrailData(int entityId, String context, boolean left) implements TrailData {
+    public record EntityTrailData(int entityId, String context, boolean left, String animationEnd) implements TrailData {
 
         public static final Codec<EntityTrailData> CODEC = RecordCodecBuilder.create((builder) -> builder.group(
                         Codec.INT.fieldOf("entity_id").forGetter(d -> d.entityId),
                         Codec.STRING.fieldOf("context").forGetter(d -> d.context),
-                        Codec.BOOL.fieldOf("left").forGetter(d -> d.left)
+                        Codec.BOOL.fieldOf("left").forGetter(d -> d.left),
+                        Codec.STRING.fieldOf("end").forGetter(d -> d.animationEnd)
                 ).apply(builder, EntityTrailData::new)
         );
 
+        public EntityTrailData(int entityId, String context, boolean left) {
+            this(entityId, context, left, EntityTrailProvider.TRAIL_END);
+        }
+
         public EntityTrailData(FriendlyByteBuf buf) {
-            this(buf.readInt(), buf.readUtf(), buf.readBoolean());
+            this(buf.readInt(), buf.readUtf(), buf.readBoolean(), buf.readUtf());
         }
 
         public static <T extends Entity & EntityTrailHolderProvider> EntityTrailData create(T entity, String context, boolean left) {
@@ -156,6 +161,7 @@ public class EntityTrailProvider<T extends Entity & IAnimated & EntityTrailHolde
             buf.writeInt(this.entityId);
             buf.writeUtf(this.context);
             buf.writeBoolean(this.left);
+            buf.writeUtf(this.animationEnd);
         }
 
         @Override
