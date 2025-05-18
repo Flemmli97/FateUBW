@@ -22,7 +22,7 @@ public class DataEvent {
         if (event.includeClient()) {
             data.addProvider(new BlockStates(data, event.getExistingFileHelper()));
             data.addProvider(new ItemModels(data, event.getExistingFileHelper()));
-            data.addProvider(new Lang(data, event.getExistingFileHelper()));
+            data.addProvider(new Lang(data));
             data.addProvider(new ParticleGen(data));
             data.addProvider(new SoundGen(data, new IgnoreFileHelper(event.getExistingFileHelper(), true)));
         }

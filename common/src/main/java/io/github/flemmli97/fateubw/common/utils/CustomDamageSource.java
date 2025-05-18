@@ -19,6 +19,10 @@ public class CustomDamageSource {
         return Platform.INSTANCE.setBypassArmor(new IndirectEntityDamageSource(Fate.MODID + ".excalibur", source, sourceEntity)).setMagic();
     }
 
+    public static DamageSource ea(Entity source, Entity sourceEntity) {
+        return Platform.INSTANCE.setBypassArmor(new IndirectEntityDamageSource(Fate.MODID + ".ea", source, sourceEntity)).setMagic();
+    }
+
     public static DamageSource babylon(Entity source, Entity sourceEntity) {
         return new IndirectEntityDamageSource(Fate.MODID + ".babylon", source, sourceEntity).setProjectile();
     }
@@ -40,11 +44,11 @@ public class CustomDamageSource {
     }
 
     public static DamageSource magicBeam(Entity source, Entity sourceEntity) {
-        return new IndirectEntityDamageSource(Fate.MODID + ".magic_beam", source, sourceEntity);
+        return new IndirectEntityDamageSource(Fate.MODID + ".magic_beam", source, sourceEntity).setMagic();
     }
 
     public static DamageSource magicShot(Entity source, Entity sourceEntity) {
-        return new IndirectEntityDamageSource(Fate.MODID + ".magic_shot", source, sourceEntity);
+        return new IndirectEntityDamageSource(Fate.MODID + ".magic_shot", source, sourceEntity).setMagic();
     }
 
     public static DamageSource hiKen(LivingEntity sourceEntity) {
@@ -67,6 +71,8 @@ public class CustomDamageSource {
         Map<String, String> translations = new LinkedHashMap<>();
         add(translations, "excalibur", new Translation(Type.DEFAULT, "%1$s was vaporized by %2$s with excalibur"),
                 new Translation(Type.ITEM, "%1$s was vaporized by %2$s using %3$s"));
+        add(translations, "ea", new Translation(Type.DEFAULT, "%1$s was erased by the swirling void of Ea"),
+                new Translation(Type.ITEM, "%1$s was erased by the swirling void by %2$s using %3$s"));
         add(translations, "babylon",
                 new Translation(Type.DEFAULT, "%1$s was impaled by %2$s with the gate of babylon"),
                 new Translation(Type.ITEM, "%1$s was impaled by %2$s with the gate of babylon"));
@@ -77,8 +83,8 @@ public class CustomDamageSource {
                 new Translation(Type.DEFAULT, "%1$s's heart was pierced with gae bolg"),
                 new Translation(Type.ITEM, "%1$s's heart was pierced with gae bolg"));
         add(translations, "caladbolg",
-                new Translation(Type.DEFAULT, "%1$s died from a powerful... arrow?"),
-                new Translation(Type.ITEM, "%1$s died from a powerful... arrow?"));
+                new Translation(Type.DEFAULT, "%1$s was pierced by Caladbolg II"),
+                new Translation(Type.ITEM, "%1$s was pierced by Caladbolg II"));
         add(translations, "arrow",
                 new Translation(Type.DEFAULT, "%1$s was shot by %2$s"),
                 new Translation(Type.ITEM, "%1$s was shot by %2$s using %3$s"));

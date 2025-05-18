@@ -22,7 +22,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.common.data.ExistingFileHelper;
 import org.apache.commons.lang3.text.translate.JavaUnicodeEscaper;
 
 import java.io.BufferedWriter;
@@ -50,7 +49,7 @@ public class Lang implements DataProvider {
 
     private static final Comparator<String> ORDER = Comparator.comparingInt(o -> LangType.get(o).ordinal());
 
-    public Lang(DataGenerator gen, ExistingFileHelper existing) {
+    public Lang(DataGenerator gen) {
         this.gen = gen;
         this.modid = Fate.MODID;
         this.locale = "en_us";

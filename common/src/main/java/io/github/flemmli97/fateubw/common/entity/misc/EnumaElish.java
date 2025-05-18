@@ -85,6 +85,6 @@ public class EnumaElish extends BaseBeam {
 
     @Override
     public void onImpact(EntityHitResult result) {
-        result.getEntity().hurt(CustomDamageSource.excalibur(this, this.getOwner()), Utils.magicDamage(this.getOwner()) + Config.Common.eaDamage);
+        result.getEntity().hurt(CustomDamageSource.ea(this, this.getOwner()), Utils.magicDamage(this.getOwner()) + Config.Common.eaDamage);
     }
 }
