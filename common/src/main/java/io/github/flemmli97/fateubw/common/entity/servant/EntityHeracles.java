@@ -35,6 +35,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.ItemStack;
@@ -45,10 +48,14 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
+import java.util.UUID;
 
 public class EntityHeracles extends BaseServant {
 
+    public static final int MAX_DEATH = 3;
     protected static final EntityDataAccessor<Integer> DEATH_COUNT = SynchedEntityData.defineId(EntityHeracles.class, EntityDataSerializers.INT);
+
+    private static final UUID DEATH_MOD = UUID.fromString("5f642c37-7ed0-409a-91a5-0095001eb6e3");
 
     private static final AnimatedAction ONE_HAND_HEAVY_1 = AnimatedAction.builder(0.7, "one_hand_heavy_1").marker("attack", 0.6).build();
     private static final AnimatedAction ONE_HAND_HEAVY_2 = AnimatedAction.builder(0.7, "one_hand_heavy_2").marker("attack", 0.52).build();
@@ -196,7 +203,7 @@ public class EntityHeracles extends BaseServant {
             this.voidDeath = true;
             super.tickDeath();
         } else if (!this.level.isClientSide) {
-            if (this.getDeaths() < 12) {
+            if (this.getDeaths() < MAX_DEATH) {
                 this.deathTime++;
                 if (this.deathTime == 1) {
                     this.getAnimationHandler().setAnimation(FAKE_DEATH);
@@ -204,15 +211,27 @@ public class EntityHeracles extends BaseServant {
                 AnimatedAction anim = this.getAnimationHandler().getAnimation();
                 if (anim == null || !anim.getID().equals(FAKE_DEATH.getID())) {
                     this.setDeathNumber(this.getDeaths() + 1);
-                    double heal = 1 - this.getDeaths() * 0.04;
-                    this.setHealth((float) (heal * this.getMaxHealth()));
-                    this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 300, 3, false, false));
+                    double mod = ((double) this.getDeaths() / MAX_DEATH) * 0.7;
+                    this.applyDeathMod(mod);
+                    this.setHealth(this.getMaxHealth());
+                    this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 300, 2, false, false));
                     this.deathTime = 0;
                     this.revealServant();
                 }
             } else {
                 super.tickDeath();
             }
+        }
+    }
+
+    private void applyDeathMod(double mod) {
+        AttributeInstance att = this.getAttribute(Attributes.MAX_HEALTH);
+        att.removeModifier(DEATH_MOD);
+        AttributeInstance dmg = this.getAttribute(Attributes.ATTACK_DAMAGE);
+        dmg.removeModifier(DEATH_MOD);
+        if (mod != 0) {
+            att.addPermanentModifier(new AttributeModifier(DEATH_MOD, "fate.death.mod", -mod, AttributeModifier.Operation.MULTIPLY_TOTAL));
+            att.addPermanentModifier(new AttributeModifier(DEATH_MOD, "fate.death.mod", mod * 0.35, AttributeModifier.Operation.MULTIPLY_TOTAL));
         }
     }
 
