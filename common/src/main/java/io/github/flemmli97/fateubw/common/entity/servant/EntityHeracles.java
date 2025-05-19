@@ -6,6 +6,7 @@ import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.particles.RingParticleData;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
+import io.github.flemmli97.fateubw.common.registry.ModSounds;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.AnimatedAttackGoal;
@@ -70,8 +71,10 @@ public class EntityHeracles extends BaseServant {
     private static final AnimatedAction LAND = AnimatedAction.builder(0.44, "land").build();
 
     private static final AnimatedAction DEATH = AnimatedAction.builder(0.68, "death").infinite().build();
-    private static final AnimatedAction FAKE_DEATH = new AnimatedAction(5.92, "fake_death");
-    private static final AnimatedAction SUMMON = new AnimatedAction(2, "summon");
+    private static final AnimatedAction FAKE_DEATH = AnimatedAction.builder(5.92, "fake_death")
+            .marker("roar", 5.).build();
+    private static final AnimatedAction SUMMON = AnimatedAction.builder(2, "summon")
+            .marker("roar", 0.84).build();
     private static final AnimatedAction[] ANIMS = {ONE_HAND_HEAVY_1, ONE_HAND_HEAVY_2, ONE_HAND_HEAVY_3, TWO_HAND_HEAVY_1, TWO_HAND_HEAVY_2, UPPER_CUT, JUMP, JUMP_HIT, LAND, DEATH, FAKE_DEATH, SUMMON};
 
     public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityHeracles>>> ATTACKS = List.of(
@@ -175,6 +178,18 @@ public class EntityHeracles extends BaseServant {
 
     public int getDeaths() {
         return this.entityData.get(DEATH_COUNT);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (!this.level.isClientSide) {
+           AnimatedAction anim = this.getAnimationHandler().getAnimation();
+           if (anim != null && anim.isAt("roar")) {
+                this.playSound(ModSounds.HERACLES_ROAR.get(), 1, 1);
+                S2CScreenShake.sendAround(this, 24, 8, 2);
+            }
+        }
     }
 
     @Override

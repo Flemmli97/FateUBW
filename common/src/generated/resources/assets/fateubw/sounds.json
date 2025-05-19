@@ -34,5 +34,11 @@
       "random/explode3",
       "random/explode4"
     ]
+  },
+  "entity.heracles.roar": {
+    "subtitle": "fateubw:entity.heracles.roar",
+    "sounds": [
+      "fateubw:entity/heracles/roar"
+    ]
   }
 }

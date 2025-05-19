@@ -22,6 +22,7 @@ public class SoundGen extends SoundDefinitionsProvider {
         this.add(ModSounds.ENTITY_BABYLON_SHOOT.get(), fromEvent(SoundEvents.PLAYER_ATTACK_SWEEP.getLocation()), 7, false);
         this.add(ModSounds.ENTITY_EXCALIBUR_SHOOT.get(), new ResourceLocation("random/explode"), 4, false);
         this.add(ModSounds.ENTITY_EA_SHOOT.get(), new ResourceLocation("random/explode"), 4, false);
+        this.add(ModSounds.HERACLES_ROAR.get());
     }
 
     private void add(SoundEvent event) {

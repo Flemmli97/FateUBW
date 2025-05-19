@@ -16,6 +16,7 @@ public class ModSounds {
     public static final RegistryEntrySupplier<SoundEvent> ENTITY_BABYLON_SHOOT = register("entity.babylon.shoot");
     public static final RegistryEntrySupplier<SoundEvent> ENTITY_EXCALIBUR_SHOOT = register("entity.excalibur.shoot");
     public static final RegistryEntrySupplier<SoundEvent> ENTITY_EA_SHOOT = register("entity.ea.shoot");
+    public static final RegistryEntrySupplier<SoundEvent> HERACLES_ROAR = register("entity.heracles.roar");
 
     private static RegistryEntrySupplier<SoundEvent> register(String name) {
         return SOUND_EVENTS.register(name, () -> new SoundEvent(new ResourceLocation(Fate.MODID, name)));
