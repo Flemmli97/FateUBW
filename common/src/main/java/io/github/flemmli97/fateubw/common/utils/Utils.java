@@ -67,6 +67,26 @@ public class Utils {
         return (float) living.getAttributeValue(ModAttributes.MAGIC_ATTACK.get());
     }
 
+    public static boolean runWithInvulTimer(@Nullable Entity source, Entity target, Predicate<Entity> attack, int invulnerability) {
+        int invul = target.invulnerableTime;
+        boolean modified = false;
+        boolean sourceCheck = true;
+        if (target instanceof LivingEntity living && source != null) {
+            if (living.getLastHurtByMob() != source) {
+                sourceCheck = false;
+            }
+        }
+        if (target.invulnerableTime + invulnerability <= 20 && sourceCheck) {
+            target.invulnerableTime = Math.min(target.invulnerableTime, 10);
+            modified = true;
+        }
+        boolean success = attack.test(target);
+        if (!success && modified) {
+            target.invulnerableTime = invul;
+        }
+        return success;
+    }
+
     public static boolean alliedTo(Entity entity, Entity other) {
         if (entity.getServer() == null)
             return false;

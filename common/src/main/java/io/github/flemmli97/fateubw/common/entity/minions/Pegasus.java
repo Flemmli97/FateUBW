@@ -12,6 +12,7 @@ import io.github.flemmli97.fateubw.common.particles.trail.provider.MotionTrailPr
 import io.github.flemmli97.fateubw.common.registry.ModParticles;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
+import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
 import io.github.flemmli97.tenshilib.api.entity.AoeAttackEntity;
@@ -318,13 +319,14 @@ public class Pegasus extends PathfinderMob implements IAnimated, StandingVehicle
     public void mobAttack(AnimatedAction anim, LivingEntity target, Consumer<LivingEntity> cons) {
         OrientedBoundingBox obb = this.prepareAttackBox(anim, target, 0.2, false);
         this.level.getEntitiesOfClass(LivingEntity.class, obb.getEncompassingBox(),
-                entity -> this.targetPred.test(entity) && obb.intersects(entity.getBoundingBox())).forEach(e -> {
-            if (e.getLastHurtByMob() == this)
-                e.invulnerableTime = 0;
-            cons.accept(e);
-        });
+                entity -> this.targetPred.test(entity) && obb.intersects(entity.getBoundingBox())).forEach(cons);
         if (!this.level.isClientSide)
             S2CAttackDebug.sendDebugPacket(obb, S2CAttackDebug.EnumAABBType.ATTACK, this);
+    }
+
+    @Override
+    public boolean doHurtTarget(Entity entity) {
+        return Utils.runWithInvulTimer(this, entity, super::doHurtTarget, 0);
     }
 
     public void setMovingFlag(MoveType type) {

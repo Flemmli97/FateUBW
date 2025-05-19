@@ -103,9 +103,9 @@ public class BabylonWeapon extends BaseProjectile {
             if (!this.level.isClientSide) {
                 if (thrower instanceof Player) {
                     HitResult hit = RayTraceUtils.entityRayTrace(thrower, 64, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, false, false, null);
-                    this.shootAtPosition(hit.getLocation().x, hit.getLocation().y, hit.getLocation().z, 1.f, 3);
+                    this.shootAtPosition(hit.getLocation().x, hit.getLocation().y, hit.getLocation().z, 1.f, 15);
                 } else if (this.target != null) {
-                    this.shootAtEntity(this.target, 1.f, 3);
+                    this.shootAtEntity(this.target, 1.f, 15);
                 }
                 this.playSound(ModSounds.ENTITY_BABYLON_SHOOT.get(), 0.8f, (this.random.nextFloat() - this.random.nextFloat()) * 0.2f + 0.5f);
             }
@@ -197,10 +197,10 @@ public class BabylonWeapon extends BaseProjectile {
 
     @Override
     protected boolean entityRayTraceHit(EntityHitResult result) {
-        boolean res = result.getEntity().hurt(CustomDamageSource.babylon(this, this.getOwner()), (float) this.dmg * 1.5F);
+        boolean res = Utils.runWithInvulTimer(null, result.getEntity(),
+                e -> e.hurt(CustomDamageSource.babylon(this, this.getOwner()), (float) this.dmg * 1.5F), 2);
         if (res && result.getEntity() instanceof LivingEntity entity) {
             entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 30));
-            entity.invulnerableTime = 14;
         }
         this.discard();
         return true;
@@ -277,7 +277,7 @@ public class BabylonWeapon extends BaseProjectile {
         }
         for (Vec3 offset : Utils.randomSidedPositions(thrower, amount, range)) {
             BabylonWeapon weapon = new BabylonWeapon(thrower.level, thrower, target);
-            weapon.shoot(thrower, 0, 180 + thrower.getYRot(), 0, 0.5F, 0);
+            weapon.shoot(thrower, 0, 180 + thrower.getYRot(), 0, 0.5F, 10);
             weapon.setPos(offset.x, offset.y, offset.z);
             weapon.setWeapon(Config.Common.babylonWeapons.getRandomWeapon(weapon.random));
             weapon.level.addFreshEntity(weapon);
@@ -313,7 +313,7 @@ public class BabylonWeapon extends BaseProjectile {
             if (offset == null)
                 continue;
             BabylonWeapon weapon = new BabylonWeapon(thrower.level, thrower, target);
-            weapon.shoot(thrower, offset.getSecond(), offset.getFirst(), 0, 0.5F, 0);
+            weapon.shoot(thrower, offset.getSecond(), offset.getFirst(), 0, 0.5F, 10);
             Vec3 area = pos.add(Vec3.directionFromRotation(-offset.getSecond(), offset.getFirst()).scale(range));
             weapon.setPos(area.x, area.y, area.z);
             weapon.setWeapon(Config.Common.babylonWeapons.getRandomWeapon(weapon.random));

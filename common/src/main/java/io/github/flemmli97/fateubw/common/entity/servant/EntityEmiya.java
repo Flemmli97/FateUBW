@@ -208,10 +208,7 @@ public class EntityEmiya extends BaseServant {
                 this.setDeltaMovement(this.getDeltaMovement().add(dir));
             }
             if (anim.isAt("attack")) {
-                this.mobAttack(anim, this.getTarget(), e -> {
-                    e.invulnerableTime = 10;
-                    this.doHurtTarget(e);
-                });
+                this.mobAttack(anim, this.getTarget(), this::doHurtTarget);
                 this.targetPosition = null;
                 if (this.getTarget() != null)
                     this.targetPosition = this.getTarget().position();

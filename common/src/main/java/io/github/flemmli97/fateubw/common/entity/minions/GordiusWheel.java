@@ -9,6 +9,7 @@ import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
+import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
 import io.github.flemmli97.tenshilib.api.entity.AoeAttackEntity;
@@ -215,11 +216,7 @@ public class GordiusWheel extends PathfinderMob implements IAnimated, StandingVe
     public void mobAttack(AnimatedAction anim, LivingEntity target, Consumer<LivingEntity> cons) {
         OrientedBoundingBox obb = this.prepareAttackBox(anim, target, 0.2, false);
         this.level.getEntitiesOfClass(LivingEntity.class, obb.getEncompassingBox(),
-                entity -> this.targetPred.test(entity) && obb.intersects(entity.getBoundingBox())).forEach(e -> {
-            if (e.getLastHurtByMob() == this)
-                e.invulnerableTime = 0;
-            cons.accept(e);
-        });
+                entity -> this.targetPred.test(entity) && obb.intersects(entity.getBoundingBox())).forEach(cons);
         if (!this.level.isClientSide)
             S2CAttackDebug.sendDebugPacket(obb, S2CAttackDebug.EnumAABBType.ATTACK, this);
     }
@@ -257,6 +254,11 @@ public class GordiusWheel extends PathfinderMob implements IAnimated, StandingVe
         if (damageSource != DamageSource.OUT_OF_WORLD && this.isCharging())
             damage *= 0.5f;
         return super.hurt(damageSource, damage);
+    }
+
+    @Override
+    public boolean doHurtTarget(Entity entity) {
+        return Utils.runWithInvulTimer(this, entity, super::doHurtTarget, 0);
     }
 
     @Override

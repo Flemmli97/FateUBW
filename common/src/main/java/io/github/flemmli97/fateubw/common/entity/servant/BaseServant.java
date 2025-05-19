@@ -685,11 +685,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     public void mobAttack(AnimatedAction anim, LivingEntity target, Consumer<LivingEntity> cons) {
         OrientedBoundingBox obb = this.calculateAttackAABB(anim, this.targetPosition != null || target == null ? this.targetPosition : target.position(), 0.2);
         this.level.getEntitiesOfClass(LivingEntity.class, obb.getEncompassingBox(),
-                entity -> this.targetPred.test(entity) && obb.intersects(entity.getBoundingBox())).forEach(e -> {
-            if (e.getLastHurtByMob() == this)
-                e.invulnerableTime = 0;
-            cons.accept(e);
-        });
+                entity -> this.targetPred.test(entity) && obb.intersects(entity.getBoundingBox())).forEach(cons);
         if (!this.level.isClientSide)
             S2CAttackDebug.sendDebugPacket(obb, S2CAttackDebug.EnumAABBType.ATTACK, this);
     }
@@ -781,7 +777,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
 
     @Override
     public boolean doHurtTarget(Entity entity) {
-        return this.mobHurtTarget(entity);
+        return Utils.runWithInvulTimer(this, entity, this::mobHurtTarget, 0);
     }
 
     protected boolean mobHurtTarget(Entity target) {

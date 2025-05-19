@@ -271,16 +271,12 @@ public class EntitySasaki extends BaseServant {
                 this.hiken = true;
                 for (LivingEntity entity : this.level.getEntitiesOfClass(LivingEntity.class, obb.getEncompassingBox(),
                         entity -> this.targetPred.test(entity) && obb.intersects(entity.getBoundingBox()))) {
-                    entity.invulnerableTime = 0;
                     if (this.doHurtTarget(entity) && !damage)
                         damage = true;
-                    entity.invulnerableTime = 0;
                     if (this.doHurtTarget(entity) && !damage)
                         damage = true;
-                    entity.invulnerableTime = 0;
                     if (this.doHurtTarget(entity) && !damage)
                         damage = true;
-                    entity.invulnerableTime = 0;
                 }
                 this.hiken = false;
                 this.tsubameParticles(this.position().add(0, this.getEyeHeight(), 0).add(dir.scale(0.5)));
