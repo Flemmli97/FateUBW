@@ -33,7 +33,6 @@ public class ItemDagger extends SwordItem {
             tooltipComponents.add(new TranslatableComponent("fateubw.tooltip.item.mana", Config.Common.daggerThrowMana).withStyle(ChatFormatting.AQUA));
     }
 
-
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         if (!level.isClientSide) {

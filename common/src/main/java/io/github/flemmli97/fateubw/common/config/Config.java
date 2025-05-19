@@ -76,6 +76,7 @@ public class Config {
         public static int grimoireMana = 30;
         public static int chainMana = 0;
         public static int daggerThrowMana = 5;
+        public static int staffMana = 10;
 
         public static boolean debugAttack = false;
     }

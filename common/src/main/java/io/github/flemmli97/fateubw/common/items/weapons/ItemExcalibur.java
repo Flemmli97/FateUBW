@@ -49,25 +49,20 @@ public class ItemExcalibur extends SwordItem {
     }
 
     @Override
-    public void releaseUsing(ItemStack stack, Level world, LivingEntity entityLiving, int timeLeft) {
+    public void releaseUsing(ItemStack stack, Level level, LivingEntity entity, int timeLeft) {
         int i = this.getUseDuration(stack) - timeLeft;
         if (i < 40) {
             return;
         }
-        if (!world.isClientSide) {
-            if (!(entityLiving instanceof Player player) || ((Player) entityLiving).isCreative()) {
-                Excalibur excalibur = new Excalibur(world, entityLiving);
-                world.addFreshEntity(excalibur);
+        if (!level.isClientSide) {
+            if (!(entity instanceof Player player) || player.isCreative() || Platform.INSTANCE.getPlayerData(player).map(mana -> mana.useMana(player, Config.Common.excaliburMana)).orElse(false)) {
+                Excalibur excalibur = new Excalibur(level, entity);
+                level.addFreshEntity(excalibur);
             } else {
-                if (Platform.INSTANCE.getPlayerData(player).map(mana -> mana.useMana(player, Config.Common.excaliburMana)).orElse(false)) {
-                    Excalibur excalibur = new Excalibur(world, entityLiving);
-                    world.addFreshEntity(excalibur);
-                } else {
-                    player.sendMessage(new TranslatableComponent("fateubw.chat.mana.missing").withStyle(ChatFormatting.AQUA), Util.NIL_UUID);
-                }
+                player.sendMessage(new TranslatableComponent("fateubw.chat.mana.missing").withStyle(ChatFormatting.AQUA), Util.NIL_UUID);
             }
         }
-        super.releaseUsing(stack, world, entityLiving, timeLeft);
+        super.releaseUsing(stack, level, entity, timeLeft);
     }
 
     @Override

@@ -50,26 +50,21 @@ public class ItemEA extends SwordItem {
     }
 
     @Override
-    public void releaseUsing(ItemStack stack, Level world, LivingEntity entityLiving, int timeLeft) {
+    public void releaseUsing(ItemStack stack, Level level, LivingEntity entity, int timeLeft) {
         int i = this.getUseDuration(stack) - timeLeft;
-        Platform.INSTANCE.getItemStackData(stack).ifPresent(data -> data.setInUse(entityLiving, false, entityLiving.getUsedItemHand() == InteractionHand.MAIN_HAND));
+        Platform.INSTANCE.getItemStackData(stack).ifPresent(data -> data.setInUse(entity, false, entity.getUsedItemHand() == InteractionHand.MAIN_HAND));
         if (i < 40) {
             return;
         }
-        if (!world.isClientSide) {
-            if (!(entityLiving instanceof Player player) || ((Player) entityLiving).isCreative()) {
-                EnumaElish ea = new EnumaElish(world, entityLiving);
-                world.addFreshEntity(ea);
+        if (!level.isClientSide) {
+            if (!(entity instanceof Player player) || player.isCreative() || Platform.INSTANCE.getPlayerData(player).map(mana -> mana.useMana(player, Config.Common.eaMana)).orElse(false)) {
+                EnumaElish ea = new EnumaElish(level, entity);
+                level.addFreshEntity(ea);
             } else {
-                if (Platform.INSTANCE.getPlayerData(player).map(mana -> mana.useMana(player, Config.Common.eaMana)).orElse(false)) {
-                    EnumaElish ea = new EnumaElish(world, entityLiving);
-                    world.addFreshEntity(ea);
-                } else {
-                    player.sendMessage(new TranslatableComponent("fateubw.chat.mana.missing").withStyle(ChatFormatting.AQUA), Util.NIL_UUID);
-                }
+                player.sendMessage(new TranslatableComponent("fateubw.chat.mana.missing").withStyle(ChatFormatting.AQUA), Util.NIL_UUID);
             }
         }
-        super.releaseUsing(stack, world, entityLiving, timeLeft);
+        super.releaseUsing(stack, level, entity, timeLeft);
     }
 
     @Override

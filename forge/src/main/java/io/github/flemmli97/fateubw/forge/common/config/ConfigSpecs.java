@@ -81,6 +81,7 @@ public class ConfigSpecs {
         public final ForgeConfigSpec.IntValue grimoireMana;
         public final ForgeConfigSpec.IntValue chainMana;
         public final ForgeConfigSpec.IntValue daggerThrowMana;
+        public final ForgeConfigSpec.IntValue staffMana;
 
         public final ForgeConfigSpec.BooleanValue debugAttack;
 
@@ -144,6 +145,7 @@ public class ConfigSpecs {
             this.grimoireMana = builder.comment("Mana cost for summoning a monster using the spellbook").defineInRange("Monster Summon Mana", Config.Common.grimoireMana, 0, Integer.MAX_VALUE);
             this.chainMana = builder.comment("Mana cost for throwing the chain dagger").defineInRange("Chain Throw Mana", Config.Common.chainMana, 0, Integer.MAX_VALUE);
             this.daggerThrowMana = builder.comment("Mana cost for throwing hassans dagger").defineInRange("Dagger Throw Mana", Config.Common.daggerThrowMana, 0, Integer.MAX_VALUE);
+            this.staffMana = builder.comment("Mana cost for using medeas staff").defineInRange("Staff Mana", Config.Common.staffMana, 0, Integer.MAX_VALUE);
             builder.pop();
 
             this.debugAttack = builder.comment("Turn on attack bounding box debugging").define("Debug Attack", Config.Common.debugAttack);

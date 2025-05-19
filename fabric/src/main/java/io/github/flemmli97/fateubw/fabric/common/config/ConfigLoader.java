@@ -59,6 +59,7 @@ public class ConfigLoader {
         Config.Common.grimoireMana = ConfigSpecs.COMMON_CONFIG.grimoireMana.get();
         Config.Common.chainMana = ConfigSpecs.COMMON_CONFIG.chainMana.get();
         Config.Common.daggerThrowMana = ConfigSpecs.COMMON_CONFIG.daggerThrowMana.get();
+        Config.Common.staffMana = ConfigSpecs.COMMON_CONFIG.staffMana.get();
 
         Config.Common.debugAttack = ConfigSpecs.COMMON_CONFIG.debugAttack.get();
     }
