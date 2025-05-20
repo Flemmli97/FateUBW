@@ -3,6 +3,7 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 
 import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.common.config.Config;
+import io.github.flemmli97.fateubw.common.entity.ai.MoveBehindAttackRunner;
 import io.github.flemmli97.fateubw.common.entity.minions.HassanClone;
 import io.github.flemmli97.fateubw.common.entity.misc.ThrownItemEntity;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
@@ -78,6 +79,13 @@ public class EntityHassan extends BaseServant {
                             .or(EntityHassan.DAGGER_4, 2, 0.16f, 1)
                             .withChance(0.6f))
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 11),
+            WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.DAGGER_1)
+                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
+                    .chain(GoalAttackAction.<EntityHassan>chainBuilder(EntityHassan.DAGGER_2, 2, 0.2f, 1)
+                            .or(EntityHassan.DAGGER_3, 2, 0.2f, 1)
+                            .or(EntityHassan.DAGGER_4, 2, 0.16f, 1)
+                            .withChance(0.6f))
+                    .prepare(() -> new WrappedRunner<>(new MoveBehindAttackRunner<>(1))), 9),
             WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.DAGGER_3)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
                     .chain(GoalAttackAction.<EntityHassan>chainBuilder(EntityHassan.DAGGER_1, 2, 0.2f, 1)
@@ -88,7 +96,10 @@ public class EntityHassan extends BaseServant {
                     .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.2))), 11),
             WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.TOP_STAB)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.2))), 10),
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.2))), 8),
+            WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.TOP_STAB)
+                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
+                    .prepare(() -> new WrappedRunner<>(new MoveBehindAttackRunner<>(1.2))), 10),
             WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.THROW)
                     .cooldown(e -> e.getRandom().nextInt(15) + 10)
                     .withCondition(((goal, target, previous) -> goal.distanceToTargetSq > 25 || goal.attacker.getRandom().nextFloat() < 0.5))
@@ -96,7 +107,7 @@ public class EntityHassan extends BaseServant {
             WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.DUPE)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
                     .withCondition((goal, target, prev) -> Utils.<EntityHassan>npCheck().test(goal, target, prev) && goal.attacker.gatherCopies().isEmpty())
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(4, 6, 1.3))), 15)
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(4, 6, 1.3))), 20)
     );
     public static final List<WeightedEntry.Wrapper<IdleAction<EntityHassan>>> IDLE_ACTIONS = List.of(
             WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1, 0.5)), 6),
@@ -131,13 +142,6 @@ public class EntityHassan extends BaseServant {
         super(entityType, level);
         if (!level.isClientSide)
             this.goalSelector.addGoal(0, this.attack);
-    }
-
-    public static boolean behind(Entity source, Entity target) {
-        Vec3 vec3 = target.getViewVector(1.0f);
-        Vec3 vec31 = source.position().vectorTo(target.position()).normalize();
-        vec31 = new Vec3(vec31.x, 0.0, vec31.z);
-        return vec31.dot(vec3) > 0.0;
     }
 
     @Override
@@ -209,7 +213,7 @@ public class EntityHassan extends BaseServant {
 
     @Override
     public boolean doHurtTarget(Entity entity) {
-        this.behind = EntityHassan.behind(this, entity);
+        this.behind = MoveBehindAttackRunner.behind(this, entity);
         boolean hurt = super.doHurtTarget(entity);
         if (this.behind && hurt) {
             this.level.playSound(null, this, SoundEvents.PLAYER_ATTACK_CRIT, this.getSoundSource(), 0.7f, 0.9f);

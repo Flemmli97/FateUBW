@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import java.util.List;
 
 @Mixin(targets = "net/minecraft/client/particle/ParticleEngine$MutableSpriteSet")
-public class SpriteSetMixin implements SpriteList {
+public abstract class SpriteSetMixin implements SpriteList {
 
     @Shadow
     private List<TextureAtlasSprite> sprites;

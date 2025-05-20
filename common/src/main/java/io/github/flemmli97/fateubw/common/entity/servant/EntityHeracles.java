@@ -184,8 +184,8 @@ public class EntityHeracles extends BaseServant {
     public void tick() {
         super.tick();
         if (!this.level.isClientSide) {
-           AnimatedAction anim = this.getAnimationHandler().getAnimation();
-           if (anim != null && anim.isAt("roar")) {
+            AnimatedAction anim = this.getAnimationHandler().getAnimation();
+            if (anim != null && anim.isAt("roar")) {
                 this.playSound(ModSounds.HERACLES_ROAR.get(), 1, 1);
                 S2CScreenShake.sendAround(this, 24, 8, 2);
             }

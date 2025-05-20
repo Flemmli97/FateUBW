@@ -4,6 +4,7 @@ import io.github.flemmli97.fateubw.api.datapack.ServantProperties;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.entity.TargetableOpponent;
 import io.github.flemmli97.fateubw.common.entity.ai.FollowMasterGoal;
+import io.github.flemmli97.fateubw.common.entity.ai.MoveBehindAttackRunner;
 import io.github.flemmli97.fateubw.common.entity.ai.TargetOwnerEnemyGoal;
 import io.github.flemmli97.fateubw.common.entity.misc.ThrownItemEntity;
 import io.github.flemmli97.fateubw.common.entity.servant.EntityHassan;
@@ -86,7 +87,14 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
                             .or(EntityHassan.DAGGER_3, 2, 0.2f, 1)
                             .or(EntityHassan.DAGGER_4, 2, 0.16f, 1)
                             .withChance(0.6f))
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 11),
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
+            WeightedEntry.wrap(new GoalAttackAction<HassanClone>(EntityHassan.DAGGER_1)
+                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
+                    .chain(GoalAttackAction.<HassanClone>chainBuilder(EntityHassan.DAGGER_2, 2, 0.2f, 1)
+                            .or(EntityHassan.DAGGER_3, 2, 0.2f, 1)
+                            .or(EntityHassan.DAGGER_4, 2, 0.16f, 1)
+                            .withChance(0.6f))
+                    .prepare(() -> new WrappedRunner<>(new MoveBehindAttackRunner<>(1))), 11),
             WeightedEntry.wrap(new GoalAttackAction<HassanClone>(EntityHassan.DAGGER_3)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
                     .chain(GoalAttackAction.<HassanClone>chainBuilder(EntityHassan.DAGGER_1, 2, 0.2f, 1)
@@ -94,14 +102,17 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
                             .or(EntityHassan.DAGGER_1, 2, 0.2f, 1)
                             .chain(EntityHassan.DAGGER_4, 2, 0.16f)
                             .withChance(0.6f))
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 11),
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.2))), 11),
             WeightedEntry.wrap(new GoalAttackAction<HassanClone>(EntityHassan.TOP_STAB)
                     .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
+                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.2))), 8),
+            WeightedEntry.wrap(new GoalAttackAction<HassanClone>(EntityHassan.TOP_STAB)
+                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
+                    .prepare(() -> new WrappedRunner<>(new MoveBehindAttackRunner<>(1.2))), 10),
             WeightedEntry.wrap(new GoalAttackAction<HassanClone>(EntityHassan.THROW)
                     .cooldown(e -> e.getRandom().nextInt(15) + 10)
                     .withCondition(((goal, target, previous) -> goal.distanceToTargetSq > 25 || goal.attacker.getRandom().nextFloat() < 0.5))
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 14, 1.1))), 12)
+                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 14, 1.1))), 13)
     );
     public static final List<WeightedEntry.Wrapper<IdleAction<HassanClone>>> IDLE_ACTIONS = List.of(
             WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1, 0.5)), 6),
@@ -252,12 +263,16 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
 
     @Override
     public boolean doHurtTarget(Entity entity) {
+        return Utils.runWithInvulTimer(this, entity, this::runHurtTarget, 0);
+    }
+
+    private boolean runHurtTarget(Entity entity) {
         if (entity instanceof Mob) {
             LivingEntity target = ((Mob) entity).getTarget();
             if (target == this.getOwner())
                 ((Mob) entity).setTarget(this);
         }
-        boolean behind = EntityHassan.behind(this, entity);
+        boolean behind = MoveBehindAttackRunner.behind(this, entity);
         if (behind) {
             this.getAttribute(Attributes.ATTACK_DAMAGE)
                     .addTransientModifier(new AttributeModifier(HassanClone.BACKSTAB_MODIFIER, "fate.backstab.mod", 0.5,
@@ -398,15 +413,10 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
         return weapon.isEmpty() ? new ItemStack(ModItems.ASSASSIN_DAGGER.get()) : weapon.copy();
     }
 
-
     public void mobAttack(AnimatedAction anim, LivingEntity target, Consumer<LivingEntity> cons) {
         OrientedBoundingBox obb = this.calculateAttackAABB(anim, this.targetPosition != null || target == null ? this.targetPosition : target.position(), 0.2);
         this.level.getEntitiesOfClass(LivingEntity.class, obb.getEncompassingBox(),
-                entity -> this.targetPred.test(entity) && obb.intersects(entity.getBoundingBox())).forEach(e -> {
-            if (e.getLastHurtByMob() == this)
-                e.invulnerableTime = 0;
-            cons.accept(e);
-        });
+                entity -> this.targetPred.test(entity) && obb.intersects(entity.getBoundingBox())).forEach(cons);
         if (!this.level.isClientSide)
             S2CAttackDebug.sendDebugPacket(obb, S2CAttackDebug.EnumAABBType.ATTACK, this);
     }

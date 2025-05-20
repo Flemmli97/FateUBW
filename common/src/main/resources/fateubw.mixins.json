@@ -4,7 +4,9 @@
   "package": "io.github.flemmli97.fateubw.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "Matrix4fMixin"
+    "Matrix4fMixin",
+    "PathFinderMixin",
+    "PathNavigationMixin"
   ],
   "client": [
     "ItemRendererMixin",

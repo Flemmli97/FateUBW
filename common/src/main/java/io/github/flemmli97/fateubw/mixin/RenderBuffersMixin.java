@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(RenderBuffers.class)
-public class RenderBuffersMixin {
+public abstract class RenderBuffersMixin {
 
     @Inject(method = "put", at = @At("HEAD"))
     private static void addGlintTypes(Object2ObjectLinkedOpenHashMap<RenderType, BufferBuilder> map, RenderType type, CallbackInfo callbackInfo) {

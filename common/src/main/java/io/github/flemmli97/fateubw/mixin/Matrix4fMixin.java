@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(Matrix4f.class)
-public class Matrix4fMixin implements Matrix4fTransformer {
+public abstract class Matrix4fMixin implements Matrix4fTransformer {
 
     @Shadow
     protected float m00;
