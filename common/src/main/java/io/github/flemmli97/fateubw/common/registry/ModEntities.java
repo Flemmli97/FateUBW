@@ -128,7 +128,7 @@ public class ModEntities {
 
     public static final RegistryEntrySupplier<EntityType<LesserMonster>> LESSER_MONSTER = regWithEgg(EntityType.Builder.<LesserMonster>of(LesserMonster::new, MobCategory.MONSTER).clientTrackingRange(8), new ResourceLocation(Fate.MODID, "starfish_monster"), 0x171c3f, 0x00ff00);
     public static final RegistryEntrySupplier<EntityType<GordiusWheel>> GORDIUS_WHEEL = regWithEgg(EntityType.Builder.of(GordiusWheel::new, MobCategory.CREATURE).sized(2, 1.5f), new ResourceLocation(Fate.MODID, "gordius_wheel"), 0x87595c, 0x981a24);
-    public static final RegistryEntrySupplier<EntityType<HassanClone>> HASSAN_COPY = hassanClone(new ServantProperties(50, 6, 8, 0, 14, 0, 5, 0.345, 50, BuiltinServantClasses.NONE));
+    public static final RegistryEntrySupplier<EntityType<HassanClone>> HASSAN_COPY = hassanClone(new ServantProperties(50, 7, 8, 0, 10, 0, 0, 0.35, 0, BuiltinServantClasses.NONE));
     public static final RegistryEntrySupplier<EntityType<Pegasus>> PEGASUS = regWithEgg(EntityType.Builder.of(Pegasus::new, MobCategory.MONSTER).sized(1.35f, 1.65f), new ResourceLocation(Fate.MODID, "pegasus"), 0xffffff, 0xdde0e1);
 
     public static final RegistryEntrySupplier<EntityType<MultiPartEntity>> MULTIPART = reg(EntityType.Builder.<MultiPartEntity>of(MultiPartEntity::new, MobCategory.MISC)

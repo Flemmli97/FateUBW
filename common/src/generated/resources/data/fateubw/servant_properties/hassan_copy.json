@@ -1,12 +1,12 @@
 {
   "class": "fateubw:none",
   "health": 50.0,
-  "strength": 6.0,
+  "strength": 7.0,
   "magic": 0.0,
   "armor": 8.0,
-  "projectile_prot": 14.0,
-  "magic_prot": 5.0,
-  "move_speed": 0.345,
+  "projectile_prot": 10.0,
+  "magic_prot": 0.0,
+  "move_speed": 0.35,
   "projectile_block_chance": 0.0,
-  "nobel_phantasm_cost": 50
+  "nobel_phantasm_cost": 0
 }
