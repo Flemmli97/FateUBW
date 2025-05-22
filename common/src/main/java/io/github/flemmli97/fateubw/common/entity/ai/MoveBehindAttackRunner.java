@@ -93,7 +93,7 @@ public class MoveBehindAttackRunner<T extends PathfinderMob & IAnimated & AoeAtt
                     // Try evade if too close
                     if (target.getBoundingBox().contains(Vec3.atCenterOf(newPos))) {
                         Vec3 away = vec3.subtract(target.position());
-                        vec3 = vec3.add(away.scale(target.getBbWidth() *  0.5 + 0.3));
+                        vec3 = vec3.add(away.scale(target.getBbWidth() * 0.5 + 0.3));
                         newPos = new BlockPos(Math.round(vec3.x()), Math.round(vec3.y()), Math.round(vec3.z()));
                     }
                 }

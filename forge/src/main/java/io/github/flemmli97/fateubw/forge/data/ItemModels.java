@@ -128,7 +128,10 @@ public class ItemModels extends ItemModelProvider {
             } else if (reg == ModItems.CRYSTAL_RED || reg == ModItems.CRYSTAL_YELLOW || reg == ModItems.CRYSTAL_BLACK || reg == ModItems.CRYSTAL_BLUE || reg == ModItems.CRYSTAL_GREEN) {
                 this.withExistingParent(reg.getID().getPath(), new ResourceLocation(Fate.MODID, "item/gem_shard"))
                         .texture("layer0", this.itemTexture(reg.getID()));
-            } else {
+            } else if(reg == ModItems.ANIMATION_DEBUG) {
+                this.singleTexture(reg.getID().getPath(), this.mcLoc("item/generated"), "layer0", new ResourceLocation("item/stick"));
+            }
+            else {
                 this.withExistingParent(reg.getID().getPath(), ModelLocationUtils.decorateItemModelLocation("generated"))
                         .texture("layer0", this.itemTexture(reg.getID()));
             }

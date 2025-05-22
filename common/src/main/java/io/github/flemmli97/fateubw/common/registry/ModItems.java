@@ -19,6 +19,7 @@ import io.github.flemmli97.fateubw.common.items.weapons.ItemStaff;
 import io.github.flemmli97.fateubw.common.lib.BuiltinServantClasses;
 import io.github.flemmli97.fateubw.common.lib.ItemTiers;
 import io.github.flemmli97.fateubw.platform.Platform;
+import io.github.flemmli97.tenshilib.common.item.AnimationDebugger;
 import io.github.flemmli97.tenshilib.platform.PlatformUtils;
 import io.github.flemmli97.tenshilib.platform.registry.PlatformRegistry;
 import io.github.flemmli97.tenshilib.platform.registry.RegistryEntrySupplier;
@@ -27,6 +28,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.SwordItem;
 
 import java.util.ArrayList;
@@ -69,14 +71,14 @@ public class ModItems {
     public static final RegistryEntrySupplier<Item> DEEP_SLATE_GEM_ORE = ITEMS.register("deepslate_gem_ore", () -> new BlockItem(ModBlocks.DEEP_SLATE_GEM_ORE.get(), new Item.Properties().tab(Fate.TAB)));
     public static final RegistryEntrySupplier<Item> DEEP_SLATE_ARTIFACT_ORE = ITEMS.register("deepslate_artifact_ore", () -> new BlockItem(ModBlocks.DEEP_SLATE_ARTIFACT_ORE.get(), new Item.Properties().tab(Fate.TAB)));
 
-    public static final RegistryEntrySupplier<Item> CHARM_NONE = registercharm(BuiltinServantClasses.NONE);
-    public static final RegistryEntrySupplier<Item> CHARM_SABER = registercharm(BuiltinServantClasses.SABER);
-    public static final RegistryEntrySupplier<Item> CHARM_ARCHER = registercharm(BuiltinServantClasses.ARCHER);
-    public static final RegistryEntrySupplier<Item> CHARM_LANCER = registercharm(BuiltinServantClasses.LANCER);
-    public static final RegistryEntrySupplier<Item> CHARM_CASTER = registercharm(BuiltinServantClasses.CASTER);
-    public static final RegistryEntrySupplier<Item> CHARM_BERSERKER = registercharm(BuiltinServantClasses.BERSERKER);
-    public static final RegistryEntrySupplier<Item> CHARM_RIDER = registercharm(BuiltinServantClasses.RIDER);
-    public static final RegistryEntrySupplier<Item> CHARM_ASSASSIN = registercharm(BuiltinServantClasses.ASSASSIN);
+    public static final RegistryEntrySupplier<Item> CHARM_NONE = registerCharm(BuiltinServantClasses.NONE);
+    public static final RegistryEntrySupplier<Item> CHARM_SABER = registerCharm(BuiltinServantClasses.SABER);
+    public static final RegistryEntrySupplier<Item> CHARM_ARCHER = registerCharm(BuiltinServantClasses.ARCHER);
+    public static final RegistryEntrySupplier<Item> CHARM_LANCER = registerCharm(BuiltinServantClasses.LANCER);
+    public static final RegistryEntrySupplier<Item> CHARM_CASTER = registerCharm(BuiltinServantClasses.CASTER);
+    public static final RegistryEntrySupplier<Item> CHARM_BERSERKER = registerCharm(BuiltinServantClasses.BERSERKER);
+    public static final RegistryEntrySupplier<Item> CHARM_RIDER = registerCharm(BuiltinServantClasses.RIDER);
+    public static final RegistryEntrySupplier<Item> CHARM_ASSASSIN = registerCharm(BuiltinServantClasses.ASSASSIN);
     public static final RegistryEntrySupplier<Item> CRYSTAL_RED = ITEMS.register("gem_shard_red", () -> new Item(new Item.Properties().tab(Fate.TAB)));
     public static final RegistryEntrySupplier<Item> CRYSTAL_GREEN = ITEMS.register("gem_shard_green", () -> new Item(new Item.Properties().tab(Fate.TAB)));
     public static final RegistryEntrySupplier<Item> CRYSTAL_YELLOW = ITEMS.register("gem_shard_yellow", () -> new Item(new Item.Properties().tab(Fate.TAB)));
@@ -92,6 +94,8 @@ public class ModItems {
     public static final RegistryEntrySupplier<Item> ICON_1 = ITEMS.register("icon_1", () -> new Item(new Item.Properties()));
     public static final RegistryEntrySupplier<Item> ICON_2 = ITEMS.register("icon_2", () -> new Item(new Item.Properties()));
     public static final RegistryEntrySupplier<Item> ICON_3 = ITEMS.register("icon_3", () -> new Item(new Item.Properties()));
+    public static final RegistryEntrySupplier<Item> ANIMATION_DEBUG = ITEMS.register("animation_debugger", () -> new AnimationDebugger(new Item.Properties()
+            .stacksTo(1).rarity(Rarity.EPIC)));
 
     public static final Supplier<Item> RANDOM_ICON = () -> {
         int i = new Random().nextInt(4);
@@ -103,7 +107,7 @@ public class ModItems {
         };
     };
 
-    private static RegistryEntrySupplier<Item> registercharm(ResourceLocation type) {
+    private static RegistryEntrySupplier<Item> registerCharm(ResourceLocation type) {
         RegistryEntrySupplier<Item> item = ITEMS.register("artifact_" + type.getPath(), () -> new ItemServantCharm(type, new Item.Properties().tab(Fate.TAB)));
         CHARMS.add(item);
         return item;

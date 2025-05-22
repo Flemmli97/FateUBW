@@ -310,7 +310,12 @@ public class EntityMedea extends BaseServant {
         Vec3 look = this.getLookAngle();
         beam.setPos(this.getEyePosition().add(look.x(), 2, look.z()));
         beam.setDamageMultiplier(1 + strength * 0.15f);
-        beam.setRotationTo(target, 0);
+        if (target != null)
+            beam.setRotationTo(target, 0);
+        else {
+            Vec3 dir = this.getLookAngle();
+            beam.setRotationToDir(dir.x(), dir.y(), dir.z(), 0);
+        }
         this.level.addFreshEntity(beam);
         this.revealServant();
     }
