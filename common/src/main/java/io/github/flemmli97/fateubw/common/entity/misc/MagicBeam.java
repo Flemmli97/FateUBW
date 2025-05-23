@@ -149,4 +149,9 @@ public class MagicBeam extends BaseBeam {
         this.entityData.set(PRE_SHOOT_TICK, compound.getInt("PreShoot"));
         this.damageMultiplier = compound.getFloat("DamageMultieier");
     }
+
+    @Override
+    public boolean firstPerson3d(Entity entity) {
+        return true;
+    }
 }
