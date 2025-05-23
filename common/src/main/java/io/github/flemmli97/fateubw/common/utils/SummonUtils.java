@@ -6,7 +6,6 @@ import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.datapack.ServantPropManager;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.items.ItemServantCharm;
-import io.github.flemmli97.fateubw.common.registry.ModBlocks;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
@@ -20,8 +19,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,7 +26,7 @@ import java.util.List;
 
 public class SummonUtils {
 
-    public static void placeSummoningStructure(ServerLevel world, BlockPos pos, AltarBlockEntity tile, Direction facing) {
+    public static void placeSummoningStructure(ServerLevel world, BlockPos pos, AltarBlockEntity altar, Direction facing) {
         for (int x = -2; x <= 2; x++)
             for (int z = -2; z <= 2; z++) {
                 if (x != 0 || z != 0) {
@@ -42,59 +39,14 @@ public class SummonUtils {
             for (int z = -2; z <= 2; z++) {
                 if (x != 0 || z != 0) {
                     BlockPos newPos = new BlockPos(pos.getX() + x, pos.getY(), pos.getZ() + z);
-                    world.setBlockAndUpdate(newPos, ModBlocks.CHALK.get().defaultBlockState().setValue(ChalkBlock.FACING, facing).setValue(ChalkBlock.POSITION, getChalkPos(x, z, facing)));
+                    world.removeBlock(newPos, false);
                     world.sendParticles(ParticleTypes.CLOUD, newPos.getX() + 0.5, newPos.getY(), newPos.getZ() + 0.5, 1, 0, 0.2, 0, 0);
                 }
             }
-        tile.setComplete(true);
-    }
-
-    public static boolean checkStructure(Level world, BlockPos pos, Direction facing) {
-        for (int x = -2; x <= 2; x++)
-            for (int z = -2; z <= 2; z++)
-                for (int y = 0; y < 2; y++) {
-                    if (x != 0 || z != 0 || y != 0) {
-                        BlockPos newPos = new BlockPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
-                        BlockState state = world.getBlockState(newPos);
-                        if (y == 0 && (!(state.getBlock() instanceof ChalkBlock) || state.getValue(ChalkBlock.POSITION) != getChalkPos(x, z, state.getValue(ChalkBlock.FACING))))
-                            return false;
-                        else if (y == 1 && state.getBlock() != Blocks.AIR) {
-                            return false;
-                        }
-                    }
-                }
-        return true;
-    }
-
-    private static EnumPositionChalk getChalkPos(int x, int z, Direction facing) {
-        //default to north
-        int column = x + 2;
-        int row = z + 2;
-        if (facing == Direction.NORTH) {
-            column = x + 2;
-            row = z + 2;
-        } else if (facing == Direction.WEST) {
-            column = -z + 2;
-            row = x + 2;
-        } else if (facing == Direction.SOUTH) {
-            column = -x + 2;
-            row = -z + 2;
-        } else if (facing == Direction.EAST) {
-            column = z + 2;
-            row = -x + 2;
-        }
-        return EnumPositionChalk.fromPos(column + row * 5);
+        altar.setComplete(true);
     }
 
     public static void removeSummoningStructure(Level world, BlockPos pos) {
-        for (int x = -2; x <= 2; x++)
-            for (int z = -2; z <= 2; z++) {
-                if (x != 0 || z != 0) {
-                    BlockPos posNew = pos.offset(x, 0, z);
-                    if (world.getBlockState(posNew).getBlock() instanceof ChalkBlock)
-                        world.destroyBlock(posNew, false);
-                }
-            }
         world.playSound(null, pos, SoundEvents.GENERIC_EXPLODE, SoundSource.AMBIENT, 0.4F, 1F);
         world.removeBlockEntity(pos);
         world.destroyBlock(pos, false);

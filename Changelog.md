@@ -8,6 +8,7 @@ FateUBW 1.1.2
 - Updated some servant stats
 - Updated Hassan to have a backstab movement
 - Fix some damage sources tags
+- Remove all chalk block states and replace it with a pure rendering solution
 
 FateUBW 1.1.1
 ================

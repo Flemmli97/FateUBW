@@ -182,6 +182,9 @@ public class AltarBlock extends BaseEntityBlock {
             double d3 = (random.nextFloat() - 0.5D) * 1.000000001490116D;
             world.addParticle(ParticleTypes.PORTAL, d0, d1, d2, d3, d3, d3);
         }
+        BlockEntity blockEntity = world.getBlockEntity(pos);
+        if (!(blockEntity instanceof AltarBlockEntity altar) || !altar.isComplete())
+            return;
         switch (state.getValue(FACING)) {
             case NORTH -> {
                 world.addParticle(ParticleTypes.FLAME, pos.getX() + 3 * PIXEL, pos.getY() + 16 * PIXEL, pos.getZ() + 12.5 * PIXEL, 0, 0, 0);
@@ -219,9 +222,6 @@ public class AltarBlock extends BaseEntityBlock {
             if (player.isShiftKeyDown() || stack.getItem() == ModItems.CHALK.get() || stack.getItem() == ModItems.CRYSTAL_CLUSTER.get() || stack.getItem() instanceof ItemServantCharm)
                 return InteractionResult.SUCCESS;
             return InteractionResult.PASS;
-        }
-        if (!SummonUtils.checkStructure(world, pos, player.getDirection())) {
-            altar.setComplete(false);
         }
         if (player.isShiftKeyDown()) {
             if (altar.removeItem(player))

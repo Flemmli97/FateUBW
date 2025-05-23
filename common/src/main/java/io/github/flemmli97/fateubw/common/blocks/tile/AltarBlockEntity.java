@@ -23,6 +23,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 
 public class AltarBlockEntity extends BlockEntity {
 
@@ -50,6 +51,8 @@ public class AltarBlockEntity extends BlockEntity {
 
     public void setComplete(boolean flag) {
         this.isComplete = flag;
+        if (!this.level.isClientSide)
+            this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), Block.UPDATE_CLIENTS);
     }
 
     public boolean addItem(Player player, ItemStack stack) {
@@ -189,5 +192,13 @@ public class AltarBlockEntity extends BlockEntity {
      */
     public void updateSummoning(boolean flag) {
         this.isSummoning = flag;
+    }
+
+    /**
+     * ====== Forge
+     */
+    public AABB getRenderBoundingBox() {
+        return new AABB(this.getBlockPos(), this.getBlockPos().offset(1, 1, 1))
+                .inflate(4);
     }
 }
