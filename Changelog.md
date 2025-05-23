@@ -1,7 +1,18 @@
+FateUBW 1.1.2
+================
+- Updated ai for:
+  - Heracles, Sasaki, Diarmuid, Medea
+- Updated item/block texture resolution now to all use 16x16
+- Changed katana id to monohoshi_zao
+- Fix bow being stackable
+- Updated some servant stats
+- Updated Hassan to have a backstab movement
+- Fix some damage sources tags
+
 FateUBW 1.1.1
 ================
 - Updated ai for:
-  - iskander, lancelot, medusa, hassan
+  - Iskander, Lancelot, Medusa, Hassan
 - Updated and fixed some textures
 - Adjusted attack range for some attacks
 - Update attributes of servants
@@ -13,7 +24,7 @@ FateUBW 1.1.1
 FateUBW 1.1.0
 ================
 - Start of combat update. Other servants will follow
-  - Updated artoria, gilgamesh, emiya, cuchulainn, gilles (missing nobel phantasm)
+  - Updated Artoria, Gilgamesh, Emiya, Cuchulainn, Gilles (missing nobel phantasm)
   - Rest will follow
 - Update dependencies
 - Update pegasus model
