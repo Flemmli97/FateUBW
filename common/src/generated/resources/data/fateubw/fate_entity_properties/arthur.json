@@ -6,7 +6,9 @@
     "fateubw:projectile_block_chance": 0.15000000596046448,
     "fateubw:projectile_resistance": 3.0,
     "fateubw:magic_attack": 15.0,
-    "minecraft:generic.movement_speed": 0.33
+    "minecraft:generic.movement_speed": 0.33,
+    "fateubw:combat_regen": 3.0,
+    "fateubw:passive_regen": 15.0
   },
   "nobel_phantasm_cost": 80,
   "class": "fateubw:saber"

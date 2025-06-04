@@ -4,7 +4,9 @@
     "minecraft:generic.attack_damage": 12.0,
     "minecraft:generic.armor": 14.0,
     "fateubw:projectile_resistance": 4.0,
-    "minecraft:generic.movement_speed": 0.35
+    "minecraft:generic.movement_speed": 0.35,
+    "fateubw:combat_regen": 1.5,
+    "fateubw:passive_regen": 15.0
   },
   "nobel_phantasm_cost": 70,
   "class": "fateubw:rider"

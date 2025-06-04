@@ -6,7 +6,9 @@
     "fateubw:projectile_block_chance": 0.10000000149011612,
     "fateubw:projectile_resistance": 10.0,
     "fateubw:magic_resistance": 0.1,
-    "minecraft:generic.movement_speed": 0.3
+    "minecraft:generic.movement_speed": 0.3,
+    "fateubw:combat_regen": 2.0,
+    "fateubw:passive_regen": 15.0
   },
   "nobel_phantasm_cost": 0,
   "class": "fateubw:berserker"

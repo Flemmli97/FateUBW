@@ -47,7 +47,7 @@ public class EventCalls {
         if (entity instanceof ServerPlayer player)
             Platform.INSTANCE.getPlayerData(player).ifPresent(data -> data.tick(player));
         if (!entity.level.isClientSide) {
-            if (entity.tickCount % 20 == 0) {
+            if (entity.tickCount % 40 == 0) {
                 boolean target = entity instanceof Mob mob && mob.getTarget() != null;
                 AttributeInstance att = entity.getAttribute(target || entity.getCombatTracker().isInCombat() ?
                         ModAttributes.COMBAT_REGEN.get() : ModAttributes.PASSIVE_REGEN.get());
