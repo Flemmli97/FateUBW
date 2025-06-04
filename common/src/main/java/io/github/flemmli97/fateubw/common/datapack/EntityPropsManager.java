@@ -8,6 +8,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
 import io.github.flemmli97.fateubw.Fate;
+import io.github.flemmli97.fateubw.api.datapack.AttributeHolderProperties;
 import io.github.flemmli97.fateubw.api.datapack.ServantProperties;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.lib.BuiltinServantClasses;
@@ -24,24 +25,30 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
-public class ServantPropManager extends SimpleJsonResourceReloadListener {
+public class EntityPropsManager extends SimpleJsonResourceReloadListener {
 
-    public static final String DIRECTORY = "servant_properties";
+    public static final String DIRECTORY = "fate_entity_properties";
     private static final Gson GSON = new GsonBuilder().create();
 
     private Map<ResourceLocation, ServantProperties> props = ImmutableMap.of();
+    private Map<ResourceLocation, AttributeHolderProperties> genericProps = ImmutableMap.of();
     private Map<ResourceLocation, List<EntityTypeAndID>> classServantMap = ImmutableMap.of();
     private Set<EntityTypeAndID> servants = ImmutableSet.of();
     private boolean built;
 
-    public ServantPropManager() {
+    public EntityPropsManager() {
         super(GSON, DIRECTORY);
     }
 
     public ServantProperties get(ResourceLocation entityType) {
         return this.props.getOrDefault(entityType, ServantProperties.DEFAULT);
+    }
+
+    public AttributeHolderProperties getGeneric(ResourceLocation entityType) {
+        return this.genericProps.getOrDefault(entityType, AttributeHolderProperties.DEFAULT);
     }
 
     public Set<ResourceLocation> getServantClasses() {
@@ -84,17 +91,26 @@ public class ServantPropManager extends SimpleJsonResourceReloadListener {
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> data, ResourceManager manager, ProfilerFiller profiler) {
         ImmutableMap.Builder<ResourceLocation, ServantProperties> builder = ImmutableMap.builder();
+        ImmutableMap.Builder<ResourceLocation, AttributeHolderProperties> attBuilder = ImmutableMap.builder();
         data.forEach((fres, el) -> {
             try {
-                ServantProperties props = ServantProperties.CODEC.parse(JsonOps.INSTANCE, el)
-                        .getOrThrow(false, Fate.LOGGER::error);
-                builder.put(fres, props);
+                Optional<ServantProperties> servantProps = ServantProperties.CODEC.parse(JsonOps.INSTANCE, el).result();
+                if (servantProps.isPresent()) {
+                    ServantProperties props = ServantProperties.CODEC.parse(JsonOps.INSTANCE, el)
+                            .getOrThrow(false, Fate.LOGGER::error);
+                    builder.put(fres, servantProps.get());
+                } else {
+                    AttributeHolderProperties props = AttributeHolderProperties.CODEC.parse(JsonOps.INSTANCE, el)
+                            .getOrThrow(false, Fate.LOGGER::error);
+                    attBuilder.put(fres, props);
+                }
             } catch (Exception ex) {
-                Fate.LOGGER.error("Couldnt parse crop properties json {} {}", fres, ex);
+                Fate.LOGGER.error("Couldnt parse entity properties json {} {}", fres, ex);
                 ex.fillInStackTrace();
             }
         });
         this.props = builder.build();
+        this.genericProps = attBuilder.build();
         this.built = false;
     }
 

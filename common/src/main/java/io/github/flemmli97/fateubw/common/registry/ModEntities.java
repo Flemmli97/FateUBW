@@ -3,6 +3,7 @@ package io.github.flemmli97.fateubw.common.registry;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import io.github.flemmli97.fateubw.Fate;
+import io.github.flemmli97.fateubw.api.datapack.AttributeHolderProperties;
 import io.github.flemmli97.fateubw.api.datapack.ServantProperties;
 import io.github.flemmli97.fateubw.common.entity.MultiPartEntity;
 import io.github.flemmli97.fateubw.common.entity.minions.GordiusWheel;
@@ -51,7 +52,6 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.item.Item;
 
 import java.util.ArrayList;
@@ -63,55 +63,111 @@ public class ModEntities {
 
     public static final PlatformRegistry<EntityType<?>> ENTITIES = PlatformUtils.INSTANCE.of(Registry.ENTITY_TYPE_REGISTRY, Fate.MODID);
 
-    private static final Map<ResourceLocation, ServantProperties> DEFAULT_PROPERTIES = new HashMap<>();
+    private static final Map<ResourceLocation, ServantProperties.Builder> DEFAULT_SERVANT_PROPERTIES = new HashMap<>();
+    private static final Map<ResourceLocation, AttributeHolderProperties.Builder> DEFAULT_ENTITY_PROPERTIES = new HashMap<>();
 
     private static final List<RegistryEntrySupplier<EntityType<?>>> SERVANTS = new ArrayList<>();
 
     public static final RegistryEntrySupplier<EntityType<EntityArthur>> ARTHUR = regServant(EntityType.Builder.of(EntityArthur::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "arthur"), 0x048dd0, 0xecee37,
-            new ServantProperties(400, 15, 16, 0.15f, 3, 15, 0, 0.33, 80, BuiltinServantClasses.SABER));
+            new ServantProperties.Builder(BuiltinServantClasses.SABER)
+                    .putAttributes(() -> Attributes.MAX_HEALTH, 400).putAttributes(() -> Attributes.ATTACK_DAMAGE, 15)
+                    .putAttributes(() -> Attributes.ARMOR, 16).putAttributes(ModAttributes.PROJECTILE_BLOCK_CHANCE, 0.15f)
+                    .putAttributes(ModAttributes.PROJECTILE_RESISTANCE, 3).putAttributes(ModAttributes.MAGIC_ATTACK, 15).putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.33)
+                    .npCost(80));
 
     public static final RegistryEntrySupplier<EntityType<EntityCuchulainn>> CUCHULAINN = regServant(EntityType.Builder.of(EntityCuchulainn::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "cuchulainn"), 0x0038ff, 0xb6c0c1,
-            new ServantProperties(370, 12, 14, 0.1f, 6, 0, 0, 0.37, 50, BuiltinServantClasses.LANCER));
+            new ServantProperties.Builder(BuiltinServantClasses.LANCER)
+                    .putAttributes(() -> Attributes.MAX_HEALTH, 370).putAttributes(() -> Attributes.ATTACK_DAMAGE, 12)
+                    .putAttributes(() -> Attributes.ARMOR, 14).putAttributes(ModAttributes.PROJECTILE_BLOCK_CHANCE, 0.1f)
+                    .putAttributes(ModAttributes.PROJECTILE_RESISTANCE, 6).putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.37)
+                    .npCost(50));
     public static final RegistryEntrySupplier<EntityType<EntityDiarmuid>> DIARMUID = regServant(EntityType.Builder.of(EntityDiarmuid::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "diarmuid"), 0x2d5554, 0x302f34,
-            new ServantProperties(380, 10, 14, 0.1f, 5, 0, 0, 0.37, 60, BuiltinServantClasses.LANCER));
+            new ServantProperties.Builder(BuiltinServantClasses.LANCER)
+                    .putAttributes(() -> Attributes.MAX_HEALTH, 380).putAttributes(() -> Attributes.ATTACK_DAMAGE, 10)
+                    .putAttributes(() -> Attributes.ARMOR, 14).putAttributes(ModAttributes.PROJECTILE_BLOCK_CHANCE, 0.1f)
+                    .putAttributes(ModAttributes.PROJECTILE_RESISTANCE, 5).putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.37)
+                    .npCost(60));
 
     public static final RegistryEntrySupplier<EntityType<EntityEmiya>> EMIYA = regServant(EntityType.Builder.of(EntityEmiya::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "emiya"), 0x9f0707, 0x000000,
-            new ServantProperties(350, 13, 10, 0, 4, 0, 0, 0.35, 50, BuiltinServantClasses.ARCHER));
+            new ServantProperties.Builder(BuiltinServantClasses.ARCHER)
+                    .putAttributes(() -> Attributes.MAX_HEALTH, 350).putAttributes(() -> Attributes.ATTACK_DAMAGE, 13)
+                    .putAttributes(() -> Attributes.ARMOR, 10)
+                    .putAttributes(ModAttributes.PROJECTILE_RESISTANCE, 4).putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.35)
+                    .npCost(50));
     public static final RegistryEntrySupplier<EntityType<EntityGilgamesh>> GILGAMESH = regServant(EntityType.Builder.of(EntityGilgamesh::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "gilgamesh"), 0xfff400, 0xffdb00,
-            new ServantProperties(450, 10, 12, 0, 5, 0, 0, 0.32, 80, BuiltinServantClasses.ARCHER));
+            new ServantProperties.Builder(BuiltinServantClasses.ARCHER)
+                    .putAttributes(() -> Attributes.MAX_HEALTH, 450).putAttributes(() -> Attributes.ATTACK_DAMAGE, 10)
+                    .putAttributes(() -> Attributes.ARMOR, 12)
+                    .putAttributes(ModAttributes.PROJECTILE_RESISTANCE, 5).putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.32)
+                    .npCost(80));
 
     public static final RegistryEntrySupplier<EntityType<EntityMedea>> MEDEA = regServant(EntityType.Builder.of(EntityMedea::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "medea"), 0x6f086b, 0x4a8be5,
-            new ServantProperties(350, 9, 8, 0, 2, 17, 0.4, 0.31, 70, BuiltinServantClasses.CASTER));
+            new ServantProperties.Builder(BuiltinServantClasses.CASTER)
+                    .putAttributes(() -> Attributes.MAX_HEALTH, 350).putAttributes(() -> Attributes.ATTACK_DAMAGE, 9)
+                    .putAttributes(() -> Attributes.ARMOR, 8)
+                    .putAttributes(ModAttributes.PROJECTILE_RESISTANCE, 2).putAttributes(ModAttributes.MAGIC_ATTACK, 17)
+                    .putAttributes(ModAttributes.MAGIC_RESISTANCE, 0.4).putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.31)
+                    .npCost(70));
     public static final RegistryEntrySupplier<EntityType<EntityGilles>> GILLES = regServant(EntityType.Builder.of(EntityGilles::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "gilles"), 0x100460, 0x600453,
-            new ServantProperties(370, 5, 16, 0, 2, 15, 0.6, 0.32, 80, BuiltinServantClasses.CASTER));
+            new ServantProperties.Builder(BuiltinServantClasses.CASTER)
+                    .putAttributes(() -> Attributes.MAX_HEALTH, 370).putAttributes(() -> Attributes.ATTACK_DAMAGE, 5)
+                    .putAttributes(() -> Attributes.ARMOR, 16)
+                    .putAttributes(ModAttributes.PROJECTILE_RESISTANCE, 2).putAttributes(ModAttributes.MAGIC_ATTACK, 15)
+                    .putAttributes(ModAttributes.MAGIC_RESISTANCE, 0.6).putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.32)
+                    .npCost(80));
 
     public static final RegistryEntrySupplier<EntityType<EntityHeracles>> HERACLES = regServant(EntityType.Builder.of(EntityHeracles::new, MobCategory.MISC).sized(1.4f, 2.6f),
             new ResourceLocation(Fate.MODID, "heracles"), 0x3c1d06, 0x5e3c22,
-            new ServantProperties(200, 10, 18, 0, 8, 0, 0, 0.3, 0, BuiltinServantClasses.BERSERKER));
+            new ServantProperties.Builder(BuiltinServantClasses.BERSERKER)
+                    .putAttributes(() -> Attributes.MAX_HEALTH, 200).putAttributes(() -> Attributes.ATTACK_DAMAGE, 10)
+                    .putAttributes(() -> Attributes.ARMOR, 18)
+                    .putAttributes(ModAttributes.PROJECTILE_RESISTANCE, 8).putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.3)
+                    .npCost(0));
     public static final RegistryEntrySupplier<EntityType<EntityLancelot>> LANCELOT = regServant(EntityType.Builder.of(EntityLancelot::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "lancelot"), 0x071a33, 0x1d4f94,
-            new ServantProperties(450, 15, 15, 0.1f, 10, 0, 0.1, 0.3, 0, BuiltinServantClasses.BERSERKER));
+            new ServantProperties.Builder(BuiltinServantClasses.BERSERKER)
+                    .putAttributes(() -> Attributes.MAX_HEALTH, 450).putAttributes(() -> Attributes.ATTACK_DAMAGE, 15)
+                    .putAttributes(() -> Attributes.ARMOR, 15).putAttributes(ModAttributes.PROJECTILE_BLOCK_CHANCE, 0.1f)
+                    .putAttributes(ModAttributes.PROJECTILE_RESISTANCE, 10)
+                    .putAttributes(ModAttributes.MAGIC_RESISTANCE, 0.1).putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.3)
+                    .npCost(0));
 
     public static final RegistryEntrySupplier<EntityType<EntityIskander>> ISKANDER = regServant(EntityType.Builder.of(EntityIskander::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "iskander"), 0xd40000, 0x8d0101,
-            new ServantProperties(450, 12, 14, 0, 4, 0, 0, 0.35, 70, BuiltinServantClasses.RIDER));
+            new ServantProperties.Builder(BuiltinServantClasses.RIDER)
+                    .putAttributes(() -> Attributes.MAX_HEALTH, 450).putAttributes(() -> Attributes.ATTACK_DAMAGE, 12)
+                    .putAttributes(() -> Attributes.ARMOR, 14)
+                    .putAttributes(ModAttributes.PROJECTILE_RESISTANCE, 4).putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.35)
+                    .npCost(70));
     public static final RegistryEntrySupplier<EntityType<EntityMedusa>> MEDUSA = regServant(EntityType.Builder.of(EntityMedusa::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "medusa"), 0x000000, 0xf234ea,
-            new ServantProperties(350, 11, 12, 0, 6, 0, 0, 0.36, 70, BuiltinServantClasses.RIDER));
+            new ServantProperties.Builder(BuiltinServantClasses.RIDER)
+                    .putAttributes(() -> Attributes.MAX_HEALTH, 350).putAttributes(() -> Attributes.ATTACK_DAMAGE, 11)
+                    .putAttributes(() -> Attributes.ARMOR, 12)
+                    .putAttributes(ModAttributes.PROJECTILE_RESISTANCE, 6).putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.36)
+                    .npCost(70));
 
     public static final RegistryEntrySupplier<EntityType<EntityHassan>> HASSAN = regServant(EntityType.Builder.of(EntityHassan::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "hassan"), 0x000000, 0x3a393a,
-            new ServantProperties(320, 10, 10, 0, 12, 0, 0, 0.36, 40, BuiltinServantClasses.ASSASSIN));
+            new ServantProperties.Builder(BuiltinServantClasses.ASSASSIN)
+                    .putAttributes(() -> Attributes.MAX_HEALTH, 320).putAttributes(() -> Attributes.ATTACK_DAMAGE, 10)
+                    .putAttributes(() -> Attributes.ARMOR, 10)
+                    .putAttributes(ModAttributes.PROJECTILE_RESISTANCE, 12).putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.36)
+                    .npCost(40));
     public static final RegistryEntrySupplier<EntityType<EntitySasaki>> SASAKI = regServant(EntityType.Builder.of(EntitySasaki::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "sasaki"), 0x4e04c3, 0xa77cec,
-            new ServantProperties(300, 13, 10, 0, 5, 0, 0, 0.33, 30, BuiltinServantClasses.ASSASSIN));
+            new ServantProperties.Builder(BuiltinServantClasses.ASSASSIN)
+                    .putAttributes(() -> Attributes.MAX_HEALTH, 300).putAttributes(() -> Attributes.ATTACK_DAMAGE, 13)
+                    .putAttributes(() -> Attributes.ARMOR, 10)
+                    .putAttributes(ModAttributes.PROJECTILE_RESISTANCE, 5).putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.33)
+                    .npCost(30));
 
     public static final RegistryEntrySupplier<EntityType<Excalibur>> EXCALIBUR = reg(EntityType.Builder.<Excalibur>of(Excalibur::new, MobCategory.MISC).sized(0.05F, 0.05F), new ResourceLocation(Fate.MODID, "excalibur"));
     public static final RegistryEntrySupplier<EntityType<GaeBolg>> GAEBOLG = reg(EntityType.Builder.<GaeBolg>of(GaeBolg::new, MobCategory.MISC).sized(0.25F, 0.25F), new ResourceLocation(Fate.MODID, "gae_bolg"));
@@ -126,35 +182,57 @@ public class ModEntities {
     public static final RegistryEntrySupplier<EntityType<ThrownGem>> GEM = reg(EntityType.Builder.<ThrownGem>of(ThrownGem::new, MobCategory.MISC).sized(0.25F, 0.25F), new ResourceLocation(Fate.MODID, "thrown_gem"));
     public static final RegistryEntrySupplier<EntityType<MagicShot>> MAGIC_SHOT = reg(EntityType.Builder.<MagicShot>of(MagicShot::new, MobCategory.MISC).sized(0.25F, 0.25F), new ResourceLocation(Fate.MODID, "magic_shot"));
 
-    public static final RegistryEntrySupplier<EntityType<LesserMonster>> LESSER_MONSTER = regWithEgg(EntityType.Builder.<LesserMonster>of(LesserMonster::new, MobCategory.MONSTER).clientTrackingRange(8), new ResourceLocation(Fate.MODID, "starfish_monster"), 0x171c3f, 0x00ff00);
-    public static final RegistryEntrySupplier<EntityType<GordiusWheel>> GORDIUS_WHEEL = regWithEgg(EntityType.Builder.of(GordiusWheel::new, MobCategory.CREATURE).sized(2, 1.5f), new ResourceLocation(Fate.MODID, "gordius_wheel"), 0x87595c, 0x981a24);
-    public static final RegistryEntrySupplier<EntityType<HassanClone>> HASSAN_COPY = hassanClone(new ServantProperties(50, 7, 8, 0, 10, 0, 0, 0.35, 0, BuiltinServantClasses.NONE));
-    public static final RegistryEntrySupplier<EntityType<Pegasus>> PEGASUS = regWithEgg(EntityType.Builder.of(Pegasus::new, MobCategory.MONSTER).sized(1.35f, 1.65f), new ResourceLocation(Fate.MODID, "pegasus"), 0xffffff, 0xdde0e1);
+    public static final RegistryEntrySupplier<EntityType<LesserMonster>> LESSER_MONSTER = regWithEgg(EntityType.Builder.<LesserMonster>of(LesserMonster::new, MobCategory.MONSTER).clientTrackingRange(8),
+            new ResourceLocation(Fate.MODID, "starfish_monster"), 0x171c3f, 0x00ff00,
+            new AttributeHolderProperties.Builder()
+                    .putAttributes(() -> Attributes.MAX_HEALTH, 30).putAttributes(() -> Attributes.ATTACK_DAMAGE, 11)
+                    .putAttributes(() -> Attributes.ARMOR, 4).putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.28)
+                    .putAttributes(() -> Attributes.KNOCKBACK_RESISTANCE, 1));
+    public static final RegistryEntrySupplier<EntityType<GordiusWheel>> GORDIUS_WHEEL = regWithEgg(EntityType.Builder.of(GordiusWheel::new, MobCategory.CREATURE).sized(2, 1.5f),
+            new ResourceLocation(Fate.MODID, "gordius_wheel"), 0x87595c, 0x981a24,
+            new AttributeHolderProperties.Builder()
+                    .putAttributes(() -> Attributes.MAX_HEALTH, 120).putAttributes(() -> Attributes.ATTACK_DAMAGE, 15)
+                    .putAttributes(() -> Attributes.ARMOR, 6).putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.37)
+                    .putAttributes(() -> Attributes.KNOCKBACK_RESISTANCE, 1));
+    public static final RegistryEntrySupplier<EntityType<HassanClone>> HASSAN_COPY = hassanClone(new AttributeHolderProperties.Builder()
+            .putAttributes(() -> Attributes.MAX_HEALTH, 50).putAttributes(() -> Attributes.ATTACK_DAMAGE, 7)
+            .putAttributes(() -> Attributes.ARMOR, 8).putAttributes(ModAttributes.PROJECTILE_RESISTANCE, 10)
+            .putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.35));
+    public static final RegistryEntrySupplier<EntityType<Pegasus>> PEGASUS = regWithEgg(EntityType.Builder.of(Pegasus::new, MobCategory.MONSTER).sized(1.35f, 1.65f),
+            new ResourceLocation(Fate.MODID, "pegasus"), 0xffffff, 0xdde0e1,
+            new AttributeHolderProperties.Builder()
+                    .putAttributes(() -> Attributes.MAX_HEALTH, 80).putAttributes(() -> Attributes.ATTACK_DAMAGE, 17)
+                    .putAttributes(() -> Attributes.ARMOR, 5).putAttributes(ModAttributes.PROJECTILE_BLOCK_CHANCE, 0.2)
+                    .putAttributes(ModAttributes.MAGIC_RESISTANCE, 0.1).putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.34)
+                    .putAttributes(() -> Attributes.FLYING_SPEED, 0.85));
 
     public static final RegistryEntrySupplier<EntityType<MultiPartEntity>> MULTIPART = reg(EntityType.Builder.<MultiPartEntity>of(MultiPartEntity::new, MobCategory.MISC)
             .noSave().noSummon().sized(0.25F, 0.25F), new ResourceLocation(Fate.MODID, "multi_part"));
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public static <V extends BaseServant> RegistryEntrySupplier<EntityType<V>> regServant(EntityType.Builder<V> entity, ResourceLocation name, int primary, int secondary, ServantProperties props) {
+    public static <V extends BaseServant> RegistryEntrySupplier<EntityType<V>> regServant(EntityType.Builder<V> entity, ResourceLocation name, int primary, int secondary, ServantProperties.Builder props) {
         RegistryEntrySupplier<EntityType<V>> reg = reg(entity.clientTrackingRange(10), name);
         ModItems.ITEMS.register(name.getPath() + "_spawn_egg", () -> new FateEgg(reg, primary, secondary, new Item.Properties().tab(Fate.TAB)));
         if (Platform.INSTANCE.isDatagen()) {
-            DEFAULT_PROPERTIES.put(name, props);
+            DEFAULT_SERVANT_PROPERTIES.put(name, props);
             SERVANTS.add((RegistryEntrySupplier) reg);
         }
         return reg;
     }
 
-    public static <V extends Mob> RegistryEntrySupplier<EntityType<V>> regWithEgg(EntityType.Builder<V> entity, ResourceLocation name, int primary, int secondary) {
+    public static <V extends Mob> RegistryEntrySupplier<EntityType<V>> regWithEgg(EntityType.Builder<V> entity, ResourceLocation name, int primary, int secondary, AttributeHolderProperties.Builder props) {
         RegistryEntrySupplier<EntityType<V>> reg = reg(entity.clientTrackingRange(10), name);
         ModItems.ITEMS.register(name.getPath() + "_spawn_egg", () -> new SpawnEgg(reg, primary, secondary, new Item.Properties().tab(Fate.TAB)));
+        if (Platform.INSTANCE.isDatagen()) {
+            DEFAULT_ENTITY_PROPERTIES.put(name, props);
+        }
         return reg;
     }
 
-    public static RegistryEntrySupplier<EntityType<HassanClone>> hassanClone(ServantProperties props) {
+    public static RegistryEntrySupplier<EntityType<HassanClone>> hassanClone(AttributeHolderProperties.Builder props) {
         RegistryEntrySupplier<EntityType<HassanClone>> reg = reg(EntityType.Builder.of(HassanClone::new, MobCategory.MISC), new ResourceLocation(Fate.MODID, "hassan_copy"));
         if (Platform.INSTANCE.isDatagen()) {
-            DEFAULT_PROPERTIES.put(reg.getID(), props);
+            DEFAULT_ENTITY_PROPERTIES.put(reg.getID(), props);
         }
         return reg;
     }
@@ -163,8 +241,12 @@ public class ModEntities {
         return ENTITIES.register(name.getPath(), () -> v.build(name.getPath()));
     }
 
-    public static Map<ResourceLocation, ServantProperties> getDefaultMobProperties() {
-        return ImmutableMap.copyOf(DEFAULT_PROPERTIES);
+    public static Map<ResourceLocation, ServantProperties.Builder> getServantProperties() {
+        return ImmutableMap.copyOf(DEFAULT_SERVANT_PROPERTIES);
+    }
+
+    public static Map<ResourceLocation, AttributeHolderProperties.Builder> getEntityProps() {
+        return ImmutableMap.copyOf(DEFAULT_ENTITY_PROPERTIES);
     }
 
     public static List<RegistryEntrySupplier<EntityType<?>>> getServants() {
@@ -173,38 +255,30 @@ public class ModEntities {
 
     public static Map<EntityType<? extends LivingEntity>, AttributeSupplier.Builder> registeredAttributes() {
         Map<EntityType<? extends LivingEntity>, AttributeSupplier.Builder> map = new HashMap<>();
-        map.put(ModEntities.ARTHUR.get(), BaseServant.createMobAttributes());
+        map.put(ModEntities.ARTHUR.get(), BaseServant.createAttributes());
 
-        map.put(ModEntities.CUCHULAINN.get(), BaseServant.createMobAttributes());
-        map.put(ModEntities.DIARMUID.get(), BaseServant.createMobAttributes());
+        map.put(ModEntities.CUCHULAINN.get(), BaseServant.createAttributes());
+        map.put(ModEntities.DIARMUID.get(), BaseServant.createAttributes());
 
-        map.put(ModEntities.EMIYA.get(), BaseServant.createMobAttributes());
-        map.put(ModEntities.GILGAMESH.get(), BaseServant.createMobAttributes());
+        map.put(ModEntities.EMIYA.get(), BaseServant.createAttributes());
+        map.put(ModEntities.GILGAMESH.get(), BaseServant.createAttributes());
 
-        map.put(ModEntities.GILLES.get(), BaseServant.createMobAttributes());
-        map.put(ModEntities.MEDEA.get(), BaseServant.createMobAttributes());
+        map.put(ModEntities.GILLES.get(), BaseServant.createAttributes());
+        map.put(ModEntities.MEDEA.get(), BaseServant.createAttributes());
 
-        map.put(ModEntities.HERACLES.get(), BaseServant.createMobAttributes());
-        map.put(ModEntities.LANCELOT.get(), BaseServant.createMobAttributes());
+        map.put(ModEntities.HERACLES.get(), BaseServant.createAttributes());
+        map.put(ModEntities.LANCELOT.get(), BaseServant.createAttributes());
 
-        map.put(ModEntities.MEDUSA.get(), BaseServant.createMobAttributes());
-        map.put(ModEntities.ISKANDER.get(), BaseServant.createMobAttributes());
+        map.put(ModEntities.MEDUSA.get(), BaseServant.createAttributes());
+        map.put(ModEntities.ISKANDER.get(), BaseServant.createAttributes());
 
-        map.put(ModEntities.HASSAN.get(), BaseServant.createMobAttributes());
-        map.put(ModEntities.SASAKI.get(), BaseServant.createMobAttributes());
+        map.put(ModEntities.HASSAN.get(), BaseServant.createAttributes());
+        map.put(ModEntities.SASAKI.get(), BaseServant.createAttributes());
 
-        map.put(ModEntities.LESSER_MONSTER.get(), Monster.createMonsterAttributes()
-                .add(Attributes.ARMOR, 4)
-                .add(Attributes.KNOCKBACK_RESISTANCE, 1)
-                .add(Attributes.MOVEMENT_SPEED, 0.28));
-        map.put(ModEntities.GORDIUS_WHEEL.get(), Monster.createMonsterAttributes().add(Attributes.MOVEMENT_SPEED, 0.37)
-                .add(Attributes.ARMOR, 6)
-                .add(Attributes.KNOCKBACK_RESISTANCE, 1));
-        map.put(ModEntities.PEGASUS.get(), Monster.createMonsterAttributes()
-                .add(Attributes.ARMOR, 5)
-                .add(Attributes.MOVEMENT_SPEED, 0.34)
-                .add(Attributes.FLYING_SPEED, 0.85));
-        map.put(ModEntities.HASSAN_COPY.get(), BaseServant.createMobAttributes());
+        map.put(ModEntities.LESSER_MONSTER.get(), BaseServant.createAttributes());
+        map.put(ModEntities.GORDIUS_WHEEL.get(), BaseServant.createAttributes());
+        map.put(ModEntities.PEGASUS.get(), BaseServant.createAttributes().add(Attributes.FLYING_SPEED, 0.85));
+        map.put(ModEntities.HASSAN_COPY.get(), BaseServant.createAttributes());
         return map;
     }
 }

@@ -1,0 +1,11 @@
+{
+  "attributes": {
+    "minecraft:generic.max_health": 450.0,
+    "minecraft:generic.attack_damage": 12.0,
+    "minecraft:generic.armor": 14.0,
+    "fateubw:projectile_resistance": 4.0,
+    "minecraft:generic.movement_speed": 0.35
+  },
+  "nobel_phantasm_cost": 70,
+  "class": "fateubw:rider"
+}

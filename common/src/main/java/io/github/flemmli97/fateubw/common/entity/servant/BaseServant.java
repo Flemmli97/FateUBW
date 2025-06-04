@@ -21,7 +21,6 @@ import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
-import io.github.flemmli97.fateubw.platform.Platform;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.AoeAttackEntity;
 import io.github.flemmli97.tenshilib.api.entity.IAnimated;
@@ -49,7 +48,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
@@ -110,7 +108,6 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     //Mana
     private int servantMana = 100, manaRegenCounter;
     private boolean died = false;
-    protected int combatTick;
     protected boolean canUseNP, critHealth;
     protected boolean disableChunkload = true, chunkTracked;
     public boolean forcedNP;
@@ -157,7 +154,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         this.moveControl = new MoveControllerPlus(this);
         this.xpReward = 35;
         ResourceLocation id = Registry.ENTITY_TYPE.getKey(this.getType());
-        this.prop = DatapackHandler.getServantProp(id);
+        this.prop = DatapackHandler.SERVANT_PROPS.get(id);
         if (!level.isClientSide) {
             this.goals();
             this.updateAttributes();
@@ -270,24 +267,25 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         return SUMMON_COLOR;
     }
 
-    public static AttributeSupplier.Builder createMobAttributes() {
+    public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMonsterAttributes()
                 .add(Attributes.FOLLOW_RANGE, 24.0)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1)
                 .add(ModAttributes.MAGIC_ATTACK.get()).add(ModAttributes.MAGIC_RESISTANCE.get())
-                .add(ModAttributes.PROJECTILE_BLOCK_CHANCE.get()).add(ModAttributes.PROJECTILE_RESISTANCE.get());
+                .add(ModAttributes.PROJECTILE_BLOCK_CHANCE.get()).add(ModAttributes.PROJECTILE_RESISTANCE.get())
+                .add(ModAttributes.COMBAT_REGEN.get())
+                .add(ModAttributes.PASSIVE_REGEN.get());
     }
 
     private void updateAttributes() {
-        this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(this.prop.health());
-        this.setHealth(this.getMaxHealth());
-        this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(this.prop.strength());
-        this.getAttribute(Attributes.ARMOR).setBaseValue(this.prop.armor());
-        this.getAttribute(ModAttributes.MAGIC_ATTACK.get()).setBaseValue(this.prop.magic());
-        this.getAttribute(ModAttributes.MAGIC_RESISTANCE.get()).setBaseValue(this.prop.magicRes());
-        this.getAttribute(ModAttributes.PROJECTILE_BLOCK_CHANCE.get()).setBaseValue(this.prop.projectileBlockChance());
-        this.getAttribute(ModAttributes.PROJECTILE_RESISTANCE.get()).setBaseValue(this.prop.projectileProt());
-        this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(this.prop.moveSpeed());
+        this.prop.getAttributes().forEach((att, val) -> {
+            AttributeInstance inst = this.getAttribute(att);
+            if (inst != null) {
+                inst.setBaseValue(val);
+                if (att == Attributes.MAX_HEALTH)
+                    this.setHealth(this.getMaxHealth());
+            }
+        });
     }
 
     //=====Mana stuff
@@ -453,7 +451,6 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         }
         if (this.level instanceof ServerLevel serverLevel) {
             this.regenMana();
-            this.combatTick = Math.max(0, --this.combatTick);
             if (!this.disableChunkload) {
                 if (!this.chunkTracked) {
                     GrailWarHandler.get(serverLevel.getServer()).track(this);
@@ -724,51 +721,14 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     }
 
     @Override
-    protected void actuallyHurt(DamageSource damageSrc, float damageAmount) {
-        if (!this.isInvulnerableTo(damageSrc)) {
-            damageAmount = Platform.INSTANCE.onLivingHurt(this, damageSrc, damageAmount);
-            if (damageAmount <= 0) return;
-            if (damageSrc.isProjectile())
-                damageAmount = Utils.projectileReduce(this, damageAmount);
-            damageAmount = this.getDamageAfterArmorAbsorb(damageSrc, damageAmount);
-            if (damageSrc.isMagic())
-                damageAmount = Utils.getDamageAfterMagicAbsorb(this, damageAmount);
-            damageAmount = this.getDamageAfterMagicAbsorb(damageSrc, damageAmount);
-            float f = damageAmount;
-            damageAmount = Math.max(damageAmount - this.getAbsorptionAmount(), 0.0F);
-            this.setAbsorptionAmount(this.getAbsorptionAmount() - (f - damageAmount));
-            damageAmount = Platform.INSTANCE.onLivingDamage(this, damageSrc, damageAmount);
-
-            if (damageAmount != 0.0F) {
-                float f1 = this.getHealth();
-                this.getCombatTracker().recordDamage(damageSrc, f1, damageAmount);
-                this.setHealth(f1 - damageAmount);
-                this.setAbsorptionAmount(this.getAbsorptionAmount() - damageAmount);
-                this.combatTick = 300;
-            }
-        }
-    }
-
-    @Override
     public boolean hurt(DamageSource damageSource, float damage) {
         if (damageSource == DamageSource.OUT_OF_WORLD) {
-            return this.preAttackEntityFrom(damageSource, damage);
+            return super.hurt(damageSource, damage);
         } else {
             if (damageSource.getEntity() == null || !damageSource.getEntity().getType().is(FateTags.STRONG_MOB))
                 damage *= 0.5;
-
-            if (damageSource.isProjectile() && !damageSource.isBypassArmor() && this.projectileBlockChance(damageSource, damage)) {
-                this.level.playSound(null, this.blockPosition(), SoundEvents.SHIELD_BLOCK, SoundSource.NEUTRAL, 1, 1);
-                if (damageSource.getDirectEntity() != null)
-                    damageSource.getDirectEntity().remove(RemovalReason.KILLED);
-                return false;
-            }
-            return this.preAttackEntityFrom(damageSource, Math.min(50, damage));
+            return super.hurt(damageSource, Math.min(50, damage));
         }
-    }
-
-    protected boolean preAttackEntityFrom(DamageSource damageSource, float par2) {
-        return super.hurt(damageSource, par2);
     }
 
     @Override

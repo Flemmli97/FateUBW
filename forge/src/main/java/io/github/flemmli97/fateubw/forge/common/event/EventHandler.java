@@ -19,8 +19,10 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -77,5 +79,15 @@ public class EventHandler {
     public static void healingEvent(LivingHealEvent event) {
         if (!EventCalls.canHeal(event.getEntityLiving()))
             event.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public void livingAttack(LivingAttackEvent event) {
+        event.setCanceled(EventCalls.onHurt(event.getEntityLiving(), event.getSource(), event.getAmount()));
+    }
+
+    @SubscribeEvent
+    public void damageCalculation(LivingHurtEvent event) {
+        event.setAmount(EventCalls.damageCalculation(event.getEntityLiving(), event.getSource(), event.getAmount()));
     }
 }

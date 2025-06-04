@@ -1,6 +1,7 @@
 package io.github.flemmli97.fateubw.common.entity.minions;
 
-import io.github.flemmli97.fateubw.common.config.Config;
+import io.github.flemmli97.fateubw.api.datapack.AttributeHolderProperties;
+import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.entity.ChargingHandler;
 import io.github.flemmli97.fateubw.common.entity.MultiPartEntity;
 import io.github.flemmli97.fateubw.common.entity.StandingVehicle;
@@ -26,9 +27,11 @@ import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.WrappedRunne
 import io.github.flemmli97.tenshilib.common.utils.OrientedBoundingBox;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
@@ -41,6 +44,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.ai.control.MoveControl;
@@ -127,9 +131,16 @@ public class GordiusWheel extends PathfinderMob implements IAnimated, StandingVe
     }
 
     private void updateAttributes() {
-        this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(Config.Common.gordiusHealth);
-        this.setHealth(this.getMaxHealth());
-        this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(Config.Common.gordiusDmg);
+        ResourceLocation id = Registry.ENTITY_TYPE.getKey(this.getType());
+        AttributeHolderProperties props = DatapackHandler.SERVANT_PROPS.getGeneric(id);
+        props.getAttributes().forEach((att, val) -> {
+            AttributeInstance inst = this.getAttribute(att);
+            if (inst != null) {
+                inst.setBaseValue(val);
+                if (att == Attributes.MAX_HEALTH)
+                    this.setHealth(this.getMaxHealth());
+            }
+        });
     }
 
     @Override

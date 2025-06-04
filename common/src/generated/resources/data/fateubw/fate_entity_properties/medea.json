@@ -1,0 +1,13 @@
+{
+  "attributes": {
+    "minecraft:generic.max_health": 350.0,
+    "minecraft:generic.attack_damage": 9.0,
+    "minecraft:generic.armor": 8.0,
+    "fateubw:projectile_resistance": 2.0,
+    "fateubw:magic_attack": 17.0,
+    "fateubw:magic_resistance": 0.4,
+    "minecraft:generic.movement_speed": 0.31
+  },
+  "nobel_phantasm_cost": 70,
+  "class": "fateubw:caster"
+}

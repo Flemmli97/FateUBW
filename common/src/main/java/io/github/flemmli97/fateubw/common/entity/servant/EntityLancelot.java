@@ -232,32 +232,17 @@ public class EntityLancelot extends BaseServant {
     public boolean hurt(DamageSource damageSource, float damage) {
         if (this.isPassenger())
             return this.getVehicle().hurt(damageSource, damage);
-
-        if (damageSource == DamageSource.OUT_OF_WORLD) {
-            return this.preAttackEntityFrom(damageSource, damage);
-        } else {
-            if (!(damageSource.getEntity() instanceof BaseServant))
-                damage *= 0.5;
-
+        if (damageSource != DamageSource.OUT_OF_WORLD && !this.level.isClientSide) {
             if (damageSource.isProjectile() && !damageSource.isBypassArmor()) {
-                boolean blocked = false;
-                if (!this.level.isClientSide) {
-                    if (this.getRandom().nextFloat() < Config.Common.lancelotReflectChance && damageSource.getDirectEntity() != null
-                            && !(damageSource.getDirectEntity() instanceof LivingEntity)) {
-                        this.reflectProjectile(damageSource.getDirectEntity());
-                        blocked = true;
-                        this.level.playSound(null, this.blockPosition(), SoundEvents.ANVIL_PLACE, SoundSource.NEUTRAL, 1, 1);
-                    } else if (this.projectileBlockChance(damageSource, damage)) {
-                        this.level.playSound(null, this.blockPosition(), SoundEvents.SHIELD_BLOCK, SoundSource.NEUTRAL, 1, 1);
-                        blocked = true;
-                    }
-                    if (blocked && damageSource.getDirectEntity() != null)
-                        damageSource.getDirectEntity().remove(RemovalReason.KILLED);
+                if (this.getRandom().nextFloat() < Config.Common.lancelotReflectChance && damageSource.getDirectEntity() != null
+                        && !(damageSource.getDirectEntity() instanceof LivingEntity)) {
+                    this.reflectProjectile(damageSource.getDirectEntity());
+                    this.level.playSound(null, this.blockPosition(), SoundEvents.ANVIL_PLACE, SoundSource.NEUTRAL, 1, 1);
+                    return false;
                 }
-                return !blocked;
             }
-            return this.preAttackEntityFrom(damageSource, Math.min(50, damage));
         }
+        return super.hurt(damageSource, damage);
     }
 
     @Override

@@ -1,6 +1,8 @@
 package io.github.flemmli97.fateubw.common.entity.minions;
 
+import io.github.flemmli97.fateubw.api.datapack.AttributeHolderProperties;
 import io.github.flemmli97.fateubw.common.config.Config;
+import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.entity.ai.TargetOwnerEnemyGoal;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
@@ -12,13 +14,16 @@ import io.github.flemmli97.tenshilib.common.entity.ai.animated.GoalAttackAction;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.IdleAction;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTargetRunner;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.WrappedRunner;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -58,7 +63,7 @@ public class LesserMonster extends PathfinderMob implements IAnimated, OwnableEn
         super(type, world);
         if (!world.isClientSide) {
             this.goals();
-            this.setAttributes();
+            this.updateAttributes();
         }
     }
 
@@ -68,9 +73,17 @@ public class LesserMonster extends PathfinderMob implements IAnimated, OwnableEn
         this.ownerUUID = owner.getUUID();
     }
 
-    protected void setAttributes() {
-        this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(Config.Common.smallMonsterHealth);
-        this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(Config.Common.smallMonsterDamage);
+    protected void updateAttributes() {
+        ResourceLocation id = Registry.ENTITY_TYPE.getKey(this.getType());
+        AttributeHolderProperties props = DatapackHandler.SERVANT_PROPS.getGeneric(id);
+        props.getAttributes().forEach((att, val) -> {
+            AttributeInstance inst = this.getAttribute(att);
+            if (inst != null) {
+                inst.setBaseValue(val);
+                if (att == Attributes.MAX_HEALTH)
+                    this.setHealth(this.getMaxHealth());
+            }
+        });
     }
 
     protected void goals() {

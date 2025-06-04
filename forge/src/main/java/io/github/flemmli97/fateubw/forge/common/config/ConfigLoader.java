@@ -33,8 +33,6 @@ public class ConfigLoader {
         //Minions
         Config.Common.gillesMinionDuration = ConfigSpecs.COMMON_CONFIG.gillesMinionDuration.get();
         Config.Common.gillesMinionAmount = ConfigSpecs.COMMON_CONFIG.gillesMinionAmount.get();
-        Config.Common.smallMonsterHealth = ConfigSpecs.COMMON_CONFIG.smallMonsterHealth.get().floatValue();
-        Config.Common.smallMonsterDamage = ConfigSpecs.COMMON_CONFIG.smallMonsterDamage.get().floatValue();
         Config.Common.babylonScale = ConfigSpecs.COMMON_CONFIG.babylonScale.get().floatValue();
         Config.Common.babylonWeapons.readFromString(ConfigSpecs.COMMON_CONFIG.babylonWeaponsBlacklist.get());
         Config.Common.babylonWeapons.setWhiteList(ConfigSpecs.COMMON_CONFIG.babylonWeaponsWhitelist.get());
@@ -44,10 +42,6 @@ public class ConfigLoader {
         Config.Common.magicBeam = ConfigSpecs.COMMON_CONFIG.magicBeam.get().floatValue();
         Config.Common.gaeBolgDmg = ConfigSpecs.COMMON_CONFIG.gaeBolgDmg.get().floatValue();
         Config.Common.gaeBolgEffect.readFromString(ConfigSpecs.COMMON_CONFIG.gaeBolgEffect.get());
-        Config.Common.gordiusHealth = ConfigSpecs.COMMON_CONFIG.gordiusHealth.get();
-        Config.Common.gordiusDmg = ConfigSpecs.COMMON_CONFIG.gordiusDmg.get().floatValue();
-        Config.Common.pegasusHealth = ConfigSpecs.COMMON_CONFIG.pegasusHealth.get();
-        Config.Common.pegasusDamage = ConfigSpecs.COMMON_CONFIG.pegasusDamage.get().floatValue();
         Config.Common.medeaCircleSpan = ConfigSpecs.COMMON_CONFIG.medeaCircleSpan.get();
         Config.Common.medeaCircleRange = ConfigSpecs.COMMON_CONFIG.medeaCircleRange.get().floatValue();
 

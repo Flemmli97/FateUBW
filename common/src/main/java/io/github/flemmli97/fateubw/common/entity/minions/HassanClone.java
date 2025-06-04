@@ -1,6 +1,6 @@
 package io.github.flemmli97.fateubw.common.entity.minions;
 
-import io.github.flemmli97.fateubw.api.datapack.ServantProperties;
+import io.github.flemmli97.fateubw.api.datapack.AttributeHolderProperties;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.entity.TargetableOpponent;
 import io.github.flemmli97.fateubw.common.entity.ai.FollowMasterGoal;
@@ -16,7 +16,6 @@ import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.registry.ModParticles;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
-import io.github.flemmli97.fateubw.platform.Platform;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
 import io.github.flemmli97.tenshilib.api.entity.AoeAttackEntity;
@@ -57,6 +56,7 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
@@ -192,16 +192,15 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
 
     private void updateAttributes() {
         ResourceLocation id = Registry.ENTITY_TYPE.getKey(this.getType());
-        ServantProperties props = DatapackHandler.getServantProp(id);
-        this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(props.health());
-        this.setHealth(this.getMaxHealth());
-        this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(props.strength());
-        this.getAttribute(Attributes.ARMOR).setBaseValue(props.armor());
-        this.getAttribute(ModAttributes.MAGIC_ATTACK.get()).setBaseValue(props.magic());
-        this.getAttribute(ModAttributes.MAGIC_RESISTANCE.get()).setBaseValue(props.magicRes());
-        this.getAttribute(ModAttributes.PROJECTILE_BLOCK_CHANCE.get()).setBaseValue(props.projectileBlockChance());
-        this.getAttribute(ModAttributes.PROJECTILE_RESISTANCE.get()).setBaseValue(props.projectileProt());
-        this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(props.moveSpeed());
+        AttributeHolderProperties props = DatapackHandler.SERVANT_PROPS.getGeneric(id);
+        props.getAttributes().forEach((att, val) -> {
+            AttributeInstance inst = this.getAttribute(att);
+            if (inst != null) {
+                inst.setBaseValue(val);
+                if (att == Attributes.MAX_HEALTH)
+                    this.setHealth(this.getMaxHealth());
+            }
+        });
     }
 
     @Override
@@ -290,31 +289,6 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
             }
         }
         return hurt;
-    }
-
-    @Override
-    protected void actuallyHurt(DamageSource damageSrc, float damageAmount) {
-        if (!this.isInvulnerableTo(damageSrc)) {
-            damageAmount = Platform.INSTANCE.onLivingHurt(this, damageSrc, damageAmount);
-            if (damageAmount <= 0) return;
-            if (damageSrc.isProjectile())
-                damageAmount = Utils.projectileReduce(this, damageAmount);
-            damageAmount = this.getDamageAfterArmorAbsorb(damageSrc, damageAmount);
-            if (damageSrc.isMagic())
-                damageAmount = Utils.getDamageAfterMagicAbsorb(this, damageAmount);
-            damageAmount = this.getDamageAfterMagicAbsorb(damageSrc, damageAmount);
-            float f = damageAmount;
-            damageAmount = Math.max(damageAmount - this.getAbsorptionAmount(), 0.0F);
-            this.setAbsorptionAmount(this.getAbsorptionAmount() - (f - damageAmount));
-            damageAmount = Platform.INSTANCE.onLivingDamage(this, damageSrc, damageAmount);
-
-            if (damageAmount != 0.0F) {
-                float f1 = this.getHealth();
-                this.getCombatTracker().recordDamage(damageSrc, f1, damageAmount);
-                this.setHealth(f1 - damageAmount);
-                this.setAbsorptionAmount(this.getAbsorptionAmount() - damageAmount);
-            }
-        }
     }
 
     @Override

@@ -45,13 +45,11 @@ public class Config {
         // Misc
         public static int gillesMinionDuration = 6000;
         public static int gillesMinionAmount = 7;
-        public static float smallMonsterHealth = 30;
-        public static float smallMonsterDamage = 11;
         public static float babylonScale = 1.5f;
         public static WeaponList babylonWeapons = new WeaponList(ModItems.ENUMAELISH.getID().toString());
-        public static float eaDamage = 35;
-        public static float excaliburDamage = 25;
-        public static float caladBolgDmg = 25;
+        public static float eaDamage = 50;
+        public static float excaliburDamage = 35;
+        public static float caladBolgDmg = 30;
         public static float magicBeam = 6;
         public static float gaeBolgDmg = 18;
         public static PotionEffectsConfig gaeBolgEffect = new PotionEffectsConfig(
@@ -59,11 +57,6 @@ public class Config {
                         new PotionEffectsConfig.EffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 300, 7),
                         new PotionEffectsConfig.EffectInstance(MobEffects.JUMP, 200, 128))
         );
-
-        public static double gordiusHealth = 120;
-        public static float gordiusDmg = 15;
-        public static double pegasusHealth = 80;
-        public static float pegasusDamage = 17;
         public static int medeaCircleSpan = 2000;
         public static float medeaCircleRange = 24;
 

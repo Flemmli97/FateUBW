@@ -2,13 +2,16 @@ package io.github.flemmli97.fateubw.fabric.mixin;
 
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.attachment.PlayerData;
+import io.github.flemmli97.fateubw.common.event.EventCalls;
 import io.github.flemmli97.fateubw.fabric.common.data.PlayerDataGet;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Player.class)
@@ -16,6 +19,11 @@ public abstract class PlayerMixin implements PlayerDataGet {
 
     @Unique
     private final PlayerData fateData = new PlayerData();
+
+    @ModifyVariable(method = "actuallyHurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;getDamageAfterArmorAbsorb(Lnet/minecraft/world/damagesource/DamageSource;F)F"), argsOnly = true)
+    private float hurt(float origin, DamageSource source) {
+        return EventCalls.damageCalculation((Player) (Object) this, source, origin);
+    }
 
     @Inject(method = "readAdditionalSaveData", at = @At("RETURN"))
     private void loadData(CompoundTag compound, CallbackInfo info) {

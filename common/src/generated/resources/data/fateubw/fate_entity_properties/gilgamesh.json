@@ -1,0 +1,11 @@
+{
+  "attributes": {
+    "minecraft:generic.max_health": 450.0,
+    "minecraft:generic.attack_damage": 10.0,
+    "minecraft:generic.armor": 12.0,
+    "fateubw:projectile_resistance": 5.0,
+    "minecraft:generic.movement_speed": 0.32
+  },
+  "nobel_phantasm_cost": 80,
+  "class": "fateubw:archer"
+}

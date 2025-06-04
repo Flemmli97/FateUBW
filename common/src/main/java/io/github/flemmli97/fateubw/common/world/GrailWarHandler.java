@@ -3,7 +3,7 @@ package io.github.flemmli97.fateubw.common.world;
 import com.google.common.collect.ImmutableSet;
 import io.github.flemmli97.fateubw.common.config.Config;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
-import io.github.flemmli97.fateubw.common.datapack.ServantPropManager;
+import io.github.flemmli97.fateubw.common.datapack.EntityPropsManager;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.registry.AdvancementRegister;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
@@ -275,7 +275,7 @@ public class GrailWarHandler extends SavedData {
     }
 
     public boolean canSpawnMoreServants(ServerLevel level) {
-        for (ServantPropManager.EntityTypeAndID entry : DatapackHandler.SERVANT_PROPS.getServants(level)) {
+        for (EntityPropsManager.EntityTypeAndID entry : DatapackHandler.SERVANT_PROPS.getServants(level)) {
             if (!Config.Common.allowDuplicateServant && this.servantsTypes.contains(entry.id()))
                 return false;
             if (!Config.Common.allowDuplicateClass && this.servantClasses.contains(DatapackHandler.SERVANT_PROPS.get(entry.id()).getServantClass()))

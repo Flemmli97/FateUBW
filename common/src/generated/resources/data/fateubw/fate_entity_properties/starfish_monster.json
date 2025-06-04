@@ -1,0 +1,9 @@
+{
+  "attributes": {
+    "minecraft:generic.max_health": 30.0,
+    "minecraft:generic.attack_damage": 11.0,
+    "minecraft:generic.armor": 4.0,
+    "minecraft:generic.movement_speed": 0.28,
+    "minecraft:generic.knockback_resistance": 1.0
+  }
+}

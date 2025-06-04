@@ -19,6 +19,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.HashMap;
@@ -72,8 +73,8 @@ public class CommandGui extends Screen {
         this.minecraft.font.draw(stack, this.getComponent("fateubw.gui.nobel_phantasm", c -> c.withStyle(ChatFormatting.DARK_RED)), this.width / 2 - 90, this.height / 2 + 55, 1);
         if (this.servant != null) {
             this.minecraft.font.draw(stack, this.servant.getRealName(), this.width / 2 - 90, this.height / 2 + 5, 1);
-            this.minecraft.font.draw(stack, String.valueOf(this.servant.props().strength()), this.width / 2 - 90, this.height / 2 + 25, 1);
-            this.minecraft.font.draw(stack, String.valueOf(this.servant.props().armor()), this.width / 2 - 90, this.height / 2 + 45, 1);
+            this.minecraft.font.draw(stack, String.valueOf((int) this.servant.getAttributeValue(Attributes.ATTACK_DAMAGE)), this.width / 2 - 90, this.height / 2 + 25, 1);
+            this.minecraft.font.draw(stack, String.valueOf((int) this.servant.getAttributeValue(Attributes.ARMOR)), this.width / 2 - 90, this.height / 2 + 45, 1);
             this.minecraft.font.draw(stack, this.servant.nobelPhantasm(), this.width / 2 - 90, this.height / 2 + 65, 1);
             float mouseXNew = (float) ((this.width - 200) / 2 + 51) - mouseX;
             float mouseYNew = (float) ((this.height - 180) / 2 + 75 - 50) - mouseY;

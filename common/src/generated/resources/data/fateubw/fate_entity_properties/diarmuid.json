@@ -1,0 +1,12 @@
+{
+  "attributes": {
+    "minecraft:generic.max_health": 380.0,
+    "minecraft:generic.attack_damage": 10.0,
+    "minecraft:generic.armor": 14.0,
+    "fateubw:projectile_block_chance": 0.10000000149011612,
+    "fateubw:projectile_resistance": 5.0,
+    "minecraft:generic.movement_speed": 0.37
+  },
+  "nobel_phantasm_cost": 60,
+  "class": "fateubw:lancer"
+}

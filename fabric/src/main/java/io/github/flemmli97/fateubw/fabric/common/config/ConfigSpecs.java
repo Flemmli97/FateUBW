@@ -72,8 +72,6 @@ public class ConfigSpecs {
         //Minions
         public final CommentedJsonConfig.IntVal gillesMinionDuration;
         public final CommentedJsonConfig.IntVal gillesMinionAmount;
-        public final CommentedJsonConfig.DoubleVal smallMonsterHealth;
-        public final CommentedJsonConfig.DoubleVal smallMonsterDamage;
         public final CommentedJsonConfig.DoubleVal babylonScale;
         public final CommentedJsonConfig.CommentedVal<List<String>> babylonWeaponsBlacklist;
         public final CommentedJsonConfig.CommentedVal<Boolean> babylonWeaponsWhitelist;
@@ -83,10 +81,6 @@ public class ConfigSpecs {
         public final CommentedJsonConfig.DoubleVal magicBeam;
         public final CommentedJsonConfig.DoubleVal gaeBolgDmg;
         public final CommentedJsonConfig.CommentedVal<List<String>> gaeBolgEffect;
-        public final CommentedJsonConfig.DoubleVal gordiusHealth;
-        public final CommentedJsonConfig.DoubleVal gordiusDmg;
-        public final CommentedJsonConfig.DoubleVal pegasusHealth;
-        public final CommentedJsonConfig.DoubleVal pegasusDamage;
         public final CommentedJsonConfig.IntVal medeaCircleSpan;
         public final CommentedJsonConfig.DoubleVal medeaCircleRange;
 
@@ -132,8 +126,6 @@ public class ConfigSpecs {
             builder.push("misc");
             this.gillesMinionDuration = builder.comment("Living duration of gilles monster in ticks").defineInRange("Gilles Monster", Config.Common.gillesMinionDuration, 0, Integer.MAX_VALUE);
             this.gillesMinionAmount = builder.comment("Max amount gilles can have at once").defineInRange("Gilles Monster Max Amount", Config.Common.gillesMinionAmount, 0, Integer.MAX_VALUE);
-            this.smallMonsterHealth = builder.comment("Health for gilles summoned monsters").defineInRange("Monster Health", Config.Common.smallMonsterHealth, 0, Double.MAX_VALUE);
-            this.smallMonsterDamage = builder.comment("Damage for gilles summoned monsters").defineInRange("Monster Damage", Config.Common.smallMonsterDamage, 0, Double.MAX_VALUE);
             this.babylonScale = builder.comment("Damage scaling for projectiles from the gate of babylon").defineInRange("Babylon Dmg Scale", Config.Common.babylonScale, 0, Double.MAX_VALUE);
             this.babylonWeaponsBlacklist = builder.comment("Blacklist weapons for the gate of babylon here. You can also use the modid for a whole mod").define("Babylon Blacklist",
                     Config.Common.babylonWeapons.writeToString());
@@ -145,10 +137,6 @@ public class ConfigSpecs {
             this.gaeBolgDmg = builder.comment("Damage of Gae Bolg").defineInRange("Gae Bolg Dmg", Config.Common.gaeBolgDmg, 0, Double.MAX_VALUE);
             this.gaeBolgEffect = builder.comment("Potions applied by Gae Bolg. Usage: " + PotionEffectsConfig.usage()).define("Gae Bolg Potions",
                     Config.Common.gaeBolgEffect.writeToString());
-            this.gordiusHealth = builder.comment("Health of the Gordius Wheels").defineInRange("Gordius Health", Config.Common.gordiusHealth, 0, Double.MAX_VALUE);
-            this.gordiusDmg = builder.comment("Dmg of the Gordius Wheel during charging").defineInRange("Gordius Dmg", Config.Common.gordiusDmg, 0, Double.MAX_VALUE);
-            this.pegasusHealth = builder.comment("Health of Pegasus").defineInRange("Pegasus Health", Config.Common.pegasusHealth, 0, Double.MAX_VALUE);
-            this.pegasusDamage = builder.comment("Damage of Pegasus").defineInRange("Pegasus Damage", Config.Common.pegasusDamage, 0, Double.MAX_VALUE);
             this.medeaCircleSpan = builder.comment("Time in ticks for medeas magic circle").defineInRange("Magic Circle Duration", Config.Common.medeaCircleSpan, 0, Integer.MAX_VALUE);
             this.medeaCircleRange = builder.comment("Range of medeas magic circle").defineInRange("Magic Circle Range", Config.Common.medeaCircleRange, 0, Double.MAX_VALUE);
             builder.pop();

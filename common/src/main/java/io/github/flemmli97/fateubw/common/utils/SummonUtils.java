@@ -3,7 +3,7 @@ package io.github.flemmli97.fateubw.common.utils;
 import io.github.flemmli97.fateubw.common.blocks.ChalkBlock;
 import io.github.flemmli97.fateubw.common.blocks.tile.AltarBlockEntity;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
-import io.github.flemmli97.fateubw.common.datapack.ServantPropManager;
+import io.github.flemmli97.fateubw.common.datapack.EntityPropsManager;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.items.ItemServantCharm;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
@@ -79,7 +79,7 @@ public class SummonUtils {
                 return null;
             servantType = spawnableTypes.get(level.random.nextInt(spawnableTypes.size()));
         }
-        List<ServantPropManager.EntityTypeAndID> entities = DatapackHandler.SERVANT_PROPS.getServantsFromClass(level, servantType)
+        List<EntityPropsManager.EntityTypeAndID> entities = DatapackHandler.SERVANT_PROPS.getServantsFromClass(level, servantType)
                 .stream().filter(entry -> handler.canSpawnServantType(entry.id())).toList();
         if (entities.isEmpty())
             return null;
