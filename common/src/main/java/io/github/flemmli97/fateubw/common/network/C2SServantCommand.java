@@ -21,7 +21,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.EntityHitResult;
 
@@ -107,7 +106,7 @@ public record C2SServantCommand(EnumServantUpdate command) implements Packet {
                 servant.setTarget(null);
                 if (Config.Common.punishTeleport) {
                     for (BaseServant others : sender.level.getEntitiesOfClass(BaseServant.class, sender.getBoundingBox().inflate(32)))
-                        if (others != servant && !Utils.inSameTeam(sender, others)) {
+                        if (others != servant && !Utils.alliedTo(sender, others)) {
                             others.setTarget(sender);
                             others.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 1200, 1));
                             others.addEffect(new MobEffectInstance(MobEffects.HEAL, 2, 3));
@@ -126,15 +125,8 @@ public record C2SServantCommand(EnumServantUpdate command) implements Packet {
                 break;
             case TARGET:
                 EntityHitResult res = RayTraceUtils.calculateEntityFromLook(sender, 16);
-                if (res != null && res.getEntity() instanceof LivingEntity e) {
-                    if (e instanceof BaseServant) {
-                        if (!Utils.inSameTeam(sender, (BaseServant) e))
-                            servant.setTarget(e);
-                    } else if (e instanceof Player) {
-                        if (!Utils.inSameTeam(sender, e.getUUID()))
-                            servant.setTarget(e);
-                    } else
-                        servant.setTarget(e);
+                if (res != null && res.getEntity() instanceof LivingEntity target && !Utils.alliedTo(sender, target)) {
+                    servant.setTarget(target);
                 }
                 break;
         }

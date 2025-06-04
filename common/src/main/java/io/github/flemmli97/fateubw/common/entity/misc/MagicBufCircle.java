@@ -74,8 +74,6 @@ public class MagicBufCircle extends Entity implements OwnableEntity {
     private boolean canApplyTo(LivingEntity entity) {
         if (this.getOwner() == null)
             return false;
-        if (entity == this.getOwner())
-            return true;
         return Utils.alliedTo(this.getOwner(), entity);
     }
 

@@ -147,11 +147,7 @@ public class Lang implements DataProvider {
         this.add("fateubw.chat.grailwar.playerout", "%1$s is out.");
         this.add("fateubw.chat.grailwar.spawn", "A servant has spawned near %1$s.");
         this.add("fateubw.chat.grailwar.end", "The grailwar has ended");
-        this.add("fateubw.chat.truce.send", "Send a truce request to %1$s");
-        this.add("fateubw.chat.truce.pending", "Pending truce request from %1$s");
-        this.add("fateubw.chat.truce.request", "%1$s send you a truce request");
-        this.add("fateubw.chat.truce.requestsuccess", "%1$s accepted your a truce request");
-        this.add("fateubw.chat.truce.accept", "You accepted %1$s's truces request");
+
         this.add("fateubw.chat.servant.death", "A servant has been killed");
         this.add("fateubw.chat.servant.avalon", "Avalons healing ability has activated");
         this.add("fateubw.chat.servant.cuchulainn", "Cuchulainn's speed increased");
@@ -169,21 +165,40 @@ public class Lang implements DataProvider {
         this.add("fateubw.chat.command.stay", "You told your servant to hold their position");
         this.add("fateubw.chat.command.patrol", "Your servant now protects this area");
         this.add("fateubw.chat.command.kill", "You killed your servant");
-        this.add("fateubw.chat.command.spellsuccess", "You buffed your servant using a command spell");
-        this.add("fateubw.chat.command.spellfail", "You don't have any command spells anymore");
+        this.add("fateubw.chat.command.spell.success", "You buffed your servant using a command spell");
+        this.add("fateubw.chat.command.spell.fail", "You don't have any command spells anymore");
         this.add("fateubw.chat.medea.circle.spawn", "Medea created a magic circle");
         this.add("fateubw.chat.item.command.fail", "What are you doing???");
+        this.add("fateubw.chat.team.permission.no", "You don't have the permission for this action!");
+        this.add("fateubw.chat.team.self.no", "You can't target yourself!");
+        this.add("fateubw.chat.team.missing", "No such team %s exists!");
+        this.add("fateubw.chat.team.player.exist", "%s is already in a team!");
+        this.add("fateubw.chat.team.promote", "%s promoted you to admin");
+        this.add("fateubw.chat.team.promote.user", "You promoted %s to admin");
+        this.add("fateubw.chat.team.demote", "%s demoted you");
+        this.add("fateubw.chat.team.demote.user", "You demoted %s");
+        this.add("fateubw.chat.team.kicked", "%s kicked you from team %s");
+        this.add("fateubw.chat.team.invite.pending", "You have pending invites from %s");
+        this.add("fateubw.chat.team.invite.sent", "You sent out an invite to %s");
+        this.add("fateubw.chat.team.invite.received", "You received an invite from team %s");
+        this.add("fateubw.chat.team.alliance.start", "%s and %s started an alliance!");
+        this.add("fateubw.chat.team.alliance.dissolved", "%s of team %s dissolved the alliance!");
+        this.add("fateubw.chat.team.alliance.dissolved.with", "%s dissolved the alliance with team %s!");
+        this.add("fateubw.chat.team.alliance.denied", "%s denied your alliance request...");
+        this.add("fateubw.chat.team.alliance.pending", "You have pending ally requests from %s");
+        this.add("fateubw.chat.team.alliance.sent", "You sent out an ally request to team %s");
+        this.add("fateubw.chat.team.alliance.received", "You received an ally request from team %s");
 
         this.add("fateubw.gui.name", "Name:");
         this.add("fateubw.gui.damage", "Damage");
         this.add("fateubw.gui.armor", "Armor");
         this.add("fateubw.gui.nobel_phantasm", "Nobel Phantasm");
+        this.add("fateubw.gui.save", "Save");
+        this.add("fateubw.gui.back", "Back");
         this.add("fateubw.gui.command.attack", "Attack");
         this.add("fateubw.gui.command.movement", "Movement");
-        this.add("fateubw.gui.command.truce", "Truce");
         this.add("fateubw.gui.command.kill", "Kill");
         this.add("fateubw.gui.command.special", "Special");
-        this.add("fateubw.gui.command.back", "Back");
         this.add("fateubw.gui.command.aggressive", "Aggressive");
         this.add("fateubw.gui.command.normal", "Normal");
         this.add("fateubw.gui.command.defensive", "Defensive");
@@ -191,13 +206,30 @@ public class Lang implements DataProvider {
         this.add("fateubw.gui.command.stay", "Stay");
         this.add("fateubw.gui.command.protect", "Guard");
         this.add("fateubw.gui.command.call", "Call");
-        this.add("fateubw.gui.truce.request", "Request");
-        this.add("fateubw.gui.truce.accept", "Accept");
-        this.add("fateubw.gui.truce.remove", "Remove/Deny");
+
         this.add("fateubw.gui.spawn.master", "Master");
         this.add("fateubw.gui.spawn.war", "Create/Join grailwar");
         this.add("fateubw.gui.spawn.war.help", "Requires being master");
-        this.add("fateubw.gui.save", "Save");
+
+        this.add("fateubw.gui.team", "Team");
+        this.add("fateubw.gui.team.name", "%s");
+        this.add("fateubw.gui.team.invites", "Invites");
+        this.add("fateubw.gui.team.allies", "Allies");
+        this.add("fateubw.gui.team.members", "Members");
+        this.add("fateubw.gui.team.leave", "Leave");
+        this.add("fateubw.gui.team.disband", "Disband");
+        this.add("fateubw.gui.team.create", "Create");
+        this.add("fateubw.gui.team.none", "You currently are not in a team! Either create a new one or get invited to one.");
+        this.add("fateubw.gui.team.invite", "Invite");
+        this.add("fateubw.gui.team.retract", "Retract");
+        this.add("fateubw.gui.team.accept", "Accept");
+        this.add("fateubw.gui.team.deny", "Deny");
+        this.add("fateubw.gui.team.dissolve", "Dissolve");
+        this.add("fateubw.gui.team.kick", "Kick");
+        this.add("fateubw.gui.team.promote", "Promote");
+        this.add("fateubw.gui.team.demote", "Demote");
+        this.add("fateubw.gui.team.request", "Request");
+        this.add("fateubw.gui.team.rename", "Click to rename team");
 
         CustomDamageSource.defaultTranslations().forEach(this::add);
 

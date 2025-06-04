@@ -11,6 +11,10 @@ loom {
             programArgs "--output", project(":common").file("src/generated/resources").absolutePath
             programArgs "--existing", project(":common").file("src/main/resources").absolutePath
         }
+        dev2 {
+            client()
+            programArgs "--username", "Dev2"
+        }
     }
 }
 

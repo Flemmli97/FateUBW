@@ -15,7 +15,8 @@ public class PacketRegistrar {
         register.registerMessage(id++, C2SMessageGui.ID, C2SMessageGui.class, C2SMessageGui::write, C2SMessageGui::read, C2SMessageGui::handle);
         register.registerMessage(id++, C2SServantCommand.ID, C2SServantCommand.class, C2SServantCommand::write, C2SServantCommand::read, C2SServantCommand::handle);
         register.registerMessage(id++, C2SServantSpecial.ID, C2SServantSpecial.class, C2SServantSpecial::write, C2SServantSpecial::read, C2SServantSpecial::handle);
-        register.registerMessage(id++, C2STruceMessage.ID, C2STruceMessage.class, C2STruceMessage::write, C2STruceMessage::read, C2STruceMessage::handle);
+        register.registerMessage(id++, C2STeamMessage.ID, C2STeamMessage.class, C2STeamMessage::write, C2STeamMessage::read, C2STeamMessage::handle);
+        register.registerMessage(id++, C2STeamUuidMessage.ID, C2STeamUuidMessage.class, C2STeamUuidMessage::write, C2STeamUuidMessage::read, C2STeamUuidMessage::handle);
         register.registerMessage(id++, C2SGuiOpenRequest.ID, C2SGuiOpenRequest.class, C2SGuiOpenRequest::write, C2SGuiOpenRequest::read, C2SGuiOpenRequest::handle);
         register.registerMessage(id++, C2SSpawnEgg.ID, C2SSpawnEgg.class, C2SSpawnEgg::write, C2SSpawnEgg::read, C2SSpawnEgg::handle);
         return id;
@@ -29,8 +30,7 @@ public class PacketRegistrar {
         register.registerMessage(id++, S2CMana.ID, S2CMana.class, S2CMana::write, S2CMana::read, S2CMana::handle);
         register.registerMessage(id++, S2CPlayerCap.ID, S2CPlayerCap.class, S2CPlayerCap::write, S2CPlayerCap::read, S2CPlayerCap::handle);
         register.registerMessage(id++, S2COpenGui.ID, S2COpenGui.class, S2COpenGui::write, S2COpenGui::read, S2COpenGui::handle);
-        register.registerMessage(id++, S2CTruceData.ID, S2CTruceData.class, S2CTruceData::write, S2CTruceData::read, S2CTruceData::handle);
-        register.registerMessage(id++, S2CWarData.ID, S2CWarData.class, S2CWarData::write, S2CWarData::read, S2CWarData::handle);
+        register.registerMessage(id++, S2CTeamGuiData.ID, S2CTeamGuiData.class, S2CTeamGuiData::write, S2CTeamGuiData::read, S2CTeamGuiData::handle);
         register.registerMessage(id++, S2CScreenShake.ID, S2CScreenShake.class, S2CScreenShake::write, S2CScreenShake::read, S2CScreenShake::handle);
         register.registerMessage(id++, S2CAttackDebug.ID, S2CAttackDebug.class, S2CAttackDebug::write, S2CAttackDebug::read, S2CAttackDebug::handle);
         register.registerMessage(id++, S2CSpawnEggScreen.ID, S2CSpawnEggScreen.class, S2CSpawnEggScreen::write, S2CSpawnEggScreen::read, S2CSpawnEggScreen::handle);

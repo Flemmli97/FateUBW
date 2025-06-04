@@ -5,11 +5,9 @@ import io.github.flemmli97.fateubw.common.config.Config;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.datapack.ServantPropManager;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
-import io.github.flemmli97.fateubw.common.network.S2CWarData;
 import io.github.flemmli97.fateubw.common.registry.AdvancementRegister;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.utils.SummonUtils;
-import io.github.flemmli97.fateubw.platform.NetworkCalls;
 import io.github.flemmli97.fateubw.platform.Platform;
 import io.github.flemmli97.tenshilib.platform.PlatformUtils;
 import net.minecraft.ChatFormatting;
@@ -131,12 +129,10 @@ public class GrailWarHandler extends SavedData {
         if (this.isParticipant(player)) {
             this.participants.remove(player.getUUID());
             Platform.INSTANCE.getPlayerData(player).ifPresent(data -> data.setCommandSeals(player, 0));
-            TruceHandler.get(player.getLevel().getServer()).disbandAll(player);
             player.getLevel().getServer().getPlayerList().broadcastMessage(new TranslatableComponent("fateubw.chat.grailwar.playerout", player.getName()).withStyle(ChatFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
             this.setDirty();
             return true;
         } else if (clear) {
-            TruceHandler.get(player.getLevel().getServer()).disbandAll(player);
             this.setDirty();
         }
         return false;
@@ -275,7 +271,6 @@ public class GrailWarHandler extends SavedData {
         this.servantClasses.clear();
         this.spawnedServants = 0;
         server.getPlayerList().broadcastMessage(new TranslatableComponent("fateubw.chat.grailwar.end").withStyle(ChatFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
-        NetworkCalls.INSTANCE.sendToAll(new S2CWarData(server), server);
         this.setDirty();
     }
 

@@ -3,7 +3,7 @@ package io.github.flemmli97.fateubw.common.utils;
 import com.mojang.datafixers.util.Pair;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.registry.ModAttributes;
-import io.github.flemmli97.fateubw.common.world.TruceHandler;
+import io.github.flemmli97.fateubw.common.world.TeamHandler;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.GoalAttackAction;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;
@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import java.util.UUID;
 import java.util.function.Predicate;
 
 public class Utils {
@@ -87,77 +86,29 @@ public class Utils {
         return success;
     }
 
-    public static boolean alliedTo(Entity entity, Entity other) {
+    public static boolean alliedTo(@Nullable Entity entity, @Nullable Entity other) {
+        if (entity == null || other == null)
+            return false;
         if (entity.getServer() == null)
             return false;
-        return false; // TODO
-//        if (entity instanceof ServerPlayer player) {
-//            if (other instanceof OwnableEntity ownable) {
-//                if (ownable.getOwnerUUID() == null) {
-//                    return false;
-//                }
-//                Entity owner = ownable.getOwner();
-//                return player.getUUID().equals(ownable.getOwnerUUID())
-//                        || (owner == null ? inSameTeam(player, ownable.getOwnerUUID()) : alliedTo(player, owner));
-//            }
-//            return inSameTeam(player, other.getUUID());
-//        }
-//        if (entity instanceof OwnableEntity ownable) {
-//            if (ownable.getOwnerUUID() == null) {
-//                return false;
-//            }
-//            if (other.getUUID().equals(ownable.getOwnerUUID()))
-//                return true;
-//            if (other instanceof OwnableEntity ownable2) {
-//                if(ownable2.getOwner() != null && alliedTo(entity, ownable2.getOwner()))
-//                    return true;
-//                else if(ownable2.getOwnerUUID() != null && TruceHandler.get(entity.getServer()).get(ownable2.getOwnerUUID()).contains(entity.getUUID()))
-//                    return true;
-//            }
-//            Entity owner = ownable.getOwner();
-//            return owner != null ? alliedTo(owner, other) : TruceHandler.get(entity.getServer()).get(ownable.getOwnerUUID()).contains(entity.getUUID());
-//        }
-//        return false;
-    }
-
-    public static boolean inSameTeam(ServerPlayer player, UUID other) {
-        if (player.getServer() == null || other == null)
-            return false;
-        return TruceHandler.get(player.getServer()).get(player.getUUID()).contains(other);
-    }
-
-    public static boolean inSameTeam(ServerPlayer player, BaseServant servant) {
-        if (player.getServer() == null)
-            return false;
-        UUID other = servant.getOwnerUUID();
-        return other != null && TruceHandler.get(player.getServer()).get(player.getUUID()).contains(other);
-    }
-
-    public static boolean inSameTeam(BaseServant servant, BaseServant other) {
-        if (servant.getServer() == null)
-            return false;
-        UUID first = servant.getOwnerUUID();
-        UUID second = other.getOwnerUUID();
-        return first != null && second != null && TruceHandler.get(servant.getServer()).get(first).contains(second);
+        if (entity instanceof OwnableEntity ownable && other.getUUID().equals(ownable.getOwnerUUID()))
+            return true;
+        if (other instanceof OwnableEntity ownable && entity.getUUID().equals(ownable.getOwnerUUID()))
+            return true;
+        return TeamHandler.get(entity.getServer()).areAllies(entity, other);
     }
 
     public static Predicate<LivingEntity> servantTargetPredicate(Mob entity) {
         return target -> {
-            if (target == entity || !entity.canAttack(target) || !target.canBeSeenAsEnemy())
+            if (target == entity || !entity.canAttack(target) || !target.canBeSeenAsEnemy() || Utils.alliedTo(entity, target))
                 return false;
             if (target == entity.getTarget())
                 return true;
             if (entity.hasPassenger(target) || entity.getVehicle() == target)
                 return false;
-            if (entity instanceof OwnableEntity ownable && target instanceof OwnableEntity ownable2 && ownable.getOwnerUUID() != null && ownable.getOwnerUUID().equals(ownable2.getOwnerUUID()))
-                return false;
-            if (target instanceof OwnableEntity ownable && ownable.getOwner() == entity)
-                return false;
             if (entity instanceof BaseServant servant) {
-                if (target instanceof BaseServant)
-                    return !Utils.inSameTeam(servant, (BaseServant) target);
-                if (target instanceof ServerPlayer playerTarget)
-                    return target != servant.getOwner() && !Utils.inSameTeam(playerTarget, servant);
+                if (target instanceof BaseServant || (target instanceof ServerPlayer)) //TODO: only when player is active grailwar participant
+                    return true;
             }
             return target instanceof Enemy;
         };

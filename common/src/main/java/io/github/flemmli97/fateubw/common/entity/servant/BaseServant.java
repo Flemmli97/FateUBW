@@ -129,11 +129,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     public final Predicate<LivingEntity> retaliatePred = (target) -> {
         if (target == this)
             return false;
-        if (target instanceof BaseServant)
-            return !Utils.inSameTeam(BaseServant.this, (BaseServant) target);
-        if (target instanceof ServerPlayer)
-            return target != BaseServant.this.getOwner() && !Utils.inSameTeam((ServerPlayer) target, BaseServant.this);
-        return true;
+        return !Utils.alliedTo(BaseServant.this, target);
     };
 
     public NearestAttackableTargetGoal<BaseServant> targetServant = new NearestAttackableTargetGoal<>(this, BaseServant.class, 10, true, true, this.targetPred);

@@ -28,21 +28,18 @@ public record C2SMessageGui(C2SMessageGui.Type message) implements Packet {
     public static void handle(C2SMessageGui pkt, ServerPlayer sender) {
         if (sender == null)
             return;
-        if (pkt.message == Type.SERVANT || pkt.message == Type.ALL) {
+        if (pkt.message == Type.SERVANT) {
             GrailWarHandler grailWar = GrailWarHandler.get(sender.getServer());
             if (grailWar.getServant(sender) != null)
                 NetworkCalls.INSTANCE.sendToClient(new S2COpenGui(grailWar.getServant(sender)), sender);
         }
-        if (pkt.message == Type.GRAIL || pkt.message == Type.ALL)
-            NetworkCalls.INSTANCE.sendToClient(new S2CWarData(sender.getServer()), sender);
-        if (pkt.message == Type.TRUCE || pkt.message == Type.ALL)
-            NetworkCalls.INSTANCE.sendToClient(new S2CTruceData(sender.getLevel(), sender), sender);
+        if (pkt.message == Type.TEAM) {
+            S2CTeamGuiData.sendTeamData(sender, true);
+        }
     }
 
     public enum Type {
         SERVANT,
-        GRAIL,
-        TRUCE,
-        ALL
+        TEAM
     }
 }

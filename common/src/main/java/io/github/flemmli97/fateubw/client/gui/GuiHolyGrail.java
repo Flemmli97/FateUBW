@@ -3,6 +3,7 @@ package io.github.flemmli97.fateubw.client.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.flemmli97.fateubw.Fate;
+import io.github.flemmli97.fateubw.client.gui.widget.CustomButton;
 import io.github.flemmli97.fateubw.common.network.C2SGrailReward;
 import io.github.flemmli97.fateubw.platform.NetworkCalls;
 import net.minecraft.client.Minecraft;
@@ -39,11 +40,11 @@ public class GuiHolyGrail extends Screen {
             int index = this.page * 7 + i;
             if (index < list.size()) {
                 Map.Entry<ResourceLocation, Component> val = list.get(this.page * 7 + i);
-                this.addRenderableWidget(new ButtonValue<String>(this.width / 2 - X_SIZE / 2 + 6, this.height / 2 - Y_SIZE / 2 + (i * 23) + 6, 243, 20, val.getValue(),
+                this.addRenderableWidget(new CustomButton(this.width / 2 - X_SIZE / 2 + 6, this.height / 2 - Y_SIZE / 2 + (i * 23) + 6, 243, 20, val.getValue(),
                         button -> {
                             NetworkCalls.INSTANCE.sendToServer(new C2SGrailReward(val.getKey()));
                             GuiHolyGrail.this.minecraft.player.closeContainer();
-                        }).setTexture(TEX, 0, 216 - 20).setVal(val.getKey().toString()));
+                        }).setTexture(TEX, 0, 216 - 20));
             }
         }
         if (this.page > 0) {

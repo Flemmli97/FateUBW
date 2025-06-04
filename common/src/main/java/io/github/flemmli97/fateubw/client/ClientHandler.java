@@ -1,13 +1,15 @@
 package io.github.flemmli97.fateubw.client;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.mojang.authlib.GameProfile;
 import io.github.flemmli97.fateubw.client.gui.CommandGui;
 import io.github.flemmli97.fateubw.client.gui.GuiHolyGrail;
 import io.github.flemmli97.fateubw.client.gui.ManaBar;
 import io.github.flemmli97.fateubw.client.gui.SpawnEggScreen;
+import io.github.flemmli97.fateubw.client.gui.TeamGui;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
+import io.github.flemmli97.fateubw.common.network.C2STeamMessage;
+import io.github.flemmli97.fateubw.common.world.GrailTeam;
+import io.github.flemmli97.fateubw.platform.NetworkCalls;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -16,9 +18,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class ClientHandler {
 
@@ -27,10 +27,7 @@ public class ClientHandler {
     public static KeyMapping special;
     public static KeyMapping boost;
     public static KeyMapping target;
-    public static List<GameProfile> grailPlayers = ImmutableList.of();
-    public static Set<GameProfile> pending = ImmutableSet.of();
-    public static Set<GameProfile> requests = ImmutableSet.of();
-    public static Set<GameProfile> truce = ImmutableSet.of();
+
     public static int clientTick;
 
     private static boolean paused;
@@ -66,17 +63,16 @@ public class ClientHandler {
         Minecraft.getInstance().setScreen(new GuiHolyGrail(rewards));
     }
 
-    public static void grailData(Set<GameProfile> set) {
-        grailPlayers = ImmutableList.copyOf(set.stream().sorted(SORT_NAME).filter(prof -> prof.getId().equals(Minecraft.getInstance().player.getUUID())).iterator());
-    }
-
-    public static void truceData(Set<GameProfile> t, Set<GameProfile> p, Set<GameProfile> r) {
-        truce = ImmutableSet.copyOf(t.stream().sorted(SORT_NAME).iterator());
-        pending = ImmutableSet.copyOf(p.stream().sorted(SORT_NAME).iterator());
-        requests = ImmutableSet.copyOf(r.stream().sorted(SORT_NAME).iterator());
-    }
-
     public static void openSpawneggGui(InteractionHand hand) {
         Minecraft.getInstance().setScreen(new SpawnEggScreen(hand));
+    }
+
+    public static void openTeamGui(boolean open, GrailTeam.ClientTeamInfo info) {
+        if (Minecraft.getInstance().screen instanceof TeamGui teamGui) {
+            teamGui.update(info, true);
+        } else if (open)
+            Minecraft.getInstance().setScreen(new TeamGui(info));
+        else
+            NetworkCalls.INSTANCE.sendToServer(new C2STeamMessage(C2STeamMessage.Type.CLOSE, ""));
     }
 }

@@ -1,52 +1,27 @@
-package io.github.flemmli97.fateubw.client.gui;
+package io.github.flemmli97.fateubw.client.gui.widget;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import io.github.flemmli97.fateubw.Fate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
-public class ButtonValue<T> extends Button {
-
-    public static final ResourceLocation GUI_STUFF = new ResourceLocation(Fate.MODID + "textures/gui/buttons.png");
-
-    public boolean selected;
-    private T val;
-    private final Pressable<T> pressable;
+public class CustomButton extends Button {
 
     private int u, v = 46, uMax = 200;
 
     private ResourceLocation texture = AbstractWidget.WIDGETS_LOCATION;
 
-    public ButtonValue(int x, int y, int widthIn, int heightIn, String buttonText, Pressable<T> press) {
-        super(x, y, widthIn, heightIn, new TranslatableComponent(buttonText), (button) -> {
-        });
-        this.pressable = press;
+    public CustomButton(int x, int y, int widthIn, int heightIn, Component buttonText, OnPress press) {
+        super(x, y, widthIn, heightIn, buttonText, press);
     }
 
-    public ButtonValue(int x, int y, int widthIn, int heightIn, Component buttonText, Pressable<T> press) {
-        super(x, y, widthIn, heightIn, buttonText, (button) -> {
-        });
-        this.pressable = press;
-    }
-
-    public ButtonValue<T> setVal(T val) {
-        this.val = val;
-        return this;
-    }
-
-    public T getVal() {
-        return this.val;
-    }
-
-    public ButtonValue<T> setTexture(ResourceLocation res, int u, int v) {
+    public CustomButton setTexture(ResourceLocation res, int u, int v) {
         this.texture = res;
         this.u = u;
         this.v = v;
@@ -73,15 +48,5 @@ public class ButtonValue<T> extends Button {
         if (this.isHoveredOrFocused()) {
             this.renderToolTip(poseStack, mouseX, mouseY);
         }
-    }
-
-    @Override
-    public void onPress() {
-        this.pressable.press(this);
-    }
-
-    public interface Pressable<T> {
-
-        void press(ButtonValue<T> button);
     }
 }
