@@ -59,7 +59,7 @@ public class MagicBufCircle extends Entity implements OwnableEntity {
             if (this.tickCount % 5 == 0 && this.getOwner() != null) {
                 float r = this.entityData.get(RANGE);
                 for (LivingEntity entity : this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(r),
-                        entity -> entity == this.getOwner())) { // TODO other entities
+                        entity -> Utils.alliedTo(this.getOwner(), entity))) {
                     entity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 1, 2, true, false));
                     if (!entity.hasEffect(MobEffects.REGENERATION))
                         entity.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 50, 1, true, false));

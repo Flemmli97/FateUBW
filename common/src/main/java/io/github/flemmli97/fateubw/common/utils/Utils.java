@@ -89,6 +89,8 @@ public class Utils {
     public static boolean alliedTo(@Nullable Entity entity, @Nullable Entity other) {
         if (entity == null || other == null)
             return false;
+        if (entity == other)
+            return false;
         if (entity.getServer() == null)
             return false;
         if (entity instanceof OwnableEntity ownable && other.getUUID().equals(ownable.getOwnerUUID()))
