@@ -2,6 +2,7 @@ package io.github.flemmli97.fateubw.common.event;
 
 import io.github.flemmli97.fateubw.common.network.S2CPlayerCap;
 import io.github.flemmli97.fateubw.common.registry.ModEffects;
+import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.fateubw.common.world.GrailTeam;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import io.github.flemmli97.fateubw.common.world.TeamHandler;
@@ -11,6 +12,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 
 import java.util.List;
@@ -25,11 +27,13 @@ public class EventCalls {
         TeamHandler teamHandler = TeamHandler.get(player.getServer());
         List<GrailTeam.ShortTeamInfo> invites = teamHandler.fetchInvitesFor(player);
         if (!invites.isEmpty()) {
-            player.sendMessage(new TranslatableComponent("fateubw.chat.team.invite.pending", invites.toString()).withStyle(ChatFormatting.GOLD), Util.NIL_UUID);
+            player.sendMessage(new TranslatableComponent("fateubw.chat.team.invite.pending",
+                    String.join(",", invites.stream().map(GrailTeam.ShortTeamInfo::name).toList())).withStyle(ChatFormatting.GOLD), Util.NIL_UUID);
         }
         List<GrailTeam.ShortTeamInfo> requests = teamHandler.fetchRequestsFor(player, teamHandler.getTeamFor(player));
         if (!requests.isEmpty()) {
-            player.sendMessage(new TranslatableComponent("fateubw.chat.team.request.pending", requests.toString()).withStyle(ChatFormatting.GOLD), Util.NIL_UUID);
+            player.sendMessage(new TranslatableComponent("fateubw.chat.team.alliance.pending",
+                    String.join(",", requests.stream().map(GrailTeam.ShortTeamInfo::name).toList())).withStyle(ChatFormatting.GOLD), Util.NIL_UUID);
         }
     }
 
@@ -40,5 +44,13 @@ public class EventCalls {
 
     public static boolean canHeal(LivingEntity entity) {
         return !entity.hasEffect(ModEffects.GAE_BUIDHE.get());
+    }
+
+    public static float damageCalculation(LivingEntity livingEntity, DamageSource damageSrc, float damageAmount) {
+        if (damageSrc.isProjectile())
+            damageAmount = Utils.projectileReduce(livingEntity, damageAmount);
+        if (damageSrc.isMagic())
+            damageAmount = Utils.getDamageAfterMagicAbsorb(livingEntity, damageAmount);
+        return damageAmount;
     }
 }

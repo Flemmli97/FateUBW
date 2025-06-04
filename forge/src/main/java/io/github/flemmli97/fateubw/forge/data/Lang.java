@@ -185,7 +185,7 @@ public class Lang implements DataProvider {
         this.add("fateubw.chat.team.alliance.dissolved", "%s of team %s dissolved the alliance!");
         this.add("fateubw.chat.team.alliance.dissolved.with", "%s dissolved the alliance with team %s!");
         this.add("fateubw.chat.team.alliance.denied", "%s denied your alliance request...");
-        this.add("fateubw.chat.team.alliance.pending", "You have pending ally requests from %s");
+        this.add("fateubw.chat.team.alliance.pending", "You have pending alliance requests from [%s]");
         this.add("fateubw.chat.team.alliance.sent", "You sent out an ally request to team %s");
         this.add("fateubw.chat.team.alliance.received", "You received an ally request from team %s");
 
