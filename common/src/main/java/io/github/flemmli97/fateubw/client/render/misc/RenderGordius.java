@@ -2,7 +2,7 @@ package io.github.flemmli97.fateubw.client.render.misc;
 
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.client.model.ModelGordiusWheel;
-import io.github.flemmli97.fateubw.common.entity.minions.GordiusWheel;
+import io.github.flemmli97.fateubw.common.entity.summons.GordiusWheel;
 import io.github.flemmli97.tenshilib.client.render.RiderLayerRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;

@@ -1,7 +1,7 @@
 package io.github.flemmli97.fateubw.common.items.weapons;
 
 import io.github.flemmli97.fateubw.common.config.Config;
-import io.github.flemmli97.fateubw.common.entity.minions.LesserMonster;
+import io.github.flemmli97.fateubw.common.entity.summons.LesserMonster;
 import io.github.flemmli97.fateubw.platform.Platform;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;

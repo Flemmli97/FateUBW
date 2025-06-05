@@ -6,7 +6,7 @@ import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.client.model.ModelPegasus;
 import io.github.flemmli97.fateubw.client.render.FateRenders;
 import io.github.flemmli97.fateubw.client.render.layer.PortalLayerRenderer;
-import io.github.flemmli97.fateubw.common.entity.minions.Pegasus;
+import io.github.flemmli97.fateubw.common.entity.summons.Pegasus;
 import io.github.flemmli97.tenshilib.client.render.RiderLayerRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;

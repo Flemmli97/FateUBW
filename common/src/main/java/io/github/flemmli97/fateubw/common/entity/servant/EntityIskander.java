@@ -3,7 +3,7 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 
 import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.common.entity.StandingVehicle;
-import io.github.flemmli97.fateubw.common.entity.minions.GordiusWheel;
+import io.github.flemmli97.fateubw.common.entity.summons.GordiusWheel;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.utils.Utils;

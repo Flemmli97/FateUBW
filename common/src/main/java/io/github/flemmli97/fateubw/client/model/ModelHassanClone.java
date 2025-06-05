@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.client.ClientHandler;
-import io.github.flemmli97.fateubw.common.entity.minions.HassanClone;
+import io.github.flemmli97.fateubw.common.entity.summons.HassanClone;
 import io.github.flemmli97.tenshilib.api.entity.IAnimated;
 import io.github.flemmli97.tenshilib.client.AnimationManager;
 import io.github.flemmli97.tenshilib.client.model.BlockBenchAnimations;
@@ -22,7 +22,6 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 
 import java.util.ArrayList;
@@ -147,11 +146,6 @@ public class ModelHassanClone<T extends HassanClone & IAnimated> extends BaseSer
         PartDefinition RightItemDetached = partdefinition.addOrReplaceChild("RightItemDetached", CubeListBuilder.create(), PartPose.offset(-6.0F, 9.0F, -2.0F));
 
         return LayerDefinition.create(meshdefinition, 128, 128);
-    }
-
-    @Override
-    public ModelPartHandler.ModelPartExtended getHand(InteractionHand side) {
-        return side == InteractionHand.MAIN_HAND ? this.rightArm : this.leftArm;
     }
 
     @Override

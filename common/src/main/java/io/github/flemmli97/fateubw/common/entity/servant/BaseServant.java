@@ -12,12 +12,12 @@ import io.github.flemmli97.fateubw.common.entity.ai.HurtByTargetPredicateGoal;
 import io.github.flemmli97.fateubw.common.entity.ai.StandStillGoal;
 import io.github.flemmli97.fateubw.common.entity.ai.TargetNoneGoal;
 import io.github.flemmli97.fateubw.common.lib.FateTags;
+import io.github.flemmli97.fateubw.common.network.C2SServantCommand;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailHolder;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailHolderProvider;
 import io.github.flemmli97.fateubw.common.registry.ModAttributes;
 import io.github.flemmli97.fateubw.common.registry.ModParticles;
-import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
@@ -112,7 +112,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     protected boolean disableChunkload = true, chunkTracked;
     public boolean forcedNP;
 
-    protected EnumServantUpdate commandBehaviour = EnumServantUpdate.NORMAL;
+    protected C2SServantCommand.Type commandBehaviour = C2SServantCommand.Type.NORMAL;
 
     //PlayerUUID
     private Player owner;
@@ -376,7 +376,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         this.deathTime = tag.getInt("Death");
         this.died = tag.getBoolean("IsDead");
         try {
-            this.updateAI(EnumServantUpdate.valueOf(tag.getString("Command")));
+            this.updateAI(C2SServantCommand.Type.valueOf(tag.getString("Command")));
         } catch (IllegalArgumentException ignored) {
         }
         this.servantMana = tag.getInt("Mana");
@@ -389,7 +389,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
 
     public abstract Goal getAttackAI();
 
-    public void updateAI(EnumServantUpdate behaviour) {
+    public void updateAI(C2SServantCommand.Type behaviour) {
         this.commandBehaviour = behaviour;
         this.goalSelector.addGoal(0, this.getAttackAI());
         switch (behaviour) {

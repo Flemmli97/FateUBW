@@ -6,7 +6,6 @@ import io.github.flemmli97.tenshilib.platform.InitUtil;
 import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnPlacements;
@@ -39,13 +38,7 @@ public interface Platform {
 
     boolean canSpawnEvent(Mob entity, LevelAccessor level, double x, double y, double z, BaseSpawner spawner, MobSpawnType spawnReason, SpawnPlacements.Type place);
 
-    float onLivingHurt(LivingEntity entity, DamageSource source, float amount);
-
-    float onLivingDamage(LivingEntity entity, DamageSource source, float amount);
-
     <T extends CriterionTrigger<?>> T registerCriteriaTrigger(T criterion);
-
-    boolean mobGriefing(Entity entity);
 
     Item createExcalibur(Item.Properties props);
 

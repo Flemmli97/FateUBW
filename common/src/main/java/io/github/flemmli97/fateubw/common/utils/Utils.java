@@ -30,12 +30,6 @@ public class Utils {
         return (goal, target, prev) -> (goal.attacker.canUseNP() && goal.attacker.getOwner() == null && goal.attacker.getMana() >= goal.attacker.props().hogouMana()) || goal.attacker.forcedNP;
     }
 
-    public static boolean testNearbyEnemy(BaseServant servant) {
-        List<?> var1 = servant.level.getEntitiesOfClass(BaseServant.class, servant.getBoundingBox().expandTowards(32, 3.0D, 32));
-        List<?> var2 = servant.level.getEntitiesOfClass(BaseServant.class, servant.getBoundingBox().expandTowards(15, 3.0D, 15));
-        return var1.size() > 1 && var2.size() < 2;
-    }
-
     public static Vec3 fromRelativeVector(Entity entity, Vec3 relative) {
         return fromRelativeVector(entity.getYRot(), relative);
     }

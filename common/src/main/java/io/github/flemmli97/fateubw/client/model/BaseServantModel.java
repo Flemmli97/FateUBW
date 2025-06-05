@@ -1,6 +1,7 @@
 package io.github.flemmli97.fateubw.client.model;
 
 import io.github.flemmli97.tenshilib.client.model.ExtendedModel;
+import io.github.flemmli97.tenshilib.client.model.IItemArmModel;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HeadedModel;
 import net.minecraft.client.renderer.RenderType;
@@ -9,7 +10,7 @@ import net.minecraft.world.entity.Entity;
 
 import java.util.function.Function;
 
-public abstract class BaseServantModel<T extends Entity> extends EntityModel<T> implements IArmModel, HeadedModel, IPreRenderUpdate<T>, ExtendedModel {
+public abstract class BaseServantModel<T extends Entity> extends EntityModel<T> implements IItemArmModel, HeadedModel, IPreRenderUpdate<T>, ExtendedModel {
 
     protected BaseServantModel(Function<ResourceLocation, RenderType> function) {
         super(function);

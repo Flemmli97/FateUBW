@@ -20,7 +20,6 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 
 import java.util.ArrayList;
@@ -128,11 +127,6 @@ public class ModelHeracles<T extends EntityHeracles & IAnimated> extends BaseSer
         PartDefinition rightFoot = rightLegDown.addOrReplaceChild("rightFoot", CubeListBuilder.create().texOffs(82, 0).addBox(-2.0F, 0.0F, -4.0F, 4.0F, 2.0F, 6.0F, new CubeDeformation(0.1F)), PartPose.offset(0.0F, 6.0F, 2.5F));
 
         return LayerDefinition.create(meshdefinition, 128, 128);
-    }
-
-    @Override
-    public ModelPartHandler.ModelPartExtended getHand(InteractionHand side) {
-        return side == InteractionHand.MAIN_HAND ? this.rightArm : this.leftArm;
     }
 
     @Override

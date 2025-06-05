@@ -6,7 +6,6 @@ import io.github.flemmli97.fateubw.common.config.Config;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.items.ItemServantCommander;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
-import io.github.flemmli97.fateubw.common.utils.EnumServantUpdate;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import io.github.flemmli97.fateubw.platform.Platform;
@@ -26,7 +25,7 @@ import net.minecraft.world.phys.EntityHitResult;
 
 import java.util.UUID;
 
-public record C2SServantCommand(EnumServantUpdate command) implements Packet {
+public record C2SServantCommand(Type command) implements Packet {
 
     public static final ResourceLocation ID = new ResourceLocation(Fate.MODID, "c2s_servant_command");
 
@@ -41,7 +40,7 @@ public record C2SServantCommand(EnumServantUpdate command) implements Packet {
     }
 
     public static C2SServantCommand read(FriendlyByteBuf buf) {
-        return new C2SServantCommand(buf.readEnum(EnumServantUpdate.class));
+        return new C2SServantCommand(buf.readEnum(Type.class));
     }
 
     public static void handle(C2SServantCommand pkt, ServerPlayer sender) {
@@ -143,5 +142,22 @@ public record C2SServantCommand(EnumServantUpdate command) implements Packet {
             }
         }
         return GrailWarHandler.get(player.getServer()).getServant(player);
+    }
+
+    public enum Type {
+
+        NORMAL,
+        AGGRESSIVE,
+        DEFENSIVE,
+        FOLLOW,
+        STAY,
+        GUARD,
+        NP,
+        KILL,
+        FORFEIT,
+        BOOST,
+        TELEPORT,
+        TARGET
+
     }
 }

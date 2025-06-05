@@ -2,7 +2,6 @@ package io.github.flemmli97.fateubw.client;
 
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.client.model.BaseServantModel;
-import io.github.flemmli97.fateubw.client.model.ModelCaladBolg;
 import io.github.flemmli97.fateubw.client.model.ModelEA;
 import io.github.flemmli97.fateubw.client.model.ModelGordiusWheel;
 import io.github.flemmli97.fateubw.client.model.ModelHassanClone;
@@ -14,7 +13,6 @@ import io.github.flemmli97.fateubw.client.model.ModelStarfishDemon;
 import io.github.flemmli97.fateubw.client.particles.RingParticle;
 import io.github.flemmli97.fateubw.client.particles.TrailParticle;
 import io.github.flemmli97.fateubw.client.render.RenderEmpty;
-import io.github.flemmli97.fateubw.client.render.RenderMultiPartEntity;
 import io.github.flemmli97.fateubw.client.render.ServantRenderer;
 import io.github.flemmli97.fateubw.client.render.misc.EmptyRender;
 import io.github.flemmli97.fateubw.client.render.misc.RenderArcherArrow;
@@ -122,7 +120,7 @@ public class ClientRegister {
         consumer.register(ModEntities.PEGASUS.get(), RenderPegasus::new);
         consumer.register(ModEntities.DAGGER_HOOK.get(), RenderChainDagger::new);
 
-        consumer.register(ModEntities.MULTIPART.get(), RenderMultiPartEntity::new);
+        consumer.register(ModEntities.MULTIPART.get(), EmptyRender::new);
     }
 
     private static <T extends BaseServant, M extends BaseServantModel<T>> EntityRendererProvider<? super T> getServantRenderer(Function<ModelPart, M> model, ModelLayerLocation layerLocation, ResourceLocation texture, float shadow) {
@@ -146,7 +144,6 @@ public class ClientRegister {
         cons.accept(ModelServant.LAYER_LOCATION_SLIM, () -> ModelServant.createBodyLayer(new CubeDeformation(0), true));
         cons.accept(ModelHeracles.LAYER_LOCATION, ModelHeracles::createBodyLayer);
         cons.accept(ModelMedea.LAYER_LOCATION, ModelMedea::createBodyLayer);
-        cons.accept(ModelCaladBolg.LAYER_LOCATION, ModelCaladBolg::createBodyLayer);
         cons.accept(ModelGordiusWheel.LAYER_LOCATION, ModelGordiusWheel::createBodyLayer);
         cons.accept(ModelHassanClone.LAYER_LOCATION, ModelHassanClone::createBodyLayer);
         cons.accept(ModelStarfishDemon.LAYER_LOCATION, ModelStarfishDemon::createBodyLayer);

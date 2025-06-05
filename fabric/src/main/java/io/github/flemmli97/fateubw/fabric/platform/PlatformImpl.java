@@ -11,8 +11,6 @@ import io.github.flemmli97.fateubw.platform.Platform;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnPlacements;
@@ -54,23 +52,8 @@ public class PlatformImpl implements Platform {
     }
 
     @Override
-    public float onLivingHurt(LivingEntity entity, DamageSource source, float amount) {
-        return amount;
-    }
-
-    @Override
-    public float onLivingDamage(LivingEntity entity, DamageSource source, float amount) {
-        return amount;
-    }
-
-    @Override
     public <T extends CriterionTrigger<?>> T registerCriteriaTrigger(T criterion) {
         return CriteriaTriggers.register(criterion);
-    }
-
-    @Override
-    public boolean mobGriefing(Entity entity) {
-        return false;
     }
 
     @Override

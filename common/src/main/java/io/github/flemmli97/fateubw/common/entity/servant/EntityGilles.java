@@ -2,7 +2,7 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 
 
 import io.github.flemmli97.fateubw.common.config.Config;
-import io.github.flemmli97.fateubw.common.entity.minions.LesserMonster;
+import io.github.flemmli97.fateubw.common.entity.summons.LesserMonster;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicShot;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;

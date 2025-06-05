@@ -1,4 +1,4 @@
-package io.github.flemmli97.fateubw.common.entity.minions;
+package io.github.flemmli97.fateubw.common.entity.summons;
 
 import io.github.flemmli97.fateubw.api.datapack.AttributeHolderProperties;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;

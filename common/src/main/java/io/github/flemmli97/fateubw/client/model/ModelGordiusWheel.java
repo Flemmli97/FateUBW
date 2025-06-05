@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.client.ClientHandler;
-import io.github.flemmli97.fateubw.common.entity.minions.GordiusWheel;
+import io.github.flemmli97.fateubw.common.entity.summons.GordiusWheel;
 import io.github.flemmli97.tenshilib.client.AnimationManager;
 import io.github.flemmli97.tenshilib.client.model.BlockBenchAnimations;
 import io.github.flemmli97.tenshilib.client.model.ExtendedModel;
@@ -29,7 +29,6 @@ import net.minecraft.world.entity.LivingEntity;
  * Gordius Wheel - Black_Saturn
  * Created using Tabula 6.0.0
  */
-
 public class ModelGordiusWheel extends EntityModel<GordiusWheel> implements ExtendedModel, RideableModel<GordiusWheel> {
 
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(Fate.MODID, "gordius"), "main");

@@ -1,8 +1,8 @@
 package io.github.flemmli97.fateubw.common.utils;
 
 import io.github.flemmli97.fateubw.Fate;
-import io.github.flemmli97.fateubw.common.entity.minions.GordiusWheel;
-import io.github.flemmli97.fateubw.common.entity.minions.Pegasus;
+import io.github.flemmli97.fateubw.common.entity.summons.GordiusWheel;
+import io.github.flemmli97.fateubw.common.entity.summons.Pegasus;
 import io.github.flemmli97.fateubw.platform.Platform;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.EntityDamageSource;

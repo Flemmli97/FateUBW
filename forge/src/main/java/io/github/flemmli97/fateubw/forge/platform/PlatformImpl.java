@@ -10,7 +10,6 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnPlacements;
@@ -24,9 +23,7 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.NaturalSpawner;
-import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.data.loading.DatagenModLoader;
-import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.eventbus.api.Event;
 
 import java.util.Optional;
@@ -58,23 +55,8 @@ public class PlatformImpl implements Platform {
     }
 
     @Override
-    public float onLivingHurt(LivingEntity entity, DamageSource source, float amount) {
-        return ForgeHooks.onLivingHurt(entity, source, amount);
-    }
-
-    @Override
-    public float onLivingDamage(LivingEntity entity, DamageSource source, float amount) {
-        return ForgeHooks.onLivingDamage(entity, source, amount);
-    }
-
-    @Override
     public <T extends CriterionTrigger<?>> T registerCriteriaTrigger(T criterion) {
         return CriteriaTriggers.register(criterion);
-    }
-
-    @Override
-    public boolean mobGriefing(Entity entity) {
-        return ForgeEventFactory.getMobGriefingEvent(entity.level, entity);
     }
 
     @Override

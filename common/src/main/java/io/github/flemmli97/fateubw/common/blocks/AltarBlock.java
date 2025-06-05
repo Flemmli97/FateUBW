@@ -8,6 +8,7 @@ import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.utils.SummonUtils;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import io.github.flemmli97.fateubw.platform.Platform;
+import io.github.flemmli97.tenshilib.common.utils.VoxelUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -36,92 +37,60 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
-import java.util.stream.Stream;
 
 public class AltarBlock extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     private static final double PIXEL = 0.0625;
 
-    private static final VoxelShape TABLE_SHAPE = Stream.of(
-            Block.box(13.5, 0, 0.5, 15.5, 11, 2.5),
-            Block.box(0.5, 0, 0.5, 2.5, 11, 2.5),
-            Block.box(0.5, 9, 0.5, 15.5, 12, 15.5),
-            Block.box(13.5, 0, 13.5, 15.5, 11, 15.5),
-            Block.box(0.5, 0, 13.5, 2.5, 11, 15.5),
-            Block.box(0, 11.9, 0, 16, 12, 16),
-            Block.box(15.9, 5, 4, 16, 6, 5),
-            Block.box(15.9, 4, 3, 16, 6, 4),
-            Block.box(15.9, 3, 0, 16, 6, 3),
-            Block.box(15.9, 3, 13, 16, 6, 16),
-            Block.box(15.9, 4, 12, 16, 6, 13),
-            Block.box(15.9, 5, 11, 16, 6, 12),
-            Block.box(0, 3, 0, 0.1, 6, 3),
-            Block.box(0, 4, 3, 0.1, 6, 4),
-            Block.box(0, 5, 4, 0.1, 6, 5),
-            Block.box(0, 5, 11, 0.1, 6, 12),
-            Block.box(0, 4, 12, 0.1, 6, 13),
-            Block.box(0, 3, 13, 0.1, 6, 16),
-            Block.box(0, 3, 15.9, 3, 6, 16),
-            Block.box(3, 4, 15.9, 4, 6, 16),
-            Block.box(4, 5, 15.9, 5, 6, 16),
-            Block.box(13, 3, 15.9, 16, 6, 16),
-            Block.box(12, 4, 15.9, 13, 6, 16),
-            Block.box(11, 5, 15.9, 12, 6, 16),
-            Block.box(13, 3, 0, 16, 6, 0.1),
-            Block.box(12, 4, 0, 13, 6, 0.1),
-            Block.box(11, 5, 0, 12, 6, 0.1),
-            Block.box(4, 5, 0, 5, 6, 0.1),
-            Block.box(0, 3, 0, 3, 6, 0.1),
-            Block.box(3, 4, 0, 4, 6, 0.1),
-            Block.box(0, 6, 0, 0.1, 12, 16),
-            Block.box(15.9, 6, 0, 16, 12, 16),
-            Block.box(0, 6, 0, 16, 12, 0.1),
-            Block.box(0, 6, 15.9, 16, 12, 16)
-    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).orElse(Shapes.empty());
-    private static final VoxelShape SOUTH = Shapes.join(TABLE_SHAPE, Stream.of(
-            Block.box(7, 12, 1, 9, 15, 3),
-            Block.box(6.5, 11.5, 2.5, 7.5, 12.5, 3.5),
-            Block.box(13.5, 11.5, 2.5, 14.5, 12.5, 3.5),
-            Block.box(11.5, 11.5, 3.5, 12.5, 12.5, 4.5),
-            Block.box(12, 10.5, 2, 14, 13.5, 4),
-            Block.box(2.5, 11.5, 3.5, 3.5, 12.5, 4.5),
-            Block.box(2, 11.5, 2, 4, 14.5, 4)
-    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).orElse(Shapes.empty()), BooleanOp.OR);
-    private static final VoxelShape EAST = Shapes.join(TABLE_SHAPE, Stream.of(
-            Block.box(1, 12, 7, 3, 15, 9),
-            Block.box(2.5, 11.5, 8.5, 3.5, 12.5, 9.5),
-            Block.box(2.5, 11.5, 1.5, 3.5, 12.5, 2.5),
-            Block.box(3.5, 11.5, 3.5, 4.5, 12.5, 4.5),
-            Block.box(2, 10.5, 2, 4, 13.5, 4),
-            Block.box(3.5, 11.5, 12.5, 4.5, 12.5, 13.5),
-            Block.box(2, 11.5, 12, 4, 14.5, 14)
-    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).orElse(Shapes.empty()), BooleanOp.OR);
-    private static final VoxelShape WEST = Shapes.join(TABLE_SHAPE, Stream.of(
-            Block.box(13, 12, 7, 15, 15, 9),
-            Block.box(12.5, 11.5, 6.5, 13.5, 12.5, 7.5),
-            Block.box(12.5, 11.5, 13.5, 13.5, 12.5, 14.5),
-            Block.box(11.5, 11.5, 11.5, 12.5, 12.5, 12.5),
-            Block.box(12, 10.5, 12, 14, 13.5, 14),
-            Block.box(11.5, 11.5, 2.5, 12.5, 12.5, 3.5),
-            Block.box(12, 11.5, 2, 14, 14.5, 4)
-    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).orElse(Shapes.empty()), BooleanOp.OR);
-    private static final VoxelShape NORTH = Shapes.join(TABLE_SHAPE, Stream.of(
-            Block.box(7, 12, 13, 9, 15, 15),
-            Block.box(8.5, 11.5, 12.5, 9.5, 12.5, 13.5),
-            Block.box(1.5, 11.5, 12.5, 2.5, 12.5, 13.5),
-            Block.box(3.5, 11.5, 11.5, 4.5, 12.5, 12.5),
-            Block.box(2, 10.5, 12, 4, 13.5, 14),
-            Block.box(12.5, 11.5, 11.5, 13.5, 12.5, 12.5),
-            Block.box(12, 11.5, 12, 14, 14.5, 14)
-    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).orElse(Shapes.empty()), BooleanOp.OR);
+    private static final VoxelShape[] SHAPES = VoxelUtils.joinedOrDirs(
+            VoxelUtils.ShapeBuilder.of(13.5, 0, 0.5, 15.5, 11, 2.5),
+            VoxelUtils.ShapeBuilder.of(0.5, 0, 0.5, 2.5, 11, 2.5),
+            VoxelUtils.ShapeBuilder.of(0.5, 9, 0.5, 15.5, 12, 15.5),
+            VoxelUtils.ShapeBuilder.of(13.5, 0, 13.5, 15.5, 11, 15.5),
+            VoxelUtils.ShapeBuilder.of(0.5, 0, 13.5, 2.5, 11, 15.5),
+            VoxelUtils.ShapeBuilder.of(0, 11.9, 0, 16, 12, 16),
+            VoxelUtils.ShapeBuilder.of(15.9, 5, 4, 16, 6, 5),
+            VoxelUtils.ShapeBuilder.of(15.9, 4, 3, 16, 6, 4),
+            VoxelUtils.ShapeBuilder.of(15.9, 3, 0, 16, 6, 3),
+            VoxelUtils.ShapeBuilder.of(15.9, 3, 13, 16, 6, 16),
+            VoxelUtils.ShapeBuilder.of(15.9, 4, 12, 16, 6, 13),
+            VoxelUtils.ShapeBuilder.of(15.9, 5, 11, 16, 6, 12),
+            VoxelUtils.ShapeBuilder.of(0, 3, 0, 0.1, 6, 3),
+            VoxelUtils.ShapeBuilder.of(0, 4, 3, 0.1, 6, 4),
+            VoxelUtils.ShapeBuilder.of(0, 5, 4, 0.1, 6, 5),
+            VoxelUtils.ShapeBuilder.of(0, 5, 11, 0.1, 6, 12),
+            VoxelUtils.ShapeBuilder.of(0, 4, 12, 0.1, 6, 13),
+            VoxelUtils.ShapeBuilder.of(0, 3, 13, 0.1, 6, 16),
+            VoxelUtils.ShapeBuilder.of(0, 3, 15.9, 3, 6, 16),
+            VoxelUtils.ShapeBuilder.of(3, 4, 15.9, 4, 6, 16),
+            VoxelUtils.ShapeBuilder.of(4, 5, 15.9, 5, 6, 16),
+            VoxelUtils.ShapeBuilder.of(13, 3, 15.9, 16, 6, 16),
+            VoxelUtils.ShapeBuilder.of(12, 4, 15.9, 13, 6, 16),
+            VoxelUtils.ShapeBuilder.of(11, 5, 15.9, 12, 6, 16),
+            VoxelUtils.ShapeBuilder.of(13, 3, 0, 16, 6, 0.1),
+            VoxelUtils.ShapeBuilder.of(12, 4, 0, 13, 6, 0.1),
+            VoxelUtils.ShapeBuilder.of(11, 5, 0, 12, 6, 0.1),
+            VoxelUtils.ShapeBuilder.of(4, 5, 0, 5, 6, 0.1),
+            VoxelUtils.ShapeBuilder.of(0, 3, 0, 3, 6, 0.1),
+            VoxelUtils.ShapeBuilder.of(3, 4, 0, 4, 6, 0.1),
+            VoxelUtils.ShapeBuilder.of(0, 6, 0, 0.1, 12, 16),
+            VoxelUtils.ShapeBuilder.of(15.9, 6, 0, 16, 12, 16),
+            VoxelUtils.ShapeBuilder.of(0, 6, 0, 16, 12, 0.1),
+            VoxelUtils.ShapeBuilder.of(0, 6, 15.9, 16, 12, 16),
+            VoxelUtils.ShapeBuilder.of(7, 12, 13, 9, 15, 15),
+            VoxelUtils.ShapeBuilder.of(8.5, 11.5, 12.5, 9.5, 12.5, 13.5),
+            VoxelUtils.ShapeBuilder.of(1.5, 11.5, 12.5, 2.5, 12.5, 13.5),
+            VoxelUtils.ShapeBuilder.of(3.5, 11.5, 11.5, 4.5, 12.5, 12.5),
+            VoxelUtils.ShapeBuilder.of(2, 10.5, 12, 4, 13.5, 14),
+            VoxelUtils.ShapeBuilder.of(12.5, 11.5, 11.5, 13.5, 12.5, 12.5),
+            VoxelUtils.ShapeBuilder.of(12, 11.5, 12, 14, 14.5, 14)
+    );
 
     public AltarBlock(Properties props) {
         super(props);
@@ -136,12 +105,7 @@ public class AltarBlock extends BaseEntityBlock {
     @SuppressWarnings("deprecation")
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-        return switch (state.getValue(FACING)) {
-            case WEST -> WEST;
-            case EAST -> EAST;
-            case SOUTH -> SOUTH;
-            default -> NORTH;
-        };
+        return SHAPES[state.getValue(FACING).get2DDataValue()];
     }
 
     @Override

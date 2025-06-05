@@ -4,7 +4,7 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.common.config.Config;
 import io.github.flemmli97.fateubw.common.entity.ai.MoveBehindAttackRunner;
-import io.github.flemmli97.fateubw.common.entity.minions.HassanClone;
+import io.github.flemmli97.fateubw.common.entity.summons.HassanClone;
 import io.github.flemmli97.fateubw.common.entity.misc.ThrownItemEntity;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.utils.Utils;

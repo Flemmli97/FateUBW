@@ -15,7 +15,6 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
 
 public class ModelMedea<T extends EntityMedea & IAnimated> extends ModelServant<T> {
 
@@ -103,11 +102,6 @@ public class ModelMedea<T extends EntityMedea & IAnimated> extends ModelServant<
         PartDefinition RightItemDetached = partdefinition.addOrReplaceChild("RightItemDetached", CubeListBuilder.create(), PartPose.offset(-6.0F, 9.0F, -2.0F));
 
         return LayerDefinition.create(meshdefinition, 128, 128);
-    }
-
-    @Override
-    public ModelPartHandler.ModelPartExtended getHand(InteractionHand side) {
-        return side == InteractionHand.MAIN_HAND ? this.rightArm : this.leftArm;
     }
 
     @Override
