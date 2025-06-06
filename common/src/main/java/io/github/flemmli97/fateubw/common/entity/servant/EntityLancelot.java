@@ -232,7 +232,7 @@ public class EntityLancelot extends BaseServant {
     public boolean hurt(DamageSource damageSource, float damage) {
         if (this.isPassenger())
             return this.getVehicle().hurt(damageSource, damage);
-        if (damageSource != DamageSource.OUT_OF_WORLD && !this.level.isClientSide) {
+        if (!damageSource.isBypassInvul() && !this.level.isClientSide) {
             if (damageSource.isProjectile() && !damageSource.isBypassArmor()) {
                 if (this.getRandom().nextFloat() < Config.Common.lancelotReflectChance && damageSource.getDirectEntity() != null
                         && !(damageSource.getDirectEntity() instanceof LivingEntity)) {

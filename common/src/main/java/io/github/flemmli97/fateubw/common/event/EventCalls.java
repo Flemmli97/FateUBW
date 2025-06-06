@@ -5,7 +5,6 @@ import io.github.flemmli97.fateubw.common.registry.ModAttributes;
 import io.github.flemmli97.fateubw.common.registry.ModEffects;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.fateubw.common.world.GrailTeam;
-import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import io.github.flemmli97.fateubw.common.world.TeamHandler;
 import io.github.flemmli97.fateubw.platform.NetworkCalls;
 import io.github.flemmli97.fateubw.platform.Platform;
@@ -26,9 +25,6 @@ import java.util.List;
 public class EventCalls {
 
     public static void joinWorld(ServerPlayer player) {
-        GrailWarHandler handler = GrailWarHandler.get(player.getServer());
-        if (handler.removeConnection(player))
-            handler.removePlayer(player, true);
         Platform.INSTANCE.getPlayerData(player).ifPresent(data -> NetworkCalls.INSTANCE.sendToClient(new S2CPlayerCap(data), player));
         TeamHandler teamHandler = TeamHandler.get(player.getServer());
         List<GrailTeam.ShortTeamInfo> invites = teamHandler.fetchInvitesFor(player);

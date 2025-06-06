@@ -3,9 +3,9 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 
 import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.common.entity.DaggerHitNotifiable;
+import io.github.flemmli97.fateubw.common.entity.misc.ChainDagger;
 import io.github.flemmli97.fateubw.common.entity.summons.GordiusWheel;
 import io.github.flemmli97.fateubw.common.entity.summons.Pegasus;
-import io.github.flemmli97.fateubw.common.entity.misc.ChainDagger;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.utils.Utils;
@@ -302,7 +302,7 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
 
     @Override
     public boolean hurt(DamageSource damageSource, float damage) {
-        if (damageSource == DamageSource.OUT_OF_WORLD) {
+        if (damageSource.isBypassInvul()) {
             return super.hurt(damageSource, damage);
         } else if (this.getVehicle() != null) {
             damage *= 0.5;

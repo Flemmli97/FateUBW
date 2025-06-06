@@ -18,19 +18,18 @@ public class Config {
 
         public static int minPlayer = 1;
         public static int maxPlayer = 7;
-        public static int joinTime = 12000;
-        public static int rewardDelay = 500;
-        public static int charmSpawnRate = 2000;
-        public static int gemSpawnRate = 500;
+        public static int grailWarCooldown = 5;
+        public static int joinTime = 2400;
         public static boolean allowDuplicateServant;
         public static boolean allowDuplicateClass;
         public static boolean fillMissingSlots = true;
         public static int maxServantCircle = 1;
         public static int servantMinSpawnDelay = 3000;
         public static int servantMaxSpawnDelay = 6000;
+
         public static boolean punishTeleport = true;
-        public static List<String> notifyBlackList = Lists.newArrayList(ModEntities.HASSAN.getID().toString());
-        public static boolean notificationWhitelist = true;
+        public static List<String> notifyBlacklist = Lists.newArrayList(ModEntities.HASSAN.getID().toString());
+        public static boolean notificationWhitelist;
         public static boolean notifyAll = true;
         public static PotionEffectsConfig npBoostEffect = new PotionEffectsConfig(
                 List.of(new PotionEffectsConfig.EffectInstance(MobEffects.DAMAGE_RESISTANCE, 6000, 2),

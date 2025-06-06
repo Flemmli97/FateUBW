@@ -14,12 +14,12 @@ import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.lib.BuiltinServantClasses;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.Level;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -55,18 +55,18 @@ public class EntityPropsManager extends SimpleJsonResourceReloadListener {
         return this.classServantMap.keySet();
     }
 
-    public Set<EntityTypeAndID> getServants(ServerLevel level) {
+    public Set<EntityTypeAndID> getServants(Level level) {
         this.computeData(level);
         return this.servants;
     }
 
-    public List<EntityTypeAndID> getServantsFromClass(ServerLevel level, ResourceLocation servantClass) {
+    public List<EntityTypeAndID> getServantsFromClass(Level level, ResourceLocation servantClass) {
         this.computeData(level);
         return this.classServantMap.getOrDefault(servantClass, List.of());
     }
 
     @SuppressWarnings("unchecked")
-    public void computeData(ServerLevel level) {
+    public void computeData(Level level) {
         if (!this.built) {
             Map<ResourceLocation, List<EntityTypeAndID>> classes = new HashMap<>();
             Set<EntityTypeAndID> servants = new HashSet<>();

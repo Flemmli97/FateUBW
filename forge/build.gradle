@@ -5,6 +5,9 @@ loom {
         mixinConfigs = ["fateubw.mixins.json"]
     }
     runs {
+        client {
+            vmArgs "-XX:+AllowEnhancedClassRedefinition"
+        }
         data {
             data()
             programArgs "--all", "--mod", "fateubw"

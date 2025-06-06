@@ -41,15 +41,18 @@ public class FateEgg extends SpawnEgg {
     @Override
     public boolean onEntitySpawned(Entity e, ItemStack stack, Player player) {
         if (player instanceof ServerPlayer serverPlayer && e instanceof BaseServant servant) {
-            GrailWarHandler track = GrailWarHandler.get(serverPlayer.getLevel().getServer());
             boolean owned = spawnOwned(stack);
             if (owned) {
                 servant.setOwner(player);
             }
-            if (owned && track.getServant(serverPlayer) == null && joinGrailwar(stack)) {
-                GrailWarHandler.JoinResult res = track.join((ServerPlayer) player, servant);
-                if (res != GrailWarHandler.JoinResult.SUCCESS)
+            if (owned && joinGrailwar(stack)) {
+                GrailWarHandler track = GrailWarHandler.get(serverPlayer.getLevel().getServer());
+                GrailWarHandler.JoinResult res = track.checkJoining(serverPlayer);
+                if (res != GrailWarHandler.JoinResult.SUCCESS) {
                     player.sendMessage(new TranslatableComponent(res.translationKey).withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                } else {
+                    track.join(servant);
+                }
             }
         }
         return super.onEntitySpawned(e, stack, player);

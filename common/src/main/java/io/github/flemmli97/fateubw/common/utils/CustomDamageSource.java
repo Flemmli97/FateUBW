@@ -15,6 +15,16 @@ import java.util.Map;
 
 public class CustomDamageSource {
 
+    public static final DamageSource GRAIL_DAMAGE = new GrailDamageSource();
+
+    private static class GrailDamageSource extends DamageSource {
+        private GrailDamageSource() {
+            super(Fate.MODID + ".grail");
+            this.bypassArmor();
+            this.bypassInvul();
+        }
+    }
+
     public static DamageSource excalibur(Entity source, Entity sourceEntity) {
         return Platform.INSTANCE.setBypassArmor(new IndirectEntityDamageSource(Fate.MODID + ".excalibur", source, sourceEntity)).setMagic();
     }
@@ -69,6 +79,7 @@ public class CustomDamageSource {
 
     public static Map<String, String> defaultTranslations() {
         Map<String, String> translations = new LinkedHashMap<>();
+        add(translations, "grail", new Translation(Type.DEFAULT, "%1$s died by the power of the holy grail"));
         add(translations, "excalibur", new Translation(Type.DEFAULT, "%1$s was vaporized by %2$s with excalibur"),
                 new Translation(Type.ITEM, "%1$s was vaporized by %2$s using %3$s"));
         add(translations, "ea", new Translation(Type.DEFAULT, "%1$s was erased by the swirling void of Ea"),

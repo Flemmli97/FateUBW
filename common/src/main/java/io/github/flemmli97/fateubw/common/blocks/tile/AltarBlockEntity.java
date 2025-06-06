@@ -1,11 +1,13 @@
 package io.github.flemmli97.fateubw.common.blocks.tile;
 
+import io.github.flemmli97.fateubw.common.blocks.AltarBlock;
+import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.items.ItemServantCharm;
 import io.github.flemmli97.fateubw.common.lib.BuiltinServantClasses;
 import io.github.flemmli97.fateubw.common.network.S2CAltarUpdate;
 import io.github.flemmli97.fateubw.common.registry.ModBlocks;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
-import io.github.flemmli97.fateubw.common.utils.SummonUtils;
+import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import io.github.flemmli97.fateubw.platform.NetworkCalls;
 import io.github.flemmli97.fateubw.platform.Platform;
 import net.minecraft.core.BlockPos;
@@ -24,6 +26,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 public class AltarBlockEntity extends BlockEntity {
 
@@ -35,6 +38,30 @@ public class AltarBlockEntity extends BlockEntity {
 
     public AltarBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlocks.TILE_ALTAR.get(), pos, state);
+    }
+
+    public static void ticker(Level level, BlockPos pos, BlockState state, AltarBlockEntity altar) {
+        if (level instanceof ServerLevel serverLevel) {
+            if (altar.isSummoning) {
+                altar.summoningTick++;
+                if (altar.summoningTick == 1) {
+                    level.playSound(null, altar.worldPosition, SoundEvents.PORTAL_TRAVEL, SoundSource.AMBIENT, 0.4F, 1F);
+                }
+                if (altar.summoningTick > 150) {
+                    BaseServant servant = GrailWarHandler.get(serverLevel.getServer())
+                            .summonRandomServant(serverLevel, Vec3.atCenterOf(altar.worldPosition), (ServerPlayer) altar.player, altar.inventoryCharm, false);
+                    if (servant != null)
+                        Platform.INSTANCE.getPlayerData(altar.player).ifPresent(data -> data.setCommandSeals(altar.player, 3));
+                    AltarBlock.removeSummoningStructure(level, pos);
+                }
+            }
+        } else {
+            altar.tick++;
+            if (altar.tick > 360)
+                altar.tick = 0;
+            if (altar.isSummoning)
+                altar.summoningTick++;
+        }
     }
 
     public ItemStack getCharm() {
@@ -150,29 +177,6 @@ public class AltarBlockEntity extends BlockEntity {
         this.player = player;
         if (this.getLevel() instanceof ServerLevel serverLevel)
             NetworkCalls.INSTANCE.sendToTracking(new S2CAltarUpdate(this.getBlockPos(), this.isSummoning), serverLevel, this.getBlockPos());
-    }
-
-    public static void ticker(Level level, BlockPos pos, BlockState state, AltarBlockEntity altar) {
-        if (level instanceof ServerLevel serverLevel) {
-            if (altar.isSummoning) {
-                altar.summoningTick++;
-                if (altar.summoningTick == 1) {
-                    level.playSound(null, altar.worldPosition, SoundEvents.PORTAL_TRAVEL, SoundSource.AMBIENT, 0.4F, 1F);
-                }
-                if (altar.summoningTick > 150) {
-                    boolean success = SummonUtils.summonRandomServant(altar.inventoryCharm, (ServerPlayer) altar.player, altar.worldPosition, serverLevel);
-                    if (success)
-                        Platform.INSTANCE.getPlayerData(altar.player).ifPresent(data -> data.setCommandSeals(altar.player, 3));
-                    SummonUtils.removeSummoningStructure(level, pos);
-                }
-            }
-        } else {
-            altar.tick++;
-            if (altar.tick > 360)
-                altar.tick = 0;
-            if (altar.isSummoning)
-                altar.summoningTick++;
-        }
     }
 
     public boolean isSummoning() {

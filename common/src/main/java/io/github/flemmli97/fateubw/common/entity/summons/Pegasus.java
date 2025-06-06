@@ -444,9 +444,11 @@ public class Pegasus extends PathfinderMob implements IAnimated, StandingVehicle
 
     @Override
     public boolean hurt(DamageSource damageSource, float damage) {
+        if (damageSource.isBypassInvul())
+            return super.hurt(damageSource, damage);
         if (this.getAnimationHandler().isCurrent(SUMMON))
             return false;
-        if (damageSource != DamageSource.OUT_OF_WORLD && this.isCharging())
+        if (this.isCharging())
             damage *= 0.5f;
         return super.hurt(damageSource, damage);
     }

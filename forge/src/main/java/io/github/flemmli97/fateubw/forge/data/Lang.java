@@ -9,6 +9,7 @@ import io.github.flemmli97.fateubw.common.registry.ModEffects;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
+import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import io.github.flemmli97.tenshilib.common.item.SpawnEgg;
 import io.github.flemmli97.tenshilib.platform.registry.RegistryEntrySupplier;
 import net.minecraft.data.DataGenerator;
@@ -140,21 +141,29 @@ public class Lang implements DataProvider {
 
         this.add("fateubw.chat.item.spawn", "You already have a servant, spawned a masterless one");
         this.add("fateubw.chat.mana.missing", "You don't have enough mana");
-        this.add("fateubw.chat.grailwar.init", "A grailwar has been initialized. You have %1$s seconds to join it.");
-        this.add("fateubw.chat.grailwar.start", "Joining is now locked.");
-        this.add("fateubw.chat.grailwar.missingplayer", "Not enough player, restarting timer");
+        this.add("fateubw.chat.grailwar.init", "A grailwar is starting soon. You have %1$s seconds to join it.");
+        this.add("fateubw.chat.grailwar.start", "A grailwar has now started. Joining it is not possible anymore");
+        this.add("fateubw.chat.grailwar.players.none", "The grailwar doesn't have any player participants. The grail refuses to start the war!");
+        this.add("fateubw.chat.grailwar.players.missing", "Not enough player, restarting timer");
+        this.add("fateubw.chat.grailwar.players.dead", "All player participants are dead. Grailwar has ended with no winner.");
         this.add("fateubw.chat.grailwar.win", "%1$s won the grail war.");
-        this.add("fateubw.chat.grailwar.playerout", "%1$s is out.");
+        this.add("fateubw.chat.grailwar.win.none", "Unable to determine a winner for the grailwar");
+        this.add("fateubw.chat.grailwar.player.out", "%1$s is out.");
         this.add("fateubw.chat.grailwar.spawn", "A servant has spawned near %1$s.");
         this.add("fateubw.chat.grailwar.end", "The grailwar has ended");
+        this.add(GrailWarHandler.JoinResult.WRONG_STATE.translationKey, "Now is not the time to join a grailwar!");
+        this.add(GrailWarHandler.JoinResult.FULL.translationKey, "The grail doesn't accept more participants!");
+        this.add(GrailWarHandler.JoinResult.JOINED.translationKey, "You already joined this grailwar");
+        this.add(GrailWarHandler.JoinResult.WRONG_SERVANT.translationKey, "This servant can't join the grailwar!");
+        this.add(GrailWarHandler.JoinResult.NO_MORE_SERVANTS.translationKey, "No more servants can join this grailwar");
+        this.add(GrailWarHandler.JoinResult.SUCCESS.translationKey, "Success");
 
         this.add("fateubw.chat.servant.death", "A servant has been killed");
         this.add("fateubw.chat.servant.avalon", "Avalons healing ability has activated");
         this.add("fateubw.chat.servant.cuchulainn", "Cuchulainn's speed increased");
         this.add("fateubw.chat.servant.diarmuid", "Diarmuid's speed increased");
-        this.add("fateubw.chat.altar.fail", "Summon failed either because you can't join the current war or joined already");
         this.add("fateubw.chat.altar.incomplete", "Incomplete Structure");
-        this.add("fateubw.chat.altar.existing", "How dare you to summon another servant");
+        this.add("fateubw.chat.altar.servant.existing", "How dare you to summon another servant!");
         this.add("fateubw.chat.command.attackall", "Your servant now attacks every mob");
         this.add("fateubw.chat.command.attackservant", "Your servant now only attacks other servants");
         this.add("fateubw.chat.command.defensive", "Your servant now only fights back when attacked");
@@ -242,7 +251,8 @@ public class Lang implements DataProvider {
         this.add("fateubw.advancements.win.title", "People die if they are killed");
         this.add("fateubw.advancements.win.description", "Win a grailwar. Sounds easy right");
 
-        this.add("fateubw.command.loot.none", "No such loot %s");
+        this.add("fateubw.command.war.start", "Manually started a grailwar");
+        this.add("fateubw.command.war.start.fail", "Could not start a grailwar cause one is already running. Stop the current one first");
         this.add("fateubw.command.loot.give", "Gave loot %1$s to %2$s");
         this.add("fateubw.command.attributes.reset", "Reset all attributes obtained through grail loots for %s");
         this.add("fateubw.command.spells.set", "Set command spells for %2$s to %1$s");

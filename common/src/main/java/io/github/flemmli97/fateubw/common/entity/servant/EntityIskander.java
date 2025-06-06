@@ -137,7 +137,7 @@ public class EntityIskander extends BaseServant {
 
     @Override
     public boolean hurt(DamageSource damageSource, float damage) {
-        if (damageSource == DamageSource.OUT_OF_WORLD) {
+        if (damageSource.isBypassInvul()) {
             return super.hurt(damageSource, damage);
         } else if (this.getVehicle() != null) {
             damage *= 0.5;

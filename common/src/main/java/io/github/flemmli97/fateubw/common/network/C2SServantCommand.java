@@ -93,13 +93,6 @@ public record C2SServantCommand(Type command) implements Packet {
             case KILL:
                 servant.onKillOrder(sender, cap.useCommandSeal(sender));
                 break;
-            case FORFEIT: //Unused
-                GrailWarHandler track = GrailWarHandler.get(sender.getServer());
-                if (track.isParticipant(sender)) {
-                    track.removePlayer(sender, false);
-                    servant.onForfeit(sender);
-                }
-                break;
             case TELEPORT:
                 servant.randomTeleport(sender.getX(), sender.getY(), sender.getZ(), false);
                 servant.setTarget(null);
@@ -154,7 +147,6 @@ public record C2SServantCommand(Type command) implements Packet {
         GUARD,
         NP,
         KILL,
-        FORFEIT,
         BOOST,
         TELEPORT,
         TARGET

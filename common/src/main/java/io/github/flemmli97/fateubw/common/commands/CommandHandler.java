@@ -6,6 +6,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.loot.GrailLootTable;
 import io.github.flemmli97.fateubw.common.loot.entry.AttributeEntry;
@@ -30,9 +31,10 @@ public class CommandHandler {
     public static SuggestionProvider<CommandSourceStack> GRAILLOOTSUGGESTION = (ctx, builder) -> SharedSuggestionProvider.suggestResource(DatapackHandler.getAllTables().stream(), builder);
 
     public static void reg(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(Commands.literal("fate")
+        dispatcher.register(Commands.literal(Fate.MODID)
                 .then(Commands.literal("reset").requires(src -> src.hasPermission(2)).executes(CommandHandler::resetWar)
                         .then(Commands.literal("attributes").then(Commands.argument("players", EntityArgument.players()).executes(CommandHandler::resetAttributes))))
+                .then(Commands.literal("start").requires(src -> src.hasPermission(2)).executes(CommandHandler::startWar))
                 .then(Commands.literal("loot").requires(src -> src.hasPermission(2))
                         .then(Commands.argument("id", ResourceLocationArgument.id()).suggests(GRAILLOOTSUGGESTION)
                                 .then(Commands.argument("players", EntityArgument.players()).executes(CommandHandler::giveLoot))))
@@ -49,8 +51,17 @@ public class CommandHandler {
         );
     }
 
+    private static int startWar(CommandContext<CommandSourceStack> ctx) {
+        if (!GrailWarHandler.get(ctx.getSource().getServer()).forceStartGrailWar()) {
+            ctx.getSource().sendFailure(new TranslatableComponent("fateubw.command.war.start.fail"));
+            return 0;
+        }
+        ctx.getSource().sendSuccess(new TranslatableComponent("fateubw.command.war.start"), false);
+        return Command.SINGLE_SUCCESS;
+    }
+
     private static int resetWar(CommandContext<CommandSourceStack> ctx) {
-        GrailWarHandler.get(ctx.getSource().getServer()).reset(ctx.getSource().getServer());
+        GrailWarHandler.get(ctx.getSource().getServer()).reset(true);
         return Command.SINGLE_SUCCESS;
     }
 

@@ -18,6 +18,7 @@ import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.Entity
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailHolderProvider;
 import io.github.flemmli97.fateubw.common.registry.ModAttributes;
 import io.github.flemmli97.fateubw.common.registry.ModParticles;
+import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
@@ -109,7 +110,6 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     private int servantMana = 100, manaRegenCounter;
     private boolean died = false;
     protected boolean canUseNP, critHealth;
-    protected boolean disableChunkload = true, chunkTracked;
     public boolean forcedNP;
 
     protected C2SServantCommand.Type commandBehaviour = C2SServantCommand.Type.NORMAL;
@@ -324,11 +324,15 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     public Player getOwner() {
         if (this.owner != null && this.owner.isAlive())
             return this.owner;
-        if (this.hasOwner()) {
+        UUID ownerId = this.getOwnerUUID();
+        if (ownerId != null) {
+            Player owner;
             if (this.getServer() != null)
-                this.setOwner(this.getServer().getPlayerList().getPlayer(this.entityData.get(OWNER_UUID).get()));
+                owner = this.getServer().getPlayerList().getPlayer(ownerId);
             else
-                this.setOwner(this.level.getPlayerByUUID(this.entityData.get(OWNER_UUID).get()));
+                owner = this.level.getPlayerByUUID(ownerId);
+            if (owner != null)
+                this.setOwner(owner);
         }
         return this.owner;
     }
@@ -348,7 +352,6 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         } else
             this.entityData.set(OWNER_UUID, Optional.empty());
         this.owner = player;
-        this.disableChunkload = !this.hasOwner();
     }
 
     //=====NBT
@@ -364,7 +367,6 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         tag.putInt("Mana", this.servantMana);
         tag.putBoolean("HealthMessage", this.critHealth);
         tag.putBoolean("Revealed", this.showServant());
-        tag.putBoolean("DisableChunkload", this.disableChunkload);
     }
 
     @Override
@@ -382,7 +384,6 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         this.servantMana = tag.getInt("Mana");
         this.critHealth = tag.getBoolean("HealthMessage");
         this.entityData.set(SHOW_SERVANT, tag.getBoolean("Revealed"));
-        this.disableChunkload = tag.getBoolean("DisableChunkload");
     }
 
     //=====Entity AI updating
@@ -451,19 +452,15 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         }
         if (this.level instanceof ServerLevel serverLevel) {
             this.regenMana();
-            if (!this.disableChunkload) {
-                if (!this.chunkTracked) {
-                    GrailWarHandler.get(serverLevel.getServer()).track(this);
-                    this.chunkTracked = true;
-                }
+            GrailWarHandler handler = GrailWarHandler.get(serverLevel.getServer());
+            if (handler.isParticipant(this)) {
                 ChunkPos pos = this.chunkPosition();
-                ((ServerChunkCache) this.level.getChunkSource()).addRegionTicket(TRACKINGTICKET, pos, 2, pos);
-            } else
-                this.chunkTracked = false;
+                ((ServerChunkCache) this.level.getChunkSource()).addRegionTicket(TRACKINGTICKET, pos, 1, pos);
+            }
 
             this.getAnimationHandler().runIfNotNull(this::handleAttack);
             if (this.getOwner() instanceof ServerPlayer serverPlayer) {
-                if (!this.tracked.contains(serverPlayer)) {
+                if (!this.tracked.contains(serverPlayer) && !this.isRemoved()) {
                     if (!this.addToOwner) {
                         this.addEntityOwner(serverPlayer);
                         this.addToOwner = true;
@@ -548,6 +545,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         return StandingVehicle.shouldSit(this) ? -0.35 : 0;
     }
 
+    // TODO: better way for this
     private void addEntityOwner(ServerPlayer serverPlayer) {
         serverPlayer.connection.send(this.getAddEntityPacket());
         serverPlayer.connection.send(new ClientboundSetEntityDataPacket(this.getId(), this.entityData, true));
@@ -605,11 +603,9 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         ++this.deathTime;
         if (this.level instanceof ServerLevel serverLevel) {
             if (this.deathTime == 1) {
-                //if(this.getLastDamageSource()!=DamageSource.OUT_OF_WORLD)
-                this.level.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("fateubw.chat.servant.death").withStyle(ChatFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
+                if (GrailWarHandler.get(serverLevel.getServer()).isParticipant(this) || this.getLastDamageSource() == CustomDamageSource.GRAIL_DAMAGE)
+                    this.level.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("fateubw.chat.servant.death").withStyle(ChatFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
                 this.playSound(SoundEvents.WITHER_SPAWN, 1.0F, 1.0F);
-                GrailWarHandler.get(serverLevel.getServer()).removeServant(this);
-                this.disableChunkload = true;
                 this.getAnimationHandler().setAnimation(this.deathAnim());
             }
 
@@ -639,13 +635,6 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
 
     public int maxDeathTick() {
         return 200;
-    }
-
-    @Override
-    public void remove(RemovalReason reason) {
-        super.remove(reason);
-        if (this.level instanceof ServerLevel serverLevel)
-            GrailWarHandler.get(serverLevel.getServer()).untrack(this);
     }
 
     //=====Entity attack etc.
@@ -722,7 +711,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
 
     @Override
     public boolean hurt(DamageSource damageSource, float damage) {
-        if (damageSource == DamageSource.OUT_OF_WORLD) {
+        if (damageSource.isBypassInvul()) {
             return super.hurt(damageSource, damage);
         } else {
             if (damageSource.getEntity() == null || !damageSource.getEntity().getType().is(FateTags.STRONG_MOB))
@@ -781,8 +770,15 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         }
     }
 
+    @Override
+    protected void dropAllDeathLoot(DamageSource damageSource) {
+        if (damageSource == CustomDamageSource.GRAIL_DAMAGE || (this.getServer() != null && GrailWarHandler.get(this.getServer()).isParticipant(this)))
+            return;
+        super.dropAllDeathLoot(damageSource);
+    }
+
     public void onKillOrder(Player player, boolean success) {
-        this.hurt(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
+        this.hurt(CustomDamageSource.GRAIL_DAMAGE, Float.MAX_VALUE);
         player.sendMessage(new TranslatableComponent("fateubw.chat.command.kill").withStyle(ChatFormatting.RED), Util.NIL_UUID);
     }
 

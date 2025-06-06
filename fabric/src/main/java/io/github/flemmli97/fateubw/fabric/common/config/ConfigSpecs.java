@@ -50,15 +50,14 @@ public class ConfigSpecs {
         public final CommentedJsonConfig.IntVal minPlayer;
         public final CommentedJsonConfig.IntVal maxPlayer;
         public final CommentedJsonConfig.IntVal joinTime;
-        public final CommentedJsonConfig.IntVal rewardDelay;
-        public final CommentedJsonConfig.IntVal charmSpawnRate;
-        public final CommentedJsonConfig.IntVal gemSpawnRate;
+        public final CommentedJsonConfig.IntVal grailWarCooldown;
         public final CommentedJsonConfig.CommentedVal<Boolean> allowDuplicateServant;
         public final CommentedJsonConfig.CommentedVal<Boolean> allowDuplicateClass;
         public final CommentedJsonConfig.CommentedVal<Boolean> fillMissingSlots;
         public final CommentedJsonConfig.IntVal maxServantCircle;
         public final CommentedJsonConfig.IntVal servantMinSpawnDelay;
         public final CommentedJsonConfig.IntVal servantMaxSpawnDelay;
+
         public final CommentedJsonConfig.CommentedVal<Boolean> punishTeleport;
         public final CommentedJsonConfig.CommentedVal<List<String>> notifyBlackList;
         public final CommentedJsonConfig.CommentedVal<Boolean> whiteList;
@@ -100,18 +99,17 @@ public class ConfigSpecs {
             builder.push("general");
             this.minPlayer = builder.comment("Minimum of player count required to start a grail war").defineInRange("Min Player", Config.Common.minPlayer, 1, Integer.MAX_VALUE);
             this.maxPlayer = builder.comment("Maximum of player allowed in a grail war").defineInRange("Max Player", Config.Common.maxPlayer, 1, Integer.MAX_VALUE);
+            this.grailWarCooldown = builder.comment("Time in minecraft days till the next grailwar after one has ended").defineInRange("Grailwar Cooldown", Config.Common.grailWarCooldown, 0, Integer.MAX_VALUE);
             this.joinTime = builder.comment("Time buffer in ticks to join a grail war after start").defineInRange("Join Time", Config.Common.joinTime, 0, Integer.MAX_VALUE);
-            this.rewardDelay = builder.comment("Delay after an ended grail war for getting the grail").defineInRange("Reward Delay", Config.Common.rewardDelay, 0, Integer.MAX_VALUE);
-            this.charmSpawnRate = builder.comment("Legacy. Does Nothing").defineInRange("Charm Gen Rate", Config.Common.charmSpawnRate, 0, Integer.MAX_VALUE);
-            this.gemSpawnRate = builder.comment("Legacy. Does Nothing").defineInRange("Gem Gen Rate", Config.Common.gemSpawnRate, 0, Integer.MAX_VALUE);
             this.allowDuplicateServant = builder.comment("Allow the summoning of duplicate servants during a grail war").define("Allow Duplicate Servants", Config.Common.allowDuplicateClass);
             this.allowDuplicateClass = builder.comment("Allow the summoning of duplicate servant classes during a grail war").define("Allow Duplicate Classes", Config.Common.allowDuplicateClass);
             this.fillMissingSlots = builder.comment("Fill in missing players till max allowed with npc").define("Fill Empty Slots", Config.Common.fillMissingSlots);
             this.maxServantCircle = builder.comment("Amount of masterless servant that can spawn each time. (Fill Empty Slots needs to be true)").defineInRange("Servant Amount", Config.Common.maxServantCircle, 1, Integer.MAX_VALUE);
             this.servantMinSpawnDelay = builder.comment("Minimum time between each attempt to spawn masterless servants. (Fill Empty Slots needs to be true)").defineInRange("Servant Spawn Delay (Min)", Config.Common.servantMinSpawnDelay, 0, Integer.MAX_VALUE);
             this.servantMaxSpawnDelay = builder.comment("Maximum time between each attempt to spawn masterless servants. (Fill Empty Slots needs to be true)").defineInRange("Servant Spawn Delay (Max)", Config.Common.servantMaxSpawnDelay, 0, Integer.MAX_VALUE);
+
             this.punishTeleport = builder.comment("Should teleporting servants to the owner during a fight be punished").define("Punish Teleport", Config.Common.punishTeleport);
-            this.notifyBlackList = builder.comment("Servants that dont notify players when spawned (from filling missing slots)").define("Servant notification", Config.Common.notifyBlackList);
+            this.notifyBlackList = builder.comment("Servants that dont notify players when spawned (from filling missing slots)").define("Servant notification", Config.Common.notifyBlacklist);
             this.whiteList = builder.comment("Turn servant notification list into a whitelist").define("Notify Whitelist", Config.Common.notificationWhitelist);
             this.notifyAll = builder.comment("Notify everyone if a servant spawns. Else only the player the servant spawned on will be notified").define("Notify Everyone", Config.Common.notifyAll);
             this.npBoostEffect = builder.comment("Potions applied when boostin servants using a command seal. Usage: " + PotionEffectsConfig.usage()).define("NP Effects",

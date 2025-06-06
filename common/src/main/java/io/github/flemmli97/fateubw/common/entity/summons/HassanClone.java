@@ -293,7 +293,7 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
 
     @Override
     public boolean hurt(DamageSource damageSource, float damage) {
-        if (damageSource == DamageSource.OUT_OF_WORLD) {
+        if (damageSource.isBypassInvul()) {
             return super.hurt(damageSource, damage);
         } else {
             if (damageSource.getEntity() == null || !damageSource.getEntity().getType().is(FateTags.STRONG_MOB))

@@ -12,18 +12,17 @@ public class ConfigLoader {
     public static void loadCommon() {
         Config.Common.minPlayer = ConfigSpecs.COMMON_CONFIG.minPlayer.get();
         Config.Common.maxPlayer = ConfigSpecs.COMMON_CONFIG.maxPlayer.get();
+        Config.Common.grailWarCooldown = ConfigSpecs.COMMON_CONFIG.grailWarCooldown.get();
         Config.Common.joinTime = ConfigSpecs.COMMON_CONFIG.joinTime.get();
-        Config.Common.rewardDelay = ConfigSpecs.COMMON_CONFIG.rewardDelay.get();
-        Config.Common.charmSpawnRate = ConfigSpecs.COMMON_CONFIG.charmSpawnRate.get();
-        Config.Common.gemSpawnRate = ConfigSpecs.COMMON_CONFIG.gemSpawnRate.get();
         Config.Common.allowDuplicateServant = ConfigSpecs.COMMON_CONFIG.allowDuplicateServant.get();
         Config.Common.allowDuplicateClass = ConfigSpecs.COMMON_CONFIG.allowDuplicateClass.get();
         Config.Common.fillMissingSlots = ConfigSpecs.COMMON_CONFIG.fillMissingSlots.get();
         Config.Common.maxServantCircle = ConfigSpecs.COMMON_CONFIG.maxServantCircle.get();
         Config.Common.servantMinSpawnDelay = ConfigSpecs.COMMON_CONFIG.servantMinSpawnDelay.get();
         Config.Common.servantMaxSpawnDelay = ConfigSpecs.COMMON_CONFIG.servantMaxSpawnDelay.get();
+
         Config.Common.punishTeleport = ConfigSpecs.COMMON_CONFIG.punishTeleport.get();
-        Config.Common.notifyBlackList = ConfigSpecs.COMMON_CONFIG.notifyBlackList.get();
+        Config.Common.notifyBlacklist = ConfigSpecs.COMMON_CONFIG.notifyBlackList.get();
         Config.Common.notificationWhitelist = ConfigSpecs.COMMON_CONFIG.whiteList.get();
         Config.Common.notifyAll = ConfigSpecs.COMMON_CONFIG.notifyAll.get();
         Config.Common.npBoostEffect.readFromString(ConfigSpecs.COMMON_CONFIG.npBoostEffect.get());

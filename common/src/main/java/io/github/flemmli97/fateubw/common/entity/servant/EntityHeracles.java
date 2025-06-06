@@ -7,6 +7,7 @@ import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.particles.RingParticleData;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.registry.ModSounds;
+import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.AnimatedAttackGoal;
@@ -194,14 +195,14 @@ public class EntityHeracles extends BaseServant {
 
     @Override
     public boolean hurt(DamageSource damageSource, float damage) {
-        if (damageSource != DamageSource.OUT_OF_WORLD && (damage -= 3) < 0)
+        if (damageSource.isBypassInvul() && (damage -= 3) < 0)
             return false;
         return super.hurt(damageSource, damage);
     }
 
     @Override
     protected void tickDeath() {
-        if (this.getLastDamageSource() == DamageSource.OUT_OF_WORLD || this.voidDeath) {
+        if (this.getLastDamageSource() == DamageSource.OUT_OF_WORLD || this.getLastDamageSource() == CustomDamageSource.GRAIL_DAMAGE || this.voidDeath) {
             this.voidDeath = true;
             super.tickDeath();
         } else if (!this.level.isClientSide) {

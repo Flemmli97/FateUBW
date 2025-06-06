@@ -262,7 +262,7 @@ public class GordiusWheel extends PathfinderMob implements IAnimated, StandingVe
 
     @Override
     public boolean hurt(DamageSource damageSource, float damage) {
-        if (damageSource != DamageSource.OUT_OF_WORLD && this.isCharging())
+        if (!damageSource.isBypassInvul() && this.isCharging())
             damage *= 0.5f;
         return super.hurt(damageSource, damage);
     }
