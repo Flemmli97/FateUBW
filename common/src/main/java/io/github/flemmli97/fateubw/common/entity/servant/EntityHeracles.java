@@ -188,14 +188,14 @@ public class EntityHeracles extends BaseServant {
             AnimatedAction anim = this.getAnimationHandler().getAnimation();
             if (anim != null && anim.isAt("roar")) {
                 this.playSound(ModSounds.HERACLES_ROAR.get(), 1, 1);
-                S2CScreenShake.sendAround(this, 24, 8, 2);
+                S2CScreenShake.sendAround(this, 24, 16, 2);
             }
         }
     }
 
     @Override
     public boolean hurt(DamageSource damageSource, float damage) {
-        if (damageSource.isBypassInvul() && (damage -= 3) < 0)
+        if (!damageSource.isBypassInvul() && (damage -= 3) < 0)
             return false;
         return super.hurt(damageSource, damage);
     }
@@ -337,7 +337,7 @@ public class EntityHeracles extends BaseServant {
         boolean hurt = super.doHurtTarget(entity);
         if (hurt) {
             if (this.lastHitTick != this.tickCount) {
-                S2CScreenShake.sendAround(this, 12, 4, 1.5f);
+                S2CScreenShake.sendAround(this, 12, 8, 2);
                 this.playSound(SoundEvents.GENERIC_EXPLODE, 1, this.getRandom().nextFloat() * 0.2f + 0.9f);
             }
             this.lastHitTick = this.tickCount;

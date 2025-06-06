@@ -2,15 +2,16 @@ package io.github.flemmli97.fateubw.client;
 
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.Random;
 import java.util.function.Consumer;
 
 public class ShakeHandler {
 
     public static int shakeTick;
     public static float shakeStrength = 2;
+    private static final Random RANDOM = new Random();
 
     public static void shakeScreen(Vec3 pos, double maxDist, int time, float strength) {
         Vec3 player = Minecraft.getInstance().player.position();
@@ -33,8 +34,7 @@ public class ShakeHandler {
             return;
         float strengthPitch = ShakeHandler.shakeStrength;
         float strengthRoll = ShakeHandler.shakeStrength;
-        float pT = t * 24 - partialTicks;
-        setPitch.accept(pitch + Mth.sin(pT * 2) * strengthPitch);
-        setRoll.accept(roll + Mth.sin(pT) * strengthRoll);
+        setPitch.accept(pitch + RANDOM.nextFloat(-1, 1) * strengthPitch);
+        setRoll.accept(roll + RANDOM.nextFloat(-1, 1) * strengthRoll);
     }
 }

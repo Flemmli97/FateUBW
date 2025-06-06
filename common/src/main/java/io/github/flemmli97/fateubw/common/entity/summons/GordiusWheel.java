@@ -208,13 +208,13 @@ public class GordiusWheel extends PathfinderMob implements IAnimated, StandingVe
                 }
                 this.playSound(SoundEvents.COW_STEP, 0.4F, 0.4F);
                 S2CAttackDebug.sendDebugPacket(obb, S2CAttackDebug.EnumAABBType.ATTACK, this);
-                S2CScreenShake.sendAround(this, 14, 3, 0.5f);
+                S2CScreenShake.sendAround(this, 14, 4, 1.5f);
             }
         } else {
             this.getNavigation().stop();
             if (anim.isAt("attack")) {
                 this.mobAttack(anim, this.getTarget(), this::doHurtTarget);
-                S2CScreenShake.sendAround(this, 6, 4, 1);
+                S2CScreenShake.sendAround(this, 6, 8, 2);
             }
         }
     }

@@ -316,13 +316,13 @@ public class Pegasus extends PathfinderMob implements IAnimated, StandingVehicle
                 }
                 S2CAttackDebug.sendDebugPacket(obb, S2CAttackDebug.EnumAABBType.ATTACK, this);
                 if (hit)
-                    S2CScreenShake.sendAround(this, 14, 3, 0.5f);
+                    S2CScreenShake.sendAround(this, 14, 8, 2);
             }
         } else if (!anim.is(SUMMON)) {
             this.getNavigation().stop();
             if (anim.isAt("attack")) {
                 this.mobAttack(anim, this.getTarget(), this::doHurtTarget);
-                S2CScreenShake.sendAround(this, 6, 4, 1);
+                S2CScreenShake.sendAround(this, 6, 8, 2);
             }
         }
     }

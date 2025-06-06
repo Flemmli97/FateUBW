@@ -240,7 +240,7 @@ public class EntityArthur extends BaseServant {
                     }
                 });
                 if (!this.hitEntity.isEmpty()) {
-                    S2CScreenShake.sendAround(this, 12, 6, 1);
+                    S2CScreenShake.sendAround(this, 12, 8, 2);
                     this.setDeltaMovement(this.getDeltaMovement().scale(0.05));
                     this.getAnimationHandler().setAnimation(INVISIBLE_BURST_HIT);
                 }
