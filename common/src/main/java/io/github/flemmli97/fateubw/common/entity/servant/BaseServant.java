@@ -35,7 +35,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEquipmentPacket;
@@ -184,13 +183,6 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
 
     public Component nobelPhantasm() {
         return this.hogou;
-    }
-
-    @Override
-    public Component getTypeName() {
-        if (this.level.isClientSide && !this.showServant())
-            return new TextComponent("UNKNOWN");
-        return super.getTypeName();
     }
 
     public Component getRealName() {
