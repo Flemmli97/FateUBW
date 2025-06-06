@@ -6,7 +6,7 @@
     "fateubw:projectile_resistance": 4.0,
     "minecraft:generic.movement_speed": 0.35,
     "fateubw:combat_regen": 1.0,
-    "fateubw:passive_regen": 15.0
+    "fateubw:passive_regen": 10.0
   },
   "nobel_phantasm_cost": 50,
   "class": "fateubw:archer"

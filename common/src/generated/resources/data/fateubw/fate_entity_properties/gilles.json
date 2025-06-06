@@ -7,8 +7,8 @@
     "fateubw:magic_attack": 15.0,
     "fateubw:magic_resistance": 0.6,
     "minecraft:generic.movement_speed": 0.32,
-    "fateubw:combat_regen": 2.5,
-    "fateubw:passive_regen": 15.0
+    "fateubw:combat_regen": 1.5,
+    "fateubw:passive_regen": 10.0
   },
   "nobel_phantasm_cost": 80,
   "class": "fateubw:caster"

@@ -6,8 +6,8 @@
     "fateubw:projectile_block_chance": 0.10000000149011612,
     "fateubw:projectile_resistance": 5.0,
     "minecraft:generic.movement_speed": 0.37,
-    "fateubw:combat_regen": 2.0,
-    "fateubw:passive_regen": 15.0
+    "fateubw:combat_regen": 1.0,
+    "fateubw:passive_regen": 10.0
   },
   "nobel_phantasm_cost": 60,
   "class": "fateubw:lancer"

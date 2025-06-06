@@ -75,7 +75,7 @@ public class ModEntities {
                     .putAttributes(() -> Attributes.ARMOR, 16).putAttributes(ModAttributes.PROJECTILE_BLOCK_CHANCE, 0.15f)
                     .putAttributes(ModAttributes.PROJECTILE_RESISTANCE, 3).putAttributes(ModAttributes.MAGIC_ATTACK, 15)
                     .putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.33)
-                    .putAttributes(ModAttributes.COMBAT_REGEN, 3).putAttributes(ModAttributes.PASSIVE_REGEN, 15)
+                    .putAttributes(ModAttributes.COMBAT_REGEN, 2).putAttributes(ModAttributes.PASSIVE_REGEN, 10)
                     .npCost(80));
 
     public static final RegistryEntrySupplier<EntityType<EntityCuchulainn>> CUCHULAINN = regServant(EntityType.Builder.of(EntityCuchulainn::new, MobCategory.MISC),
@@ -84,7 +84,7 @@ public class ModEntities {
                     .putAttributes(() -> Attributes.MAX_HEALTH, 370).putAttributes(() -> Attributes.ATTACK_DAMAGE, 12)
                     .putAttributes(() -> Attributes.ARMOR, 14).putAttributes(ModAttributes.PROJECTILE_BLOCK_CHANCE, 0.1f)
                     .putAttributes(ModAttributes.PROJECTILE_RESISTANCE, 6).putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.37)
-                    .putAttributes(ModAttributes.COMBAT_REGEN, 2).putAttributes(ModAttributes.PASSIVE_REGEN, 15)
+                    .putAttributes(ModAttributes.COMBAT_REGEN, 1).putAttributes(ModAttributes.PASSIVE_REGEN, 10)
                     .npCost(50));
     public static final RegistryEntrySupplier<EntityType<EntityDiarmuid>> DIARMUID = regServant(EntityType.Builder.of(EntityDiarmuid::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "diarmuid"), 0x2d5554, 0x302f34,
@@ -92,7 +92,7 @@ public class ModEntities {
                     .putAttributes(() -> Attributes.MAX_HEALTH, 380).putAttributes(() -> Attributes.ATTACK_DAMAGE, 10)
                     .putAttributes(() -> Attributes.ARMOR, 14).putAttributes(ModAttributes.PROJECTILE_BLOCK_CHANCE, 0.1f)
                     .putAttributes(ModAttributes.PROJECTILE_RESISTANCE, 5).putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.37)
-                    .putAttributes(ModAttributes.COMBAT_REGEN, 2).putAttributes(ModAttributes.PASSIVE_REGEN, 15)
+                    .putAttributes(ModAttributes.COMBAT_REGEN, 1).putAttributes(ModAttributes.PASSIVE_REGEN, 10)
                     .npCost(60));
 
     public static final RegistryEntrySupplier<EntityType<EntityEmiya>> EMIYA = regServant(EntityType.Builder.of(EntityEmiya::new, MobCategory.MISC),
@@ -101,7 +101,7 @@ public class ModEntities {
                     .putAttributes(() -> Attributes.MAX_HEALTH, 350).putAttributes(() -> Attributes.ATTACK_DAMAGE, 13)
                     .putAttributes(() -> Attributes.ARMOR, 10)
                     .putAttributes(ModAttributes.PROJECTILE_RESISTANCE, 4).putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.35)
-                    .putAttributes(ModAttributes.COMBAT_REGEN, 1).putAttributes(ModAttributes.PASSIVE_REGEN, 15)
+                    .putAttributes(ModAttributes.COMBAT_REGEN, 1).putAttributes(ModAttributes.PASSIVE_REGEN, 10)
                     .npCost(50));
     public static final RegistryEntrySupplier<EntityType<EntityGilgamesh>> GILGAMESH = regServant(EntityType.Builder.of(EntityGilgamesh::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "gilgamesh"), 0xfff400, 0xffdb00,
@@ -109,7 +109,7 @@ public class ModEntities {
                     .putAttributes(() -> Attributes.MAX_HEALTH, 450).putAttributes(() -> Attributes.ATTACK_DAMAGE, 10)
                     .putAttributes(() -> Attributes.ARMOR, 12)
                     .putAttributes(ModAttributes.PROJECTILE_RESISTANCE, 5).putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.32)
-                    .putAttributes(ModAttributes.COMBAT_REGEN, 2).putAttributes(ModAttributes.PASSIVE_REGEN, 15)
+                    .putAttributes(ModAttributes.COMBAT_REGEN, 1).putAttributes(ModAttributes.PASSIVE_REGEN, 10)
                     .npCost(80));
 
     public static final RegistryEntrySupplier<EntityType<EntityMedea>> MEDEA = regServant(EntityType.Builder.of(EntityMedea::new, MobCategory.MISC),
@@ -119,7 +119,7 @@ public class ModEntities {
                     .putAttributes(() -> Attributes.ARMOR, 8)
                     .putAttributes(ModAttributes.PROJECTILE_RESISTANCE, 2).putAttributes(ModAttributes.MAGIC_ATTACK, 17)
                     .putAttributes(ModAttributes.MAGIC_RESISTANCE, 0.4).putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.31)
-                    .putAttributes(ModAttributes.COMBAT_REGEN, 3.5).putAttributes(ModAttributes.PASSIVE_REGEN, 15)
+                    .putAttributes(ModAttributes.COMBAT_REGEN, 2.5).putAttributes(ModAttributes.PASSIVE_REGEN, 10)
                     .npCost(70));
     public static final RegistryEntrySupplier<EntityType<EntityGilles>> GILLES = regServant(EntityType.Builder.of(EntityGilles::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "gilles"), 0x100460, 0x600453,
@@ -128,7 +128,7 @@ public class ModEntities {
                     .putAttributes(() -> Attributes.ARMOR, 16)
                     .putAttributes(ModAttributes.PROJECTILE_RESISTANCE, 2).putAttributes(ModAttributes.MAGIC_ATTACK, 15)
                     .putAttributes(ModAttributes.MAGIC_RESISTANCE, 0.6).putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.32)
-                    .putAttributes(ModAttributes.COMBAT_REGEN, 2.5).putAttributes(ModAttributes.PASSIVE_REGEN, 15)
+                    .putAttributes(ModAttributes.COMBAT_REGEN, 1.5).putAttributes(ModAttributes.PASSIVE_REGEN, 10)
                     .npCost(80));
 
     public static final RegistryEntrySupplier<EntityType<EntityHeracles>> HERACLES = regServant(EntityType.Builder.of(EntityHeracles::new, MobCategory.MISC).sized(1.4f, 2.6f),
@@ -137,7 +137,7 @@ public class ModEntities {
                     .putAttributes(() -> Attributes.MAX_HEALTH, 200).putAttributes(() -> Attributes.ATTACK_DAMAGE, 10)
                     .putAttributes(() -> Attributes.ARMOR, 18)
                     .putAttributes(ModAttributes.PROJECTILE_RESISTANCE, 8).putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.3)
-                    .putAttributes(ModAttributes.PASSIVE_REGEN, 15)
+                    .putAttributes(ModAttributes.PASSIVE_REGEN, 10)
                     .npCost(0));
     public static final RegistryEntrySupplier<EntityType<EntityLancelot>> LANCELOT = regServant(EntityType.Builder.of(EntityLancelot::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "lancelot"), 0x071a33, 0x1d4f94,
@@ -146,7 +146,7 @@ public class ModEntities {
                     .putAttributes(() -> Attributes.ARMOR, 15).putAttributes(ModAttributes.PROJECTILE_BLOCK_CHANCE, 0.1f)
                     .putAttributes(ModAttributes.PROJECTILE_RESISTANCE, 10)
                     .putAttributes(ModAttributes.MAGIC_RESISTANCE, 0.1).putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.3)
-                    .putAttributes(ModAttributes.COMBAT_REGEN, 2).putAttributes(ModAttributes.PASSIVE_REGEN, 15)
+                    .putAttributes(ModAttributes.COMBAT_REGEN, 1).putAttributes(ModAttributes.PASSIVE_REGEN, 10)
                     .npCost(0));
 
     public static final RegistryEntrySupplier<EntityType<EntityIskander>> ISKANDER = regServant(EntityType.Builder.of(EntityIskander::new, MobCategory.MISC),
@@ -155,7 +155,7 @@ public class ModEntities {
                     .putAttributes(() -> Attributes.MAX_HEALTH, 450).putAttributes(() -> Attributes.ATTACK_DAMAGE, 12)
                     .putAttributes(() -> Attributes.ARMOR, 14)
                     .putAttributes(ModAttributes.PROJECTILE_RESISTANCE, 4).putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.35)
-                    .putAttributes(ModAttributes.COMBAT_REGEN, 1.5).putAttributes(ModAttributes.PASSIVE_REGEN, 15)
+                    .putAttributes(ModAttributes.COMBAT_REGEN, 1.5).putAttributes(ModAttributes.PASSIVE_REGEN, 10)
                     .npCost(70));
     public static final RegistryEntrySupplier<EntityType<EntityMedusa>> MEDUSA = regServant(EntityType.Builder.of(EntityMedusa::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "medusa"), 0x000000, 0xf234ea,
@@ -163,7 +163,7 @@ public class ModEntities {
                     .putAttributes(() -> Attributes.MAX_HEALTH, 350).putAttributes(() -> Attributes.ATTACK_DAMAGE, 11)
                     .putAttributes(() -> Attributes.ARMOR, 12)
                     .putAttributes(ModAttributes.PROJECTILE_RESISTANCE, 6).putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.36)
-                    .putAttributes(ModAttributes.COMBAT_REGEN, 1.5).putAttributes(ModAttributes.PASSIVE_REGEN, 15)
+                    .putAttributes(ModAttributes.COMBAT_REGEN, 1.5).putAttributes(ModAttributes.PASSIVE_REGEN, 10)
                     .npCost(70));
 
     public static final RegistryEntrySupplier<EntityType<EntityHassan>> HASSAN = regServant(EntityType.Builder.of(EntityHassan::new, MobCategory.MISC),
@@ -172,7 +172,7 @@ public class ModEntities {
                     .putAttributes(() -> Attributes.MAX_HEALTH, 320).putAttributes(() -> Attributes.ATTACK_DAMAGE, 10)
                     .putAttributes(() -> Attributes.ARMOR, 10)
                     .putAttributes(ModAttributes.PROJECTILE_RESISTANCE, 12).putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.36)
-                    .putAttributes(ModAttributes.COMBAT_REGEN, 2).putAttributes(ModAttributes.PASSIVE_REGEN, 15)
+                    .putAttributes(ModAttributes.COMBAT_REGEN, 1).putAttributes(ModAttributes.PASSIVE_REGEN, 10)
                     .npCost(40));
     public static final RegistryEntrySupplier<EntityType<EntitySasaki>> SASAKI = regServant(EntityType.Builder.of(EntitySasaki::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "sasaki"), 0x4e04c3, 0xa77cec,
@@ -180,7 +180,7 @@ public class ModEntities {
                     .putAttributes(() -> Attributes.MAX_HEALTH, 300).putAttributes(() -> Attributes.ATTACK_DAMAGE, 13)
                     .putAttributes(() -> Attributes.ARMOR, 10)
                     .putAttributes(ModAttributes.PROJECTILE_RESISTANCE, 5).putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.33)
-                    .putAttributes(ModAttributes.COMBAT_REGEN, 2).putAttributes(ModAttributes.PASSIVE_REGEN, 15)
+                    .putAttributes(ModAttributes.COMBAT_REGEN, 1).putAttributes(ModAttributes.PASSIVE_REGEN, 10)
                     .npCost(30));
 
     public static final RegistryEntrySupplier<EntityType<Excalibur>> EXCALIBUR = reg(EntityType.Builder.<Excalibur>of(Excalibur::new, MobCategory.MISC).sized(0.05F, 0.05F), new ResourceLocation(Fate.MODID, "excalibur"));

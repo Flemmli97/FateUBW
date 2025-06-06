@@ -5,8 +5,8 @@
     "minecraft:generic.armor": 10.0,
     "fateubw:projectile_resistance": 5.0,
     "minecraft:generic.movement_speed": 0.33,
-    "fateubw:combat_regen": 2.0,
-    "fateubw:passive_regen": 15.0
+    "fateubw:combat_regen": 1.0,
+    "fateubw:passive_regen": 10.0
   },
   "nobel_phantasm_cost": 30,
   "class": "fateubw:assassin"
