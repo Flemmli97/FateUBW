@@ -128,7 +128,7 @@ public class CommandGui extends Screen {
             }));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 + 8, 80, 20
                     , new TranslatableComponent("fateubw.gui.command.kill"), b -> {
-                NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.KILL));
+                NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.KILL, this.servant.getId()));
                 NetworkCalls.INSTANCE.sendToServer(new C2SMessageGui(C2SMessageGui.Type.SERVANT));
             }));
             if (this.servant != null) {
@@ -143,22 +143,22 @@ public class CommandGui extends Screen {
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 82, 80, 20
                     , new TranslatableComponent("fateubw.gui.back"), this::backButton));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 52, 80, 20
-                    , new TranslatableComponent("fateubw.gui.command.aggressive"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.AGGRESSIVE))));
+                    , new TranslatableComponent("fateubw.gui.command.aggressive"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.AGGRESSIVE, this.servant.getId()))));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 22, 80, 20
-                    , new TranslatableComponent("fateubw.gui.command.normal"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.NORMAL))));
+                    , new TranslatableComponent("fateubw.gui.command.normal"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.NORMAL, this.servant.getId()))));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 + 8, 80, 20
-                    , new TranslatableComponent("fateubw.gui.command.defensive"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.DEFENSIVE))));
+                    , new TranslatableComponent("fateubw.gui.command.defensive"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.DEFENSIVE, this.servant.getId()))));
         } else if (this.currentPage == Pages.MOVEMENT) {
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 82, 80, 20
                     , new TranslatableComponent("fateubw.gui.command.back"), this::backButton));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 52, 80, 20
-                    , new TranslatableComponent("fateubw.gui.command.follow"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.FOLLOW))));
+                    , new TranslatableComponent("fateubw.gui.command.follow"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.FOLLOW, this.servant.getId()))));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 22, 80, 20
-                    , new TranslatableComponent("fateubw.gui.command.stay"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.STAY))));
+                    , new TranslatableComponent("fateubw.gui.command.stay"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.STAY, this.servant.getId()))));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 + 8, 80, 20
-                    , new TranslatableComponent("fateubw.gui.command.protect"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.GUARD))));
+                    , new TranslatableComponent("fateubw.gui.command.protect"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.GUARD, this.servant.getId()))));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 + 38, 80, 20
-                    , new TranslatableComponent("fateubw.gui.command.call"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.TELEPORT))));
+                    , new TranslatableComponent("fateubw.gui.command.call"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.TELEPORT, this.servant.getId()))));
         } else if (this.currentPage == Pages.SPECIAL) {
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 82, 80, 20
                     , new TranslatableComponent("fateubw.gui.command.back"), this::backButton));
@@ -167,7 +167,7 @@ public class CommandGui extends Screen {
                     String id = this.servant.specialCommands()[i];
                     this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 52, 80, 20,
                             new TranslatableComponent(id),
-                            b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantSpecial(id))));
+                            b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantSpecial(id, this.servant.getId()))));
                 }
         }
     }

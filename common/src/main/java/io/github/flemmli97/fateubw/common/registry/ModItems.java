@@ -6,7 +6,6 @@ import io.github.flemmli97.fateubw.common.items.ItemCrystal;
 import io.github.flemmli97.fateubw.common.items.ItemHolyGrail;
 import io.github.flemmli97.fateubw.common.items.ItemManaBottle;
 import io.github.flemmli97.fateubw.common.items.ItemServantCharm;
-import io.github.flemmli97.fateubw.common.items.ItemServantCommander;
 import io.github.flemmli97.fateubw.common.items.weapons.ClassSpear;
 import io.github.flemmli97.fateubw.common.items.weapons.ItemArcherBow;
 import io.github.flemmli97.fateubw.common.items.weapons.ItemDagger;
@@ -88,7 +87,6 @@ public class ModItems {
     public static final RegistryEntrySupplier<Item> CHALK = ITEMS.register("chalk", () -> new ItemChalk(new Item.Properties().tab(Fate.TAB).defaultDurability(32)));
     public static final RegistryEntrySupplier<Item> MANA_BOTTLE = ITEMS.register("mana_bottle", () -> new ItemManaBottle(new Item.Properties().tab(Fate.TAB)));
     public static final RegistryEntrySupplier<Item> GRAIL = ITEMS.register("holy_grail", () -> new ItemHolyGrail(new Item.Properties().tab(Fate.TAB)));
-    public static final RegistryEntrySupplier<Item> COMMANDER = ITEMS.register("command_seal", () -> new ItemServantCommander(new Item.Properties().tab(Fate.TAB)));
 
     public static final RegistryEntrySupplier<Item> ICON_0 = ITEMS.register("icon_0", () -> new Item(new Item.Properties()));
     public static final RegistryEntrySupplier<Item> ICON_1 = ITEMS.register("icon_1", () -> new Item(new Item.Properties()));

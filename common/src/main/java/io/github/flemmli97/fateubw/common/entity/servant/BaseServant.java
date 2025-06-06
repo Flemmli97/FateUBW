@@ -14,6 +14,7 @@ import io.github.flemmli97.fateubw.common.entity.ai.TargetNoneGoal;
 import io.github.flemmli97.fateubw.common.lib.FateTags;
 import io.github.flemmli97.fateubw.common.network.C2SServantCommand;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
+import io.github.flemmli97.fateubw.common.network.S2COpenGui;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailHolder;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailHolderProvider;
 import io.github.flemmli97.fateubw.common.registry.ModAttributes;
@@ -22,6 +23,7 @@ import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
+import io.github.flemmli97.fateubw.platform.NetworkCalls;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.AoeAttackEntity;
 import io.github.flemmli97.tenshilib.api.entity.IAnimated;
@@ -50,6 +52,8 @@ import net.minecraft.server.level.TicketType;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -421,6 +425,16 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
                 this.restrictTo(this.getOwner().blockPosition(), 8);
             }
         }
+    }
+
+    @Override
+    public InteractionResult mobInteract(Player player, InteractionHand hand) {
+        if (player.isShiftKeyDown() && player.getUUID().equals(this.getOwnerUUID())) {
+            if (player instanceof ServerPlayer serverPlayer)
+                NetworkCalls.INSTANCE.sendToClient(new S2COpenGui(this), serverPlayer);
+            return InteractionResult.sidedSuccess(player.level.isClientSide);
+        }
+        return InteractionResult.FAIL;
     }
 
     //=====Living update handling and stuff
