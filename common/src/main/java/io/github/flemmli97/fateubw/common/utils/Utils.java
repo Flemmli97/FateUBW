@@ -5,10 +5,7 @@ import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.registry.ModAttributes;
 import io.github.flemmli97.fateubw.common.world.TeamHandler;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.GoalAttackAction;
-import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -20,7 +17,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -139,44 +135,5 @@ public class Utils {
         }
         return offsets.stream().map(p -> pos.add(hor.scale(p.getFirst() * 2)).add(vert.scale(p.getSecond() * 2 + 1)))
                 .toList();
-    }
-
-    public static void teleportTo(LivingEntity entity, double x, double y, double z, @Nullable SoundEvent soundEvent, @Nullable ParticleOptions particle) {
-        Vec3 prev = entity.position();
-        entity.teleportTo(x, y, z);
-        if (soundEvent != null) {
-            entity.level.playSound(null, entity.xo, entity.yo, entity.zo, soundEvent, entity.getSoundSource(), 1.0F, 1.0F);
-            entity.playSound(soundEvent, 1.0F, 1.0F);
-        }
-        if (particle != null) {
-            for (int i = 0; i < 10; i++) {
-                if (entity.level instanceof ServerLevel serverLevel) {
-                    serverLevel.sendParticles(particle,
-                            prev.x() + entity.getBbWidth() * randomUniform(entity.getRandom()), prev.y() + entity.getBbHeight() * randomUniform(entity.getRandom()), prev.z() + entity.getBbWidth() * randomUniform(entity.getRandom())
-                            , 0,
-                            randomUniform(entity.getRandom()) * 0.1, randomUniform(entity.getRandom()) * 0.1, randomUniform(entity.getRandom()) * 0.1,
-                            1);
-                } else {
-                    entity.level.addParticle(particle,
-                            prev.x() + entity.getBbWidth() * randomUniform(entity.getRandom()), prev.y() + entity.getBbHeight() * randomUniform(entity.getRandom()), prev.z() + entity.getBbWidth() * randomUniform(entity.getRandom()),
-                            randomUniform(entity.getRandom()) * 0.1, randomUniform(entity.getRandom()) * 0.1, randomUniform(entity.getRandom()) * 0.1);
-                }
-            }
-            for (int i = 0; i < 10; i++) {
-                if (entity.level instanceof ServerLevel serverLevel) {
-                    serverLevel.sendParticles(particle, entity.getRandomX(0.5), entity.getRandomY(), entity.getRandomZ(0.5),
-                            0,
-                            randomUniform(entity.getRandom()) * 0.1, randomUniform(entity.getRandom()) * 0.1, randomUniform(entity.getRandom()) * 0.1,
-                            1);
-                } else {
-                    entity.level.addParticle(particle, entity.getRandomX(0.5), entity.getRandomY(), entity.getRandomZ(0.5),
-                            randomUniform(entity.getRandom()) * 0.1, randomUniform(entity.getRandom()) * 0.1, randomUniform(entity.getRandom()) * 0.1);
-                }
-            }
-        }
-    }
-
-    private static double randomUniform(Random random) {
-        return random.nextDouble() - 0.5;
     }
 }

@@ -1,6 +1,6 @@
 package io.github.flemmli97.fateubw.common.entity.ai;
 
-import io.github.flemmli97.fateubw.common.utils.Utils;
+import io.github.flemmli97.fateubw.common.utils.TeleportUtils;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.IAnimated;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.ActionRun;
@@ -43,7 +43,7 @@ public class TeleportRunner<T extends PathfinderMob & IAnimated> implements Acti
                 }
                 if (posAway != null && target.distanceToSqr(posAway) >= this.minDistSqr) {
                     if (goal.attacker.isWithinRestriction(new BlockPos(posAway))) {
-                        Utils.teleportTo(goal.attacker, posAway.x(), posAway.y(), posAway.z(),
+                        TeleportUtils.teleportTo(goal.attacker, posAway.x(), posAway.y(), posAway.z(),
                                 SoundEvents.ENDERMAN_TELEPORT, ParticleTypes.WITCH);
                         this.teleported = true;
                     }

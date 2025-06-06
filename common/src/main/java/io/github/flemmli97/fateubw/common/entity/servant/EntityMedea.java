@@ -9,6 +9,7 @@ import io.github.flemmli97.fateubw.common.entity.misc.MagicBeam;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicBufCircle;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
+import io.github.flemmli97.fateubw.common.utils.TeleportUtils;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
@@ -258,7 +259,7 @@ public class EntityMedea extends BaseServant {
                 dir = dir.subtract(off);
                 this.teleportPre = this.position();
                 this.gravityPre = this.isNoGravity();
-                Utils.teleportTo(this, this.getX() + dir.x(), this.getY() + dir.y(), this.getZ() + dir.z(),
+                TeleportUtils.teleportTo(this, this.getX() + dir.x(), this.getY() + dir.y(), this.getZ() + dir.z(),
                         SoundEvents.ENDERMAN_TELEPORT, ParticleTypes.WITCH);
                 this.teleportPos = this.position();
             }

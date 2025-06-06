@@ -1,6 +1,8 @@
 package io.github.flemmli97.fateubw.common.entity.ai;
 
+import io.github.flemmli97.fateubw.common.utils.TeleportUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -16,7 +18,8 @@ import java.util.function.Predicate;
  */
 public class FollowMasterGoal<T extends PathfinderMob & OwnableEntity> extends Goal {
 
-    public final T goalOwner;
+    public final T mob;
+
     private Entity follow;
     private double minTPDist;
     private int followDelay;
@@ -24,13 +27,14 @@ public class FollowMasterGoal<T extends PathfinderMob & OwnableEntity> extends G
     public final float minDist;
     private float oldWaterCost;
     private final Predicate<T> additionalPred;
+    private int teleportCooldown;
 
-    public FollowMasterGoal(T goalOwner, double teleport, float minDistance, float maxDistance) {
-        this(goalOwner, teleport, minDistance, maxDistance, s -> false);
+    public FollowMasterGoal(T mob, double teleport, float minDistance, float maxDistance) {
+        this(mob, teleport, minDistance, maxDistance, s -> false);
     }
 
-    public FollowMasterGoal(T goalOwner, double teleport, float minDistance, float maxDistance, Predicate<T> more) {
-        this.goalOwner = goalOwner;
+    public FollowMasterGoal(T mob, double teleport, float minDistance, float maxDistance, Predicate<T> more) {
+        this.mob = mob;
         this.minTPDist = teleport * teleport;
         this.minDist = minDistance;
         this.maxDist = maxDistance;
@@ -40,14 +44,14 @@ public class FollowMasterGoal<T extends PathfinderMob & OwnableEntity> extends G
 
     @Override
     public boolean canUse() {
-        Entity livingentity = this.goalOwner.getOwner();
+        Entity livingentity = this.mob.getOwner();
         if (livingentity == null) {
             return false;
         } else if (livingentity.isSpectator()) {
             return false;
-        } else if (this.additionalPred.test(this.goalOwner)) {
+        } else if (this.additionalPred.test(this.mob)) {
             return false;
-        } else if (this.goalOwner.distanceToSqr(livingentity) < (this.minDist * this.minDist)) {
+        } else if (this.mob.distanceToSqr(livingentity) < (this.minDist * this.minDist)) {
             return false;
         } else {
             this.follow = livingentity;
@@ -57,41 +61,46 @@ public class FollowMasterGoal<T extends PathfinderMob & OwnableEntity> extends G
 
     @Override
     public boolean canContinueToUse() {
-        if (this.goalOwner.getNavigation().isDone()) {
+        if (this.mob.getNavigation().isDone()) {
             return false;
-        } else if (this.additionalPred.test(this.goalOwner)) {
+        } else if (this.additionalPred.test(this.mob)) {
             return false;
         } else {
-            return !(this.goalOwner.distanceToSqr(this.follow) <= (this.maxDist * this.maxDist));
+            return !(this.mob.distanceToSqr(this.follow) <= (this.maxDist * this.maxDist));
         }
     }
 
     @Override
     public void start() {
         this.followDelay = 0;
-        this.oldWaterCost = this.goalOwner.getPathfindingMalus(BlockPathTypes.WATER);
-        this.goalOwner.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
+        this.oldWaterCost = this.mob.getPathfindingMalus(BlockPathTypes.WATER);
+        this.mob.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
     }
 
     @Override
     public void stop() {
         this.follow = null;
-        this.goalOwner.getNavigation().stop();
-        this.goalOwner.setPathfindingMalus(BlockPathTypes.WATER, this.oldWaterCost);
+        this.mob.getNavigation().stop();
+        this.mob.setPathfindingMalus(BlockPathTypes.WATER, this.oldWaterCost);
     }
 
     @Override
     public void tick() {
-        this.goalOwner.getLookControl().setLookAt(this.follow, 10.0F, this.goalOwner.getMaxHeadXRot());
+        this.mob.getLookControl().setLookAt(this.follow, 10.0F, this.mob.getMaxHeadXRot());
         if (--this.followDelay <= 0) {
             this.followDelay = 10;
-            if (!this.goalOwner.isLeashed()) {
-                if (this.goalOwner.distanceToSqr(this.follow) >= this.minTPDist) {
+            if (!this.mob.isLeashed()) {
+                if (this.mob.distanceToSqr(this.follow) >= this.minTPDist) {
                     this.tryTeleport();
                 } else {
-                    this.goalOwner.getNavigation().moveTo(this.follow, 1);
+                    this.mob.getNavigation().moveTo(this.follow, 1);
                 }
 
+            }
+        }
+        if (--this.teleportCooldown <= 0 && this.follow.level.dimension() != this.mob.level.dimension()) {
+            if (!TeleportUtils.safeDimensionTeleport(this.mob, (ServerLevel) this.follow.getLevel(), this.follow.blockPosition())) {
+                this.teleportCooldown = 10;
             }
         }
     }
@@ -118,23 +127,23 @@ public class FollowMasterGoal<T extends PathfinderMob & OwnableEntity> extends G
         } else if (!this.canTeleportTo(new BlockPos(x, y, z))) {
             return false;
         } else {
-            this.goalOwner.moveTo(x + 0.5D, y, z + 0.5D, this.goalOwner.getYRot(), this.goalOwner.getXRot());
-            this.goalOwner.getNavigation().stop();
+            this.mob.moveTo(x + 0.5D, y, z + 0.5D, this.mob.getYRot(), this.mob.getXRot());
+            this.mob.getNavigation().stop();
             return true;
         }
     }
 
     private boolean canTeleportTo(BlockPos pos) {
-        BlockPathTypes pathnodetype = WalkNodeEvaluator.getBlockPathTypeStatic(this.goalOwner.level, pos.mutable());
+        BlockPathTypes pathnodetype = WalkNodeEvaluator.getBlockPathTypeStatic(this.mob.level, pos.mutable());
         if (pathnodetype != BlockPathTypes.WALKABLE) {
             return false;
         } else {
-            BlockPos blockpos = pos.subtract(this.goalOwner.blockPosition());
-            return this.goalOwner.level.noCollision(this.goalOwner, this.goalOwner.getBoundingBox().move(blockpos));
+            BlockPos blockpos = pos.subtract(this.mob.blockPosition());
+            return this.mob.level.noCollision(this.mob, this.mob.getBoundingBox().move(blockpos));
         }
     }
 
     private int getRandomInt(int min, int max) {
-        return this.goalOwner.getRandom().nextInt(max - min + 1) + min;
+        return this.mob.getRandom().nextInt(max - min + 1) + min;
     }
 }

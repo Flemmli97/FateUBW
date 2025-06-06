@@ -7,6 +7,7 @@ import io.github.flemmli97.fateubw.common.items.weapons.ClassSpear;
 import io.github.flemmli97.fateubw.common.registry.ModEffects;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
+import io.github.flemmli97.fateubw.common.utils.TeleportUtils;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
@@ -228,7 +229,7 @@ public class EntityDiarmuid extends BaseServant {
                 }
             }
             if (anim.isAt("teleport") && this.blinkTarget != null) {
-                Utils.teleportTo(this, this.blinkTarget.x(), this.blinkTarget.y(), this.blinkTarget.z(),
+                TeleportUtils.teleportTo(this, this.blinkTarget.x(), this.blinkTarget.y(), this.blinkTarget.z(),
                         SoundEvents.PLAYER_ATTACK_SWEEP, ParticleTypes.CLOUD);
                 this.blinkTarget = null;
             }
