@@ -165,8 +165,9 @@ public class GrailWarHandler extends SavedData {
     /**
      * The participating players
      */
-    public Set<UUID> players() {
-        return ImmutableSet.copyOf(this.participants.entrySet().stream().filter(p -> p.getValue().isPlayerParticipant())
+    public Set<UUID> players(boolean valid) {
+        return ImmutableSet.copyOf(this.participants.entrySet().stream().filter(p ->
+                        p.getValue().isPlayerParticipant() && (!valid || p.getValue().valid(this.server)))
                 .map(Map.Entry::getKey)
                 .toList());
     }
@@ -217,7 +218,7 @@ public class GrailWarHandler extends SavedData {
 
     private void start() {
         this.phase = Phase.ACTIVE;
-        Set<UUID> players = this.players();
+        Set<UUID> players = this.players(true);
         if (players.size() >= CommonConfig.minPlayer) {
             this.server.getPlayerList().broadcastMessage(new TranslatableComponent("fateubw.chat.grailwar.start").withStyle(ChatFormatting.GOLD), ChatType.SYSTEM, Util.NIL_UUID);
         } else if (players.isEmpty()) {
@@ -247,7 +248,7 @@ public class GrailWarHandler extends SavedData {
             }
         });
         invalid.forEach(this.participants::remove);
-        if (this.players().isEmpty()) {
+        if (this.players(false).isEmpty()) {
             this.reset(false);
             this.server.getPlayerList().broadcastMessage(new TranslatableComponent("fateubw.chat.grailwar.players.dead").withStyle(ChatFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
         } else if (this.isFull()) {
@@ -331,7 +332,7 @@ public class GrailWarHandler extends SavedData {
         if (this.isFull())
             return;
         List<ServerPlayer> players = new ArrayList<>();
-        Set<UUID> playerParticipant = this.players();
+        Set<UUID> playerParticipant = this.players(false);
         this.server.getPlayerList().getPlayers().forEach(player -> {
             if (playerParticipant.contains(player.getUUID()))
                 players.add(player);
