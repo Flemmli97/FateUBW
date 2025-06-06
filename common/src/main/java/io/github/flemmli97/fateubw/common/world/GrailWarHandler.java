@@ -367,7 +367,7 @@ public class GrailWarHandler extends SavedData {
         return CommonConfig.notificationWhitelist == CommonConfig.notifyBlacklist.contains(loc.toString());
     }
 
-    private void broadcastParticipants(Component message) {
+    public void broadcastParticipants(Component message) {
         this.server.getPlayerList().broadcastMessage(message,
                 player -> this.isParticipant(player) ? message : null, ChatType.SYSTEM, Util.NIL_UUID);
     }

@@ -35,7 +35,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
@@ -609,19 +608,22 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         ++this.deathTime;
         if (this.level instanceof ServerLevel serverLevel) {
             if (this.deathTime == 1) {
-                if (GrailWarHandler.get(serverLevel.getServer()).isParticipant(this) || this.getLastDamageSource() == CustomDamageSource.GRAIL_DAMAGE)
-                    this.level.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("fateubw.chat.servant.death").withStyle(ChatFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
+                GrailWarHandler handler = GrailWarHandler.get(serverLevel.getServer());
+                if (handler.isParticipant(this) || this.getLastDamageSource() == CustomDamageSource.GRAIL_DAMAGE) {
+                    handler.broadcastParticipants(new TranslatableComponent("fateubw.chat.servant.death").withStyle(ChatFormatting.RED));
+                }
                 this.playSound(SoundEvents.WITHER_SPAWN, 1.0F, 1.0F);
                 this.getAnimationHandler().setAnimation(this.deathAnim());
             }
-
-            if (this.deathTime > 15 && this.deathTime % 5 == 0 && (this.lastHurtByPlayerTime > 0 || this.isAlwaysExperienceDropper()) && this.shouldDropExperience() && this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
-                int exp = this.xpReward;
-                int splitExp;
-                while (exp > 0) {
-                    splitExp = ExperienceOrb.getExperienceValue(exp);
-                    exp -= splitExp;
-                    this.level.addFreshEntity(new ExperienceOrb(this.level, this.getX(), this.getY(), this.getZ(), splitExp));
+            if (this.getLastDamageSource() != CustomDamageSource.GRAIL_DAMAGE) {
+                if (this.deathTime > 15 && this.deathTime % 5 == 0 && (this.lastHurtByPlayerTime > 0 || this.isAlwaysExperienceDropper()) && this.shouldDropExperience() && this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
+                    int exp = this.xpReward;
+                    int splitExp;
+                    while (exp > 0) {
+                        splitExp = ExperienceOrb.getExperienceValue(exp);
+                        exp -= splitExp;
+                        this.level.addFreshEntity(new ExperienceOrb(this.level, this.getX(), this.getY(), this.getZ(), splitExp));
+                    }
                 }
             }
             AnimatedAction anim = this.getAnimationHandler().getAnimation();
