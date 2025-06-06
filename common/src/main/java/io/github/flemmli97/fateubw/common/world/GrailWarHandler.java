@@ -400,6 +400,39 @@ public class GrailWarHandler extends SavedData {
         return servant;
     }
 
+    /**
+     * Move masterless servant to a random player if too far away
+     */
+    public void moveToPlayer(BaseServant servant) {
+        if (servant.hasOwner() || servant.getServer() == null)
+            return;
+        if (!this.hasPlayersNearby(servant)) {
+            List<ServerPlayer> players = servant.getServer().getPlayerList().getPlayers().stream().filter(this::isParticipant).toList();
+            ServerPlayer player = players.get(servant.getRandom().nextInt(players.size()));
+            for (int i = 0; i < 10; i++) {
+                double xR = servant.getRandom().nextDouble() - 0.5;
+                double zR = servant.getRandom().nextDouble() - 0.5;
+                double x = player.getX() + xR * 128 + (xR <= 0 ? -24 : 24);
+                double z = player.getZ() + zR * 128 + (zR <= 0 ? -24 : 24);
+                double y = player.getY() + (servant.getRandom().nextInt(64) - 32);
+                if (servant.randomTeleport(x, y, z, false)) {
+                    break;
+                }
+            }
+        }
+    }
+
+    private boolean hasPlayersNearby(BaseServant servant) {
+        for (Player player : servant.level.players()) {
+            if (!this.isParticipant(player))
+                continue;
+            double dist = player.distanceToSqr(servant.getX(), player.getY(), servant.getZ());
+            if (dist < 256 * 256)
+                return true;
+        }
+        return false;
+    }
+
     public void load(CompoundTag compound) {
         ListTag tag = compound.getList("Participants", Tag.TAG_COMPOUND);
         tag.forEach(cT -> {

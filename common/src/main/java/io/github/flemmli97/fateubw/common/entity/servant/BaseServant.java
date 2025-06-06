@@ -454,6 +454,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
             if (handler.isParticipant(this)) {
                 ChunkPos pos = this.chunkPosition();
                 ((ServerChunkCache) this.level.getChunkSource()).addRegionTicket(TRACKINGTICKET, pos, 2, pos);
+                handler.moveToPlayer(this);
             }
 
             this.getAnimationHandler().runIfNotNull(this::handleAttack);
