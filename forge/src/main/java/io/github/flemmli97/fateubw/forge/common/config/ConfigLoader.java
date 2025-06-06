@@ -8,6 +8,7 @@ public class ConfigLoader {
     public static void loadClient() {
         ClientConfig.manaX = ConfigSpecs.CLIENT_CONFIG.manaBarX.get();
         ClientConfig.manaY = ConfigSpecs.CLIENT_CONFIG.manaBarY.get();
+        ClientConfig.manaBarPosition = ConfigSpecs.CLIENT_CONFIG.manaBarPosition.get();
     }
 
     public static void loadCommon() {

@@ -37,10 +37,12 @@ public class ConfigSpecs {
 
         public final CommentedJsonConfig.IntVal manaBarX;
         public final CommentedJsonConfig.IntVal manaBarY;
+        public final CommentedJsonConfig.CommentedVal<ClientConfig.DisplayPosition> manaBarPosition;
 
         public Client(CommentedJsonConfig.Builder builder) {
             this.manaBarX = builder.comment("X Position of the mana bar").defineInRange("Mana X", ClientConfig.manaX, 0, Integer.MAX_VALUE);
             this.manaBarY = builder.comment("Y Position of the mana bar").defineInRange("Mana Y", ClientConfig.manaY, 0, Integer.MAX_VALUE);
+            this.manaBarPosition = builder.comment("Relative Position of the mana bar in regards to the screen").define("Mana Bar Anchor", ClientConfig.manaBarPosition);
             builder.registerReloadHandler(ConfigLoader::loadClient);
         }
     }

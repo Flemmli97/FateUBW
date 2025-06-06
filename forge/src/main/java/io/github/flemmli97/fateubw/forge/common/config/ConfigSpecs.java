@@ -21,10 +21,12 @@ public class ConfigSpecs {
 
         public final ForgeConfigSpec.IntValue manaBarX;
         public final ForgeConfigSpec.IntValue manaBarY;
+        public final ForgeConfigSpec.EnumValue<ClientConfig.DisplayPosition> manaBarPosition;
 
         public Client(ForgeConfigSpec.Builder builder) {
             this.manaBarX = builder.comment("X Position of the mana bar").defineInRange("Mana X", ClientConfig.manaX, 0, Integer.MAX_VALUE);
             this.manaBarY = builder.comment("Y Position of the mana bar").defineInRange("Mana Y", ClientConfig.manaY, 0, Integer.MAX_VALUE);
+            this.manaBarPosition = builder.comment("Relative Position of the mana bar in regards to the screen").defineEnum("Mana Bar Anchor", ClientConfig.manaBarPosition);
         }
     }
 
