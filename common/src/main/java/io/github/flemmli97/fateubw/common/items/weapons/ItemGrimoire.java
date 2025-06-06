@@ -1,6 +1,6 @@
 package io.github.flemmli97.fateubw.common.items.weapons;
 
-import io.github.flemmli97.fateubw.common.config.Config;
+import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.entity.summons.LesserMonster;
 import io.github.flemmli97.fateubw.platform.Platform;
 import net.minecraft.ChatFormatting;
@@ -27,14 +27,14 @@ public class ItemGrimoire extends Item {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
-        if (Config.Common.grimoireMana > 0)
-            tooltipComponents.add(new TranslatableComponent("fateubw.tooltip.item.mana", Config.Common.grimoireMana).withStyle(ChatFormatting.AQUA));
+        if (CommonConfig.grimoireMana > 0)
+            tooltipComponents.add(new TranslatableComponent("fateubw.tooltip.item.mana", CommonConfig.grimoireMana).withStyle(ChatFormatting.AQUA));
     }
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         if (!level.isClientSide) {
-            if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).map(mana -> mana.useMana(player, Config.Common.grimoireMana)).orElse(false)) {
+            if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).map(mana -> mana.useMana(player, CommonConfig.grimoireMana)).orElse(false)) {
                 this.spawn(player, player.getItemInHand(hand));
                 return InteractionResultHolder.consume(player.getItemInHand(hand));
             }

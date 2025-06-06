@@ -1,7 +1,7 @@
 package io.github.flemmli97.fateubw.common.items.weapons;
 
 import io.github.flemmli97.fateubw.Fate;
-import io.github.flemmli97.fateubw.common.config.Config;
+import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.entity.misc.ArcherArrow;
 import io.github.flemmli97.fateubw.common.entity.misc.CaladBolg;
 import io.github.flemmli97.fateubw.common.items.SwingItem;
@@ -38,10 +38,10 @@ public class ItemArcherBow extends BowItem implements SwingItem {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
-        if (Config.Common.archerBowMana > 0)
-            tooltipComponents.add(new TranslatableComponent("fateubw.tooltip.item.bow.arrow", Config.Common.archerBowMana).withStyle(ChatFormatting.AQUA));
-        if (Config.Common.caladbolgMana > 0)
-            tooltipComponents.add(new TranslatableComponent("fateubw.tooltip.item.caladbolg", Config.Common.caladbolgMana).withStyle(ChatFormatting.AQUA));
+        if (CommonConfig.archerBowMana > 0)
+            tooltipComponents.add(new TranslatableComponent("fateubw.tooltip.item.bow.arrow", CommonConfig.archerBowMana).withStyle(ChatFormatting.AQUA));
+        if (CommonConfig.caladbolgMana > 0)
+            tooltipComponents.add(new TranslatableComponent("fateubw.tooltip.item.caladbolg", CommonConfig.caladbolgMana).withStyle(ChatFormatting.AQUA));
     }
 
     @Override
@@ -50,7 +50,7 @@ public class ItemArcherBow extends BowItem implements SwingItem {
             if (player.isCreative())
                 this.setCharged(stack, true);
             else {
-                if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).map(cap -> cap.useMana(player, Config.Common.caladbolgMana)).orElse(false)) {
+                if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).map(cap -> cap.useMana(player, CommonConfig.caladbolgMana)).orElse(false)) {
                     this.setCharged(stack, true);
                 }
             }
@@ -69,7 +69,7 @@ public class ItemArcherBow extends BowItem implements SwingItem {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
-        if (player.isCreative() || this.charged(player.getItemInHand(hand)) || Platform.INSTANCE.getPlayerData(player).map(cap -> cap.getMana() >= Config.Common.archerBowMana).orElse(false)) {
+        if (player.isCreative() || this.charged(player.getItemInHand(hand)) || Platform.INSTANCE.getPlayerData(player).map(cap -> cap.getMana() >= CommonConfig.archerBowMana).orElse(false)) {
             player.startUsingItem(hand);
             return InteractionResultHolder.consume(player.getItemInHand(hand));
         } else {
@@ -98,7 +98,7 @@ public class ItemArcherBow extends BowItem implements SwingItem {
     public void spawnNormalArrow(ItemStack stack, Level world, LivingEntity entity, int timeLeft) {
         if (entity instanceof Player player) {
             boolean flag = player.getAbilities().instabuild || EnchantmentHelper.getItemEnchantmentLevel(Enchantments.INFINITY_ARROWS, stack) > 0
-                    || Platform.INSTANCE.getPlayerData(player).map(cap -> cap.useMana(player, Config.Common.archerBowMana)).orElse(false);
+                    || Platform.INSTANCE.getPlayerData(player).map(cap -> cap.useMana(player, CommonConfig.archerBowMana)).orElse(false);
             int i = this.getUseDuration(stack) - timeLeft;
 
             if (flag) {

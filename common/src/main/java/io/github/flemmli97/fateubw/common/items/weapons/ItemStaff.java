@@ -1,6 +1,6 @@
 package io.github.flemmli97.fateubw.common.items.weapons;
 
-import io.github.flemmli97.fateubw.common.config.Config;
+import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicBeam;
 import io.github.flemmli97.fateubw.platform.Platform;
 import net.minecraft.ChatFormatting;
@@ -31,15 +31,15 @@ public class ItemStaff extends Item {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
-        if (Config.Common.daggerThrowMana > 0)
-            tooltipComponents.add(new TranslatableComponent("fateubw.tooltip.item.mana", Config.Common.staffMana).withStyle(ChatFormatting.AQUA));
+        if (CommonConfig.daggerThrowMana > 0)
+            tooltipComponents.add(new TranslatableComponent("fateubw.tooltip.item.mana", CommonConfig.staffMana).withStyle(ChatFormatting.AQUA));
     }
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!level.isClientSide) {
-            if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).map(mana -> mana.getMana() >= Config.Common.staffMana).orElse(false)) {
+            if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).map(mana -> mana.getMana() >= CommonConfig.staffMana).orElse(false)) {
                 player.startUsingItem(hand);
                 return InteractionResultHolder.consume(stack);
             }
@@ -56,7 +56,7 @@ public class ItemStaff extends Item {
             return;
         }
         if (!level.isClientSide) {
-            if (!(entity instanceof Player player) || player.isCreative() || Platform.INSTANCE.getPlayerData(player).map(mana -> mana.useMana(player, Config.Common.staffMana)).orElse(false)) {
+            if (!(entity instanceof Player player) || player.isCreative() || Platform.INSTANCE.getPlayerData(player).map(mana -> mana.useMana(player, CommonConfig.staffMana)).orElse(false)) {
                 MagicBeam beam = new MagicBeam(level, entity);
                 beam.setPos(entity.getEyePosition().add(0, 2, 0));
                 Vec3 target = entity.position().add(entity.getLookAngle().scale(16));

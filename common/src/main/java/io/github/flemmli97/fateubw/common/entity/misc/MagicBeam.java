@@ -1,6 +1,6 @@
 package io.github.flemmli97.fateubw.common.entity.misc;
 
-import io.github.flemmli97.fateubw.common.config.Config;
+import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModParticles;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
@@ -125,7 +125,7 @@ public class MagicBeam extends BaseBeam {
 
     @Override
     public void onImpact(EntityHitResult result) {
-        result.getEntity().hurt(CustomDamageSource.magicBeam(this, this.getOwner()), (Utils.magicDamage(this.getOwner()) + Config.Common.magicBeam) * this.damageMultiplier);
+        result.getEntity().hurt(CustomDamageSource.magicBeam(this, this.getOwner()), (Utils.magicDamage(this.getOwner()) + CommonConfig.magicBeam) * this.damageMultiplier);
     }
 
     private int getPreShootTick() {

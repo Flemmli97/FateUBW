@@ -1,7 +1,7 @@
 package io.github.flemmli97.fateubw.common.items.weapons;
 
 import io.github.flemmli97.fateubw.common.attachment.PlayerData;
-import io.github.flemmli97.fateubw.common.config.Config;
+import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.entity.misc.ChainDagger;
 import io.github.flemmli97.fateubw.platform.Platform;
 import net.minecraft.ChatFormatting;
@@ -30,8 +30,8 @@ public class ItemMedusaDagger extends SwordItem {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
-        if (Config.Common.chainMana > 0)
-            tooltipComponents.add(new TranslatableComponent("fateubw.tooltip.item.mana", Config.Common.chainMana).withStyle(ChatFormatting.AQUA));
+        if (CommonConfig.chainMana > 0)
+            tooltipComponents.add(new TranslatableComponent("fateubw.tooltip.item.mana", CommonConfig.chainMana).withStyle(ChatFormatting.AQUA));
     }
 
     @Override
@@ -40,7 +40,7 @@ public class ItemMedusaDagger extends SwordItem {
             Optional<PlayerData> opt = Platform.INSTANCE.getPlayerData(player);
             ChainDagger thrownDagger = opt.map(PlayerData::getThrownDagger).orElse(null);
             if (thrownDagger == null) {
-                if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).map(mana -> mana.useMana(player, Config.Common.chainMana)).orElse(false)) {
+                if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).map(mana -> mana.useMana(player, CommonConfig.chainMana)).orElse(false)) {
                     ChainDagger dagger = new ChainDagger(world, player, hand == InteractionHand.MAIN_HAND);
                     dagger.shoot(player, player.getXRot(), player.getYRot(), 0, 1.5f, 0);
                     world.addFreshEntity(dagger);

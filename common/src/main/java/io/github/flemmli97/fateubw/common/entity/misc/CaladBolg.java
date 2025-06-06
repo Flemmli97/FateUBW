@@ -1,6 +1,6 @@
 package io.github.flemmli97.fateubw.common.entity.misc;
 
-import io.github.flemmli97.fateubw.common.config.Config;
+import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
@@ -59,7 +59,7 @@ public class CaladBolg extends BaseProjectile {
     }
 
     protected void doExplosion(Entity hit) {
-        float dmg = Utils.magicDamage(this.getOwner()) + Config.Common.caladBolgDmg;
+        float dmg = Utils.magicDamage(this.getOwner()) + CommonConfig.caladBolgDmg;
         if (hit != null)
             hit.hurt(CustomDamageSource.caladBolg(this, this.getOwner()), dmg);
         Vec3 pos = hit != null ? hit.position() : this.position();

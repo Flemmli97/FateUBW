@@ -1,6 +1,6 @@
 package io.github.flemmli97.fateubw.common.items.weapons;
 
-import io.github.flemmli97.fateubw.common.config.Config;
+import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.entity.misc.GaeBolg;
 import io.github.flemmli97.fateubw.common.lib.ItemTiers;
 import io.github.flemmli97.fateubw.platform.Platform;
@@ -28,15 +28,15 @@ public class ItemGaeBolg extends ClassSpear {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
-        if (Config.Common.gaeBolgMana > 0)
-            tooltipComponents.add(new TranslatableComponent("fateubw.tooltip.item.mana", Config.Common.gaeBolgMana).withStyle(ChatFormatting.AQUA));
+        if (CommonConfig.gaeBolgMana > 0)
+            tooltipComponents.add(new TranslatableComponent("fateubw.tooltip.item.mana", CommonConfig.gaeBolgMana).withStyle(ChatFormatting.AQUA));
     }
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!world.isClientSide) {
-            if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).map(mana -> mana.useMana(player, Config.Common.gaeBolgMana)).orElse(false)) {
+            if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).map(mana -> mana.useMana(player, CommonConfig.gaeBolgMana)).orElse(false)) {
                 GaeBolg gaeBolg = new GaeBolg(world, player);
                 gaeBolg.shoot(player, player.getXRot(), player.getYRot(), 0, 1.5F, 0);
                 world.addFreshEntity(gaeBolg);

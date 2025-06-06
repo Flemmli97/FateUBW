@@ -1,7 +1,7 @@
 package io.github.flemmli97.fateubw.common.entity.misc;
 
 import com.mojang.datafixers.util.Pair;
-import io.github.flemmli97.fateubw.common.config.Config;
+import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModParticles;
 import io.github.flemmli97.fateubw.common.registry.ModSounds;
@@ -230,7 +230,7 @@ public class BabylonWeapon extends BaseProjectile {
     public void setWeapon(ItemStack stack) {
         if (!stack.isEmpty()) {
             this.entityData.set(WEAPON_TYPE, stack);
-            this.dmg = ItemUtils.damage(stack) * Config.Common.babylonScale;
+            this.dmg = ItemUtils.damage(stack) * CommonConfig.babylonScale;
         }
     }
 
@@ -279,7 +279,7 @@ public class BabylonWeapon extends BaseProjectile {
             BabylonWeapon weapon = new BabylonWeapon(thrower.level, thrower, target);
             weapon.shoot(thrower, 0, 180 + thrower.getYRot(), 0, 0.5F, 10);
             weapon.setPos(offset.x, offset.y, offset.z);
-            weapon.setWeapon(Config.Common.babylonWeapons.getRandomWeapon(weapon.random));
+            weapon.setWeapon(CommonConfig.babylonWeapons.getRandomWeapon(weapon.random));
             weapon.level.addFreshEntity(weapon);
         }
     }
@@ -316,7 +316,7 @@ public class BabylonWeapon extends BaseProjectile {
             weapon.shoot(thrower, offset.getSecond(), offset.getFirst(), 0, 0.5F, 10);
             Vec3 area = pos.add(Vec3.directionFromRotation(-offset.getSecond(), offset.getFirst()).scale(range));
             weapon.setPos(area.x, area.y, area.z);
-            weapon.setWeapon(Config.Common.babylonWeapons.getRandomWeapon(weapon.random));
+            weapon.setWeapon(CommonConfig.babylonWeapons.getRandomWeapon(weapon.random));
             weapon.level.addFreshEntity(weapon);
         }
     }

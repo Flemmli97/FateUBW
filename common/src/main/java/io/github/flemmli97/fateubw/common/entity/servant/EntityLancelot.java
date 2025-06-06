@@ -3,7 +3,7 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 
 import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.Fate;
-import io.github.flemmli97.fateubw.common.config.Config;
+import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.entity.servant.ai.LancelotAttackAI;
 import io.github.flemmli97.fateubw.common.items.weapons.ClassSpear;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
@@ -234,7 +234,7 @@ public class EntityLancelot extends BaseServant {
             return this.getVehicle().hurt(damageSource, damage);
         if (!damageSource.isBypassInvul() && !this.level.isClientSide) {
             if (damageSource.isProjectile() && !damageSource.isBypassArmor()) {
-                if (this.getRandom().nextFloat() < Config.Common.lancelotReflectChance && damageSource.getDirectEntity() != null
+                if (this.getRandom().nextFloat() < CommonConfig.lancelotReflectChance && damageSource.getDirectEntity() != null
                         && !(damageSource.getDirectEntity() instanceof LivingEntity)) {
                     this.reflectProjectile(damageSource.getDirectEntity());
                     this.level.playSound(null, this.blockPosition(), SoundEvents.ANVIL_PLACE, SoundSource.NEUTRAL, 1, 1);

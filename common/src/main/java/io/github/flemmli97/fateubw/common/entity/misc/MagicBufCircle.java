@@ -1,6 +1,6 @@
 package io.github.flemmli97.fateubw.common.entity.misc;
 
-import io.github.flemmli97.fateubw.common.config.Config;
+import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.entity.EntityUtil;
@@ -66,7 +66,7 @@ public class MagicBufCircle extends Entity implements OwnableEntity {
                     entity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 1, 2, true, false));
                 }
             }
-            if (this.livingTick > Config.Common.medeaCircleSpan || this.getOwner() == null || this.getOwner().isDeadOrDying())
+            if (this.livingTick > CommonConfig.medeaCircleSpan || this.getOwner() == null || this.getOwner().isDeadOrDying())
                 this.discard();
         }
     }

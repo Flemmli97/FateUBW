@@ -1,7 +1,7 @@
 package io.github.flemmli97.fateubw.common.entity.summons;
 
 import io.github.flemmli97.fateubw.api.datapack.AttributeHolderProperties;
-import io.github.flemmli97.fateubw.common.config.Config;
+import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.entity.ai.TargetOwnerEnemyGoal;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
@@ -102,7 +102,7 @@ public class LesserMonster extends PathfinderMob implements IAnimated, OwnableEn
         super.tick();
         if (!this.level.isClientSide) {
             this.livingTicks++;
-            if (this.livingTicks > Config.Common.gillesMinionDuration)
+            if (this.livingTicks > CommonConfig.gillesMinionDuration)
                 this.remove(RemovalReason.KILLED);
             AnimatedAction anim = this.getAnimationHandler().getAnimation();
             if (anim != null && anim.is(ATTACK) && anim.isAt("attack")) {

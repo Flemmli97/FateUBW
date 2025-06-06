@@ -3,7 +3,7 @@ package io.github.flemmli97.fateubw.common.network;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.client.AttackBBRender;
 import io.github.flemmli97.fateubw.client.ClientHandler;
-import io.github.flemmli97.fateubw.common.config.Config;
+import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.platform.NetworkCalls;
 import io.github.flemmli97.tenshilib.common.utils.OrientedBoundingBox;
 import net.minecraft.network.FriendlyByteBuf;
@@ -16,7 +16,7 @@ public class S2CAttackDebug implements Packet {
     public static final ResourceLocation ID = new ResourceLocation(Fate.MODID, "s2c_attack_debug");
 
     public static void sendDebugPacket(OrientedBoundingBox aabb, EnumAABBType type, Entity entity) {
-        if (Config.Common.debugAttack)
+        if (CommonConfig.debugAttack)
             NetworkCalls.INSTANCE.sendToTracking(new S2CAttackDebug(aabb, type), entity);
     }
 
@@ -44,7 +44,7 @@ public class S2CAttackDebug implements Packet {
 
     public static void handle(S2CAttackDebug pkt) {
         Player player = ClientHandler.clientPlayer();
-        if (player == null || !Config.Common.debugAttack)
+        if (player == null || !CommonConfig.debugAttack)
             return;
         AttackBBRender.INST.addNewAABB(pkt.obb, pkt.duration, pkt.type);
     }

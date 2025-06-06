@@ -1,7 +1,7 @@
 package io.github.flemmli97.fateubw.common.world;
 
 import com.google.common.collect.ImmutableSet;
-import io.github.flemmli97.fateubw.common.config.Config;
+import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.datapack.EntityPropsManager;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
@@ -146,7 +146,7 @@ public class GrailWarHandler extends SavedData {
     }
 
     public boolean isFull() {
-        return this.joinedParticipants >= Config.Common.maxPlayer;
+        return this.joinedParticipants >= CommonConfig.maxPlayer;
     }
 
     public boolean isParticipant(Entity entity) {
@@ -175,7 +175,7 @@ public class GrailWarHandler extends SavedData {
         this.loadTickets(level);
         switch (this.phase) {
             case NONE -> {
-                if (Math.abs(day(level) - this.lastGrailEndDay) > Config.Common.grailWarCooldown
+                if (Math.abs(day(level) - this.lastGrailEndDay) > CommonConfig.grailWarCooldown
                         && level.getDayTime() % 24000 == 1) {
                     this.setupStart();
                 }
@@ -185,7 +185,7 @@ public class GrailWarHandler extends SavedData {
                     this.start();
             }
             case ACTIVE -> {
-                if (Config.Common.fillMissingSlots && --this.timeToNextServant <= 0) {
+                if (CommonConfig.fillMissingSlots && --this.timeToNextServant <= 0) {
                     this.trySpawnNPCServant(level);
                 }
                 this.runGrailWar();
@@ -209,7 +209,7 @@ public class GrailWarHandler extends SavedData {
     }
 
     private void setupStart() {
-        this.joinTime = Config.Common.joinTime;
+        this.joinTime = CommonConfig.joinTime;
         this.phase = Phase.JOIN;
         this.server.getPlayerList().broadcastMessage(new TranslatableComponent("fateubw.chat.grailwar.init", this.joinTime / 20)
                 .withStyle(ChatFormatting.LIGHT_PURPLE), ChatType.SYSTEM, Util.NIL_UUID);
@@ -218,13 +218,13 @@ public class GrailWarHandler extends SavedData {
     private void start() {
         this.phase = Phase.ACTIVE;
         Set<UUID> players = this.players();
-        if (players.size() >= Config.Common.minPlayer) {
+        if (players.size() >= CommonConfig.minPlayer) {
             this.server.getPlayerList().broadcastMessage(new TranslatableComponent("fateubw.chat.grailwar.start").withStyle(ChatFormatting.GOLD), ChatType.SYSTEM, Util.NIL_UUID);
         } else if (players.isEmpty()) {
             this.server.getPlayerList().broadcastMessage(new TranslatableComponent("fateubw.chat.grailwar.players.none").withStyle(ChatFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
             this.reset(false);
         } else {
-            this.joinTime = Config.Common.joinTime;
+            this.joinTime = CommonConfig.joinTime;
             this.phase = Phase.JOIN;
             this.server.getPlayerList().broadcastMessage(new TranslatableComponent("fateubw.chat.grailwar.players.missing").withStyle(ChatFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
         }
@@ -299,9 +299,9 @@ public class GrailWarHandler extends SavedData {
 
     public boolean canSpawnMoreServants(Level level) {
         for (EntityPropsManager.EntityTypeAndID entry : DatapackHandler.SERVANT_PROPS.getServants(level)) {
-            if (!Config.Common.allowDuplicateServant && this.servantsTypes.contains(entry.id()))
+            if (!CommonConfig.allowDuplicateServant && this.servantsTypes.contains(entry.id()))
                 return false;
-            if (!Config.Common.allowDuplicateClass && this.servantClasses.contains(DatapackHandler.SERVANT_PROPS.get(entry.id()).getServantClass()))
+            if (!CommonConfig.allowDuplicateClass && this.servantClasses.contains(DatapackHandler.SERVANT_PROPS.get(entry.id()).getServantClass()))
                 return false;
         }
         return true;
@@ -318,13 +318,13 @@ public class GrailWarHandler extends SavedData {
     public boolean canSpawnServantType(ResourceLocation entityType) {
         if (this.isFull())
             return false;
-        return Config.Common.allowDuplicateServant || !this.servantsTypes.contains(entityType);
+        return CommonConfig.allowDuplicateServant || !this.servantsTypes.contains(entityType);
     }
 
     public boolean canSpawnServantClass(ResourceLocation servantClass) {
         if (this.isFull())
             return false;
-        return Config.Common.allowDuplicateClass || !this.servantClasses.contains(servantClass);
+        return CommonConfig.allowDuplicateClass || !this.servantClasses.contains(servantClass);
     }
 
     private void trySpawnNPCServant(ServerLevel level) {
@@ -336,7 +336,7 @@ public class GrailWarHandler extends SavedData {
             if (playerParticipant.contains(player.getUUID()))
                 players.add(player);
         });
-        int spawns = Math.min(level.random.nextInt(Config.Common.maxServantCircle) + 1, Config.Common.maxPlayer - this.joinedParticipants);
+        int spawns = Math.min(level.random.nextInt(CommonConfig.maxServantCircle) + 1, CommonConfig.maxPlayer - this.joinedParticipants);
         for (int i = 0; i < spawns; i++) {
             if (players.isEmpty())
                 return;
@@ -351,9 +351,9 @@ public class GrailWarHandler extends SavedData {
             BaseServant servant = this.summonRandomServant(player.getLevel(), new Vec3(x, y, z), null, null, true);
             if (servant != null) {
                 player.getLevel().getChunkSource().addRegionTicket(BaseServant.TRACKINGTICKET, cpos, 1, cpos);
-                this.timeToNextServant = Mth.nextInt(player.getLevel().random, Config.Common.servantMinSpawnDelay, Config.Common.servantMaxSpawnDelay);
+                this.timeToNextServant = Mth.nextInt(player.getLevel().random, CommonConfig.servantMinSpawnDelay, CommonConfig.servantMaxSpawnDelay);
                 if (this.notify(Registry.ENTITY_TYPE.getKey(servant.getType()))) {
-                    if (Config.Common.notifyAll)
+                    if (CommonConfig.notifyAll)
                         this.broadcastParticipants(new TranslatableComponent("fateubw.chat.grailwar.spawn", player.getName()).withStyle(ChatFormatting.GRAY));
                     else
                         player.sendMessage(new TranslatableComponent("fateubw.chat.grailwar.spawn", player.getName()).withStyle(ChatFormatting.GRAY), Util.NIL_UUID);
@@ -363,7 +363,7 @@ public class GrailWarHandler extends SavedData {
     }
 
     private boolean notify(ResourceLocation loc) {
-        return Config.Common.notificationWhitelist == Config.Common.notifyBlacklist.contains(loc.toString());
+        return CommonConfig.notificationWhitelist == CommonConfig.notifyBlacklist.contains(loc.toString());
     }
 
     private void broadcastParticipants(Component message) {

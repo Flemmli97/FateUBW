@@ -2,7 +2,7 @@ package io.github.flemmli97.fateubw.common.network;
 
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.attachment.PlayerData;
-import io.github.flemmli97.fateubw.common.config.Config;
+import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.items.ItemServantCommander;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
@@ -96,7 +96,7 @@ public record C2SServantCommand(Type command) implements Packet {
             case TELEPORT:
                 servant.randomTeleport(sender.getX(), sender.getY(), sender.getZ(), false);
                 servant.setTarget(null);
-                if (Config.Common.punishTeleport) {
+                if (CommonConfig.punishTeleport) {
                     for (BaseServant others : sender.level.getEntitiesOfClass(BaseServant.class, sender.getBoundingBox().inflate(32)))
                         if (others != servant && !Utils.alliedTo(sender, others)) {
                             others.setTarget(sender);
@@ -109,7 +109,7 @@ public record C2SServantCommand(Type command) implements Packet {
                 break;
             case BOOST:
                 if (cap.useCommandSeal(sender)) {
-                    for (MobEffectInstance effect : Config.Common.npBoostEffect.potions())
+                    for (MobEffectInstance effect : CommonConfig.npBoostEffect.potions())
                         servant.addEffect(effect);
                     sender.sendMessage(new TranslatableComponent("fateubw.chat.command.spell.success").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 } else

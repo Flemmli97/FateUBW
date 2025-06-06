@@ -1,6 +1,6 @@
 package io.github.flemmli97.fateubw.common.entity.misc;
 
-import io.github.flemmli97.fateubw.common.config.Config;
+import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.entity.servant.EntityCuchulainn;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
@@ -35,9 +35,9 @@ public class GaeBolg extends BaseProjectile {
 
     @Override
     protected boolean entityRayTraceHit(EntityHitResult res) {
-        res.getEntity().hurt(CustomDamageSource.gaeBolg(this, this.getOwner()), Utils.magicDamage(this.getOwner()) + Config.Common.gaeBolgDmg);
+        res.getEntity().hurt(CustomDamageSource.gaeBolg(this, this.getOwner()), Utils.magicDamage(this.getOwner()) + CommonConfig.gaeBolgDmg);
         if (res.getEntity() instanceof LivingEntity && (!(res.getEntity() instanceof Player) || !((Player) res.getEntity()).getAbilities().invulnerable)) {
-            for (MobEffectInstance effect : Config.Common.gaeBolgEffect.potions()) {
+            for (MobEffectInstance effect : CommonConfig.gaeBolgEffect.potions()) {
                 //The no jump effect from jump boost doesnt seem to affect entities
                 if (effect.getEffect() != MobEffects.JUMP || res.getEntity() instanceof Player)
                     ((LivingEntity) res.getEntity()).addEffect(effect);

@@ -2,7 +2,7 @@ package io.github.flemmli97.fateubw.common.entity.misc;
 
 import com.mojang.math.Vector3f;
 import io.github.flemmli97.fateubw.client.ShakeHandler;
-import io.github.flemmli97.fateubw.common.config.Config;
+import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModParticles;
 import io.github.flemmli97.fateubw.common.registry.ModSounds;
@@ -85,6 +85,6 @@ public class EnumaElish extends BaseBeam {
 
     @Override
     public void onImpact(EntityHitResult result) {
-        result.getEntity().hurt(CustomDamageSource.ea(this, this.getOwner()), Utils.magicDamage(this.getOwner()) + Config.Common.eaDamage);
+        result.getEntity().hurt(CustomDamageSource.ea(this, this.getOwner()), Utils.magicDamage(this.getOwner()) + CommonConfig.eaDamage);
     }
 }
