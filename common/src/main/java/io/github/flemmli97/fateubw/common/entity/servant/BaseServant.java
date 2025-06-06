@@ -715,7 +715,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
             return super.hurt(damageSource, damage);
         } else {
             if (damageSource.getEntity() == null || !damageSource.getEntity().getType().is(FateTags.STRONG_MOB))
-                damage *= 0.5;
+                damage *= 0.75;
             return super.hurt(damageSource, Math.min(50, damage));
         }
     }

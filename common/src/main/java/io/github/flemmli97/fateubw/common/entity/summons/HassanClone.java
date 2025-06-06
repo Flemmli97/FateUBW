@@ -297,7 +297,7 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
             return super.hurt(damageSource, damage);
         } else {
             if (damageSource.getEntity() == null || !damageSource.getEntity().getType().is(FateTags.STRONG_MOB))
-                damage *= 0.5;
+                damage *= 0.75;
             if (damageSource.isProjectile() && !damageSource.isBypassArmor() && this.projectileBlockChance(damageSource, damage)) {
                 this.level.playSound(null, this.blockPosition(), SoundEvents.SHIELD_BLOCK, SoundSource.NEUTRAL, 1, 1);
                 if (damageSource.getDirectEntity() != null)
