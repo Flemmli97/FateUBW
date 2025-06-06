@@ -2,7 +2,6 @@ package io.github.flemmli97.fateubw.common.network;
 
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
-import io.github.flemmli97.fateubw.platform.NetworkCalls;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -30,8 +29,9 @@ public record C2SMessageGui(C2SMessageGui.Type message) implements Packet {
             return;
         if (pkt.message == Type.SERVANT) {
             GrailWarHandler grailWar = GrailWarHandler.get(sender.getServer());
-            if (grailWar.getServant(sender) != null)
-                NetworkCalls.INSTANCE.sendToClient(new S2COpenGui(grailWar.getServant(sender)), sender);
+            if (grailWar.getServant(sender) != null) {
+                S2CServantGui.sendServantGui(sender, grailWar.getServant(sender));
+            }
         }
         if (pkt.message == Type.TEAM) {
             S2CTeamGuiData.sendTeamData(sender, true);

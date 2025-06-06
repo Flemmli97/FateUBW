@@ -6,8 +6,9 @@ import io.github.flemmli97.fateubw.client.gui.GuiHolyGrail;
 import io.github.flemmli97.fateubw.client.gui.ManaBar;
 import io.github.flemmli97.fateubw.client.gui.SpawnEggScreen;
 import io.github.flemmli97.fateubw.client.gui.TeamGui;
-import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
+import io.github.flemmli97.fateubw.common.network.C2SServantCommand;
 import io.github.flemmli97.fateubw.common.network.C2STeamMessage;
+import io.github.flemmli97.fateubw.common.network.S2CServantGui;
 import io.github.flemmli97.fateubw.common.world.GrailTeam;
 import io.github.flemmli97.fateubw.platform.NetworkCalls;
 import net.minecraft.client.KeyMapping;
@@ -55,8 +56,13 @@ public class ClientHandler {
         return isPaused ? pausedPartial : Minecraft.getInstance().getFrameTime();
     }
 
-    public static void displayCommandGui(BaseServant servant) {
-        Minecraft.getInstance().setScreen(new CommandGui(servant));
+    public static void displayCommandGui(S2CServantGui.ServantMetaData data, boolean open) {
+        if (Minecraft.getInstance().screen instanceof CommandGui teamGui) {
+            teamGui.update(data);
+        } else if (open)
+            Minecraft.getInstance().setScreen(new CommandGui(data));
+        else
+            NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.CLOSE, data.entityId()));
     }
 
     public static void openGrailGui(Map<ResourceLocation, Component> rewards) {

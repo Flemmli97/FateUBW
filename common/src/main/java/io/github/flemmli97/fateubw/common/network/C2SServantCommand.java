@@ -38,31 +38,31 @@ public record C2SServantCommand(Type command, int entityId) implements Packet {
         if (servant == null)
             return;
         switch (pkt.command) {
-            case NORMAL:
+            case NORMAL -> {
                 servant.updateAI(pkt.command);
                 sender.sendMessage(new TranslatableComponent("fateubw.chat.command.attackservant").withStyle(ChatFormatting.RED), Util.NIL_UUID);
-                break;
-            case AGGRESSIVE:
+            }
+            case AGGRESSIVE -> {
                 servant.updateAI(pkt.command);
                 sender.sendMessage(new TranslatableComponent("fateubw.chat.command.attackall").withStyle(ChatFormatting.RED), Util.NIL_UUID);
-                break;
-            case DEFENSIVE:
+            }
+            case DEFENSIVE -> {
                 servant.updateAI(pkt.command);
                 sender.sendMessage(new TranslatableComponent("fateubw.chat.command.defensive").withStyle(ChatFormatting.RED), Util.NIL_UUID);
-                break;
-            case FOLLOW:
+            }
+            case FOLLOW -> {
                 servant.updateAI(pkt.command);
                 sender.sendMessage(new TranslatableComponent("fateubw.chat.command.follow").withStyle(ChatFormatting.RED), Util.NIL_UUID);
-                break;
-            case STAY:
+            }
+            case STAY -> {
                 servant.updateAI(pkt.command);
                 sender.sendMessage(new TranslatableComponent("fateubw.chat.command.stay").withStyle(ChatFormatting.RED), Util.NIL_UUID);
-                break;
-            case GUARD:
+            }
+            case GUARD -> {
                 servant.updateAI(pkt.command);
                 sender.sendMessage(new TranslatableComponent("fateubw.chat.command.patrol").withStyle(ChatFormatting.RED), Util.NIL_UUID);
-                break;
-            case NP:
+            }
+            case NP -> {
                 if (!servant.forcedNP) {
                     if (!sender.isCreative()) {
                         if (data.useMana(sender, servant.props().hogouMana()) && data.useCommandSeal(sender)) {
@@ -78,11 +78,11 @@ public record C2SServantCommand(Type command, int entityId) implements Packet {
                 } else {
                     sender.sendMessage(new TranslatableComponent("fateubw.chat.command.npprep").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 }
-                break;
-            case KILL:
+            }
+            case KILL -> {
                 servant.onKillOrder(sender, data.useCommandSeal(sender));
-                break;
-            case TELEPORT:
+            }
+            case TELEPORT -> {
                 servant.randomTeleport(sender.getX(), sender.getY(), sender.getZ(), false);
                 servant.setTarget(null);
                 if (CommonConfig.punishTeleport) {
@@ -95,21 +95,22 @@ public record C2SServantCommand(Type command, int entityId) implements Packet {
                     sender.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 1200, 1));
                     sender.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 600, 1));
                 }
-                break;
-            case BOOST:
+            }
+            case BOOST -> {
                 if (Platform.INSTANCE.getPlayerData(sender).map(d -> d.useCommandSeal(sender)).orElse(false)) {
                     for (MobEffectInstance effect : CommonConfig.npBoostEffect.potions())
                         servant.addEffect(effect);
                     sender.sendMessage(new TranslatableComponent("fateubw.chat.command.spell.success").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 } else
                     sender.sendMessage(new TranslatableComponent("fateubw.chat.command.spell.fail").withStyle(ChatFormatting.RED), Util.NIL_UUID);
-                break;
-            case TARGET:
+            }
+            case TARGET -> {
                 EntityHitResult res = RayTraceUtils.calculateEntityFromLook(sender, 16);
                 if (res != null && res.getEntity() instanceof LivingEntity target && !Utils.alliedTo(sender, target)) {
                     servant.setTarget(target);
                 }
-                break;
+            }
+            case CLOSE -> servant.setSentOwnerData(false);
         }
     }
 
@@ -143,7 +144,8 @@ public record C2SServantCommand(Type command, int entityId) implements Packet {
         KILL,
         BOOST,
         TELEPORT,
-        TARGET
+        TARGET,
+        CLOSE
 
     }
 }

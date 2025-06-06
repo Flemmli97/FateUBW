@@ -8,9 +8,11 @@ import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.network.C2SMessageGui;
 import io.github.flemmli97.fateubw.common.network.C2SServantCommand;
 import io.github.flemmli97.fateubw.common.network.C2SServantSpecial;
+import io.github.flemmli97.fateubw.common.network.S2CServantGui;
 import io.github.flemmli97.fateubw.platform.NetworkCalls;
 import io.github.flemmli97.fateubw.platform.Platform;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
@@ -18,7 +20,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.HashMap;
@@ -33,15 +35,19 @@ public class CommandGui extends Screen {
     private final Map<String, Component> translationCache = new HashMap<>();
 
     private Pages currentPage = Pages.MENU;
-    private Random rand = new Random();
-    private int command1 = this.rand.nextInt(3);
-    private int command2 = this.rand.nextInt(3);
-    private int command3 = this.rand.nextInt(3);
-    private final BaseServant servant;
+    private final Random rand = new Random();
 
-    public CommandGui(BaseServant servant) {
+    private final int command1 = this.rand.nextInt(3);
+    private final int command2 = this.rand.nextInt(3);
+    private final int command3 = this.rand.nextInt(3);
+
+    private final BaseServant servant;
+    private S2CServantGui.ServantMetaData data;
+
+    public CommandGui(S2CServantGui.ServantMetaData data) {
         super(new TranslatableComponent("fateubw.gui.command"));
-        this.servant = servant;
+        this.servant = this.createFrom(data);
+        this.update(data);
     }
 
     private Component getComponent(String key, Consumer<MutableComponent> otherwise) {
@@ -67,14 +73,12 @@ public class CommandGui extends Screen {
         this.drawCommand(stack, capSync.getCommandSeals());
 
         this.minecraft.font.draw(stack, this.getComponent("fateubw.gui.name", c -> c.withStyle(ChatFormatting.DARK_RED)), this.width / 2 - 90, this.height / 2 - 5, 1);
-        this.minecraft.font.draw(stack, this.getComponent("fateubw.gui.damage", c -> c.withStyle(ChatFormatting.DARK_RED)), this.width / 2 - 90, this.height / 2 + 15, 1);
-        this.minecraft.font.draw(stack, this.getComponent("fateubw.gui.armor", c -> c.withStyle(ChatFormatting.DARK_RED)), this.width / 2 - 90, this.height / 2 + 35, 1);
-        this.minecraft.font.draw(stack, this.getComponent("fateubw.gui.nobel_phantasm", c -> c.withStyle(ChatFormatting.DARK_RED)), this.width / 2 - 90, this.height / 2 + 55, 1);
+        this.minecraft.font.draw(stack, this.getComponent("fateubw.gui.nobel_phantasm", c -> c.withStyle(ChatFormatting.DARK_RED)), this.width / 2 - 90, this.height / 2 + 15, 1);
+        this.minecraft.font.draw(stack, this.getComponent("fateubw.gui.nobel_phantasm_cost", c -> c.withStyle(ChatFormatting.DARK_RED)), this.width / 2 - 90, this.height / 2 + 35, 1);
         if (this.servant != null) {
             this.minecraft.font.draw(stack, this.servant.getRealName(), this.width / 2 - 90, this.height / 2 + 5, 1);
-            this.minecraft.font.draw(stack, String.valueOf((int) this.servant.getAttributeValue(Attributes.ATTACK_DAMAGE)), this.width / 2 - 90, this.height / 2 + 25, 1);
-            this.minecraft.font.draw(stack, String.valueOf((int) this.servant.getAttributeValue(Attributes.ARMOR)), this.width / 2 - 90, this.height / 2 + 45, 1);
-            this.minecraft.font.draw(stack, this.servant.nobelPhantasm(), this.width / 2 - 90, this.height / 2 + 65, 1);
+            this.minecraft.font.draw(stack, this.servant.nobelPhantasm(), this.width / 2 - 90, this.height / 2 + 25, 1);
+            this.minecraft.font.draw(stack, "" + this.data.npCost(), this.width / 2 - 90, this.height / 2 + 45, 1);
             float mouseXNew = (float) ((this.width - 200) / 2 + 51) - mouseX;
             float mouseYNew = (float) ((this.height - 180) / 2 + 75 - 50) - mouseY;
             InventoryScreen.renderEntityInInventory(this.width / 2 - 50, this.height / 2 - 20, 29, mouseXNew, mouseYNew, this.servant);
@@ -128,7 +132,7 @@ public class CommandGui extends Screen {
             }));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 + 8, 80, 20
                     , new TranslatableComponent("fateubw.gui.command.kill"), b -> {
-                NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.KILL, this.servant.getId()));
+                NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.KILL, this.entityId()));
                 NetworkCalls.INSTANCE.sendToServer(new C2SMessageGui(C2SMessageGui.Type.SERVANT));
             }));
             if (this.servant != null) {
@@ -143,22 +147,22 @@ public class CommandGui extends Screen {
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 82, 80, 20
                     , new TranslatableComponent("fateubw.gui.back"), this::backButton));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 52, 80, 20
-                    , new TranslatableComponent("fateubw.gui.command.aggressive"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.AGGRESSIVE, this.servant.getId()))));
+                    , new TranslatableComponent("fateubw.gui.command.aggressive"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.AGGRESSIVE, this.entityId()))));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 22, 80, 20
-                    , new TranslatableComponent("fateubw.gui.command.normal"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.NORMAL, this.servant.getId()))));
+                    , new TranslatableComponent("fateubw.gui.command.normal"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.NORMAL, this.entityId()))));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 + 8, 80, 20
-                    , new TranslatableComponent("fateubw.gui.command.defensive"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.DEFENSIVE, this.servant.getId()))));
+                    , new TranslatableComponent("fateubw.gui.command.defensive"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.DEFENSIVE, this.entityId()))));
         } else if (this.currentPage == Pages.MOVEMENT) {
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 82, 80, 20
                     , new TranslatableComponent("fateubw.gui.command.back"), this::backButton));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 52, 80, 20
-                    , new TranslatableComponent("fateubw.gui.command.follow"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.FOLLOW, this.servant.getId()))));
+                    , new TranslatableComponent("fateubw.gui.command.follow"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.FOLLOW, this.entityId()))));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 22, 80, 20
-                    , new TranslatableComponent("fateubw.gui.command.stay"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.STAY, this.servant.getId()))));
+                    , new TranslatableComponent("fateubw.gui.command.stay"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.STAY, this.entityId()))));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 + 8, 80, 20
-                    , new TranslatableComponent("fateubw.gui.command.protect"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.GUARD, this.servant.getId()))));
+                    , new TranslatableComponent("fateubw.gui.command.protect"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.GUARD, this.entityId()))));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 + 38, 80, 20
-                    , new TranslatableComponent("fateubw.gui.command.call"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.TELEPORT, this.servant.getId()))));
+                    , new TranslatableComponent("fateubw.gui.command.call"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.TELEPORT, this.entityId()))));
         } else if (this.currentPage == Pages.SPECIAL) {
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 82, 80, 20
                     , new TranslatableComponent("fateubw.gui.command.back"), this::backButton));
@@ -167,7 +171,7 @@ public class CommandGui extends Screen {
                     String id = this.servant.specialCommands()[i];
                     this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 52, 80, 20,
                             new TranslatableComponent(id),
-                            b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantSpecial(id, this.servant.getId()))));
+                            b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantSpecial(id, this.entityId()))));
                 }
         }
     }
@@ -178,12 +182,46 @@ public class CommandGui extends Screen {
     }
 
     @Override
+    public void removed() {
+        super.removed();
+        NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.CLOSE, this.entityId()));
+    }
+
+    @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (this.minecraft.options.keyInventory.matches(keyCode, scanCode)) {
             this.onClose();
             return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    public void update(S2CServantGui.ServantMetaData data) {
+        this.data = data;
+        if (this.servant != null && data != null) {
+            data.equipment().ifPresent(list ->
+                    list.forEach(p -> this.servant.setItemSlot(p.getFirst(), p.getSecond())));
+            if (data.syncedData() != null)
+                this.servant.getEntityData().assignValues(data.syncedData());
+        }
+    }
+
+    private BaseServant createFrom(S2CServantGui.ServantMetaData data) {
+        if (data == null)
+            return null;
+        Entity fromId = Minecraft.getInstance().level.getEntity(data.entityId());
+        if (fromId instanceof BaseServant servant) {
+            return servant;
+        }
+        Entity created = data.type().create(Minecraft.getInstance().level);
+        if (created instanceof BaseServant servant) {
+            return servant;
+        }
+        return null;
+    }
+
+    private int entityId() {
+        return this.data != null ? this.data.entityId() : 0;
     }
 
     private enum Pages {

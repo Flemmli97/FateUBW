@@ -29,7 +29,7 @@ public class PacketRegistrar {
         register.registerMessage(id++, S2CItemInUse.ID, S2CItemInUse.class, S2CItemInUse::write, S2CItemInUse::read, S2CItemInUse::handle);
         register.registerMessage(id++, S2CMana.ID, S2CMana.class, S2CMana::write, S2CMana::read, S2CMana::handle);
         register.registerMessage(id++, S2CPlayerCap.ID, S2CPlayerCap.class, S2CPlayerCap::write, S2CPlayerCap::read, S2CPlayerCap::handle);
-        register.registerMessage(id++, S2COpenGui.ID, S2COpenGui.class, S2COpenGui::write, S2COpenGui::read, S2COpenGui::handle);
+        register.registerMessage(id++, S2CServantGui.ID, S2CServantGui.class, S2CServantGui::write, S2CServantGui::read, S2CServantGui::handle);
         register.registerMessage(id++, S2CTeamGuiData.ID, S2CTeamGuiData.class, S2CTeamGuiData::write, S2CTeamGuiData::read, S2CTeamGuiData::handle);
         register.registerMessage(id++, S2CScreenShake.ID, S2CScreenShake.class, S2CScreenShake::write, S2CScreenShake::read, S2CScreenShake::handle);
         register.registerMessage(id++, S2CAttackDebug.ID, S2CAttackDebug.class, S2CAttackDebug::write, S2CAttackDebug::read, S2CAttackDebug::handle);

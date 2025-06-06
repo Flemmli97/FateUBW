@@ -1,7 +1,5 @@
 package io.github.flemmli97.fateubw.common.entity.servant;
 
-import com.google.common.collect.Lists;
-import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.api.datapack.ServantProperties;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
@@ -14,7 +12,7 @@ import io.github.flemmli97.fateubw.common.entity.ai.TargetNoneGoal;
 import io.github.flemmli97.fateubw.common.lib.FateTags;
 import io.github.flemmli97.fateubw.common.network.C2SServantCommand;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
-import io.github.flemmli97.fateubw.common.network.S2COpenGui;
+import io.github.flemmli97.fateubw.common.network.S2CServantGui;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailHolder;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailHolderProvider;
 import io.github.flemmli97.fateubw.common.registry.ModAttributes;
@@ -23,7 +21,6 @@ import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
-import io.github.flemmli97.fateubw.platform.NetworkCalls;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.AoeAttackEntity;
 import io.github.flemmli97.tenshilib.api.entity.IAnimated;
@@ -37,9 +34,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
-import net.minecraft.network.protocol.game.ClientboundSetEquipmentPacket;
-import net.minecraft.network.protocol.game.ClientboundUpdateAttributesPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -93,7 +87,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -119,7 +112,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     //PlayerUUID
     private Player owner;
 
-    private final TranslatableComponent hogou;
+    private final Component hogou;
 
     private final ServantProperties prop;
 
@@ -146,7 +139,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     public static final int MOVE_TICK_MAX = 3;
 
     private final List<ServerPlayer> tracked = new ArrayList<>();
-    private boolean addToOwner;
+    private boolean sendToOwnerData;
     private boolean initAnim;
 
     private final EntityTrailHolder<BaseServant> trailHolder = new EntityTrailHolder<>(this);
@@ -430,7 +423,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
         if (player.isShiftKeyDown() && player.getUUID().equals(this.getOwnerUUID())) {
             if (player instanceof ServerPlayer serverPlayer)
-                NetworkCalls.INSTANCE.sendToClient(new S2COpenGui(this), serverPlayer);
+                S2CServantGui.sendServantGui(serverPlayer, this);
             return InteractionResult.sidedSuccess(player.level.isClientSide);
         }
         return InteractionResult.FAIL;
@@ -460,17 +453,16 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
             GrailWarHandler handler = GrailWarHandler.get(serverLevel.getServer());
             if (handler.isParticipant(this)) {
                 ChunkPos pos = this.chunkPosition();
-                ((ServerChunkCache) this.level.getChunkSource()).addRegionTicket(TRACKINGTICKET, pos, 1, pos);
+                ((ServerChunkCache) this.level.getChunkSource()).addRegionTicket(TRACKINGTICKET, pos, 2, pos);
             }
 
             this.getAnimationHandler().runIfNotNull(this::handleAttack);
             if (this.getOwner() instanceof ServerPlayer serverPlayer) {
                 if (!this.tracked.contains(serverPlayer) && !this.isRemoved()) {
-                    if (!this.addToOwner) {
-                        this.addEntityOwner(serverPlayer);
-                        this.addToOwner = true;
+                    if (this.sendToOwnerData) {
+                        // Update meta for the player with gui open
+                        S2CServantGui.sendServantGui(serverPlayer, this, false);
                     }
-                    this.updateDataManager(serverPlayer);
                 }
             }
             if (this.getTarget() != null && this.getTarget().getVehicle() instanceof LivingEntity)
@@ -542,38 +534,15 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     @Override
     public void stopSeenByPlayer(ServerPlayer player) {
         this.tracked.remove(player);
-        this.addToOwner = false;
+    }
+
+    public void setSentOwnerData(boolean send) {
+        this.sendToOwnerData = send;
     }
 
     @Override
     public double getMyRidingOffset() {
         return StandingVehicle.shouldSit(this) ? -0.35 : 0;
-    }
-
-    // TODO: better way for this
-    private void addEntityOwner(ServerPlayer serverPlayer) {
-        serverPlayer.connection.send(this.getAddEntityPacket());
-        serverPlayer.connection.send(new ClientboundSetEntityDataPacket(this.getId(), this.entityData, true));
-        ArrayList<Pair<EquipmentSlot, ItemStack>> list = Lists.newArrayList();
-        for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
-            ItemStack itemStack = this.getItemBySlot(equipmentSlot);
-            if (itemStack.isEmpty()) continue;
-            list.add(Pair.of(equipmentSlot, itemStack.copy()));
-        }
-        if (!list.isEmpty()) {
-            serverPlayer.connection.send(new ClientboundSetEquipmentPacket(this.getId(), list));
-        }
-    }
-
-    private void updateDataManager(ServerPlayer player) {
-        SynchedEntityData entitydatamanager = this.getEntityData();
-        if (entitydatamanager.isDirty()) {
-            player.connection.send(new ClientboundSetEntityDataPacket(this.getId(), entitydatamanager, false));
-        }
-        Set<AttributeInstance> set = this.getAttributes().getDirtyAttributes();
-        if (!set.isEmpty()) {
-            player.connection.send(new ClientboundUpdateAttributesPacket(this.getId(), set));
-        }
     }
 
     //=====Death Handling
@@ -791,11 +760,6 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     }
 
     public void onForfeit(Player player) {
-
-    }
-
-    public boolean projectileBlockChance(DamageSource damageSource, float damage) {
-        return this.random.nextFloat() < (float) this.getAttributeValue(ModAttributes.PROJECTILE_BLOCK_CHANCE.get());
     }
 
     @Override

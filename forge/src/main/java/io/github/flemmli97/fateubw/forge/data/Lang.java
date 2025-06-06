@@ -3,11 +3,7 @@ package io.github.flemmli97.fateubw.forge.data;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.github.flemmli97.fateubw.Fate;
-import io.github.flemmli97.fateubw.common.registry.ModAttributes;
-import io.github.flemmli97.fateubw.common.registry.ModBlocks;
-import io.github.flemmli97.fateubw.common.registry.ModEffects;
-import io.github.flemmli97.fateubw.common.registry.ModEntities;
-import io.github.flemmli97.fateubw.common.registry.ModItems;
+import io.github.flemmli97.fateubw.common.registry.*;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import io.github.flemmli97.tenshilib.common.item.SpawnEgg;
@@ -199,11 +195,11 @@ public class Lang implements DataProvider {
         this.add("fateubw.chat.team.alliance.received", "You received an ally request from team %s");
 
         this.add("fateubw.gui.name", "Name:");
-        this.add("fateubw.gui.damage", "Damage");
-        this.add("fateubw.gui.armor", "Armor");
         this.add("fateubw.gui.nobel_phantasm", "Nobel Phantasm");
+        this.add("fateubw.gui.nobel_phantasm_cost", "Mana Cost");
         this.add("fateubw.gui.save", "Save");
         this.add("fateubw.gui.back", "Back");
+        this.add("fateubw.gui.command", "Command GUI");
         this.add("fateubw.gui.command.attack", "Attack");
         this.add("fateubw.gui.command.movement", "Movement");
         this.add("fateubw.gui.command.kill", "Kill");
