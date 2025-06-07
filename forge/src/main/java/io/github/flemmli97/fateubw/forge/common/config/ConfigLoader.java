@@ -29,11 +29,6 @@ public class ConfigLoader {
         CommonConfig.notifyAll = ConfigSpecs.COMMON_CONFIG.notifyAll.get();
         CommonConfig.npBoostEffect.readFromString(ConfigSpecs.COMMON_CONFIG.npBoostEffect.get());
 
-        CommonConfig.lancelotReflectChance = ConfigSpecs.COMMON_CONFIG.lancelotReflectChance.get().floatValue();
-        CommonConfig.hassanCopies = ConfigSpecs.COMMON_CONFIG.hassanCopies.get();
-        //Minions
-        CommonConfig.gillesMinionDuration = ConfigSpecs.COMMON_CONFIG.gillesMinionDuration.get();
-        CommonConfig.gillesMinionAmount = ConfigSpecs.COMMON_CONFIG.gillesMinionAmount.get();
         CommonConfig.babylonScale = ConfigSpecs.COMMON_CONFIG.babylonScale.get().floatValue();
         CommonConfig.babylonWeapons.readFromString(ConfigSpecs.COMMON_CONFIG.babylonWeaponsBlacklist.get());
         CommonConfig.babylonWeapons.setWhiteList(ConfigSpecs.COMMON_CONFIG.babylonWeaponsWhitelist.get());
@@ -43,8 +38,6 @@ public class ConfigLoader {
         CommonConfig.magicBeam = ConfigSpecs.COMMON_CONFIG.magicBeam.get().floatValue();
         CommonConfig.gaeBolgDmg = ConfigSpecs.COMMON_CONFIG.gaeBolgDmg.get().floatValue();
         CommonConfig.gaeBolgEffect.readFromString(ConfigSpecs.COMMON_CONFIG.gaeBolgEffect.get());
-        CommonConfig.medeaCircleSpan = ConfigSpecs.COMMON_CONFIG.medeaCircleSpan.get();
-        CommonConfig.medeaCircleRange = ConfigSpecs.COMMON_CONFIG.medeaCircleRange.get().floatValue();
 
         CommonConfig.excaliburMana = ConfigSpecs.COMMON_CONFIG.excaliburMana.get();
         CommonConfig.eaMana = ConfigSpecs.COMMON_CONFIG.eaMana.get();

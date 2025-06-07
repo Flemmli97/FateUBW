@@ -2,7 +2,7 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 
 
 import com.mojang.math.Vector4f;
-import io.github.flemmli97.fateubw.common.config.CommonConfig;
+import io.github.flemmli97.fateubw.api.datapack.ServantExtraData;
 import io.github.flemmli97.fateubw.common.entity.ai.MoveBehindAttackRunner;
 import io.github.flemmli97.fateubw.common.entity.misc.ThrownItemEntity;
 import io.github.flemmli97.fateubw.common.entity.summons.HassanClone;
@@ -232,7 +232,7 @@ public class EntityHassan extends BaseServant {
     }
 
     public boolean addCopy(HassanClone copy) {
-        if (this.copies.size() < CommonConfig.hassanCopies) {
+        if (this.copies.size() < this.props().getConfig(ServantExtraData.HASSAN_COPIES)) {
             this.copies.add(copy.getUUID());
             return true;
         }
@@ -276,7 +276,7 @@ public class EntityHassan extends BaseServant {
             if (!this.forcedNP && !this.useMana(this.props().hogouMana()))
                 return;
             this.copies.clear();
-            for (int i = 0; i < CommonConfig.hassanCopies; i++) {
+            for (int i = 0; i < this.props().getConfig(ServantExtraData.HASSAN_COPIES); i++) {
                 HassanClone hassan = new HassanClone(this.level, this);
                 hassan.moveTo(this.getX(), this.getY(), this.getZ(), Mth.wrapDegrees(this.level.random.nextFloat() * 360.0F), 0.0F);
                 hassan.finalizeSpawn((ServerLevelAccessor) this.level, this.level.getCurrentDifficultyAt(this.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);

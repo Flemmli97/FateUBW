@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.api.datapack.AttributeHolderProperties;
+import io.github.flemmli97.fateubw.api.datapack.ServantExtraData;
 import io.github.flemmli97.fateubw.api.datapack.ServantProperties;
 import io.github.flemmli97.fateubw.common.entity.MultiPartEntity;
 import io.github.flemmli97.fateubw.common.entity.misc.ArcherArrow;
@@ -120,7 +121,9 @@ public class ModEntities {
                     .putAttributes(ModAttributes.PROJECTILE_RESISTANCE, 2).putAttributes(ModAttributes.MAGIC_ATTACK, 17)
                     .putAttributes(ModAttributes.MAGIC_RESISTANCE, 0.4).putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.31)
                     .putAttributes(ModAttributes.COMBAT_REGEN, 2.5).putAttributes(ModAttributes.PASSIVE_REGEN, 10)
-                    .npCost(70));
+                    .npCost(70)
+                    .withConfigData(ServantExtraData.MEDEA_CIRCLE_DURATION)
+                    .withConfigData(ServantExtraData.MEDEA_CIRCLE_RANGE));
     public static final RegistryEntrySupplier<EntityType<EntityGilles>> GILLES = regServant(EntityType.Builder.of(EntityGilles::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "gilles"), 0x100460, 0x600453,
             new ServantProperties.Builder(BuiltinServantClasses.CASTER)
@@ -129,7 +132,9 @@ public class ModEntities {
                     .putAttributes(ModAttributes.PROJECTILE_RESISTANCE, 2).putAttributes(ModAttributes.MAGIC_ATTACK, 15)
                     .putAttributes(ModAttributes.MAGIC_RESISTANCE, 0.6).putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.32)
                     .putAttributes(ModAttributes.COMBAT_REGEN, 1.5).putAttributes(ModAttributes.PASSIVE_REGEN, 10)
-                    .npCost(80));
+                    .npCost(80)
+                    .withConfigData(ServantExtraData.GILLES_MONSTER_DURATION)
+                    .withConfigData(ServantExtraData.GILLES_MONSTER_MAX));
 
     public static final RegistryEntrySupplier<EntityType<EntityHeracles>> HERACLES = regServant(EntityType.Builder.of(EntityHeracles::new, MobCategory.MISC).sized(1.4f, 2.6f),
             new ResourceLocation(Fate.MODID, "heracles"), 0x3c1d06, 0x5e3c22,
@@ -138,7 +143,8 @@ public class ModEntities {
                     .putAttributes(() -> Attributes.ARMOR, 18)
                     .putAttributes(ModAttributes.PROJECTILE_RESISTANCE, 8).putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.3)
                     .putAttributes(ModAttributes.PASSIVE_REGEN, 10)
-                    .npCost(0));
+                    .npCost(0)
+                    .withConfigData(ServantExtraData.HERACLES_DEATH_MAX));
     public static final RegistryEntrySupplier<EntityType<EntityLancelot>> LANCELOT = regServant(EntityType.Builder.of(EntityLancelot::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "lancelot"), 0x071a33, 0x1d4f94,
             new ServantProperties.Builder(BuiltinServantClasses.BERSERKER)
@@ -147,7 +153,8 @@ public class ModEntities {
                     .putAttributes(ModAttributes.PROJECTILE_RESISTANCE, 10)
                     .putAttributes(ModAttributes.MAGIC_RESISTANCE, 0.1).putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.3)
                     .putAttributes(ModAttributes.COMBAT_REGEN, 1).putAttributes(ModAttributes.PASSIVE_REGEN, 10)
-                    .npCost(0));
+                    .npCost(0)
+                    .withConfigData(ServantExtraData.LANCELOT_REFLECT_CHANCE));
 
     public static final RegistryEntrySupplier<EntityType<EntityIskander>> ISKANDER = regServant(EntityType.Builder.of(EntityIskander::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "iskander"), 0xd40000, 0x8d0101,
@@ -173,7 +180,8 @@ public class ModEntities {
                     .putAttributes(() -> Attributes.ARMOR, 10)
                     .putAttributes(ModAttributes.PROJECTILE_RESISTANCE, 12).putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.36)
                     .putAttributes(ModAttributes.COMBAT_REGEN, 1).putAttributes(ModAttributes.PASSIVE_REGEN, 10)
-                    .npCost(40));
+                    .npCost(40)
+                    .withConfigData(ServantExtraData.HASSAN_COPIES));
     public static final RegistryEntrySupplier<EntityType<EntitySasaki>> SASAKI = regServant(EntityType.Builder.of(EntitySasaki::new, MobCategory.MISC),
             new ResourceLocation(Fate.MODID, "sasaki"), 0x4e04c3, 0xa77cec,
             new ServantProperties.Builder(BuiltinServantClasses.ASSASSIN)

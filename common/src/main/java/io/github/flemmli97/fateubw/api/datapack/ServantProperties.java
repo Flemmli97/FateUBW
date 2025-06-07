@@ -12,6 +12,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -20,7 +21,8 @@ public class ServantProperties {
     public static final Codec<ServantProperties> CODEC = RecordCodecBuilder.create((instance) ->
             instance.group(Codec.unboundedMap(Registry.ATTRIBUTE.byNameCodec(), Codec.DOUBLE).fieldOf("attributes").forGetter(d -> d.attributes),
                     Codec.INT.fieldOf("nobel_phantasm_cost").forGetter(d -> d.manaCost),
-                    ResourceLocation.CODEC.fieldOf("class").forGetter(d -> d.servantClass)
+                    ResourceLocation.CODEC.fieldOf("class").forGetter(d -> d.servantClass),
+                    ServantExtraData.CODEC.optionalFieldOf("configs").forGetter(d -> d.extraData.empty() ? Optional.empty() : Optional.of(d.extraData))
             ).apply(instance, ServantProperties::new));
 
     public static final ServantProperties DEFAULT = new ServantProperties.Builder(BuiltinServantClasses.NONE)
@@ -30,11 +32,17 @@ public class ServantProperties {
     private final Map<Attribute, Double> attributes;
     private final int manaCost;
     private final ResourceLocation servantClass;
+    private final ServantExtraData extraData;
 
-    public ServantProperties(Map<Attribute, Double> attributes, int manaCost, ResourceLocation servantClass) {
+    private ServantProperties(Map<Attribute, Double> attributes, int manaCost, ResourceLocation servantClass, Optional<ServantExtraData> extraData) {
+        this(attributes, manaCost, servantClass, extraData.orElse(new ServantExtraData(Map.of())));
+    }
+
+    public ServantProperties(Map<Attribute, Double> attributes, int manaCost, ResourceLocation servantClass, ServantExtraData extraData) {
         this.attributes = attributes;
         this.manaCost = manaCost;
         this.servantClass = servantClass;
+        this.extraData = extraData;
     }
 
     public Map<Attribute, Double> getAttributes() {
@@ -49,11 +57,16 @@ public class ServantProperties {
         return this.servantClass;
     }
 
+    public <T> T getConfig(ServantExtraData.DataType<T> type) {
+        return this.extraData.get(type);
+    }
+
     public static class Builder {
 
         private final Map<Supplier<Attribute>, Double> attributes = new LinkedHashMap<>();
         private int manaCost;
         private final ResourceLocation servantClass;
+        private final Map<ServantExtraData.DataType<?>, Object> values = new LinkedHashMap<>();
 
         public Builder(ResourceLocation servantClass) {
             this.servantClass = servantClass;
@@ -69,13 +82,22 @@ public class ServantProperties {
             return this;
         }
 
+        public <T> Builder withConfigData(ServantExtraData.DataType<T> type) {
+            return this.withConfigData(type, type.defaultValue());
+        }
+
+        public <T> Builder withConfigData(ServantExtraData.DataType<T> type, T value) {
+            this.values.put(type, value);
+            return this;
+        }
+
         public ServantProperties build() {
             return new ServantProperties(this.attributes.entrySet().stream().collect(Collectors.toMap(
                     e -> e.getKey().get(),
                     Map.Entry::getValue,
                     (e1, e2) -> e1,
                     LinkedHashMap::new
-            )), this.manaCost, this.servantClass);
+            )), this.manaCost, this.servantClass, new ServantExtraData(this.values));
         }
     }
 }

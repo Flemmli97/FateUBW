@@ -11,5 +11,9 @@
     "fateubw:passive_regen": 10.0
   },
   "nobel_phantasm_cost": 80,
-  "class": "fateubw:caster"
+  "class": "fateubw:caster",
+  "configs": {
+    "fateubw:gilles_monster_duration": 6000,
+    "fateubw:gilles_monster_max": 7
+  }
 }

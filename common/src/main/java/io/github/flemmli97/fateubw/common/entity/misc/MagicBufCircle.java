@@ -1,6 +1,7 @@
 package io.github.flemmli97.fateubw.common.entity.misc;
 
-import io.github.flemmli97.fateubw.common.config.CommonConfig;
+import io.github.flemmli97.fateubw.api.datapack.ServantExtraData;
+import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.entity.EntityUtil;
@@ -32,8 +33,12 @@ public class MagicBufCircle extends Entity implements OwnableEntity {
     private int livingTick;
     private List<float[]> circlePoints;
 
+    private final int maxLivingTicks;
+
     public MagicBufCircle(EntityType<?> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn);
+        this.maxLivingTicks = DatapackHandler.SERVANT_PROPS.get(ModEntities.MEDEA.getID())
+                .getConfig(ServantExtraData.MEDEA_CIRCLE_DURATION);
     }
 
     public MagicBufCircle(Level world, LivingEntity owner, float r) {
@@ -66,7 +71,7 @@ public class MagicBufCircle extends Entity implements OwnableEntity {
                     entity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 1, 2, true, false));
                 }
             }
-            if (this.livingTick > CommonConfig.medeaCircleSpan || this.getOwner() == null || this.getOwner().isDeadOrDying())
+            if (this.livingTick > this.maxLivingTicks || this.getOwner() == null || this.getOwner().isDeadOrDying())
                 this.discard();
         }
     }

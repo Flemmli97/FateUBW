@@ -67,13 +67,7 @@ public class ConfigSpecs {
         public final CommentedJsonConfig.CommentedVal<Boolean> notifyAll;
         public final CommentedJsonConfig.CommentedVal<List<String>> npBoostEffect;
 
-        //Servants
-        public CommentedJsonConfig.DoubleVal lancelotReflectChance;
-        public CommentedJsonConfig.IntVal hassanCopies;
-
-        //Minions
-        public final CommentedJsonConfig.IntVal gillesMinionDuration;
-        public final CommentedJsonConfig.IntVal gillesMinionAmount;
+        // Misc
         public final CommentedJsonConfig.DoubleVal babylonScale;
         public final CommentedJsonConfig.CommentedVal<List<String>> babylonWeaponsBlacklist;
         public final CommentedJsonConfig.CommentedVal<Boolean> babylonWeaponsWhitelist;
@@ -83,8 +77,6 @@ public class ConfigSpecs {
         public final CommentedJsonConfig.DoubleVal magicBeam;
         public final CommentedJsonConfig.DoubleVal gaeBolgDmg;
         public final CommentedJsonConfig.CommentedVal<List<String>> gaeBolgEffect;
-        public final CommentedJsonConfig.IntVal medeaCircleSpan;
-        public final CommentedJsonConfig.DoubleVal medeaCircleRange;
 
         public final CommentedJsonConfig.IntVal excaliburMana;
         public final CommentedJsonConfig.IntVal eaMana;
@@ -119,14 +111,7 @@ public class ConfigSpecs {
                     CommonConfig.npBoostEffect.writeToString());
             builder.pop();
 
-            builder.push("servants");
-            this.lancelotReflectChance = builder.comment("Chance for lancelot to reflect a blocked projectile").defineInRange("Projectile Reflect Chance", CommonConfig.lancelotReflectChance, 0, 1);
-            this.hassanCopies = builder.comment("Amount of copies hassan can call").defineInRange("Hassan Copies", CommonConfig.hassanCopies, 0, Integer.MAX_VALUE);
-            builder.pop();
-
             builder.push("misc");
-            this.gillesMinionDuration = builder.comment("Living duration of gilles monster in ticks").defineInRange("Gilles Monster", CommonConfig.gillesMinionDuration, 0, Integer.MAX_VALUE);
-            this.gillesMinionAmount = builder.comment("Max amount gilles can have at once").defineInRange("Gilles Monster Max Amount", CommonConfig.gillesMinionAmount, 0, Integer.MAX_VALUE);
             this.babylonScale = builder.comment("Damage scaling for projectiles from the gate of babylon").defineInRange("Babylon Dmg Scale", CommonConfig.babylonScale, 0, Double.MAX_VALUE);
             this.babylonWeaponsBlacklist = builder.comment("Blacklist weapons for the gate of babylon here. You can also use the modid for a whole mod").define("Babylon Blacklist",
                     CommonConfig.babylonWeapons.writeToString());
@@ -138,8 +123,6 @@ public class ConfigSpecs {
             this.gaeBolgDmg = builder.comment("Damage of Gae Bolg").defineInRange("Gae Bolg Dmg", CommonConfig.gaeBolgDmg, 0, Double.MAX_VALUE);
             this.gaeBolgEffect = builder.comment("Potions applied by Gae Bolg. Usage: " + PotionEffectsConfig.usage()).define("Gae Bolg Potions",
                     CommonConfig.gaeBolgEffect.writeToString());
-            this.medeaCircleSpan = builder.comment("Time in ticks for medeas magic circle").defineInRange("Magic Circle Duration", CommonConfig.medeaCircleSpan, 0, Integer.MAX_VALUE);
-            this.medeaCircleRange = builder.comment("Range of medeas magic circle").defineInRange("Magic Circle Range", CommonConfig.medeaCircleRange, 0, Double.MAX_VALUE);
             builder.pop();
 
             builder.push("weapons");

@@ -1,7 +1,7 @@
 package io.github.flemmli97.fateubw.common.entity.summons;
 
 import io.github.flemmli97.fateubw.api.datapack.AttributeHolderProperties;
-import io.github.flemmli97.fateubw.common.config.CommonConfig;
+import io.github.flemmli97.fateubw.api.datapack.ServantExtraData;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.entity.ai.TargetOwnerEnemyGoal;
 import io.github.flemmli97.fateubw.common.registry.ModEntities;
@@ -59,12 +59,15 @@ public class LesserMonster extends PathfinderMob implements IAnimated, OwnableEn
 
     public static final int MOVE_TICK_MAX = 3;
 
+    private final int maxLivingTicks;
+
     public LesserMonster(EntityType<? extends LesserMonster> type, Level world) {
         super(type, world);
         if (!world.isClientSide) {
             this.goals();
             this.updateAttributes();
         }
+        this.maxLivingTicks = DatapackHandler.SERVANT_PROPS.get(ModEntities.GILLES.getID()).getConfig(ServantExtraData.GILLES_MONSTER_DURATION);
     }
 
     public LesserMonster(Level world, LivingEntity owner) {
@@ -102,7 +105,7 @@ public class LesserMonster extends PathfinderMob implements IAnimated, OwnableEn
         super.tick();
         if (!this.level.isClientSide) {
             this.livingTicks++;
-            if (this.livingTicks > CommonConfig.gillesMinionDuration)
+            if (this.livingTicks > this.maxLivingTicks)
                 this.remove(RemovalReason.KILLED);
             AnimatedAction anim = this.getAnimationHandler().getAnimation();
             if (anim != null && anim.is(ATTACK) && anim.isAt("attack")) {

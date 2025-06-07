@@ -11,5 +11,9 @@
     "fateubw:passive_regen": 10.0
   },
   "nobel_phantasm_cost": 70,
-  "class": "fateubw:caster"
+  "class": "fateubw:caster",
+  "configs": {
+    "fateubw:medea_circle_duration": 2000,
+    "fateubw:medea_circle_range": 24.0
+  }
 }

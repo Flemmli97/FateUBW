@@ -2,6 +2,7 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 
 
 import com.mojang.math.Vector4f;
+import io.github.flemmli97.fateubw.api.datapack.ServantExtraData;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.particles.RingParticleData;
@@ -54,7 +55,6 @@ import java.util.UUID;
 
 public class EntityHeracles extends BaseServant {
 
-    public static final int MAX_DEATH = 3;
     protected static final EntityDataAccessor<Integer> DEATH_COUNT = SynchedEntityData.defineId(EntityHeracles.class, EntityDataSerializers.INT);
 
     private static final UUID DEATH_MOD = UUID.fromString("5f642c37-7ed0-409a-91a5-0095001eb6e3");
@@ -174,7 +174,7 @@ public class EntityHeracles extends BaseServant {
     }
 
     public void setDeathNumber(int death) {
-        this.entityData.set(DEATH_COUNT, Mth.clamp(death, 0, MAX_DEATH));
+        this.entityData.set(DEATH_COUNT, Mth.clamp(death, 0, this.props().getConfig(ServantExtraData.HERACLES_DEATH_MAX)));
     }
 
     public int getDeaths() {
@@ -206,7 +206,8 @@ public class EntityHeracles extends BaseServant {
             this.voidDeath = true;
             super.tickDeath();
         } else if (!this.level.isClientSide) {
-            if (this.getDeaths() < MAX_DEATH) {
+            int maxDeaths = this.props().getConfig(ServantExtraData.HERACLES_DEATH_MAX);
+            if (this.getDeaths() < maxDeaths) {
                 this.deathTime++;
                 if (this.deathTime == 1) {
                     this.getAnimationHandler().setAnimation(FAKE_DEATH);
@@ -214,7 +215,7 @@ public class EntityHeracles extends BaseServant {
                 AnimatedAction anim = this.getAnimationHandler().getAnimation();
                 if (anim == null || !anim.getID().equals(FAKE_DEATH.getID())) {
                     this.setDeathNumber(this.getDeaths() + 1);
-                    double mod = ((double) this.getDeaths() / MAX_DEATH) * 0.7;
+                    double mod = ((double) this.getDeaths() / maxDeaths) * 0.7;
                     this.applyDeathMod(mod);
                     this.setHealth(this.getMaxHealth());
                     this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 300, 2, false, false));

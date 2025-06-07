@@ -31,12 +31,7 @@ public class CommonConfig {
                     new PotionEffectsConfig.EffectInstance(MobEffects.MOVEMENT_SPEED, 6000, 2))
     );
 
-    public static float lancelotReflectChance = 0.4f;
-    public static int hassanCopies = 5;
-
     // Misc
-    public static int gillesMinionDuration = 6000;
-    public static int gillesMinionAmount = 7;
     public static float babylonScale = 1.5f;
     public static WeaponList babylonWeapons = new WeaponList(ModItems.ENUMAELISH.getID().toString());
     public static float eaDamage = 50;
@@ -49,10 +44,7 @@ public class CommonConfig {
                     new PotionEffectsConfig.EffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 300, 7),
                     new PotionEffectsConfig.EffectInstance(MobEffects.JUMP, 200, 128))
     );
-    public static int medeaCircleSpan = 2000;
-    public static float medeaCircleRange = 24;
 
-    //Items
     public static int excaliburMana = 70;
     public static int eaMana = 70;
     public static int archerBowMana = 3;

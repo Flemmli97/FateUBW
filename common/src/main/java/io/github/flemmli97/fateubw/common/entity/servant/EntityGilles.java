@@ -1,7 +1,7 @@
 package io.github.flemmli97.fateubw.common.entity.servant;
 
 
-import io.github.flemmli97.fateubw.common.config.CommonConfig;
+import io.github.flemmli97.fateubw.api.datapack.ServantExtraData;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicShot;
 import io.github.flemmli97.fateubw.common.entity.summons.LesserMonster;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
@@ -131,7 +131,8 @@ public class EntityGilles extends BaseServant {
     }
 
     protected boolean canSummonMore() {
-        return this.level.getEntitiesOfClass(LesserMonster.class, this.getBoundingBox().inflate(16), monster -> this.getUUID().equals(monster.getOwnerUUID())).size() < CommonConfig.gillesMinionAmount;
+        return this.level.getEntitiesOfClass(LesserMonster.class, this.getBoundingBox().inflate(16),
+                monster -> this.getUUID().equals(monster.getOwnerUUID())).size() < this.props().getConfig(ServantExtraData.GILLES_MONSTER_MAX);
     }
 
     public void attackWithRangedAttack() {

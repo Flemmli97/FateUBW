@@ -2,7 +2,7 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 
 
 import com.mojang.math.Vector4f;
-import io.github.flemmli97.fateubw.common.config.CommonConfig;
+import io.github.flemmli97.fateubw.api.datapack.ServantExtraData;
 import io.github.flemmli97.fateubw.common.entity.SwitchableWeapon;
 import io.github.flemmli97.fateubw.common.entity.ai.TeleportRunner;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicBeam;
@@ -344,10 +344,11 @@ public class EntityMedea extends BaseServant {
 
     public void makeCircle() {
         if (!this.level.isClientSide) {
-            MagicBufCircle circle = new MagicBufCircle(this.level, this, CommonConfig.medeaCircleRange);
+            MagicBufCircle circle = new MagicBufCircle(this.level, this, this.props().getConfig(ServantExtraData.MEDEA_CIRCLE_RANGE));
             this.level.addFreshEntity(circle);
-            this.circleDelay = CommonConfig.medeaCircleSpan + this.random.nextInt(100);
-            this.aiCircledelay = (int) (this.random.nextInt(400) + CommonConfig.medeaCircleSpan * 0.5);
+            int duration = this.props().getConfig(ServantExtraData.MEDEA_CIRCLE_DURATION);
+            this.circleDelay = duration + this.random.nextInt(100);
+            this.aiCircledelay = (int) (this.random.nextInt(400) + duration * 0.5);
             this.circlePos = circle.position();
             if (this.getOwner() != null)
                 this.getOwner().sendMessage(new TranslatableComponent("fateubw.chat.medea.circle.spawn"), Util.NIL_UUID);
@@ -380,7 +381,8 @@ public class EntityMedea extends BaseServant {
     @Override
     public boolean isWithinRestriction(BlockPos pos) {
         if (this.circlePos != null) {
-            if (this.circlePos.distanceToSqr(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5) > CommonConfig.medeaCircleRange * CommonConfig.medeaCircleRange)
+            float range = this.props().getConfig(ServantExtraData.MEDEA_CIRCLE_RANGE);
+            if (this.circlePos.distanceToSqr(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5) > range * range)
                 return false;
         }
         return super.isWithinRestriction(pos);

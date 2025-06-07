@@ -8,5 +8,8 @@
     "fateubw:passive_regen": 10.0
   },
   "nobel_phantasm_cost": 0,
-  "class": "fateubw:berserker"
+  "class": "fateubw:berserker",
+  "configs": {
+    "fateubw:heracles_death_max": 2
+  }
 }
