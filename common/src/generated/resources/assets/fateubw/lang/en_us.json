@@ -148,6 +148,7 @@
   "fateubw.chat.grailwar.players.dead": "All player participants are dead. Grailwar has ended with no winner.",
   "fateubw.chat.grailwar.win": "%1$s won the grail war.",
   "fateubw.chat.grailwar.win.none": "Unable to determine a winner for the grailwar",
+  "fateubw.chat.grailwar.win.spawn": "The grail appeared near you",
   "fateubw.chat.grailwar.player.out": "%1$s is out.",
   "fateubw.chat.grailwar.spawn": "A servant has spawned near %1$s.",
   "fateubw.chat.grailwar.end": "The grailwar has ended",

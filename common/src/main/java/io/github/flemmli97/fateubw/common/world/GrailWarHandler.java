@@ -263,12 +263,17 @@ public class GrailWarHandler extends SavedData {
                     AdvancementRegister.GRAIL_WAR_TRIGGER.trigger(player, false);
                     this.server.getPlayerList().broadcastMessage(new TranslatableComponent("fateubw.chat.grailwar.win", name).withStyle(ChatFormatting.GOLD), ChatType.SYSTEM, Util.NIL_UUID);
 
-                    ItemEntity holyGrail = new ItemEntity(player.level, player.getX() + player.getRandom().nextInt(9) - 4, player.getY(), player.getZ() + player.getRandom().nextInt(9) - 4, new ItemStack(ModItems.GRAIL.get()));
+                    ItemEntity holyGrail = new ItemEntity(player.level,
+                            player.getX() + player.getRandom().nextInt(7) - 3, player.getY() + 3, player.getZ() + player.getRandom().nextInt(7) - 3,
+                            new ItemStack(ModItems.GRAIL.get()));
                     holyGrail.setExtendedLifetime();
                     holyGrail.setOwner(player.getUUID());
                     holyGrail.setInvulnerable(true);
                     holyGrail.setGlowingTag(true);
+                    holyGrail.setNoGravity(true);
                     player.level.addFreshEntity(holyGrail);
+                    player.sendMessage(new TranslatableComponent("fateubw.chat.grailwar.win.spawn")
+                            .withStyle(ChatFormatting.GRAY), Util.NIL_UUID);
 
                     Platform.INSTANCE.getPlayerData(player).ifPresent(data -> data.saveServant(participant.getServant(this.server)));
                 } else {

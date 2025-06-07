@@ -79,9 +79,7 @@ public record C2SServantCommand(Type command, int entityId) implements Packet {
                     sender.sendMessage(new TranslatableComponent("fateubw.chat.command.npprep").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 }
             }
-            case KILL -> {
-                servant.onKillOrder(sender, data.useCommandSeal(sender));
-            }
+            case KILL -> servant.onKillOrder(sender, data.useCommandSeal(sender));
             case TELEPORT -> {
                 servant.randomTeleport(sender.getX(), sender.getY(), sender.getZ(), false);
                 servant.setTarget(null);

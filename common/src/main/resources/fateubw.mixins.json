@@ -9,10 +9,12 @@
     "PathNavigationMixin"
   ],
   "client": [
+    "ItemEntityRenderMixin",
     "ItemRendererMixin",
     "LivingEntityRendererMixin",
     "RenderBuffersMixin",
-    "RenderTypeAccessor", "SpriteSetMixin"
+    "RenderTypeAccessor",
+    "SpriteSetMixin"
   ],
   "injectors": {
     "defaultRequire": 1

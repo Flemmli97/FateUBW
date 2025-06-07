@@ -154,7 +154,7 @@ public class CommandGui extends Screen {
                     , new TranslatableComponent("fateubw.gui.command.defensive"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.DEFENSIVE, this.entityId()))));
         } else if (this.currentPage == Pages.MOVEMENT) {
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 82, 80, 20
-                    , new TranslatableComponent("fateubw.gui.command.back"), this::backButton));
+                    , new TranslatableComponent("fateubw.gui.back"), this::backButton));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 52, 80, 20
                     , new TranslatableComponent("fateubw.gui.command.follow"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.FOLLOW, this.entityId()))));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 22, 80, 20
@@ -165,7 +165,7 @@ public class CommandGui extends Screen {
                     , new TranslatableComponent("fateubw.gui.command.call"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.TELEPORT, this.entityId()))));
         } else if (this.currentPage == Pages.SPECIAL) {
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 82, 80, 20
-                    , new TranslatableComponent("fateubw.gui.command.back"), this::backButton));
+                    , new TranslatableComponent("fateubw.gui.back"), this::backButton));
             if (this.servant != null)
                 for (int i = 0; i < this.servant.specialCommands().length; i++) {
                     String id = this.servant.specialCommands()[i];
