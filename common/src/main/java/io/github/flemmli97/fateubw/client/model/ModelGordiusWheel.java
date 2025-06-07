@@ -35,25 +35,22 @@ public class ModelGordiusWheel extends EntityModel<GordiusWheel> implements Exte
 
     protected final ModelPartHandler model;
     protected final BlockBenchAnimations anim;
-    private ModelPartHandler.ModelPartExtended frontAxel;
-    private ModelPartHandler.ModelPartExtended backAxel;
-    private ModelPartHandler.ModelPartExtended leftWheelWeaponMain;
-    private ModelPartHandler.ModelPartExtended rightWheelWeaponMain;
-    private ModelPartHandler.ModelPartExtended footLeftFront;
-    private ModelPartHandler.ModelPartExtended footRightFront;
-    private ModelPartHandler.ModelPartExtended footLeftFront2;
-    private ModelPartHandler.ModelPartExtended footRightFront2;
-    private ModelPartHandler.ModelPartExtended footLeftRear;
-    private ModelPartHandler.ModelPartExtended footRightRear;
-    private ModelPartHandler.ModelPartExtended footLeftRear2;
-    private ModelPartHandler.ModelPartExtended footRightRear2;
-    private ModelPartHandler.ModelPartExtended centerBeam;
-    private ModelPartHandler.ModelPartExtended backBeam;
+    private final ModelPartHandler.ModelPartExtended frontAxel;
+    private final ModelPartHandler.ModelPartExtended backAxel;
+    private final ModelPartHandler.ModelPartExtended leftWheelWeaponMain;
+    private final ModelPartHandler.ModelPartExtended rightWheelWeaponMain;
+    private final ModelPartHandler.ModelPartExtended footLeftFront;
+    private final ModelPartHandler.ModelPartExtended footRightFront;
+    private final ModelPartHandler.ModelPartExtended footLeftFront2;
+    private final ModelPartHandler.ModelPartExtended footRightFront2;
+    private final ModelPartHandler.ModelPartExtended footLeftRear;
+    private final ModelPartHandler.ModelPartExtended footRightRear;
+    private final ModelPartHandler.ModelPartExtended footLeftRear2;
+    private final ModelPartHandler.ModelPartExtended footRightRear2;
+    private final ModelPartHandler.ModelPartExtended centerBeam;
+    private final ModelPartHandler.ModelPartExtended backBeam;
 
-    private ModelPartHandler.ModelPartExtended[] mountComponents;
-    private ModelPartHandler.ModelPartExtended backBeamJoint;
-    private ModelPartHandler.ModelPartExtended chariotFloorJoint;
-    private ModelPartHandler.ModelPartExtended mountPos;
+    private final ModelPartHandler.ModelPartExtended[] mountComponents;
 
     public ModelGordiusWheel(ModelPart root) {
         super();

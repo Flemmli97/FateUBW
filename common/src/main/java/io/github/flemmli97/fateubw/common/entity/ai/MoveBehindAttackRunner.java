@@ -107,7 +107,7 @@ public class MoveBehindAttackRunner<T extends PathfinderMob & IAnimated & AoeAtt
         if (!this.pathPos.isEmpty()) {
             if (entity.getNavigation().isDone()) {
                 Path path = ((PathNavigationEx) entity.getNavigation())
-                        .createPathFor(this.pathPos, 0);
+                        .fateubw$createPathFor(this.pathPos, 0);
                 if (path != null) {
                     entity.getNavigation().moveTo(path, speed);
                 }

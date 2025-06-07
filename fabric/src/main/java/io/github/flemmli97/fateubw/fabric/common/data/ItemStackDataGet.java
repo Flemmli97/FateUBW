@@ -4,5 +4,5 @@ import io.github.flemmli97.fateubw.common.attachment.ItemStackData;
 
 public interface ItemStackDataGet {
 
-    ItemStackData getData();
+    ItemStackData fateubw$getData();
 }

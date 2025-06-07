@@ -36,13 +36,13 @@ public class PlatformImpl implements Platform {
 
     @Override
     public Optional<PlayerData> getPlayerData(Player player) {
-        return Optional.ofNullable(((PlayerDataGet) player).getData());
+        return Optional.ofNullable(((PlayerDataGet) player).fateubw$getData());
     }
 
     @Override
     public Optional<ItemStackData> getItemStackData(Object stack) {
         if (stack instanceof ItemStackDataGet getter)
-            return Optional.ofNullable(getter.getData());
+            return Optional.ofNullable(getter.fateubw$getData());
         return Optional.empty();
     }
 

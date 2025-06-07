@@ -139,7 +139,7 @@ public class ModEntities {
     public static final RegistryEntrySupplier<EntityType<EntityHeracles>> HERACLES = regServant(EntityType.Builder.of(EntityHeracles::new, MobCategory.MISC).sized(1.4f, 2.6f),
             new ResourceLocation(Fate.MODID, "heracles"), 0x3c1d06, 0x5e3c22,
             new ServantProperties.Builder(BuiltinServantClasses.BERSERKER)
-                    .putAttributes(() -> Attributes.MAX_HEALTH, 200).putAttributes(() -> Attributes.ATTACK_DAMAGE, 10)
+                    .putAttributes(() -> Attributes.MAX_HEALTH, 250).putAttributes(() -> Attributes.ATTACK_DAMAGE, 10)
                     .putAttributes(() -> Attributes.ARMOR, 18)
                     .putAttributes(ModAttributes.PROJECTILE_RESISTANCE, 8).putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.3)
                     .putAttributes(ModAttributes.PASSIVE_REGEN, 10)

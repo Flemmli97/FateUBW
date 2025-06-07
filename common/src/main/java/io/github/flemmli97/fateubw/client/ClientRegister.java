@@ -63,10 +63,10 @@ import java.util.function.Supplier;
 public class ClientRegister {
 
     public static void registerKeyBinding(Consumer<KeyMapping> consumer) {
-        consumer.accept(ClientHandler.gui = new KeyMapping("fate.key.gui", GLFW.GLFW_KEY_H, "fate.keycategory"));
-        consumer.accept(ClientHandler.special = new KeyMapping("fate.key.np", GLFW.GLFW_KEY_J, "fate.keycategory"));
-        consumer.accept(ClientHandler.boost = new KeyMapping("fate.key.boost", GLFW.GLFW_KEY_N, "fate.keycategory"));
-        consumer.accept(ClientHandler.target = new KeyMapping("fate.key.target", GLFW.GLFW_KEY_B, "fate.keycategory"));
+        consumer.accept(ClientHandler.gui = new KeyMapping("fateubw.key.gui", GLFW.GLFW_KEY_H, "fateubw.keycategory"));
+        consumer.accept(ClientHandler.special = new KeyMapping("fateubw.key.np", GLFW.GLFW_KEY_J, "fateubw.keycategory"));
+        consumer.accept(ClientHandler.boost = new KeyMapping("fateubw.key.boost", GLFW.GLFW_KEY_N, "fateubw.keycategory"));
+        consumer.accept(ClientHandler.target = new KeyMapping("fateubw.key.target", GLFW.GLFW_KEY_B, "fateubw.keycategory"));
     }
 
     public static void registerItemProps(ItemModelPropsRegister register) {

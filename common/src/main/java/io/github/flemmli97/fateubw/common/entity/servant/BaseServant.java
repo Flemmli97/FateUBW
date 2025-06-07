@@ -346,8 +346,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     @Override
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
-        if (this.hasOwner())
-            tag.putUUID("Owner", this.entityData.get(OWNER_UUID).get());
+        this.entityData.get(OWNER_UUID).ifPresent(uuid -> tag.putUUID("Owner", uuid));
         tag.putBoolean("CanUseNP", this.canUseNP);
         tag.putInt("Death", this.deathTime);
         tag.putBoolean("IsDead", this.died);

@@ -241,6 +241,8 @@ public class Lang implements DataProvider {
         this.add("fateubw.gui.team.request", "Request");
         this.add("fateubw.gui.team.rename", "Click to rename team");
 
+        this.add("fateubw.gui.holy_grail", "Holy Grail");
+
         CustomDamageSource.defaultTranslations().forEach(this::add);
 
         this.add("fateubw.advancements.title", "Welcome to the §k__§r grailwar");
@@ -254,7 +256,9 @@ public class Lang implements DataProvider {
 
         this.add("fateubw.command.war.start", "Manually started a grailwar");
         this.add("fateubw.command.war.start.fail", "Could not start a grailwar cause one is already running. Stop the current one first");
-        this.add("fateubw.command.loot.give", "Gave loot %1$s to %2$s");
+        this.add("fateubw.command.loot.give", "Gave loot %1$s to %2$s players");
+        this.add("fateubw.command.loot.give.single", "Gave loot %1$s to %2$s");
+        this.add("fateubw.command.loot.none", "No such loot %s exists");
         this.add("fateubw.command.attributes.reset", "Reset all attributes obtained through grail loots for %s");
         this.add("fateubw.command.spells.set", "Set command spells for %2$s to %1$s");
         this.add("fateubw.command.spells.take", "Took %2$s command spells from %1$s");
@@ -273,6 +277,12 @@ public class Lang implements DataProvider {
         this.add("fateubw.loot.armor", "Increased Armor");
         this.add("fateubw.loot.resummon", "Resummon");
         this.add("fateubw.loot.servant_loot", "Servant Drops");
+
+        this.add("fateubw.keycategory", "Fate UBW");
+        this.add("fateubw.key.gui", "Gui");
+        this.add("fateubw.key.np", "Noble Phantasm");
+        this.add("fateubw.key.boost", "Command Boost");
+        this.add("fateubw.key.target", "Target");
 
         this.add("fateubw_book", "Fate Guidebook");
         this.add("fateubw.patchouli.landing", "");

@@ -210,12 +210,12 @@ public class CommandGui extends Screen {
         if (data == null)
             return null;
         Entity fromId = Minecraft.getInstance().level.getEntity(data.entityId());
-        if (fromId instanceof BaseServant servant) {
-            return servant;
+        if (fromId instanceof BaseServant s) {
+            return s;
         }
         Entity created = data.type().create(Minecraft.getInstance().level);
-        if (created instanceof BaseServant servant) {
-            return servant;
+        if (created instanceof BaseServant s) {
+            return s;
         }
         return null;
     }

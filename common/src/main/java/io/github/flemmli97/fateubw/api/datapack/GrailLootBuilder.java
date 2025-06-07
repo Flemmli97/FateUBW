@@ -12,8 +12,8 @@ public class GrailLootBuilder {
 
     private final String name;
     private final List<String> descriptions = new ArrayList<>();
-    private List<GrailLootEntry<?>> pools = new ArrayList<>();
-    private List<LootItemCondition> conditions = new ArrayList<>();
+    private final List<GrailLootEntry<?>> pools = new ArrayList<>();
+    private final List<LootItemCondition> conditions = new ArrayList<>();
 
     private GrailLootBuilder(String name) {
         this.name = name;

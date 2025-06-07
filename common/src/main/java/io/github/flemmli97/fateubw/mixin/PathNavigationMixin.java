@@ -25,7 +25,7 @@ public abstract class PathNavigationMixin implements PathNavigationEx {
     public abstract Path createPath(BlockPos pos, int accuracy);
 
     @Override
-    public Path createPathFor(List<BlockPos> targets, int accuracy) {
+    public Path fateubw$createPathFor(List<BlockPos> targets, int accuracy) {
         if (targets.isEmpty())
             return null;
         BlockPos pos = targets.get(0);

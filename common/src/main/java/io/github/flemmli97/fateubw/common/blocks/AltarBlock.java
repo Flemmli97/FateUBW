@@ -144,8 +144,8 @@ public class AltarBlock extends BaseEntityBlock {
     @Override
     public void onRemove(BlockState state, Level world, BlockPos pos, BlockState oldState, boolean isMoving) {
         if (!state.is(oldState.getBlock())) {
-            BlockEntity tileentity = world.getBlockEntity(pos);
-            if (tileentity instanceof AltarBlockEntity altar) {
+            BlockEntity blockEntity = world.getBlockEntity(pos);
+            if (blockEntity instanceof AltarBlockEntity altar) {
                 ItemStack stack = altar.getCharm();
                 if (!stack.isEmpty()) {
                     ItemEntity item = new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), stack);

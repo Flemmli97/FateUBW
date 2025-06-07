@@ -70,11 +70,15 @@ public class CommandHandler {
         ResourceLocation id = ResourceLocationArgument.getId(ctx, "id");
         GrailLootTable loot = DatapackHandler.getLootTable(id).orElse(null);
         if (loot == null) {
-            ctx.getSource().sendSuccess(new TranslatableComponent("fateubw.command.loot.none", players), false);
+            ctx.getSource().sendSuccess(new TranslatableComponent("fateubw.command.loot.none", id.toString()), false);
             return 0;
         }
         players.forEach(loot::give);
-        ctx.getSource().sendSuccess(new TranslatableComponent("fateubw.command.loot.give", players, id), false);
+        if (players.size() == 1) {
+            ctx.getSource().sendSuccess(new TranslatableComponent("fateubw.command.loot.give.single", players.iterator().next().getDisplayName(), id.toString()), false);
+        } else {
+            ctx.getSource().sendSuccess(new TranslatableComponent("fateubw.command.loot.give", players.iterator().next().getDisplayName(), id.toString()), false);
+        }
         return Command.SINGLE_SUCCESS;
     }
 

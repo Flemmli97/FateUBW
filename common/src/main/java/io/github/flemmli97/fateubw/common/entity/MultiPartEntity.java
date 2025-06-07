@@ -170,11 +170,6 @@ public class MultiPartEntity extends Entity {
     }
 
     @Override
-    public boolean canBeCollidedWith() {
-        return false;
-    }
-
-    @Override
     public boolean isInvulnerableTo(DamageSource source) {
         if (this.getParent() != null && this.getParent().isInvulnerableTo(source))
             return true;

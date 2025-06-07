@@ -21,7 +21,7 @@ public class FollowMasterGoal<T extends PathfinderMob & OwnableEntity> extends G
     public final T mob;
 
     private Entity follow;
-    private double minTPDist;
+    private final double minTPDist;
     private int followDelay;
     public final float maxDist;
     public final float minDist;

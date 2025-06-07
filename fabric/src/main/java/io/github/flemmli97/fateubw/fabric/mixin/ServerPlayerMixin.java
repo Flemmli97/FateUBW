@@ -14,7 +14,7 @@ public abstract class ServerPlayerMixin {
 
     @Inject(method = "restoreFrom", at = @At("RETURN"))
     private void copyOld(ServerPlayer oldPlayer, boolean alive, CallbackInfo info) {
-        ((PlayerDataGet) this).getData().from(((PlayerDataGet) oldPlayer).getData());
-        NetworkCalls.INSTANCE.sendToClient(new S2CPlayerCap(((PlayerDataGet) this).getData()), (ServerPlayer) (Object) this);
+        ((PlayerDataGet) this).fateubw$getData().from(((PlayerDataGet) oldPlayer).fateubw$getData());
+        NetworkCalls.INSTANCE.sendToClient(new S2CPlayerCap(((PlayerDataGet) this).fateubw$getData()), (ServerPlayer) (Object) this);
     }
 }

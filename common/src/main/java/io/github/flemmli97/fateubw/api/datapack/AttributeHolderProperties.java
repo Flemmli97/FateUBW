@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class AttributeHolderProperties {
+public record AttributeHolderProperties(Map<Attribute, Double> attributes) {
 
     public static final Codec<AttributeHolderProperties> CODEC = RecordCodecBuilder.create((instance) ->
             instance.group(
@@ -24,13 +24,8 @@ public class AttributeHolderProperties {
             .putAttributes(() -> Attributes.MAX_HEALTH, 20).putAttributes(() -> Attributes.ATTACK_DAMAGE, 1)
             .putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.2).putAttributes(ModAttributes.MAGIC_ATTACK, 1).build();
 
-    private final Map<Attribute, Double> attributes;
-
-    public AttributeHolderProperties(Map<Attribute, Double> attributes) {
-        this.attributes = attributes;
-    }
-
-    public Map<Attribute, Double> getAttributes() {
+    @Override
+    public Map<Attribute, Double> attributes() {
         return ImmutableMap.copyOf(this.attributes);
     }
 

@@ -115,7 +115,7 @@ public class ItemModels extends ItemModelProvider {
                         .override().predicate(ItemModelProps.ACTIVE_ID, 1).model(this.getExistingFile(new ResourceLocation(Fate.MODID, "excalibur_active")));
             } else if (reg.get() instanceof BlockItem blockItem) {
                 this.getBuilder(reg.getID().getPath()).parent(new ModelFile.UncheckedModelFile(new ResourceLocation(blockItem.getBlock().getRegistryName().getNamespace(), "block/" + blockItem.getBlock().getRegistryName().getPath())));
-            } else if (reg.get() instanceof SwordItem || reg.get() instanceof ClassSpear || reg == ModItems.STAFF) {
+            } else if (reg.get() instanceof SwordItem || reg.get() instanceof ClassSpear) {
                 this.withExistingParent(reg.getID().getPath(), ModelLocationUtils.decorateItemModelLocation("handheld"))
                         .texture("layer0", this.itemTexture(reg.getID()));
             } else if (reg == ModItems.ICON_0 || reg == ModItems.ICON_1 || reg == ModItems.ICON_2 || reg == ModItems.ICON_3) {

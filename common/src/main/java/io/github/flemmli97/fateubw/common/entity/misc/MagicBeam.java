@@ -57,11 +57,6 @@ public class MagicBeam extends BaseBeam {
     }
 
     @Override
-    public boolean piercing() {
-        return super.piercing();
-    }
-
-    @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(SHOOT_TIME, this.random.nextInt(15) + 10);

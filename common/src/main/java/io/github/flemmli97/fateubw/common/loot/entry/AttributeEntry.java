@@ -50,7 +50,7 @@ public class AttributeEntry extends GrailLootEntry<AttributeEntry> {
         AttributeInstance inst = player.getAttribute(this.att);
         if (inst != null) {
             AttributeModifier mod = inst.getModifier(ATTRIBUTE_UUID);
-            float val = this.range.getFloat(context);
+            double val = this.range.getFloat(context);
             if (mod != null) {
                 val += mod.getAmount();
                 inst.removeModifier(ATTRIBUTE_UUID);

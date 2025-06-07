@@ -36,7 +36,7 @@ public abstract class PlayerMixin implements PlayerDataGet {
     }
 
     @Override
-    public PlayerData getData() {
+    public PlayerData fateubw$getData() {
         return this.fateData;
     }
 }

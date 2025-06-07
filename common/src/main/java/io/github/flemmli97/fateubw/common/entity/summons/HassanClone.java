@@ -193,7 +193,7 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
     private void updateAttributes() {
         ResourceLocation id = Registry.ENTITY_TYPE.getKey(this.getType());
         AttributeHolderProperties props = DatapackHandler.SERVANT_PROPS.getGeneric(id);
-        props.getAttributes().forEach((att, val) -> {
+        props.attributes().forEach((att, val) -> {
             AttributeInstance inst = this.getAttribute(att);
             if (inst != null) {
                 inst.setBaseValue(val);

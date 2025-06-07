@@ -4,5 +4,5 @@ import io.github.flemmli97.fateubw.common.attachment.PlayerData;
 
 public interface PlayerDataGet {
 
-    PlayerData getData();
+    PlayerData fateubw$getData();
 }

@@ -13,7 +13,7 @@ public abstract class ItemStackMixin implements ItemStackDataGet {
     private final ItemStackData fateData = new ItemStackData();
 
     @Override
-    public ItemStackData getData() {
+    public ItemStackData fateubw$getData() {
         return this.fateData;
     }
 }

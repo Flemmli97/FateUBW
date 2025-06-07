@@ -1,6 +1,6 @@
 {
   "attributes": {
-    "minecraft:generic.max_health": 200.0,
+    "minecraft:generic.max_health": 250.0,
     "minecraft:generic.attack_damage": 10.0,
     "minecraft:generic.armor": 18.0,
     "fateubw:projectile_resistance": 8.0,

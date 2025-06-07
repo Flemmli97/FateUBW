@@ -35,7 +35,7 @@ public abstract class Matrix4fMixin implements Matrix4fTransformer {
     protected float m23;
 
     @Override
-    public Vec3 transform(Vec3 vec3) {
+    public Vec3 fateubw$transform(Vec3 vec3) {
         double f = vec3.x;
         double g = vec3.y;
         double h = vec3.z;
