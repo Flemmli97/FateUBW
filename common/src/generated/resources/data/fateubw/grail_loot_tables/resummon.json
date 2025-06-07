@@ -1,0 +1,9 @@
+{
+  "name": "fateubw.loot.resummon",
+  "loot_pools": [
+    {
+      "as_loot": false,
+      "type": "fateubw:servant_entry"
+    }
+  ]
+}

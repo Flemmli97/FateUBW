@@ -1,30 +1,35 @@
 package io.github.flemmli97.fateubw.common.attachment;
 
+import com.mojang.datafixers.util.Pair;
 import io.github.flemmli97.fateubw.common.entity.misc.ChainDagger;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.network.S2CCommandSeals;
 import io.github.flemmli97.fateubw.common.network.S2CMana;
 import io.github.flemmli97.fateubw.common.network.S2CPlayerCap;
-import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import io.github.flemmli97.fateubw.platform.NetworkCalls;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.function.Predicate;
-
 public class PlayerData {
-
-    private static final Predicate<BaseServant> NOT_DEAD = t -> !t.isDeadOrDying();
 
     private int currentMana, commandSeals = 0;
     private int manaRegenCooldown = 100;
     private float manaRegenAccel = 1;
 
-    private CompoundTag savedServant;
+    private Pair<EntityType<?>, CompoundTag> savedServant;
 
     private ChainDagger currentDagger;
 
@@ -60,36 +65,57 @@ public class PlayerData {
     public void tick(ServerPlayer player) {
         if (--this.manaRegenCooldown <= 0) {
             this.addMana(player, 1);
-            this.manaRegenCooldown = (int) (80 / this.manaRegenAccel);
+            this.manaRegenCooldown = (int) (120 / this.manaRegenAccel);
             this.manaRegenAccel = Math.min(this.manaRegenAccel + 0.5f, 10);
         }
     }
 
-    public void saveServant(ServerPlayer player) {
-        //TODO: Needs rework
-        GrailWarHandler tracker = GrailWarHandler.get(player.getServer());
-        if (tracker.getServant(player) != null) {
+    public void saveServant(BaseServant servant) {
+        if (servant != null) {
+            servant.stopRiding();
+            servant.ejectPassengers();
             CompoundTag nbt = new CompoundTag();
-            tracker.getServant(player).saveAsPassenger(nbt);
-            this.savedServant = nbt;
-            this.savedServant.remove("Pos");
-            this.savedServant.remove("Motion");
-            this.savedServant.remove("Rotation");
-            this.savedServant.remove("UUIDMost");
-            this.savedServant.remove("UUIDLeast");
+            servant.saveWithoutId(nbt);
+            nbt.remove("Pos");
+            nbt.remove("Motion");
+            nbt.remove("Rotation");
+            nbt.remove("UUID");
+            this.savedServant = Pair.of(servant.getType(), nbt);
         }
     }
 
-    public void restoreServant(Player player) {
-        if (this.savedServant != null && !player.level.isClientSide) {
-            Entity e = EntityType.loadEntityRecursive(this.savedServant, player.level, entity -> entity);
-            if (e != null) {
-                Vec3 look = player.getLookAngle();
-                e.setPos(player.getX() + look.x, player.getY(), player.getZ() + look.z);
-                player.level.addFreshEntity(e);
+    public void restoreServant(Player player, boolean loot) {
+        if (this.savedServant != null && (player.level instanceof ServerLevel serverLevel)) {
+            if (loot) {
+                ResourceLocation lootId = this.savedServant.getFirst().getDefaultLootTable();
+                LootTable lootTable = serverLevel.getServer().getLootTables().get(lootId);
+                LootContext.Builder builder = this.createLootContext(player);
+                lootTable.getRandomItems(builder.create(LootContextParamSets.ENTITY), player::spawnAtLocation);
                 this.savedServant = null;
+            } else {
+                Entity entity = this.savedServant.getFirst().create(serverLevel);
+                if (entity instanceof BaseServant servant) {
+                    servant.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(servant.blockPosition()), MobSpawnType.TRIGGERED, null, null);
+                    entity.load(this.savedServant.getSecond());
+                    Vec3 look = player.getLookAngle();
+                    entity.setPos(player.getX() + look.x, player.getY(), player.getZ() + look.z);
+                    servant.setOwner(player);
+                    serverLevel.addFreshEntity(entity);
+                    this.savedServant = null;
+                }
             }
         }
+    }
+
+    private LootContext.Builder createLootContext(Player player) {
+        DamageSource source = DamageSource.playerAttack(player);
+        return new LootContext.Builder((ServerLevel) player.level).withRandom(player.getRandom())
+                .withParameter(LootContextParams.THIS_ENTITY, player)
+                .withParameter(LootContextParams.ORIGIN, player.position())
+                .withParameter(LootContextParams.DAMAGE_SOURCE, source)
+                .withOptionalParameter(LootContextParams.KILLER_ENTITY, source.getEntity())
+                .withOptionalParameter(LootContextParams.DIRECT_KILLER_ENTITY, source.getDirectEntity())
+                .withParameter(LootContextParams.LAST_DAMAGE_PLAYER, player).withLuck(player.getLuck());
     }
 
     public int getCommandSeals() {
@@ -125,16 +151,20 @@ public class PlayerData {
     public CompoundTag writeToNBT(CompoundTag compound) {
         compound.putInt("Mana", this.currentMana);
         compound.putInt("CommandSeal", this.commandSeals);
-        if (this.savedServant != null)
-            compound.put("SavedServant", this.savedServant);
+        if (this.savedServant != null) {
+            compound.putString("SavedServantType", Registry.ENTITY_TYPE.getKey(this.savedServant.getFirst()).toString());
+            compound.put("SavedServant", this.savedServant.getSecond());
+        }
         return compound;
     }
 
     public void readFromNBT(CompoundTag compound) {
         this.currentMana = compound.getInt("Mana");
         this.commandSeals = compound.getInt("CommandSeal");
-        if (compound.contains("SavedServant"))
-            this.savedServant = compound.getCompound("SavedServant");
+        if (compound.contains("SavedServantType")) {
+            this.savedServant = Pair.of(Registry.ENTITY_TYPE.get(new ResourceLocation(compound.getString("SavedServantType"))),
+                    compound.getCompound("SavedServant"));
+        }
     }
 
     public void from(PlayerData other) {

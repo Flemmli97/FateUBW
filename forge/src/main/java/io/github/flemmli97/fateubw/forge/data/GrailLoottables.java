@@ -4,6 +4,7 @@ import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.api.datapack.GrailLootBuilder;
 import io.github.flemmli97.fateubw.api.datapack.provider.GrailLootProvider;
 import io.github.flemmli97.fateubw.common.loot.entry.AttributeEntry;
+import io.github.flemmli97.fateubw.common.loot.entry.ServantEntry;
 import io.github.flemmli97.fateubw.common.loot.entry.VanillaItemEntry;
 import io.github.flemmli97.fateubw.common.loot.entry.XPEntry;
 import net.minecraft.data.DataGenerator;
@@ -23,7 +24,7 @@ public class GrailLoottables extends GrailLootProvider {
 
     @Override
     protected void add() {
-        this.addLootTable(new ResourceLocation(Fate.MODID, "valuables"), GrailLootBuilder.create("Riches")
+        this.addLootTable(new ResourceLocation(Fate.MODID, "valuables"), GrailLootBuilder.create("fateubw.loot.valuables")
                 .addEntry(new VanillaItemEntry(LootItem.lootTableItem(Items.IRON_INGOT)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(45, 64)))
                         .build()))
@@ -40,7 +41,7 @@ public class GrailLoottables extends GrailLootProvider {
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 7)))
                         .build())));
 
-        this.addLootTable(new ResourceLocation(Fate.MODID, "rare_dungeon"), GrailLootBuilder.create("Rare Dungeon Loot")
+        this.addLootTable(new ResourceLocation(Fate.MODID, "rare_dungeon"), GrailLootBuilder.create("fateubw.loot.rare_dungeon")
                 .addEntry(new VanillaItemEntry(LootItem.lootTableItem(Items.DIAMOND)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(5, 12)))
                         .build()))
@@ -63,7 +64,7 @@ public class GrailLoottables extends GrailLootProvider {
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
                         .build())));
 
-        this.addLootTable(new ResourceLocation(Fate.MODID, "xp"), GrailLootBuilder.create("Knowledge")
+        this.addLootTable(new ResourceLocation(Fate.MODID, "xp"), GrailLootBuilder.create("fateubw.loot.knowledge")
                 .addEntry(new XPEntry(UniformGenerator.between(5000, 10000)))
                 .addEntry(new VanillaItemEntry(LootItem.lootTableItem(Items.EXPERIENCE_BOTTLE)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(32, 48)))
@@ -78,13 +79,19 @@ public class GrailLoottables extends GrailLootProvider {
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(64)))
                         .build())));
 
-        this.addLootTable(new ResourceLocation(Fate.MODID, "power"), GrailLootBuilder.create("Power")
+        this.addLootTable(new ResourceLocation(Fate.MODID, "power"), GrailLootBuilder.create("fateubw.loot.power")
                 .addEntry(new AttributeEntry(Attributes.MAX_HEALTH, UniformGenerator.between(1, 2)))
                 .addEntry(new AttributeEntry(Attributes.ATTACK_DAMAGE, UniformGenerator.between(0.2f, 0.4f))));
 
-        this.addLootTable(new ResourceLocation(Fate.MODID, "armor"), GrailLootBuilder.create("Increased Armor")
+        this.addLootTable(new ResourceLocation(Fate.MODID, "armor"), GrailLootBuilder.create("fateubw.loot.armor")
                 .addEntry(new AttributeEntry(Attributes.MAX_HEALTH, UniformGenerator.between(0, 2)))
                 .addEntry(new AttributeEntry(Attributes.ARMOR, UniformGenerator.between(0.3f, 0.5f)))
                 .addEntry(new AttributeEntry(Attributes.ARMOR_TOUGHNESS, UniformGenerator.between(0.2f, 0.5f))));
+
+        this.addLootTable(new ResourceLocation(Fate.MODID, "resummon"), GrailLootBuilder.create("fateubw.loot.resummon")
+                .addEntry(new ServantEntry(false)));
+
+        this.addLootTable(new ResourceLocation(Fate.MODID, "servant_loot"), GrailLootBuilder.create("fateubw.loot.servant_loot")
+                .addEntry(new ServantEntry(true)));
     }
 }

@@ -1,5 +1,5 @@
 {
-  "name": "Power",
+  "name": "fateubw.loot.power",
   "loot_pools": [
     {
       "attribute": "minecraft:generic.max_health",

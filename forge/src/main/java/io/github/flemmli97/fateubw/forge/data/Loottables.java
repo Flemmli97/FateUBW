@@ -24,7 +24,6 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.entries.LootPoolSingletonContainer;
 import net.minecraft.world.level.storage.loot.entries.LootTableReference;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
-import net.minecraft.world.level.storage.loot.functions.LootingEnchantFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -81,11 +80,8 @@ public class Loottables extends LootTableProvider {
 
         private LootTable.Builder getDefault(ItemLike... items) {
             LootPool.Builder build = LootPool.lootPool().setRolls(ConstantValue.exactly(1));
-            LootPool.lootPool().setRolls(ConstantValue.exactly(1));
             for (ItemLike item : items)
-                build.add(LootItem.lootTableItem(item))
-                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 0.1F)))
-                        .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0.0F, 0.05F)).setLimit(1));
+                build.add(LootItem.lootTableItem(item));
             return LootTable.lootTable().withPool(build);
         }
 

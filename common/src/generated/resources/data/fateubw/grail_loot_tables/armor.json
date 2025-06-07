@@ -1,5 +1,5 @@
 {
-  "name": "Increased Armor",
+  "name": "fateubw.loot.armor",
   "loot_pools": [
     {
       "attribute": "minecraft:generic.max_health",

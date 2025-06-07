@@ -6,6 +6,7 @@ import io.github.flemmli97.fateubw.common.loot.entry.AttributeEntry;
 import io.github.flemmli97.fateubw.common.loot.entry.CommandEntry;
 import io.github.flemmli97.fateubw.common.loot.entry.EmptyEntry;
 import io.github.flemmli97.fateubw.common.loot.entry.LootTableEntry;
+import io.github.flemmli97.fateubw.common.loot.entry.ServantEntry;
 import io.github.flemmli97.fateubw.common.loot.entry.VanillaItemEntry;
 import io.github.flemmli97.fateubw.common.loot.entry.XPEntry;
 import io.github.flemmli97.tenshilib.platform.PlatformUtils;
@@ -26,5 +27,6 @@ public class GrailLootSerializer {
     public static RegistryEntrySupplier<LootSerializerType<XPEntry>> XP = SERIALIZER.register("xp_entry", () -> new LootSerializerType<>(XPEntry.CODEC));
     public static RegistryEntrySupplier<LootSerializerType<AttributeEntry>> ATTRIBUTE = SERIALIZER.register("attribute_entry", () -> new LootSerializerType<>(AttributeEntry.CODEC));
     public static RegistryEntrySupplier<LootSerializerType<CommandEntry>> COMMAND = SERIALIZER.register("command_entry", () -> new LootSerializerType<>(CommandEntry.CODEC));
+    public static RegistryEntrySupplier<LootSerializerType<ServantEntry>> SERVANT = SERIALIZER.register("servant_entry", () -> new LootSerializerType<>(ServantEntry.CODEC));
 
 }

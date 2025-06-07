@@ -269,8 +269,8 @@ public class GrailWarHandler extends SavedData {
                     holyGrail.setInvulnerable(true);
                     holyGrail.setGlowingTag(true);
                     player.level.addFreshEntity(holyGrail);
-                    Platform.INSTANCE.getPlayerData(player).ifPresent(data -> data.saveServant(player));
 
+                    Platform.INSTANCE.getPlayerData(player).ifPresent(data -> data.saveServant(participant.getServant(this.server)));
                 } else {
                     this.server.getPlayerList().broadcastMessage(new TranslatableComponent("fateubw.chat.grailwar.win.none").withStyle(ChatFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
                 }
