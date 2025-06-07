@@ -22,6 +22,8 @@ public class ManaBar extends GuiComponent {
     }
 
     public void renderBar(PoseStack stack) {
+        if (this.mc.player.isCreative() || this.mc.player.isSpectator())
+            return;
         int mana = Platform.INSTANCE.getPlayerData(this.mc.player).map(PlayerData::getMana).orElse(0);
         int guiWidth = this.mc.getWindow().getGuiScaledWidth();
         int guiHeight = this.mc.getWindow().getGuiScaledHeight();
