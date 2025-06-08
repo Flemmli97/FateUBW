@@ -8,7 +8,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class RenderGem extends RenderProjectileItem<ThrownGem> {
 
-    private final ItemStack gem = new ItemStack(ModItems.CRYSTAL_CLUSTER.get());
+    private final ItemStack gem = new ItemStack(ModItems.MANA_GEM.get());
 
     public RenderGem(EntityRendererProvider.Context ctx) {
         super(ctx);

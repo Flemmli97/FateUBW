@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "fateubw:items/gem_cluster"
+    "layer0": "fateubw:items/mana_gem"
   }
 }

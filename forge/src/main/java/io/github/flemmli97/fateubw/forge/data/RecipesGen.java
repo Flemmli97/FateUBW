@@ -29,7 +29,7 @@ public class RecipesGen extends RecipeProvider {
 
     @Override
     public void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
-        ShapelessRecipeBuilder.shapeless(ModItems.CRYSTAL_CLUSTER.get())
+        ShapelessRecipeBuilder.shapeless(ModItems.MANA_GEM.get())
                 .requires(ModItems.CRYSTAL_RED.get())
                 .requires(ModItems.CRYSTAL_BLACK.get())
                 .requires(ModItems.CRYSTAL_BLUE.get())
@@ -40,7 +40,7 @@ public class RecipesGen extends RecipeProvider {
                 .define('T', Items.TORCH)
                 .define('R', Items.RED_WOOL)
                 .define('L', FateTags.FABRIC_LAPIS_BLOCK)
-                .define('G', ModItems.CRYSTAL_CLUSTER.get())
+                .define('G', ModItems.MANA_GEM.get())
                 .define('D', FateTags.FABRIC_DIAMOND_BLOCK)
                 .pattern("RTR").pattern("GDG").pattern("LGL")
                 .unlockedBy("dummy", new ImpossibleTrigger.TriggerInstance()).save(consumer);

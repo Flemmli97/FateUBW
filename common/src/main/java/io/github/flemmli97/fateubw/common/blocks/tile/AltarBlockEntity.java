@@ -76,6 +76,10 @@ public class AltarBlockEntity extends BlockEntity {
         return this.isComplete;
     }
 
+    public boolean canSummon() {
+        return this.isComplete() && !this.isSummoning() && this.invCatalyst.stream().noneMatch(ItemStack::isEmpty);
+    }
+
     public void setComplete(boolean flag) {
         this.isComplete = flag;
         if (!this.level.isClientSide)
@@ -96,7 +100,7 @@ public class AltarBlockEntity extends BlockEntity {
                     this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), Block.UPDATE_CLIENTS);
                 return true;
             }
-        } else if (stack.getItem() == ModItems.CRYSTAL_CLUSTER.get()) {
+        } else if (stack.getItem() == ModItems.MANA_GEM.get()) {
             ItemStack add = stack.copy();
             add.setCount(1);
             for (int x = 0; x < this.invCatalyst.size(); x++) {
@@ -159,6 +163,7 @@ public class AltarBlockEntity extends BlockEntity {
             CompoundTag tag = compound.getCompound("Charm");
             this.inventoryCharm = ItemStack.of(tag);
         }
+        this.invCatalyst.clear();
         ContainerHelper.loadAllItems(compound, this.invCatalyst);
         this.isComplete = compound.getBoolean("complete");
     }

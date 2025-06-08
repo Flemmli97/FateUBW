@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "fateubw:gem_cluster"
+      "fateubw:mana_gem"
     ]
   },
   "criteria": {
@@ -12,7 +12,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "fateubw:gem_cluster"
+        "recipe": "fateubw:mana_gem"
       }
     }
   },

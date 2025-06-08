@@ -71,7 +71,6 @@ public class Lang implements DataProvider {
         this.add(ModItems.CRYSTAL_YELLOW.get(), "Green Gem Shard");
         this.add(ModItems.CRYSTAL_GREEN.get(), "Yellow Gem Shard");
         this.add(ModItems.CRYSTAL_BLACK.get(), "Black Gem Shard");
-        this.add(ModItems.CRYSTAL_CLUSTER.get(), "Synthesized Gem");
         this.add(ModItems.CHARM_NONE.get(), "Artifact");
         this.add(ModItems.CHARM_SABER.get(), "Artifact (Saber)");
         this.add(ModItems.CHARM_ARCHER.get(), "Artifact (Archer)");
@@ -164,6 +163,7 @@ public class Lang implements DataProvider {
         this.add("fateubw.chat.servant.cuchulainn", "Cuchulainn's speed increased");
         this.add("fateubw.chat.servant.diarmuid", "Diarmuid's speed increased");
         this.add("fateubw.chat.altar.incomplete", "Incomplete Structure");
+        this.add("fateubw.chat.altar.missing.catalyst", "Missing gems!");
         this.add("fateubw.chat.altar.servant.existing", "How dare you to summon another servant!");
         this.add("fateubw.chat.command.attackall", "Your servant now attacks every mob");
         this.add("fateubw.chat.command.attackservant", "Your servant now only attacks other servants");

@@ -36,7 +36,7 @@ public class PatchouliGen extends PatchouliBookProvider {
                 .setVersion("1.1")
                 .setI18n(true)
                 .setShowProgress(false)
-                .addCategory("category.start", "fateubw.patchouli.category.start", "fateubw.patchouli.category.start.desc", new ItemStack(ModItems.CRYSTAL_CLUSTER.get()))
+                .addCategory("category.start", "fateubw.patchouli.category.start", "fateubw.patchouli.category.start.desc", new ItemStack(ModItems.MANA_GEM.get()))
                 .setSortnum(0)
                 .addEntry("entry.ores", "fateubw.patchouli.entry.ores", ModBlocks.GEM_ORE.get().getRegistryName().toString())
                 .setSortnum(0)

@@ -83,7 +83,7 @@ public class ModItems {
     public static final RegistryEntrySupplier<Item> CRYSTAL_YELLOW = ITEMS.register("gem_shard_yellow", () -> new Item(new Item.Properties().tab(Fate.TAB)));
     public static final RegistryEntrySupplier<Item> CRYSTAL_BLUE = ITEMS.register("gem_shard_blue", () -> new Item(new Item.Properties().tab(Fate.TAB)));
     public static final RegistryEntrySupplier<Item> CRYSTAL_BLACK = ITEMS.register("gem_shard_black", () -> new Item(new Item.Properties().tab(Fate.TAB)));
-    public static final RegistryEntrySupplier<Item> CRYSTAL_CLUSTER = ITEMS.register("gem_cluster", () -> new ItemCrystal(new Item.Properties().tab(Fate.TAB)));
+    public static final RegistryEntrySupplier<Item> MANA_GEM = ITEMS.register("mana_gem", () -> new ItemCrystal(new Item.Properties().tab(Fate.TAB)));
     public static final RegistryEntrySupplier<Item> CHALK = ITEMS.register("chalk", () -> new ItemChalk(new Item.Properties().tab(Fate.TAB).defaultDurability(32)));
     public static final RegistryEntrySupplier<Item> MANA_BOTTLE = ITEMS.register("mana_bottle", () -> new ItemManaBottle(new Item.Properties().tab(Fate.TAB)));
     public static final RegistryEntrySupplier<Item> GRAIL = ITEMS.register("holy_grail", () -> new ItemHolyGrail(new Item.Properties().tab(Fate.TAB)));

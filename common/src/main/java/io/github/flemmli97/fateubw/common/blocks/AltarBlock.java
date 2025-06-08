@@ -1,10 +1,8 @@
 package io.github.flemmli97.fateubw.common.blocks;
 
 import io.github.flemmli97.fateubw.common.blocks.tile.AltarBlockEntity;
-import io.github.flemmli97.fateubw.common.items.ItemServantCharm;
 import io.github.flemmli97.fateubw.common.registry.AdvancementRegister;
 import io.github.flemmli97.fateubw.common.registry.ModBlocks;
-import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import io.github.flemmli97.fateubw.platform.Platform;
 import io.github.flemmli97.tenshilib.common.utils.VoxelUtils;
@@ -98,13 +96,13 @@ public class AltarBlock extends BaseEntityBlock {
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 
-    public static void placeSummoningStructure(ServerLevel world, BlockPos pos, AltarBlockEntity altar, Direction facing) {
+    public static boolean placeSummoningStructure(ServerLevel world, BlockPos pos, AltarBlockEntity altar, Direction facing) {
         for (int x = -2; x <= 2; x++)
             for (int z = -2; z <= 2; z++) {
                 if (x != 0 || z != 0) {
                     BlockPos posNew = pos.offset(x, 0, z);
                     if (!(world.getBlockState(posNew).getBlock() instanceof ChalkBlock))
-                        return;
+                        return false;
                 }
             }
         for (int x = -2; x <= 2; x++)
@@ -116,6 +114,7 @@ public class AltarBlock extends BaseEntityBlock {
                 }
             }
         altar.setComplete(true);
+        return true;
     }
 
     public static void removeSummoningStructure(Level world, BlockPos pos) {
@@ -144,8 +143,8 @@ public class AltarBlock extends BaseEntityBlock {
     @Override
     public void onRemove(BlockState state, Level world, BlockPos pos, BlockState oldState, boolean isMoving) {
         if (!state.is(oldState.getBlock())) {
-            BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof AltarBlockEntity altar) {
+            BlockEntity tileentity = world.getBlockEntity(pos);
+            if (tileentity instanceof AltarBlockEntity altar) {
                 ItemStack stack = altar.getCharm();
                 if (!stack.isEmpty()) {
                     ItemEntity item = new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), stack);
@@ -210,43 +209,49 @@ public class AltarBlock extends BaseEntityBlock {
         if (!(blockEntity instanceof AltarBlockEntity altar))
             return InteractionResult.PASS;
         if (!(player instanceof ServerPlayer serverPlayer)) {
-            if (player.isShiftKeyDown() || stack.getItem() == ModItems.CHALK.get() || stack.getItem() == ModItems.CRYSTAL_CLUSTER.get() || stack.getItem() instanceof ItemServantCharm)
-                return InteractionResult.SUCCESS;
-            return InteractionResult.PASS;
+            return InteractionResult.SUCCESS;
+        }
+        if (altar.addItem(player, stack)) {
+            return InteractionResult.SUCCESS;
         }
         if (player.isShiftKeyDown()) {
             if (altar.removeItem(player))
                 return InteractionResult.SUCCESS;
-        } else if (stack.getItem() == ModItems.CHALK.get() && !altar.isComplete()) {
-            placeSummoningStructure((ServerLevel) world, pos, altar, state.getValue(FACING).getOpposite());
+            return InteractionResult.FAIL;
+        } else if (altar.addItem(player, stack)) {
             return InteractionResult.SUCCESS;
-        } else if (!altar.addItem(player, stack) && stack.getItem() == ModItems.CRYSTAL_CLUSTER.get()) {
-            return Platform.INSTANCE.getPlayerData(player).map(data -> {
-                GrailWarHandler tracker = GrailWarHandler.get(serverPlayer.getServer());
-                if (tracker.getServant(serverPlayer) == null) {
-                    if (!altar.isComplete()) {
-                        player.sendMessage(new TranslatableComponent("fateubw.chat.altar.incomplete").withStyle(ChatFormatting.DARK_RED), Util.NIL_UUID);
+        }
+        if (!altar.isComplete()) {
+            boolean placeRes = placeSummoningStructure((ServerLevel) world, pos, altar, state.getValue(FACING).getOpposite());
+            if (!placeRes) {
+                player.sendMessage(new TranslatableComponent("fateubw.chat.altar.incomplete").withStyle(ChatFormatting.DARK_RED), Util.NIL_UUID);
+            }
+            return placeRes ? InteractionResult.SUCCESS : InteractionResult.PASS;
+        }
+        return Platform.INSTANCE.getPlayerData(player).map(data -> {
+            GrailWarHandler tracker = GrailWarHandler.get(serverPlayer.getServer());
+            if (tracker.getServant(serverPlayer) == null) {
+                if (!altar.canSummon()) {
+                    player.sendMessage(new TranslatableComponent("fateubw.chat.altar.missing.catalyst").withStyle(ChatFormatting.DARK_RED), Util.NIL_UUID);
+                    return InteractionResult.FAIL;
+                }
+                if (!altar.isSummoning()) {
+                    GrailWarHandler.JoinResult joinResult = tracker.checkJoining(player);
+                    if (joinResult != GrailWarHandler.JoinResult.SUCCESS) {
+                        player.sendMessage(new TranslatableComponent(joinResult.translationKey).withStyle(ChatFormatting.DARK_RED), Util.NIL_UUID);
                         return InteractionResult.FAIL;
                     }
-                    if (!altar.isSummoning()) {
-                        GrailWarHandler.JoinResult joinResult = tracker.checkJoining(player);
-                        if (joinResult != GrailWarHandler.JoinResult.SUCCESS) {
-                            player.sendMessage(new TranslatableComponent(joinResult.translationKey).withStyle(ChatFormatting.DARK_RED), Util.NIL_UUID);
-                            return InteractionResult.FAIL;
-                        }
-                        if (!player.isCreative())
-                            stack.shrink(1);
-                        altar.setSummoning(player);
-                        AdvancementRegister.GRAIL_WAR_TRIGGER.trigger(serverPlayer, true);
-                        return InteractionResult.CONSUME;
-                    }
-                } else {
-                    player.sendMessage(new TranslatableComponent("fateubw.chat.altar.servant.existing").withStyle(ChatFormatting.DARK_RED), Util.NIL_UUID);
+                    if (!player.isCreative())
+                        stack.shrink(1);
+                    altar.setSummoning(player);
+                    AdvancementRegister.GRAIL_WAR_TRIGGER.trigger(serverPlayer, true);
+                    return InteractionResult.SUCCESS;
                 }
-                return InteractionResult.FAIL;
-            }).orElse(InteractionResult.FAIL);
-        }
-        return InteractionResult.FAIL;
+            } else {
+                player.sendMessage(new TranslatableComponent("fateubw.chat.altar.servant.existing").withStyle(ChatFormatting.DARK_RED), Util.NIL_UUID);
+            }
+            return InteractionResult.FAIL;
+        }).orElse(InteractionResult.FAIL);
     }
 
     @Override
