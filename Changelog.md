@@ -1,3 +1,23 @@
+FateUBW 1.2.0
+================
+- Removed truce system and replaced it with a team system
+  - Players can create teams with other players
+  - Teams can create alliances with each others
+  - Servants will not attack allied players/servants
+- Rewrite datapack entity properties
+- Some entity config values (e.g. mob health) moved to datapack
+- Rewrote some combat handling such as projectile blocking to be more generic
+- Add combat and passive health regen (attribute)
+  - Combat regen gets applied in combat, passive otherwise
+- Rewrote the grailwar system
+  - Instead of triggered by players a grailwar now happens based on time since the last one passed
+- Servants in a grailwar do not drop loot now
+- Update mana bar and config
+- Remove command control item for the gui and replace with simple shift right click on servant action
+- Add resummmon and servant loot drop entry to grail loot
+- Various servant related configs are moved to datapack
+- Reduced default deaths for heracles 3 -> 2. Also configurable now
+
 FateUBW 1.1.2
 ================
 - Updated ai for:
