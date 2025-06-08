@@ -285,9 +285,11 @@ public class Lang implements DataProvider {
         this.add("fateubw.key.target", "Target");
 
         this.add("fateubw_book", "Fate Guidebook");
-        this.add("fateubw.patchouli.landing", "");
+        this.add("fateubw.patchouli.landing", "The Holy Grail War... a battle between players who yearn for the power of the wish granting Holy Grail. " +
+                "This book serves as a guide if you wish to also participate in it.");
         this.add("fateubw.patchouli.category.start", "Getting started");
-        this.add("fateubw.patchouli.category.start.desc", "");
+        this.add("fateubw.patchouli.category.start.desc", "Grail wars happen regulary in the world. The grail will announce when players are able to join one. " +
+                "During a grailwar enemy servants without players might also spawn. Defeating every servant and being the last one standing will grant the player the holy grail rewarding the player with various loot.");
         this.add("fateubw.patchouli.entry.ores", "Ores");
 
         this.add("fateubw.patchouli.entry.ores." + ModBlocks.GEM_ORE.getID().getPath(), "These ores pulse faintly with residual mana. When mined, it yields small pieces of mana shards. " +
@@ -300,8 +302,6 @@ public class Lang implements DataProvider {
         this.add("fateubw.patchouli.entry.altar.2", "To begin inscribe a 5x5 area using chalk centered around the altar. Right clicking the altar should then complete it.");
         this.add("fateubw.patchouli.entry.altar.3", "By offering 8 mana crystals and right clicking once again will start the summoning process calling forth your servant. If you possess an artifact you may place it on the altar before activation. " +
                 "These can boost you chance of increasing the odds that a servant of that class will heed your call.");
-        this.add("fateubw.patchouli.category.war", "Grail War");
-        this.add("fateubw.patchouli.category.war.desc", "During a grailwar (depending on the config) enemy servants without players might also spawn. Defeating every servant and being the last one standing will grant the player the holy grail rewarding the player with various loot.");
         this.add("fateubw.patchouli.entry.servant", "Servant");
         this.add("fateubw.patchouli.entry.servant.1", "Servants are the physical embodiments of Heroic Spirits, summoned via the $(l:entry.altar)summoning altar$(/l) to serve a Master in battle.$(br)$(br) " +
                 "To manage and issue orders to your Servant, press $(4)($(k:fateubw.key.gui))$() to open a GUI allowing you to command basic behaviors—such as follow, hold position etc. " +
