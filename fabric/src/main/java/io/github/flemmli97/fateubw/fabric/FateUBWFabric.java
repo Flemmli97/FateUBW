@@ -92,6 +92,7 @@ public class FateUBWFabric implements ModInitializer {
         ModBlocks.TILES.registerContent();
         ModEntities.ENTITIES.registerContent();
         GrailLootSerializer.SERIALIZER.registerContent();
+        GrailLootSerializer.LOOT_FUNCTION.registerContent();
         ModParticles.PARTICLES.registerContent();
         ModAttributes.ATTRIBUTES.registerContent();
         ModFeatures.register();

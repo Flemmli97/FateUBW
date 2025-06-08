@@ -19,10 +19,12 @@ import io.github.flemmli97.fateubw.forge.common.config.ConfigLoader;
 import io.github.flemmli97.fateubw.forge.common.config.ConfigSpecs;
 import io.github.flemmli97.fateubw.forge.common.event.EventHandler;
 import io.github.flemmli97.fateubw.forge.common.network.PacketHandler;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -52,6 +54,7 @@ public class FateUBWForge {
         modBus.addListener(this::conf);
         modBus.addListener(CapabilityInsts::register);
         modBus.addListener(this::attributes);
+        modBus.addGenericListener(Attribute.class, this::registry);
 
         if (FMLLoader.getDist() == Dist.CLIENT)
             ClientEvents.register();
@@ -75,6 +78,11 @@ public class FateUBWForge {
         ModAttributes.ATTRIBUTES.registerContent();
         ModSounds.SOUND_EVENTS.registerContent();
         ModEffects.EFFECTS.registerContent();
+    }
+
+    public void registry(RegistryEvent.Register<Attribute> event) {
+        // Is vanilla reg
+        GrailLootSerializer.LOOT_FUNCTION.registerContent();
     }
 
     public void setup(FMLCommonSetupEvent event) {

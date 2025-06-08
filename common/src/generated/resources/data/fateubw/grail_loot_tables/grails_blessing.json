@@ -1,0 +1,157 @@
+{
+  "name": "fateubw.loot.grails_blessing",
+  "loot_pools": [
+    {
+      "range": {
+        "type": "minecraft:uniform",
+        "min": 9000,
+        "max": 15000
+      },
+      "type": "fateubw:xp_entry"
+    },
+    {
+      "entry": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:set_count",
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 32,
+              "max": 64
+            },
+            "add": false
+          }
+        ],
+        "name": "minecraft:gold_ingot"
+      },
+      "type": "fateubw:vanilla_entry"
+    },
+    {
+      "entry": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:set_count",
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 2,
+              "max": 5
+            },
+            "add": false
+          }
+        ],
+        "name": "minecraft:gold_block"
+      },
+      "type": "fateubw:vanilla_entry"
+    },
+    {
+      "entry": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:set_count",
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 10,
+              "max": 20
+            },
+            "add": false
+          }
+        ],
+        "name": "minecraft:diamond"
+      },
+      "type": "fateubw:vanilla_entry"
+    },
+    {
+      "entry": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:set_count",
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 3,
+              "max": 7
+            },
+            "add": false
+          }
+        ],
+        "name": "minecraft:netherite_ingot"
+      },
+      "type": "fateubw:vanilla_entry"
+    },
+    {
+      "entry": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:set_count",
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 2,
+              "max": 6
+            },
+            "add": false
+          }
+        ],
+        "name": "fateubw:mana_bottle"
+      },
+      "type": "fateubw:vanilla_entry"
+    },
+    {
+      "entry": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:enchant_with_levels",
+            "levels": {
+              "type": "minecraft:uniform",
+              "min": 25,
+              "max": 30
+            },
+            "treasure": false
+          }
+        ],
+        "name": "minecraft:book"
+      },
+      "type": "fateubw:vanilla_entry"
+    },
+    {
+      "entry": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:enchant_with_levels",
+            "levels": {
+              "type": "minecraft:uniform",
+              "min": 25,
+              "max": 30
+            },
+            "treasure": false
+          }
+        ],
+        "name": "minecraft:book"
+      },
+      "type": "fateubw:vanilla_entry"
+    },
+    {
+      "entry": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:enchant_with_levels",
+            "levels": {
+              "type": "minecraft:uniform",
+              "min": 25,
+              "max": 30
+            },
+            "treasure": false
+          }
+        ],
+        "name": "minecraft:book"
+      },
+      "type": "fateubw:vanilla_entry"
+    }
+  ]
+}

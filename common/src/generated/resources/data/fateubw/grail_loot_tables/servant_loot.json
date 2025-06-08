@@ -1,9 +1,0 @@
-{
-  "name": "fateubw.loot.servant_loot",
-  "loot_pools": [
-    {
-      "as_loot": true,
-      "type": "fateubw:servant_entry"
-    }
-  ]
-}

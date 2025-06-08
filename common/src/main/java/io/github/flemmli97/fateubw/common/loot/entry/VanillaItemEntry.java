@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 
 public class VanillaItemEntry extends GrailLootEntry<VanillaItemEntry> {
 
-    public static Codec<VanillaItemEntry> CODEC = LootCodecs.POOL_ENTRY_CODEC.fieldOf("entry")
+    public static final Codec<VanillaItemEntry> CODEC = LootCodecs.POOL_ENTRY_CODEC.fieldOf("entry")
             .xmap(VanillaItemEntry::new, e -> e.lootEntry).codec();
 
     private final LootPoolEntryContainer lootEntry;
@@ -33,7 +33,11 @@ public class VanillaItemEntry extends GrailLootEntry<VanillaItemEntry> {
 
     @Override
     public void accept(ServerPlayer player, LootContext context) {
-        Consumer<ItemStack> givePlayer = player::addItem;
+        Consumer<ItemStack> givePlayer = stack -> {
+            if (!player.addItem(stack)) {
+                player.spawnAtLocation(stack);
+            }
+        };
         this.lootEntry.expand(context, gen -> gen.createItemStack(givePlayer, context));
     }
 }

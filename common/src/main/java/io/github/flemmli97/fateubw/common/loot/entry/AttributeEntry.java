@@ -26,17 +26,20 @@ public class AttributeEntry extends GrailLootEntry<AttributeEntry> {
 
     public static final Codec<AttributeEntry> CODEC = RecordCodecBuilder.create(inst -> inst.group(
                     Registry.ATTRIBUTE.byNameCodec().fieldOf("attribute").forGetter(d -> d.att),
+                    Codec.DOUBLE.fieldOf("max").forGetter(d -> d.max),
                     LootCodecs.NUMBER_PROVIDER_CODEC.fieldOf("range").forGetter(d -> d.range),
                     LootCodecs.LOOT_ITEM_CONDITION.listOf().optionalFieldOf("conditions").forGetter(d -> d.conditions.length == 0 ? Optional.empty() : Optional.of(Arrays.stream(d.conditions).toList()))
-            ).apply(inst, (att, range, cond) -> new AttributeEntry(att, range, cond.map(l -> l.toArray(l.toArray(new LootItemCondition[0]))).orElse(new LootItemCondition[0])))
+            ).apply(inst, (att, max, range, cond) -> new AttributeEntry(att, max, range, cond.map(l -> l.toArray(l.toArray(new LootItemCondition[0]))).orElse(new LootItemCondition[0])))
     );
 
     private final Attribute att;
+    private final double max;
     private final NumberProvider range;
 
-    public AttributeEntry(Attribute att, NumberProvider range, LootItemCondition... conditions) {
+    public AttributeEntry(Attribute att, double max, NumberProvider range, LootItemCondition... conditions) {
         super(conditions);
         this.att = att;
+        this.max = max;
         this.range = range;
     }
 
@@ -55,7 +58,7 @@ public class AttributeEntry extends GrailLootEntry<AttributeEntry> {
                 val += mod.getAmount();
                 inst.removeModifier(ATTRIBUTE_UUID);
             }
-            inst.addPermanentModifier(new AttributeModifier(ATTRIBUTE_UUID, "fate.modifier", val, AttributeModifier.Operation.ADDITION));
+            inst.addPermanentModifier(new AttributeModifier(ATTRIBUTE_UUID, "fate.modifier", Math.min(val, this.max), AttributeModifier.Operation.ADDITION));
         }
     }
 }
