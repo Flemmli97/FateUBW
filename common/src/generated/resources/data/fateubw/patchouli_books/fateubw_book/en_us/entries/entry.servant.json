@@ -1,6 +1,6 @@
 {
   "name": "fateubw.patchouli.entry.servant",
-  "category": "fateubw:category.war",
+  "category": "fateubw:category.start",
   "icon": "fateubw:artifact_none",
   "pages": [
     {
@@ -11,5 +11,6 @@
       "type": "patchouli:text",
       "text": "fateubw.patchouli.entry.servant.2"
     }
-  ]
+  ],
+  "sortnum": 2
 }

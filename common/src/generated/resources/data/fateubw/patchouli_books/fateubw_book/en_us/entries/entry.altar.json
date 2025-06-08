@@ -5,7 +5,7 @@
   "pages": [
     {
       "type": "patchouli:crafting",
-      "recipe": "fateubw:altar",
+      "recipe": "fateubw:summoning_altar",
       "text": "fateubw.patchouli.entry.altar.1"
     },
     {

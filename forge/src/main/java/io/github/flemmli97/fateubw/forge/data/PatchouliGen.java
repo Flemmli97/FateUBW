@@ -4,7 +4,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.registry.ModBlocks;
+import io.github.flemmli97.fateubw.common.registry.ModEntities;
 import io.github.flemmli97.fateubw.common.registry.ModItems;
+import io.github.flemmli97.tenshilib.common.item.SpawnEgg;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -31,7 +33,7 @@ public class PatchouliGen extends PatchouliBookProvider {
         EntryBuilder builder;
         consumer.accept((builder = this.createBookBuilder("fateubw_book", "fateubw_book", "fateubw.patchouli.landing")
                 .setCreativeTab(Fate.TAB.getRecipeFolderName())
-                .setVersion("1.0")
+                .setVersion("1.1")
                 .setI18n(true)
                 .setShowProgress(false)
                 .addCategory("category.start", "fateubw.patchouli.category.start", "fateubw.patchouli.category.start.desc", new ItemStack(ModItems.CRYSTAL_CLUSTER.get()))
@@ -47,7 +49,7 @@ public class PatchouliGen extends PatchouliBookProvider {
                 .build()
                 .addEntry("entry.altar", "fateubw.patchouli.entry.altar", ModBlocks.ALTAR.get().getRegistryName().toString()))
                 .setSortnum(1)
-                .addCraftingPage(new ResourceLocation(Fate.MODID, "altar"))
+                .addCraftingPage(new ResourceLocation(Fate.MODID, "summoning_altar"))
                 .setText("fateubw.patchouli.entry.altar.1")
                 .build()
                 .addPage(new MultiBlockPage("fateubw.patchouli.entry.altar", true, builder))
@@ -58,10 +60,8 @@ public class PatchouliGen extends PatchouliBookProvider {
                 .build()
                 .addSimpleTextPage("fateubw.patchouli.entry.altar.3")
                 .build()
-                .build()
-                .addCategory("category.war", "fateubw.patchouli.category.war", "fateubw.patchouli.category.war.desc", new ItemStack(ModItems.GRAIL.get()))
-                .setSortnum(1)
                 .addEntry("entry.servant", "fateubw.patchouli.entry.servant", ModItems.CHARM_NONE.get().getRegistryName().toString())
+                .setSortnum(2)
                 .addSimpleTextPage("fateubw.patchouli.entry.servant.1")
                 .addSimpleTextPage("fateubw.patchouli.entry.servant.2")
                 .build()
@@ -72,22 +72,22 @@ public class PatchouliGen extends PatchouliBookProvider {
                 .build()
                 .build()
                 .addCategory("category.loot", "fateubw.patchouli.category.loot", "fateubw.patchouli.category.loot.desc", new ItemStack(Items.STICK))
-                .setSortnum(2)
+                .setSortnum(1)
                 .addEntry("entry.item", "fateubw.patchouli.entry.item", Items.STICK.getRegistryName().toString())
                 .addSimpleTextPage("fateubw.patchouli.entry.item.1")
                 .build()
                 .addEntry("entry.attribute", "fateubw.patchouli.entry.attribute", Items.IRON_SWORD.getRegistryName().toString())
                 .addSimpleTextPage("fateubw.patchouli.entry.attribute.1")
                 .build()
-                .addEntry("entry.loot.servant", "fateubw.patchouli.entry.loot.servant", Items.BARRIER.getRegistryName().toString())
+                .addEntry("entry.loot.servant", "fateubw.patchouli.entry.loot.servant", SpawnEgg.fromType(ModEntities.ARTHUR.get()).get().getRegistryName().toString())
                 .addSimpleTextPage("fateubw.patchouli.entry.loot.servant.1")
+                .build()
+                .addEntry("entry.loot.commands", "fateubw.patchouli.entry.commands", Items.COMMAND_BLOCK.getRegistryName().toString())
+                .addSimpleTextPage("fateubw.patchouli.entry.commands.1")
                 .build()
                 .addEntry("entry.xp", "fateubw.patchouli.entry.xp", Items.EXPERIENCE_BOTTLE.getRegistryName().toString())
                 .addSimpleTextPage("fateubw.patchouli.entry.xp.1")
                 .build()
-                //.addEntry("entry.astral", "fateubw.patchouli.entry.astral", Items.BARRIER.getRegistryName().toString())
-                //.addSimpleTextPage("fateubw.patchouli.entry.astral.1")
-                //.build()
                 .build()
         );
     }

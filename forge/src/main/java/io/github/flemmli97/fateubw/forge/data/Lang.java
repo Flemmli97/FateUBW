@@ -286,36 +286,42 @@ public class Lang implements DataProvider {
 
         this.add("fateubw_book", "Fate Guidebook");
         this.add("fateubw.patchouli.landing", "");
-        this.add("fateubw.patchouli.category.start", "How to start");
+        this.add("fateubw.patchouli.category.start", "Getting started");
         this.add("fateubw.patchouli.category.start.desc", "");
         this.add("fateubw.patchouli.entry.ores", "Ores");
-        this.add("fateubw.patchouli.entry.ores." + ModBlocks.GEM_ORE.getID().getPath(), "Gem shards that are common underground. " +
-                "Combine 5 different types to create a cluster. You need a bit of them to start. Gem clusters are throwable that create an explosion on impact");
-        this.add("fateubw.patchouli.entry.ores." + ModBlocks.ARTIFACT_ORE.getID().getPath(), "Rarely found underground. Right click an empty one to get a random " +
-                "artifact for a class. Using an artifact during summoning increases your chances of getting a servant of that class");
+
+        this.add("fateubw.patchouli.entry.ores." + ModBlocks.GEM_ORE.getID().getPath(), "These ores pulse faintly with residual mana. When mined, it yields small pieces of mana shards. " +
+                "Combining the different types of shards and a bit of mana one can create a larger and stronger mana crystal. " +
+                "The created gem itself explodes violently when hurled as a projectile but its true purpose lies in the summoning ritual.");
+        this.add("fateubw.patchouli.entry.ores." + ModBlocks.ARTIFACT_ORE.getID().getPath(), "Deeper still lies the much rarer Artifact Ore. These stones will yield forgotten relics of specific servant classes. " +
+                "These artifacts can be used during a summoning ritual to increasing the chance that a Servant of matching class will heed your call.");
         this.add("fateubw.patchouli.entry.altar", "Summoning Altar");
-        this.add("fateubw.patchouli.entry.altar.1", "To use the summoning altar you need to make a drawing chalk and use it to create a 5x5 field of chalk with the altar in the center. " +
-                "After that right click the altar with the drawing chalk and it should form a proper red magic circle.");
-        this.add("fateubw.patchouli.entry.altar.2", "Now put 8 gem clusters into the altar and right click it with another cluster to start the summoning");
-        this.add("fateubw.patchouli.entry.altar.3", "If you use an artifact before the summoning you can increase your chances of getting a servant of said class");
+        this.add("fateubw.patchouli.entry.altar.1", "At the heart of all Grail rituals lies the Summoning Altar—a carefully constructed array designed to bridge the gap between the mortal world and the Throne of Heroes. ");
+        this.add("fateubw.patchouli.entry.altar.2", "To begin inscribe a 5x5 area using chalk centered around the altar. Right clicking the altar should then complete it.");
+        this.add("fateubw.patchouli.entry.altar.3", "By offering 8 mana crystals and right clicking once again will start the summoning process calling forth your servant. If you possess an artifact you may place it on the altar before activation. " +
+                "These can boost you chance of increasing the odds that a servant of that class will heed your call.");
         this.add("fateubw.patchouli.category.war", "Grail War");
         this.add("fateubw.patchouli.category.war.desc", "During a grailwar (depending on the config) enemy servants without players might also spawn. Defeating every servant and being the last one standing will grant the player the holy grail rewarding the player with various loot.");
         this.add("fateubw.patchouli.entry.servant", "Servant");
-        this.add("fateubw.patchouli.entry.servant.1", "After you used the $(l:entry.altar)summoning altar$(/l) to summon your servant you can press $(4)($(k:fate.key.gui))$() to open the servant gui from which you can issue various orders to your servant. " +
-                "Additionally pressing $(li)$(4)($(k:fate.key.np))$() commands them to use their nobel phantasm at the cost of using up a command spell and your own mana.");
-        this.add("fateubw.patchouli.entry.servant.2", "$(li)$(4)($(k:fate.key.boost))$() uses up a command spell to boost your servant temporary." +
-                "$(li)$(4)($(k:fate.key.target))$() while looking at an entity makes your servant attack said entity.");
-        this.add("fateubw.patchouli.entry.grail", "Holy Grail");
+        this.add("fateubw.patchouli.entry.servant.1", "Servants are the physical embodiments of Heroic Spirits, summoned via the $(l:entry.altar)summoning altar$(/l) to serve a Master in battle.$(br)$(br) " +
+                "To manage and issue orders to your Servant, press $(4)($(k:fateubw.key.gui))$() to open a GUI allowing you to command basic behaviors—such as follow, hold position etc. " +
+                "Additionally several keybindings grant you more advanced control during battle:");
+        this.add("fateubw.patchouli.entry.servant.2", "$(li)$(4)($(k:fateubw.key.np))$() commands them to use their nobel phantasm at the cost of using up a command spell and your own mana. " +
+                "$(li)$(4)($(k:fateubw.key.boost))$() to expend a Command Spell, releasing a surge of magical energy that greatly enhances your Servant’s combat abilities for a short time." +
+                "$(li)$(4)($(k:fateubw.key.target))$() while looking at an entity makes your servant prioritize and attack said entity.");
+        this.add("fateubw.patchouli.entry.grail", "The Holy Grail");
         this.add("fateubw.patchouli.entry.grail.1", "By being victorious in the grail war you will be awarded with the holy grail. An object said to be able to grant any wish you want. " +
-                "Though for gameplays sake this is sadly not the case. By using it you will be able to select a from a pool of loottables.");
+                "Upon use you may choose between multiple possible powerful rewards.");
         this.add("fateubw.patchouli.category.loot", "Loot");
-        this.add("fateubw.patchouli.category.loot.desc", "Overview of possible loot to be granted. The actual loot depends on the selected loottable. The server can define custom loottables via datapacks.");
+        this.add("fateubw.patchouli.category.loot.desc", "This section is more addressed for pack devs and contains an overview of possible loot to be granted. The actual loot depends on the selected loottable. The server can define custom loottables via datapacks.");
         this.add("fateubw.patchouli.entry.item", "Items");
-        this.add("fateubw.patchouli.entry.item.1", "Items as per defined in the loot table");
+        this.add("fateubw.patchouli.entry.item.1", "Various items as per defined in the loot table");
         this.add("fateubw.patchouli.entry.attribute", "Attributes");
-        this.add("fateubw.patchouli.entry.attribute.1", "Can grant attributes like permanent extra health or attack damage etc.");
+        this.add("fateubw.patchouli.entry.attribute.1", "Can grant permant attributes increases like extra health, attack damage etc.");
         this.add("fateubw.patchouli.entry.loot.servant", "Servant");
-        this.add("fateubw.patchouli.entry.loot.servant.1", "Not implemented yet");
+        this.add("fateubw.patchouli.entry.loot.servant.1", "Resummons the servant used in the last grailwar. Or drops the servants loot (i.e. their weapon)");
+        this.add("fateubw.patchouli.entry.commands", "Commands");
+        this.add("fateubw.patchouli.entry.commands.1", "Allows executing of commands");
         this.add("fateubw.patchouli.entry.xp", "XP");
         this.add("fateubw.patchouli.entry.xp.1", "Grants random amount of xp points");
     }

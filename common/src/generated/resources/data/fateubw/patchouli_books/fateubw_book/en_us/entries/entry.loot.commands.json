@@ -1,0 +1,11 @@
+{
+  "name": "fateubw.patchouli.entry.commands",
+  "category": "fateubw:category.loot",
+  "icon": "minecraft:command_block",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "fateubw.patchouli.entry.commands.1"
+    }
+  ]
+}

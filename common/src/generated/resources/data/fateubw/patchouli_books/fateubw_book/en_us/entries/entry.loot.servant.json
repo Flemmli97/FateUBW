@@ -1,7 +1,7 @@
 {
   "name": "fateubw.patchouli.entry.loot.servant",
   "category": "fateubw:category.loot",
-  "icon": "minecraft:barrier",
+  "icon": "fateubw:arthur_spawn_egg",
   "pages": [
     {
       "type": "patchouli:text",
