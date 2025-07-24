@@ -75,7 +75,6 @@ public class Participant {
                 if (servant != null) {
                     this.servant = new WeakReference<>(servant);
                     this.levelCache = servant.level.dimension();
-                    ;
                     break;
                 }
             }

@@ -243,9 +243,11 @@ public class AltarBlock extends BaseEntityBlock {
                     }
                     if (!player.isCreative())
                         stack.shrink(1);
-                    altar.setSummoning(player);
-                    AdvancementRegister.GRAIL_WAR_TRIGGER.trigger(serverPlayer, true);
-                    return InteractionResult.SUCCESS;
+                    if (altar.setSummoning(player)) {
+                        AdvancementRegister.GRAIL_WAR_TRIGGER.trigger(serverPlayer, true);
+                        return InteractionResult.SUCCESS;
+                    }
+                    return InteractionResult.FAIL;
                 }
             } else {
                 player.sendMessage(new TranslatableComponent("fateubw.chat.altar.servant.existing").withStyle(ChatFormatting.DARK_RED), Util.NIL_UUID);

@@ -13,6 +13,7 @@ import io.github.flemmli97.fateubw.platform.Platform;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -354,7 +355,7 @@ public class GrailWarHandler extends SavedData {
             ChunkPos cpos = new ChunkPos(x >> 4, z >> 4);
             LevelChunk chunk = player.getLevel().getChunk(cpos.x, cpos.z);
             int y = chunk.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) + 1;
-            BaseServant servant = this.summonRandomServant(player.getLevel(), new Vec3(x, y, z), null, null, true);
+            BaseServant servant = this.summonRandomServant(player.getLevel(), new Vec3(x, y, z), null, null, true, true);
             if (servant != null) {
                 player.getLevel().getChunkSource().addRegionTicket(BaseServant.TRACKINGTICKET, cpos, 2, cpos);
                 this.timeToNextServant = Mth.nextInt(player.getLevel().random, CommonConfig.servantMinSpawnDelay, CommonConfig.servantMaxSpawnDelay);
@@ -377,7 +378,7 @@ public class GrailWarHandler extends SavedData {
                 player -> this.isParticipant(player) ? message : null, ChatType.SYSTEM, Util.NIL_UUID);
     }
 
-    public BaseServant summonRandomServant(ServerLevel level, Vec3 pos, @Nullable ServerPlayer player, @Nullable ItemStack stack, boolean event) {
+    public BaseServant summonRandomServant(ServerLevel level, Vec3 pos, @Nullable ServerPlayer player, @Nullable ItemStack stack, boolean event, boolean addToLevel) {
         ResourceLocation servantClass = null;
         if (stack != null && stack.getItem() instanceof ItemServantCharm charm && player.getRandom().nextFloat() <= 0.6 && this.canSpawnServantClass(charm.type))
             servantClass = ((ItemServantCharm) stack.getItem()).type;
@@ -390,7 +391,9 @@ public class GrailWarHandler extends SavedData {
         List<EntityPropsManager.EntityTypeAndID> entities = servants.stream().filter(entry -> this.canSpawnServantType(entry.id())).toList();
         if (entities.isEmpty())
             return null;
-        BaseServant servant = entities.get(level.random.nextInt(entities.size())).type().create(level);
+        BaseServant servant = entities.get(level.random.nextInt(entities.size())).type()
+                .create(level, null, null, null, new BlockPos(pos),
+                        MobSpawnType.MOB_SUMMONED, false, false);
         if (servant == null)
             return null;
         servant.moveTo(pos.x(), pos.y(), pos.z(), level.random.nextFloat() * 360.0F, 0);
@@ -399,9 +402,10 @@ public class GrailWarHandler extends SavedData {
         servant.setOwner(player);
         if (event && !Platform.INSTANCE.canSpawnEvent(servant, level, pos.x(), pos.y(), pos.z(), null, MobSpawnType.TRIGGERED, SpawnPlacements.getPlacementType(servant.getType())))
             return null;
-        servant.finalizeSpawn(level, level.getCurrentDifficultyAt(servant.blockPosition()), MobSpawnType.TRIGGERED, null, null);
-        level.addFreshEntity(servant);
         this.join(servant);
+        servant.finalizeSpawn(level, level.getCurrentDifficultyAt(servant.blockPosition()), MobSpawnType.TRIGGERED, null, null);
+        if (addToLevel)
+            level.addFreshEntity(servant);
         return servant;
     }
 

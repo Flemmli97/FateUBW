@@ -34,24 +34,23 @@ public class AltarBlockEntity extends BlockEntity {
     private ItemStack inventoryCharm = ItemStack.EMPTY;
     private final NonNullList<ItemStack> invCatalyst = NonNullList.withSize(8, ItemStack.EMPTY);
     private int summoningTick, tick;
-    private Player player;
+    private BaseServant servant;
 
     public AltarBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlocks.TILE_ALTAR.get(), pos, state);
     }
 
     public static void ticker(Level level, BlockPos pos, BlockState state, AltarBlockEntity altar) {
-        if (level instanceof ServerLevel serverLevel) {
+        if (level instanceof ServerLevel) {
             if (altar.isSummoning) {
                 altar.summoningTick++;
                 if (altar.summoningTick == 1) {
                     level.playSound(null, altar.worldPosition, SoundEvents.PORTAL_TRAVEL, SoundSource.AMBIENT, 0.4F, 1F);
                 }
-                if (altar.summoningTick > 150) {
-                    BaseServant servant = GrailWarHandler.get(serverLevel.getServer())
-                            .summonRandomServant(serverLevel, Vec3.atCenterOf(altar.worldPosition), (ServerPlayer) altar.player, altar.inventoryCharm, false);
-                    if (servant != null)
-                        Platform.INSTANCE.getPlayerData(altar.player).ifPresent(data -> data.setCommandSeals(altar.player, 3));
+                if (altar.summoningTick == 150) {
+                    if (altar.servant != null) {
+                        level.addFreshEntity(altar.servant);
+                    }
                     AltarBlock.removeSummoningStructure(level, pos);
                 }
             }
@@ -177,11 +176,19 @@ public class AltarBlockEntity extends BlockEntity {
         compound.putBoolean("complete", this.isComplete);
     }
 
-    public void setSummoning(Player player) {
-        this.isSummoning = true;
-        this.player = player;
-        if (this.getLevel() instanceof ServerLevel serverLevel)
-            NetworkCalls.INSTANCE.sendToTracking(new S2CAltarUpdate(this.getBlockPos(), this.isSummoning), serverLevel, this.getBlockPos());
+    public boolean setSummoning(Player player) {
+        if (player instanceof ServerPlayer serverPlayer) {
+            BaseServant servant = GrailWarHandler.get(serverPlayer.getServer())
+                    .summonRandomServant(serverPlayer.getLevel(), Vec3.atCenterOf(this.worldPosition), serverPlayer, this.inventoryCharm, false, false);
+            if (servant != null) {
+                this.isSummoning = true;
+                NetworkCalls.INSTANCE.sendToTracking(new S2CAltarUpdate(this.getBlockPos(), this.isSummoning), serverPlayer.getLevel(), this.getBlockPos());
+                Platform.INSTANCE.getPlayerData(serverPlayer).ifPresent(data -> data.setCommandSeals(serverPlayer, 3));
+                this.servant = servant;
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean isSummoning() {
