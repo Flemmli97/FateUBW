@@ -305,12 +305,12 @@ public class GrailWarHandler extends SavedData {
 
     public boolean canSpawnMoreServants(Level level) {
         for (EntityPropsManager.EntityTypeAndID entry : DatapackHandler.SERVANT_PROPS.getServants(level)) {
-            if (!CommonConfig.allowDuplicateServant && this.servantsTypes.contains(entry.id()))
-                return false;
-            if (!CommonConfig.allowDuplicateClass && this.servantClasses.contains(DatapackHandler.SERVANT_PROPS.get(entry.id()).getServantClass()))
-                return false;
+            boolean canSpawn = CommonConfig.allowDuplicateServant || !this.servantsTypes.contains(entry.id());
+            if (canSpawn && (CommonConfig.allowDuplicateClass
+                    || !this.servantClasses.contains(DatapackHandler.SERVANT_PROPS.get(entry.id()).getServantClass())))
+                return true;
         }
-        return true;
+        return false;
     }
 
     public boolean canSpawnServant(BaseServant servant) {
