@@ -748,6 +748,13 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     }
 
     @Override
+    protected boolean shouldDropExperience() {
+        if (this.getServer() != null && GrailWarHandler.get(this.getServer()).isParticipant(this))
+            return false;
+        return super.shouldDropExperience();
+    }
+
+    @Override
     protected void dropAllDeathLoot(DamageSource damageSource) {
         if (damageSource == CustomDamageSource.GRAIL_DAMAGE || (this.getServer() != null && GrailWarHandler.get(this.getServer()).isParticipant(this)))
             return;
