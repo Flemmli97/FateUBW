@@ -17,6 +17,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.util.random.Weight;
+import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
@@ -74,7 +76,7 @@ public class EntityPropsManager extends SimpleJsonResourceReloadListener {
                 EntityType<?> type = Registry.ENTITY_TYPE.get(id);
                 Entity entity = type.create(level);
                 if (!prop.getServantClass().equals(BuiltinServantClasses.NONE) && entity instanceof BaseServant) {
-                    EntityTypeAndID entry = new EntityTypeAndID((EntityType<? extends BaseServant>) type, id);
+                    EntityTypeAndID entry = new EntityTypeAndID((EntityType<? extends BaseServant>) type, id, prop.weight());
                     classes.merge(prop.getServantClass(), Lists.newArrayList(entry), (old, val) -> {
                         old.add(entry);
                         return old;
@@ -114,6 +116,19 @@ public class EntityPropsManager extends SimpleJsonResourceReloadListener {
         this.built = false;
     }
 
-    public record EntityTypeAndID(EntityType<? extends BaseServant> type, ResourceLocation id) {
+    public record EntityTypeAndID(EntityType<? extends BaseServant> type, ResourceLocation id, Weight weight) implements WeightedEntry {
+
+        public EntityTypeAndID(EntityType<? extends BaseServant> type, ResourceLocation id) {
+            this(type, id, 1);
+        }
+
+        public EntityTypeAndID(EntityType<? extends BaseServant> type, ResourceLocation id, int weight) {
+            this(type, id, Weight.of(weight));
+        }
+
+        @Override
+        public Weight getWeight() {
+            return this.weight();
+        }
     }
 }

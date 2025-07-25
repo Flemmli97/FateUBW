@@ -20,8 +20,9 @@ public class ServantProperties {
 
     public static final Codec<ServantProperties> CODEC = RecordCodecBuilder.create((instance) ->
             instance.group(Codec.unboundedMap(Registry.ATTRIBUTE.byNameCodec(), Codec.DOUBLE).fieldOf("attributes").forGetter(d -> d.attributes),
-                    Codec.INT.fieldOf("nobel_phantasm_cost").forGetter(d -> d.manaCost),
-                    ResourceLocation.CODEC.fieldOf("class").forGetter(d -> d.servantClass),
+                    Codec.INT.fieldOf("nobel_phantasm_cost").forGetter(ServantProperties::hogouMana),
+                    Codec.INT.fieldOf("weight").forGetter(ServantProperties::weight),
+                    ResourceLocation.CODEC.fieldOf("class").forGetter(ServantProperties::getServantClass),
                     ServantExtraData.CODEC.optionalFieldOf("configs").forGetter(d -> d.extraData.empty() ? Optional.empty() : Optional.of(d.extraData))
             ).apply(instance, ServantProperties::new));
 
@@ -30,17 +31,18 @@ public class ServantProperties {
             .putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.2).putAttributes(ModAttributes.MAGIC_ATTACK, 1).build();
 
     private final Map<Attribute, Double> attributes;
-    private final int manaCost;
+    private final int manaCost, weight;
     private final ResourceLocation servantClass;
     private final ServantExtraData extraData;
 
-    private ServantProperties(Map<Attribute, Double> attributes, int manaCost, ResourceLocation servantClass, Optional<ServantExtraData> extraData) {
-        this(attributes, manaCost, servantClass, extraData.orElse(new ServantExtraData(Map.of())));
+    private ServantProperties(Map<Attribute, Double> attributes, int manaCost, int weight, ResourceLocation servantClass, Optional<ServantExtraData> extraData) {
+        this(attributes, manaCost, weight, servantClass, extraData.orElse(new ServantExtraData(Map.of())));
     }
 
-    public ServantProperties(Map<Attribute, Double> attributes, int manaCost, ResourceLocation servantClass, ServantExtraData extraData) {
+    public ServantProperties(Map<Attribute, Double> attributes, int manaCost, int weight, ResourceLocation servantClass, ServantExtraData extraData) {
         this.attributes = attributes;
         this.manaCost = manaCost;
+        this.weight = weight;
         this.servantClass = servantClass;
         this.extraData = extraData;
     }
@@ -51,6 +53,10 @@ public class ServantProperties {
 
     public int hogouMana() {
         return this.manaCost;
+    }
+
+    public int weight() {
+        return weight;
     }
 
     public ResourceLocation getServantClass() {
@@ -65,6 +71,7 @@ public class ServantProperties {
 
         private final Map<Supplier<Attribute>, Double> attributes = new LinkedHashMap<>();
         private int manaCost;
+        private int weight = 1;
         private final ResourceLocation servantClass;
         private final Map<ServantExtraData.DataType<?>, Object> values = new LinkedHashMap<>();
 
@@ -79,6 +86,11 @@ public class ServantProperties {
 
         public Builder npCost(int manaCost) {
             this.manaCost = manaCost;
+            return this;
+        }
+
+        public Builder weight(int weight) {
+            this.weight = weight;
             return this;
         }
 
@@ -97,7 +109,7 @@ public class ServantProperties {
                     Map.Entry::getValue,
                     (e1, e2) -> e1,
                     LinkedHashMap::new
-            )), this.manaCost, this.servantClass, new ServantExtraData(this.values));
+            )), this.manaCost, this.weight, this.servantClass, new ServantExtraData(this.values));
         }
     }
 }

@@ -1,4 +1,9 @@
 {
+  "weight": 1,
+  "class": "fateubw:berserker",
+  "configs": {
+    "fateubw:heracles_death_max": 2
+  },
   "attributes": {
     "minecraft:generic.max_health": 250.0,
     "minecraft:generic.attack_damage": 10.0,
@@ -7,9 +12,5 @@
     "minecraft:generic.movement_speed": 0.3,
     "fateubw:passive_regen": 10.0
   },
-  "nobel_phantasm_cost": 0,
-  "class": "fateubw:berserker",
-  "configs": {
-    "fateubw:heracles_death_max": 2
-  }
+  "nobel_phantasm_cost": 0
 }

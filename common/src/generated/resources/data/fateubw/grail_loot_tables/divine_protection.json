@@ -46,12 +46,12 @@
           {
             "function": "fateubw:max_enchant",
             "enchantments": [
-              "minecraft:protection",
-              "minecraft:unbreaking",
-              "minecraft:feather_falling",
               "minecraft:fire_protection",
-              "minecraft:projectile_protection",
-              "minecraft:blast_protection"
+              "minecraft:blast_protection",
+              "minecraft:unbreaking",
+              "minecraft:protection",
+              "minecraft:feather_falling",
+              "minecraft:projectile_protection"
             ]
           }
         ],
@@ -66,12 +66,12 @@
           {
             "function": "fateubw:max_enchant",
             "enchantments": [
-              "minecraft:protection",
-              "minecraft:unbreaking",
-              "minecraft:feather_falling",
               "minecraft:fire_protection",
-              "minecraft:projectile_protection",
-              "minecraft:blast_protection"
+              "minecraft:blast_protection",
+              "minecraft:unbreaking",
+              "minecraft:protection",
+              "minecraft:feather_falling",
+              "minecraft:projectile_protection"
             ]
           }
         ],
@@ -86,12 +86,12 @@
           {
             "function": "fateubw:max_enchant",
             "enchantments": [
-              "minecraft:protection",
-              "minecraft:unbreaking",
-              "minecraft:feather_falling",
               "minecraft:fire_protection",
-              "minecraft:projectile_protection",
-              "minecraft:blast_protection"
+              "minecraft:blast_protection",
+              "minecraft:unbreaking",
+              "minecraft:protection",
+              "minecraft:feather_falling",
+              "minecraft:projectile_protection"
             ]
           }
         ],
@@ -106,12 +106,12 @@
           {
             "function": "fateubw:max_enchant",
             "enchantments": [
-              "minecraft:protection",
-              "minecraft:unbreaking",
-              "minecraft:feather_falling",
               "minecraft:fire_protection",
-              "minecraft:projectile_protection",
-              "minecraft:blast_protection"
+              "minecraft:blast_protection",
+              "minecraft:unbreaking",
+              "minecraft:protection",
+              "minecraft:feather_falling",
+              "minecraft:projectile_protection"
             ]
           }
         ],
@@ -126,12 +126,12 @@
           {
             "function": "fateubw:max_enchant",
             "enchantments": [
-              "minecraft:protection",
-              "minecraft:unbreaking",
-              "minecraft:feather_falling",
               "minecraft:fire_protection",
-              "minecraft:projectile_protection",
-              "minecraft:blast_protection"
+              "minecraft:blast_protection",
+              "minecraft:unbreaking",
+              "minecraft:protection",
+              "minecraft:feather_falling",
+              "minecraft:projectile_protection"
             ]
           }
         ],

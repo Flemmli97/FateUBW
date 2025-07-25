@@ -1,4 +1,10 @@
 {
+  "weight": 1,
+  "class": "fateubw:caster",
+  "configs": {
+    "fateubw:gilles_monster_duration": 6000,
+    "fateubw:gilles_monster_max": 7
+  },
   "attributes": {
     "minecraft:generic.max_health": 370.0,
     "minecraft:generic.attack_damage": 5.0,
@@ -10,10 +16,5 @@
     "fateubw:combat_regen": 1.5,
     "fateubw:passive_regen": 10.0
   },
-  "nobel_phantasm_cost": 80,
-  "class": "fateubw:caster",
-  "configs": {
-    "fateubw:gilles_monster_duration": 6000,
-    "fateubw:gilles_monster_max": 7
-  }
+  "nobel_phantasm_cost": 80
 }

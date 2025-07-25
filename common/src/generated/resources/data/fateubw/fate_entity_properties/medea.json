@@ -1,4 +1,10 @@
 {
+  "weight": 1,
+  "class": "fateubw:caster",
+  "configs": {
+    "fateubw:medea_circle_duration": 2000,
+    "fateubw:medea_circle_range": 24.0
+  },
   "attributes": {
     "minecraft:generic.max_health": 350.0,
     "minecraft:generic.attack_damage": 9.0,
@@ -10,10 +16,5 @@
     "fateubw:combat_regen": 2.5,
     "fateubw:passive_regen": 10.0
   },
-  "nobel_phantasm_cost": 70,
-  "class": "fateubw:caster",
-  "configs": {
-    "fateubw:medea_circle_duration": 2000,
-    "fateubw:medea_circle_range": 24.0
-  }
+  "nobel_phantasm_cost": 70
 }

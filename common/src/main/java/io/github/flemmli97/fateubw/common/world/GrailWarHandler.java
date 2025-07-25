@@ -29,6 +29,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.util.random.WeightedRandom;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnPlacements;
@@ -412,9 +413,11 @@ public class GrailWarHandler extends SavedData {
         List<EntityPropsManager.EntityTypeAndID> entities = servants.stream().filter(entry -> this.canSpawnServantType(entry.id())).toList();
         if (entities.isEmpty())
             return null;
-        BaseServant servant = entities.get(level.random.nextInt(entities.size())).type()
+        BaseServant servant = WeightedRandom.getRandomItem(level.random, entities)
+                .map(t->t.type()
                 .create(level, null, null, null, new BlockPos(pos),
-                        MobSpawnType.MOB_SUMMONED, false, false);
+                        MobSpawnType.MOB_SUMMONED, false, false))
+                .orElse(null);
         if (servant == null)
             return null;
         servant.moveTo(pos.x(), pos.y(), pos.z(), level.random.nextFloat() * 360.0F, 0);

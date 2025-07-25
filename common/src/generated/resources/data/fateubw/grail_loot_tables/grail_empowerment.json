@@ -36,10 +36,10 @@
           {
             "function": "fateubw:max_enchant",
             "enchantments": [
-              "minecraft:bane_of_arthropods",
               "minecraft:sharpness",
-              "minecraft:unbreaking",
               "minecraft:smite",
+              "minecraft:bane_of_arthropods",
+              "minecraft:unbreaking",
               "minecraft:impaling"
             ]
           }
@@ -55,10 +55,10 @@
           {
             "function": "fateubw:max_enchant",
             "enchantments": [
-              "minecraft:bane_of_arthropods",
               "minecraft:sharpness",
-              "minecraft:unbreaking",
               "minecraft:smite",
+              "minecraft:bane_of_arthropods",
+              "minecraft:unbreaking",
               "minecraft:impaling"
             ]
           }
@@ -74,10 +74,10 @@
           {
             "function": "fateubw:max_enchant",
             "enchantments": [
-              "minecraft:bane_of_arthropods",
               "minecraft:sharpness",
-              "minecraft:unbreaking",
               "minecraft:smite",
+              "minecraft:bane_of_arthropods",
+              "minecraft:unbreaking",
               "minecraft:impaling"
             ]
           }
@@ -93,10 +93,10 @@
           {
             "function": "fateubw:max_enchant",
             "enchantments": [
-              "minecraft:bane_of_arthropods",
               "minecraft:sharpness",
-              "minecraft:unbreaking",
               "minecraft:smite",
+              "minecraft:bane_of_arthropods",
+              "minecraft:unbreaking",
               "minecraft:impaling"
             ]
           }
