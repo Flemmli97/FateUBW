@@ -1,3 +1,13 @@
+FateUBW 1.2.1
+================
+- Fix only one player able to join the war
+- Don't delay the join using altar after the servant spawned as that messed up the state
+- Target key also applies to all nearby owned servants
+- Invalid players during join phase now don't take up a space anymore
+  - Happens if e.g. the servant gets killed during join phase
+  - Player won't be able to rejoin in that case to prevent rerolling your servant
+- Add weight to servant properties to make some rarer. Although for now everything is 1 cause only few servants are implemented
+
 FateUBW 1.2.0
 ================
 - Removed truce system and replaced it with a team system
