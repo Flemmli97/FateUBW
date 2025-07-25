@@ -10,6 +10,7 @@ import io.github.flemmli97.fateubw.common.registry.ModItems;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import io.github.flemmli97.fateubw.platform.NetworkCalls;
 import io.github.flemmli97.fateubw.platform.Platform;
+import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -49,6 +50,8 @@ public class AltarBlockEntity extends BlockEntity {
                 }
                 if (altar.summoningTick == 150) {
                     if (altar.servant != null) {
+                        if (altar.servant.getOwner() != null)
+                            altar.servant.lookAt(EntityAnchorArgument.Anchor.EYES, altar.servant.getOwner().position());
                         level.addFreshEntity(altar.servant);
                     }
                     AltarBlock.removeSummoningStructure(level, pos);
