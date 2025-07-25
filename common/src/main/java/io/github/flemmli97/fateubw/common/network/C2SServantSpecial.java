@@ -32,5 +32,4 @@ public record C2SServantSpecial(String specialID, int entityId) implements Packe
     public ResourceLocation getID() {
         return ID;
     }
-
 }

@@ -104,8 +104,13 @@ public record C2SServantCommand(Type command, int entityId) implements Packet {
             }
             case TARGET -> {
                 EntityHitResult res = RayTraceUtils.calculateEntityFromLook(sender, 16);
-                if (res != null && res.getEntity() instanceof LivingEntity target && !Utils.alliedTo(sender, target)) {
-                    servant.setTarget(target);
+                if (res != null && res.getEntity() instanceof LivingEntity target) {
+                    if (!Utils.alliedTo(sender, target)) {
+                        servant.setTarget(target);
+                        for (BaseServant others : sender.getLevel().getEntitiesOfClass(BaseServant.class, sender.getBoundingBox().inflate(32), s -> sender.getUUID().equals(s.getOwnerUUID()))) {
+                            others.setTarget(target);
+                        }
+                    }
                 }
             }
             case CLOSE -> servant.setSentOwnerData(false);
@@ -144,6 +149,5 @@ public record C2SServantCommand(Type command, int entityId) implements Packet {
         TELEPORT,
         TARGET,
         CLOSE
-
     }
 }

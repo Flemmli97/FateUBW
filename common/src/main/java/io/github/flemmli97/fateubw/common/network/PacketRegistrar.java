@@ -39,10 +39,12 @@ public class PacketRegistrar {
     }
 
     public interface ServerPacketRegister {
+
         <P> void registerMessage(int index, ResourceLocation id, Class<P> clss, BiConsumer<P, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, P> decoder, BiConsumer<P, ServerPlayer> handler);
     }
 
     public interface ClientPacketRegister {
+
         <P> void registerMessage(int index, ResourceLocation id, Class<P> clss, BiConsumer<P, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, P> decoder, Consumer<P> handler);
     }
 }
