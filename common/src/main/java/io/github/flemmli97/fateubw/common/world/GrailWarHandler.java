@@ -17,6 +17,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.ChatType;
@@ -56,8 +57,14 @@ public class GrailWarHandler extends SavedData {
     private static final String IDENTIFIER = "FateGrailWar";
 
     private final MinecraftServer server;
+    /**
+     * Active participants in the current grailwar
+     */
     private final Map<UUID, Participant> participants = new HashMap<>();
-    private int joinedParticipants;
+    /**
+     * The participants that have at one point joined this grailwar. Includes participants that are not eliminated
+     */
+    private Set<UUID> joinedParticipants = new HashSet<>();
 
     /**
      * Tracking what servants and classes spawned in the grailwar
@@ -124,7 +131,7 @@ public class GrailWarHandler extends SavedData {
             this.participants.put(participant.getId(), participant);
             this.servantClasses.add(servant.props().getServantClass());
             this.servantsTypes.add(Registry.ENTITY_TYPE.getKey(servant.getType()));
-            this.joinedParticipants++;
+            this.joinedParticipants.add(participant.getId());
             return true;
         }
         return false;
@@ -137,7 +144,7 @@ public class GrailWarHandler extends SavedData {
         if (this.isFull()) {
             return JoinResult.FULL;
         }
-        if (this.participants.containsKey(player.getUUID())) {
+        if (this.joinedParticipants.contains(player.getUUID())) {
             return JoinResult.JOINED;
         }
         if (!this.canSpawnMoreServants(player.level)) {
@@ -147,7 +154,9 @@ public class GrailWarHandler extends SavedData {
     }
 
     public boolean isFull() {
-        return this.joinedParticipants >= CommonConfig.maxPlayer;
+        if (this.phase == Phase.JOIN)
+            return this.participants.size() >= CommonConfig.maxPlayer;
+        return this.joinedParticipants.size() >= CommonConfig.maxPlayer;
     }
 
     public boolean isParticipant(Entity entity) {
@@ -185,6 +194,17 @@ public class GrailWarHandler extends SavedData {
             case JOIN -> {
                 if (--this.joinTime <= 0)
                     this.start();
+                // Remove invalid servants during join times too. joinedParticipants is not updated to prevent players killing their servants and try to rejoin
+                Set<UUID> invalid = new HashSet<>();
+                this.participants.forEach((id, participant) -> {
+                    if (!participant.valid(this.server)) {
+                        invalid.add(id);
+                        BaseServant servant = participant.getServant(this.server);
+                        if (servant != null)
+                            servant.hurt(CustomDamageSource.GRAIL_DAMAGE, Integer.MAX_VALUE);
+                    }
+                });
+                invalid.forEach(this.participants::remove);
             }
             case ACTIVE -> {
                 if (CommonConfig.fillMissingSlots && --this.timeToNextServant <= 0) {
@@ -222,6 +242,7 @@ public class GrailWarHandler extends SavedData {
         Set<UUID> players = this.players(true);
         if (players.size() >= CommonConfig.minPlayer) {
             this.server.getPlayerList().broadcastMessage(new TranslatableComponent("fateubw.chat.grailwar.start").withStyle(ChatFormatting.GOLD), ChatType.SYSTEM, Util.NIL_UUID);
+            this.joinedParticipants = new HashSet<>(this.participants.keySet());
         } else if (players.isEmpty()) {
             this.server.getPlayerList().broadcastMessage(new TranslatableComponent("fateubw.chat.grailwar.players.none").withStyle(ChatFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
             this.reset(false);
@@ -294,7 +315,7 @@ public class GrailWarHandler extends SavedData {
         this.participants.clear();
         this.servantsTypes.clear();
         this.servantClasses.clear();
-        this.joinedParticipants = 0;
+        this.joinedParticipants.clear();
         this.phase = Phase.NONE;
         this.lastGrailEndDay = day(this.server.overworld());
         this.joinTime = 0;
@@ -343,7 +364,7 @@ public class GrailWarHandler extends SavedData {
             if (playerParticipant.contains(player.getUUID()))
                 players.add(player);
         });
-        int spawns = Math.min(level.random.nextInt(CommonConfig.maxServantCircle) + 1, CommonConfig.maxPlayer - this.joinedParticipants);
+        int spawns = Math.min(level.random.nextInt(CommonConfig.maxServantCircle) + 1, CommonConfig.maxPlayer - this.joinedParticipants.size());
         for (int i = 0; i < spawns; i++) {
             if (players.isEmpty())
                 return;
@@ -448,7 +469,8 @@ public class GrailWarHandler extends SavedData {
             Participant participant = new Participant((CompoundTag) cT);
             this.participants.put(participant.getId(), participant);
         });
-        this.joinedParticipants = compound.getInt("JoinedParticipants");
+        ListTag joined = compound.getList("JoinedParticipants", Tag.TAG_INT_ARRAY);
+        joined.forEach(s -> this.joinedParticipants.add(NbtUtils.loadUUID(s)));
         ListTag list = compound.getList("Servants", Tag.TAG_STRING);
         list.forEach(s -> this.servantsTypes.add(new ResourceLocation(s.getAsString())));
         ListTag list2 = compound.getList("ServantClasses", Tag.TAG_STRING);
@@ -469,7 +491,9 @@ public class GrailWarHandler extends SavedData {
         ListTag tag = new ListTag();
         this.participants.values().forEach(p -> tag.add(p.save()));
         compound.put("Participants", tag);
-        compound.putInt("JoinedParticipants", this.joinedParticipants);
+        ListTag joined = new ListTag();
+        this.joinedParticipants.forEach(id -> joined.add(NbtUtils.createUUID(id)));
+        compound.put("JoinedParticipants", joined);
         ListTag list = new ListTag();
         this.servantsTypes.forEach(res -> list.add(StringTag.valueOf(res.toString())));
         compound.put("Servants", list);
