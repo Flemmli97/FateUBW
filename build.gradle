@@ -1,6 +1,35 @@
 plugins {
     id "architectury-plugin" version "3.4-SNAPSHOT"
-    id "dev.architectury.loom" version "1.4-SNAPSHOT" apply false
+    id "dev.architectury.loom" version "1.10-SNAPSHOT" apply false
 }
 
 apply from: "https://raw.githubusercontent.com/Flemmli97/GradleScripts/arch-loom-v2/main.gradle"
+
+
+subprojects {
+    repositories {
+        mavenLocal()
+        maven {
+            name = "TenshiLib"
+            url "https://maven.blazing-coop.net/releases"
+        }
+        maven {
+            name = "Fuzs Mod Resources"
+            url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/"
+        }
+        maven {
+            name = "SmartBrainLib (SBL) Maven Repo"
+            url = "https://dl.cloudsmith.io/public/tslat/sbl/maven/"
+        }
+        maven {
+            url "https://maven.blamejared.com"
+        }
+        maven {
+            url = "https://api.modrinth.com/maven"
+        }
+        maven {
+            name = 'Favouriteless Maven'
+            url 'https://maven.favouriteless.net/releases'
+        }
+    }
+}

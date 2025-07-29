@@ -9,7 +9,10 @@ repositories {
 }
 
 dependencies {
-    modCompileOnly "io.github.flemmli97:tenshilib:${tenshilib_version}-fabric"
+    modCompileOnly "io.github.flemmli97:tenshilib:${tenshilib_version}-common"
+    modCompileOnly "net.tslat.smartbrainlib:SmartBrainLib-common-${minecraft_version}:${sbl_version}"
+    modCompileOnly "fuzs.forgeconfigapiport:forgeconfigapiport-common-neoforgeapi:${forge_config_api}"
+
 }
 
 sourceSets.main.resources {

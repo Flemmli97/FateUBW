@@ -13,13 +13,13 @@
     "sources": "https://github.com/Flemmli97/FateUBW"
   },
   "license": "ARR",
-  "icon": "icon.png",
+  "icon": "logo.png",
   "environment": "*",
   "entrypoints": {
     "main": [
       "io.github.flemmli97.fateubw.fabric.FateUBWFabric"
     ],
-    "client": [
+    "tenshilib_client": [
       "io.github.flemmli97.fateubw.fabric.FateUBWFabricClient"
     ],
     "modmenu": [
@@ -33,6 +33,8 @@
   "depends": {
     "fabric": ">=${fabric_version}",
     "minecraft": ">=${mcversion}",
-    "tenshilib": ">=${tenshilib_version}"
+    "tenshilib": ">=${tenshilib_version}",
+    "forgeconfigapiport": ">=${forge_config_api}",
+    "smartbrainlib": ">=${sbl_version}"
   }
 }

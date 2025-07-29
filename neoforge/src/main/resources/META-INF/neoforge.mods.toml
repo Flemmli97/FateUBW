@@ -1,0 +1,38 @@
+modLoader = "javafml"
+loaderVersion = "[${loader_version},)"
+license = "ARR"
+issueTrackerURL = "https://github.com/Flemmli97/FateUBW/issues"
+[[mixins]]
+config = "fateubw.mixins.json"
+[[mods]]
+modId = "fateubw"
+version = "${version}"
+displayName = "FateUBW"
+displayURL = "${homepage}"
+logoFile = "icon.png"
+authors = "Flemmli97"
+description = '''The Holy Grail War! Brought to minecraft'''
+[[dependencies.fateubw]]
+modId = "minecraft"
+type = "required"
+versionRange = "[${mcversion},)"
+ordering = "NONE"
+side = "BOTH"
+[[dependencies.fateubw]]
+modId = "neoforge"
+type = "required"
+versionRange = "[${neoforge_version},)"
+ordering = "NONE"
+side = "BOTH"
+[[dependencies.fateubw]]
+modId = "tenshilib"
+type = "required"
+versionRange = "[${tenshilib_version},)"
+ordering = "NONE"
+side = "BOTH"
+[[dependencies.fateubw]]
+modId = "smartbrainlib"
+type = "required"
+versionRange = "[${sbl_version},)"
+ordering = "NONE"
+side = "BOTH"
