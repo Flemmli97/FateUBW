@@ -59,16 +59,16 @@ public class ItemArcherBow extends BowItem implements SwingItem {
     }
 
     @Override
-    public void releaseUsing(ItemStack stack, Level world, LivingEntity entity, int timeLeft) {
+    public void releaseUsing(ItemStack stack, Level level, LivingEntity entity, int timeLeft) {
         if (this.charged(stack)) {
-            this.spawnCaladBolg(world, entity, stack, timeLeft);
+            this.spawnCaladBolg(level, entity, stack, timeLeft);
         } else {
-            this.spawnNormalArrow(stack, world, entity, timeLeft);
+            this.spawnNormalArrow(stack, level, entity, timeLeft);
         }
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         if (player.isCreative() || this.charged(player.getItemInHand(hand)) || Platform.INSTANCE.getPlayerData(player).map(cap -> cap.getMana() >= CommonConfig.archerBowMana).orElse(false)) {
             player.startUsingItem(hand);
             return InteractionResultHolder.consume(player.getItemInHand(hand));
@@ -82,20 +82,20 @@ public class ItemArcherBow extends BowItem implements SwingItem {
         return this.charged(stack) || super.isFoil(stack);
     }
 
-    public void spawnCaladBolg(Level world, LivingEntity entityLiving, ItemStack stack, int timeLeft) {
-        CaladBolg bolg = new CaladBolg(world, entityLiving);
-        if (!world.isClientSide) {
+    public void spawnCaladBolg(Level level, LivingEntity entityLiving, ItemStack stack, int timeLeft) {
+        CaladBolg bolg = new CaladBolg(level, entityLiving);
+        if (!level.isClientSide) {
             int i = this.getUseDuration(stack) - timeLeft;
             float f = getPowerForTime(i * 2);
             if (f >= 0.1D) {
                 bolg.shoot(entityLiving, entityLiving.getXRot(), entityLiving.getYRot(), 0, f, 0);
-                world.addFreshEntity(bolg);
+                level.addFreshEntity(bolg);
                 this.setCharged(stack, false);
             }
         }
     }
 
-    public void spawnNormalArrow(ItemStack stack, Level world, LivingEntity entity, int timeLeft) {
+    public void spawnNormalArrow(ItemStack stack, Level level, LivingEntity entity, int timeLeft) {
         if (entity instanceof Player player) {
             boolean flag = player.getAbilities().instabuild || EnchantmentHelper.getItemEnchantmentLevel(Enchantments.INFINITY_ARROWS, stack) > 0
                     || Platform.INSTANCE.getPlayerData(player).map(cap -> cap.useMana(player, CommonConfig.archerBowMana)).orElse(false);
@@ -104,7 +104,7 @@ public class ItemArcherBow extends BowItem implements SwingItem {
             if (flag) {
                 float f = getPowerForTime(i * 2);
                 if (f >= 0.1D) {
-                    if (!world.isClientSide) {
+                    if (!level.isClientSide) {
                         AbstractArrow arrow = this.customArrow(new ArcherArrow(player.level, player)); // Forge
                         arrow.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, f * 2.5F, 1.0F);
                         if (f == 1.0F)
@@ -120,10 +120,10 @@ public class ItemArcherBow extends BowItem implements SwingItem {
                             arrow.setSecondsOnFire(100);
 
                         stack.hurtAndBreak(1, player, (p) -> p.broadcastBreakEvent(player.getUsedItemHand()));
-                        world.addFreshEntity(arrow);
+                        level.addFreshEntity(arrow);
                     }
 
-                    world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ARROW_SHOOT, SoundSource.PLAYERS, 1.0F, 1.0F / (player.getRandom().nextFloat() * 0.4F + 1.2F) + f * 0.5F);
+                    level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ARROW_SHOOT, SoundSource.PLAYERS, 1.0F, 1.0F / (player.getRandom().nextFloat() * 0.4F + 1.2F) + f * 0.5F);
 
                     player.awardStat(Stats.ITEM_USED.get(this));
                 }

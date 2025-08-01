@@ -18,8 +18,8 @@ public class RingParticle extends ColoredParticle {
 
     private final float yRot, xRot, growth;
 
-    public RingParticle(ClientLevel world, double x, double y, double z, double motionX, double motionY, double motionZ, RingParticleData data, SpriteSet sprite, int maxAge, float minAgeRand, float maxAgeRand, boolean collide, boolean randomMovements, boolean gravity) {
-        super(world, x, y, z, motionX, motionY, motionZ, data, sprite, maxAge, minAgeRand, maxAgeRand, collide, randomMovements, gravity);
+    public RingParticle(ClientLevel level, double x, double y, double z, double motionX, double motionY, double motionZ, RingParticleData data, SpriteSet sprite, int maxAge, float minAgeRand, float maxAgeRand, boolean collide, boolean randomMovements, boolean gravity) {
+        super(level, x, y, z, motionX, motionY, motionZ, data, sprite, maxAge, minAgeRand, maxAgeRand, collide, randomMovements, gravity);
         this.yRot = data.getRotY();
         this.xRot = data.getRotX();
         this.growth = data.getGrowth();
@@ -86,8 +86,8 @@ public class RingParticle extends ColoredParticle {
         }
 
         @Override
-        public Particle createParticle(RingParticleData data, ClientLevel world, double x, double y, double z, double motionX, double motionY, double motionZ) {
-            return new RingParticle(world, x, y, z, motionX, motionY, motionZ, data, this.sprite, 40, 0.7F, 1.3F, false, true, false);
+        public Particle createParticle(RingParticleData data, ClientLevel level, double x, double y, double z, double motionX, double motionY, double motionZ) {
+            return new RingParticle(level, x, y, z, motionX, motionY, motionZ, data, this.sprite, 40, 0.7F, 1.3F, false, true, false);
         }
     }
 }

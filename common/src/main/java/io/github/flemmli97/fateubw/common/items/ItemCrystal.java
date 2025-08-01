@@ -16,16 +16,16 @@ public class ItemCrystal extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
-        if (world.isClientSide)
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        if (level.isClientSide)
             return InteractionResultHolder.success(player.getItemInHand(hand));
         ItemStack stack = player.getItemInHand(hand);
         if (!player.isCreative())
             stack.shrink(1);
         player.playSound(SoundEvents.ARROW_SHOOT, 0.5F, 0.4F / (player.getRandom().nextFloat() * 0.4F + 0.8F));
-        ThrownGem gem = new ThrownGem(world, player);
+        ThrownGem gem = new ThrownGem(level, player);
         gem.shoot(player, player.getXRot(), player.getYRot(), 0, 1.5F, 0);
-        world.addFreshEntity(gem);
+        level.addFreshEntity(gem);
         return InteractionResultHolder.success(player.getItemInHand(hand));
     }
 }

@@ -38,7 +38,7 @@ public class ClassSpear extends TieredItem implements Vanishable, IExtendedWeapo
     }
 
     @Override
-    public boolean canAttackBlock(BlockState state, Level world, BlockPos pos, Player player) {
+    public boolean canAttackBlock(BlockState state, Level level, BlockPos pos, Player player) {
         return false;
     }
 

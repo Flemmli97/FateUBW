@@ -24,12 +24,12 @@ public class Excalibur extends BaseBeam {
 
     private Vec3 dir, up, side;
 
-    public Excalibur(EntityType<? extends Excalibur> type, Level world) {
-        super(type, world);
+    public Excalibur(EntityType<? extends Excalibur> type, Level level) {
+        super(type, level);
     }
 
-    public Excalibur(Level world, LivingEntity shooter) {
-        super(ModEntities.EXCALIBUR.get(), world, shooter);
+    public Excalibur(Level level, LivingEntity shooter) {
+        super(ModEntities.EXCALIBUR.get(), level, shooter);
         Vec3 off = new Vec3(shooter.getLookAngle().x, 0, shooter.getLookAngle().z).normalize().scale(shooter.getBbWidth() * 0.5);
         this.setPos(this.getX() + off.x, this.getY(), this.getZ() + off.z);
     }

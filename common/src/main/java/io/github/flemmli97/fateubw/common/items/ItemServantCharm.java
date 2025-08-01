@@ -21,16 +21,16 @@ public class ItemServantCharm extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (this.type == BuiltinServantClasses.NONE) {
-            if (!world.isClientSide) {
+            if (!level.isClientSide) {
                 if (!player.isCreative())
                     stack.shrink(1);
-                ItemEntity item = new ItemEntity(world, player.getX(), player.getY(), player.getZ(),
-                        new ItemStack(ModItems.CHARMS.get(world.random.nextInt(ModItems.CHARMS.size())).get()));
+                ItemEntity item = new ItemEntity(level, player.getX(), player.getY(), player.getZ(),
+                        new ItemStack(ModItems.CHARMS.get(level.random.nextInt(ModItems.CHARMS.size())).get()));
                 item.setPickUpDelay(0);
-                world.addFreshEntity(item);
+                level.addFreshEntity(item);
             }
             return InteractionResultHolder.success(stack);
 

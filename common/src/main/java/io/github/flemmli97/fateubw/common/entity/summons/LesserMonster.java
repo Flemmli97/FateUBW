@@ -61,17 +61,17 @@ public class LesserMonster extends PathfinderMob implements IAnimated, OwnableEn
 
     private final int maxLivingTicks;
 
-    public LesserMonster(EntityType<? extends LesserMonster> type, Level world) {
-        super(type, world);
-        if (!world.isClientSide) {
+    public LesserMonster(EntityType<? extends LesserMonster> type, Level level) {
+        super(type, level);
+        if (!level.isClientSide) {
             this.goals();
             this.updateAttributes();
         }
         this.maxLivingTicks = DatapackHandler.SERVANT_PROPS.get(ModEntities.GILLES.getID()).getConfig(ServantExtraData.GILLES_MONSTER_DURATION);
     }
 
-    public LesserMonster(Level world, LivingEntity owner) {
-        this(ModEntities.LESSER_MONSTER.get(), world);
+    public LesserMonster(Level level, LivingEntity owner) {
+        this(ModEntities.LESSER_MONSTER.get(), level);
         this.owner = owner;
         this.ownerUUID = owner.getUUID();
     }

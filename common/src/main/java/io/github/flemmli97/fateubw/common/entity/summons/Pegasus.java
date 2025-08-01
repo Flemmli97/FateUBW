@@ -156,8 +156,8 @@ public class Pegasus extends PathfinderMob implements IAnimated, StandingVehicle
         this.moveControl = new PegasusMoveController(this);
     }
 
-    protected PathNavigation createFlyNavigator(Level worldIn) {
-        FlyingPathNavigation flyingpathnavigator = new FlyingPathNavigation(this, worldIn) {
+    protected PathNavigation createFlyNavigator(Level level) {
+        FlyingPathNavigation flyingpathnavigator = new FlyingPathNavigation(this, level) {
             @Override
             public boolean isStableDestination(BlockPos pos) {
                 return true;

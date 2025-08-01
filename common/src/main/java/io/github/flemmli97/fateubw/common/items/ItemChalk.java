@@ -21,15 +21,15 @@ public class ItemChalk extends Item {
 
     @Override
     public InteractionResult useOn(UseOnContext ictx) {
-        Level world = ictx.getLevel();
-        if (world.isClientSide)
+        Level level = ictx.getLevel();
+        if (level.isClientSide)
             return InteractionResult.SUCCESS;
         BlockPlaceContext ctx = new BlockPlaceContext(ictx);
         ItemStack stack = ctx.getItemInHand();
         if (ctx.canPlace()) {
             BlockState state = ModBlocks.CHALK.get().defaultBlockState();
-            if (this.canPlace(ctx, state) && world.setBlockAndUpdate(ctx.getClickedPos(), state)) {
-                world.playSound(null, ctx.getClickedPos(), SoundEvents.WOOL_PLACE, SoundSource.BLOCKS, 1.0F / 2.0F, 1.0F);
+            if (this.canPlace(ctx, state) && level.setBlockAndUpdate(ctx.getClickedPos(), state)) {
+                level.playSound(null, ctx.getClickedPos(), SoundEvents.WOOL_PLACE, SoundSource.BLOCKS, 1.0F / 2.0F, 1.0F);
                 if (ctx.getPlayer() != null && !ctx.getPlayer().isCreative())
                     stack.hurtAndBreak(1, ctx.getPlayer(), player -> player.broadcastBreakEvent(ctx.getHand()));
                 return InteractionResult.SUCCESS;

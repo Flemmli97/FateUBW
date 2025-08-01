@@ -59,8 +59,8 @@ public class FateEgg extends SpawnEgg {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
-        InteractionResultHolder<ItemStack> res = super.use(world, player, hand);
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        InteractionResultHolder<ItemStack> res = super.use(level, player, hand);
         if (res.getResult() == InteractionResult.PASS) {
             if (player instanceof ServerPlayer serverPlayer)
                 NetworkCalls.INSTANCE.sendToClient(new S2CSpawnEggScreen(hand), serverPlayer);
@@ -70,9 +70,9 @@ public class FateEgg extends SpawnEgg {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, Level level, List<Component> tooltip, TooltipFlag flag) {
         tooltip.add(new TranslatableComponent("fateubw.tooltip.item.spawn").withStyle(ChatFormatting.GOLD));
-        super.appendHoverText(stack, world, tooltip, flag);
+        super.appendHoverText(stack, level, tooltip, flag);
     }
 
     public static boolean spawnOwned(ItemStack stack) {

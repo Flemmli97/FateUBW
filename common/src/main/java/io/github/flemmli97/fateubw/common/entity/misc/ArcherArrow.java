@@ -21,12 +21,12 @@ public class ArcherArrow extends AbstractArrow {
 
     private int knockbackStrength;
 
-    public ArcherArrow(EntityType<? extends ArcherArrow> type, Level world) {
-        super(type, world);
+    public ArcherArrow(EntityType<? extends ArcherArrow> type, Level level) {
+        super(type, level);
     }
 
-    public ArcherArrow(Level world, LivingEntity shootingEntity) {
-        super(ModEntities.ARCHER_ARROW.get(), shootingEntity, world);
+    public ArcherArrow(Level level, LivingEntity shootingEntity) {
+        super(ModEntities.ARCHER_ARROW.get(), shootingEntity, level);
     }
 
     @Override

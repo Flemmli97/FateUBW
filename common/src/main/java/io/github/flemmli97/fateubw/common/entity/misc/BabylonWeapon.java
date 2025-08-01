@@ -56,16 +56,16 @@ public class BabylonWeapon extends BaseProjectile {
     private final BlockState particleState = Blocks.GOLD_BLOCK.defaultBlockState();
     private int despawnTimer;
 
-    public BabylonWeapon(EntityType<? extends BabylonWeapon> type, Level world) {
-        super(type, world);
+    public BabylonWeapon(EntityType<? extends BabylonWeapon> type, Level level) {
+        super(type, level);
     }
 
-    public BabylonWeapon(Level world, LivingEntity shootingEntity) {
-        super(ModEntities.BABYLON.get(), world, shootingEntity);
+    public BabylonWeapon(Level level, LivingEntity shootingEntity) {
+        super(ModEntities.BABYLON.get(), level, shootingEntity);
     }
 
-    public BabylonWeapon(Level world, LivingEntity shootingEntity, LivingEntity target) {
-        this(world, shootingEntity);
+    public BabylonWeapon(Level level, LivingEntity shootingEntity, LivingEntity target) {
+        this(level, shootingEntity);
         this.target = target;
     }
 

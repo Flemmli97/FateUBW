@@ -29,16 +29,16 @@ public class MagicBeam extends BaseBeam {
     public boolean idle = true;
     private boolean setSpawnRot;
 
-    public MagicBeam(EntityType<? extends MagicBeam> type, Level world) {
-        super(type, world);
+    public MagicBeam(EntityType<? extends MagicBeam> type, Level level) {
+        super(type, level);
     }
 
-    public MagicBeam(Level world, LivingEntity shooter) {
-        super(ModEntities.MAGIC_BEAM.get(), world, shooter);
+    public MagicBeam(Level level, LivingEntity shooter) {
+        super(ModEntities.MAGIC_BEAM.get(), level, shooter);
     }
 
-    public MagicBeam(Level world, LivingEntity shootingEntity, @Nullable LivingEntity target) {
-        this(world, shootingEntity);
+    public MagicBeam(Level level, LivingEntity shootingEntity, @Nullable LivingEntity target) {
+        this(level, shootingEntity);
         this.target = target;
     }
 

@@ -22,12 +22,12 @@ import java.util.List;
 
 public class CaladBolg extends BaseProjectile {
 
-    public CaladBolg(EntityType<? extends CaladBolg> type, Level worldIn) {
-        super(type, worldIn);
+    public CaladBolg(EntityType<? extends CaladBolg> type, Level level) {
+        super(type, level);
     }
 
-    public CaladBolg(Level world, LivingEntity shootingEntity) {
-        super(ModEntities.CALADBOLG.get(), world, shootingEntity);
+    public CaladBolg(Level level, LivingEntity shootingEntity) {
+        super(ModEntities.CALADBOLG.get(), level, shootingEntity);
     }
 
     @Override

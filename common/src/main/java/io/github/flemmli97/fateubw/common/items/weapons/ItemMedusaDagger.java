@@ -35,15 +35,15 @@ public class ItemMedusaDagger extends SwordItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
-        if (!world.isClientSide) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        if (!level.isClientSide) {
             Optional<PlayerData> opt = Platform.INSTANCE.getPlayerData(player);
             ChainDagger thrownDagger = opt.map(PlayerData::getThrownDagger).orElse(null);
             if (thrownDagger == null) {
                 if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).map(mana -> mana.useMana(player, CommonConfig.chainMana)).orElse(false)) {
-                    ChainDagger dagger = new ChainDagger(world, player, hand == InteractionHand.MAIN_HAND);
+                    ChainDagger dagger = new ChainDagger(level, player, hand == InteractionHand.MAIN_HAND);
                     dagger.shoot(player, player.getXRot(), player.getYRot(), 0, 1.5f, 0);
-                    world.addFreshEntity(dagger);
+                    level.addFreshEntity(dagger);
                     opt.ifPresent(data -> data.setThrownDagger(dagger));
                     return InteractionResultHolder.consume(player.getItemInHand(hand));
                 }

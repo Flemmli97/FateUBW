@@ -20,12 +20,12 @@ import net.minecraft.world.phys.EntityHitResult;
 
 public class GaeBolg extends BaseProjectile {
 
-    public GaeBolg(EntityType<? extends GaeBolg> type, Level world) {
-        super(type, world);
+    public GaeBolg(EntityType<? extends GaeBolg> type, Level level) {
+        super(type, level);
     }
 
-    public GaeBolg(Level world, LivingEntity shooter) {
-        super(ModEntities.GAEBOLG.get(), world, shooter);
+    public GaeBolg(Level level, LivingEntity shooter) {
+        super(ModEntities.GAEBOLG.get(), level, shooter);
     }
 
     @Override

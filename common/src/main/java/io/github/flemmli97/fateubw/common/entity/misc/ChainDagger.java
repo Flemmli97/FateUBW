@@ -29,12 +29,12 @@ public class ChainDagger extends BaseProjectile {
 
     private Entity hookedEntity;
 
-    public ChainDagger(EntityType<? extends ChainDagger> type, Level world) {
-        super(type, world);
+    public ChainDagger(EntityType<? extends ChainDagger> type, Level level) {
+        super(type, level);
     }
 
-    public ChainDagger(Level world, LivingEntity shooter, boolean mainHand) {
-        super(ModEntities.DAGGER_HOOK.get(), world, shooter);
+    public ChainDagger(Level level, LivingEntity shooter, boolean mainHand) {
+        super(ModEntities.DAGGER_HOOK.get(), level, shooter);
         this.getEntityData().set(MAINHAND, mainHand);
     }
 

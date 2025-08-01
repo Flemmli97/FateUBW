@@ -93,8 +93,8 @@ public class GrailWarHandler extends SavedData {
         return server.overworld().getDataStorage().computeIfAbsent(tag -> new GrailWarHandler(server, tag), () -> new GrailWarHandler(server), IDENTIFIER);
     }
 
-    private static int day(Level world) {
-        return (int) ((world.getDayTime()) / 24000 % Integer.MAX_VALUE);
+    private static int day(Level level) {
+        return (int) ((level.getDayTime()) / 24000 % Integer.MAX_VALUE);
     }
 
     /**
@@ -217,11 +217,11 @@ public class GrailWarHandler extends SavedData {
         this.setDirty();
     }
 
-    private void loadTickets(ServerLevel world) {
+    private void loadTickets(ServerLevel level) {
         if (this.servantTickets != null) {
             this.servantTickets.forEach((c, r) -> {
-                if (world.dimension().equals(r))
-                    world.getChunkSource().addRegionTicket(BaseServant.TRACKINGTICKET, c, 2, c);
+                if (level.dimension().equals(r))
+                    level.getChunkSource().addRegionTicket(BaseServant.TRACKINGTICKET, c, 2, c);
                 else {
                     ServerLevel w = this.server.getLevel(r);
                     w.getChunkSource().addRegionTicket(BaseServant.TRACKINGTICKET, c, 2, c);

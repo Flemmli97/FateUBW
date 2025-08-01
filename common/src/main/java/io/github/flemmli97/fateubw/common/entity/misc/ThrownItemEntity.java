@@ -20,12 +20,12 @@ public class ThrownItemEntity extends BaseProjectile {
 
     private double dmg;
 
-    public ThrownItemEntity(EntityType<? extends ThrownItemEntity> type, Level world) {
-        super(type, world);
+    public ThrownItemEntity(EntityType<? extends ThrownItemEntity> type, Level level) {
+        super(type, level);
     }
 
-    public ThrownItemEntity(Level world, LivingEntity shootingEntity) {
-        super(ModEntities.THROWN_ITEM.get(), world, shootingEntity);
+    public ThrownItemEntity(Level level, LivingEntity shootingEntity) {
+        super(ModEntities.THROWN_ITEM.get(), level, shootingEntity);
     }
 
     @Override

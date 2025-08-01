@@ -33,13 +33,13 @@ public class ItemGaeBolg extends ClassSpear {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        if (!world.isClientSide) {
+        if (!level.isClientSide) {
             if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).map(mana -> mana.useMana(player, CommonConfig.gaeBolgMana)).orElse(false)) {
-                GaeBolg gaeBolg = new GaeBolg(world, player);
+                GaeBolg gaeBolg = new GaeBolg(level, player);
                 gaeBolg.shoot(player, player.getXRot(), player.getYRot(), 0, 1.5F, 0);
-                world.addFreshEntity(gaeBolg);
+                level.addFreshEntity(gaeBolg);
                 stack.shrink(1);
                 return InteractionResultHolder.consume(stack);
 

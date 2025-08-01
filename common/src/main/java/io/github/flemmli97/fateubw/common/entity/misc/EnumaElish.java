@@ -24,12 +24,12 @@ public class EnumaElish extends BaseBeam {
 
     private Vec3 dir, up, side;
 
-    public EnumaElish(EntityType<? extends EnumaElish> type, Level worldIn) {
-        super(type, worldIn);
+    public EnumaElish(EntityType<? extends EnumaElish> type, Level level) {
+        super(type, level);
     }
 
-    public EnumaElish(Level world, LivingEntity shooter) {
-        super(ModEntities.EA.get(), world, shooter);
+    public EnumaElish(Level level, LivingEntity shooter) {
+        super(ModEntities.EA.get(), level, shooter);
         Vec3 off = new Vec3(shooter.getLookAngle().x, 0, shooter.getLookAngle().z).normalize().scale(shooter.getBbWidth() * 0.5);
         this.setPos(this.getX() + off.x, this.getY(), this.getZ() + off.z);
 

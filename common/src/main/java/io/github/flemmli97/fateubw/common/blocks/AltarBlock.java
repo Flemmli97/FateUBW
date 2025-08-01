@@ -96,12 +96,12 @@ public class AltarBlock extends BaseEntityBlock {
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 
-    public static boolean placeSummoningStructure(ServerLevel world, BlockPos pos, AltarBlockEntity altar, Direction facing) {
+    public static boolean placeSummoningStructure(ServerLevel level, BlockPos pos, AltarBlockEntity altar, Direction facing) {
         for (int x = -2; x <= 2; x++)
             for (int z = -2; z <= 2; z++) {
                 if (x != 0 || z != 0) {
                     BlockPos posNew = pos.offset(x, 0, z);
-                    if (!(world.getBlockState(posNew).getBlock() instanceof ChalkBlock))
+                    if (!(level.getBlockState(posNew).getBlock() instanceof ChalkBlock))
                         return false;
                 }
             }
@@ -109,18 +109,18 @@ public class AltarBlock extends BaseEntityBlock {
             for (int z = -2; z <= 2; z++) {
                 if (x != 0 || z != 0) {
                     BlockPos newPos = new BlockPos(pos.getX() + x, pos.getY(), pos.getZ() + z);
-                    world.removeBlock(newPos, false);
-                    world.sendParticles(ParticleTypes.CLOUD, newPos.getX() + 0.5, newPos.getY(), newPos.getZ() + 0.5, 1, 0, 0.2, 0, 0);
+                    level.removeBlock(newPos, false);
+                    level.sendParticles(ParticleTypes.CLOUD, newPos.getX() + 0.5, newPos.getY(), newPos.getZ() + 0.5, 1, 0, 0.2, 0, 0);
                 }
             }
         altar.setComplete(true);
         return true;
     }
 
-    public static void removeSummoningStructure(Level world, BlockPos pos) {
-        world.playSound(null, pos, SoundEvents.GENERIC_EXPLODE, SoundSource.AMBIENT, 0.4F, 1F);
-        world.removeBlockEntity(pos);
-        world.destroyBlock(pos, false);
+    public static void removeSummoningStructure(Level level, BlockPos pos) {
+        level.playSound(null, pos, SoundEvents.GENERIC_EXPLODE, SoundSource.AMBIENT, 0.4F, 1F);
+        level.removeBlockEntity(pos);
+        level.destroyBlock(pos, false);
     }
 
     @Override
@@ -141,60 +141,60 @@ public class AltarBlock extends BaseEntityBlock {
 
     @SuppressWarnings("deprecation")
     @Override
-    public void onRemove(BlockState state, Level world, BlockPos pos, BlockState oldState, boolean isMoving) {
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
         if (!state.is(oldState.getBlock())) {
-            BlockEntity tileentity = world.getBlockEntity(pos);
+            BlockEntity tileentity = level.getBlockEntity(pos);
             if (tileentity instanceof AltarBlockEntity altar) {
                 ItemStack stack = altar.getCharm();
                 if (!stack.isEmpty()) {
-                    ItemEntity item = new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), stack);
-                    world.addFreshEntity(item);
+                    ItemEntity item = new ItemEntity(level, pos.getX(), pos.getY(), pos.getZ(), stack);
+                    level.addFreshEntity(item);
                 }
                 NonNullList<ItemStack> list = altar.getCatalyst();
                 for (ItemStack cat : list) {
                     if (!cat.isEmpty()) {
-                        ItemEntity item = new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), cat);
-                        world.addFreshEntity(item);
+                        ItemEntity item = new ItemEntity(level, pos.getX(), pos.getY(), pos.getZ(), cat);
+                        level.addFreshEntity(item);
                     }
                 }
-                world.updateNeighbourForOutputSignal(pos, this);
+                level.updateNeighbourForOutputSignal(pos, this);
             }
-            super.onRemove(state, world, pos, oldState, isMoving);
+            super.onRemove(state, level, pos, oldState, isMoving);
         }
     }
 
     @Override
-    public void animateTick(BlockState state, Level world, BlockPos pos, Random random) {
+    public void animateTick(BlockState state, Level level, BlockPos pos, Random random) {
         for (int l = 0; l < 5; ++l) {
             double d0 = pos.getX() + random.nextFloat();
             double d1 = pos.getY() + random.nextFloat();
             double d2 = pos.getZ() + random.nextFloat();
             double d3 = (random.nextFloat() - 0.5D) * 1.000000001490116D;
-            world.addParticle(ParticleTypes.PORTAL, d0, d1, d2, d3, d3, d3);
+            level.addParticle(ParticleTypes.PORTAL, d0, d1, d2, d3, d3, d3);
         }
-        BlockEntity blockEntity = world.getBlockEntity(pos);
+        BlockEntity blockEntity = level.getBlockEntity(pos);
         if (!(blockEntity instanceof AltarBlockEntity altar) || !altar.isComplete())
             return;
         switch (state.getValue(FACING)) {
             case NORTH -> {
-                world.addParticle(ParticleTypes.FLAME, pos.getX() + 3 * PIXEL, pos.getY() + 16 * PIXEL, pos.getZ() + 12.5 * PIXEL, 0, 0, 0);
-                world.addParticle(ParticleTypes.FLAME, pos.getX() + 8 * PIXEL, pos.getY() + 17.5 * PIXEL, pos.getZ() + 13.5 * PIXEL, 0, 0, 0);
-                world.addParticle(ParticleTypes.FLAME, pos.getX() + 13 * PIXEL, pos.getY() + 17 * PIXEL, pos.getZ() + 12.5 * PIXEL, 0, 0, 0);
+                level.addParticle(ParticleTypes.FLAME, pos.getX() + 3 * PIXEL, pos.getY() + 16 * PIXEL, pos.getZ() + 12.5 * PIXEL, 0, 0, 0);
+                level.addParticle(ParticleTypes.FLAME, pos.getX() + 8 * PIXEL, pos.getY() + 17.5 * PIXEL, pos.getZ() + 13.5 * PIXEL, 0, 0, 0);
+                level.addParticle(ParticleTypes.FLAME, pos.getX() + 13 * PIXEL, pos.getY() + 17 * PIXEL, pos.getZ() + 12.5 * PIXEL, 0, 0, 0);
             }
             case SOUTH -> {
-                world.addParticle(ParticleTypes.FLAME, pos.getX() + 13 * PIXEL, pos.getY() + 16 * PIXEL, pos.getZ() + 2.5 * PIXEL, 0, 0, 0);
-                world.addParticle(ParticleTypes.FLAME, pos.getX() + 8 * PIXEL, pos.getY() + 17.5 * PIXEL, pos.getZ() + 1.5 * PIXEL, 0, 0, 0);
-                world.addParticle(ParticleTypes.FLAME, pos.getX() + 3 * PIXEL, pos.getY() + 17 * PIXEL, pos.getZ() + 2.5 * PIXEL, 0, 0, 0);
+                level.addParticle(ParticleTypes.FLAME, pos.getX() + 13 * PIXEL, pos.getY() + 16 * PIXEL, pos.getZ() + 2.5 * PIXEL, 0, 0, 0);
+                level.addParticle(ParticleTypes.FLAME, pos.getX() + 8 * PIXEL, pos.getY() + 17.5 * PIXEL, pos.getZ() + 1.5 * PIXEL, 0, 0, 0);
+                level.addParticle(ParticleTypes.FLAME, pos.getX() + 3 * PIXEL, pos.getY() + 17 * PIXEL, pos.getZ() + 2.5 * PIXEL, 0, 0, 0);
             }
             case EAST -> {
-                world.addParticle(ParticleTypes.FLAME, pos.getX() + 2.5 * PIXEL, pos.getY() + 16 * PIXEL, pos.getZ() + 3 * PIXEL, 0, 0, 0);
-                world.addParticle(ParticleTypes.FLAME, pos.getX() + 1.5 * PIXEL, pos.getY() + 17.5 * PIXEL, pos.getZ() + 8 * PIXEL, 0, 0, 0);
-                world.addParticle(ParticleTypes.FLAME, pos.getX() + 2.5 * PIXEL, pos.getY() + 17 * PIXEL, pos.getZ() + 13 * PIXEL, 0, 0, 0);
+                level.addParticle(ParticleTypes.FLAME, pos.getX() + 2.5 * PIXEL, pos.getY() + 16 * PIXEL, pos.getZ() + 3 * PIXEL, 0, 0, 0);
+                level.addParticle(ParticleTypes.FLAME, pos.getX() + 1.5 * PIXEL, pos.getY() + 17.5 * PIXEL, pos.getZ() + 8 * PIXEL, 0, 0, 0);
+                level.addParticle(ParticleTypes.FLAME, pos.getX() + 2.5 * PIXEL, pos.getY() + 17 * PIXEL, pos.getZ() + 13 * PIXEL, 0, 0, 0);
             }
             case WEST -> {
-                world.addParticle(ParticleTypes.FLAME, pos.getX() + 12.5 * PIXEL, pos.getY() + 16 * PIXEL, pos.getZ() + 13 * PIXEL, 0, 0, 0);
-                world.addParticle(ParticleTypes.FLAME, pos.getX() + 13.5 * PIXEL, pos.getY() + 17.5 * PIXEL, pos.getZ() + 8 * PIXEL, 0, 0, 0);
-                world.addParticle(ParticleTypes.FLAME, pos.getX() + 12.5 * PIXEL, pos.getY() + 17 * PIXEL, pos.getZ() + 3 * PIXEL, 0, 0, 0);
+                level.addParticle(ParticleTypes.FLAME, pos.getX() + 12.5 * PIXEL, pos.getY() + 16 * PIXEL, pos.getZ() + 13 * PIXEL, 0, 0, 0);
+                level.addParticle(ParticleTypes.FLAME, pos.getX() + 13.5 * PIXEL, pos.getY() + 17.5 * PIXEL, pos.getZ() + 8 * PIXEL, 0, 0, 0);
+                level.addParticle(ParticleTypes.FLAME, pos.getX() + 12.5 * PIXEL, pos.getY() + 17 * PIXEL, pos.getZ() + 3 * PIXEL, 0, 0, 0);
             }
             default -> {
             }
@@ -203,8 +203,8 @@ public class AltarBlock extends BaseEntityBlock {
 
     @SuppressWarnings("deprecation")
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult res) {
-        BlockEntity blockEntity = world.getBlockEntity(pos);
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult res) {
+        BlockEntity blockEntity = level.getBlockEntity(pos);
         ItemStack stack = player.getItemInHand(hand);
         if (!(blockEntity instanceof AltarBlockEntity altar))
             return InteractionResult.PASS;
@@ -222,7 +222,7 @@ public class AltarBlock extends BaseEntityBlock {
             return InteractionResult.SUCCESS;
         }
         if (!altar.isComplete()) {
-            boolean placeRes = placeSummoningStructure((ServerLevel) world, pos, altar, state.getValue(FACING).getOpposite());
+            boolean placeRes = placeSummoningStructure((ServerLevel) level, pos, altar, state.getValue(FACING).getOpposite());
             if (!placeRes) {
                 player.sendMessage(new TranslatableComponent("fateubw.chat.altar.incomplete").withStyle(ChatFormatting.DARK_RED), Util.NIL_UUID);
             }

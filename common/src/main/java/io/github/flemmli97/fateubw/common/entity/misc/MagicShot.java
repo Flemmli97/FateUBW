@@ -23,13 +23,12 @@ public class MagicShot extends BaseProjectile {
 
     private ColorType colorType = ColorType.PURPLE;
 
-
-    public MagicShot(EntityType<? extends MagicShot> type, Level world) {
-        super(type, world);
+    public MagicShot(EntityType<? extends MagicShot> type, Level level) {
+        super(type, level);
     }
 
-    public MagicShot(Level world, LivingEntity shootingEntity) {
-        super(ModEntities.MAGIC_SHOT.get(), world, shootingEntity);
+    public MagicShot(Level level, LivingEntity shootingEntity) {
+        super(ModEntities.MAGIC_SHOT.get(), level, shootingEntity);
     }
 
     @Override

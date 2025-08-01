@@ -25,7 +25,7 @@ public abstract class ParticleEngineMixin {
     private static List<ParticleRenderType> RENDER_ORDER;
 
     @Inject(at = @At("RETURN"), method = "<init>")
-    private void customTypes(ClientLevel world, TextureManager textureManager, CallbackInfo ci) {
+    private void customTypes(ClientLevel level, TextureManager textureManager, CallbackInfo ci) {
         RENDER_ORDER = ImmutableList.<ParticleRenderType>builder().addAll(RENDER_ORDER)
                 .add(TrailParticle.COLOR_PARTICLE)
                 .build();

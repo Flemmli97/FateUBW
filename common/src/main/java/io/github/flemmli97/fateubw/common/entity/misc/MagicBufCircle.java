@@ -35,14 +35,14 @@ public class MagicBufCircle extends Entity implements OwnableEntity {
 
     private final int maxLivingTicks;
 
-    public MagicBufCircle(EntityType<?> entityTypeIn, Level worldIn) {
-        super(entityTypeIn, worldIn);
+    public MagicBufCircle(EntityType<?> entityTypeIn, Level level) {
+        super(entityTypeIn, level);
         this.maxLivingTicks = DatapackHandler.SERVANT_PROPS.get(ModEntities.MEDEA.getID())
                 .getConfig(ServantExtraData.MEDEA_CIRCLE_DURATION);
     }
 
-    public MagicBufCircle(Level world, LivingEntity owner, float r) {
-        this(ModEntities.MEDEA_CIRCLE.get(), world);
+    public MagicBufCircle(Level level, LivingEntity owner, float r) {
+        this(ModEntities.MEDEA_CIRCLE.get(), level);
         this.setPos(owner.getX(), owner.getY(), owner.getZ());
         this.owner = owner;
         this.ownerUUID = owner.getUUID();

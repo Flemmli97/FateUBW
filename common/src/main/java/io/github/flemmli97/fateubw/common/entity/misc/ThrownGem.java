@@ -10,12 +10,12 @@ import net.minecraft.world.phys.EntityHitResult;
 
 public class ThrownGem extends BaseProjectile {
 
-    public ThrownGem(EntityType<? extends ThrownGem> type, Level world) {
-        super(type, world);
+    public ThrownGem(EntityType<? extends ThrownGem> type, Level level) {
+        super(type, level);
     }
 
-    public ThrownGem(Level world, LivingEntity shooter) {
-        super(ModEntities.GEM.get(), world, shooter);
+    public ThrownGem(Level level, LivingEntity shooter) {
+        super(ModEntities.GEM.get(), level, shooter);
     }
 
     @Override

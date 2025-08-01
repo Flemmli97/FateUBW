@@ -17,7 +17,7 @@ public class ItemHolyGrail extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         if (player instanceof ServerPlayer serverPlayer) {
             NetworkCalls.INSTANCE.sendToClient(new S2CGrailGui(), serverPlayer);
             return InteractionResultHolder.consume(player.getItemInHand(hand));

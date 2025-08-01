@@ -17,9 +17,9 @@ public class ItemManaBottle extends Item {
     }
 
     @Override
-    public ItemStack finishUsingItem(ItemStack stack, Level world, LivingEntity entity) {
+    public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
         Player player = entity instanceof Player ? (Player) entity : null;
-        if (!world.isClientSide && player != null)
+        if (!level.isClientSide && player != null)
             Platform.INSTANCE.getPlayerData(player).ifPresent(data -> data.addMana(player, 50));
         if (player == null || !player.isCreative())
             stack.shrink(1);
@@ -27,7 +27,7 @@ public class ItemManaBottle extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         player.startUsingItem(hand);
         return InteractionResultHolder.success(player.getItemInHand(hand));
     }
