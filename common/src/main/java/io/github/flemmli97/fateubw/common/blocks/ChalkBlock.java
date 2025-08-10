@@ -20,19 +20,16 @@ public class ChalkBlock extends Block {
         this.registerDefaultState(this.stateDefinition.any());
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
         return SHAPE;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public BlockState updateShape(BlockState state, Direction direction, BlockState stateNew, LevelAccessor world, BlockPos pos, BlockPos posNew) {
         return !state.canSurvive(world, pos) ? Blocks.AIR.defaultBlockState() : super.updateShape(state, direction, stateNew, world, pos, posNew);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public boolean canSurvive(BlockState state, LevelReader reader, BlockPos pos) {
         BlockState down = reader.getBlockState(pos.below());

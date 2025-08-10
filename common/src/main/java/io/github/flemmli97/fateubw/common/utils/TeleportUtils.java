@@ -7,17 +7,17 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Random;
 import java.util.function.Predicate;
 
 public class TeleportUtils {
@@ -56,11 +56,11 @@ public class TeleportUtils {
     }
 
     public static BlockPos isSafePos(Mob entity, Level level, BlockPos pos, Predicate<BlockState> validPos) {
-        BlockPathTypes blockPathTypes = entity.getNavigation().getNodeEvaluator().getBlockPathType(level, pos.getX(), pos.getY(), pos.getZ());
-        if (blockPathTypes == BlockPathTypes.OPEN) {
+        PathType blockPathTypes = entity.getNavigation().getNodeEvaluator().getPathType(level, pos.getX(), pos.getY(), pos.getZ());
+        if (blockPathTypes == PathType.OPEN) {
             if (!entity.isNoGravity())
                 return null;
-        } else if (blockPathTypes != BlockPathTypes.WALKABLE) {
+        } else if (blockPathTypes != PathType.WALKABLE) {
             return null;
         }
         BlockState blockState = level.getBlockState(pos.below());
@@ -79,38 +79,38 @@ public class TeleportUtils {
         Vec3 prev = entity.position();
         entity.teleportTo(x, y, z);
         if (soundEvent != null) {
-            entity.level.playSound(null, entity.xo, entity.yo, entity.zo, soundEvent, entity.getSoundSource(), 1.0F, 1.0F);
+            entity.level().playSound(null, entity.xo, entity.yo, entity.zo, soundEvent, entity.getSoundSource(), 1.0F, 1.0F);
             entity.playSound(soundEvent, 1.0F, 1.0F);
         }
         if (particle != null) {
             for (int i = 0; i < 10; i++) {
-                if (entity.level instanceof ServerLevel serverLevel) {
+                if (entity.level() instanceof ServerLevel serverLevel) {
                     serverLevel.sendParticles(particle,
                             prev.x() + entity.getBbWidth() * TeleportUtils.randomUniform(entity.getRandom()), prev.y() + entity.getBbHeight() * TeleportUtils.randomUniform(entity.getRandom()), prev.z() + entity.getBbWidth() * TeleportUtils.randomUniform(entity.getRandom())
                             , 0,
                             TeleportUtils.randomUniform(entity.getRandom()) * 0.1, TeleportUtils.randomUniform(entity.getRandom()) * 0.1, TeleportUtils.randomUniform(entity.getRandom()) * 0.1,
                             1);
                 } else {
-                    entity.level.addParticle(particle,
+                    entity.level().addParticle(particle,
                             prev.x() + entity.getBbWidth() * TeleportUtils.randomUniform(entity.getRandom()), prev.y() + entity.getBbHeight() * TeleportUtils.randomUniform(entity.getRandom()), prev.z() + entity.getBbWidth() * TeleportUtils.randomUniform(entity.getRandom()),
                             TeleportUtils.randomUniform(entity.getRandom()) * 0.1, TeleportUtils.randomUniform(entity.getRandom()) * 0.1, TeleportUtils.randomUniform(entity.getRandom()) * 0.1);
                 }
             }
             for (int i = 0; i < 10; i++) {
-                if (entity.level instanceof ServerLevel serverLevel) {
+                if (entity.level() instanceof ServerLevel serverLevel) {
                     serverLevel.sendParticles(particle, entity.getRandomX(0.5), entity.getRandomY(), entity.getRandomZ(0.5),
                             0,
                             TeleportUtils.randomUniform(entity.getRandom()) * 0.1, TeleportUtils.randomUniform(entity.getRandom()) * 0.1, TeleportUtils.randomUniform(entity.getRandom()) * 0.1,
                             1);
                 } else {
-                    entity.level.addParticle(particle, entity.getRandomX(0.5), entity.getRandomY(), entity.getRandomZ(0.5),
+                    entity.level().addParticle(particle, entity.getRandomX(0.5), entity.getRandomY(), entity.getRandomZ(0.5),
                             TeleportUtils.randomUniform(entity.getRandom()) * 0.1, TeleportUtils.randomUniform(entity.getRandom()) * 0.1, TeleportUtils.randomUniform(entity.getRandom()) * 0.1);
                 }
             }
         }
     }
 
-    private static double randomUniform(Random random) {
+    private static double randomUniform(RandomSource random) {
         return random.nextDouble() - 0.5;
     }
 }

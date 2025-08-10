@@ -108,13 +108,13 @@ public class ConfigSpecs {
             this.whiteList = builder.comment("Turn servant notification list into a whitelist").define("Notify Whitelist", CommonConfig.notificationWhitelist);
             this.notifyAll = builder.comment("Notify everyone if a servant spawns. Else only the player the servant spawned on will be notified").define("Notify Everyone", CommonConfig.notifyAll);
             this.npBoostEffect = builder.comment("Potions applied when boostin servants using a command seal. Usage: " + PotionEffectsConfig.usage()).define("NP Effects",
-                    CommonConfig.npBoostEffect.writeToString());
+                    CommonConfig.npBoostEffect.write());
             builder.pop();
 
             builder.push("misc");
             this.babylonScale = builder.comment("Damage scaling for projectiles from the gate of babylon").defineInRange("Babylon Dmg Scale", CommonConfig.babylonScale, 0, Double.MAX_VALUE);
             this.babylonWeaponsBlacklist = builder.comment("Blacklist weapons for the gate of babylon here. You can also use the modid for a whole mod").define("Babylon Blacklist",
-                    CommonConfig.babylonWeapons.writeToString());
+                    CommonConfig.babylonWeapons.write());
             this.babylonWeaponsWhitelist = builder.comment("Turn the blacklist into a whitelist").define("Babylon Whitelist", CommonConfig.babylonWeapons.isWhiteList());
             this.eaDamage = builder.comment("Damage of EA").defineInRange("EA Dmg", CommonConfig.eaDamage, 0, Double.MAX_VALUE);
             this.excaliburDamage = builder.comment("Damage of excalibur").defineInRange("Excalibur Dmg", CommonConfig.excaliburDamage, 0, Double.MAX_VALUE);
@@ -122,7 +122,7 @@ public class ConfigSpecs {
             this.magicBeam = builder.comment("Damage of medeas magic beams").defineInRange("Magic Beam Dmg", CommonConfig.magicBeam, 0, Double.MAX_VALUE);
             this.gaeBolgDmg = builder.comment("Damage of Gae Bolg").defineInRange("Gae Bolg Dmg", CommonConfig.gaeBolgDmg, 0, Double.MAX_VALUE);
             this.gaeBolgEffect = builder.comment("Potions applied by Gae Bolg. Usage: " + PotionEffectsConfig.usage()).define("Gae Bolg Potions",
-                    CommonConfig.gaeBolgEffect.writeToString());
+                    CommonConfig.gaeBolgEffect.write());
             builder.pop();
 
             builder.push("weapons");

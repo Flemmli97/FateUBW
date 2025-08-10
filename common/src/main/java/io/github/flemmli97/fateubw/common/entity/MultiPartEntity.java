@@ -1,10 +1,10 @@
 package io.github.flemmli97.fateubw.common.entity;
 
 import io.github.flemmli97.fateubw.common.network.S2CMultipartDataPkt;
-import io.github.flemmli97.fateubw.common.registry.ModEntities;
-import io.github.flemmli97.fateubw.platform.NetworkCalls;
+import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.tenshilib.common.entity.EntityUtil;
 import io.github.flemmli97.tenshilib.common.utils.MathUtils;
+import io.github.flemmli97.tenshilib.loader.LoaderNetwork;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
@@ -51,7 +51,7 @@ public class MultiPartEntity extends Entity {
     }
 
     public MultiPartEntity(Level level, float width, float height, Position offset) {
-        this(ModEntities.MULTIPART.get(), level);
+        this(FateEntities.MULTIPART.get(), level);
         this.setSize(width, height);
         this.offset = offset;
     }
@@ -247,7 +247,7 @@ public class MultiPartEntity extends Entity {
     @Override
     public void startSeenByPlayer(ServerPlayer serverPlayer) {
         super.startSeenByPlayer(serverPlayer);
-        NetworkCalls.INSTANCE.sendToClient(new S2CMultipartDataPkt(this.getId(), this.offset, this.smoothMovement), serverPlayer);
+        LoaderNetwork.INSTANCE.sendToPlayer(new S2CMultipartDataPkt(this.getId(), this.offset, this.smoothMovement), serverPlayer);
     }
 
     public void setViewRotation(float rotY, float rotX) {

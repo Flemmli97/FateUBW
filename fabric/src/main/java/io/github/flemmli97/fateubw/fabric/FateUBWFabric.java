@@ -6,16 +6,16 @@ import io.github.flemmli97.fateubw.common.commands.CommandHandler;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.entity.servant.ai.LancelotAttackAI;
 import io.github.flemmli97.fateubw.common.event.EventCalls;
-import io.github.flemmli97.fateubw.common.registry.AdvancementRegister;
-import io.github.flemmli97.fateubw.common.registry.GrailLootSerializer;
-import io.github.flemmli97.fateubw.common.registry.ModAttributes;
-import io.github.flemmli97.fateubw.common.registry.ModBlocks;
-import io.github.flemmli97.fateubw.common.registry.ModEffects;
-import io.github.flemmli97.fateubw.common.registry.ModEntities;
-import io.github.flemmli97.fateubw.common.registry.ModFeatures;
-import io.github.flemmli97.fateubw.common.registry.ModItems;
-import io.github.flemmli97.fateubw.common.registry.ModParticles;
-import io.github.flemmli97.fateubw.common.registry.ModSounds;
+import io.github.flemmli97.fateubw.common.registry.FateAttributes;
+import io.github.flemmli97.fateubw.common.registry.FateBlocks;
+import io.github.flemmli97.fateubw.common.registry.FateCriterionTriggers;
+import io.github.flemmli97.fateubw.common.registry.FateEntities;
+import io.github.flemmli97.fateubw.common.registry.FateFeatures;
+import io.github.flemmli97.fateubw.common.registry.FateGrailLootSerializer;
+import io.github.flemmli97.fateubw.common.registry.FateItems;
+import io.github.flemmli97.fateubw.common.registry.FateMobEffects;
+import io.github.flemmli97.fateubw.common.registry.FateParticles;
+import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import io.github.flemmli97.fateubw.fabric.common.config.ConfigLoader;
 import io.github.flemmli97.fateubw.fabric.common.config.ConfigSpecs;
@@ -86,24 +86,24 @@ public class FateUBWFabric implements ModInitializer {
     }
 
     public static void registerContent() {
-        ModEntities.ENTITIES.getEntries();
-        ModBlocks.BLOCKS.registerContent();
-        ModItems.ITEMS.registerContent();
-        ModBlocks.TILES.registerContent();
-        ModEntities.ENTITIES.registerContent();
-        GrailLootSerializer.SERIALIZER.registerContent();
-        GrailLootSerializer.LOOT_FUNCTION.registerContent();
-        ModParticles.PARTICLES.registerContent();
-        ModAttributes.ATTRIBUTES.registerContent();
-        ModFeatures.register();
-        ModSounds.SOUND_EVENTS.registerContent();
-        ModEffects.EFFECTS.registerContent();
-        ModFeatures.registerToBiomes((dec, holder) -> BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), dec, holder.unwrapKey().orElseThrow()));
+        FateEntities.ENTITIES.getEntries();
+        FateBlocks.BLOCKS.registerContent();
+        FateItems.ITEMS.registerContent();
+        FateBlocks.BLOCK_ENTITIES.registerContent();
+        FateEntities.ENTITIES.registerContent();
+        FateGrailLootSerializer.SERIALIZER.registerContent();
+        FateGrailLootSerializer.LOOT_FUNCTION.registerContent();
+        FateParticles.PARTICLES.registerContent();
+        FateAttributes.ATTRIBUTES.registerContent();
+        FateFeatures.register();
+        FateSounds.SOUND_EVENTS.registerContent();
+        FateMobEffects.EFFECTS.registerContent();
+        FateFeatures.registerToBiomes((dec, holder) -> BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), dec, holder.unwrapKey().orElseThrow()));
     }
 
     public void setup() {
-        ModEntities.registeredAttributes().forEach(FabricDefaultAttributeRegistry::register);
-        AdvancementRegister.init();
+        FateEntities.registeredAttributes().forEach(FabricDefaultAttributeRegistry::register);
+        FateCriterionTriggers.init();
         ServerPacketHandler.registerServer();
     }
 

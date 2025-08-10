@@ -15,8 +15,8 @@ import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.network.S2CServantGui;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailHolder;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailHolderProvider;
-import io.github.flemmli97.fateubw.common.registry.ModAttributes;
-import io.github.flemmli97.fateubw.common.registry.ModParticles;
+import io.github.flemmli97.fateubw.common.registry.FateAttributes;
+import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
@@ -29,11 +29,9 @@ import io.github.flemmli97.tenshilib.common.item.SpawnEgg;
 import io.github.flemmli97.tenshilib.common.particle.ColoredParticleData;
 import io.github.flemmli97.tenshilib.common.utils.OrientedBoundingBox;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -154,7 +152,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
             this.goals();
             this.updateAttributes();
         }
-        this.hogou = new TranslatableComponent(id + ".hogou");
+        this.hogou = Component.translatable(id + ".hogou");
     }
 
     protected void goals() {
@@ -259,10 +257,10 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         return Monster.createMonsterAttributes()
                 .add(Attributes.FOLLOW_RANGE, 24.0)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1)
-                .add(ModAttributes.MAGIC_ATTACK.get()).add(ModAttributes.MAGIC_RESISTANCE.get())
-                .add(ModAttributes.PROJECTILE_BLOCK_CHANCE.get()).add(ModAttributes.PROJECTILE_RESISTANCE.get())
-                .add(ModAttributes.COMBAT_REGEN.get())
-                .add(ModAttributes.PASSIVE_REGEN.get());
+                .add(FateAttributes.MAGIC_ATTACK.get()).add(FateAttributes.MAGIC_RESISTANCE.get())
+                .add(FateAttributes.PROJECTILE_BLOCK_CHANCE.get()).add(FateAttributes.PROJECTILE_RESISTANCE.get())
+                .add(FateAttributes.COMBAT_REGEN.get())
+                .add(FateAttributes.PASSIVE_REGEN.get());
     }
 
     private void updateAttributes() {
@@ -566,7 +564,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         this.died = true;
         if (this.level.isClientSide) {
             for (int i = 0; i < ((int) ((9 / (float) this.maxDeathTick()) * this.deathTime - 1)); i++) {
-                this.level.addParticle(new ColoredParticleData(ModParticles.LIGHT.get(), 76 / 255f, 128 / 255f, 207 / 255f, 0.3f, 0.15f), this.getX(this.random.nextDouble() * 3 - 1.5),
+                this.level.addParticle(new ColoredParticleData(FateParticles.LIGHT.get(), 76 / 255f, 128 / 255f, 207 / 255f, 0.3f, 0.15f), this.getX(this.random.nextDouble() * 3 - 1.5),
                         this.getY(this.random.nextDouble() * 3 - 1.5),
                         this.getZ(this.random.nextDouble() * 3 - 1.5),
                         this.random.nextGaussian() * 0.02D,
@@ -579,7 +577,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
             if (this.deathTime == 1) {
                 GrailWarHandler handler = GrailWarHandler.get(serverLevel.getServer());
                 if (handler.isParticipant(this) || this.getLastDamageSource() == CustomDamageSource.GRAIL_DAMAGE) {
-                    handler.broadcastParticipants(new TranslatableComponent("fateubw.chat.servant.death").withStyle(ChatFormatting.RED));
+                    handler.broadcastParticipants(Component.translatable("fateubw.chat.servant.death").withStyle(ChatFormatting.RED));
                 }
                 this.playSound(SoundEvents.WITHER_SPAWN, 1.0F, 1.0F);
                 this.getAnimationHandler().setAnimation(this.deathAnim());
@@ -763,7 +761,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
 
     public void onKillOrder(Player player, boolean success) {
         this.hurt(CustomDamageSource.GRAIL_DAMAGE, Float.MAX_VALUE);
-        player.sendMessage(new TranslatableComponent("fateubw.chat.command.kill").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+        player.sendSystemMessage(Component.translatable("fateubw.chat.command.kill").withStyle(ChatFormatting.RED));
     }
 
     public void onForfeit(Player player) {

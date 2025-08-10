@@ -1,14 +1,13 @@
 package io.github.flemmli97.fateubw.common.entity.servant;
 
-
 import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.api.datapack.ServantExtraData;
 import io.github.flemmli97.fateubw.common.entity.SwitchableWeapon;
 import io.github.flemmli97.fateubw.common.entity.ai.TeleportRunner;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicBeam;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicBufCircle;
-import io.github.flemmli97.fateubw.common.registry.ModEntities;
-import io.github.flemmli97.fateubw.common.registry.ModItems;
+import io.github.flemmli97.fateubw.common.registry.FateEntities;
+import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.utils.TeleportUtils;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
@@ -21,11 +20,10 @@ import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.JumpEvadeAct
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.KeepDistanceRunner;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveAwayRunner;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.WrappedRunner;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.world.DifficultyInstance;
@@ -118,7 +116,7 @@ public class EntityMedea extends BaseServant {
         return false;
     });
 
-    public final SwitchableWeapon<EntityMedea> switchableWeapon = new SwitchableWeapon<>(this, new ItemStack(ModItems.RULE_BREAKER.get()), ItemStack.EMPTY);
+    public final SwitchableWeapon<EntityMedea> switchableWeapon = new SwitchableWeapon<>(this, new ItemStack(FateItems.RULE_BREAKER.get()), ItemStack.EMPTY);
 
     private boolean gravityPre;
     private Vec3 teleportPre, teleportPos;
@@ -136,7 +134,7 @@ public class EntityMedea extends BaseServant {
 
     @Override
     protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.STAFF.get()));
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(FateItems.STAFF.get()));
     }
 
     @Override
@@ -351,7 +349,7 @@ public class EntityMedea extends BaseServant {
             this.aiCircledelay = (int) (this.random.nextInt(400) + duration * 0.5);
             this.circlePos = circle.position();
             if (this.getOwner() != null)
-                this.getOwner().sendMessage(new TranslatableComponent("fateubw.chat.medea.circle.spawn"), Util.NIL_UUID);
+                this.getOwner().sendMessage(Component.translatable("fateubw.chat.medea.circle.spawn"));
             this.playSound(SoundEvents.BEACON_POWER_SELECT, 1, 1);
         }
     }
@@ -390,12 +388,12 @@ public class EntityMedea extends BaseServant {
 
     @Override
     public String[] specialCommands() {
-        return new String[]{ModEntities.MEDEA.getID() + ".circle"};
+        return new String[]{FateEntities.MEDEA.getID() + ".circle"};
     }
 
     @Override
     public void doSpecialCommand(String s) {
-        if (s.equals(ModEntities.MEDEA.getID() + ".circle") && this.circleDelay <= 0)
+        if (s.equals(FateEntities.MEDEA.getID() + ".circle") && this.circleDelay <= 0)
             this.getAnimationHandler().setAnimation(MAGIC_CIRCLE);
     }
 

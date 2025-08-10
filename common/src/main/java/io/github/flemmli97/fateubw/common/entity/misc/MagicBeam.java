@@ -1,8 +1,8 @@
 package io.github.flemmli97.fateubw.common.entity.misc;
 
 import io.github.flemmli97.fateubw.common.config.CommonConfig;
-import io.github.flemmli97.fateubw.common.registry.ModEntities;
-import io.github.flemmli97.fateubw.common.registry.ModParticles;
+import io.github.flemmli97.fateubw.common.registry.FateEntities;
+import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.particle.ColoredParticleData;
@@ -34,7 +34,7 @@ public class MagicBeam extends BaseBeam {
     }
 
     public MagicBeam(Level level, LivingEntity shooter) {
-        super(ModEntities.MAGIC_BEAM.get(), level, shooter);
+        super(FateEntities.MAGIC_BEAM.get(), level, shooter);
     }
 
     public MagicBeam(Level level, LivingEntity shootingEntity, @Nullable LivingEntity target) {
@@ -92,7 +92,7 @@ public class MagicBeam extends BaseBeam {
     @Override
     public void tick() {
         if (this.level.isClientSide) {
-            this.level.addParticle(new ColoredParticleData(ModParticles.LIGHT.get(), 205 / 255F, 13 / 255F, 205 / 255F, 1, 0.15f), this.getX(), this.getY(), this.getZ(), this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01);
+            this.level.addParticle(new ColoredParticleData(FateParticles.LIGHT.get(), 205 / 255F, 13 / 255F, 205 / 255F, 1, 0.15f), this.getX(), this.getY(), this.getZ(), this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01);
         } else if (!this.setSpawnRot) {
             this.setSpawnRot = true;
             this.entityData.set(SPAWN_ROT_Y, this.getYRot());

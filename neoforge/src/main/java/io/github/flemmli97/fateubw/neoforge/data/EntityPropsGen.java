@@ -7,7 +7,7 @@ import com.mojang.serialization.JsonOps;
 import io.github.flemmli97.fateubw.api.datapack.AttributeHolderProperties;
 import io.github.flemmli97.fateubw.api.datapack.ServantProperties;
 import io.github.flemmli97.fateubw.common.datapack.EntityPropsManager;
-import io.github.flemmli97.fateubw.common.registry.ModEntities;
+import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
@@ -25,7 +25,7 @@ public record EntityPropsGen(DataGenerator gen) implements DataProvider {
 
     @Override
     public void run(HashCache cache) {
-        ModEntities.getServantProperties().forEach((res, prop) -> {
+        FateEntities.getServantProperties().forEach((res, prop) -> {
             Path path = this.gen.getOutputFolder().resolve("data/" + res.getNamespace() + "/" + EntityPropsManager.DIRECTORY + "/" + res.getPath() + ".json");
             try {
                 JsonElement obj = ServantProperties.CODEC.encodeStart(JsonOps.INSTANCE, prop.build())
@@ -35,7 +35,7 @@ public record EntityPropsGen(DataGenerator gen) implements DataProvider {
                 LOGGER.error("Couldn't save entity properties {}", path, e);
             }
         });
-        ModEntities.getEntityProps().forEach((res, prop) -> {
+        FateEntities.getEntityProps().forEach((res, prop) -> {
             Path path = this.gen.getOutputFolder().resolve("data/" + res.getNamespace() + "/" + EntityPropsManager.DIRECTORY + "/" + res.getPath() + ".json");
             try {
                 JsonElement obj = AttributeHolderProperties.CODEC.encodeStart(JsonOps.INSTANCE, prop.build())

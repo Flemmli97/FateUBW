@@ -1,6 +1,6 @@
 package io.github.flemmli97.fateubw.common.entity.misc;
 
-import io.github.flemmli97.fateubw.common.registry.ModEntities;
+import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
 import net.minecraft.server.level.ServerPlayer;
@@ -26,7 +26,7 @@ public class ArcherArrow extends AbstractArrow {
     }
 
     public ArcherArrow(Level level, LivingEntity shootingEntity) {
-        super(ModEntities.ARCHER_ARROW.get(), shootingEntity, level);
+        super(FateEntities.ARCHER_ARROW.get(), shootingEntity, level);
     }
 
     @Override

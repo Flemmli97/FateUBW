@@ -3,9 +3,9 @@ package io.github.flemmli97.fateubw.neoforge.data;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import io.github.flemmli97.fateubw.Fate;
-import io.github.flemmli97.fateubw.common.registry.ModBlocks;
-import io.github.flemmli97.fateubw.common.registry.ModEntities;
-import io.github.flemmli97.fateubw.common.registry.ModItems;
+import io.github.flemmli97.fateubw.common.registry.FateBlocks;
+import io.github.flemmli97.fateubw.common.registry.FateEntities;
+import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.tenshilib.common.item.SpawnEgg;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
@@ -36,37 +36,37 @@ public class PatchouliGen extends PatchouliBookProvider {
                 .setVersion("1.1")
                 .setI18n(true)
                 .setShowProgress(false)
-                .addCategory("category.start", "fateubw.patchouli.category.start", "fateubw.patchouli.category.start.desc", new ItemStack(ModItems.MANA_GEM.get()))
+                .addCategory("category.start", "fateubw.patchouli.category.start", "fateubw.patchouli.category.start.desc", new ItemStack(FateItems.MANA_GEM.get()))
                 .setSortnum(0)
-                .addEntry("entry.ores", "fateubw.patchouli.entry.ores", ModBlocks.GEM_ORE.get().getRegistryName().toString())
+                .addEntry("entry.ores", "fateubw.patchouli.entry.ores", FateBlocks.GEM_ORE.get().getRegistryName().toString())
                 .setSortnum(0)
-                .addSpotlightPage(new ItemStack(ModBlocks.GEM_ORE.get()))
-                .setText("fateubw.patchouli.entry.ores." + ModBlocks.GEM_ORE.getID().getPath())
+                .addSpotlightPage(new ItemStack(FateBlocks.GEM_ORE.get()))
+                .setText("fateubw.patchouli.entry.ores." + FateBlocks.GEM_ORE.getID().getPath())
                 .build()
-                .addSpotlightPage(new ItemStack(ModBlocks.ARTIFACT_ORE.get()))
-                .setText("fateubw.patchouli.entry.ores." + ModBlocks.ARTIFACT_ORE.getID().getPath())
+                .addSpotlightPage(new ItemStack(FateBlocks.ARTIFACT_ORE.get()))
+                .setText("fateubw.patchouli.entry.ores." + FateBlocks.ARTIFACT_ORE.getID().getPath())
                 .build()
                 .build()
-                .addEntry("entry.altar", "fateubw.patchouli.entry.altar", ModBlocks.ALTAR.get().getRegistryName().toString()))
+                .addEntry("entry.altar", "fateubw.patchouli.entry.altar", FateBlocks.ALTAR.get().getRegistryName().toString()))
                 .setSortnum(1)
                 .addCraftingPage(new ResourceLocation(Fate.MODID, "summoning_altar"))
                 .setText("fateubw.patchouli.entry.altar.1")
                 .build()
                 .addPage(new MultiBlockPage("fateubw.patchouli.entry.altar", true, builder))
                 .addPattern("CCCCC", "CCCCC", "CC0CC", "CCCCC", "CCCCC")
-                .addMapping("C", ModBlocks.CHALK.getID().toString())
-                .addMapping("0", ModBlocks.ALTAR.getID().toString())
+                .addMapping("C", FateBlocks.CHALK.getID().toString())
+                .addMapping("0", FateBlocks.ALTAR.getID().toString())
                 .setText("fateubw.patchouli.entry.altar.2")
                 .build()
                 .addSimpleTextPage("fateubw.patchouli.entry.altar.3")
                 .build()
-                .addEntry("entry.servant", "fateubw.patchouli.entry.servant", ModItems.CHARM_NONE.get().getRegistryName().toString())
+                .addEntry("entry.servant", "fateubw.patchouli.entry.servant", FateItems.CHARM_NONE.get().getRegistryName().toString())
                 .setSortnum(2)
                 .addSimpleTextPage("fateubw.patchouli.entry.servant.1")
                 .addSimpleTextPage("fateubw.patchouli.entry.servant.2")
                 .build()
-                .addEntry("entry.grail", "fateubw.patchouli.entry.grail", ModItems.GRAIL.get().getRegistryName().toString())
-                .addSpotlightPage(new ItemStack(ModItems.GRAIL.get()))
+                .addEntry("entry.grail", "fateubw.patchouli.entry.grail", FateItems.GRAIL.get().getRegistryName().toString())
+                .addSpotlightPage(new ItemStack(FateItems.GRAIL.get()))
                 .setText("fateubw.patchouli.entry.grail.1")
                 .build()
                 .build()
@@ -79,7 +79,7 @@ public class PatchouliGen extends PatchouliBookProvider {
                 .addEntry("entry.attribute", "fateubw.patchouli.entry.attribute", Items.IRON_SWORD.getRegistryName().toString())
                 .addSimpleTextPage("fateubw.patchouli.entry.attribute.1")
                 .build()
-                .addEntry("entry.loot.servant", "fateubw.patchouli.entry.loot.servant", SpawnEgg.fromType(ModEntities.ARTHUR.get()).get().getRegistryName().toString())
+                .addEntry("entry.loot.servant", "fateubw.patchouli.entry.loot.servant", SpawnEgg.fromType(FateEntities.ARTHUR.get()).get().getRegistryName().toString())
                 .addSimpleTextPage("fateubw.patchouli.entry.loot.servant.1")
                 .build()
                 .addEntry("entry.loot.commands", "fateubw.patchouli.entry.commands", Items.COMMAND_BLOCK.getRegistryName().toString())

@@ -4,22 +4,21 @@ import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.flemmli97.fateubw.common.lib.BuiltinServantClasses;
-import io.github.flemmli97.fateubw.common.registry.ModAttributes;
-import net.minecraft.core.Registry;
+import io.github.flemmli97.fateubw.common.registry.FateAttributes;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 public class ServantProperties {
 
     public static final Codec<ServantProperties> CODEC = RecordCodecBuilder.create((instance) ->
-            instance.group(Codec.unboundedMap(Registry.ATTRIBUTE.byNameCodec(), Codec.DOUBLE).fieldOf("attributes").forGetter(d -> d.attributes),
+            instance.group(Codec.unboundedMap(BuiltInRegistries.ATTRIBUTE.holderByNameCodec(), Codec.DOUBLE).fieldOf("attributes").forGetter(d -> d.attributes),
                     Codec.INT.fieldOf("nobel_phantasm_cost").forGetter(ServantProperties::hogouMana),
                     Codec.INT.fieldOf("weight").forGetter(ServantProperties::weight),
                     ResourceLocation.CODEC.fieldOf("class").forGetter(ServantProperties::getServantClass),
@@ -27,19 +26,19 @@ public class ServantProperties {
             ).apply(instance, ServantProperties::new));
 
     public static final ServantProperties DEFAULT = new ServantProperties.Builder(BuiltinServantClasses.NONE)
-            .putAttributes(() -> Attributes.MAX_HEALTH, 20).putAttributes(() -> Attributes.ATTACK_DAMAGE, 1)
-            .putAttributes(() -> Attributes.MOVEMENT_SPEED, 0.2).putAttributes(ModAttributes.MAGIC_ATTACK, 1).build();
+            .putAttributes(Attributes.MAX_HEALTH, 20).putAttributes(Attributes.ATTACK_DAMAGE, 1)
+            .putAttributes(Attributes.MOVEMENT_SPEED, 0.2).putAttributes(FateAttributes.MAGIC_ATTACK.asHolder(), 1).build();
 
-    private final Map<Attribute, Double> attributes;
+    private final Map<Holder<Attribute>, Double> attributes;
     private final int manaCost, weight;
     private final ResourceLocation servantClass;
     private final ServantExtraData extraData;
 
-    private ServantProperties(Map<Attribute, Double> attributes, int manaCost, int weight, ResourceLocation servantClass, Optional<ServantExtraData> extraData) {
+    private ServantProperties(Map<Holder<Attribute>, Double> attributes, int manaCost, int weight, ResourceLocation servantClass, Optional<ServantExtraData> extraData) {
         this(attributes, manaCost, weight, servantClass, extraData.orElse(new ServantExtraData(Map.of())));
     }
 
-    public ServantProperties(Map<Attribute, Double> attributes, int manaCost, int weight, ResourceLocation servantClass, ServantExtraData extraData) {
+    public ServantProperties(Map<Holder<Attribute>, Double> attributes, int manaCost, int weight, ResourceLocation servantClass, ServantExtraData extraData) {
         this.attributes = attributes;
         this.manaCost = manaCost;
         this.weight = weight;
@@ -47,7 +46,7 @@ public class ServantProperties {
         this.extraData = extraData;
     }
 
-    public Map<Attribute, Double> getAttributes() {
+    public Map<Holder<Attribute>, Double> getAttributes() {
         return ImmutableMap.copyOf(this.attributes);
     }
 
@@ -56,7 +55,7 @@ public class ServantProperties {
     }
 
     public int weight() {
-        return weight;
+        return this.weight;
     }
 
     public ResourceLocation getServantClass() {
@@ -69,17 +68,17 @@ public class ServantProperties {
 
     public static class Builder {
 
-        private final Map<Supplier<Attribute>, Double> attributes = new LinkedHashMap<>();
+        private final Map<Holder<Attribute>, Double> attributes = new HashMap<>();
         private int manaCost;
         private int weight = 1;
         private final ResourceLocation servantClass;
-        private final Map<ServantExtraData.DataType<?>, Object> values = new LinkedHashMap<>();
+        private final Map<ServantExtraData.DataType<?>, Object> values = new HashMap<>();
 
         public Builder(ResourceLocation servantClass) {
             this.servantClass = servantClass;
         }
 
-        public Builder putAttributes(Supplier<Attribute> att, double val) {
+        public Builder putAttributes(Holder<Attribute> att, double val) {
             this.attributes.put(att, val);
             return this;
         }
@@ -104,12 +103,7 @@ public class ServantProperties {
         }
 
         public ServantProperties build() {
-            return new ServantProperties(this.attributes.entrySet().stream().collect(Collectors.toMap(
-                    e -> e.getKey().get(),
-                    Map.Entry::getValue,
-                    (e1, e2) -> e1,
-                    LinkedHashMap::new
-            )), this.manaCost, this.weight, this.servantClass, new ServantExtraData(this.values));
+            return new ServantProperties(this.attributes, this.manaCost, this.weight, this.servantClass, new ServantExtraData(this.values));
         }
     }
 }

@@ -6,11 +6,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.flemmli97.tenshilib.common.utils.CodecUtils;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -80,7 +78,7 @@ public class GrailTeam {
 
     protected boolean rename(Player source, String name) {
         if (!this.isAdmin(source.getUUID())) {
-            source.sendMessage(new TranslatableComponent("fateubw.chat.team.permission.no").withStyle(ChatFormatting.DARK_RED), Util.NIL_UUID);
+            source.sendMessage(Component.translatable("fateubw.chat.team.permission.no").withStyle(ChatFormatting.DARK_RED));
             return false;
         }
         this.name = name;
@@ -136,19 +134,19 @@ public class GrailTeam {
 
     protected boolean removePlayer(Player source, UUID uuid) {
         if (!this.isAdmin(source.getUUID()) && !source.getUUID().equals(uuid)) {
-            source.sendMessage(new TranslatableComponent("fateubw.chat.team.permission.no").withStyle(ChatFormatting.DARK_RED), Util.NIL_UUID);
+            source.sendMessage(Component.translatable("fateubw.chat.team.permission.no").withStyle(ChatFormatting.DARK_RED));
             return false;
         }
         Player player = source.getServer().getPlayerList().getPlayer(uuid);
         if (player != null) {
-            player.sendMessage(new TranslatableComponent("fateubw.chat.team.kicked", source.getName(), this.getName()).withStyle(ChatFormatting.RED), Util.NIL_UUID);
+            player.sendSystemMessage(Component.translatable("fateubw.chat.team.kicked", source.getName(), this.getName()).withStyle(ChatFormatting.RED));
         }
         return this.players.remove(uuid) != null;
     }
 
     protected boolean givePerms(Player source, UUID uuid) {
         if (!this.isAdmin(source.getUUID())) {
-            source.sendMessage(new TranslatableComponent("fateubw.chat.team.permission.no").withStyle(ChatFormatting.DARK_RED), Util.NIL_UUID);
+            source.sendMessage(Component.translatable("fateubw.chat.team.permission.no").withStyle(ChatFormatting.DARK_RED));
             return false;
         }
         if (!this.isMember(uuid) || source.getServer() == null)
@@ -158,24 +156,24 @@ public class GrailTeam {
         Component target;
         if (player != null) {
             target = player.getName();
-            player.sendMessage(new TranslatableComponent("fateubw.chat.team.promote", source.getName())
-                    .withStyle(ChatFormatting.GOLD), Util.NIL_UUID);
+            player.sendSystemMessage(Component.translatable("fateubw.chat.team.promote", source.getName())
+                    .withStyle(ChatFormatting.GOLD));
         } else {
             target = source.getServer().getProfileCache().get(uuid).map(p -> new TextComponent(p.getName())).orElse(null);
         }
         if (target != null)
-            source.sendMessage(new TranslatableComponent("fateubw.chat.team.promote.user", target)
-                    .withStyle(ChatFormatting.GRAY), Util.NIL_UUID);
+            source.sendMessage(Component.translatable("fateubw.chat.team.promote.user", target)
+                    .withStyle(ChatFormatting.GRAY));
         return true;
     }
 
     protected boolean revokePerms(Player source, UUID uuid) {
         if (!this.isAdmin(source.getUUID())) {
-            source.sendMessage(new TranslatableComponent("fateubw.chat.team.permission.no").withStyle(ChatFormatting.DARK_RED), Util.NIL_UUID);
+            source.sendMessage(Component.translatable("fateubw.chat.team.permission.no").withStyle(ChatFormatting.DARK_RED));
             return false;
         }
         if (source.getUUID().equals(uuid)) {
-            source.sendMessage(new TranslatableComponent("fateubw.chat.team.self.no").withStyle(ChatFormatting.DARK_RED), Util.NIL_UUID);
+            source.sendMessage(Component.translatable("fateubw.chat.team.self.no").withStyle(ChatFormatting.DARK_RED));
             return false;
         }
         if (source.getServer() == null)
@@ -185,20 +183,20 @@ public class GrailTeam {
         Component target;
         if (player != null) {
             target = player.getName();
-            player.sendMessage(new TranslatableComponent("fateubw.chat.team.demote", source.getName())
-                    .withStyle(ChatFormatting.RED), Util.NIL_UUID);
+            player.sendSystemMessage(Component.translatable("fateubw.chat.team.demote", source.getName())
+                    .withStyle(ChatFormatting.RED));
         } else {
             target = source.getServer().getProfileCache().get(uuid).map(p -> new TextComponent(p.getName())).orElse(null);
         }
         if (target != null)
-            source.sendMessage(new TranslatableComponent("fateubw.chat.team.demote.user", target)
-                    .withStyle(ChatFormatting.GRAY), Util.NIL_UUID);
+            source.sendMessage(Component.translatable("fateubw.chat.team.demote.user", target)
+                    .withStyle(ChatFormatting.GRAY));
         return true;
     }
 
     protected boolean invite(Player source, UUID uuid) {
         if (!this.isAdmin(source.getUUID())) {
-            source.sendMessage(new TranslatableComponent("fateubw.chat.team.permission.no").withStyle(ChatFormatting.DARK_RED), Util.NIL_UUID);
+            source.sendMessage(Component.translatable("fateubw.chat.team.permission.no").withStyle(ChatFormatting.DARK_RED));
             return false;
         }
         if (source.getServer() == null || this.isMember(uuid))
@@ -208,20 +206,20 @@ public class GrailTeam {
         Component target;
         if (player != null) {
             target = player.getName();
-            player.sendMessage(new TranslatableComponent("fateubw.chat.team.invite.received", this.getName())
-                    .withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
+            player.sendSystemMessage(Component.translatable("fateubw.chat.team.invite.received", this.getName())
+                    .withStyle(ChatFormatting.GREEN));
         } else {
             target = source.getServer().getProfileCache().get(uuid).map(p -> new TextComponent(p.getName())).orElse(null);
         }
         if (target != null)
-            source.sendMessage(new TranslatableComponent("fateubw.chat.team.invite.sent", target)
-                    .withStyle(ChatFormatting.GRAY), Util.NIL_UUID);
+            source.sendMessage(Component.translatable("fateubw.chat.team.invite.sent", target)
+                    .withStyle(ChatFormatting.GRAY));
         return true;
     }
 
     protected boolean removeInvite(Player source, UUID uuid) {
         if (!this.isAdmin(source.getUUID()) && !source.getUUID().equals(uuid)) {
-            source.sendMessage(new TranslatableComponent("fateubw.chat.team.permission.no").withStyle(ChatFormatting.DARK_RED), Util.NIL_UUID);
+            source.sendMessage(Component.translatable("fateubw.chat.team.permission.no").withStyle(ChatFormatting.DARK_RED));
             return false;
         }
         return this.players.remove(uuid, TeamPosition.INVITED);
@@ -229,7 +227,7 @@ public class GrailTeam {
 
     protected boolean addAlly(Player source, GrailTeam team) {
         if (!this.isAdmin(source.getUUID())) {
-            source.sendMessage(new TranslatableComponent("fateubw.chat.team.permission.no").withStyle(ChatFormatting.DARK_RED), Util.NIL_UUID);
+            source.sendMessage(Component.translatable("fateubw.chat.team.permission.no").withStyle(ChatFormatting.DARK_RED));
             return false;
         }
         if (source.getServer() == null)
@@ -246,44 +244,44 @@ public class GrailTeam {
         }
         this.allies.put(team.getId(), TeamStatus.ALLY);
         team.allies.put(this.getId(), TeamStatus.ALLY);
-        this.notifyAdmins(this, source.getServer(), player -> player.sendMessage(new TranslatableComponent("fateubw.chat.team.alliance.start", this.getName(), team.getName()).withStyle(ChatFormatting.GOLD), Util.NIL_UUID));
-        this.notifyAdmins(team, source.getServer(), player -> player.sendMessage(new TranslatableComponent("fateubw.chat.team.alliance.start", this.getName(), team.getName()).withStyle(ChatFormatting.GOLD), Util.NIL_UUID));
+        this.notifyAdmins(this, source.getServer(), player -> player.sendSystemMessage(Component.translatable("fateubw.chat.team.alliance.start", this.getName(), team.getName()).withStyle(ChatFormatting.GOLD)));
+        this.notifyAdmins(team, source.getServer(), player -> player.sendSystemMessage(Component.translatable("fateubw.chat.team.alliance.start", this.getName(), team.getName()).withStyle(ChatFormatting.GOLD)));
         return true;
     }
 
     protected boolean removeAlly(Player source, GrailTeam team) {
         if (!this.isAdmin(source.getUUID())) {
-            source.sendMessage(new TranslatableComponent("fateubw.chat.team.permission.no").withStyle(ChatFormatting.DARK_RED), Util.NIL_UUID);
+            source.sendMessage(Component.translatable("fateubw.chat.team.permission.no").withStyle(ChatFormatting.DARK_RED));
             return false;
         }
         if (source.getServer() == null)
             return false;
         this.allies.remove(team.getId());
         team.allies.remove(this.getId());
-        team.notifyAdmins(this, source.getServer(), player -> player.sendMessage(new TranslatableComponent("fateubw.chat.team.alliance.dissolved.with", source.getName(), team.getName()).withStyle(ChatFormatting.RED), Util.NIL_UUID));
-        source.sendMessage(new TranslatableComponent("fateubw.chat.team.alliance.dissolved", source.getName(), this.getName())
-                .withStyle(ChatFormatting.GRAY), Util.NIL_UUID);
+        team.notifyAdmins(this, source.getServer(), player -> player.sendSystemMessage(Component.translatable("fateubw.chat.team.alliance.dissolved.with", source.getName(), team.getName()).withStyle(ChatFormatting.RED)));
+        source.sendMessage(Component.translatable("fateubw.chat.team.alliance.dissolved", source.getName(), this.getName())
+                .withStyle(ChatFormatting.GRAY));
         return true;
     }
 
     protected boolean requestAlliance(Player source, GrailTeam team) {
         if (!this.isAdmin(source.getUUID())) {
-            source.sendMessage(new TranslatableComponent("fateubw.chat.team.permission.no").withStyle(ChatFormatting.DARK_RED), Util.NIL_UUID);
+            source.sendMessage(Component.translatable("fateubw.chat.team.permission.no").withStyle(ChatFormatting.DARK_RED));
             return false;
         }
         if (source.getServer() == null || this.getAllyStatus(team) != TeamStatus.NONE)
             return false;
         this.allies.put(team.getId(), TeamStatus.OUTGOING_REQUEST);
         team.allies.put(this.getId(), TeamStatus.INCOMING_REQUEST);
-        team.notifyAdmins(team, source.getServer(), player -> player.sendMessage(new TranslatableComponent("fateubw.chat.team.alliance.received", this.getName()).withStyle(ChatFormatting.GREEN), Util.NIL_UUID));
-        source.sendMessage(new TranslatableComponent("fateubw.chat.team.alliance.sent", team.getName())
-                .withStyle(ChatFormatting.GRAY), Util.NIL_UUID);
+        team.notifyAdmins(team, source.getServer(), player -> player.sendSystemMessage(Component.translatable("fateubw.chat.team.alliance.received", this.getName()).withStyle(ChatFormatting.GREEN)));
+        source.sendMessage(Component.translatable("fateubw.chat.team.alliance.sent", team.getName())
+                .withStyle(ChatFormatting.GRAY));
         return true;
     }
 
     protected boolean removeRequest(Player source, GrailTeam team) {
         if (!this.isAdmin(source.getUUID())) {
-            source.sendMessage(new TranslatableComponent("fateubw.chat.team.permission.no").withStyle(ChatFormatting.DARK_RED), Util.NIL_UUID);
+            source.sendMessage(Component.translatable("fateubw.chat.team.permission.no").withStyle(ChatFormatting.DARK_RED));
             return false;
         }
         TeamStatus status = this.getAllyStatus(team);
@@ -296,7 +294,7 @@ public class GrailTeam {
 
     protected boolean denyRequest(Player source, GrailTeam team) {
         if (!this.isAdmin(source.getUUID())) {
-            source.sendMessage(new TranslatableComponent("fateubw.chat.team.permission.no").withStyle(ChatFormatting.DARK_RED), Util.NIL_UUID);
+            source.sendMessage(Component.translatable("fateubw.chat.team.permission.no").withStyle(ChatFormatting.DARK_RED));
             return false;
         }
         if (source.getServer() == null)
@@ -306,8 +304,8 @@ public class GrailTeam {
             return false;
         this.allies.remove(team.getId());
         team.allies.remove(this.getId());
-        this.notifyAdmins(team, source.getServer(), player -> player.sendMessage(new TranslatableComponent("fateubw.chat.team.alliance.denied", this.getName())
-                .withStyle(ChatFormatting.RED), Util.NIL_UUID));
+        this.notifyAdmins(team, source.getServer(), player -> player.sendSystemMessage(Component.translatable("fateubw.chat.team.alliance.denied", this.getName())
+                .withStyle(ChatFormatting.RED)));
         return true;
     }
 

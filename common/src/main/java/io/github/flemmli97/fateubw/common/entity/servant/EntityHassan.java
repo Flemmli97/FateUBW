@@ -6,7 +6,7 @@ import io.github.flemmli97.fateubw.api.datapack.ServantExtraData;
 import io.github.flemmli97.fateubw.common.entity.ai.MoveBehindAttackRunner;
 import io.github.flemmli97.fateubw.common.entity.misc.ThrownItemEntity;
 import io.github.flemmli97.fateubw.common.entity.summons.HassanClone;
-import io.github.flemmli97.fateubw.common.registry.ModItems;
+import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
@@ -146,7 +146,7 @@ public class EntityHassan extends BaseServant {
 
     @Override
     protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.ASSASSIN_DAGGER.get()));
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(FateItems.ASSASSIN_DAGGER.get()));
     }
 
     @Override
@@ -319,7 +319,7 @@ public class EntityHassan extends BaseServant {
             this.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
             weapon = this.mainHandCache;
         }
-        return weapon.isEmpty() ? new ItemStack(ModItems.ASSASSIN_DAGGER.get()) : weapon.copy();
+        return weapon.isEmpty() ? new ItemStack(FateItems.ASSASSIN_DAGGER.get()) : weapon.copy();
     }
 
     @Override

@@ -5,10 +5,10 @@ import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.api.datapack.ServantExtraData;
 import io.github.flemmli97.fateubw.common.entity.servant.ai.LancelotAttackAI;
-import io.github.flemmli97.fateubw.common.items.weapons.ClassSpear;
+import io.github.flemmli97.fateubw.common.items.weapons.SpearItem;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
-import io.github.flemmli97.fateubw.common.registry.ModEntities;
-import io.github.flemmli97.fateubw.common.registry.ModItems;
+import io.github.flemmli97.fateubw.common.registry.FateEntities;
+import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
@@ -194,7 +194,7 @@ public class EntityLancelot extends BaseServant {
             pred = stack -> stack.getItem() instanceof CrossbowItem;
         }
         if (anim.is(EntityLancelot.STAB_1)) {
-            pred = stack -> stack.getItem() instanceof TridentItem || stack.getItem() instanceof ClassSpear
+            pred = stack -> stack.getItem() instanceof TridentItem || stack.getItem() instanceof SpearItem
                     || stack.getItem().getDescriptionId().contains("spear");
         }
         if (pred.test(this.getMainHandItem()))
@@ -224,7 +224,7 @@ public class EntityLancelot extends BaseServant {
         super.actuallyHurt(damageSrc, damageAmount);
         if (!this.canUseNP && !this.isDeadOrDying() && this.getHealth() < 0.5 * this.getMaxHealth()) {
             this.canUseNP = true;
-            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.ARONDIGHT.get()));
+            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(FateItems.ARONDIGHT.get()));
         }
     }
 
@@ -278,7 +278,7 @@ public class EntityLancelot extends BaseServant {
             equipmentSlot = EquipmentSlot.OFFHAND;
         }
         ItemStack current = this.getItemBySlot(equipmentSlot);
-        if (current.getItem() == ModItems.ARONDIGHT.get() && equipmentSlot == EquipmentSlot.MAINHAND)
+        if (current.getItem() == FateItems.ARONDIGHT.get() && equipmentSlot == EquipmentSlot.MAINHAND)
             return false;
         boolean bl = !special;
         int slot = -1;
@@ -339,7 +339,7 @@ public class EntityLancelot extends BaseServant {
 
     protected boolean specialWeapons(ItemStack stack) {
         return LancelotAttackAI.getFor(stack) != null
-                || stack.getItem() instanceof ClassSpear
+                || stack.getItem() instanceof SpearItem
                 || stack.getItem().getDescriptionId().contains("spear")
                 || stack.getItem() instanceof ArrowItem || stack.getItem() instanceof FireworkRocketItem;
     }
@@ -447,7 +447,7 @@ public class EntityLancelot extends BaseServant {
 
     @Override
     public void setItemSlot(EquipmentSlot slot, ItemStack stack) {
-        if (stack.getItem() != ModItems.ARONDIGHT.get())
+        if (stack.getItem() != FateItems.ARONDIGHT.get())
             stack.getOrCreateTag().putBoolean(CORRUPTED_ITEM, true);
         super.setItemSlot(slot, stack);
     }
@@ -486,12 +486,12 @@ public class EntityLancelot extends BaseServant {
 
     @Override
     public String[] specialCommands() {
-        return new String[]{ModEntities.LANCELOT.getID() + ".drop"};
+        return new String[]{FateEntities.LANCELOT.getID() + ".drop"};
     }
 
     @Override
     public void doSpecialCommand(String s) {
-        if (s.equals(ModEntities.LANCELOT.getID() + ".drop")) {
+        if (s.equals(FateEntities.LANCELOT.getID() + ".drop")) {
             this.swapWithInventory(true);
             for (int i = 0; i < this.inventory.getContainerSize(); i++) {
                 this.spawnAtLocation(this.inventory.getItem(i));

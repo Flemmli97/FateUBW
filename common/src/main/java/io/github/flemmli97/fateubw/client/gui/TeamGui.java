@@ -19,7 +19,6 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import org.jetbrains.annotations.Nullable;
@@ -46,7 +45,7 @@ public class TeamGui extends Screen {
     private Button leaveButton;
 
     public TeamGui(GrailTeam.ClientTeamInfo info) {
-        super(new TranslatableComponent("fateubw.gui.team"));
+        super(Component.translatable("fateubw.gui.team"));
         this.update(info, false);
     }
 
@@ -72,14 +71,14 @@ public class TeamGui extends Screen {
                     GrailTeam.ShortTeamInfo team = this.info.team().get();
                     y = this.topPos + 12 + 24;
                     Button invite = this.addRenderableWidget(new Button(x, y, 80, 20,
-                            new TranslatableComponent("fateubw.gui.team.invites"), b -> this.changePage(Pages.INVITES)));
+                            Component.translatable("fateubw.gui.team.invites"), b -> this.changePage(Pages.INVITES)));
                     invite.active = team.admin();
                     y += 24;
                     this.addRenderableWidget(new Button(x, y, 80, 20,
-                            new TranslatableComponent("fateubw.gui.team.allies"), b -> this.changePage(Pages.ALLIES)));
+                            Component.translatable("fateubw.gui.team.allies"), b -> this.changePage(Pages.ALLIES)));
                     y += 24;
                     this.addRenderableWidget(new Button(x, y, 80, 20,
-                            new TranslatableComponent("fateubw.gui.team.members"), b -> this.changePage(Pages.MEMBERS)));
+                            Component.translatable("fateubw.gui.team.members"), b -> this.changePage(Pages.MEMBERS)));
 
                     if (this.admin) {
                         this.box = this.addRenderableWidget(new EditBox(this.font, x, this.topPos + 10, 80, 16,
@@ -88,19 +87,19 @@ public class TeamGui extends Screen {
                     }
 
                     this.leaveButton = this.addRenderableWidget(new Button(this.leftPos + this.sizeX - padding - 80, this.topPos + this.sizeY - padding - 20, 80, 20,
-                            new TranslatableComponent(team.creator().equals(this.minecraft.player.getUUID()) ?
+                            Component.translatable(team.creator().equals(this.minecraft.player.getUUID()) ?
                                     "fateubw.gui.team.disband" : "fateubw.gui.team.leave").withStyle(ChatFormatting.RED),
                             b -> NetworkCalls.INSTANCE.sendToServer(new C2STeamMessage(C2STeamMessage.Type.LEAVE, ""))));
                     this.leaveButton.active = false;
                 } else {
                     this.addRenderableWidget(new Button(this.leftPos + this.sizeX - padding - 80, this.topPos + y, 80, 20,
-                            new TranslatableComponent("fateubw.gui.team.invites"), b -> this.changePage(Pages.INVITES)));
+                            Component.translatable("fateubw.gui.team.invites"), b -> this.changePage(Pages.INVITES)));
                     y = this.topPos + this.sizeY - padding - 20 - 24;
                     this.box = this.addRenderableWidget(new EditBox(this.font, this.leftPos + this.sizeX / 2 - 60, y, 120, 20,
                             new TextComponent("")));
                     y += 24;
                     Button create = this.addRenderableWidget(new Button(this.leftPos + this.sizeX / 2 - 60, y, 120, 20,
-                            new TranslatableComponent("fateubw.gui.team.create"), b -> {
+                            Component.translatable("fateubw.gui.team.create"), b -> {
                         NetworkCalls.INSTANCE.sendToServer(new C2STeamMessage(C2STeamMessage.Type.CREATE, this.box.getValue()));
                         b.active = false;
                     }));
@@ -186,7 +185,7 @@ public class TeamGui extends Screen {
         }
         if (this.page == Pages.MAIN) {
             if (this.info.team().isPresent()) {
-                Component txt = new TranslatableComponent("fateubw.gui.team.name", this.info.team().get().name());
+                Component txt = Component.translatable("fateubw.gui.team.name", this.info.team().get().name());
                 int width = this.font.width(txt);
                 this.font.draw(stack, txt,
                         this.leftPos + this.sizeX / 2 - width / 2, this.topPos + 15, 0);
@@ -194,13 +193,13 @@ public class TeamGui extends Screen {
                     boolean vis = this.box.visible;
                     this.box.visible = true;
                     if (this.box.isMouseOver(mouseX, mouseY)) {
-                        this.renderTooltip(stack, new TranslatableComponent("fateubw.gui.team.rename"), mouseX, mouseY);
+                        this.renderTooltip(stack, Component.translatable("fateubw.gui.team.rename"), mouseX, mouseY);
                     }
                     this.box.visible = vis;
                 }
             } else {
                 int y = 0;
-                for (FormattedCharSequence lines : this.font.split(new TranslatableComponent("fateubw.gui.team.none"), this.sizeX / 2 - 18)) {
+                for (FormattedCharSequence lines : this.font.split(Component.translatable("fateubw.gui.team.none"), this.sizeX / 2 - 18)) {
                     this.font.draw(stack, lines,
                             this.leftPos + 18, this.topPos + 18 + y * 11, 0);
                     y += 1;
@@ -292,9 +291,9 @@ public class TeamGui extends Screen {
     private enum Pages {
 
         MAIN(new ResourceLocation(Fate.MODID, "textures/gui/team_gui_1.png"), null, 220, 160),
-        INVITES(new ResourceLocation(Fate.MODID, "textures/gui/team_gui_2.png"), new TranslatableComponent("fateubw.gui.team.invites"), 220, 206),
-        ALLIES(new ResourceLocation(Fate.MODID, "textures/gui/team_gui_2.png"), new TranslatableComponent("fateubw.gui.team.allies"), 220, 206),
-        MEMBERS(new ResourceLocation(Fate.MODID, "textures/gui/team_gui_2.png"), new TranslatableComponent("fateubw.gui.team.members"), 220, 206);
+        INVITES(new ResourceLocation(Fate.MODID, "textures/gui/team_gui_2.png"), Component.translatable("fateubw.gui.team.invites"), 220, 206),
+        ALLIES(new ResourceLocation(Fate.MODID, "textures/gui/team_gui_2.png"), Component.translatable("fateubw.gui.team.allies"), 220, 206),
+        MEMBERS(new ResourceLocation(Fate.MODID, "textures/gui/team_gui_2.png"), Component.translatable("fateubw.gui.team.members"), 220, 206);
 
         public final ResourceLocation texture;
         public final Component title;

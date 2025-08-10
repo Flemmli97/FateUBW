@@ -1,10 +1,10 @@
 package io.github.flemmli97.fateubw.common.loot.entry;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import io.github.flemmli97.fateubw.common.loot.GrailLootEntry;
 import io.github.flemmli97.fateubw.common.loot.LootCodecs;
 import io.github.flemmli97.fateubw.common.loot.LootSerializerType;
-import io.github.flemmli97.fateubw.common.registry.GrailLootSerializer;
+import io.github.flemmli97.fateubw.common.registry.FateGrailLootSerializer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -16,8 +16,8 @@ import java.util.function.Supplier;
 
 public class VanillaItemEntry extends GrailLootEntry<VanillaItemEntry> {
 
-    public static final Codec<VanillaItemEntry> CODEC = LootCodecs.POOL_ENTRY_CODEC.fieldOf("entry")
-            .xmap(VanillaItemEntry::new, e -> e.lootEntry).codec();
+    public static final MapCodec<VanillaItemEntry> CODEC = LootCodecs.POOL_ENTRY_CODEC.fieldOf("entry")
+            .xmap(VanillaItemEntry::new, e -> e.lootEntry);
 
     private final LootPoolEntryContainer lootEntry;
 
@@ -28,7 +28,7 @@ public class VanillaItemEntry extends GrailLootEntry<VanillaItemEntry> {
 
     @Override
     public Supplier<LootSerializerType<VanillaItemEntry>> getType() {
-        return GrailLootSerializer.VANILLA;
+        return FateGrailLootSerializer.VANILLA;
     }
 
     @Override

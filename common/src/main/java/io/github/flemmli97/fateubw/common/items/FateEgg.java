@@ -1,15 +1,14 @@
 package io.github.flemmli97.fateubw.common.items;
 
-import io.github.flemmli97.fateubw.Fate;
+import io.github.flemmli97.fateubw.common.components.ServantSpawneggData;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.network.S2CSpawnEggScreen;
+import io.github.flemmli97.fateubw.common.registry.FateDataComponents;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
-import io.github.flemmli97.fateubw.platform.NetworkCalls;
 import io.github.flemmli97.tenshilib.common.item.SpawnEgg;
+import io.github.flemmli97.tenshilib.loader.LoaderNetwork;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -26,9 +25,6 @@ import java.util.function.Supplier;
 
 public class FateEgg extends SpawnEgg {
 
-    public static final String MASTER = Fate.MODID + ":Master";
-    public static final String WAR = Fate.MODID + ":JoinWar";
-
     public FateEgg(Supplier<? extends EntityType<? extends BaseServant>> type, int primary, int secondary, Properties props) {
         super(new EntityTypeHolder<>(BaseServant.class, type), primary, secondary, props);
     }
@@ -39,19 +35,25 @@ public class FateEgg extends SpawnEgg {
     }
 
     @Override
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+        super.appendHoverText(stack, context, tooltip, flag);
+        tooltip.add(Component.translatable("fateubw.tooltip.item.spawn").withStyle(ChatFormatting.GOLD));
+    }
+
+    @Override
     public boolean onEntitySpawned(Entity e, ItemStack stack, Player player) {
         if (player instanceof ServerPlayer serverPlayer && e instanceof BaseServant servant) {
-            boolean owned = spawnOwned(stack);
-            if (owned) {
+            ServantSpawneggData data = stack.getOrDefault(FateDataComponents.SERVANT_EGG_DATA.get(), ServantSpawneggData.DEFAULT);
+            if (data.withMaster()) {
                 servant.setOwner(player);
-            }
-            if (owned && joinGrailwar(stack)) {
-                GrailWarHandler track = GrailWarHandler.get(serverPlayer.getLevel().getServer());
-                GrailWarHandler.JoinResult res = track.checkJoining(serverPlayer);
-                if (res != GrailWarHandler.JoinResult.SUCCESS) {
-                    player.sendMessage(new TranslatableComponent(res.translationKey).withStyle(ChatFormatting.RED), Util.NIL_UUID);
-                } else {
-                    track.join(servant);
+                if (data.joinGrailwar()) {
+                    GrailWarHandler track = GrailWarHandler.get(serverPlayer.getServer());
+                    GrailWarHandler.JoinResult res = track.checkJoining(serverPlayer);
+                    if (res != GrailWarHandler.JoinResult.SUCCESS) {
+                        player.sendSystemMessage(Component.translatable(res.translationKey).withStyle(ChatFormatting.RED));
+                    } else {
+                        track.join(servant);
+                    }
                 }
             }
         }
@@ -63,39 +65,9 @@ public class FateEgg extends SpawnEgg {
         InteractionResultHolder<ItemStack> res = super.use(level, player, hand);
         if (res.getResult() == InteractionResult.PASS) {
             if (player instanceof ServerPlayer serverPlayer)
-                NetworkCalls.INSTANCE.sendToClient(new S2CSpawnEggScreen(hand), serverPlayer);
+                LoaderNetwork.INSTANCE.sendToPlayer(new S2CSpawnEggScreen(hand), serverPlayer);
             return InteractionResultHolder.consume(player.getItemInHand(hand));
         }
         return res;
-    }
-
-    @Override
-    public void appendHoverText(ItemStack stack, Level level, List<Component> tooltip, TooltipFlag flag) {
-        tooltip.add(new TranslatableComponent("fateubw.tooltip.item.spawn").withStyle(ChatFormatting.GOLD));
-        super.appendHoverText(stack, level, tooltip, flag);
-    }
-
-    public static boolean spawnOwned(ItemStack stack) {
-        boolean withMaster = false;
-        if (stack.hasTag() && stack.getTag().contains(MASTER)) {
-            withMaster = stack.getTag().getBoolean(MASTER);
-        }
-        return withMaster;
-    }
-
-    public static void withMaster(ItemStack stack, boolean master) {
-        stack.getOrCreateTag().putBoolean(MASTER, master);
-    }
-
-    public static boolean joinGrailwar(ItemStack stack) {
-        boolean joinWar = false;
-        if (stack.hasTag() && stack.getTag().contains(WAR)) {
-            joinWar = stack.getTag().getBoolean(WAR);
-        }
-        return joinWar;
-    }
-
-    public static void setJoinWar(ItemStack stack, boolean join) {
-        stack.getOrCreateTag().putBoolean(WAR, join);
     }
 }

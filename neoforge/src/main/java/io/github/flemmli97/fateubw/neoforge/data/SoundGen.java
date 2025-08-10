@@ -1,7 +1,7 @@
 package io.github.flemmli97.fateubw.neoforge.data;
 
 import io.github.flemmli97.fateubw.Fate;
-import io.github.flemmli97.fateubw.common.registry.ModSounds;
+import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -18,11 +18,11 @@ public class SoundGen extends SoundDefinitionsProvider {
 
     @Override
     public void registerSounds() {
-        this.add(ModSounds.ENTITY_BABYLON_SPAWN.get(), fromEvent(SoundEvents.BEACON_ACTIVATE.getLocation()));
-        this.add(ModSounds.ENTITY_BABYLON_SHOOT.get(), fromEvent(SoundEvents.PLAYER_ATTACK_SWEEP.getLocation()), 7, false);
-        this.add(ModSounds.ENTITY_EXCALIBUR_SHOOT.get(), new ResourceLocation("random/explode"), 4, false);
-        this.add(ModSounds.ENTITY_EA_SHOOT.get(), new ResourceLocation("random/explode"), 4, false);
-        this.add(ModSounds.HERACLES_ROAR.get());
+        this.add(FateSounds.ENTITY_BABYLON_SPAWN.get(), fromEvent(SoundEvents.BEACON_ACTIVATE.getLocation()));
+        this.add(FateSounds.ENTITY_BABYLON_SHOOT.get(), fromEvent(SoundEvents.PLAYER_ATTACK_SWEEP.getLocation()), 7, false);
+        this.add(FateSounds.ENTITY_EXCALIBUR_SHOOT.get(), new ResourceLocation("random/explode"), 4, false);
+        this.add(FateSounds.ENTITY_EA_SHOOT.get(), new ResourceLocation("random/explode"), 4, false);
+        this.add(FateSounds.HERACLES_ROAR.get());
     }
 
     private void add(SoundEvent event) {

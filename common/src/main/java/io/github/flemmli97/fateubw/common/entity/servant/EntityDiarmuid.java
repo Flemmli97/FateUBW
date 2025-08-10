@@ -1,11 +1,10 @@
 package io.github.flemmli97.fateubw.common.entity.servant;
 
-
 import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.common.entity.ai.AnimationRunner;
-import io.github.flemmli97.fateubw.common.items.weapons.ClassSpear;
-import io.github.flemmli97.fateubw.common.registry.ModEffects;
-import io.github.flemmli97.fateubw.common.registry.ModItems;
+import io.github.flemmli97.fateubw.common.items.weapons.SpearItem;
+import io.github.flemmli97.fateubw.common.registry.FateItems;
+import io.github.flemmli97.fateubw.common.registry.FateMobEffects;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.fateubw.common.utils.TeleportUtils;
 import io.github.flemmli97.fateubw.common.utils.Utils;
@@ -115,8 +114,8 @@ public class EntityDiarmuid extends BaseServant {
 
     @Override
     protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.GAEDEARG.get()));
-        this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(ModItems.GAEBUIDHE.get()));
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(FateItems.GAEDEARG.get()));
+        this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(FateItems.GAEBUIDHE.get()));
     }
 
     @Override
@@ -294,12 +293,12 @@ public class EntityDiarmuid extends BaseServant {
             if (leftHandAttack) {
                 if (entity instanceof LivingEntity living) {
                     living.removeEffect(MobEffects.REGENERATION);
-                    MobEffectInstance eff = living.getEffect(ModEffects.GAE_BUIDHE.get());
+                    MobEffectInstance eff = living.getEffect(FateMobEffects.GAE_BUIDHE.get());
                     int amplifier = 0;
                     if (eff != null && this.getRandom().nextFloat() < 1 - (eff.getAmplifier() * 0.2)) {
                         amplifier = Math.min(4, eff.getAmplifier() + 1);
                     }
-                    living.addEffect(new MobEffectInstance(ModEffects.GAE_BUIDHE.get(), 200 + (amplifier * 100), amplifier));
+                    living.addEffect(new MobEffectInstance(FateMobEffects.GAE_BUIDHE.get(), 200 + (amplifier * 100), amplifier));
                 }
             }
             if (rightHandAttack) {
@@ -350,8 +349,8 @@ public class EntityDiarmuid extends BaseServant {
     }
 
     private void unsealWeapon(ItemStack stack, boolean unseal) {
-        if (stack.getItem() == ModItems.GAEBUIDHE.get() || stack.getItem() == ModItems.GAEDEARG.get()) {
-            ClassSpear.applyFoil(stack, !unseal);
+        if (stack.getItem() == FateItems.GAEBUIDHE.get() || stack.getItem() == FateItems.GAEDEARG.get()) {
+            SpearItem.applyFoil(stack, !unseal);
             if (unseal) {
                 this.playSound(SoundEvents.ENCHANTMENT_TABLE_USE, 1, 1);
             }

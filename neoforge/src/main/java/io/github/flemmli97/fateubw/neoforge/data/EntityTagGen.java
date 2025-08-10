@@ -2,14 +2,14 @@ package io.github.flemmli97.fateubw.neoforge.data;
 
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.lib.FateTags;
-import io.github.flemmli97.fateubw.common.registry.ModEntities;
+import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.tenshilib.TenshiLib;
-import io.github.flemmli97.tenshilib.platform.registry.RegistryEntrySupplier;
+import io.github.flemmli97.tenshilib.loader.registry.RegistryEntrySupplier;
 import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.world.entity.EntityType;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 
 public class EntityTagGen extends TagsProvider<EntityType<?>> {
@@ -21,18 +21,18 @@ public class EntityTagGen extends TagsProvider<EntityType<?>> {
 
     @Override
     protected void addTags() {
-        for (RegistryEntrySupplier<EntityType<?>> type : ModEntities.getServants()) {
+        for (RegistryEntrySupplier<EntityType<?>, EntityType<?>> type : FateEntities.getServants()) {
             this.tag(FateTags.SERVANT).add(type.get());
         }
         this.tag(FateTags.STRONG_MOB)
                 .addTag(FateTags.SERVANT)
-                .add(ModEntities.LESSER_MONSTER.get())
-                .add(ModEntities.GORDIUS_WHEEL.get())
-                .add(ModEntities.PEGASUS.get())
-                .add(ModEntities.HASSAN_COPY.get());
+                .add(FateEntities.LESSER_MONSTER.get())
+                .add(FateEntities.GORDIUS_WHEEL.get())
+                .add(FateEntities.PEGASUS.get())
+                .add(FateEntities.HASSAN_COPY.get());
 
         this.tag(TenshiLib.MULTIPART_ENTITY)
-                .add(ModEntities.MULTIPART.get());
+                .add(FateEntities.MULTIPART.get());
     }
 
     @Override

@@ -5,7 +5,7 @@ import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.common.entity.SwitchableWeapon;
 import io.github.flemmli97.fateubw.common.entity.misc.BabylonWeapon;
 import io.github.flemmli97.fateubw.common.entity.misc.EnumaElish;
-import io.github.flemmli97.fateubw.common.registry.ModItems;
+import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.fateubw.platform.Platform;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
@@ -141,7 +141,7 @@ public class EntityGilgamesh extends BaseServant {
                 return false;
             });
 
-    public final SwitchableWeapon<EntityGilgamesh> switchableWeapon = new SwitchableWeapon<>(this, new ItemStack(ModItems.ENUMAELISH.get()), ItemStack.EMPTY);
+    public final SwitchableWeapon<EntityGilgamesh> switchableWeapon = new SwitchableWeapon<>(this, new ItemStack(FateItems.ENUMAELISH.get()), ItemStack.EMPTY);
 
     public EntityGilgamesh(EntityType<? extends EntityGilgamesh> entityType, Level level) {
         super(entityType, level);
@@ -232,7 +232,7 @@ public class EntityGilgamesh extends BaseServant {
         super.actuallyHurt(damageSrc, damageAmount);
         if (!this.canUseNP && !this.isDeadOrDying() && this.getHealth() < 0.5 * this.getMaxHealth()) {
             this.canUseNP = true;
-            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.ENUMAELISH.get()));
+            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(FateItems.ENUMAELISH.get()));
         }
     }
 
@@ -286,7 +286,7 @@ public class EntityGilgamesh extends BaseServant {
     }
 
     protected boolean useRanged() {
-        return this.getMainHandItem().getItem() != ModItems.ENUMAELISH.get();
+        return this.getMainHandItem().getItem() != FateItems.ENUMAELISH.get();
     }
 
     @Override

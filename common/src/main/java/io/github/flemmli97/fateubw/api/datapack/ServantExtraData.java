@@ -43,7 +43,7 @@ public class ServantExtraData {
                                     .flatMap(id -> {
                                         DataType<?> type = REGISTRY.get(id);
                                         if (type == null)
-                                            return DataResult.error("No such type " + id);
+                                            return DataResult.error(() -> "No such type " + id);
                                         DataResult<?> value = type.codec.parse(ops, pair.getSecond());
                                         return value.map(v -> {
                                             values.put(type, v);
@@ -54,7 +54,7 @@ public class ServantExtraData {
                         });
                         ServantExtraData extraData = new ServantExtraData(values.build());
                         if (!errors.isEmpty()) {
-                            return DataResult.error("Error during parsing: " + String.join("\n", errors), extraData);
+                            return DataResult.error(() -> "Error during parsing: " + String.join("\n", errors), extraData);
                         }
                         return DataResult.success(extraData);
                     }).map(r -> Pair.of(r, input));
@@ -71,7 +71,7 @@ public class ServantExtraData {
     };
 
     public static synchronized <T> DataType<T> register(String namespace, String path, Codec<T> codec, T defaultValue) {
-        DataType<T> type = new DataType<>(new ResourceLocation(namespace, path), codec, defaultValue);
+        DataType<T> type = new DataType<>(ResourceLocation.fromNamespaceAndPath(namespace, path), codec, defaultValue);
         if (REGISTRY.put(type.id(), type) != null) {
             throw new IllegalStateException("Type with " + type.id() + " already registered");
         }
@@ -103,7 +103,7 @@ public class ServantExtraData {
     public record DataType<T>(ResourceLocation id, Codec<T> codec, T defaultValue) {
 
         public DataType(String namespace, String path, Codec<T> codec, T defaultValue) {
-            this(new ResourceLocation(namespace, path), codec, defaultValue);
+            this(ResourceLocation.fromNamespaceAndPath(namespace, path), codec, defaultValue);
         }
 
         @Override

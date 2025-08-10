@@ -3,11 +3,11 @@ package io.github.flemmli97.fateubw.neoforge.data;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.github.flemmli97.fateubw.Fate;
-import io.github.flemmli97.fateubw.common.registry.ModAttributes;
-import io.github.flemmli97.fateubw.common.registry.ModBlocks;
-import io.github.flemmli97.fateubw.common.registry.ModEffects;
-import io.github.flemmli97.fateubw.common.registry.ModEntities;
-import io.github.flemmli97.fateubw.common.registry.ModItems;
+import io.github.flemmli97.fateubw.common.registry.FateAttributes;
+import io.github.flemmli97.fateubw.common.registry.FateBlocks;
+import io.github.flemmli97.fateubw.common.registry.FateEntities;
+import io.github.flemmli97.fateubw.common.registry.FateItems;
+import io.github.flemmli97.fateubw.common.registry.FateMobEffects;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import io.github.flemmli97.tenshilib.common.item.SpawnEgg;
@@ -57,82 +57,82 @@ public class Lang implements DataProvider {
     }
 
     protected void addTranslations() {
-        for (RegistryEntrySupplier<Item> reg : ModItems.ITEMS.getEntries()) {
+        for (RegistryEntrySupplier<Item> reg : FateItems.ITEMS.getEntries()) {
             if (reg.get() instanceof SpawnEgg || reg.getID().getPath().startsWith("gem") || reg.getID().getPath().startsWith("artifact"))
                 continue;
-            if (reg == ModItems.ENUMAELISH)
+            if (reg == FateItems.ENUMAELISH)
                 this.add(reg.get(), "EA");
             else
                 this.add(reg.get(), this.simpleOfRegName(reg.getID()));
         }
 
-        this.add(ModItems.CRYSTAL_RED.get(), "Red Gem Shard");
-        this.add(ModItems.CRYSTAL_BLUE.get(), "Blue Gem Shard");
-        this.add(ModItems.CRYSTAL_YELLOW.get(), "Green Gem Shard");
-        this.add(ModItems.CRYSTAL_GREEN.get(), "Yellow Gem Shard");
-        this.add(ModItems.CRYSTAL_BLACK.get(), "Black Gem Shard");
-        this.add(ModItems.CHARM_NONE.get(), "Artifact");
-        this.add(ModItems.CHARM_SABER.get(), "Artifact (Saber)");
-        this.add(ModItems.CHARM_ARCHER.get(), "Artifact (Archer)");
-        this.add(ModItems.CHARM_LANCER.get(), "Artifact (Lancer)");
-        this.add(ModItems.CHARM_BERSERKER.get(), "Artifact (Berserker)");
-        this.add(ModItems.CHARM_ASSASSIN.get(), "Artifact (Assassin)");
-        this.add(ModItems.CHARM_CASTER.get(), "Artifact (Caster)");
-        this.add(ModItems.CHARM_RIDER.get(), "Artifact (Rider)");
+        this.add(FateItems.CRYSTAL_RED.get(), "Red Gem Shard");
+        this.add(FateItems.CRYSTAL_BLUE.get(), "Blue Gem Shard");
+        this.add(FateItems.CRYSTAL_YELLOW.get(), "Green Gem Shard");
+        this.add(FateItems.CRYSTAL_GREEN.get(), "Yellow Gem Shard");
+        this.add(FateItems.CRYSTAL_BLACK.get(), "Black Gem Shard");
+        this.add(FateItems.CHARM_NONE.get(), "Artifact");
+        this.add(FateItems.CHARM_SABER.get(), "Artifact (Saber)");
+        this.add(FateItems.CHARM_ARCHER.get(), "Artifact (Archer)");
+        this.add(FateItems.CHARM_LANCER.get(), "Artifact (Lancer)");
+        this.add(FateItems.CHARM_BERSERKER.get(), "Artifact (Berserker)");
+        this.add(FateItems.CHARM_ASSASSIN.get(), "Artifact (Assassin)");
+        this.add(FateItems.CHARM_CASTER.get(), "Artifact (Caster)");
+        this.add(FateItems.CHARM_RIDER.get(), "Artifact (Rider)");
 
-        for (RegistryEntrySupplier<EntityType<?>> type : ModEntities.ENTITIES.getEntries()) {
+        for (RegistryEntrySupplier<EntityType<?>> type : FateEntities.ENTITIES.getEntries()) {
             SpawnEgg.fromType(type.get()).ifPresent(egg -> this.add(egg, "%s" + " Spawn Egg"));
         }
 
-        for (RegistryEntrySupplier<Block> type : ModBlocks.BLOCKS.getEntries()) {
+        for (RegistryEntrySupplier<Block> type : FateBlocks.BLOCKS.getEntries()) {
             this.add(type.get(), this.simpleOfRegName(type.getID()));
         }
 
-        this.add(ModEntities.ARTHUR.get(), "King Arthur");
-        this.add(ModEntities.ARTHUR.getID() + ".hogou", "Excalibur");
-        this.add(ModEntities.CUCHULAINN.get(), "Cuchulainn");
-        this.add(ModEntities.CUCHULAINN.getID() + ".hogou", "Gae Bolg");
-        this.add(ModEntities.DIARMUID.get(), "Diarmuid ua Duibhne");
-        this.add(ModEntities.DIARMUID.getID() + ".hogou", "Gae Dearg/Buidhe");
-        this.add(ModEntities.EMIYA.get(), "Archer Emiya");
-        this.add(ModEntities.EMIYA.getID() + ".hogou", "Caladbolg");
-        this.add(ModEntities.GILGAMESH.get(), "King Gilgamesh");
-        this.add(ModEntities.GILGAMESH.getID() + ".hogou", "Gate of Babylon");
-        this.add(ModEntities.MEDEA.get(), "Medea");
-        this.add(ModEntities.MEDEA.getID() + ".hogou", "Rule Breaker");
-        this.add(ModEntities.MEDEA.getID() + ".circle", "Magic Circle");
-        this.add(ModEntities.GILLES.get(), "Gilles de Rais");
-        this.add(ModEntities.GILLES.getID() + ".hogou", "Prelati's Spellbook");
-        this.add(ModEntities.HERACLES.get(), "Heracles");
-        this.add(ModEntities.HERACLES.getID() + ".hogou", "God Hand");
-        this.add(ModEntities.LANCELOT.get(), "Sir Lancelot");
-        this.add(ModEntities.LANCELOT.getID() + ".hogou", "Knight of Owner");
-        this.add(ModEntities.LANCELOT.getID() + ".drop", "Drop Inventory");
-        this.add(ModEntities.ISKANDER.get(), "Alexander the Great");
-        this.add(ModEntities.ISKANDER.getID() + ".hogou", "Gordius Bulls");
-        this.add(ModEntities.MEDUSA.get(), "Medusa");
-        this.add(ModEntities.MEDUSA.getID() + ".hogou", "Bellerophon");
-        this.add(ModEntities.HASSAN.get(), "Hassan-i-Sabbah");
-        this.add(ModEntities.HASSAN.getID() + ".hogou", "Delusional Illusion");
-        this.add(ModEntities.SASAKI.get(), "Sasaki Kojiro");
-        this.add(ModEntities.SASAKI.getID() + ".hogou", "Tsubame Gaeshi");
+        this.add(FateEntities.ARTHUR.get(), "King Arthur");
+        this.add(FateEntities.ARTHUR.getID() + ".hogou", "Excalibur");
+        this.add(FateEntities.CUCHULAINN.get(), "Cuchulainn");
+        this.add(FateEntities.CUCHULAINN.getID() + ".hogou", "Gae Bolg");
+        this.add(FateEntities.DIARMUID.get(), "Diarmuid ua Duibhne");
+        this.add(FateEntities.DIARMUID.getID() + ".hogou", "Gae Dearg/Buidhe");
+        this.add(FateEntities.EMIYA.get(), "Archer Emiya");
+        this.add(FateEntities.EMIYA.getID() + ".hogou", "Caladbolg");
+        this.add(FateEntities.GILGAMESH.get(), "King Gilgamesh");
+        this.add(FateEntities.GILGAMESH.getID() + ".hogou", "Gate of Babylon");
+        this.add(FateEntities.MEDEA.get(), "Medea");
+        this.add(FateEntities.MEDEA.getID() + ".hogou", "Rule Breaker");
+        this.add(FateEntities.MEDEA.getID() + ".circle", "Magic Circle");
+        this.add(FateEntities.GILLES.get(), "Gilles de Rais");
+        this.add(FateEntities.GILLES.getID() + ".hogou", "Prelati's Spellbook");
+        this.add(FateEntities.HERACLES.get(), "Heracles");
+        this.add(FateEntities.HERACLES.getID() + ".hogou", "God Hand");
+        this.add(FateEntities.LANCELOT.get(), "Sir Lancelot");
+        this.add(FateEntities.LANCELOT.getID() + ".hogou", "Knight of Owner");
+        this.add(FateEntities.LANCELOT.getID() + ".drop", "Drop Inventory");
+        this.add(FateEntities.ISKANDER.get(), "Alexander the Great");
+        this.add(FateEntities.ISKANDER.getID() + ".hogou", "Gordius Bulls");
+        this.add(FateEntities.MEDUSA.get(), "Medusa");
+        this.add(FateEntities.MEDUSA.getID() + ".hogou", "Bellerophon");
+        this.add(FateEntities.HASSAN.get(), "Hassan-i-Sabbah");
+        this.add(FateEntities.HASSAN.getID() + ".hogou", "Delusional Illusion");
+        this.add(FateEntities.SASAKI.get(), "Sasaki Kojiro");
+        this.add(FateEntities.SASAKI.getID() + ".hogou", "Tsubame Gaeshi");
 
-        this.add(ModEntities.LESSER_MONSTER.get(), "Monster");
-        this.add(ModEntities.GORDIUS_WHEEL.get(), "Gordius Wheel");
-        this.add(ModEntities.HASSAN_COPY.get(), "Hassan-i-Sabbah");
-        this.add(ModEntities.PEGASUS.get(), "Pegasus");
+        this.add(FateEntities.LESSER_MONSTER.get(), "Monster");
+        this.add(FateEntities.GORDIUS_WHEEL.get(), "Gordius Wheel");
+        this.add(FateEntities.HASSAN_COPY.get(), "Hassan-i-Sabbah");
+        this.add(FateEntities.PEGASUS.get(), "Pegasus");
 
-        for (RegistryEntrySupplier<EntityType<?>> reg : ModEntities.ENTITIES.getEntries()) {
+        for (RegistryEntrySupplier<EntityType<?>> reg : FateEntities.ENTITIES.getEntries()) {
             if (!this.data.containsKey(reg.get().getDescriptionId())) {
                 this.add(reg.get(), this.simpleOfRegName(reg.getID()));
             }
         }
 
-        for (RegistryEntrySupplier<Attribute> reg : ModAttributes.ATTRIBUTES.getEntries()) {
+        for (RegistryEntrySupplier<Attribute> reg : FateAttributes.ATTRIBUTES.getEntries()) {
             this.add(reg.get().getDescriptionId(), this.simpleOfRegName(reg.getID()));
         }
 
-        for (RegistryEntrySupplier<MobEffect> reg : ModEffects.EFFECTS.getEntries()) {
+        for (RegistryEntrySupplier<MobEffect> reg : FateMobEffects.EFFECTS.getEntries()) {
             this.add(reg.get().getDescriptionId(), this.simpleOfRegName(reg.getID()));
         }
 
@@ -291,10 +291,10 @@ public class Lang implements DataProvider {
                 "During a grailwar enemy servants without players might also spawn. Defeating every servant and being the last one standing will grant the player the holy grail rewarding the player with various loot.");
         this.add("fateubw.patchouli.entry.ores", "Ores");
 
-        this.add("fateubw.patchouli.entry.ores." + ModBlocks.GEM_ORE.getID().getPath(), "These ores pulse faintly with residual mana. When mined, it yields small pieces of mana shards. " +
+        this.add("fateubw.patchouli.entry.ores." + FateBlocks.GEM_ORE.getID().getPath(), "These ores pulse faintly with residual mana. When mined, it yields small pieces of mana shards. " +
                 "Combining the different types of shards and a bit of mana one can create a larger and stronger mana crystal. " +
                 "The created gem itself explodes violently when hurled as a projectile but its true purpose lies in the summoning ritual.");
-        this.add("fateubw.patchouli.entry.ores." + ModBlocks.ARTIFACT_ORE.getID().getPath(), "Deeper still lies the much rarer Artifact Ore. These stones will yield forgotten relics of specific servant classes. " +
+        this.add("fateubw.patchouli.entry.ores." + FateBlocks.ARTIFACT_ORE.getID().getPath(), "Deeper still lies the much rarer Artifact Ore. These stones will yield forgotten relics of specific servant classes. " +
                 "These artifacts can be used during a summoning ritual to increasing the chance that a Servant of matching class will heed your call.");
         this.add("fateubw.patchouli.entry.altar", "Summoning Altar");
         this.add("fateubw.patchouli.entry.altar.1", "At the heart of all Grail rituals lies the Summoning Altar—a carefully constructed array designed to bridge the gap between the mortal world and the Throne of Heroes. ");

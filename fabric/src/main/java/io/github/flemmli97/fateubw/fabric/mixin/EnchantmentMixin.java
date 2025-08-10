@@ -1,6 +1,6 @@
 package io.github.flemmli97.fateubw.fabric.mixin;
 
-import io.github.flemmli97.fateubw.common.items.weapons.ClassSpear;
+import io.github.flemmli97.fateubw.common.items.weapons.SpearItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
@@ -15,7 +15,7 @@ public abstract class EnchantmentMixin {
     @Inject(method = "canEnchant", at = @At("HEAD"), cancellable = true)
     private void enchantTest(ItemStack stack, CallbackInfoReturnable<Boolean> info) {
         EnchantmentCategory cat = ((Enchantment) (Object) this).category;
-        if ((cat == EnchantmentCategory.WEAPON || cat == EnchantmentCategory.TRIDENT) && stack.getItem() instanceof ClassSpear) {
+        if ((cat == EnchantmentCategory.WEAPON || cat == EnchantmentCategory.TRIDENT) && stack.getItem() instanceof SpearItem) {
             info.setReturnValue(true);
             info.cancel();
         }

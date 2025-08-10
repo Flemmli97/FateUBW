@@ -1,8 +1,8 @@
 package io.github.flemmli97.fateubw.common.config;
 
 import com.google.common.collect.Lists;
-import io.github.flemmli97.fateubw.common.registry.ModEntities;
-import io.github.flemmli97.fateubw.common.registry.ModItems;
+import io.github.flemmli97.fateubw.common.registry.FateEntities;
+import io.github.flemmli97.fateubw.common.registry.FateItems;
 import net.minecraft.world.effect.MobEffects;
 
 import java.util.List;
@@ -21,7 +21,7 @@ public class CommonConfig {
     public static int servantMaxSpawnDelay = 6000;
 
     public static boolean punishTeleport = true;
-    public static List<String> notifyBlacklist = Lists.newArrayList(ModEntities.HASSAN.getID().toString());
+    public static List<String> notifyBlacklist = Lists.newArrayList(FateEntities.HASSAN.getID().toString());
     public static boolean notificationWhitelist;
     public static boolean notifyAll = true;
     public static PotionEffectsConfig npBoostEffect = new PotionEffectsConfig(
@@ -33,7 +33,7 @@ public class CommonConfig {
 
     // Misc
     public static float babylonScale = 1.5f;
-    public static WeaponList babylonWeapons = new WeaponList(ModItems.ENUMAELISH.getID().toString());
+    public static WeaponList babylonWeapons = new WeaponList(FateItems.ENUMAELISH.getID().toString());
     public static float eaDamage = 50;
     public static float excaliburDamage = 35;
     public static float caladBolgDmg = 30;

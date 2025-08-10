@@ -4,14 +4,27 @@ import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.client.ClientHandler;
 import io.github.flemmli97.fateubw.common.world.GrailTeam;
 import io.github.flemmli97.fateubw.common.world.TeamHandler;
-import io.github.flemmli97.fateubw.platform.NetworkCalls;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import io.github.flemmli97.tenshilib.loader.LoaderNetwork;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 
-public class S2CTeamGuiData implements Packet {
+public class S2CTeamGuiData implements CustomPacketPayload {
 
-    public static final ResourceLocation ID = new ResourceLocation(Fate.MODID, "s2c_team_gui");
+    public static final CustomPacketPayload.Type<S2CTeamGuiData> TYPE = new CustomPacketPayload.Type<>(Fate.modRes("s2c_team_gui"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, S2CTeamGuiData> STREAM_CODEC = new StreamCodec<>() {
+        @Override
+        public S2CTeamGuiData decode(RegistryFriendlyByteBuf buf) {
+            return new S2CTeamGuiData(buf.readBoolean(), GrailTeam.ClientTeamInfo.read(buf));
+        }
+
+        @Override
+        public void encode(RegistryFriendlyByteBuf buf, S2CTeamGuiData pkt) {
+            buf.writeBoolean(pkt.open);
+            pkt.info.write(buf);
+        }
+    };
 
     private final boolean open;
     private final GrailTeam.ClientTeamInfo info;
@@ -29,11 +42,7 @@ public class S2CTeamGuiData implements Packet {
     }
 
     public static void sendTeamData(ServerPlayer player, boolean open) {
-        NetworkCalls.INSTANCE.sendToClient(new S2CTeamGuiData(player, open), player);
-    }
-
-    public static S2CTeamGuiData read(FriendlyByteBuf buf) {
-        return new S2CTeamGuiData(buf.readBoolean(), GrailTeam.ClientTeamInfo.read(buf));
+        LoaderNetwork.INSTANCE.sendToPlayer(new S2CTeamGuiData(player, open), player);
     }
 
     public static void handle(S2CTeamGuiData pkt) {
@@ -41,13 +50,7 @@ public class S2CTeamGuiData implements Packet {
     }
 
     @Override
-    public void write(FriendlyByteBuf buf) {
-        buf.writeBoolean(this.open);
-        this.info.write(buf);
-    }
-
-    @Override
-    public ResourceLocation getID() {
-        return ID;
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

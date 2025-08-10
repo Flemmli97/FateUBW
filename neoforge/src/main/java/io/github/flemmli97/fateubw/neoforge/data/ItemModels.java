@@ -2,8 +2,8 @@ package io.github.flemmli97.fateubw.neoforge.data;
 
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.client.ItemModelProps;
-import io.github.flemmli97.fateubw.common.items.weapons.ClassSpear;
-import io.github.flemmli97.fateubw.common.registry.ModItems;
+import io.github.flemmli97.fateubw.common.items.weapons.SpearItem;
+import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.tenshilib.common.item.SpawnEgg;
 import io.github.flemmli97.tenshilib.platform.registry.RegistryEntrySupplier;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -26,10 +26,10 @@ public class ItemModels extends ItemModelProvider {
     @Override
     protected void registerModels() {
         int sealid = 1;
-        for (RegistryEntrySupplier<Item> reg : ModItems.ITEMS.getEntries()) {
-            if (reg == ModItems.ENUMAELISH || reg == ModItems.HERACLES_AXE)
+        for (RegistryEntrySupplier<Item> reg : FateItems.ITEMS.getEntries()) {
+            if (reg == FateItems.ENUMAELISH || reg == FateItems.HERACLES_AXE)
                 continue;
-            if (reg == ModItems.MEDUSA_DAGGER) {
+            if (reg == FateItems.MEDUSA_DAGGER) {
                 this.withExistingParent(reg.getID().getPath(), ModelLocationUtils.decorateItemModelLocation("handheld"))
                         .texture("layer0", this.itemTexture(reg.getID()))
                         .override().predicate(ItemModelProps.THROWN_DAGGER_ID, 0)
@@ -50,7 +50,7 @@ public class ItemModels extends ItemModelProvider {
                                 .scale(0.68f, 0.68f, 0.68f)
                                 .end()
                                 .end());
-            } else if (reg == ModItems.ARCHBOW) {
+            } else if (reg == FateItems.ARCHBOW) {
                 this.withExistingParent(reg.getID().getPath(), ModelLocationUtils.decorateItemModelLocation("generated"))
                         .texture("layer0", "fateubw:items/emiyas_bow")
                         .override().predicate(ItemModelProps.BOW_PULL_ID, 0.05f)
@@ -97,35 +97,35 @@ public class ItemModels extends ItemModelProvider {
                         .translation(1.13f, 3.2f, 1.13f)
                         .scale(0.68f, 0.68f, 0.68f)
                         .end();
-            } else if (reg == ModItems.GAEBOLG || reg == ModItems.GAEBUIDHE
-                    || reg == ModItems.GAEDEARG) {
+            } else if (reg == FateItems.GAEBOLG || reg == FateItems.GAEBUIDHE
+                    || reg == FateItems.GAEDEARG) {
                 this.withExistingParent(reg.getID().getPath(), new ResourceLocation(Fate.MODID, "item/spear_item"))
                         .texture("layer0", this.itemTexture(reg.getID()));
-            } else if (reg == ModItems.ARONDIGHT || reg == ModItems.MONOHOSHI_ZAO || reg == ModItems.STAFF) {
+            } else if (reg == FateItems.ARONDIGHT || reg == FateItems.MONOHOSHI_ZAO || reg == FateItems.STAFF) {
                 this.withExistingParent(reg.getID().getPath(), new ResourceLocation(Fate.MODID, "item/32x32_weapon"))
                         .texture("layer0", this.itemTexture(reg.getID()));
             } else if (reg.get() instanceof SpawnEgg)
                 this.withExistingParent(reg.getID().getPath(), ModelLocationUtils.decorateItemModelLocation("template_spawn_egg"));
-            else if (reg == ModItems.INVISEXCALIBUR) {
+            else if (reg == FateItems.INVISEXCALIBUR) {
                 this.withExistingParent(reg.getID().getPath(), new ResourceLocation(Fate.MODID, "item/32x32_weapon"))
                         .texture("layer0", this.itemTexture(reg.getID()));
-            } else if (reg == ModItems.EXCALIBUR) {
+            } else if (reg == FateItems.EXCALIBUR) {
                 this.withExistingParent(reg.getID().getPath(), new ResourceLocation(Fate.MODID, "item/32x32_weapon"))
                         .texture("layer0", "fateubw:items/excalibur")
                         .override().predicate(ItemModelProps.ACTIVE_ID, 1).model(this.getExistingFile(new ResourceLocation(Fate.MODID, "excalibur_active")));
             } else if (reg.get() instanceof BlockItem blockItem) {
                 this.getBuilder(reg.getID().getPath()).parent(new ModelFile.UncheckedModelFile(new ResourceLocation(blockItem.getBlock().getRegistryName().getNamespace(), "block/" + blockItem.getBlock().getRegistryName().getPath())));
-            } else if (reg.get() instanceof SwordItem || reg.get() instanceof ClassSpear) {
+            } else if (reg.get() instanceof SwordItem || reg.get() instanceof SpearItem) {
                 this.withExistingParent(reg.getID().getPath(), ModelLocationUtils.decorateItemModelLocation("handheld"))
                         .texture("layer0", this.itemTexture(reg.getID()));
-            } else if (reg == ModItems.ICON_0 || reg == ModItems.ICON_1 || reg == ModItems.ICON_2 || reg == ModItems.ICON_3) {
+            } else if (reg == FateItems.ICON_0 || reg == FateItems.ICON_1 || reg == FateItems.ICON_2 || reg == FateItems.ICON_3) {
                 this.withExistingParent(reg.getID().getPath(), ModelLocationUtils.decorateItemModelLocation("generated"))
                         .texture("layer0", new ResourceLocation(reg.getID().getNamespace(), "gui/command_seal_" + sealid));
                 sealid++;
-            } else if (reg == ModItems.CRYSTAL_RED || reg == ModItems.CRYSTAL_YELLOW || reg == ModItems.CRYSTAL_BLACK || reg == ModItems.CRYSTAL_BLUE || reg == ModItems.CRYSTAL_GREEN) {
+            } else if (reg == FateItems.CRYSTAL_RED || reg == FateItems.CRYSTAL_YELLOW || reg == FateItems.CRYSTAL_BLACK || reg == FateItems.CRYSTAL_BLUE || reg == FateItems.CRYSTAL_GREEN) {
                 this.withExistingParent(reg.getID().getPath(), new ResourceLocation(Fate.MODID, "item/gem_shard"))
                         .texture("layer0", this.itemTexture(reg.getID()));
-            } else if (reg == ModItems.ANIMATION_DEBUG) {
+            } else if (reg == FateItems.ANIMATION_DEBUG) {
                 this.singleTexture(reg.getID().getPath(), this.mcLoc("item/generated"), "layer0", new ResourceLocation("item/stick"));
             } else {
                 this.withExistingParent(reg.getID().getPath(), ModelLocationUtils.decorateItemModelLocation("generated"))

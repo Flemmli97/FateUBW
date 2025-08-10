@@ -11,18 +11,16 @@ import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.loot.GrailLootTable;
 import io.github.flemmli97.fateubw.common.loot.entry.AttributeEntry;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
+import io.github.flemmli97.fateubw.mixin.AttributeMapAccessor;
 import io.github.flemmli97.fateubw.platform.Platform;
-import io.github.flemmli97.tenshilib.platform.PlatformUtils;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 
 import java.util.Collection;
 
@@ -53,10 +51,10 @@ public class CommandHandler {
 
     private static int startWar(CommandContext<CommandSourceStack> ctx) {
         if (!GrailWarHandler.get(ctx.getSource().getServer()).forceStartGrailWar()) {
-            ctx.getSource().sendFailure(new TranslatableComponent("fateubw.command.war.start.fail"));
+            ctx.getSource().sendFailure(Component.translatable("fateubw.command.war.start.fail"));
             return 0;
         }
-        ctx.getSource().sendSuccess(new TranslatableComponent("fateubw.command.war.start"), false);
+        ctx.getSource().sendSuccess(() -> Component.translatable("fateubw.command.war.start"), false);
         return Command.SINGLE_SUCCESS;
     }
 
@@ -70,27 +68,23 @@ public class CommandHandler {
         ResourceLocation id = ResourceLocationArgument.getId(ctx, "id");
         GrailLootTable loot = DatapackHandler.getLootTable(id).orElse(null);
         if (loot == null) {
-            ctx.getSource().sendSuccess(new TranslatableComponent("fateubw.command.loot.none", id.toString()), false);
+            ctx.getSource().sendSuccess(() -> Component.translatable("fateubw.command.loot.none", id.toString()), false);
             return 0;
         }
         players.forEach(loot::give);
         if (players.size() == 1) {
-            ctx.getSource().sendSuccess(new TranslatableComponent("fateubw.command.loot.give.single", players.iterator().next().getDisplayName(), id.toString()), false);
+            ctx.getSource().sendSuccess(() -> Component.translatable("fateubw.command.loot.give.single", players.iterator().next().getDisplayName(), id.toString()), false);
         } else {
-            ctx.getSource().sendSuccess(new TranslatableComponent("fateubw.command.loot.give", players.iterator().next().getDisplayName(), id.toString()), false);
+            ctx.getSource().sendSuccess(() -> Component.translatable("fateubw.command.loot.give", players.iterator().next().getDisplayName(), id.toString()), false);
         }
         return Command.SINGLE_SUCCESS;
     }
 
     private static int resetAttributes(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         Collection<ServerPlayer> players = EntityArgument.getPlayers(ctx, "players");
-        Collection<Attribute> attributes = PlatformUtils.INSTANCE.attributes().values();
-        players.forEach(player -> attributes.forEach(att -> {
-            AttributeInstance inst = player.getAttribute(att);
-            if (inst != null)
-                inst.removeModifier(AttributeEntry.ATTRIBUTE_UUID);
-        }));
-        ctx.getSource().sendSuccess(new TranslatableComponent("fateubw.command.attributes.reset", players), false);
+        players.forEach(player -> ((AttributeMapAccessor) player.getAttributes()).getAttributes()
+                .forEach((att, inst) -> inst.removeModifier(AttributeEntry.ATTRIBUTE_UUID)));
+        ctx.getSource().sendSuccess(() -> Component.translatable("fateubw.command.attributes.reset", players), false);
         return Command.SINGLE_SUCCESS;
     }
 
@@ -107,11 +101,11 @@ public class CommandHandler {
         }));
         switch (mode) {
             case SET ->
-                    ctx.getSource().sendSuccess(new TranslatableComponent("fateubw.command.spells.set", players, amount), false);
+                    ctx.getSource().sendSuccess(() -> Component.translatable("fateubw.command.spells.set", players, amount), false);
             case TAKE ->
-                    ctx.getSource().sendSuccess(new TranslatableComponent("fateubw.command.spells.take", players, amount), false);
+                    ctx.getSource().sendSuccess(() -> Component.translatable("fateubw.command.spells.take", players, amount), false);
             case ADD ->
-                    ctx.getSource().sendSuccess(new TranslatableComponent("fateubw.command.spells.add", players, amount), false);
+                    ctx.getSource().sendSuccess(() -> Component.translatable("fateubw.command.spells.add", players, amount), false);
         }
         return players.size();
     }

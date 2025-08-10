@@ -1,16 +1,27 @@
 package io.github.flemmli97.fateubw.common.network;
 
 import io.github.flemmli97.fateubw.Fate;
-import io.github.flemmli97.fateubw.client.ClientHandler;
 import io.github.flemmli97.fateubw.common.attachment.PlayerData;
 import io.github.flemmli97.fateubw.platform.Platform;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
 
-public class S2CMana implements Packet {
+public class S2CMana implements CustomPacketPayload {
 
-    public static final ResourceLocation ID = new ResourceLocation(Fate.MODID, "s2c_mana");
+    public static final CustomPacketPayload.Type<S2CMana> TYPE = new CustomPacketPayload.Type<>(Fate.modRes("s2c_mana"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, S2CMana> STREAM_CODEC = new StreamCodec<>() {
+        @Override
+        public S2CMana decode(RegistryFriendlyByteBuf buf) {
+            return new S2CMana(buf.readInt());
+        }
+
+        @Override
+        public void encode(RegistryFriendlyByteBuf buf, S2CMana pkt) {
+            buf.writeInt(pkt.manaValue);
+        }
+    };
 
     private final int manaValue;
 
@@ -22,23 +33,12 @@ public class S2CMana implements Packet {
         this.manaValue = playerMana.getMana();
     }
 
-    @Override
-    public void write(FriendlyByteBuf buf) {
-        buf.writeInt(this.manaValue);
+    public static void handle(S2CMana pkt, Player player) {
+        Platform.INSTANCE.getPlayerData(player).ifPresent(data -> data.setMana(player, pkt.manaValue));
     }
 
     @Override
-    public ResourceLocation getID() {
-        return ID;
-    }
-
-    public static S2CMana read(FriendlyByteBuf buf) {
-        return new S2CMana(buf.readInt());
-    }
-
-    public static void handle(S2CMana pkt) {
-        Player player = ClientHandler.clientPlayer();
-        if (player != null)
-            Platform.INSTANCE.getPlayerData(player).ifPresent(data -> data.setMana(player, pkt.manaValue));
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

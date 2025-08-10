@@ -1,17 +1,31 @@
 package io.github.flemmli97.fateubw.common.network;
 
 import io.github.flemmli97.fateubw.Fate;
-import io.github.flemmli97.fateubw.client.ClientHandler;
-import io.github.flemmli97.fateubw.common.blocks.tile.AltarBlockEntity;
+import io.github.flemmli97.fateubw.common.blocks.entity.AltarBlockEntity;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-public class S2CAltarUpdate implements Packet {
+public class S2CAltarUpdate implements CustomPacketPayload {
 
-    public static final ResourceLocation ID = new ResourceLocation(Fate.MODID, "altar");
+    public static final CustomPacketPayload.Type<S2CAltarUpdate> TYPE = new CustomPacketPayload.Type<>(Fate.modRes("s2c_altar_state"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, S2CAltarUpdate> STREAM_CODEC = new StreamCodec<>() {
+        @Override
+        public S2CAltarUpdate decode(RegistryFriendlyByteBuf buf) {
+            return new S2CAltarUpdate(buf.readInt(), buf.readInt(), buf.readInt(), buf.readBoolean());
+        }
+
+        @Override
+        public void encode(RegistryFriendlyByteBuf buf, S2CAltarUpdate pkt) {
+            buf.writeInt(pkt.x);
+            buf.writeInt(pkt.y);
+            buf.writeInt(pkt.z);
+            buf.writeBoolean(pkt.summoning);
+        }
+    };
 
     private final boolean summoning;
     private final int x, y, z;
@@ -30,30 +44,15 @@ public class S2CAltarUpdate implements Packet {
         this.summoning = summoning;
     }
 
-    @Override
-    public void write(FriendlyByteBuf buf) {
-        buf.writeInt(this.x);
-        buf.writeInt(this.y);
-        buf.writeInt(this.z);
-        buf.writeBoolean(this.summoning);
-    }
-
-    @Override
-    public ResourceLocation getID() {
-        return ID;
-    }
-
-    public static S2CAltarUpdate read(FriendlyByteBuf buf) {
-        return new S2CAltarUpdate(buf.readInt(), buf.readInt(), buf.readInt(), buf.readBoolean());
-    }
-
-    public static void handle(S2CAltarUpdate pkt) {
-        Player player = ClientHandler.clientPlayer();
-        if (player == null)
-            return;
+    public static void handle(S2CAltarUpdate pkt, Player player) {
         BlockPos pos = new BlockPos(pkt.x, pkt.y, pkt.z);
-        BlockEntity tile = player.level.getBlockEntity(pos);
-        if (tile instanceof AltarBlockEntity)
-            ((AltarBlockEntity) tile).updateSummoning(pkt.summoning);
+        BlockEntity tile = player.level().getBlockEntity(pos);
+        if (tile instanceof AltarBlockEntity altar)
+            altar.updateSummoning(pkt.summoning);
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

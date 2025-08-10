@@ -1,6 +1,6 @@
 package io.github.flemmli97.fateubw.common.entity.misc;
 
-import io.github.flemmli97.fateubw.common.registry.ModEntities;
+import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Explosion;
@@ -15,7 +15,7 @@ public class ThrownGem extends BaseProjectile {
     }
 
     public ThrownGem(Level level, LivingEntity shooter) {
-        super(ModEntities.GEM.get(), level, shooter);
+        super(FateEntities.GEM.get(), level, shooter);
     }
 
     @Override

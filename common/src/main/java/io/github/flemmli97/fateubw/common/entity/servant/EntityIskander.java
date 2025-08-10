@@ -4,8 +4,8 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.common.entity.StandingVehicle;
 import io.github.flemmli97.fateubw.common.entity.summons.GordiusWheel;
-import io.github.flemmli97.fateubw.common.registry.ModEntities;
-import io.github.flemmli97.fateubw.common.registry.ModItems;
+import io.github.flemmli97.fateubw.common.registry.FateEntities;
+import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
@@ -122,7 +122,7 @@ public class EntityIskander extends BaseServant {
 
     @Override
     protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.KUPRIOTS.get()));
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(FateItems.KUPRIOTS.get()));
     }
 
     @Override
@@ -222,7 +222,7 @@ public class EntityIskander extends BaseServant {
             return false;
         if (this.isPassenger() || this.level.isClientSide)
             return false;
-        GordiusWheel wheel = ModEntities.GORDIUS_WHEEL.get().create(this.level);
+        GordiusWheel wheel = FateEntities.GORDIUS_WHEEL.get().create(this.level);
         wheel.setPos(this.getX(), this.getY(), this.getZ());
         this.level.addFreshEntity(wheel);
         this.boardingCooldown = 0;

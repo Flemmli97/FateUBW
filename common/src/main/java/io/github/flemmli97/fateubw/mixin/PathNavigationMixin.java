@@ -28,8 +28,8 @@ public abstract class PathNavigationMixin implements PathNavigationEx {
     public Path fateubw$createPathFor(List<BlockPos> targets, int accuracy) {
         if (targets.isEmpty())
             return null;
-        BlockPos pos = targets.get(0);
-        targets.remove(0);
+        BlockPos pos = targets.getFirst();
+        targets.removeFirst();
         ((PathFinderEx) this.pathFinder).fateubw$setPathTargets(targets);
         Path path = this.createPath(pos, accuracy);
         ((PathFinderEx) this.pathFinder).fateubw$setPathTargets(null);

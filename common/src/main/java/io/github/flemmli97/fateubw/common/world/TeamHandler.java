@@ -3,12 +3,11 @@ package io.github.flemmli97.fateubw.common.world;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.network.S2CTeamGuiData;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -94,7 +93,7 @@ public class TeamHandler extends SavedData {
     public void createTeam(Player player, String name) {
         UUID uuid = player.getUUID();
         if (this.teamsByPlayer.containsKey(uuid)) {
-            player.sendMessage(new TranslatableComponent("fateubw.chat.team.player.exist", player.getName()).withStyle(ChatFormatting.RED), Util.NIL_UUID);
+            player.sendSystemMessage(Component.translatable("fateubw.chat.team.player.exist", player.getName()).withStyle(ChatFormatting.RED));
             return;
         }
         GrailTeam team = new GrailTeam(name, uuid);
@@ -106,12 +105,12 @@ public class TeamHandler extends SavedData {
     public void joinTeam(Player player, UUID teamID) {
         UUID uuid = player.getUUID();
         if (this.teamsByPlayer.containsKey(uuid)) {
-            player.sendMessage(new TranslatableComponent("fateubw.chat.team.player.exist", player.getName()).withStyle(ChatFormatting.RED), Util.NIL_UUID);
+            player.sendSystemMessage(Component.translatable("fateubw.chat.team.player.exist", player.getName()).withStyle(ChatFormatting.RED));
             return;
         }
         GrailTeam team = this.teams.get(teamID);
         if (team == null) {
-            player.sendMessage(new TranslatableComponent("fateubw.chat.team.missing", teamID.toString()).withStyle(ChatFormatting.RED), Util.NIL_UUID);
+            player.sendSystemMessage(Component.translatable("fateubw.chat.team.missing", teamID.toString()).withStyle(ChatFormatting.RED));
             return;
         }
         if (team.addPlayer(uuid)) {

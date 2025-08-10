@@ -2,8 +2,8 @@ package io.github.flemmli97.fateubw.common.entity.misc;
 
 import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.entity.servant.EntityCuchulainn;
-import io.github.flemmli97.fateubw.common.registry.ModEntities;
-import io.github.flemmli97.fateubw.common.registry.ModItems;
+import io.github.flemmli97.fateubw.common.registry.FateEntities;
+import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import net.minecraft.sounds.SoundEvents;
@@ -25,7 +25,7 @@ public class GaeBolg extends BaseProjectile {
     }
 
     public GaeBolg(Level level, LivingEntity shooter) {
-        super(ModEntities.GAEBOLG.get(), level, shooter);
+        super(FateEntities.GAEBOLG.get(), level, shooter);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class GaeBolg extends BaseProjectile {
         if (!this.level.isClientSide) {
             if (this.getOwner() instanceof Player player) {
                 if (!player.isCreative()) {
-                    ItemEntity gaeBolg = new ItemEntity(this.level, this.getOwner().getX(), this.getOwner().getY(), this.getOwner().getZ(), new ItemStack(ModItems.GAEBOLG.get()));
+                    ItemEntity gaeBolg = new ItemEntity(this.level, this.getOwner().getX(), this.getOwner().getY(), this.getOwner().getZ(), new ItemStack(FateItems.GAEBOLG.get()));
                     gaeBolg.setPickUpDelay(0);
                     player.level.addFreshEntity(gaeBolg);
                     player.playSound(SoundEvents.ITEM_PICKUP, 0.8f, 1);

@@ -1,11 +1,7 @@
 apply from: "https://raw.githubusercontent.com/Flemmli97/GradleScripts/arch-loom-v2/common.gradle"
 
-repositories {
-    mavenLocal()
-    maven {
-        name = "TenshiLib"
-        url "https://maven.blazing-coop.net/releases"
-    }
+loom {
+    accessWidenerPath.set project(":fabric").file("src/main/resources/fate.accesswidener")
 }
 
 dependencies {

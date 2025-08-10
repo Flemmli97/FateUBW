@@ -4,7 +4,7 @@ import io.github.flemmli97.fateubw.common.entity.SwitchableWeapon;
 import io.github.flemmli97.fateubw.common.entity.misc.Excalibur;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailProvider;
-import io.github.flemmli97.fateubw.common.registry.ModItems;
+import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
@@ -19,11 +19,10 @@ import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTarget
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.WrappedRunner;
 import io.github.flemmli97.tenshilib.common.utils.OrientedBoundingBox;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.ChatType;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -139,7 +138,7 @@ public class EntityArthur extends BaseServant {
         return false;
     });
 
-    public final SwitchableWeapon<EntityArthur> switchableWeapon = new SwitchableWeapon<>(this, new ItemStack(ModItems.EXCALIBUR.get()), ItemStack.EMPTY);
+    public final SwitchableWeapon<EntityArthur> switchableWeapon = new SwitchableWeapon<>(this, new ItemStack(FateItems.EXCALIBUR.get()), ItemStack.EMPTY);
 
     private Vec3 burstDir;
     protected List<LivingEntity> hitEntity;
@@ -158,7 +157,7 @@ public class EntityArthur extends BaseServant {
 
     @Override
     protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.INVISEXCALIBUR.get()));
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(FateItems.INVISEXCALIBUR.get()));
     }
 
     @Override
@@ -176,7 +175,7 @@ public class EntityArthur extends BaseServant {
         super.actuallyHurt(damageSrc, damageAmount);
         if (!this.canUseNP && !this.isDeadOrDying() && this.getHealth() < 0.5 * this.getMaxHealth()) {
             this.canUseNP = true;
-            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.EXCALIBUR.get()));
+            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(FateItems.EXCALIBUR.get()));
         }
     }
 
@@ -186,7 +185,7 @@ public class EntityArthur extends BaseServant {
         if (this.getHealth() < 0.25 * this.getMaxHealth() && this.getHealth() > 0) {
             if (!this.critHealth) {
                 if (!this.level.isClientSide)
-                    this.level.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("fateubw.chat.servant.avalon").withStyle(ChatFormatting.GOLD), ChatType.SYSTEM, Util.NIL_UUID);
+                    this.level.getServer().getPlayerList().broadcastMessage(Component.translatable("fateubw.chat.servant.avalon").withStyle(ChatFormatting.GOLD), ChatType.SYSTEM);
                 this.critHealth = true;
             }
             if (!this.hasEffect(MobEffects.REGENERATION))

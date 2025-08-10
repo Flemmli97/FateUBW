@@ -7,7 +7,7 @@ import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.entity.misc.ChainDagger;
-import io.github.flemmli97.fateubw.common.registry.ModItems;
+import io.github.flemmli97.fateubw.common.registry.FateItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -60,9 +60,9 @@ public class RenderChainDagger extends EntityRenderer<ChainDagger> {
             matrix4f = pose.pose();
             matrix3f = pose.normal();
             int i = entity.fromMainHand() ? 1 : -1;
-            if (i == 1 && living.getMainHandItem().isEmpty() && living.getOffhandItem().getItem() == ModItems.MEDUSA_DAGGER.get())
+            if (i == 1 && living.getMainHandItem().isEmpty() && living.getOffhandItem().getItem() == FateItems.MEDUSA_DAGGER.get())
                 i = -1;
-            else if (living.getMainHandItem().getItem() == ModItems.MEDUSA_DAGGER.get())
+            else if (living.getMainHandItem().getItem() == FateItems.MEDUSA_DAGGER.get())
                 i = 1;
             float xOffset;
             float yOffset;

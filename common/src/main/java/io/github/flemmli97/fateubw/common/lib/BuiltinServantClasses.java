@@ -5,13 +5,13 @@ import net.minecraft.resources.ResourceLocation;
 
 public class BuiltinServantClasses {
 
-    public static final ResourceLocation NONE = new ResourceLocation(Fate.MODID, "none");
-    public static final ResourceLocation SABER = new ResourceLocation(Fate.MODID, "saber");
-    public static final ResourceLocation LANCER = new ResourceLocation(Fate.MODID, "lancer");
-    public static final ResourceLocation ARCHER = new ResourceLocation(Fate.MODID, "archer");
-    public static final ResourceLocation CASTER = new ResourceLocation(Fate.MODID, "caster");
-    public static final ResourceLocation BERSERKER = new ResourceLocation(Fate.MODID, "berserker");
-    public static final ResourceLocation RIDER = new ResourceLocation(Fate.MODID, "rider");
-    public static final ResourceLocation ASSASSIN = new ResourceLocation(Fate.MODID, "assassin");
+    public static final ResourceLocation NONE = Fate.modRes("none");
+    public static final ResourceLocation SABER = Fate.modRes("saber");
+    public static final ResourceLocation LANCER = Fate.modRes("lancer");
+    public static final ResourceLocation ARCHER = Fate.modRes("archer");
+    public static final ResourceLocation CASTER = Fate.modRes("caster");
+    public static final ResourceLocation BERSERKER = Fate.modRes("berserker");
+    public static final ResourceLocation RIDER = Fate.modRes("rider");
+    public static final ResourceLocation ASSASSIN = Fate.modRes("assassin");
 
 }

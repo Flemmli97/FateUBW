@@ -1,8 +1,8 @@
 package io.github.flemmli97.fateubw.common.entity.misc;
 
 import com.mojang.math.Vector3f;
-import io.github.flemmli97.fateubw.common.registry.ModEntities;
-import io.github.flemmli97.fateubw.common.registry.ModParticles;
+import io.github.flemmli97.fateubw.common.registry.FateEntities;
+import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.particle.ColoredParticleData;
@@ -28,7 +28,7 @@ public class MagicShot extends BaseProjectile {
     }
 
     public MagicShot(Level level, LivingEntity shootingEntity) {
-        super(ModEntities.MAGIC_SHOT.get(), level, shootingEntity);
+        super(FateEntities.MAGIC_SHOT.get(), level, shootingEntity);
     }
 
     @Override
@@ -69,7 +69,7 @@ public class MagicShot extends BaseProjectile {
             Vector3f color = this.colorType.particleColor;
             Vec3 delta = this.getDeltaMovement().scale(0.5);
             for (int i = 0; i < 8; i++) {
-                this.level.addParticle(new ColoredParticleData(ModParticles.LIGHT.get(), color.x(), color.y(), color.z(), 0.5f, 0.5f),
+                this.level.addParticle(new ColoredParticleData(FateParticles.LIGHT.get(), color.x(), color.y(), color.z(), 0.5f, 0.5f),
                         this.getX() + this.random.nextGaussian() * delta.x(), this.getY() + 0.35 + this.random.nextGaussian() * delta.y(), this.getZ() + this.random.nextGaussian() * delta.z(),
                         this.random.nextGaussian() * 0.01, Math.abs(this.random.nextGaussian() * 0.03), this.random.nextGaussian() * 0.01);
             }

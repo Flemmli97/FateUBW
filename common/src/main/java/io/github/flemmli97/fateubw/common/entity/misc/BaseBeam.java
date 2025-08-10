@@ -1,7 +1,7 @@
 package io.github.flemmli97.fateubw.common.entity.misc;
 
 import io.github.flemmli97.fateubw.common.entity.TargetableOpponent;
-import io.github.flemmli97.tenshilib.common.entity.EntityBeam;
+import io.github.flemmli97.tenshilib.common.entity.BeamEntity;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -10,7 +10,7 @@ import net.minecraft.world.phys.AABB;
 
 import java.util.function.Predicate;
 
-public abstract class BaseBeam extends EntityBeam {
+public abstract class BaseBeam extends BeamEntity {
 
     private Predicate<LivingEntity> pred = e -> !e.getUUID().equals(this.getOwnerUUID());
 

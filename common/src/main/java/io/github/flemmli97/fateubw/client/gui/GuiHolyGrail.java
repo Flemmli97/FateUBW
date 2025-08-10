@@ -12,7 +12,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
@@ -28,7 +27,7 @@ public class GuiHolyGrail extends Screen {
     private static final int X_SIZE = 255, Y_SIZE = 186;
 
     public GuiHolyGrail(Map<ResourceLocation, Component> rewards) {
-        super(new TranslatableComponent("fateubw.gui.holy_grail"));
+        super(Component.translatable("fateubw.gui.holy_grail"));
         this.rewards = rewards;
     }
 

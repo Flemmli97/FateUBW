@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import io.github.flemmli97.fateubw.Fate;
-import io.github.flemmli97.fateubw.common.blocks.tile.AltarBlockEntity;
+import io.github.flemmli97.fateubw.common.blocks.entity.AltarBlockEntity;
 import io.github.flemmli97.tenshilib.client.render.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;

@@ -1,7 +1,7 @@
 package io.github.flemmli97.fateubw.common.entity.misc;
 
 import io.github.flemmli97.fateubw.common.entity.TargetableOpponent;
-import io.github.flemmli97.tenshilib.common.entity.EntityProjectile;
+import io.github.flemmli97.tenshilib.common.entity.AdvancedProjectile;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Predicate;
 
-public abstract class BaseProjectile extends EntityProjectile {
+public abstract class BaseProjectile extends AdvancedProjectile {
 
     private Predicate<LivingEntity> pred = e -> !e.getUUID().equals(this.getOwnerUUID());
     protected float damageMultiplier = 1;

@@ -1,18 +1,17 @@
 package io.github.flemmli97.fateubw.common.blocks;
 
-import io.github.flemmli97.fateubw.common.blocks.tile.AltarBlockEntity;
-import io.github.flemmli97.fateubw.common.registry.AdvancementRegister;
-import io.github.flemmli97.fateubw.common.registry.ModBlocks;
+import io.github.flemmli97.fateubw.common.blocks.entity.AltarBlockEntity;
+import io.github.flemmli97.fateubw.common.registry.FateBlocks;
+import io.github.flemmli97.fateubw.common.registry.FateCriterionTriggers;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import io.github.flemmli97.fateubw.platform.Platform;
 import io.github.flemmli97.tenshilib.common.utils.VoxelUtils;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -118,7 +117,7 @@ public class AltarBlock extends BaseEntityBlock {
     }
 
     public static void removeSummoningStructure(Level level, BlockPos pos) {
-        level.playSound(null, pos, SoundEvents.GENERIC_EXPLODE, SoundSource.AMBIENT, 0.4F, 1F);
+        level.playSound(null, pos, SoundEvents.GENERIC_EXPLODE.value(), SoundSource.AMBIENT, 0.4F, 1F);
         level.removeBlockEntity(pos);
         level.destroyBlock(pos, false);
     }
@@ -224,7 +223,7 @@ public class AltarBlock extends BaseEntityBlock {
         if (!altar.isComplete()) {
             boolean placeRes = placeSummoningStructure((ServerLevel) level, pos, altar, state.getValue(FACING).getOpposite());
             if (!placeRes) {
-                player.sendMessage(new TranslatableComponent("fateubw.chat.altar.incomplete").withStyle(ChatFormatting.DARK_RED), Util.NIL_UUID);
+                player.sendSystemMessage(Component.translatable("fateubw.chat.altar.incomplete").withStyle(ChatFormatting.DARK_RED));
             }
             return placeRes ? InteractionResult.SUCCESS : InteractionResult.PASS;
         }
@@ -232,25 +231,25 @@ public class AltarBlock extends BaseEntityBlock {
             GrailWarHandler tracker = GrailWarHandler.get(serverPlayer.getServer());
             if (tracker.getServant(serverPlayer) == null) {
                 if (!altar.canSummon()) {
-                    player.sendMessage(new TranslatableComponent("fateubw.chat.altar.missing.catalyst").withStyle(ChatFormatting.DARK_RED), Util.NIL_UUID);
+                    player.sendSystemMessage(Component.translatable("fateubw.chat.altar.missing.catalyst").withStyle(ChatFormatting.DARK_RED));
                     return InteractionResult.FAIL;
                 }
                 if (!altar.isSummoning()) {
                     GrailWarHandler.JoinResult joinResult = tracker.checkJoining(player);
                     if (joinResult != GrailWarHandler.JoinResult.SUCCESS) {
-                        player.sendMessage(new TranslatableComponent(joinResult.translationKey).withStyle(ChatFormatting.DARK_RED), Util.NIL_UUID);
+                        player.sendSystemMessage(Component.translatable(joinResult.translationKey).withStyle(ChatFormatting.DARK_RED));
                         return InteractionResult.FAIL;
                     }
                     if (!player.isCreative())
                         stack.shrink(1);
                     if (altar.setSummoning(player)) {
-                        AdvancementRegister.GRAIL_WAR_TRIGGER.trigger(serverPlayer, true);
+                        FateCriterionTriggers.JOIN_GRAIL_WAR.get().trigger(serverPlayer);
                         return InteractionResult.SUCCESS;
                     }
                     return InteractionResult.FAIL;
                 }
             } else {
-                player.sendMessage(new TranslatableComponent("fateubw.chat.altar.servant.existing").withStyle(ChatFormatting.DARK_RED), Util.NIL_UUID);
+                player.sendSystemMessage(Component.translatable("fateubw.chat.altar.servant.existing").withStyle(ChatFormatting.DARK_RED));
             }
             return InteractionResult.FAIL;
         }).orElse(InteractionResult.FAIL);
@@ -264,7 +263,7 @@ public class AltarBlock extends BaseEntityBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return createTickerHelper(blockEntityType, ModBlocks.TILE_ALTAR.get(), AltarBlockEntity::ticker);
+        return createTickerHelper(blockEntityType, FateBlocks.ALTAR_BLOCK_ENTITY.get(), AltarBlockEntity::ticker);
     }
 
     @Override

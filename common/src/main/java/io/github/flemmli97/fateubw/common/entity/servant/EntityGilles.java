@@ -4,7 +4,7 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 import io.github.flemmli97.fateubw.api.datapack.ServantExtraData;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicShot;
 import io.github.flemmli97.fateubw.common.entity.summons.LesserMonster;
-import io.github.flemmli97.fateubw.common.registry.ModItems;
+import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.AnimatedAttackGoal;
@@ -79,7 +79,7 @@ public class EntityGilles extends BaseServant {
 
     @Override
     protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.GRIMOIRE.get()));
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(FateItems.GRIMOIRE.get()));
     }
 
     @Override

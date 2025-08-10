@@ -7,12 +7,12 @@ import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import io.github.flemmli97.fateubw.platform.Platform;
-import io.github.flemmli97.tenshilib.common.utils.RayTraceUtils;
+import io.github.flemmli97.tenshilib.common.utils.HitResultUtils;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -20,13 +20,21 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.EntityHitResult;
 
-public record C2SServantCommand(Type command, int entityId) implements Packet {
+public record C2SServantCommand(Type command, int entityId) implements CustomPacketPayload {
 
-    public static final ResourceLocation ID = new ResourceLocation(Fate.MODID, "c2s_servant_command");
+    public static final CustomPacketPayload.Type<C2SServantCommand> TYPE = new CustomPacketPayload.Type<>(Fate.modRes("c2s_servant_command"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, C2SServantCommand> STREAM_CODEC = new StreamCodec<>() {
+        @Override
+        public C2SServantCommand decode(RegistryFriendlyByteBuf buf) {
+            return new C2SServantCommand(buf.readEnum(Type.class), buf.readInt());
+        }
 
-    public static C2SServantCommand read(FriendlyByteBuf buf) {
-        return new C2SServantCommand(buf.readEnum(Type.class), buf.readInt());
-    }
+        @Override
+        public void encode(RegistryFriendlyByteBuf buf, C2SServantCommand pkt) {
+            buf.writeEnum(pkt.command);
+            buf.writeInt(pkt.entityId);
+        }
+    };
 
     public static void handle(C2SServantCommand pkt, ServerPlayer sender) {
         if (sender == null)
@@ -40,43 +48,43 @@ public record C2SServantCommand(Type command, int entityId) implements Packet {
         switch (pkt.command) {
             case NORMAL -> {
                 servant.updateAI(pkt.command);
-                sender.sendMessage(new TranslatableComponent("fateubw.chat.command.attackservant").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                sender.sendSystemMessage(Component.translatable("fateubw.chat.command.attackservant").withStyle(ChatFormatting.RED));
             }
             case AGGRESSIVE -> {
                 servant.updateAI(pkt.command);
-                sender.sendMessage(new TranslatableComponent("fateubw.chat.command.attackall").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                sender.sendSystemMessage(Component.translatable("fateubw.chat.command.attackall").withStyle(ChatFormatting.RED));
             }
             case DEFENSIVE -> {
                 servant.updateAI(pkt.command);
-                sender.sendMessage(new TranslatableComponent("fateubw.chat.command.defensive").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                sender.sendSystemMessage(Component.translatable("fateubw.chat.command.defensive").withStyle(ChatFormatting.RED));
             }
             case FOLLOW -> {
                 servant.updateAI(pkt.command);
-                sender.sendMessage(new TranslatableComponent("fateubw.chat.command.follow").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                sender.sendSystemMessage(Component.translatable("fateubw.chat.command.follow").withStyle(ChatFormatting.RED));
             }
             case STAY -> {
                 servant.updateAI(pkt.command);
-                sender.sendMessage(new TranslatableComponent("fateubw.chat.command.stay").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                sender.sendSystemMessage(Component.translatable("fateubw.chat.command.stay").withStyle(ChatFormatting.RED));
             }
             case GUARD -> {
                 servant.updateAI(pkt.command);
-                sender.sendMessage(new TranslatableComponent("fateubw.chat.command.patrol").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                sender.sendSystemMessage(Component.translatable("fateubw.chat.command.patrol").withStyle(ChatFormatting.RED));
             }
             case NP -> {
                 if (!servant.forcedNP) {
                     if (!sender.isCreative()) {
                         if (data.useMana(sender, servant.props().hogouMana()) && data.useCommandSeal(sender)) {
-                            sender.sendMessage(new TranslatableComponent("fateubw.chat.command.npsuccess").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                            sender.sendSystemMessage(Component.translatable("fateubw.chat.command.npsuccess").withStyle(ChatFormatting.RED));
                             servant.forcedNP = true;
                         } else {
-                            sender.sendMessage(new TranslatableComponent("fateubw.chat.command.npfail").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                            sender.sendSystemMessage(Component.translatable("fateubw.chat.command.npfail").withStyle(ChatFormatting.RED));
                         }
                     } else {
-                        sender.sendMessage(new TranslatableComponent("fateubw.chat.command.npsuccess").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                        sender.sendSystemMessage(Component.translatable("fateubw.chat.command.npsuccess").withStyle(ChatFormatting.RED));
                         servant.forcedNP = true;
                     }
                 } else {
-                    sender.sendMessage(new TranslatableComponent("fateubw.chat.command.npprep").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                    sender.sendSystemMessage(Component.translatable("fateubw.chat.command.npprep").withStyle(ChatFormatting.RED));
                 }
             }
             case KILL -> servant.onKillOrder(sender, data.useCommandSeal(sender));
@@ -84,7 +92,7 @@ public record C2SServantCommand(Type command, int entityId) implements Packet {
                 servant.randomTeleport(sender.getX(), sender.getY(), sender.getZ(), false);
                 servant.setTarget(null);
                 if (CommonConfig.punishTeleport) {
-                    for (BaseServant others : sender.level.getEntitiesOfClass(BaseServant.class, sender.getBoundingBox().inflate(32)))
+                    for (BaseServant others : sender.level().getEntitiesOfClass(BaseServant.class, sender.getBoundingBox().inflate(32)))
                         if (others != servant && !Utils.alliedTo(sender, others)) {
                             others.setTarget(sender);
                             others.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 1200, 1));
@@ -98,16 +106,16 @@ public record C2SServantCommand(Type command, int entityId) implements Packet {
                 if (Platform.INSTANCE.getPlayerData(sender).map(d -> d.useCommandSeal(sender)).orElse(false)) {
                     for (MobEffectInstance effect : CommonConfig.npBoostEffect.potions())
                         servant.addEffect(effect);
-                    sender.sendMessage(new TranslatableComponent("fateubw.chat.command.spell.success").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                    sender.sendSystemMessage(Component.translatable("fateubw.chat.command.spell.success").withStyle(ChatFormatting.RED));
                 } else
-                    sender.sendMessage(new TranslatableComponent("fateubw.chat.command.spell.fail").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                    sender.sendSystemMessage(Component.translatable("fateubw.chat.command.spell.fail").withStyle(ChatFormatting.RED));
             }
             case TARGET -> {
-                EntityHitResult res = RayTraceUtils.calculateEntityFromLook(sender, 16);
+                EntityHitResult res = HitResultUtils.calculateEntityFromLook(sender, 16);
                 if (res != null && res.getEntity() instanceof LivingEntity target) {
                     if (!Utils.alliedTo(sender, target)) {
                         servant.setTarget(target);
-                        for (BaseServant others : sender.getLevel().getEntitiesOfClass(BaseServant.class, sender.getBoundingBox().inflate(32), s -> sender.getUUID().equals(s.getOwnerUUID()))) {
+                        for (BaseServant others : sender.level().getEntitiesOfClass(BaseServant.class, sender.getBoundingBox().inflate(32), s -> sender.getUUID().equals(s.getOwnerUUID()))) {
                             others.setTarget(target);
                         }
                     }
@@ -118,21 +126,15 @@ public record C2SServantCommand(Type command, int entityId) implements Packet {
     }
 
     public static BaseServant getServant(ServerPlayer sender, int entityId) {
-        Entity entity = entityId == -1 ? GrailWarHandler.get(sender.getServer()).getServant(sender) : sender.level.getEntity(entityId);
+        Entity entity = entityId == -1 ? GrailWarHandler.get(sender.getServer()).getServant(sender) : sender.level().getEntity(entityId);
         if (!(entity instanceof BaseServant servant) || !sender.getUUID().equals(servant.getOwnerUUID()))
             return null;
         return servant;
     }
 
     @Override
-    public void write(FriendlyByteBuf buf) {
-        buf.writeEnum(this.command);
-        buf.writeInt(this.entityId);
-    }
-
-    @Override
-    public ResourceLocation getID() {
-        return ID;
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 
     public enum Type {

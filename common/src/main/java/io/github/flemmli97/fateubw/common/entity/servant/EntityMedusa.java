@@ -6,8 +6,8 @@ import io.github.flemmli97.fateubw.common.entity.DaggerHitNotifiable;
 import io.github.flemmli97.fateubw.common.entity.misc.ChainDagger;
 import io.github.flemmli97.fateubw.common.entity.summons.GordiusWheel;
 import io.github.flemmli97.fateubw.common.entity.summons.Pegasus;
-import io.github.flemmli97.fateubw.common.registry.ModEntities;
-import io.github.flemmli97.fateubw.common.registry.ModItems;
+import io.github.flemmli97.fateubw.common.registry.FateEntities;
+import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
@@ -149,8 +149,8 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
 
     @Override
     protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.MEDUSA_DAGGER.get()));
-        this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(ModItems.MEDUSA_DAGGER.get()));
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(FateItems.MEDUSA_DAGGER.get()));
+        this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(FateItems.MEDUSA_DAGGER.get()));
     }
 
     public boolean canThrow() {
@@ -330,7 +330,7 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
         if (this.level instanceof ServerLevel serverLevel) {
             if (!this.forcedNP && !this.useMana(this.props().hogouMana()))
                 return;
-            Pegasus peg = ModEntities.PEGASUS.get().create(serverLevel, null, null, null, this.blockPosition(), MobSpawnType.MOB_SUMMONED, false, false);
+            Pegasus peg = FateEntities.PEGASUS.get().create(serverLevel, null, null, null, this.blockPosition(), MobSpawnType.MOB_SUMMONED, false, false);
             peg.setPos(this.position());
             peg.setYRot(this.getYRot());
             peg.yRotO = this.getYRot();

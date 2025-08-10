@@ -19,7 +19,7 @@ public class ClientPacketHandler {
             public <P> void registerMessage(int index, ResourceLocation id, Class<P> clss, BiConsumer<P, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, P> decoder, Consumer<P> handler) {
                 ClientPlayNetworking.registerGlobalReceiver(id, handlerClient(decoder, handler));
             }
-        }, 0);
+        });
     }
 
     public static void sendToServer(Packet packet) {

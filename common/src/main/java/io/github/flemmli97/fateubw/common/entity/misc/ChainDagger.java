@@ -1,7 +1,7 @@
 package io.github.flemmli97.fateubw.common.entity.misc;
 
 import io.github.flemmli97.fateubw.common.entity.DaggerHitNotifiable;
-import io.github.flemmli97.fateubw.common.registry.ModEntities;
+import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.platform.Platform;
 import io.github.flemmli97.tenshilib.common.utils.RayTraceUtils;
 import net.minecraft.nbt.CompoundTag;
@@ -34,7 +34,7 @@ public class ChainDagger extends BaseProjectile {
     }
 
     public ChainDagger(Level level, LivingEntity shooter, boolean mainHand) {
-        super(ModEntities.DAGGER_HOOK.get(), level, shooter);
+        super(FateEntities.DAGGER_HOOK.get(), level, shooter);
         this.getEntityData().set(MAINHAND, mainHand);
     }
 

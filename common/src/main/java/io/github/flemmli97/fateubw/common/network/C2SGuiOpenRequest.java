@@ -3,25 +3,18 @@ package io.github.flemmli97.fateubw.common.network;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 
-public record C2SGuiOpenRequest() implements Packet {
+public class C2SGuiOpenRequest implements CustomPacketPayload {
 
-    public static final ResourceLocation ID = new ResourceLocation(Fate.MODID, "c2s_gui_open_request");
+    public static final CustomPacketPayload.Type<C2SGuiOpenRequest> TYPE = new CustomPacketPayload.Type<>(Fate.modRes("c2s_gui_open_request"));
+    public static final C2SGuiOpenRequest INSTANCE = new C2SGuiOpenRequest();
+    public static final StreamCodec<RegistryFriendlyByteBuf, C2SGuiOpenRequest> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 
-    @Override
-    public void write(FriendlyByteBuf buf) {
-    }
-
-    @Override
-    public ResourceLocation getID() {
-        return ID;
-    }
-
-    public static C2SGuiOpenRequest read(FriendlyByteBuf buf) {
-        return new C2SGuiOpenRequest();
+    private C2SGuiOpenRequest() {
     }
 
     public static void handle(C2SGuiOpenRequest pkt, ServerPlayer sender) {
@@ -29,5 +22,10 @@ public record C2SGuiOpenRequest() implements Packet {
             return;
         BaseServant servant = GrailWarHandler.get(sender.getServer()).getServant(sender);
         S2CServantGui.sendServantGui(sender, servant);
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

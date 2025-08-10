@@ -6,9 +6,10 @@ import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.network.S2CCommandSeals;
 import io.github.flemmli97.fateubw.common.network.S2CMana;
 import io.github.flemmli97.fateubw.common.network.S2CPlayerCap;
-import io.github.flemmli97.fateubw.platform.NetworkCalls;
-import net.minecraft.core.Registry;
+import io.github.flemmli97.tenshilib.loader.LoaderNetwork;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -39,7 +40,7 @@ public class PlayerData {
     public void setMana(Player player, int mana) {
         this.currentMana = Math.min(mana, 100);
         if (player instanceof ServerPlayer serverPlayer)
-            NetworkCalls.INSTANCE.sendToClient(new S2CMana(this), serverPlayer);
+            LoaderNetwork.INSTANCE.sendToPlayer(new S2CMana(this), serverPlayer);
     }
 
     public void addMana(Player player, int amount) {
@@ -57,7 +58,7 @@ public class PlayerData {
             this.manaRegenAccel = 1;
             this.manaRegenCooldown = 160;
             if (player instanceof ServerPlayer serverPlayer)
-                NetworkCalls.INSTANCE.sendToClient(new S2CMana(this), serverPlayer);
+                LoaderNetwork.INSTANCE.sendToPlayer(new S2CMana(this), serverPlayer);
         }
         return flag;
     }
@@ -85,10 +86,10 @@ public class PlayerData {
     }
 
     public void restoreServant(Player player, boolean loot) {
-        if (this.savedServant != null && (player.level instanceof ServerLevel serverLevel)) {
+        if (this.savedServant != null && (player.level() instanceof ServerLevel serverLevel)) {
             if (loot) {
-                ResourceLocation lootId = this.savedServant.getFirst().getDefaultLootTable();
-                LootTable lootTable = serverLevel.getServer().getLootTables().get(lootId);
+                ResourceKey<LootTable> lootId = this.savedServant.getFirst().getDefaultLootTable();
+                LootTable lootTable = serverLevel.getServer().reloadableRegistries().getLootTable(lootId);
                 LootContext.Builder builder = this.createLootContext(player);
                 lootTable.getRandomItems(builder.create(LootContextParamSets.ENTITY), player::spawnAtLocation);
                 this.savedServant = null;
@@ -108,7 +109,7 @@ public class PlayerData {
     }
 
     private LootContext.Builder createLootContext(Player player) {
-        DamageSource source = DamageSource.playerAttack(player);
+        DamageSource source = DamageSources.playerAttack(player);
         return new LootContext.Builder((ServerLevel) player.level).withRandom(player.getRandom())
                 .withParameter(LootContextParams.THIS_ENTITY, player)
                 .withParameter(LootContextParams.ORIGIN, player.position())
@@ -127,7 +128,7 @@ public class PlayerData {
         if (flag) {
             this.commandSeals--;
             if (player instanceof ServerPlayer serverPlayer)
-                NetworkCalls.INSTANCE.sendToClient(new S2CCommandSeals(this), serverPlayer);
+                LoaderNetwork.INSTANCE.sendToPlayer(new S2CCommandSeals(this), serverPlayer);
         }
         return flag;
     }
@@ -135,7 +136,7 @@ public class PlayerData {
     public void setCommandSeals(Player player, int amount) {
         this.commandSeals = Math.min(amount, 3);
         if (player instanceof ServerPlayer serverPlayer)
-            NetworkCalls.INSTANCE.sendToClient(new S2CCommandSeals(this), serverPlayer);
+            LoaderNetwork.INSTANCE.sendToPlayer(new S2CCommandSeals(this), serverPlayer);
     }
 
     public void setThrownDagger(ChainDagger hook) {
@@ -152,7 +153,7 @@ public class PlayerData {
         compound.putInt("Mana", this.currentMana);
         compound.putInt("CommandSeal", this.commandSeals);
         if (this.savedServant != null) {
-            compound.putString("SavedServantType", Registry.ENTITY_TYPE.getKey(this.savedServant.getFirst()).toString());
+            compound.putString("SavedServantType", BuiltInRegistries.ENTITY_TYPE.getKey(this.savedServant.getFirst()).toString());
             compound.put("SavedServant", this.savedServant.getSecond());
         }
         return compound;
@@ -162,7 +163,7 @@ public class PlayerData {
         this.currentMana = compound.getInt("Mana");
         this.commandSeals = compound.getInt("CommandSeal");
         if (compound.contains("SavedServantType")) {
-            this.savedServant = Pair.of(Registry.ENTITY_TYPE.get(new ResourceLocation(compound.getString("SavedServantType"))),
+            this.savedServant = Pair.of(BuiltInRegistries.ENTITY_TYPE.get(ResourceLocation.parse(compound.getString("SavedServantType"))),
                     compound.getCompound("SavedServant"));
         }
     }

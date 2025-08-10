@@ -1,14 +1,14 @@
 package io.github.flemmli97.fateubw.client.render.misc;
 
 import io.github.flemmli97.fateubw.common.entity.misc.ThrownGem;
-import io.github.flemmli97.fateubw.common.registry.ModItems;
+import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.tenshilib.client.render.RenderProjectileItem;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.item.ItemStack;
 
 public class RenderGem extends RenderProjectileItem<ThrownGem> {
 
-    private final ItemStack gem = new ItemStack(ModItems.MANA_GEM.get());
+    private final ItemStack gem = new ItemStack(FateItems.MANA_GEM.get());
 
     public RenderGem(EntityRendererProvider.Context ctx) {
         super(ctx);

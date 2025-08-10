@@ -18,7 +18,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -45,7 +44,7 @@ public class CommandGui extends Screen {
     private S2CServantGui.ServantMetaData data;
 
     public CommandGui(S2CServantGui.ServantMetaData data) {
-        super(new TranslatableComponent("fateubw.gui.command"));
+        super(Component.translatable("fateubw.gui.command"));
         this.servant = this.createFrom(data);
         this.update(data);
     }
@@ -53,7 +52,7 @@ public class CommandGui extends Screen {
     private Component getComponent(String key, Consumer<MutableComponent> otherwise) {
         Component cache = this.translationCache.get(key);
         if (cache == null) {
-            MutableComponent comp = new TranslatableComponent(key).withStyle();
+            MutableComponent comp = Component.translatable(key).withStyle();
             otherwise.accept(comp);
             cache = comp;
             this.translationCache.put(key, comp);
@@ -116,61 +115,61 @@ public class CommandGui extends Screen {
         super.init();
         if (this.currentPage == Pages.MENU) {
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 82, 80, 20
-                    , new TranslatableComponent("fateubw.gui.command.attack"), b -> {
+                    , Component.translatable("fateubw.gui.command.attack"), b -> {
                 this.currentPage = Pages.ATTACK;
                 this.init(this.minecraft, this.width, this.height);
             }));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 52, 80, 20
-                    , new TranslatableComponent("fateubw.gui.command.movement"), b -> {
+                    , Component.translatable("fateubw.gui.command.movement"), b -> {
                 this.currentPage = Pages.MOVEMENT;
                 this.init(this.minecraft, this.width, this.height);
             }));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 22, 80, 20
-                    , new TranslatableComponent("fateubw.gui.team"), b -> {
+                    , Component.translatable("fateubw.gui.team"), b -> {
                 NetworkCalls.INSTANCE.sendToServer(new C2SMessageGui(C2SMessageGui.Type.TEAM));
                 this.onClose();
             }));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 + 8, 80, 20
-                    , new TranslatableComponent("fateubw.gui.command.kill"), b -> {
+                    , Component.translatable("fateubw.gui.command.kill"), b -> {
                 NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.KILL, this.entityId()));
                 NetworkCalls.INSTANCE.sendToServer(new C2SMessageGui(C2SMessageGui.Type.SERVANT));
             }));
             if (this.servant != null) {
                 if (this.servant.specialCommands() != null)
                     this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 + 38, 80, 20
-                            , new TranslatableComponent("fateubw.gui.command.special"), b -> {
+                            , Component.translatable("fateubw.gui.command.special"), b -> {
                         this.currentPage = Pages.SPECIAL;
                         this.init(this.minecraft, this.width, this.height);
                     }));
             }
         } else if (this.currentPage == Pages.ATTACK) {
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 82, 80, 20
-                    , new TranslatableComponent("fateubw.gui.back"), this::backButton));
+                    , Component.translatable("fateubw.gui.back"), this::backButton));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 52, 80, 20
-                    , new TranslatableComponent("fateubw.gui.command.aggressive"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.AGGRESSIVE, this.entityId()))));
+                    , Component.translatable("fateubw.gui.command.aggressive"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.AGGRESSIVE, this.entityId()))));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 22, 80, 20
-                    , new TranslatableComponent("fateubw.gui.command.normal"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.NORMAL, this.entityId()))));
+                    , Component.translatable("fateubw.gui.command.normal"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.NORMAL, this.entityId()))));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 + 8, 80, 20
-                    , new TranslatableComponent("fateubw.gui.command.defensive"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.DEFENSIVE, this.entityId()))));
+                    , Component.translatable("fateubw.gui.command.defensive"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.DEFENSIVE, this.entityId()))));
         } else if (this.currentPage == Pages.MOVEMENT) {
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 82, 80, 20
-                    , new TranslatableComponent("fateubw.gui.back"), this::backButton));
+                    , Component.translatable("fateubw.gui.back"), this::backButton));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 52, 80, 20
-                    , new TranslatableComponent("fateubw.gui.command.follow"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.FOLLOW, this.entityId()))));
+                    , Component.translatable("fateubw.gui.command.follow"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.FOLLOW, this.entityId()))));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 22, 80, 20
-                    , new TranslatableComponent("fateubw.gui.command.stay"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.STAY, this.entityId()))));
+                    , Component.translatable("fateubw.gui.command.stay"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.STAY, this.entityId()))));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 + 8, 80, 20
-                    , new TranslatableComponent("fateubw.gui.command.protect"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.GUARD, this.entityId()))));
+                    , Component.translatable("fateubw.gui.command.protect"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.GUARD, this.entityId()))));
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 + 38, 80, 20
-                    , new TranslatableComponent("fateubw.gui.command.call"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.TELEPORT, this.entityId()))));
+                    , Component.translatable("fateubw.gui.command.call"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.TELEPORT, this.entityId()))));
         } else if (this.currentPage == Pages.SPECIAL) {
             this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 82, 80, 20
-                    , new TranslatableComponent("fateubw.gui.back"), this::backButton));
+                    , Component.translatable("fateubw.gui.back"), this::backButton));
             if (this.servant != null)
                 for (int i = 0; i < this.servant.specialCommands().length; i++) {
                     String id = this.servant.specialCommands()[i];
                     this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 52, 80, 20,
-                            new TranslatableComponent(id),
+                            Component.translatable(id),
                             b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantSpecial(id, this.entityId()))));
                 }
         }

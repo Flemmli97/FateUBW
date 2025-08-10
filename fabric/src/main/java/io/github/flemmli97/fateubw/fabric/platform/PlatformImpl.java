@@ -2,8 +2,8 @@ package io.github.flemmli97.fateubw.fabric.platform;
 
 import io.github.flemmli97.fateubw.common.attachment.ItemStackData;
 import io.github.flemmli97.fateubw.common.attachment.PlayerData;
-import io.github.flemmli97.fateubw.common.items.weapons.ItemEA;
-import io.github.flemmli97.fateubw.common.items.weapons.ItemExcalibur;
+import io.github.flemmli97.fateubw.common.items.weapons.EnumaElishItem;
+import io.github.flemmli97.fateubw.common.items.weapons.ExcaliburItem;
 import io.github.flemmli97.fateubw.fabric.common.data.ItemStackDataGet;
 import io.github.flemmli97.fateubw.fabric.common.data.PlayerDataGet;
 import io.github.flemmli97.fateubw.fabric.mixin.DamageSourceAccessor;
@@ -58,12 +58,12 @@ public class PlatformImpl implements Platform {
 
     @Override
     public Item createExcalibur(Item.Properties props) {
-        return new ItemExcalibur(props);
+        return new ExcaliburItem(props);
     }
 
     @Override
     public Item createEA(Item.Properties props) {
-        return new ItemEA(props);
+        return new EnumaElishItem(props);
     }
 
     @Override

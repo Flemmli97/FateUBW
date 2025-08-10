@@ -4,7 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.lib.FateTags;
-import io.github.flemmli97.fateubw.common.registry.ModItems;
+import io.github.flemmli97.fateubw.common.registry.FateItems;
 import net.minecraft.advancements.critereon.ImpossibleTrigger;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -29,22 +29,22 @@ public class RecipesGen extends RecipeProvider {
 
     @Override
     public void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
-        ShapelessRecipeBuilder.shapeless(ModItems.MANA_GEM.get())
-                .requires(ModItems.CRYSTAL_RED.get())
-                .requires(ModItems.CRYSTAL_BLACK.get())
-                .requires(ModItems.CRYSTAL_BLUE.get())
-                .requires(ModItems.CRYSTAL_GREEN.get())
-                .requires(ModItems.CRYSTAL_YELLOW.get())
+        ShapelessRecipeBuilder.shapeless(FateItems.MANA_GEM.get())
+                .requires(FateItems.CRYSTAL_RED.get())
+                .requires(FateItems.CRYSTAL_BLACK.get())
+                .requires(FateItems.CRYSTAL_BLUE.get())
+                .requires(FateItems.CRYSTAL_GREEN.get())
+                .requires(FateItems.CRYSTAL_YELLOW.get())
                 .unlockedBy("dummy", new ImpossibleTrigger.TriggerInstance()).save(consumer);
-        ShapedRecipeBuilder.shaped(ModItems.ALTAR.get())
+        ShapedRecipeBuilder.shaped(FateItems.ALTAR.get())
                 .define('T', Items.TORCH)
                 .define('R', Items.RED_WOOL)
                 .define('L', FateTags.FABRIC_LAPIS_BLOCK)
-                .define('G', ModItems.MANA_GEM.get())
+                .define('G', FateItems.MANA_GEM.get())
                 .define('D', FateTags.FABRIC_DIAMOND_BLOCK)
                 .pattern("RTR").pattern("GDG").pattern("LGL")
                 .unlockedBy("dummy", new ImpossibleTrigger.TriggerInstance()).save(consumer);
-        ShapedRecipeBuilder.shaped(ModItems.CHALK.get())
+        ShapedRecipeBuilder.shaped(FateItems.CHALK.get())
                 .define('B', FateTags.FABRIC_DYE_TAG)
                 .define('S', FateTags.FABRIC_STICK_TAG)
                 .define('C', FateTags.CRYSTALS)

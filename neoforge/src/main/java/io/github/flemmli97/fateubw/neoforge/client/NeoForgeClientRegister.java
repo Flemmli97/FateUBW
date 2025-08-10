@@ -5,8 +5,8 @@ import io.github.flemmli97.fateubw.client.render.FateRenders;
 import io.github.flemmli97.fateubw.client.render.RenderAltar;
 import io.github.flemmli97.fateubw.client.render.item.RenderEAItem;
 import io.github.flemmli97.fateubw.client.render.item.RenderExcaliburItem;
-import io.github.flemmli97.fateubw.common.registry.ModBlocks;
-import io.github.flemmli97.fateubw.common.registry.ModItems;
+import io.github.flemmli97.fateubw.common.registry.FateBlocks;
+import io.github.flemmli97.fateubw.common.registry.FateItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.ParticleProvider;
@@ -35,7 +35,7 @@ public class NeoForgeClientRegister {
 
         ClientRegister.registerKeyBinding(ClientRegistry::registerKeyBinding);
 
-        BlockEntityRenderers.register(ModBlocks.TILE_ALTAR.get(), RenderAltar::new);
+        BlockEntityRenderers.register(FateBlocks.ALTAR_BLOCK_ENTITY.get(), RenderAltar::new);
         event.enqueueWork(() -> ClientRegister.registerItemProps(ItemProperties::register));
     }
 
@@ -48,7 +48,7 @@ public class NeoForgeClientRegister {
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                 return this.instance;
             }
-        }, ModItems.ENUMAELISH.get());
+        }, FateItems.ENUMAELISH.get());
         event.registerItem(new IClientItemExtensions() {
             RenderExcaliburItem instance = new RenderExcaliburItem(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
 
@@ -56,7 +56,7 @@ public class NeoForgeClientRegister {
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                 return this.instance;
             }
-        }, ModItems.EXCALIBUR.get());
+        }, FateItems.EXCALIBUR.get());
     }
 
     @SubscribeEvent

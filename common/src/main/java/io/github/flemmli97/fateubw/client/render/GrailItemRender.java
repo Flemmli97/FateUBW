@@ -1,7 +1,7 @@
 package io.github.flemmli97.fateubw.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import io.github.flemmli97.fateubw.common.registry.ModItems;
+import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.tenshilib.client.render.RenderUtils;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -11,7 +11,7 @@ public class GrailItemRender {
     private static final RenderUtils.BeamBuilder BUILDER = new RenderUtils.BeamBuilder();
 
     public static void renderBeams(ItemEntity entity, PoseStack poseStack, MultiBufferSource buffer, float partialTicks) {
-        if (entity.getItem().isEmpty() || entity.getItem().getItem() != ModItems.GRAIL.get())
+        if (entity.getItem().isEmpty() || entity.getItem().getItem() != FateItems.GRAIL.get())
             return;
         poseStack.pushPose();
         poseStack.translate(0, 0.15, 0);

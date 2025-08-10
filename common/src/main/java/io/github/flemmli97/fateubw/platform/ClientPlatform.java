@@ -2,7 +2,7 @@ package io.github.flemmli97.fateubw.platform;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import io.github.flemmli97.tenshilib.platform.InitUtil;
+import io.github.flemmli97.tenshilib.loader.LoaderInitializer;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -18,7 +18,7 @@ import java.util.function.Predicate;
 
 public interface ClientPlatform {
 
-    ClientPlatform INSTANCE = InitUtil.getPlatformInstance(ClientPlatform.class,
+    ClientPlatform INSTANCE = LoaderInitializer.getImplInstance(ClientPlatform.class,
             "io.github.flemmli97.fateubw.fabric.platform.ClientPlatformImpl",
             "io.github.flemmli97.fateubw.forge.platform.ClientPlatformImpl");
 

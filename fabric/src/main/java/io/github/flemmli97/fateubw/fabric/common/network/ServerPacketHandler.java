@@ -17,7 +17,7 @@ public class ServerPacketHandler {
             public <P> void registerMessage(int index, ResourceLocation id, Class<P> clss, BiConsumer<P, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, P> decoder, BiConsumer<P, ServerPlayer> handler) {
                 ServerPlayNetworking.registerGlobalReceiver(id, handlerServer(decoder, handler));
             }
-        }, 0);
+        });
     }
 
     private static <T> ServerPlayNetworking.PlayChannelHandler handlerServer(Function<FriendlyByteBuf, T> decoder, BiConsumer<T, ServerPlayer> handler) {

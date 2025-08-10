@@ -6,8 +6,8 @@ import io.github.flemmli97.fateubw.api.datapack.ServantExtraData;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.particles.RingParticleData;
-import io.github.flemmli97.fateubw.common.registry.ModItems;
-import io.github.flemmli97.fateubw.common.registry.ModSounds;
+import io.github.flemmli97.fateubw.common.registry.FateItems;
+import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
@@ -154,7 +154,7 @@ public class EntityHeracles extends BaseServant {
 
     @Override
     protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.HERACLES_AXE.get()));
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(FateItems.HERACLES_AXE.get()));
     }
 
     @Override
@@ -187,7 +187,7 @@ public class EntityHeracles extends BaseServant {
         if (!this.level.isClientSide) {
             AnimatedAction anim = this.getAnimationHandler().getAnimation();
             if (anim != null && anim.isAt("roar")) {
-                this.playSound(ModSounds.HERACLES_ROAR.get(), 1, 1);
+                this.playSound(FateSounds.HERACLES_ROAR.get(), 1, 1);
                 S2CScreenShake.sendAround(this, 24, 16, 2);
             }
         }

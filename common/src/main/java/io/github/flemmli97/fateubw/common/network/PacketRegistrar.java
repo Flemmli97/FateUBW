@@ -1,50 +1,51 @@
 package io.github.flemmli97.fateubw.common.network;
 
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class PacketRegistrar {
 
-    public static int registerServerPackets(ServerPacketRegister register, int id) {
-        register.registerMessage(id++, C2SGrailReward.ID, C2SGrailReward.class, C2SGrailReward::write, C2SGrailReward::read, C2SGrailReward::handle);
-        register.registerMessage(id++, C2SMessageGui.ID, C2SMessageGui.class, C2SMessageGui::write, C2SMessageGui::read, C2SMessageGui::handle);
-        register.registerMessage(id++, C2SServantCommand.ID, C2SServantCommand.class, C2SServantCommand::write, C2SServantCommand::read, C2SServantCommand::handle);
-        register.registerMessage(id++, C2SServantSpecial.ID, C2SServantSpecial.class, C2SServantSpecial::write, C2SServantSpecial::read, C2SServantSpecial::handle);
-        register.registerMessage(id++, C2STeamMessage.ID, C2STeamMessage.class, C2STeamMessage::write, C2STeamMessage::read, C2STeamMessage::handle);
-        register.registerMessage(id++, C2STeamUuidMessage.ID, C2STeamUuidMessage.class, C2STeamUuidMessage::write, C2STeamUuidMessage::read, C2STeamUuidMessage::handle);
-        register.registerMessage(id++, C2SGuiOpenRequest.ID, C2SGuiOpenRequest.class, C2SGuiOpenRequest::write, C2SGuiOpenRequest::read, C2SGuiOpenRequest::handle);
-        register.registerMessage(id++, C2SSpawnEgg.ID, C2SSpawnEgg.class, C2SSpawnEgg::write, C2SSpawnEgg::read, C2SSpawnEgg::handle);
-        return id;
+    public static void registerServerPackets(ServerPacketRegister register) {
+        register.register(C2SGrailReward.TYPE, C2SGrailReward.STREAM_CODEC, C2SGrailReward::handle);
+        register.register(C2SGuiOpenRequest.TYPE, C2SGuiOpenRequest.STREAM_CODEC, C2SGuiOpenRequest::handle);
+        register.register(C2SMessageGui.TYPE, C2SMessageGui.STREAM_CODEC, C2SMessageGui::handle);
+        register.register(C2SServantCommand.TYPE, C2SServantCommand.STREAM_CODEC, C2SServantCommand::handle);
+        register.register(C2SSpawnEgg.TYPE, C2SSpawnEgg.STREAM_CODEC, C2SSpawnEgg::handle);
+        register.register(C2STeamMessage.TYPE, C2STeamMessage.STREAM_CODEC, C2STeamMessage::handle);
+        register.register(C2STeamUuidMessage.TYPE, C2STeamUuidMessage.STREAM_CODEC, C2STeamUuidMessage::handle);
     }
 
-    public static int registerClientPackets(ClientPacketRegister register, int id) {
-        register.registerMessage(id++, S2CAltarUpdate.ID, S2CAltarUpdate.class, S2CAltarUpdate::write, S2CAltarUpdate::read, S2CAltarUpdate::handle);
-        register.registerMessage(id++, S2CCommandSeals.ID, S2CCommandSeals.class, S2CCommandSeals::write, S2CCommandSeals::read, S2CCommandSeals::handle);
-        register.registerMessage(id++, S2CGrailGui.ID, S2CGrailGui.class, S2CGrailGui::write, S2CGrailGui::read, S2CGrailGui::handle);
-        register.registerMessage(id++, S2CItemInUse.ID, S2CItemInUse.class, S2CItemInUse::write, S2CItemInUse::read, S2CItemInUse::handle);
-        register.registerMessage(id++, S2CMana.ID, S2CMana.class, S2CMana::write, S2CMana::read, S2CMana::handle);
-        register.registerMessage(id++, S2CPlayerCap.ID, S2CPlayerCap.class, S2CPlayerCap::write, S2CPlayerCap::read, S2CPlayerCap::handle);
-        register.registerMessage(id++, S2CServantGui.ID, S2CServantGui.class, S2CServantGui::write, S2CServantGui::read, S2CServantGui::handle);
-        register.registerMessage(id++, S2CTeamGuiData.ID, S2CTeamGuiData.class, S2CTeamGuiData::write, S2CTeamGuiData::read, S2CTeamGuiData::handle);
-        register.registerMessage(id++, S2CScreenShake.ID, S2CScreenShake.class, S2CScreenShake::write, S2CScreenShake::read, S2CScreenShake::handle);
-        register.registerMessage(id++, S2CAttackDebug.ID, S2CAttackDebug.class, S2CAttackDebug::write, S2CAttackDebug::read, S2CAttackDebug::handle);
-        register.registerMessage(id++, S2CSpawnEggScreen.ID, S2CSpawnEggScreen.class, S2CSpawnEggScreen::write, S2CSpawnEggScreen::read, S2CSpawnEggScreen::handle);
-        register.registerMessage(id++, S2CMultipartDataPkt.ID, S2CMultipartDataPkt.class, S2CMultipartDataPkt::write, S2CMultipartDataPkt::read, S2CMultipartDataPkt::handle);
-        return id;
+    public static void registerClientPackets(ClientPacketRegister register) {
+        register.register(S2CAltarUpdate.TYPE, S2CAltarUpdate.STREAM_CODEC, S2CAltarUpdate::handle);
+        register.register(S2CAttackDebug.TYPE, S2CAttackDebug.STREAM_CODEC, S2CAttackDebug::handle);
+        register.register(S2CCommandSeals.TYPE, S2CCommandSeals.STREAM_CODEC, S2CCommandSeals::handle);
+        register.register(S2CGrailGui.TYPE, S2CGrailGui.STREAM_CODEC, S2CGrailGui::handle);
+        register.register(S2CMana.TYPE, S2CMana.STREAM_CODEC, S2CMana::handle);
+        register.register(S2CMultipartDataPkt.TYPE, S2CMultipartDataPkt.STREAM_CODEC, S2CMultipartDataPkt::handle);
+        register.register(S2CPlayerCap.TYPE, S2CPlayerCap.STREAM_CODEC, S2CPlayerCap::handle);
+        register.register(S2CScreenShake.TYPE, S2CScreenShake.STREAM_CODEC, S2CScreenShake::handle);
+        register.register(S2CServantGui.TYPE, S2CServantGui.STREAM_CODEC, S2CServantGui::handle);
+        register.register(S2CSpawnEggScreen.TYPE, S2CSpawnEggScreen.STREAM_CODEC, S2CSpawnEggScreen::handle);
+        register.register(S2CTeamGuiData.TYPE, S2CTeamGuiData.STREAM_CODEC, S2CTeamGuiData::handle);
     }
 
     public interface ServerPacketRegister {
 
-        <P> void registerMessage(int index, ResourceLocation id, Class<P> clss, BiConsumer<P, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, P> decoder, BiConsumer<P, ServerPlayer> handler);
+        <P extends CustomPacketPayload> void register(CustomPacketPayload.Type<P> type, StreamCodec<RegistryFriendlyByteBuf, P> codec, BiConsumer<P, ServerPlayer> handler);
     }
 
     public interface ClientPacketRegister {
 
-        <P> void registerMessage(int index, ResourceLocation id, Class<P> clss, BiConsumer<P, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, P> decoder, Consumer<P> handler);
+        default <P extends CustomPacketPayload> void register(CustomPacketPayload.Type<P> type, StreamCodec<RegistryFriendlyByteBuf, P> codec, Consumer<P> handler) {
+            this.register(type, codec, (pkt, p) -> handler.accept(pkt));
+        }
+
+        <P extends CustomPacketPayload> void register(CustomPacketPayload.Type<P> type, StreamCodec<RegistryFriendlyByteBuf, P> codec, BiConsumer<P, Player> handler);
     }
 }

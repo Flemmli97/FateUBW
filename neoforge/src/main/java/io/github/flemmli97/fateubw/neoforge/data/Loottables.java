@@ -3,9 +3,9 @@ package io.github.flemmli97.fateubw.neoforge.data;
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import io.github.flemmli97.fateubw.Fate;
-import io.github.flemmli97.fateubw.common.registry.ModBlocks;
-import io.github.flemmli97.fateubw.common.registry.ModEntities;
-import io.github.flemmli97.fateubw.common.registry.ModItems;
+import io.github.flemmli97.fateubw.common.registry.FateBlocks;
+import io.github.flemmli97.fateubw.common.registry.FateEntities;
+import io.github.flemmli97.fateubw.common.registry.FateItems;
 import net.minecraft.advancements.critereon.EnchantmentPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
@@ -63,19 +63,19 @@ public class Loottables extends LootTableProvider {
         private final Map<ResourceLocation, LootTable.Builder> lootTables = new HashMap<>();
 
         private void init() {
-            this.registerLootTable(ModEntities.ARTHUR.get(), this.getDefault(ModItems.EXCALIBUR.get()));
-            this.registerLootTable(ModEntities.CUCHULAINN.get(), this.getDefault(ModItems.GAEBOLG.get()));
-            this.registerLootTable(ModEntities.DIARMUID.get(), this.getDefault(ModItems.GAEBUIDHE.get(), ModItems.GAEDEARG.get()));
-            this.registerLootTable(ModEntities.EMIYA.get(), this.getDefault(ModItems.ARCHBOW.get(), ModItems.KANSHOU.get(), ModItems.BAKUYA.get()));
-            this.registerLootTable(ModEntities.GILGAMESH.get(), this.getDefault(ModItems.ENUMAELISH.get()));
-            this.registerLootTable(ModEntities.MEDEA.get(), this.getDefault(ModItems.STAFF.get(), ModItems.RULE_BREAKER.get()));
-            this.registerLootTable(ModEntities.GILLES.get(), this.getDefault(ModItems.GRIMOIRE.get()));
-            this.registerLootTable(ModEntities.HERACLES.get(), this.getDefault(ModItems.HERACLES_AXE.get()));
-            this.registerLootTable(ModEntities.LANCELOT.get(), this.getDefault(ModItems.ARONDIGHT.get()));
-            this.registerLootTable(ModEntities.ISKANDER.get(), this.getDefault(ModItems.KUPRIOTS.get()));
-            this.registerLootTable(ModEntities.MEDUSA.get(), this.getDefault(ModItems.MEDUSA_DAGGER.get()));
-            this.registerLootTable(ModEntities.HASSAN.get(), this.getDefault(ModItems.ASSASSIN_DAGGER.get()));
-            this.registerLootTable(ModEntities.SASAKI.get(), this.getDefault(ModItems.MONOHOSHI_ZAO.get()));
+            this.registerLootTable(FateEntities.ARTHUR.get(), this.getDefault(FateItems.EXCALIBUR.get()));
+            this.registerLootTable(FateEntities.CUCHULAINN.get(), this.getDefault(FateItems.GAEBOLG.get()));
+            this.registerLootTable(FateEntities.DIARMUID.get(), this.getDefault(FateItems.GAEBUIDHE.get(), FateItems.GAEDEARG.get()));
+            this.registerLootTable(FateEntities.EMIYA.get(), this.getDefault(FateItems.ARCHBOW.get(), FateItems.KANSHOU.get(), FateItems.BAKUYA.get()));
+            this.registerLootTable(FateEntities.GILGAMESH.get(), this.getDefault(FateItems.ENUMAELISH.get()));
+            this.registerLootTable(FateEntities.MEDEA.get(), this.getDefault(FateItems.STAFF.get(), FateItems.RULE_BREAKER.get()));
+            this.registerLootTable(FateEntities.GILLES.get(), this.getDefault(FateItems.GRIMOIRE.get()));
+            this.registerLootTable(FateEntities.HERACLES.get(), this.getDefault(FateItems.HERACLES_AXE.get()));
+            this.registerLootTable(FateEntities.LANCELOT.get(), this.getDefault(FateItems.ARONDIGHT.get()));
+            this.registerLootTable(FateEntities.ISKANDER.get(), this.getDefault(FateItems.KUPRIOTS.get()));
+            this.registerLootTable(FateEntities.MEDUSA.get(), this.getDefault(FateItems.MEDUSA_DAGGER.get()));
+            this.registerLootTable(FateEntities.HASSAN.get(), this.getDefault(FateItems.ASSASSIN_DAGGER.get()));
+            this.registerLootTable(FateEntities.SASAKI.get(), this.getDefault(FateItems.MONOHOSHI_ZAO.get()));
         }
 
         private LootTable.Builder getDefault(ItemLike... items) {
@@ -104,13 +104,13 @@ public class Loottables extends LootTableProvider {
 
         @Override
         public void accept(BiConsumer<ResourceLocation, LootTable.Builder> cons) {
-            this.dropSelf(ModBlocks.ALTAR.get());
-            this.add(ModBlocks.ARTIFACT_ORE.get(), drop -> createSingleItemTableWithSilkTouch(drop, ModItems.CHARM_NONE.get()));
-            this.add(ModBlocks.DEEP_SLATE_ARTIFACT_ORE.get(), drop -> createSingleItemTableWithSilkTouch(drop, ModItems.CHARM_NONE.get()));
+            this.dropSelf(FateBlocks.ALTAR.get());
+            this.add(FateBlocks.ARTIFACT_ORE.get(), drop -> createSingleItemTableWithSilkTouch(drop, FateItems.CHARM_NONE.get()));
+            this.add(FateBlocks.DEEP_SLATE_ARTIFACT_ORE.get(), drop -> createSingleItemTableWithSilkTouch(drop, FateItems.CHARM_NONE.get()));
             ResourceLocation crystal = new ResourceLocation(Fate.MODID, "blocks/crystals");
-            this.registerLootTable(crystal, createLootPool(5, ModItems.CRYSTAL_YELLOW.get(), ModItems.CRYSTAL_GREEN.get(), ModItems.CRYSTAL_BLUE.get(), ModItems.CRYSTAL_BLACK.get(), ModItems.CRYSTAL_RED.get()));
-            this.add(ModBlocks.GEM_ORE.get(), drop -> createSilkTouchDispatchTable(drop, LootTableReference.lootTableReference(crystal)));
-            this.add(ModBlocks.DEEP_SLATE_GEM_ORE.get(), drop -> createSilkTouchDispatchTable(drop, LootTableReference.lootTableReference(crystal)));
+            this.registerLootTable(crystal, createLootPool(5, FateItems.CRYSTAL_YELLOW.get(), FateItems.CRYSTAL_GREEN.get(), FateItems.CRYSTAL_BLUE.get(), FateItems.CRYSTAL_BLACK.get(), FateItems.CRYSTAL_RED.get()));
+            this.add(FateBlocks.GEM_ORE.get(), drop -> createSilkTouchDispatchTable(drop, LootTableReference.lootTableReference(crystal)));
+            this.add(FateBlocks.DEEP_SLATE_GEM_ORE.get(), drop -> createSilkTouchDispatchTable(drop, LootTableReference.lootTableReference(crystal)));
             this.loots.forEach(cons);
         }
 

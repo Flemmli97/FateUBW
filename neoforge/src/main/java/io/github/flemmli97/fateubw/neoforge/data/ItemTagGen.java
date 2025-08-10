@@ -2,7 +2,7 @@ package io.github.flemmli97.fateubw.neoforge.data;
 
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.lib.FateTags;
-import io.github.flemmli97.fateubw.common.registry.ModItems;
+import io.github.flemmli97.fateubw.common.registry.FateItems;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.data.tags.ItemTagsProvider;
@@ -25,11 +25,11 @@ public class ItemTagGen extends ItemTagsProvider {
     @Override
     protected void addTags() {
         this.tag(FateTags.CRYSTALS)
-                .add(ModItems.CRYSTAL_YELLOW.get())
-                .add(ModItems.CRYSTAL_BLUE.get())
-                .add(ModItems.CRYSTAL_BLACK.get())
-                .add(ModItems.CRYSTAL_RED.get())
-                .add(ModItems.CRYSTAL_GREEN.get());
+                .add(FateItems.CRYSTAL_YELLOW.get())
+                .add(FateItems.CRYSTAL_BLUE.get())
+                .add(FateItems.CRYSTAL_BLACK.get())
+                .add(FateItems.CRYSTAL_RED.get())
+                .add(FateItems.CRYSTAL_GREEN.get());
         TagAppender<Item> dyes = this.tag(FateTags.FABRIC_DYE_TAG)
                 .addOptional(Tags.Items.DYES.location());
         this.add(dyes::add);

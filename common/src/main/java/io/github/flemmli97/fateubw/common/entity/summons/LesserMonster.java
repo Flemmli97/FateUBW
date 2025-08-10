@@ -4,7 +4,7 @@ import io.github.flemmli97.fateubw.api.datapack.AttributeHolderProperties;
 import io.github.flemmli97.fateubw.api.datapack.ServantExtraData;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.entity.ai.TargetOwnerEnemyGoal;
-import io.github.flemmli97.fateubw.common.registry.ModEntities;
+import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
 import io.github.flemmli97.tenshilib.api.entity.IAnimated;
@@ -67,11 +67,11 @@ public class LesserMonster extends PathfinderMob implements IAnimated, OwnableEn
             this.goals();
             this.updateAttributes();
         }
-        this.maxLivingTicks = DatapackHandler.SERVANT_PROPS.get(ModEntities.GILLES.getID()).getConfig(ServantExtraData.GILLES_MONSTER_DURATION);
+        this.maxLivingTicks = DatapackHandler.SERVANT_PROPS.get(FateEntities.GILLES.getID()).getConfig(ServantExtraData.GILLES_MONSTER_DURATION);
     }
 
     public LesserMonster(Level level, LivingEntity owner) {
-        this(ModEntities.LESSER_MONSTER.get(), level);
+        this(FateEntities.LESSER_MONSTER.get(), level);
         this.owner = owner;
         this.ownerUUID = owner.getUUID();
     }

@@ -4,7 +4,7 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.flemmli97.fateubw.common.registry.ModParticles;
+import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.tenshilib.common.particle.ColoredParticleData;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.FriendlyByteBuf;
@@ -75,6 +75,6 @@ public class RingParticleData extends ColoredParticleData {
 
     @Override
     public ParticleType<?> getType() {
-        return ModParticles.RING.get();
+        return FateParticles.RING.get();
     }
 }

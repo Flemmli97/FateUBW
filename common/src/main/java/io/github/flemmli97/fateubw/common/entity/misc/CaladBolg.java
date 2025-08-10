@@ -2,7 +2,7 @@ package io.github.flemmli97.fateubw.common.entity.misc;
 
 import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
-import io.github.flemmli97.fateubw.common.registry.ModEntities;
+import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import net.minecraft.core.particles.ParticleTypes;
@@ -27,7 +27,7 @@ public class CaladBolg extends BaseProjectile {
     }
 
     public CaladBolg(Level level, LivingEntity shootingEntity) {
-        super(ModEntities.CALADBOLG.get(), level, shootingEntity);
+        super(FateEntities.CALADBOLG.get(), level, shootingEntity);
     }
 
     @Override

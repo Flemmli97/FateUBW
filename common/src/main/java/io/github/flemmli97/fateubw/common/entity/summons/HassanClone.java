@@ -10,10 +10,10 @@ import io.github.flemmli97.fateubw.common.entity.misc.ThrownItemEntity;
 import io.github.flemmli97.fateubw.common.entity.servant.EntityHassan;
 import io.github.flemmli97.fateubw.common.lib.FateTags;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
-import io.github.flemmli97.fateubw.common.registry.ModAttributes;
-import io.github.flemmli97.fateubw.common.registry.ModEntities;
-import io.github.flemmli97.fateubw.common.registry.ModItems;
-import io.github.flemmli97.fateubw.common.registry.ModParticles;
+import io.github.flemmli97.fateubw.common.registry.FateAttributes;
+import io.github.flemmli97.fateubw.common.registry.FateEntities;
+import io.github.flemmli97.fateubw.common.registry.FateItems;
+import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
@@ -32,12 +32,11 @@ import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.WrappedRunne
 import io.github.flemmli97.tenshilib.common.particle.ColoredParticleData;
 import io.github.flemmli97.tenshilib.common.utils.OrientedBoundingBox;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.ChatType;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -155,13 +154,13 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
     }
 
     public HassanClone(Level level, EntityHassan entityHassan) {
-        this(ModEntities.HASSAN_COPY.get(), level);
+        this(FateEntities.HASSAN_COPY.get(), level);
         this.setOriginal(entityHassan);
     }
 
     @Override
     protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.ASSASSIN_DAGGER.get()));
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(FateItems.ASSASSIN_DAGGER.get()));
     }
 
     @Override
@@ -309,7 +308,7 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
     }
 
     public boolean projectileBlockChance(DamageSource damageSource, float damage) {
-        return this.random.nextFloat() < (float) this.getAttributeValue(ModAttributes.PROJECTILE_BLOCK_CHANCE.get());
+        return this.random.nextFloat() < (float) this.getAttributeValue(FateAttributes.PROJECTILE_BLOCK_CHANCE.get());
     }
 
     @Override
@@ -334,7 +333,7 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
     protected void tickDeath() {
         if (this.level.isClientSide) {
             for (int i = 0; i < ((int) ((9 / (float) this.maxDeathTick()) * this.deathTime - 1)); i++) {
-                this.level.addParticle(new ColoredParticleData(ModParticles.LIGHT.get(), 76 / 255f, 128 / 255f, 207 / 255f, 0.3f, 0.15f), this.getX(this.random.nextDouble() * 3 - 1.5),
+                this.level.addParticle(new ColoredParticleData(FateParticles.LIGHT.get(), 76 / 255f, 128 / 255f, 207 / 255f, 0.3f, 0.15f), this.getX(this.random.nextDouble() * 3 - 1.5),
                         this.getY(this.random.nextDouble() * 3 - 1.5),
                         this.getZ(this.random.nextDouble() * 3 - 1.5),
                         this.random.nextGaussian() * 0.02D,
@@ -345,7 +344,7 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
         if (this.level instanceof ServerLevel serverLevel) {
             ++this.deathTime;
             if (this.deathTime == 1) {
-                serverLevel.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("fateubw.chat.servant.death").withStyle(ChatFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID);
+                serverLevel.getServer().getPlayerList().broadcastMessage(Component.translatable("fateubw.chat.servant.death").withStyle(ChatFormatting.RED), ChatType.SYSTEM);
                 this.playSound(SoundEvents.WITHER_SPAWN, 1.0F, 1.0F);
             }
             if (this.deathTime == this.maxDeathTick()) {
@@ -384,7 +383,7 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
             this.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
             weapon = this.mainHandCache;
         }
-        return weapon.isEmpty() ? new ItemStack(ModItems.ASSASSIN_DAGGER.get()) : weapon.copy();
+        return weapon.isEmpty() ? new ItemStack(FateItems.ASSASSIN_DAGGER.get()) : weapon.copy();
     }
 
     public void mobAttack(AnimatedAction anim, LivingEntity target, Consumer<LivingEntity> cons) {

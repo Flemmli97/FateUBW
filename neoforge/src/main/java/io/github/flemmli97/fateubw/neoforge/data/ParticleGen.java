@@ -5,7 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import io.github.flemmli97.fateubw.common.registry.ModParticles;
+import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
@@ -33,9 +33,9 @@ public class ParticleGen implements DataProvider {
     }
 
     public void add() {
-        this.addTo(ModParticles.LIGHT.get());
-        this.addTo(ModParticles.TRAIL.get(), 5);
-        this.addTo(ModParticles.RING.get());
+        this.addTo(FateParticles.LIGHT.get());
+        this.addTo(FateParticles.TRAIL.get(), 5);
+        this.addTo(FateParticles.RING.get());
     }
 
     @Override

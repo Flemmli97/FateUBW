@@ -1,7 +1,7 @@
 package io.github.flemmli97.fateubw.common.config;
 
 import com.google.common.collect.Lists;
-import io.github.flemmli97.tenshilib.api.config.IConfigListValue;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
@@ -10,7 +10,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PotionEffectsConfig implements IConfigListValue<PotionEffectsConfig> {
+public class PotionEffectsConfig {
 
     private List<EffectInstance> potions;
     private List<String> confVal;
@@ -19,15 +19,13 @@ public class PotionEffectsConfig implements IConfigListValue<PotionEffectsConfig
         this.potions = potions;
     }
 
-    @Override
-    public PotionEffectsConfig readFromString(List<String> s) {
-        this.confVal = Lists.newArrayList(s);
+    public PotionEffectsConfig read(List<String> config) {
+        this.confVal = Lists.newArrayList(config);
         this.potions = null;
         return this;
     }
 
-    @Override
-    public List<String> writeToString() {
+    public List<String> write() {
         if (this.confVal == null) {
             if (this.potions != null)
                 this.confVal = this.potions.stream().map(eff -> String.format("%s,%s,%s", Registry.MOB_EFFECT.getKey(eff.effect), eff.duration, eff.amplifier)).toList();
@@ -63,6 +61,6 @@ public class PotionEffectsConfig implements IConfigListValue<PotionEffectsConfig
         return effects;
     }
 
-    public record EffectInstance(MobEffect effect, int duration, int amplifier) {
+    public record EffectInstance(Holder<MobEffect> effect, int duration, int amplifier) {
     }
 }

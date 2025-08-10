@@ -1,7 +1,7 @@
 package io.github.flemmli97.fateubw.common.entity.servant;
 
 import io.github.flemmli97.fateubw.common.entity.misc.GaeBolg;
-import io.github.flemmli97.fateubw.common.registry.ModItems;
+import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
 import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
@@ -14,10 +14,9 @@ import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTarget
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTargetRunner;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.WrappedRunner;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.ChatType;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
@@ -95,7 +94,7 @@ public class EntityCuchulainn extends BaseServant {
 
     @Override
     protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.GAEBOLG.get()));
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(FateItems.GAEBOLG.get()));
     }
 
     @Override
@@ -126,11 +125,11 @@ public class EntityCuchulainn extends BaseServant {
         super.tick();
         if (!this.level.isClientSide) {
             this.gaeBolgThrowTick = Math.max(0, --this.gaeBolgThrowTick);
-            if (this.gaeBolgThrowTick == 1 && this.getMainHandItem().getItem() != ModItems.GAEBOLG.get())
-                this.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.GAEBOLG.get()));
+            if (this.gaeBolgThrowTick == 1 && this.getMainHandItem().getItem() != FateItems.GAEBOLG.get())
+                this.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(FateItems.GAEBOLG.get()));
             if (this.getHealth() < 0.25 * this.getMaxHealth() && this.getHealth() > 0) {
                 if (!this.critHealth) {
-                    this.level.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("fateubw.chat.servant.cuchulainn").withStyle(ChatFormatting.GOLD), ChatType.SYSTEM, Util.NIL_UUID);
+                    this.level.getServer().getPlayerList().broadcastMessage(Component.translatable("fateubw.chat.servant.cuchulainn").withStyle(ChatFormatting.GOLD), ChatType.SYSTEM);
                     this.critHealth = true;
                 }
                 this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 1, 2, false, false));
@@ -195,7 +194,7 @@ public class EntityCuchulainn extends BaseServant {
     }
 
     public void retrieveGaeBolg() {
-        this.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(ModItems.GAEBOLG.get()));
+        this.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(FateItems.GAEBOLG.get()));
         this.gaeBolgThrowTick = 0;
     }
 

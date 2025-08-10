@@ -2,27 +2,25 @@ package io.github.flemmli97.fateubw.common.network;
 
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 
-public record C2SMessageGui(C2SMessageGui.Type message) implements Packet {
+public record C2SMessageGui(C2SMessageGui.Type message) implements CustomPacketPayload {
 
-    public static final ResourceLocation ID = new ResourceLocation(Fate.MODID, "c2s_gui_message");
+    public static final CustomPacketPayload.Type<C2SMessageGui> TYPE = new CustomPacketPayload.Type<>(Fate.modRes("c2s_gui_message"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, C2SMessageGui> STREAM_CODEC = new StreamCodec<>() {
+        @Override
+        public C2SMessageGui decode(RegistryFriendlyByteBuf buf) {
+            return new C2SMessageGui(buf.readEnum(Type.class));
+        }
 
-    @Override
-    public void write(FriendlyByteBuf buf) {
-        buf.writeEnum(this.message);
-    }
-
-    @Override
-    public ResourceLocation getID() {
-        return ID;
-    }
-
-    public static C2SMessageGui read(FriendlyByteBuf buf) {
-        return new C2SMessageGui(buf.readEnum(Type.class));
-    }
+        @Override
+        public void encode(RegistryFriendlyByteBuf buf, C2SMessageGui pkt) {
+            buf.writeEnum(pkt.message);
+        }
+    };
 
     public static void handle(C2SMessageGui pkt, ServerPlayer sender) {
         if (sender == null)
@@ -36,6 +34,11 @@ public record C2SMessageGui(C2SMessageGui.Type message) implements Packet {
         if (pkt.message == Type.TEAM) {
             S2CTeamGuiData.sendTeamData(sender, true);
         }
+    }
+
+    @Override
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 
     public enum Type {

@@ -1,6 +1,6 @@
 package io.github.flemmli97.fateubw.common.entity.misc;
 
-import io.github.flemmli97.fateubw.common.registry.ModEntities;
+import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.tenshilib.common.utils.ItemUtils;
 import net.minecraft.nbt.CompoundTag;
@@ -25,7 +25,7 @@ public class ThrownItemEntity extends BaseProjectile {
     }
 
     public ThrownItemEntity(Level level, LivingEntity shootingEntity) {
-        super(ModEntities.THROWN_ITEM.get(), level, shootingEntity);
+        super(FateEntities.THROWN_ITEM.get(), level, shootingEntity);
     }
 
     @Override

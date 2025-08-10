@@ -10,7 +10,7 @@ import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.MotionTrailProvider;
-import io.github.flemmli97.fateubw.common.registry.ModParticles;
+import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
@@ -226,7 +226,7 @@ public class Pegasus extends PathfinderMob implements IAnimated, StandingVehicle
                     double sideScale = (this.random.nextDouble() - this.random.nextDouble()) * PORTAL_SIZE;
                     double upScale = (this.random.nextDouble() - this.random.nextDouble()) * PORTAL_SIZE + PORTAL_SIZE;
                     Vec3 pos = this.position().add(base).add(base2.scale(sideScale)).add(new Vec3(0, 1, 0).scale(upScale));
-                    this.level.addParticle(new ColoredParticleData(ModParticles.LIGHT.get(), 245 / 255F, 10 / 255F, 10 / 255F, 1, 0.5f), pos.x(), pos.y(), pos.z(), this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01);
+                    this.level.addParticle(new ColoredParticleData(FateParticles.LIGHT.get(), 245 / 255F, 10 / 255F, 10 / 255F, 1, 0.5f), pos.x(), pos.y(), pos.z(), this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01);
                 }
             }
             if (this.getAnimationHandler().isCurrent(CHARGING) && this.getAnimationHandler().getAnimation().isPast(0.48)) {
@@ -240,7 +240,7 @@ public class Pegasus extends PathfinderMob implements IAnimated, StandingVehicle
                     float g = (235 + this.getRandom().nextInt(10)) / 255F;
                     float b = 245 / 255F;
                     float scale = (float) (0.05 + this.getRandom().nextDouble() * 0.1);
-                    this.level.addParticle(new TrailParticleData(ModParticles.TRAIL.get(),
+                    this.level.addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
                                     TrailInfo.builder(new MotionTrailProvider.MotionTrailData(dir, 6, 10))
                                             .setColor(r, g, b, 0.6f)
                                             .setColor2(r, g, b, 0.6f)

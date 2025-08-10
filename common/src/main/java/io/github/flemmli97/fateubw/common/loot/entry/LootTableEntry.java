@@ -1,12 +1,13 @@
 package io.github.flemmli97.fateubw.common.loot.entry;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.flemmli97.fateubw.common.loot.GrailLootEntry;
 import io.github.flemmli97.fateubw.common.loot.LootCodecs;
 import io.github.flemmli97.fateubw.common.loot.LootSerializerType;
-import io.github.flemmli97.fateubw.common.registry.GrailLootSerializer;
-import net.minecraft.resources.ResourceLocation;
+import io.github.flemmli97.fateubw.common.registry.FateGrailLootSerializer;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -19,28 +20,28 @@ import java.util.function.Supplier;
 
 public class LootTableEntry extends GrailLootEntry<LootTableEntry> {
 
-    public static final Codec<LootTableEntry> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-            ResourceLocation.CODEC.listOf().fieldOf("loot_tables").forGetter(d -> d.lootTables),
+    public static final MapCodec<LootTableEntry> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
+            ResourceKey.codec(Registries.LOOT_TABLE).listOf().fieldOf("loot_tables").forGetter(d -> d.lootTables),
                     LootCodecs.LOOT_ITEM_CONDITION.listOf().optionalFieldOf("conditions").forGetter(d -> d.conditions.length == 0 ? Optional.empty() : Optional.of(Arrays.stream(d.conditions).toList()))
             ).apply(inst, (command, cond) -> new LootTableEntry(command, cond.map(l -> l.toArray(l.toArray(new LootItemCondition[0]))).orElse(new LootItemCondition[0])))
     );
 
-    private final List<ResourceLocation> lootTables;
+    private final List<ResourceKey<LootTable>> lootTables;
 
-    public LootTableEntry(List<ResourceLocation> lootTables, LootItemCondition... conditions) {
+    public LootTableEntry(List<ResourceKey<LootTable>> lootTables, LootItemCondition... conditions) {
         super(conditions);
         this.lootTables = lootTables;
     }
 
     @Override
     public Supplier<LootSerializerType<LootTableEntry>> getType() {
-        return GrailLootSerializer.LOOT_TABLE;
+        return FateGrailLootSerializer.LOOT_TABLE;
     }
 
     @Override
     public void accept(ServerPlayer player, LootContext context) {
-        ResourceLocation lootTable = this.lootTables.get(context.getRandom().nextInt(this.lootTables.size()));
-        LootTable table = player.getServer().getLootTables().get(lootTable);
+        ResourceKey<LootTable> lootTable = this.lootTables.get(context.getRandom().nextInt(this.lootTables.size()));
+        LootTable table = player.getServer().reloadableRegistries().getLootTable(lootTable);
         table.getRandomItems(context, player::addItem);
     }
 }

@@ -2,7 +2,7 @@ package io.github.flemmli97.fateubw.common.entity.misc;
 
 import io.github.flemmli97.fateubw.api.datapack.ServantExtraData;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
-import io.github.flemmli97.fateubw.common.registry.ModEntities;
+import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.entity.EntityUtil;
 import io.github.flemmli97.tenshilib.common.utils.MathUtils;
@@ -37,12 +37,12 @@ public class MagicBufCircle extends Entity implements OwnableEntity {
 
     public MagicBufCircle(EntityType<?> entityTypeIn, Level level) {
         super(entityTypeIn, level);
-        this.maxLivingTicks = DatapackHandler.SERVANT_PROPS.get(ModEntities.MEDEA.getID())
+        this.maxLivingTicks = DatapackHandler.SERVANT_PROPS.get(FateEntities.MEDEA.getID())
                 .getConfig(ServantExtraData.MEDEA_CIRCLE_DURATION);
     }
 
     public MagicBufCircle(Level level, LivingEntity owner, float r) {
-        this(ModEntities.MEDEA_CIRCLE.get(), level);
+        this(FateEntities.MEDEA_CIRCLE.get(), level);
         this.setPos(owner.getX(), owner.getY(), owner.getZ());
         this.owner = owner;
         this.ownerUUID = owner.getUUID();

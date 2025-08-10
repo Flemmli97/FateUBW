@@ -43,7 +43,7 @@ public abstract class PathFinderMixin implements PathFinderEx {
     private Path after(Path path, PathNavigationRegion region, Mob mob, Set<BlockPos> targetPositions, float maxRange, int accuracy, float searchDepthMultiplier) {
         if (this.fateubw$targetPositions != null && !this.fateubw$targetPositions.isEmpty()) {
             Path newPath = PathUtils.chainPaths(path, (pos, node) -> {
-                Map<Target, BlockPos> map = Map.of(this.nodeEvaluator.getGoal(pos.getX(), pos.getY(), pos.getZ()), pos);
+                Map<Target, BlockPos> map = Map.of(this.nodeEvaluator.getTarget(pos.getX(), pos.getY(), pos.getZ()), pos);
                 this.nodeEvaluator.prepare(region, mob);
                 return this.findPath(region.getProfiler(), node, map, maxRange, accuracy, searchDepthMultiplier);
             }, this.fateubw$targetPositions);

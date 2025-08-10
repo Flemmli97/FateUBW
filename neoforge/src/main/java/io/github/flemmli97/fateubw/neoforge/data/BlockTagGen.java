@@ -1,7 +1,7 @@
 package io.github.flemmli97.fateubw.neoforge.data;
 
 import io.github.flemmli97.fateubw.Fate;
-import io.github.flemmli97.fateubw.common.registry.ModBlocks;
+import io.github.flemmli97.fateubw.common.registry.FateBlocks;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.tags.BlockTags;
@@ -16,8 +16,8 @@ public class BlockTagGen extends BlockTagsProvider {
     @Override
     public void addTags() {
         this.tag(BlockTags.MINEABLE_WITH_PICKAXE)
-                .add(ModBlocks.GEM_ORE.get(), ModBlocks.ARTIFACT_ORE.get(), ModBlocks.DEEP_SLATE_GEM_ORE.get(), ModBlocks.DEEP_SLATE_ARTIFACT_ORE.get());
+                .add(FateBlocks.GEM_ORE.get(), FateBlocks.ARTIFACT_ORE.get(), FateBlocks.DEEP_SLATE_GEM_ORE.get(), FateBlocks.DEEP_SLATE_ARTIFACT_ORE.get());
         this.tag(BlockTags.NEEDS_IRON_TOOL)
-                .add(ModBlocks.GEM_ORE.get(), ModBlocks.ARTIFACT_ORE.get(), ModBlocks.DEEP_SLATE_GEM_ORE.get(), ModBlocks.DEEP_SLATE_ARTIFACT_ORE.get());
+                .add(FateBlocks.GEM_ORE.get(), FateBlocks.ARTIFACT_ORE.get(), FateBlocks.DEEP_SLATE_GEM_ORE.get(), FateBlocks.DEEP_SLATE_ARTIFACT_ORE.get());
     }
 }

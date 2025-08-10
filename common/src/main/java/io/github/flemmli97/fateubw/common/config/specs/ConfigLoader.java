@@ -27,17 +27,17 @@ public class ConfigLoader {
         CommonConfig.notifyBlacklist = ConfigSpecs.COMMON_CONFIG.notifyBlackList.get();
         CommonConfig.notificationWhitelist = ConfigSpecs.COMMON_CONFIG.whiteList.get();
         CommonConfig.notifyAll = ConfigSpecs.COMMON_CONFIG.notifyAll.get();
-        CommonConfig.npBoostEffect.readFromString(ConfigSpecs.COMMON_CONFIG.npBoostEffect.get());
+        CommonConfig.npBoostEffect.read(ConfigSpecs.COMMON_CONFIG.npBoostEffect.get());
 
         CommonConfig.babylonScale = ConfigSpecs.COMMON_CONFIG.babylonScale.get().floatValue();
-        CommonConfig.babylonWeapons.readFromString(ConfigSpecs.COMMON_CONFIG.babylonWeaponsBlacklist.get());
+        CommonConfig.babylonWeapons.read(ConfigSpecs.COMMON_CONFIG.babylonWeaponsBlacklist.get());
         CommonConfig.babylonWeapons.setWhiteList(ConfigSpecs.COMMON_CONFIG.babylonWeaponsWhitelist.get());
         CommonConfig.eaDamage = ConfigSpecs.COMMON_CONFIG.eaDamage.get().floatValue();
         CommonConfig.excaliburDamage = ConfigSpecs.COMMON_CONFIG.excaliburDamage.get().floatValue();
         CommonConfig.caladBolgDmg = ConfigSpecs.COMMON_CONFIG.caladBolgDmg.get().floatValue();
         CommonConfig.magicBeam = ConfigSpecs.COMMON_CONFIG.magicBeam.get().floatValue();
         CommonConfig.gaeBolgDmg = ConfigSpecs.COMMON_CONFIG.gaeBolgDmg.get().floatValue();
-        CommonConfig.gaeBolgEffect.readFromString(ConfigSpecs.COMMON_CONFIG.gaeBolgEffect.get());
+        CommonConfig.gaeBolgEffect.read(ConfigSpecs.COMMON_CONFIG.gaeBolgEffect.get());
 
         CommonConfig.excaliburMana = ConfigSpecs.COMMON_CONFIG.excaliburMana.get();
         CommonConfig.eaMana = ConfigSpecs.COMMON_CONFIG.eaMana.get();

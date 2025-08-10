@@ -2,7 +2,7 @@ package io.github.flemmli97.fateubw.common.utils;
 
 import com.mojang.datafixers.util.Pair;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
-import io.github.flemmli97.fateubw.common.registry.ModAttributes;
+import io.github.flemmli97.fateubw.common.registry.FateAttributes;
 import io.github.flemmli97.fateubw.common.world.TeamHandler;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.GoalAttackAction;
 import net.minecraft.server.level.ServerPlayer;
@@ -38,22 +38,22 @@ public class Utils {
     }
 
     public static float getDamageAfterMagicAbsorb(LivingEntity entity, float damage) {
-        if (entity.getAttribute(ModAttributes.MAGIC_RESISTANCE.get()) == null)
+        if (entity.getAttribute(FateAttributes.MAGIC_RESISTANCE.get()) == null)
             return damage;
-        return (float) (damage * entity.getAttribute(ModAttributes.MAGIC_RESISTANCE.get()).getValue());
+        return (float) (damage * entity.getAttribute(FateAttributes.MAGIC_RESISTANCE.get()).getValue());
     }
 
     public static float projectileReduce(LivingEntity entity, float damage) {
-        if (entity.getAttribute(ModAttributes.PROJECTILE_RESISTANCE.get()) == null)
+        if (entity.getAttribute(FateAttributes.PROJECTILE_RESISTANCE.get()) == null)
             return damage;
-        float reduceAmount = (float) Mth.clamp(1 - entity.getAttribute(ModAttributes.PROJECTILE_RESISTANCE.get()).getValue() * 0.04, 0.1, 1);
+        float reduceAmount = (float) Mth.clamp(1 - entity.getAttribute(FateAttributes.PROJECTILE_RESISTANCE.get()).getValue() * 0.04, 0.1, 1);
         return damage * reduceAmount;
     }
 
     public static float magicDamage(@Nullable Entity entity) {
-        if (!(entity instanceof LivingEntity living) || living.getAttribute(ModAttributes.MAGIC_ATTACK.get()) == null)
+        if (!(entity instanceof LivingEntity living) || living.getAttribute(FateAttributes.MAGIC_ATTACK.get()) == null)
             return 0;
-        return (float) living.getAttributeValue(ModAttributes.MAGIC_ATTACK.get());
+        return (float) living.getAttributeValue(FateAttributes.MAGIC_ATTACK.get());
     }
 
     public static boolean runWithInvulTimer(@Nullable Entity source, Entity target, Predicate<Entity> attack, int invulnerability) {

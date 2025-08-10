@@ -7,8 +7,8 @@ import io.github.flemmli97.fateubw.common.event.EventCalls;
 import io.github.flemmli97.fateubw.common.network.S2CPlayerCap;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import io.github.flemmli97.fateubw.neoforge.attachment.PlayerCap;
-import io.github.flemmli97.fateubw.platform.NetworkCalls;
 import io.github.flemmli97.fateubw.platform.Platform;
+import io.github.flemmli97.tenshilib.loader.LoaderNetwork;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -62,7 +62,7 @@ public class EventHandler {
             if (!rev)
                 event.getOriginal().reviveCaps();
             Platform.INSTANCE.getPlayerData(serverPlayer).ifPresent(data -> data.from(Platform.INSTANCE.getPlayerData(event.getOriginal()).orElseThrow(() -> new NullPointerException("Capability of old player is null!"))));
-            NetworkCalls.INSTANCE.sendToClient(new S2CPlayerCap(Platform.INSTANCE.getPlayerData(serverPlayer).orElseThrow(() -> new NullPointerException("Capability of player is null!"))), serverPlayer);
+            LoaderNetwork.INSTANCE.sendToPlayer(new S2CPlayerCap(Platform.INSTANCE.getPlayerData(serverPlayer).orElseThrow(() -> new NullPointerException("Capability of player is null!"))), serverPlayer);
             if (!rev)
                 event.getOriginal().invalidateCaps();
         }

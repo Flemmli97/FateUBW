@@ -8,8 +8,8 @@ import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.MotionTrailProvider;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailProvider;
-import io.github.flemmli97.fateubw.common.registry.ModItems;
-import io.github.flemmli97.fateubw.common.registry.ModParticles;
+import io.github.flemmli97.fateubw.common.registry.FateItems;
+import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
@@ -151,7 +151,7 @@ public class EntitySasaki extends BaseServant {
 
     @Override
     protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.MONOHOSHI_ZAO.get()));
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(FateItems.MONOHOSHI_ZAO.get()));
     }
 
     @Override
@@ -185,7 +185,7 @@ public class EntitySasaki extends BaseServant {
             AnimatedAction anim = this.getAnimationHandler().getAnimation();
             if (anim != null) {
                 if (anim.isAt(EntityTrailProvider.TRAIL_START)) {
-                    this.level.addParticle(new TrailParticleData(ModParticles.TRAIL.get(),
+                    this.level.addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
                                     TrailInfo.builder(EntityTrailProvider.EntityTrailData.create(this, anim.getID(), false))
                                             .setColor(37 / 255f, 37 / 255f, 88 / 255f, 0.4f)
                                             .setColor2(181 / 255f, 189 / 255f, 206 / 255f, 0.1f)
@@ -214,7 +214,7 @@ public class EntitySasaki extends BaseServant {
             Vec3 sweer = baseSweer.zRot(angle).yRot(yRot);
             Vec3 normal = baseNormal.zRot(angle).yRot(yRot);
             if (this.level instanceof ServerLevel serverLevel) {
-                serverLevel.sendParticles(new TrailParticleData(ModParticles.TRAIL.get(),
+                serverLevel.sendParticles(new TrailParticleData(FateParticles.TRAIL.get(),
                                 TrailInfo.builder(new MotionTrailProvider.MotionTrailData(dir, sweer, normal,
                                                 1, 4, duration))
                                         .setColor(72 / 255f, 13 / 255f, 161 / 255f, 0.7f)
@@ -225,7 +225,7 @@ public class EntitySasaki extends BaseServant {
                                         .build()),
                         at.x() + pos.x(), at.y() + pos.y(), at.z() + pos.z(), 0, 0, 0, 0, 1);
             } else {
-                this.level.addParticle(new TrailParticleData(ModParticles.TRAIL.get(),
+                this.level.addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
                                 TrailInfo.builder(new MotionTrailProvider.MotionTrailData(dir, sweer, normal,
                                                 1, 4, duration))
                                         .setColor(72 / 255f, 13 / 255f, 161 / 255f, 0.7f)

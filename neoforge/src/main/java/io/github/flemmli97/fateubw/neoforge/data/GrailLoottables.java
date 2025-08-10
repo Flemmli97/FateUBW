@@ -9,8 +9,11 @@ import io.github.flemmli97.fateubw.common.loot.entry.ServantEntry;
 import io.github.flemmli97.fateubw.common.loot.entry.VanillaItemEntry;
 import io.github.flemmli97.fateubw.common.loot.entry.XPEntry;
 import io.github.flemmli97.fateubw.common.loot.function.EnchantMaxFunction;
-import io.github.flemmli97.fateubw.common.registry.ModItems;
-import net.minecraft.data.DataGenerator;
+import io.github.flemmli97.fateubw.common.registry.FateItems;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Items;
@@ -24,16 +27,17 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class GrailLoottables extends GrailLootProvider {
 
-    public GrailLoottables(DataGenerator gen) {
-        super(gen);
+    public GrailLoottables(PackOutput output, CompletableFuture<HolderLookup.Provider> provider) {
+        super(output, Fate.MODID, provider);
     }
 
     @Override
-    protected void add() {
-        this.addLootTable(new ResourceLocation(Fate.MODID, "grails_blessing"), GrailLootBuilder.create("fateubw.loot.grails_blessing")
+    protected void add(HolderLookup.Provider provider) {
+        this.addLootTable(Fate.modRes("grails_blessing"), GrailLootBuilder.create("fateubw.loot.grails_blessing")
                 .addEntry(new XPEntry(UniformGenerator.between(9000, 15000)))
                 .addEntry(new VanillaItemEntry(LootItem.lootTableItem(Items.GOLD_INGOT)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(32, 64)))
@@ -47,20 +51,20 @@ public class GrailLoottables extends GrailLootProvider {
                 .addEntry(new VanillaItemEntry(LootItem.lootTableItem(Items.NETHERITE_INGOT)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(3, 7)))
                         .build()))
-                .addEntry(new VanillaItemEntry(LootItem.lootTableItem(ModItems.MANA_BOTTLE.get())
+                .addEntry(new VanillaItemEntry(LootItem.lootTableItem(FateItems.MANA_BOTTLE.get())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 6)))
                         .build()))
                 .addEntry(new VanillaItemEntry(LootItem.lootTableItem(Items.BOOK)
-                        .apply(EnchantWithLevelsFunction.enchantWithLevels(UniformGenerator.between(25, 30)))
+                        .apply(EnchantWithLevelsFunction.enchantWithLevels(provider, UniformGenerator.between(25, 30)))
                         .build()))
                 .addEntry(new VanillaItemEntry(LootItem.lootTableItem(Items.BOOK)
-                        .apply(EnchantWithLevelsFunction.enchantWithLevels(UniformGenerator.between(25, 30)))
+                        .apply(EnchantWithLevelsFunction.enchantWithLevels(provider, UniformGenerator.between(25, 30)))
                         .build()))
                 .addEntry(new VanillaItemEntry(LootItem.lootTableItem(Items.BOOK)
-                        .apply(EnchantWithLevelsFunction.enchantWithLevels(UniformGenerator.between(25, 30)))
+                        .apply(EnchantWithLevelsFunction.enchantWithLevels(provider, UniformGenerator.between(25, 30)))
                         .build())));
 
-        this.addLootTable(new ResourceLocation(Fate.MODID, "explorers_dream"), GrailLootBuilder.create("fateubw.loot.explorers_dream")
+        this.addLootTable(Fate.modRes("explorers_dream"), GrailLootBuilder.create("fateubw.loot.explorers_dream")
                 .addEntry(new XPEntry(UniformGenerator.between(10000, 17000)))
                 .addEntry(new VanillaItemEntry(LootItem.lootTableItem(Items.DIAMOND)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 4)))
@@ -83,99 +87,68 @@ public class GrailLoottables extends GrailLootProvider {
                 .addEntry(new VanillaItemEntry(LootItem.lootTableItem(Items.ELYTRA)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(0, 1)))
                         .build()))
-                .addEntry(new LootTableEntry(List.of(new ResourceLocation("minecraft:chests/end_city_treasure"),
-                        new ResourceLocation("minecraft:chests/buried_treasure"),
-                        new ResourceLocation("minecraft:chests/shipwreck_treasure")))));
+                .addEntry(new LootTableEntry(List.of(
+                        ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.withDefaultNamespace("chests/end_city_treasure")),
+                        ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.withDefaultNamespace("chests/buried_treasure")),
+                        ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.withDefaultNamespace("chests/shipwreck_treasure"))))));
 
-        this.addLootTable(new ResourceLocation(Fate.MODID, "grail_empowerment"), GrailLootBuilder.create("fateubw.loot.grail_empowerment")
+        this.addLootTable(Fate.modRes("grail_empowerment"), GrailLootBuilder.create("fateubw.loot.grail_empowerment")
                 .addEntry(new XPEntry(UniformGenerator.between(5000, 9000)))
                 .addEntry(new AttributeEntry(Attributes.MAX_HEALTH, 20, UniformGenerator.between(1, 2)))
                 .addEntry(new AttributeEntry(Attributes.ATTACK_DAMAGE, 5, UniformGenerator.between(0.25f, 0.5f)))
                 .addEntry(new VanillaItemEntry(LootItem.lootTableItem(Items.BOOK)
-                        .apply(EnchantMaxFunction.builder()
-                                .withEnchantment(Enchantments.SHARPNESS)
-                                .withEnchantment(Enchantments.UNBREAKING)
-                                .withEnchantment(Enchantments.SMITE)
-                                .withEnchantment(Enchantments.BANE_OF_ARTHROPODS)
-                                .withEnchantment(Enchantments.IMPALING))
+                        .apply(EnchantMaxFunction.builder(provider)
+                                .withEnchantment(Enchantments.SHARPNESS, Enchantments.UNBREAKING,
+                                        Enchantments.SMITE, Enchantments.BANE_OF_ARTHROPODS, Enchantments.IMPALING))
                         .build()))
                 .addEntry(new VanillaItemEntry(LootItem.lootTableItem(Items.BOOK)
-                        .apply(EnchantMaxFunction.builder()
-                                .withEnchantment(Enchantments.SHARPNESS)
-                                .withEnchantment(Enchantments.UNBREAKING)
-                                .withEnchantment(Enchantments.SMITE)
-                                .withEnchantment(Enchantments.BANE_OF_ARTHROPODS)
-                                .withEnchantment(Enchantments.IMPALING))
+                        .apply(EnchantMaxFunction.builder(provider)
+                                .withEnchantment(Enchantments.SHARPNESS, Enchantments.UNBREAKING, Enchantments.SMITE,
+                                        Enchantments.BANE_OF_ARTHROPODS, Enchantments.IMPALING))
                         .build()))
                 .addEntry(new VanillaItemEntry(LootItem.lootTableItem(Items.BOOK)
-                        .apply(EnchantMaxFunction.builder()
-                                .withEnchantment(Enchantments.SHARPNESS)
-                                .withEnchantment(Enchantments.UNBREAKING)
-                                .withEnchantment(Enchantments.SMITE)
-                                .withEnchantment(Enchantments.BANE_OF_ARTHROPODS)
-                                .withEnchantment(Enchantments.IMPALING))
+                        .apply(EnchantMaxFunction.builder(provider)
+                                .withEnchantment(Enchantments.SHARPNESS, Enchantments.UNBREAKING, Enchantments.SMITE,
+                                        Enchantments.BANE_OF_ARTHROPODS, Enchantments.IMPALING))
                         .build()))
                 .addEntry(new VanillaItemEntry(LootItem.lootTableItem(Items.BOOK)
-                        .apply(EnchantMaxFunction.builder()
-                                .withEnchantment(Enchantments.SHARPNESS)
-                                .withEnchantment(Enchantments.UNBREAKING)
-                                .withEnchantment(Enchantments.SMITE)
-                                .withEnchantment(Enchantments.BANE_OF_ARTHROPODS)
-                                .withEnchantment(Enchantments.IMPALING))
+                        .apply(EnchantMaxFunction.builder(provider)
+                                .withEnchantment(Enchantments.SHARPNESS, Enchantments.UNBREAKING, Enchantments.SMITE,
+                                        Enchantments.BANE_OF_ARTHROPODS, Enchantments.IMPALING))
                         .build())));
 
-        this.addLootTable(new ResourceLocation(Fate.MODID, "divine_protection"), GrailLootBuilder.create("fateubw.loot.divine_protection")
+        this.addLootTable(Fate.modRes("divine_protection"), GrailLootBuilder.create("fateubw.loot.divine_protection")
                 .addEntry(new XPEntry(UniformGenerator.between(5000, 9000)))
                 .addEntry(new AttributeEntry(Attributes.MAX_HEALTH, 20, UniformGenerator.between(0, 2)))
                 .addEntry(new AttributeEntry(Attributes.ARMOR, 5, UniformGenerator.between(0.25f, 0.5f)))
                 .addEntry(new AttributeEntry(Attributes.ARMOR_TOUGHNESS, 5, UniformGenerator.between(0.2f, 0.4f)))
                 .addEntry(new VanillaItemEntry(LootItem.lootTableItem(Items.BOOK)
-                        .apply(EnchantMaxFunction.builder()
-                                .withEnchantment(Enchantments.ALL_DAMAGE_PROTECTION)
-                                .withEnchantment(Enchantments.UNBREAKING)
-                                .withEnchantment(Enchantments.FALL_PROTECTION)
-                                .withEnchantment(Enchantments.PROJECTILE_PROTECTION)
-                                .withEnchantment(Enchantments.FIRE_PROTECTION)
-                                .withEnchantment(Enchantments.BLAST_PROTECTION))
+                        .apply(EnchantMaxFunction.builder(provider)
+                                .withEnchantment(Enchantments.PROTECTION, Enchantments.UNBREAKING, Enchantments.FEATHER_FALLING, Enchantments.PROJECTILE_PROTECTION,
+                                        Enchantments.FIRE_PROTECTION, Enchantments.BLAST_PROTECTION))
                         .build()))
                 .addEntry(new VanillaItemEntry(LootItem.lootTableItem(Items.BOOK)
-                        .apply(EnchantMaxFunction.builder()
-                                .withEnchantment(Enchantments.ALL_DAMAGE_PROTECTION)
-                                .withEnchantment(Enchantments.UNBREAKING)
-                                .withEnchantment(Enchantments.FALL_PROTECTION)
-                                .withEnchantment(Enchantments.PROJECTILE_PROTECTION)
-                                .withEnchantment(Enchantments.FIRE_PROTECTION)
-                                .withEnchantment(Enchantments.BLAST_PROTECTION))
+                        .apply(EnchantMaxFunction.builder(provider)
+                                .withEnchantment(Enchantments.PROTECTION, Enchantments.UNBREAKING, Enchantments.FEATHER_FALLING, Enchantments.PROJECTILE_PROTECTION,
+                                        Enchantments.FIRE_PROTECTION, Enchantments.BLAST_PROTECTION))
                         .build()))
                 .addEntry(new VanillaItemEntry(LootItem.lootTableItem(Items.BOOK)
-                        .apply(EnchantMaxFunction.builder()
-                                .withEnchantment(Enchantments.ALL_DAMAGE_PROTECTION)
-                                .withEnchantment(Enchantments.UNBREAKING)
-                                .withEnchantment(Enchantments.FALL_PROTECTION)
-                                .withEnchantment(Enchantments.PROJECTILE_PROTECTION)
-                                .withEnchantment(Enchantments.FIRE_PROTECTION)
-                                .withEnchantment(Enchantments.BLAST_PROTECTION))
+                        .apply(EnchantMaxFunction.builder(provider)
+                                .withEnchantment(Enchantments.PROTECTION, Enchantments.UNBREAKING, Enchantments.FEATHER_FALLING, Enchantments.PROJECTILE_PROTECTION,
+                                        Enchantments.FIRE_PROTECTION, Enchantments.BLAST_PROTECTION))
                         .build()))
                 .addEntry(new VanillaItemEntry(LootItem.lootTableItem(Items.BOOK)
-                        .apply(EnchantMaxFunction.builder()
-                                .withEnchantment(Enchantments.ALL_DAMAGE_PROTECTION)
-                                .withEnchantment(Enchantments.UNBREAKING)
-                                .withEnchantment(Enchantments.FALL_PROTECTION)
-                                .withEnchantment(Enchantments.PROJECTILE_PROTECTION)
-                                .withEnchantment(Enchantments.FIRE_PROTECTION)
-                                .withEnchantment(Enchantments.BLAST_PROTECTION))
+                        .apply(EnchantMaxFunction.builder(provider)
+                                .withEnchantment(Enchantments.PROTECTION, Enchantments.UNBREAKING, Enchantments.FEATHER_FALLING, Enchantments.PROJECTILE_PROTECTION,
+                                        Enchantments.FIRE_PROTECTION, Enchantments.BLAST_PROTECTION))
                         .build()))
                 .addEntry(new VanillaItemEntry(LootItem.lootTableItem(Items.BOOK)
-                        .apply(EnchantMaxFunction.builder()
-                                .withEnchantment(Enchantments.ALL_DAMAGE_PROTECTION)
-                                .withEnchantment(Enchantments.UNBREAKING)
-                                .withEnchantment(Enchantments.FALL_PROTECTION)
-                                .withEnchantment(Enchantments.PROJECTILE_PROTECTION)
-                                .withEnchantment(Enchantments.FIRE_PROTECTION)
-                                .withEnchantment(Enchantments.BLAST_PROTECTION))
+                        .apply(EnchantMaxFunction.builder(provider)
+                                .withEnchantment(Enchantments.PROTECTION, Enchantments.UNBREAKING, Enchantments.FEATHER_FALLING, Enchantments.PROJECTILE_PROTECTION,
+                                        Enchantments.FIRE_PROTECTION, Enchantments.BLAST_PROTECTION))
                         .build())));
 
-        this.addLootTable(new ResourceLocation(Fate.MODID, "eternal_pact"), GrailLootBuilder.create("fateubw.loot.eternal_pact")
+        this.addLootTable(Fate.modRes("eternal_pact"), GrailLootBuilder.create("fateubw.loot.eternal_pact")
                 .addEntry(new XPEntry(UniformGenerator.between(5000, 9000)))
                 .addEntry(new ServantEntry(false))
                 .addEntry(new VanillaItemEntry(LootItem.lootTableItem(Items.SPLASH_POTION)
@@ -203,7 +176,7 @@ public class GrailLoottables extends GrailLootProvider {
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(0, 1)))
                         .build())));
 
-        this.addLootTable(new ResourceLocation(Fate.MODID, "legendary_armaments"), GrailLootBuilder.create("fateubw.loot.legendary_armaments")
+        this.addLootTable(Fate.modRes("legendary_armaments"), GrailLootBuilder.create("fateubw.loot.legendary_armaments")
                 .addEntry(new XPEntry(UniformGenerator.between(5000, 9000)))
                 .addEntry(new ServantEntry(true))
                 .addEntry(new AttributeEntry(Attributes.ARMOR, 3, UniformGenerator.between(0.2f, 0.4f)))

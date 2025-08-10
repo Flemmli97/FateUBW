@@ -12,7 +12,7 @@ import io.github.flemmli97.fateubw.api.datapack.AttributeHolderProperties;
 import io.github.flemmli97.fateubw.api.datapack.ServantProperties;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.lib.BuiltinServantClasses;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
@@ -32,7 +32,8 @@ import java.util.Set;
 
 public class EntityPropsManager extends SimpleJsonResourceReloadListener {
 
-    public static final String DIRECTORY = "fate_entity_properties";
+    public static final ResourceLocation ID = Fate.modRes("entity_properties");
+    public static final String DIRECTORY = String.format("%s/%s", ID.getNamespace(), ID.getPath());
     private static final Gson GSON = new GsonBuilder().create();
 
     private Map<ResourceLocation, ServantProperties> props = ImmutableMap.of();
@@ -73,7 +74,7 @@ public class EntityPropsManager extends SimpleJsonResourceReloadListener {
             Map<ResourceLocation, List<EntityTypeAndID>> classes = new HashMap<>();
             Set<EntityTypeAndID> servants = new HashSet<>();
             this.props.forEach((id, prop) -> {
-                EntityType<?> type = Registry.ENTITY_TYPE.get(id);
+                EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.get(id);
                 Entity entity = type.create(level);
                 if (!prop.getServantClass().equals(BuiltinServantClasses.NONE) && entity instanceof BaseServant) {
                     EntityTypeAndID entry = new EntityTypeAndID((EntityType<? extends BaseServant>) type, id, prop.weight());
@@ -98,16 +99,13 @@ public class EntityPropsManager extends SimpleJsonResourceReloadListener {
             try {
                 Optional<ServantProperties> servantProps = ServantProperties.CODEC.parse(JsonOps.INSTANCE, el).result();
                 if (servantProps.isPresent()) {
-                    ServantProperties props = ServantProperties.CODEC.parse(JsonOps.INSTANCE, el)
-                            .getOrThrow(false, Fate.LOGGER::error);
                     builder.put(fres, servantProps.get());
                 } else {
-                    AttributeHolderProperties props = AttributeHolderProperties.CODEC.parse(JsonOps.INSTANCE, el)
-                            .getOrThrow(false, Fate.LOGGER::error);
+                    AttributeHolderProperties props = AttributeHolderProperties.CODEC.parse(JsonOps.INSTANCE, el).getOrThrow();
                     attBuilder.put(fres, props);
                 }
             } catch (Exception ex) {
-                Fate.LOGGER.error("Couldnt parse entity properties json {} {}", fres, ex);
+                Fate.LOGGER.error("Couldn't parse entity properties json {} {}", fres, ex);
                 ex.fillInStackTrace();
             }
         });
