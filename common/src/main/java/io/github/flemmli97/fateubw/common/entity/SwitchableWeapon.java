@@ -1,6 +1,10 @@
 package io.github.flemmli97.fateubw.common.entity;
 
+import com.mojang.serialization.DynamicOps;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -33,19 +37,21 @@ public class SwitchableWeapon<T extends LivingEntity> {
         }
     }
 
-    public void save(CompoundTag nbt) {
+    public void save(CompoundTag nbt, HolderLookup.Provider provider) {
         CompoundTag save = new CompoundTag();
         save.putBoolean("Switched", this.switched);
-        save.put("SwitchMain", this.main.save(new CompoundTag()));
-        save.put("SwitchOff", this.off.save(new CompoundTag()));
+        DynamicOps<Tag> ops = provider.createSerializationContext(NbtOps.INSTANCE);
+        save.put("SwitchMain", ItemStack.OPTIONAL_CODEC.encodeStart(ops, this.main).getOrThrow());
+        save.put("SwitchOff", ItemStack.OPTIONAL_CODEC.encodeStart(ops, this.off).getOrThrow());
         nbt.put("SwitchStates", save);
     }
 
-    public void read(CompoundTag nbt) {
+    public void read(CompoundTag nbt, HolderLookup.Provider provider) {
         CompoundTag tag = nbt.getCompound("SwitchStates");
         this.switched = tag.getBoolean("Switched");
-        this.main = ItemStack.of(tag.getCompound("SwitchMain"));
-        this.off = ItemStack.of(tag.getCompound("SwitchOff"));
+        DynamicOps<Tag> ops = provider.createSerializationContext(NbtOps.INSTANCE);
+        this.main = ItemStack.OPTIONAL_CODEC.parse(ops, tag.get("SwitchMain")).getOrThrow();
+        this.off = ItemStack.OPTIONAL_CODEC.parse(ops, tag.get("SwitchOff")).getOrThrow();
         if (this.switched)
             this.switchItems(true);
     }

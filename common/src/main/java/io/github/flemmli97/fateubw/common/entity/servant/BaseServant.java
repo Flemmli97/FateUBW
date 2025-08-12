@@ -16,8 +16,8 @@ import io.github.flemmli97.fateubw.common.network.S2CServantGui;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailHolder;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailHolderProvider;
 import io.github.flemmli97.fateubw.common.registry.FateAttributes;
+import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
-import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
@@ -214,7 +214,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     //=====Init
 
     @Override
-    protected void defineSynchedData() {
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData();
         this.entityData.define(STATIONARY, false);
         this.entityData.define(SHOW_SERVANT, false);
@@ -316,7 +316,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
             if (this.getServer() != null)
                 owner = this.getServer().getPlayerList().getPlayer(ownerId);
             else
-                owner = this.level.getPlayerByUUID(ownerId);
+                owner = this.level().getPlayerByUUID(ownerId);
             if (owner != null)
                 this.setOwner(owner);
         }
@@ -445,12 +445,12 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
             this.setDeltaMovement(Vec3.ZERO);
             this.getNavigation().stop();
         }
-        if (this.level instanceof ServerLevel serverLevel) {
+        if (this.level() instanceof ServerLevel serverLevel) {
             this.regenMana();
             GrailWarHandler handler = GrailWarHandler.get(serverLevel.getServer());
             if (handler.isParticipant(this)) {
                 ChunkPos pos = this.chunkPosition();
-                ((ServerChunkCache) this.level.getChunkSource()).addRegionTicket(TRACKINGTICKET, pos, 2, pos);
+                ((ServerChunkCache) this.level().getChunkSource()).addRegionTicket(TRACKINGTICKET, pos, 2, pos);
                 handler.moveToPlayer(this);
             }
 
@@ -562,9 +562,9 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     @Override
     protected void tickDeath() {
         this.died = true;
-        if (this.level.isClientSide) {
+        if (this.level().isClientSide) {
             for (int i = 0; i < ((int) ((9 / (float) this.maxDeathTick()) * this.deathTime - 1)); i++) {
-                this.level.addParticle(new ColoredParticleData(FateParticles.LIGHT.get(), 76 / 255f, 128 / 255f, 207 / 255f, 0.3f, 0.15f), this.getX(this.random.nextDouble() * 3 - 1.5),
+                this.level().addParticle(new ColoredParticleData(FateParticles.LIGHT.get(), 76 / 255f, 128 / 255f, 207 / 255f, 0.3f, 0.15f), this.getX(this.random.nextDouble() * 3 - 1.5),
                         this.getY(this.random.nextDouble() * 3 - 1.5),
                         this.getZ(this.random.nextDouble() * 3 - 1.5),
                         this.random.nextGaussian() * 0.02D,
@@ -573,23 +573,23 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
             }
         }
         ++this.deathTime;
-        if (this.level instanceof ServerLevel serverLevel) {
+        if (this.level() instanceof ServerLevel serverLevel) {
             if (this.deathTime == 1) {
                 GrailWarHandler handler = GrailWarHandler.get(serverLevel.getServer());
-                if (handler.isParticipant(this) || this.getLastDamageSource() == CustomDamageSource.GRAIL_DAMAGE) {
+                if (handler.isParticipant(this) || (this.getLastDamageSource() != null && this.getLastDamageSource().is(FateDamageTypes.GRAIL))) {
                     handler.broadcastParticipants(Component.translatable("fateubw.chat.servant.death").withStyle(ChatFormatting.RED));
                 }
                 this.playSound(SoundEvents.WITHER_SPAWN, 1.0F, 1.0F);
                 this.getAnimationHandler().setAnimation(this.deathAnim());
             }
-            if (this.getLastDamageSource() != CustomDamageSource.GRAIL_DAMAGE) {
-                if (this.deathTime > 15 && this.deathTime % 5 == 0 && (this.lastHurtByPlayerTime > 0 || this.isAlwaysExperienceDropper()) && this.shouldDropExperience() && this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
+            if (this.getLastDamageSource() == null || !this.getLastDamageSource().is(FateDamageTypes.GRAIL)) {
+                if (this.deathTime > 15 && this.deathTime % 5 == 0 && (this.lastHurtByPlayerTime > 0 || this.isAlwaysExperienceDropper()) && this.shouldDropExperience() && this.level().getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
                     int exp = this.xpReward;
                     int splitExp;
                     while (exp > 0) {
                         splitExp = ExperienceOrb.getExperienceValue(exp);
                         exp -= splitExp;
-                        this.level.addFreshEntity(new ExperienceOrb(this.level, this.getX(), this.getY(), this.getZ(), splitExp));
+                        this.level().addFreshEntity(new ExperienceOrb(this.level, this.getX(), this.getY(), this.getZ(), splitExp));
                     }
                 }
             }
@@ -641,9 +641,9 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
 
     public void mobAttack(AnimatedAction anim, LivingEntity target, Consumer<LivingEntity> cons) {
         OrientedBoundingBox obb = this.calculateAttackAABB(anim, this.targetPosition != null || target == null ? this.targetPosition : target.position(), 0.2);
-        this.level.getEntitiesOfClass(LivingEntity.class, obb.getEncompassingBox(),
+        this.level().getEntitiesOfClass(LivingEntity.class, obb.getEncompassingBox(),
                 entity -> this.targetPred.test(entity) && obb.intersects(entity.getBoundingBox())).forEach(cons);
-        if (!this.level.isClientSide)
+        if (!this.level().isClientSide)
             S2CAttackDebug.sendDebugPacket(obb, S2CAttackDebug.EnumAABBType.ATTACK, this);
     }
 
@@ -689,7 +689,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         if (damageSource.isBypassInvul()) {
             return super.hurt(damageSource, damage);
         } else {
-            if (damageSource.getEntity() == null || !damageSource.getEntity().getType().is(FateTags.STRONG_MOB))
+            if (damageSource.getEntity() == null || !damageSource.getEntity().getType().is(FateTags.EntityTypes.STRONG_MOB))
                 damage *= 0.75;
             return super.hurt(damageSource, Math.min(50, damage));
         }
@@ -740,7 +740,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
             float f = 0.25F + (float) EnchantmentHelper.getBlockEfficiency(this) * 0.05F;
             if (this.random.nextFloat() < f) {
                 player.getCooldowns().addCooldown(Items.SHIELD, 100);
-                this.level.broadcastEntityEvent(player, (byte) 30);
+                this.level().broadcastEntityEvent(player, (byte) 30);
             }
         }
     }
@@ -753,14 +753,14 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     }
 
     @Override
-    protected void dropAllDeathLoot(DamageSource damageSource) {
-        if (damageSource == CustomDamageSource.GRAIL_DAMAGE || (this.getServer() != null && GrailWarHandler.get(this.getServer()).isParticipant(this)))
+    protected void dropAllDeathLoot(ServerLevel level, DamageSource damageSource) {
+        if (damageSource.is(FateDamageTypes.GRAIL) || (this.getServer() != null && GrailWarHandler.get(this.getServer()).isParticipant(this)))
             return;
-        super.dropAllDeathLoot(damageSource);
+        super.dropAllDeathLoot(level, damageSource);
     }
 
     public void onKillOrder(Player player, boolean success) {
-        this.hurt(CustomDamageSource.GRAIL_DAMAGE, Float.MAX_VALUE);
+        this.hurt(FateDamageTypes.grail(this.registryAccess()), Float.MAX_VALUE);
         player.sendSystemMessage(Component.translatable("fateubw.chat.command.kill").withStyle(ChatFormatting.RED));
     }
 

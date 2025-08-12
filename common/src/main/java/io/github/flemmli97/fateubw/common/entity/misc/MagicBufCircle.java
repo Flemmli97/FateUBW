@@ -4,12 +4,10 @@ import io.github.flemmli97.fateubw.api.datapack.ServantExtraData;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.utils.Utils;
-import io.github.flemmli97.tenshilib.common.entity.EntityUtil;
-import io.github.flemmli97.tenshilib.common.utils.MathUtils;
+import io.github.flemmli97.tenshilib.common.entity.EntityUtils;
+import io.github.flemmli97.tenshilib.common.utils.math.MathUtils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -50,20 +48,25 @@ public class MagicBufCircle extends Entity implements OwnableEntity {
     }
 
     @Override
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        builder.define(RANGE, 1f);
+    }
+
+    @Override
     public void tick() {
         super.tick();
         this.livingTick++;
-        if (this.level.isClientSide && this.livingTick % 5 == 0) {
+        if (this.level().isClientSide && this.livingTick % 5 == 0) {
             if (this.circlePoints == null)
                 this.circlePoints = MathUtils.pointsOfCircle(this.entityData.get(RANGE), 7);
             for (float[] f : this.circlePoints)
                 for (int i = 0; i < 3; i++)
-                    this.level.addParticle(ParticleTypes.WITCH, this.getX() + f[0], this.getY() + 0.2, this.getZ() + f[1], 0, 0.12, 0);
+                    this.level().addParticle(ParticleTypes.WITCH, this.getX() + f[0], this.getY() + 0.2, this.getZ() + f[1], 0, 0.12, 0);
         }
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             if (this.tickCount % 5 == 0 && this.getOwner() != null) {
                 float r = this.entityData.get(RANGE);
-                for (LivingEntity entity : this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(r),
+                for (LivingEntity entity : this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(r),
                         entity -> Utils.alliedTo(this.getOwner(), entity))) {
                     entity.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 1, 2, true, false));
                     if (!entity.hasEffect(MobEffects.REGENERATION))
@@ -83,11 +86,6 @@ public class MagicBufCircle extends Entity implements OwnableEntity {
     }
 
     @Override
-    protected void defineSynchedData() {
-        this.entityData.define(RANGE, 1f);
-    }
-
-    @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
         this.ownerUUID = compound.getUUID("Owner");
         this.livingTick = compound.getInt("Ticks");
@@ -102,11 +100,6 @@ public class MagicBufCircle extends Entity implements OwnableEntity {
     }
 
     @Override
-    public Packet<?> getAddEntityPacket() {
-        return new ClientboundAddEntityPacket(this);
-    }
-
-    @Override
     public UUID getOwnerUUID() {
         return this.ownerUUID;
     }
@@ -114,7 +107,7 @@ public class MagicBufCircle extends Entity implements OwnableEntity {
     @Override
     public LivingEntity getOwner() {
         if (this.owner == null && this.ownerUUID != null)
-            this.owner = EntityUtil.findFromUUID(LivingEntity.class, this.level, this.ownerUUID);
+            this.owner = EntityUtils.findFromUUID(LivingEntity.class, this.level(), this.ownerUUID);
         return this.owner;
     }
 }

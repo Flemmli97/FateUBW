@@ -39,9 +39,9 @@ import io.github.flemmli97.fateubw.common.entity.summons.LesserMonster;
 import io.github.flemmli97.fateubw.common.entity.summons.Pegasus;
 import io.github.flemmli97.fateubw.common.items.FateEgg;
 import io.github.flemmli97.fateubw.common.lib.BuiltinServantClasses;
-import io.github.flemmli97.fateubw.platform.Platform;
 import io.github.flemmli97.tenshilib.common.item.SpawnEgg;
 import io.github.flemmli97.tenshilib.loader.LoaderRegistryAccess;
+import io.github.flemmli97.tenshilib.loader.TenshiLibCrossPlat;
 import io.github.flemmli97.tenshilib.loader.registry.LoaderRegister;
 import io.github.flemmli97.tenshilib.loader.registry.RegistryEntrySupplier;
 import net.minecraft.core.registries.Registries;
@@ -235,7 +235,7 @@ public class FateEntities {
     private static <V extends BaseServant> RegistryEntrySupplier<EntityType<?>, EntityType<V>> regServant(String name, EntityType.Builder<V> entity, int primary, int secondary, ServantProperties.Builder props) {
         RegistryEntrySupplier<EntityType<?>, EntityType<V>> reg = reg(name, entity.clientTrackingRange(10));
         FateCreativeTab.addToTab(FateItems.ITEMS.register(name + "_spawn_egg", () -> new FateEgg(reg, primary, secondary, new Item.Properties())));
-        if (Platform.INSTANCE.isDatagen()) {
+        if (TenshiLibCrossPlat.INSTANCE.isDatagen()) {
             DEFAULT_SERVANT_PROPERTIES.put(reg.getID(), props);
             SERVANTS.add((RegistryEntrySupplier) reg);
         }
@@ -245,7 +245,7 @@ public class FateEntities {
     private static <V extends Mob> RegistryEntrySupplier<EntityType<?>, EntityType<V>> regWithEgg(String name, EntityType.Builder<V> entity, int primary, int secondary, AttributeHolderProperties.Builder props) {
         RegistryEntrySupplier<EntityType<?>, EntityType<V>> reg = reg(name, entity.clientTrackingRange(10));
         FateCreativeTab.addToTab(FateItems.ITEMS.register(name + "_spawn_egg", () -> new SpawnEgg(reg, primary, secondary, new Item.Properties())));
-        if (Platform.INSTANCE.isDatagen()) {
+        if (TenshiLibCrossPlat.INSTANCE.isDatagen()) {
             DEFAULT_ENTITY_PROPERTIES.put(reg.getID(), props);
         }
         return reg;
@@ -253,7 +253,7 @@ public class FateEntities {
 
     private static RegistryEntrySupplier<EntityType<?>, EntityType<HassanClone>> hassanClone(AttributeHolderProperties.Builder props) {
         RegistryEntrySupplier<EntityType<?>, EntityType<HassanClone>> reg = reg("hassan_copy", EntityType.Builder.of(HassanClone::new, MobCategory.MISC));
-        if (Platform.INSTANCE.isDatagen()) {
+        if (TenshiLibCrossPlat.INSTANCE.isDatagen()) {
             DEFAULT_ENTITY_PROPERTIES.put(reg.getID(), props);
         }
         return reg;

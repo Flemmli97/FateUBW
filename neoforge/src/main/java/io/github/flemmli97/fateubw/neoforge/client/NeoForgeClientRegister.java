@@ -8,7 +8,6 @@ import io.github.flemmli97.fateubw.client.render.item.RenderExcaliburItem;
 import io.github.flemmli97.fateubw.common.registry.FateBlocks;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -21,6 +20,7 @@ import net.minecraft.core.particles.ParticleType;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
@@ -70,12 +70,11 @@ public class NeoForgeClientRegister {
     }
 
     @SubscribeEvent
-    public static void registerParticles(ParticleFactoryRegisterEvent event) {
-        ParticleEngine manager = Minecraft.getInstance().particleEngine;
+    public static void registerParticles(RegisterParticleProvidersEvent event) {
         ClientRegister.registerParticles(new ClientRegister.PartileRegister() {
             @Override
             public <T extends ParticleOptions> void register(ParticleType<T> type, Function<SpriteSet, ParticleProvider<T>> provider) {
-                manager.register(type, provider::apply);
+                event.registerSpriteSet(type, provider::apply);
             }
         });
     }
@@ -83,6 +82,6 @@ public class NeoForgeClientRegister {
     @SubscribeEvent
     public static void registerShader(RegisterShadersEvent event) {
         FateRenders.registerShader(((id, vertexFormat, onLoad) ->
-                event.registerShader(new ShaderInstance(event.getResourceManager(), id, vertexFormat), onLoad)));
+                event.registerShader(new ShaderInstance(event.getResourceProvider(), id, vertexFormat), onLoad)));
     }
 }

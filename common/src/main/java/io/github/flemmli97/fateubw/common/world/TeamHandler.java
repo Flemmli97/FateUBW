@@ -3,6 +3,7 @@ package io.github.flemmli97.fateubw.common.world;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.network.S2CTeamGuiData;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
@@ -10,6 +11,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.player.Player;
@@ -28,6 +30,7 @@ import java.util.UUID;
 public class TeamHandler extends SavedData {
 
     private static final String IDENTIFIER = "FateGrailTeams";
+    private static final SavedData.Factory<TeamHandler> FACTORY = new Factory<>(TeamHandler::new, TeamHandler::new, DataFixTypes.LEVEL);
 
     private final Map<UUID, GrailTeam> teams = new HashMap<>();
     private final Map<UUID, UUID> teamsByPlayer = new HashMap<>();
@@ -37,12 +40,12 @@ public class TeamHandler extends SavedData {
     private TeamHandler() {
     }
 
-    private TeamHandler(CompoundTag tag) {
+    private TeamHandler(CompoundTag tag, HolderLookup.Provider provider) {
         this.load(tag);
     }
 
     public static TeamHandler get(MinecraftServer server) {
-        return server.overworld().getDataStorage().computeIfAbsent(TeamHandler::new, TeamHandler::new, IDENTIFIER);
+        return server.overworld().getDataStorage().computeIfAbsent(FACTORY, IDENTIFIER);
     }
 
     @Nullable
@@ -302,23 +305,23 @@ public class TeamHandler extends SavedData {
         ListTag teams = nbt.getList("Teams", Tag.TAG_COMPOUND);
         teams.forEach(tag -> {
             try {
-                GrailTeam team = GrailTeam.CODEC.parse(NbtOps.INSTANCE, tag).getOrThrow(false, Fate.LOGGER::error);
+                GrailTeam team = GrailTeam.CODEC.parse(NbtOps.INSTANCE, tag).getOrThrow();
                 this.teams.put(team.getId(), team);
                 team.members().forEach(player -> this.teamsByPlayer.put(player, team.getId()));
-            } catch (RuntimeException e) {
-                Fate.LOGGER.error(e);
+            } catch (Exception e) {
+                Fate.LOGGER.error("Unable to load team from tag {}", tag, e);
             }
         });
     }
 
     @Override
-    public CompoundTag save(CompoundTag compound) {
+    public CompoundTag save(CompoundTag compound, HolderLookup.Provider provider) {
         ListTag teams = new ListTag();
         this.teams.values().forEach(team -> {
             try {
-                teams.add(GrailTeam.CODEC.encodeStart(NbtOps.INSTANCE, team).getOrThrow(false, Fate.LOGGER::error));
-            } catch (RuntimeException e) {
-                Fate.LOGGER.error(e);
+                teams.add(GrailTeam.CODEC.encodeStart(NbtOps.INSTANCE, team).getOrThrow());
+            } catch (Exception e) {
+                Fate.LOGGER.error("Unable to save team {} with id {}", team.getId(), team.getName(), e);
             }
         });
         compound.put("Teams", teams);

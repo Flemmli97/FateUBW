@@ -13,10 +13,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.event.RenderLivingEvent;
-import net.minecraftforge.client.event.RenderNameplateEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.Event;
+import net.neoforged.neoforge.client.event.RenderLivingEvent;
+import net.neoforged.neoforge.client.event.RenderNameTagEvent;
+import net.neoforged.neoforge.common.NeoForge;
 
 import java.util.function.Predicate;
 
@@ -25,15 +24,16 @@ public class ClientPlatformImpl implements ClientPlatform {
     @Override
     public <T extends LivingEntity, M extends EntityModel<T>> boolean renderLivingEvent(LivingEntity entity, LivingEntityRenderer<T, M> renderer, float partialTick, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, boolean pre) {
         if (pre)
-            return MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Pre<>(entity, renderer, partialTick, poseStack, multiBufferSource, packedLight));
-        return MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Post<>(entity, renderer, partialTick, poseStack, multiBufferSource, packedLight));
+            return NeoForge.EVENT_BUS.post(new RenderLivingEvent.Pre<>(entity, renderer, partialTick, poseStack, multiBufferSource, packedLight)).isCanceled();
+        NeoForge.EVENT_BUS.post(new RenderLivingEvent.Post<>(entity, renderer, partialTick, poseStack, multiBufferSource, packedLight));
+        return false;
     }
 
     @Override
-    public <T extends Entity> Component nameTagRenderEvent(T entity, Component content, EntityRenderer<?> entityRenderer, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, float partialTick, Predicate<T> shouldRender) {
-        RenderNameplateEvent renderNameplateEvent = new RenderNameplateEvent(entity, entity.getDisplayName(), entityRenderer, poseStack, multiBufferSource, packedLight, partialTick);
-        MinecraftForge.EVENT_BUS.post(renderNameplateEvent);
-        return renderNameplateEvent.getResult() != Event.Result.DENY && (renderNameplateEvent.getResult() == Event.Result.ALLOW || shouldRender.test(entity)) ? renderNameplateEvent.getContent() : null;
+    public <T extends Entity> Component nameTagRenderEvent(T entity, Component content, EntityRenderer<?> entityRenderer, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, float partialTick, Predicate<T> shouldRender) {
+        RenderNameTagEvent event = new RenderNameTagEvent(entity, entity.getDisplayName(), entityRenderer, poseStack, bufferSource, packedLight, partialTick);
+        NeoForge.EVENT_BUS.post(event);
+        return event.canRender().isTrue() || event.canRender().isDefault() && shouldRender.test(entity) ? event.getContent() : null;
     }
 
     @Override

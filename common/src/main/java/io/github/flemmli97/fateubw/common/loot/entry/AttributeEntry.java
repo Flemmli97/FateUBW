@@ -5,7 +5,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.loot.GrailLootEntry;
-import io.github.flemmli97.fateubw.common.loot.LootCodecs;
 import io.github.flemmli97.fateubw.common.loot.LootSerializerType;
 import io.github.flemmli97.fateubw.common.registry.FateGrailLootSerializer;
 import net.minecraft.core.Holder;
@@ -18,8 +17,9 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
+import net.minecraft.world.level.storage.loot.providers.number.NumberProviders;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -28,11 +28,11 @@ public class AttributeEntry extends GrailLootEntry<AttributeEntry> {
     public static final ResourceLocation ATTRIBUTE_UUID = Fate.modRes("grail_loot_modifier");
 
     public static final MapCodec<AttributeEntry> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
-            BuiltInRegistries.ATTRIBUTE.holderByNameCodec().fieldOf("attribute").forGetter(d -> d.att),
+                    BuiltInRegistries.ATTRIBUTE.holderByNameCodec().fieldOf("attribute").forGetter(d -> d.att),
                     Codec.DOUBLE.fieldOf("max").forGetter(d -> d.max),
-                    LootCodecs.NUMBER_PROVIDER_CODEC.fieldOf("range").forGetter(d -> d.range),
-                    LootCodecs.LOOT_ITEM_CONDITION.listOf().optionalFieldOf("conditions").forGetter(d -> d.conditions.length == 0 ? Optional.empty() : Optional.of(Arrays.stream(d.conditions).toList()))
-            ).apply(inst, (att, max, range, cond) -> new AttributeEntry(att, max, range, cond.map(l -> l.toArray(l.toArray(new LootItemCondition[0]))).orElse(new LootItemCondition[0])))
+                    NumberProviders.CODEC.fieldOf("range").forGetter(d -> d.range),
+                    LootItemCondition.DIRECT_CODEC.listOf().optionalFieldOf("conditions").forGetter(d -> d.conditions.isEmpty() ? Optional.empty() : Optional.of(d.conditions))
+            ).apply(inst, (att, max, range, cond) -> new AttributeEntry(att, max, range, cond.orElse(List.of())))
     );
 
     private final Holder<Attribute> att;
@@ -40,6 +40,10 @@ public class AttributeEntry extends GrailLootEntry<AttributeEntry> {
     private final NumberProvider range;
 
     public AttributeEntry(Holder<Attribute> att, double max, NumberProvider range, LootItemCondition... conditions) {
+        this(att, max, range, List.of(conditions));
+    }
+
+    public AttributeEntry(Holder<Attribute> att, double max, NumberProvider range, List<LootItemCondition> conditions) {
         super(conditions);
         this.att = att;
         this.max = max;

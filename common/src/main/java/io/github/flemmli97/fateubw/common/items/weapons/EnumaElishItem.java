@@ -3,9 +3,11 @@ package io.github.flemmli97.fateubw.common.items.weapons;
 import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.entity.misc.EnumaElish;
 import io.github.flemmli97.fateubw.common.lib.ItemTiers;
+import io.github.flemmli97.fateubw.common.registry.FateDataComponents;
 import io.github.flemmli97.fateubw.platform.Platform;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
@@ -15,19 +17,18 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class EnumaElishItem extends SwordItem {
 
     public EnumaElishItem(Item.Properties props) {
-        super(ItemTiers.EA, 0, -2.4f, props);
+        super(ItemTiers.ENUMA_ELISH, props);
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+        super.appendHoverText(stack, context, tooltipComponents, isAdvanced);
         if (CommonConfig.eaMana > 0)
             tooltipComponents.add(Component.translatable("fateubw.tooltip.item.mana", CommonConfig.eaMana).withStyle(ChatFormatting.AQUA));
     }
@@ -36,9 +37,9 @@ public class EnumaElishItem extends SwordItem {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!level.isClientSide) {
-            if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).map(mana -> mana.getMana() >= CommonConfig.eaMana).orElse(false)) {
+            if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).getMana() >= CommonConfig.eaMana) {
                 player.startUsingItem(hand);
-                Platform.INSTANCE.getItemStackData(stack).ifPresent(data -> data.setInUse(player, true, hand == InteractionHand.MAIN_HAND));
+                stack.set(FateDataComponents.GLOWING_ITEM.get(), Unit.INSTANCE);
                 return InteractionResultHolder.consume(stack);
             }
             player.sendSystemMessage(Component.translatable("fateubw.chat.mana.missing").withStyle(ChatFormatting.AQUA));
@@ -49,13 +50,13 @@ public class EnumaElishItem extends SwordItem {
 
     @Override
     public void releaseUsing(ItemStack stack, Level level, LivingEntity entity, int timeLeft) {
-        int i = this.getUseDuration(stack) - timeLeft;
-        Platform.INSTANCE.getItemStackData(stack).ifPresent(data -> data.setInUse(entity, false, entity.getUsedItemHand() == InteractionHand.MAIN_HAND));
-        if (i < 40) {
+        stack.remove(FateDataComponents.GLOWING_ITEM.get());
+        int duration = this.getUseDuration(stack, entity) - timeLeft;
+        if (duration < 40) {
             return;
         }
         if (!level.isClientSide) {
-            if (!(entity instanceof Player player) || player.isCreative() || Platform.INSTANCE.getPlayerData(player).map(mana -> mana.useMana(player, CommonConfig.eaMana)).orElse(false)) {
+            if (!(entity instanceof Player player) || player.isCreative() || Platform.INSTANCE.getPlayerData(player).useMana(player, CommonConfig.eaMana)) {
                 EnumaElish ea = new EnumaElish(level, entity);
                 level.addFreshEntity(ea);
             } else {
@@ -66,7 +67,7 @@ public class EnumaElishItem extends SwordItem {
     }
 
     @Override
-    public int getUseDuration(ItemStack stack) {
+    public int getUseDuration(ItemStack stack, LivingEntity entity) {
         return 72000;
     }
 }

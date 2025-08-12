@@ -5,6 +5,8 @@ import com.mojang.datafixers.util.Pair;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.client.ClientHandler;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
+import io.github.flemmli97.fateubw.mixin.ClientboundSetEntityDataPacketAccessor;
+import io.github.flemmli97.fateubw.mixinhelper.SynchedEntityDataExtension;
 import io.github.flemmli97.tenshilib.loader.LoaderNetwork;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -76,7 +78,7 @@ public class S2CServantGui implements CustomPacketPayload {
 
     public record ServantMetaData(int entityId, EntityType<?> type,
                                   Optional<List<Pair<EquipmentSlot, ItemStack>>> equipment,
-                                  List<SynchedEntityData.DataItem<?>> syncedData, int npCost) {
+                                  List<SynchedEntityData.DataValue<?>> syncedData, int npCost) {
 
         public static final StreamCodec<RegistryFriendlyByteBuf, ServantMetaData> STREAM_CODEC = new StreamCodec<>() {
             @Override
@@ -84,8 +86,7 @@ public class S2CServantGui implements CustomPacketPayload {
                 return new ServantMetaData(buf.readInt(), BuiltInRegistries.ENTITY_TYPE.get(buf.readResourceLocation()),
                         buf.readBoolean() ? Optional.of(buf.readList(b ->
                                 Pair.of(b.readEnum(EquipmentSlot.class), ItemStack.OPTIONAL_STREAM_CODEC.decode(buf))
-                        )) : Optional.empty(), SynchedEntityData.unpack(buf), buf.readInt());
-                ;
+                        )) : Optional.empty(), ClientboundSetEntityDataPacketAccessor.doUnpack(buf), buf.readInt());
             }
 
             @Override
@@ -97,7 +98,7 @@ public class S2CServantGui implements CustomPacketPayload {
                     b.writeEnum(p.getFirst());
                     ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, p.getSecond());
                 }));
-                SynchedEntityData.pack(data.syncedData, buf);
+                ClientboundSetEntityDataPacketAccessor.doPack(data.syncedData, buf);
                 buf.writeInt(data.npCost);
             }
         };
@@ -116,7 +117,15 @@ public class S2CServantGui implements CustomPacketPayload {
                 equip = Optional.empty();
             }
             return new ServantMetaData(servant.getId(), servant.getType(), equip,
-                    full ? servant.getEntityData().getAll() : servant.getEntityData().packDirty(), servant.props().hogouMana());
+                    full ? ((SynchedEntityDataExtension) servant.getEntityData()).fate$getAll() : servant.getEntityData().packDirty(), servant.props().hogouMana());
+        }
+
+        private static void packSynced() {
+
+        }
+
+        private static void unpackSynced() {
+
         }
     }
 }

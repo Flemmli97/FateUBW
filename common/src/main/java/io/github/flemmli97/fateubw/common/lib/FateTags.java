@@ -4,21 +4,36 @@ import io.github.flemmli97.fateubw.Fate;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 
 public class FateTags {
 
-    public static final TagKey<Item> CRYSTALS = tag("crystals");
-    public static final TagKey<Item> FABRIC_DYE_TAG = tagCommon("dye_any");
-    public static final TagKey<Item> FABRIC_DYE_RED = tagCommon("dye_red");
-    public static final TagKey<Item> FABRIC_STICK_TAG = tagCommon("wood_sticks");
-    public static final TagKey<Item> FABRIC_LAPIS_BLOCK = tagCommon("lapis_blocks");
-    public static final TagKey<Item> FABRIC_DIAMOND_BLOCK = tagCommon("diamond_blocks");
+    public static class Items {
 
-    public static final TagKey<EntityType<?>> SERVANT = TagKey.create(Registries.ENTITY_TYPE, Fate.modRes("servant"));
+        public static final TagKey<Item> CRYSTALS = tag("crystals");
 
-    public static final TagKey<EntityType<?>> STRONG_MOB = TagKey.create(Registries.ENTITY_TYPE, Fate.modRes("strong_mob"));
+        public static final TagKey<Item> SPEARS = tagCommon("spears");
+        public static final TagKey<Item> MOD_SPEARS = tag("spears");
+    }
+
+    public static class Blocks {
+
+        public static final TagKey<Block> GENERIC_INCORRECT = TagKey.create(Registries.BLOCK, Fate.modRes("generic_incorrect_tool_tag"));
+    }
+
+    public static class EntityTypes {
+
+        public static final TagKey<EntityType<?>> SERVANT = TagKey.create(Registries.ENTITY_TYPE, Fate.modRes("servant"));
+        public static final TagKey<EntityType<?>> STRONG_MOB = TagKey.create(Registries.ENTITY_TYPE, Fate.modRes("strong_mob"));
+    }
+
+    public static class DamageTypes {
+
+        public static final TagKey<DamageType> IS_MAGIC = TagKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath("c", "is_magic"));
+    }
 
     public static TagKey<Item> tagCommon(String name) {
         return TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", name));

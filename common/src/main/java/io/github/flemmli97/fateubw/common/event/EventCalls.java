@@ -1,5 +1,7 @@
 package io.github.flemmli97.fateubw.common.event;
 
+import io.github.flemmli97.fateubw.common.attachment.PlayerData;
+import io.github.flemmli97.fateubw.common.lib.FateTags;
 import io.github.flemmli97.fateubw.common.network.S2CPlayerCap;
 import io.github.flemmli97.fateubw.common.registry.FateAttributes;
 import io.github.flemmli97.fateubw.common.registry.FateMobEffects;
@@ -10,6 +12,7 @@ import io.github.flemmli97.fateubw.mixin.CombatTrackerAccessor;
 import io.github.flemmli97.fateubw.platform.Platform;
 import io.github.flemmli97.tenshilib.loader.LoaderNetwork;
 import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -20,13 +23,14 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.List;
 
 public class EventCalls {
 
     public static void joinWorld(ServerPlayer player) {
-        Platform.INSTANCE.getPlayerData(player).ifPresent(data -> LoaderNetwork.INSTANCE.sendToPlayer(new S2CPlayerCap(data), player));
+        LoaderNetwork.INSTANCE.sendToPlayer(new S2CPlayerCap(Platform.INSTANCE.getPlayerData(player)), player);
         TeamHandler teamHandler = TeamHandler.get(player.getServer());
         List<GrailTeam.ShortTeamInfo> invites = teamHandler.fetchInvitesFor(player);
         if (!invites.isEmpty()) {
@@ -42,7 +46,7 @@ public class EventCalls {
 
     public static void tick(LivingEntity entity) {
         if (entity instanceof ServerPlayer player)
-            Platform.INSTANCE.getPlayerData(player).ifPresent(data -> data.tick(player));
+            Platform.INSTANCE.getPlayerData(player).tick(player);
         if (!entity.level().isClientSide) {
             if (entity.tickCount % 20 == 0) {
                 boolean target = entity instanceof Mob mob && mob.getTarget() != null;
@@ -52,6 +56,14 @@ public class EventCalls {
                     entity.heal((float) att.getValue());
                 }
             }
+        }
+    }
+
+    public static void clone(Player origin, Player player) {
+        if (player instanceof ServerPlayer serverPlayer) {
+            PlayerData data = Platform.INSTANCE.getPlayerData(origin);
+            Platform.INSTANCE.getPlayerData(player).load(data.save(new CompoundTag()));
+            LoaderNetwork.INSTANCE.sendToPlayer(new S2CPlayerCap(Platform.INSTANCE.getPlayerData(serverPlayer)), serverPlayer);
         }
     }
 
@@ -75,7 +87,7 @@ public class EventCalls {
     public static float damageCalculation(LivingEntity livingEntity, DamageSource damageSrc, float damageAmount) {
         if (damageSrc.is(DamageTypeTags.IS_PROJECTILE))
             damageAmount = Utils.projectileReduce(livingEntity, damageAmount);
-        if (damageSrc.isMagic())
+        if (damageSrc.is(FateTags.DamageTypes.IS_MAGIC))
             damageAmount = Utils.getDamageAfterMagicAbsorb(livingEntity, damageAmount);
         return damageAmount;
     }

@@ -221,7 +221,7 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
 
     @Override
     public void tick() {
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             if (this.tickCount > 200 && this.isAlive() && (this.getOwner() == null || !this.getOwner().isAlive())) {
                 this.hurt(DamageSource.OUT_OF_WORLD, Integer.MAX_VALUE);
                 return;
@@ -280,8 +280,8 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
         if (behind) {
             this.getAttribute(Attributes.ATTACK_DAMAGE).removeModifier(HassanClone.BACKSTAB_MODIFIER);
             if (hurt) {
-                this.level.playSound(null, this, SoundEvents.PLAYER_ATTACK_CRIT, this.getSoundSource(), 0.7f, 0.9f);
-                if (this.level instanceof ServerLevel serverLevel) {
+                this.level().playSound(null, this, SoundEvents.PLAYER_ATTACK_CRIT, this.getSoundSource(), 0.7f, 0.9f);
+                if (this.level() instanceof ServerLevel serverLevel) {
                     for (int i = 0; i < 15; i++)
                         serverLevel.sendParticles(DustParticleOptions.REDSTONE, entity.getRandomX(1.4), entity.getRandomY(), entity.getRandomZ(1.4), 0, 0, 0, 0, 0);
                 }
@@ -295,10 +295,10 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
         if (damageSource.isBypassInvul()) {
             return super.hurt(damageSource, damage);
         } else {
-            if (damageSource.getEntity() == null || !damageSource.getEntity().getType().is(FateTags.STRONG_MOB))
+            if (damageSource.getEntity() == null || !damageSource.getEntity().getType().is(FateTags.EntityTypes.STRONG_MOB))
                 damage *= 0.75;
             if (damageSource.isProjectile() && !damageSource.isBypassArmor() && this.projectileBlockChance(damageSource, damage)) {
-                this.level.playSound(null, this.blockPosition(), SoundEvents.SHIELD_BLOCK, SoundSource.NEUTRAL, 1, 1);
+                this.level().playSound(null, this.blockPosition(), SoundEvents.SHIELD_BLOCK, SoundSource.NEUTRAL, 1, 1);
                 if (damageSource.getDirectEntity() != null)
                     damageSource.getDirectEntity().remove(RemovalReason.KILLED);
                 return false;
@@ -331,9 +331,9 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
 
     @Override
     protected void tickDeath() {
-        if (this.level.isClientSide) {
+        if (this.level().isClientSide) {
             for (int i = 0; i < ((int) ((9 / (float) this.maxDeathTick()) * this.deathTime - 1)); i++) {
-                this.level.addParticle(new ColoredParticleData(FateParticles.LIGHT.get(), 76 / 255f, 128 / 255f, 207 / 255f, 0.3f, 0.15f), this.getX(this.random.nextDouble() * 3 - 1.5),
+                this.level().addParticle(new ColoredParticleData(FateParticles.LIGHT.get(), 76 / 255f, 128 / 255f, 207 / 255f, 0.3f, 0.15f), this.getX(this.random.nextDouble() * 3 - 1.5),
                         this.getY(this.random.nextDouble() * 3 - 1.5),
                         this.getZ(this.random.nextDouble() * 3 - 1.5),
                         this.random.nextGaussian() * 0.02D,
@@ -341,7 +341,7 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
                         this.random.nextGaussian() * 0.02D);
             }
         }
-        if (this.level instanceof ServerLevel serverLevel) {
+        if (this.level() instanceof ServerLevel serverLevel) {
             ++this.deathTime;
             if (this.deathTime == 1) {
                 serverLevel.getServer().getPlayerList().broadcastMessage(Component.translatable("fateubw.chat.servant.death").withStyle(ChatFormatting.RED), ChatType.SYSTEM);
@@ -361,12 +361,12 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
         ThrownItemEntity item = new ThrownItemEntity(this.level, this);
         item.setWeapon(this.getWeaponToThrowAndReplace(main));
         if (this.getTarget() != null) {
-            item.shootAtEntity(this.getTarget(), 1.2f, 7 - this.level.getDifficulty().getId() * 2);
+            item.shootAtEntity(this.getTarget(), 1.2f, 7 - this.level().getDifficulty().getId() * 2);
         } else {
             item.shootFromRotation(this, this.getXRot() + 5, this.getYRot(), 0.0F, 1.2f, 1.0F);
         }
         this.playSound(SoundEvents.FISHING_BOBBER_THROW, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
-        this.level.addFreshEntity(item);
+        this.level().addFreshEntity(item);
     }
 
     private ItemStack getWeaponToThrowAndReplace(boolean main) {
@@ -388,9 +388,9 @@ public class HassanClone extends PathfinderMob implements IAnimated, OwnableEnti
 
     public void mobAttack(AnimatedAction anim, LivingEntity target, Consumer<LivingEntity> cons) {
         OrientedBoundingBox obb = this.calculateAttackAABB(anim, this.targetPosition != null || target == null ? this.targetPosition : target.position(), 0.2);
-        this.level.getEntitiesOfClass(LivingEntity.class, obb.getEncompassingBox(),
+        this.level().getEntitiesOfClass(LivingEntity.class, obb.getEncompassingBox(),
                 entity -> this.targetPred.test(entity) && obb.intersects(entity.getBoundingBox())).forEach(cons);
-        if (!this.level.isClientSide)
+        if (!this.level().isClientSide)
             S2CAttackDebug.sendDebugPacket(obb, S2CAttackDebug.EnumAABBType.ATTACK, this);
     }
 

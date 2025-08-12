@@ -6,8 +6,8 @@ import io.github.flemmli97.fateubw.common.loot.LootSerializerType;
 import io.github.flemmli97.fateubw.common.registry.FateGrailLootSerializer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 public class EmptyEntry extends GrailLootEntry<EmptyEntry> {
@@ -16,7 +16,7 @@ public class EmptyEntry extends GrailLootEntry<EmptyEntry> {
     public static final MapCodec<EmptyEntry> CODEC = MapCodec.unit(INSTANCE);
 
     private EmptyEntry() {
-        super(new LootItemCondition[0]);
+        super(List.of());
     }
 
     @Override

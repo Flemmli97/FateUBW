@@ -121,7 +121,7 @@ public class EntityArthur extends BaseServant {
     public final AnimatedAttackGoal<EntityArthur> attack = new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS);
 
     private final AnimationHandler<EntityArthur> animationHandler = new AnimationHandler<>(this, ANIMS).withChangeListener(anim -> {
-        if (!this.level.isClientSide()) {
+        if (!this.level().isClientSide()) {
             if (anim == null) {
                 this.burstDir = null;
                 if (this.getAnimationHandler().isCurrent(EXCALIBAA)) {
@@ -150,7 +150,7 @@ public class EntityArthur extends BaseServant {
     }
 
     @Override
-    protected void defineSynchedData() {
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData();
         this.entityData.define(LOCKED_YAW, 0f);
     }
@@ -184,14 +184,14 @@ public class EntityArthur extends BaseServant {
         super.tick();
         if (this.getHealth() < 0.25 * this.getMaxHealth() && this.getHealth() > 0) {
             if (!this.critHealth) {
-                if (!this.level.isClientSide)
-                    this.level.getServer().getPlayerList().broadcastMessage(Component.translatable("fateubw.chat.servant.avalon").withStyle(ChatFormatting.GOLD), ChatType.SYSTEM);
+                if (!this.level().isClientSide)
+                    this.level().getServer().getPlayerList().broadcastMessage(Component.translatable("fateubw.chat.servant.avalon").withStyle(ChatFormatting.GOLD), ChatType.SYSTEM);
                 this.critHealth = true;
             }
             if (!this.hasEffect(MobEffects.REGENERATION))
                 this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 50, 1, false, false));
         }
-        if (this.level.isClientSide) {
+        if (this.level().isClientSide) {
             if (this.duringBurst()) {
                 this.setXRot(0);
                 float yRot = this.entityData.get(LOCKED_YAW);
@@ -200,7 +200,7 @@ public class EntityArthur extends BaseServant {
                 this.yRotO = yRot;
                 this.setYRot(yRot);
                 for (int i = 0; i < 8; i++)
-                    this.level.addParticle(ParticleTypes.ENTITY_EFFECT, this.getX(this.getRandom().nextGaussian() * 0.5), this.getY(this.getRandom().nextGaussian() * 0.5), this.getZ(this.getRandom().nextGaussian() * 0.5), 1, 1, 1);
+                    this.level().addParticle(ParticleTypes.ENTITY_EFFECT, this.getX(this.getRandom().nextGaussian() * 0.5), this.getY(this.getRandom().nextGaussian() * 0.5), this.getZ(this.getRandom().nextGaussian() * 0.5), 1, 1, 1);
             }
         }
     }
@@ -298,7 +298,7 @@ public class EntityArthur extends BaseServant {
         Excalibur excalibur = new Excalibur(this.level, this);
         if (pos != null)
             excalibur.setRotationTo(pos.x(), pos.y(), pos.z(), 0);
-        this.level.addFreshEntity(excalibur);
+        this.level().addFreshEntity(excalibur);
         this.revealServant();
         this.releaseUsingItem();
     }

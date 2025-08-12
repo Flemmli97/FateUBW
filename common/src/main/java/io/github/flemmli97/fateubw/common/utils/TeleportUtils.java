@@ -14,6 +14,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.world.level.pathfinder.PathfindingContext;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
@@ -56,7 +57,7 @@ public class TeleportUtils {
     }
 
     public static BlockPos isSafePos(Mob entity, Level level, BlockPos pos, Predicate<BlockState> validPos) {
-        PathType blockPathTypes = entity.getNavigation().getNodeEvaluator().getPathType(level, pos.getX(), pos.getY(), pos.getZ());
+        PathType blockPathTypes = entity.getNavigation().getNodeEvaluator().getPathType(new PathfindingContext(entity.level(), entity), pos.getX(), pos.getY(), pos.getZ());
         if (blockPathTypes == PathType.OPEN) {
             if (!entity.isNoGravity())
                 return null;

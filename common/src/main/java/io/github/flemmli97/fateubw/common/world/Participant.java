@@ -1,8 +1,8 @@
 package io.github.flemmli97.fateubw.common.world;
 
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
-import io.github.flemmli97.tenshilib.common.entity.EntityUtil;
-import net.minecraft.core.Registry;
+import io.github.flemmli97.tenshilib.common.entity.EntityUtils;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -38,7 +38,7 @@ public class Participant {
     public Participant(CompoundTag tag) {
         this.uuid = new ParticipantId(tag.getUUID("UUID"), tag.getUUID("Servant"));
         if (tag.contains("CachedLevel")) {
-            this.levelCache = ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(tag.getString("CachedLevel")));
+            this.levelCache = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(tag.getString("CachedLevel")));
         }
     }
 
@@ -63,7 +63,7 @@ public class Participant {
             if (this.levelCache != null) {
                 ServerLevel level = server.getLevel(this.levelCache);
                 if (level != null) {
-                    servant = EntityUtil.findFromUUID(BaseServant.class, level, this.uuid.servant());
+                    servant = EntityUtils.findFromUUID(BaseServant.class, level, this.uuid.servant());
                     if (servant != null) {
                         this.servant = new WeakReference<>(servant);
                         return servant;
@@ -71,10 +71,10 @@ public class Participant {
                 }
             }
             for (ServerLevel level : server.getAllLevels()) {
-                servant = EntityUtil.findFromUUID(BaseServant.class, level, this.uuid.servant());
+                servant = EntityUtils.findFromUUID(BaseServant.class, level, this.uuid.servant());
                 if (servant != null) {
                     this.servant = new WeakReference<>(servant);
-                    this.levelCache = servant.level.dimension();
+                    this.levelCache = servant.level().dimension();
                     break;
                 }
             }
@@ -89,7 +89,7 @@ public class Participant {
 
     private ResourceKey<Level> cachedLevel() {
         BaseServant servant = this.servant == null ? null : this.servant.get();
-        return servant != null ? servant.level.dimension() : null;
+        return servant != null ? servant.level().dimension() : null;
     }
 
     @Override

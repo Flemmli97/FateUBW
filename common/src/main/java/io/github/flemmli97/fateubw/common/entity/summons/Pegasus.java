@@ -10,8 +10,8 @@ import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.MotionTrailProvider;
+import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
-import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
@@ -125,7 +125,7 @@ public class Pegasus extends PathfinderMob implements IAnimated, StandingVehicle
 
     private final AnimationHandler<Pegasus> animationHandler = new AnimationHandler<>(this, ANIMS)
             .withChangeListener(anim -> {
-                if (!this.level.isClientSide && CHARGING.is(anim)) {
+                if (!this.level().isClientSide && CHARGING.is(anim)) {
                     this.hitEntities = new ArrayList<>();
                 }
                 return false;
@@ -183,7 +183,7 @@ public class Pegasus extends PathfinderMob implements IAnimated, StandingVehicle
     }
 
     @Override
-    protected void defineSynchedData() {
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData();
         this.entityData.define(LOCKED_YAW, 0f);
         this.entityData.define(FLYING, false);
@@ -218,7 +218,7 @@ public class Pegasus extends PathfinderMob implements IAnimated, StandingVehicle
         this.goalSelector.tick();
         this.getAnimationHandler().tick();
         this.chargingHandler.tick();
-        if (this.level.isClientSide) {
+        if (this.level().isClientSide) {
             if (this.getAnimationHandler().isCurrent(SUMMON)) {
                 Vec3 base = Vec3.directionFromRotation(0, this.yBodyRot).scale(-PORTAL_OFFSET);
                 Vec3 base2 = MathUtils.rotate(new Vec3(0, 1, 0), base, (float) Math.toRadians(90)).normalize();
@@ -226,7 +226,7 @@ public class Pegasus extends PathfinderMob implements IAnimated, StandingVehicle
                     double sideScale = (this.random.nextDouble() - this.random.nextDouble()) * PORTAL_SIZE;
                     double upScale = (this.random.nextDouble() - this.random.nextDouble()) * PORTAL_SIZE + PORTAL_SIZE;
                     Vec3 pos = this.position().add(base).add(base2.scale(sideScale)).add(new Vec3(0, 1, 0).scale(upScale));
-                    this.level.addParticle(new ColoredParticleData(FateParticles.LIGHT.get(), 245 / 255F, 10 / 255F, 10 / 255F, 1, 0.5f), pos.x(), pos.y(), pos.z(), this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01);
+                    this.level().addParticle(new ColoredParticleData(FateParticles.LIGHT.get(), 245 / 255F, 10 / 255F, 10 / 255F, 1, 0.5f), pos.x(), pos.y(), pos.z(), this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01);
                 }
             }
             if (this.getAnimationHandler().isCurrent(CHARGING) && this.getAnimationHandler().getAnimation().isPast(0.48)) {
@@ -240,7 +240,7 @@ public class Pegasus extends PathfinderMob implements IAnimated, StandingVehicle
                     float g = (235 + this.getRandom().nextInt(10)) / 255F;
                     float b = 245 / 255F;
                     float scale = (float) (0.05 + this.getRandom().nextDouble() * 0.1);
-                    this.level.addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
+                    this.level().addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
                                     TrailInfo.builder(new MotionTrailProvider.MotionTrailData(dir, 6, 10))
                                             .setColor(r, g, b, 0.6f)
                                             .setColor2(r, g, b, 0.6f)
@@ -259,7 +259,7 @@ public class Pegasus extends PathfinderMob implements IAnimated, StandingVehicle
         } else {
             this.moveTick = Math.max(0, --this.moveTick);
         }
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             double speed = this.getDeltaMovement().lengthSqr();
             if (speed > 0.01) {
                 this.setMovingFlag(this.moveControl.getSpeedModifier() > 1 ? MoveType.RUN : MoveType.WALK);
@@ -298,7 +298,7 @@ public class Pegasus extends PathfinderMob implements IAnimated, StandingVehicle
             if (anim.isPast("attack")) {
                 this.setDeltaMovement(this.chargeMotion);
                 OrientedBoundingBox obb = this.prepareAttackBox(anim, null, 0.2, false);
-                List<LivingEntity> list = this.level.getEntitiesOfClass(LivingEntity.class, obb.getEncompassingBox(),
+                List<LivingEntity> list = this.level().getEntitiesOfClass(LivingEntity.class, obb.getEncompassingBox(),
                         entity -> this.targetPred.test(entity) && obb.intersects(entity.getBoundingBox()));
                 boolean hit = this.canFly() && this.verticalCollision;
                 if (hit) {
@@ -307,7 +307,7 @@ public class Pegasus extends PathfinderMob implements IAnimated, StandingVehicle
                 for (LivingEntity e : list) {
                     if (this.hitEntities.contains(e))
                         continue;
-                    if (e.hurt(CustomDamageSource.pegasusCharge(this), (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE))) {
+                    if (e.hurt(FateDamageTypes.direct(FateDamageTypes.PEGASUS_CHARGE, this), (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE))) {
                         if (this.hitEntities.isEmpty()) {
                             hit = true;
                         }
@@ -329,9 +329,9 @@ public class Pegasus extends PathfinderMob implements IAnimated, StandingVehicle
 
     public void mobAttack(AnimatedAction anim, LivingEntity target, Consumer<LivingEntity> cons) {
         OrientedBoundingBox obb = this.prepareAttackBox(anim, target, 0.2, false);
-        this.level.getEntitiesOfClass(LivingEntity.class, obb.getEncompassingBox(),
+        this.level().getEntitiesOfClass(LivingEntity.class, obb.getEncompassingBox(),
                 entity -> this.targetPred.test(entity) && obb.intersects(entity.getBoundingBox())).forEach(cons);
-        if (!this.level.isClientSide)
+        if (!this.level().isClientSide)
             S2CAttackDebug.sendDebugPacket(obb, S2CAttackDebug.EnumAABBType.ATTACK, this);
     }
 

@@ -256,7 +256,7 @@ public class EntityEmiya extends BaseServant {
 
     public void attackWithRangedAttack(LivingEntity target) {
         ItemStack stack = this.getItemInHand(this.bowHand());
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             ArcherArrow arrow = new ArcherArrow(this.level, this);
             double dX = target.getX() - this.getX();
             double dY = target.getY(0.3333333333333333) - arrow.getY();
@@ -274,7 +274,7 @@ public class EntityEmiya extends BaseServant {
             arrow.setBaseDamage(arrow.getBaseDamage() + this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.7);
             arrow.setKnockback(0);
             this.playSound(SoundEvents.SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
-            this.level.addFreshEntity(arrow);
+            this.level().addFreshEntity(arrow);
         }
     }
 
@@ -282,7 +282,7 @@ public class EntityEmiya extends BaseServant {
         ItemStack stack = this.getItemInHand(this.bowHand());
         for (int i = 0; i < 6; i++) {
             ArcherArrow arrow = new ArcherArrow(this.level, this);
-            if (!this.level.isClientSide) {
+            if (!this.level().isClientSide) {
                 double dX = target.getX() - this.getX();
                 double dY = target.getY(0.33) - arrow.getY();
                 double dZ = target.getZ() - this.getZ();
@@ -299,7 +299,7 @@ public class EntityEmiya extends BaseServant {
                 arrow.setBaseDamage(arrow.getBaseDamage() + this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.7);
                 arrow.setKnockback(0);
                 this.playSound(SoundEvents.SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
-                this.level.addFreshEntity(arrow);
+                this.level().addFreshEntity(arrow);
             }
         }
     }
@@ -312,7 +312,7 @@ public class EntityEmiya extends BaseServant {
             bolg.shootAtEntity(target, 2F, 0);
         else
             bolg.shoot(this, this.getXRot(), this.getYRot(), 0, 2, 0);
-        this.level.addFreshEntity(bolg);
+        this.level().addFreshEntity(bolg);
         this.revealServant();
         this.switchableWeapon.switchItems(true);
     }

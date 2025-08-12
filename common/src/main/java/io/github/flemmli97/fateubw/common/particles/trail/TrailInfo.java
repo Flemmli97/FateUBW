@@ -1,11 +1,12 @@
 package io.github.flemmli97.fateubw.common.particles.trail;
 
-import com.mojang.math.Vector4f;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.TrailData;
 import io.github.flemmli97.tenshilib.common.utils.CodecUtils;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import org.joml.Vector4f;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -33,6 +34,32 @@ public class TrailInfo {
                     color_2.x(), color_2.y(), color_2.z(), color_2.w(), scale_2, visual, text.orElse(0), provider)
     ));
 
+    public static final StreamCodec<RegistryFriendlyByteBuf, TrailInfo> STREAM_CODEC = new StreamCodec<RegistryFriendlyByteBuf, TrailInfo>() {
+
+        @Override
+        public TrailInfo decode(RegistryFriendlyByteBuf buf) {
+            return new TrailInfo(buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(),
+                    buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readEnum(Visual.class), buf.readInt(), TrailProviderRegistry.fromBuffer(buf));
+        }
+
+        @Override
+        public void encode(RegistryFriendlyByteBuf buf, TrailInfo data) {
+            buf.writeFloat(data.r);
+            buf.writeFloat(data.g);
+            buf.writeFloat(data.b);
+            buf.writeFloat(data.a);
+            buf.writeFloat(data.width);
+            buf.writeFloat(data.r2);
+            buf.writeFloat(data.g2);
+            buf.writeFloat(data.b2);
+            buf.writeFloat(data.a2);
+            buf.writeFloat(data.width2);
+            buf.writeEnum(data.visual);
+            buf.writeInt(data.textureIndex);
+            TrailProviderRegistry.toBuffer(data.data, buf);
+        }
+    };
+
     public final float r, g, b, a, width;
     public final float r2, g2, b2, a2, width2;
     public final Visual visual;
@@ -54,27 +81,6 @@ public class TrailInfo {
         this.visual = visual;
         this.textureIndex = textureIndex;
         this.data = data;
-    }
-
-    public TrailInfo(FriendlyByteBuf buf) {
-        this(buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(),
-                buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readEnum(Visual.class), buf.readInt(), TrailProviderRegistry.fromBuffer(buf));
-    }
-
-    public void toBuffer(FriendlyByteBuf buf) {
-        buf.writeFloat(this.r);
-        buf.writeFloat(this.g);
-        buf.writeFloat(this.b);
-        buf.writeFloat(this.a);
-        buf.writeFloat(this.width);
-        buf.writeFloat(this.r2);
-        buf.writeFloat(this.g2);
-        buf.writeFloat(this.b2);
-        buf.writeFloat(this.a2);
-        buf.writeFloat(this.width2);
-        buf.writeEnum(this.visual);
-        buf.writeInt(this.textureIndex);
-        TrailProviderRegistry.toBuffer(this.data, buf);
     }
 
     public static TrailInfo.Builder builder(TrailData provider) {

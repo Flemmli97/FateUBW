@@ -1,4 +1,4 @@
-package io.github.flemmli97.fateubw.fabric.common.data;
+package io.github.flemmli97.fateubw.fabric.mixinhelper;
 
 import io.github.flemmli97.fateubw.common.attachment.PlayerData;
 

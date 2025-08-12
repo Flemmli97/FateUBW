@@ -19,10 +19,13 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.Optional;
 
 public class PlayerData {
 
@@ -85,13 +88,13 @@ public class PlayerData {
         }
     }
 
-    public void restoreServant(Player player, boolean loot) {
+    public void restoreServant(ServerPlayer player, boolean loot) {
         if (this.savedServant != null && (player.level() instanceof ServerLevel serverLevel)) {
             if (loot) {
                 ResourceKey<LootTable> lootId = this.savedServant.getFirst().getDefaultLootTable();
                 LootTable lootTable = serverLevel.getServer().reloadableRegistries().getLootTable(lootId);
                 LootContext.Builder builder = this.createLootContext(player);
-                lootTable.getRandomItems(builder.create(LootContextParamSets.ENTITY), player::spawnAtLocation);
+                lootTable.getRandomItems(builder.create(Optional.empty()), player::spawnAtLocation);
                 this.savedServant = null;
             } else {
                 Entity entity = this.savedServant.getFirst().create(serverLevel);
@@ -108,15 +111,17 @@ public class PlayerData {
         }
     }
 
-    private LootContext.Builder createLootContext(Player player) {
-        DamageSource source = DamageSources.playerAttack(player);
-        return new LootContext.Builder((ServerLevel) player.level).withRandom(player.getRandom())
+    private LootContext.Builder createLootContext(ServerPlayer player) {
+        DamageSource source = player.damageSources().playerAttack(player);
+        LootParams params = new LootParams.Builder(player.serverLevel())
                 .withParameter(LootContextParams.THIS_ENTITY, player)
                 .withParameter(LootContextParams.ORIGIN, player.position())
                 .withParameter(LootContextParams.DAMAGE_SOURCE, source)
-                .withOptionalParameter(LootContextParams.KILLER_ENTITY, source.getEntity())
-                .withOptionalParameter(LootContextParams.DIRECT_KILLER_ENTITY, source.getDirectEntity())
-                .withParameter(LootContextParams.LAST_DAMAGE_PLAYER, player).withLuck(player.getLuck());
+                .withOptionalParameter(LootContextParams.ATTACKING_ENTITY, source.getEntity())
+                .withOptionalParameter(LootContextParams.DIRECT_ATTACKING_ENTITY, source.getDirectEntity())
+                .withParameter(LootContextParams.LAST_DAMAGE_PLAYER, player).withLuck(player.getLuck())
+                .create(LootContextParamSets.ENTITY);
+        return new LootContext.Builder(params).withOptionalRandomSource(player.getRandom());
     }
 
     public int getCommandSeals() {
@@ -149,7 +154,7 @@ public class PlayerData {
         return null;
     }
 
-    public CompoundTag writeToNBT(CompoundTag compound) {
+    public CompoundTag save(CompoundTag compound) {
         compound.putInt("Mana", this.currentMana);
         compound.putInt("CommandSeal", this.commandSeals);
         if (this.savedServant != null) {
@@ -159,7 +164,7 @@ public class PlayerData {
         return compound;
     }
 
-    public void readFromNBT(CompoundTag compound) {
+    public void load(CompoundTag compound) {
         this.currentMana = compound.getInt("Mana");
         this.commandSeals = compound.getInt("CommandSeal");
         if (compound.contains("SavedServantType")) {

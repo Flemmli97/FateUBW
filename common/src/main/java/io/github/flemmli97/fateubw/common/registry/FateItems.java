@@ -12,24 +12,29 @@ import io.github.flemmli97.fateubw.common.items.weapons.ExcaliburItem;
 import io.github.flemmli97.fateubw.common.items.weapons.GaeBolgItem;
 import io.github.flemmli97.fateubw.common.items.weapons.GrimoireItem;
 import io.github.flemmli97.fateubw.common.items.weapons.KanshouBakuyaItem;
-import io.github.flemmli97.fateubw.common.items.weapons.KatanaItem;
-import io.github.flemmli97.fateubw.common.items.weapons.MedusaDaggerItem;
-import io.github.flemmli97.fateubw.common.items.weapons.SpearItem;
-import io.github.flemmli97.fateubw.common.items.weapons.StaffItem;
+import io.github.flemmli97.fateubw.common.items.weapons.MedeasStaffItem;
+import io.github.flemmli97.fateubw.common.items.weapons.MedusasDaggerItem;
 import io.github.flemmli97.fateubw.common.lib.BuiltinServantClasses;
 import io.github.flemmli97.fateubw.common.lib.ItemTiers;
+import io.github.flemmli97.fateubw.common.lib.LibAttributeModifiers;
 import io.github.flemmli97.tenshilib.common.item.AnimationDebugger;
 import io.github.flemmli97.tenshilib.loader.LoaderRegistryAccess;
 import io.github.flemmli97.tenshilib.loader.registry.LoaderRegister;
 import io.github.flemmli97.tenshilib.loader.registry.RegistryEntrySupplier;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.TieredItem;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 
 import java.util.Random;
 import java.util.function.Supplier;
@@ -38,29 +43,26 @@ public class FateItems {
 
     public static final LoaderRegister<Item> ITEMS = LoaderRegistryAccess.INSTANCE.of(Registries.ITEM, Fate.MODID);
 
-    public static final RegistryEntrySupplier<Item, SwordItem> INVISEXCALIBUR = register("invis_excalibur", () -> new SwordItem(ItemTiers.INVIS_EXCALIBUR, 0, -2.4f, new Item.Properties()) {
-        @Override
-        public boolean isFoil(ItemStack stack) {
-            return true;
-        }
-    });
-    public static final RegistryEntrySupplier<Item, ExcaliburItem> EXCALIBUR = register("excalibur", () -> new ExcaliburItem(new Item.Properties()));
-    public static final RegistryEntrySupplier<Item, GaeBolgItem> GAEBOLG = register("gae_bolg", () -> new GaeBolgItem(new Item.Properties()));
-    public static final RegistryEntrySupplier<Item, SpearItem> GAEDEARG = register("gae_dearg", () -> new SpearItem(ItemTiers.GAE_DEARG, new Item.Properties(), -1.5f, 4));
-    public static final RegistryEntrySupplier<Item, SpearItem> GAEBUIDHE = register("gae_buidhe", () -> new SpearItem(ItemTiers.GAE_BUIDHE, new Item.Properties(), -1.5f, 3f));
+    public static final RegistryEntrySupplier<Item, SwordItem> INVISEXCALIBUR = register("invis_excalibur", () -> new SwordItem(ItemTiers.INVIS_EXCALIBUR, new Item.Properties()
+            .attributes(createAttributes(ItemTiers.INVIS_EXCALIBUR, -2.4f))
+            .component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)));
+    public static final RegistryEntrySupplier<Item, ExcaliburItem> EXCALIBUR = register("excalibur", () -> new ExcaliburItem(new Item.Properties().attributes(createAttributes(ItemTiers.EXCALIBUR, -2.4f))));
+    public static final RegistryEntrySupplier<Item, GaeBolgItem> GAEBOLG = register("gae_bolg", () -> new GaeBolgItem(new Item.Properties().attributes(createAttributes(ItemTiers.GAE_BOLG, -2, 5))));
+    public static final RegistryEntrySupplier<Item, TieredItem> GAEDEARG = register("gae_dearg", () -> new TieredItem(ItemTiers.GAE_DEARG, new Item.Properties().attributes(createAttributes(ItemTiers.GAE_DEARG, -1.5f, 5))));
+    public static final RegistryEntrySupplier<Item, TieredItem> GAEBUIDHE = register("gae_buidhe", () -> new TieredItem(ItemTiers.GAE_BUIDHE, new Item.Properties().attributes(createAttributes(ItemTiers.GAE_BUIDHE, -1.5f, 4))));
     public static final RegistryEntrySupplier<Item, KanshouBakuyaItem> KANSHOU = register("kanshou", FateItems::kanshou);
-    public static final RegistryEntrySupplier<Item, KanshouBakuyaItem> BAKUYA = register("bakuya", () -> new KanshouBakuyaItem(ItemTiers.KANSHOU_BAKUYA, 0, -2f, new Item.Properties(), KANSHOU));
+    public static final RegistryEntrySupplier<Item, KanshouBakuyaItem> BAKUYA = register("bakuya", () -> new KanshouBakuyaItem(ItemTiers.KANSHOU_BAKUYA, new Item.Properties().attributes(createAttributes(ItemTiers.KANSHOU_BAKUYA, -2f)), () -> KANSHOU));
     public static final RegistryEntrySupplier<Item, ArcherBowItem> ARCHBOW = register("emiyas_bow", () -> new ArcherBowItem(new Item.Properties().stacksTo(1)));
-    public static final RegistryEntrySupplier<Item, EnumaElishItem> ENUMAELISH = register("enuma_elish", () -> new EnumaElishItem(new Item.Properties()));
-    public static final RegistryEntrySupplier<Item, StaffItem> STAFF = register("medeas_staff", () -> new StaffItem(new Item.Properties().stacksTo(1)));
-    public static final RegistryEntrySupplier<Item, SwordItem> RULE_BREAKER = register("rule_breaker", () -> new SwordItem(ItemTiers.RULE_BREAKER, 0, -2.4f, new Item.Properties()));
+    public static final RegistryEntrySupplier<Item, EnumaElishItem> ENUMAELISH = register("enuma_elish", () -> new EnumaElishItem(new Item.Properties().attributes(createAttributes(ItemTiers.ENUMA_ELISH, -2.4f))));
+    public static final RegistryEntrySupplier<Item, MedeasStaffItem> STAFF = register("medeas_staff", () -> new MedeasStaffItem(new Item.Properties().stacksTo(1)));
+    public static final RegistryEntrySupplier<Item, SwordItem> RULE_BREAKER = register("rule_breaker", () -> new SwordItem(ItemTiers.RULE_BREAKER, new Item.Properties().attributes(createAttributes(ItemTiers.RULE_BREAKER, -2.4f))));
     public static final RegistryEntrySupplier<Item, GrimoireItem> GRIMOIRE = register("prelatis_spellbook", () -> new GrimoireItem(new Item.Properties().stacksTo(1)));
-    public static final RegistryEntrySupplier<Item, AxeItem> HERACLES_AXE = register("heracles_axe", () -> new AxeItem(ItemTiers.HERACLES_AXE, 0, -3.2f, new Item.Properties()));
-    public static final RegistryEntrySupplier<Item, SwordItem> ARONDIGHT = register("arondight", () -> new SwordItem(ItemTiers.ARONDIGHT, 0, -2.4f, new Item.Properties()));
-    public static final RegistryEntrySupplier<Item, SwordItem> KUPRIOTS = register("kupriots", () -> new SwordItem(ItemTiers.KUPRIOTS, 0, -2.4f, new Item.Properties()));
-    public static final RegistryEntrySupplier<Item, MedusaDaggerItem> MEDUSA_DAGGER = register("medusas_dagger", () -> new MedusaDaggerItem(ItemTiers.DAGGER, 0, -2.0f, new Item.Properties()));
-    public static final RegistryEntrySupplier<Item, DaggerItem> ASSASSIN_DAGGER = register("assassin_dagger", () -> new DaggerItem(ItemTiers.ASSASSIN_DAGGER, 0, -1.5f, new Item.Properties()));
-    public static final RegistryEntrySupplier<Item, KatanaItem> MONOHOSHI_ZAO = register("monohoshi_zao", () -> new KatanaItem(ItemTiers.KATANA, 0, -2.6f, new Item.Properties()));
+    public static final RegistryEntrySupplier<Item, AxeItem> HERACLES_AXE = register("heracles_axe", () -> new AxeItem(ItemTiers.HERACLES_AXE, new Item.Properties().attributes(createAttributes(ItemTiers.HERACLES_AXE, -3.2f))));
+    public static final RegistryEntrySupplier<Item, SwordItem> ARONDIGHT = register("arondight", () -> new SwordItem(ItemTiers.ARONDIGHT, new Item.Properties().attributes(createAttributes(ItemTiers.ARONDIGHT, -2.4f))));
+    public static final RegistryEntrySupplier<Item, SwordItem> KUPRIOTS = register("kupriots", () -> new SwordItem(ItemTiers.KUPRIOTS, new Item.Properties().attributes(createAttributes(ItemTiers.KUPRIOTS, -2.4f))));
+    public static final RegistryEntrySupplier<Item, MedusasDaggerItem> MEDUSA_DAGGER = register("medusas_dagger", () -> new MedusasDaggerItem(ItemTiers.DAGGER, new Item.Properties().attributes(createAttributes(ItemTiers.DAGGER, -2))));
+    public static final RegistryEntrySupplier<Item, DaggerItem> ASSASSIN_DAGGER = register("assassin_dagger", () -> new DaggerItem(ItemTiers.ASSASSIN_DAGGER, new Item.Properties().attributes(createAttributes(ItemTiers.ASSASSIN_DAGGER, -1.5f))));
+    public static final RegistryEntrySupplier<Item, SwordItem> MONOHOSHI_ZAO = register("monohoshi_zao", () -> new SwordItem(ItemTiers.KATANA, new Item.Properties().attributes(createAttributes(ItemTiers.KATANA, -2.6f, 4.5))));
 
     public static final RegistryEntrySupplier<Item, BlockItem> ALTAR = register("summoning_altar", () -> new BlockItem(FateBlocks.ALTAR.get(), new Item.Properties()));
     public static final RegistryEntrySupplier<Item, BlockItem> GEM_ORE = register("gem_ore", () -> new BlockItem(FateBlocks.GEM_ORE.get(), new Item.Properties()));
@@ -123,6 +125,21 @@ public class FateItems {
     }
 
     private static KanshouBakuyaItem kanshou() {
-        return new KanshouBakuyaItem(ItemTiers.KANSHOU_BAKUYA, 0, -2f, new Item.Properties(), BAKUYA);
+        return new KanshouBakuyaItem(ItemTiers.KANSHOU_BAKUYA, new Item.Properties().attributes(createAttributes(ItemTiers.KANSHOU_BAKUYA, -2f)), () -> BAKUYA);
+    }
+
+    public static ItemAttributeModifiers createAttributes(Tier tier, double attackSpeed) {
+        return ItemAttributeModifiers.builder()
+                .add(Attributes.ATTACK_DAMAGE, new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID, tier.getAttackDamageBonus(), AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+                .add(Attributes.ATTACK_SPEED, new AttributeModifier(Item.BASE_ATTACK_SPEED_ID, attackSpeed, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+                .build();
+    }
+
+    public static ItemAttributeModifiers createAttributes(Tier tier, double attackSpeed, double range) {
+        return ItemAttributeModifiers.builder()
+                .add(Attributes.ATTACK_DAMAGE, new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID, tier.getAttackDamageBonus(), AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+                .add(Attributes.ATTACK_SPEED, new AttributeModifier(Item.BASE_ATTACK_SPEED_ID, attackSpeed, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+                .add(Attributes.ENTITY_INTERACTION_RANGE, new AttributeModifier(LibAttributeModifiers.BASE_ATTACK_RANGE_ID, range - 3.0F, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+                .build();
     }
 }

@@ -168,7 +168,7 @@ public class EntityHassan extends BaseServant {
     public void handleAttack(AnimatedAction anim) {
         if (anim.is(DUPE)) {
             if (anim.isAt(0.72)) {
-                this.level.broadcastEntityEvent(this, SMOKE);
+                this.level().broadcastEntityEvent(this, SMOKE);
             }
             if (anim.isAt("attack")) {
                 this.summonClones();
@@ -216,8 +216,8 @@ public class EntityHassan extends BaseServant {
         this.behind = MoveBehindAttackRunner.behind(this, entity);
         boolean hurt = super.doHurtTarget(entity);
         if (this.behind && hurt) {
-            this.level.playSound(null, this, SoundEvents.PLAYER_ATTACK_CRIT, this.getSoundSource(), 0.7f, 0.9f);
-            if (this.level instanceof ServerLevel serverLevel) {
+            this.level().playSound(null, this, SoundEvents.PLAYER_ATTACK_CRIT, this.getSoundSource(), 0.7f, 0.9f);
+            if (this.level() instanceof ServerLevel serverLevel) {
                 for (int i = 0; i < 15; i++)
                     serverLevel.sendParticles(DustParticleOptions.REDSTONE, entity.getRandomX(1.4), entity.getRandomY(), entity.getRandomZ(1.4), 0, 0, 0, 0, 0);
             }
@@ -241,7 +241,7 @@ public class EntityHassan extends BaseServant {
 
     public List<HassanClone> gatherCopies() {
         ArrayList<HassanClone> list = new ArrayList<>();
-        for (HassanClone e : this.level.getEntitiesOfClass(HassanClone.class, this.getBoundingBox().inflate(32))) {
+        for (HassanClone e : this.level().getEntitiesOfClass(HassanClone.class, this.getBoundingBox().inflate(32))) {
             if (this.copies.contains(e.getUUID())) {
                 e.setOriginal(this);
                 list.add(e);
@@ -254,7 +254,7 @@ public class EntityHassan extends BaseServant {
     public void handleEntityEvent(byte id) {
         if (id == SMOKE) {
             for (int i = 0; i < 32; i++) {
-                this.level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE,
+                this.level().addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE,
                         this.getX((this.getRandom().nextDouble() * 2 - 1) * 1.2), this.getY(this.getRandom().nextDouble() * 1.2), this.getZ((this.getRandom().nextDouble() * 2 - 1) * 1.2),
                         this.getRandom().nextGaussian() * 0.02, this.getRandom().nextGaussian() * 0.02, this.getRandom().nextGaussian() * 0.02);
             }
@@ -278,14 +278,14 @@ public class EntityHassan extends BaseServant {
             this.copies.clear();
             for (int i = 0; i < this.props().getConfig(ServantExtraData.HASSAN_COPIES); i++) {
                 HassanClone hassan = new HassanClone(this.level, this);
-                hassan.moveTo(this.getX(), this.getY(), this.getZ(), Mth.wrapDegrees(this.level.random.nextFloat() * 360.0F), 0.0F);
-                hassan.finalizeSpawn((ServerLevelAccessor) this.level, this.level.getCurrentDifficultyAt(this.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
-                this.level.addFreshEntity(hassan);
+                hassan.moveTo(this.getX(), this.getY(), this.getZ(), Mth.wrapDegrees(this.level().random.nextFloat() * 360.0F), 0.0F);
+                hassan.finalizeSpawn((ServerLevelAccessor) this.level, this.level().getCurrentDifficultyAt(this.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
+                this.level().addFreshEntity(hassan);
                 this.addCopy(hassan);
             }
             this.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 300, 1, true, false));
             this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 100, 2, true, false));
-            for (Mob mob : this.level.getEntitiesOfClass(Mob.class, this.getBoundingBox().inflate(32))) {
+            for (Mob mob : this.level().getEntitiesOfClass(Mob.class, this.getBoundingBox().inflate(32))) {
                 if (mob.getTarget() == this)
                     mob.setTarget(null);
             }
@@ -297,12 +297,12 @@ public class EntityHassan extends BaseServant {
         ThrownItemEntity item = new ThrownItemEntity(this.level, this);
         item.setWeapon(this.getWeaponToThrowAndReplace(main));
         if (this.getTarget() != null) {
-            item.shootAtEntity(this.getTarget(), 1.2f, 7 - this.level.getDifficulty().getId() * 2);
+            item.shootAtEntity(this.getTarget(), 1.2f, 7 - this.level().getDifficulty().getId() * 2);
         } else {
             item.shootFromRotation(this, this.getXRot() + 5, this.getYRot(), 0.0F, 1.2f, 1.0F);
         }
         this.playSound(SoundEvents.FISHING_BOBBER_THROW, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
-        this.level.addFreshEntity(item);
+        this.level().addFreshEntity(item);
     }
 
     private ItemStack getWeaponToThrowAndReplace(boolean main) {

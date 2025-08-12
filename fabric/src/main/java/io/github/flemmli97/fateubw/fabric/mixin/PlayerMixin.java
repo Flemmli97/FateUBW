@@ -3,7 +3,7 @@ package io.github.flemmli97.fateubw.fabric.mixin;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.attachment.PlayerData;
 import io.github.flemmli97.fateubw.common.event.EventCalls;
-import io.github.flemmli97.fateubw.fabric.common.data.PlayerDataGet;
+import io.github.flemmli97.fateubw.fabric.mixinhelper.PlayerDataGet;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
@@ -27,12 +27,12 @@ public abstract class PlayerMixin implements PlayerDataGet {
 
     @Inject(method = "readAdditionalSaveData", at = @At("RETURN"))
     private void loadData(CompoundTag compound, CallbackInfo info) {
-        this.fateData.readFromNBT(compound.getCompound(Fate.MODID + ":data"));
+        this.fateData.load(compound.getCompound(Fate.MODID + ":data"));
     }
 
     @Inject(method = "addAdditionalSaveData", at = @At("RETURN"))
     private void saveData(CompoundTag compound, CallbackInfo info) {
-        compound.put(Fate.MODID + ":data", this.fateData.writeToNBT(new CompoundTag()));
+        compound.put(Fate.MODID + ":data", this.fateData.save(new CompoundTag()));
     }
 
     @Override

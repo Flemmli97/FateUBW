@@ -20,7 +20,7 @@
       "io.github.flemmli97.fateubw.fabric.FateUBWFabric"
     ],
     "tenshilib_client": [
-      "io.github.flemmli97.fateubw.fabric.FateUBWFabricClient"
+      "io.github.flemmli97.fateubw.fabric.client.FateUBWFabricClient"
     ],
     "modmenu": [
       "io.github.flemmli97.fateubw.fabric.ModMenuIntegration"

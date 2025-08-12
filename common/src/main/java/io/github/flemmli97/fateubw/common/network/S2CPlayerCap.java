@@ -40,7 +40,7 @@ public class S2CPlayerCap implements CustomPacketPayload {
     public static void handle(S2CPlayerCap pkt) {
         Player player = ClientHandler.clientPlayer();
         if (player != null)
-            Platform.INSTANCE.getPlayerData(player).ifPresent(data -> data.handleClientUpdatePacket(pkt));
+            Platform.INSTANCE.getPlayerData(player).handleClientUpdatePacket(pkt);
     }
 
     @Override

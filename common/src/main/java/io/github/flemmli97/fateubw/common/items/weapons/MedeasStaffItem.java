@@ -16,19 +16,18 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class StaffItem extends Item {
+public class MedeasStaffItem extends Item {
 
-    public StaffItem(Properties properties) {
+    public MedeasStaffItem(Properties properties) {
         super(properties);
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+        super.appendHoverText(stack, context, tooltipComponents, isAdvanced);
         if (CommonConfig.daggerThrowMana > 0)
             tooltipComponents.add(Component.translatable("fateubw.tooltip.item.mana", CommonConfig.staffMana).withStyle(ChatFormatting.AQUA));
     }
@@ -37,7 +36,7 @@ public class StaffItem extends Item {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!level.isClientSide) {
-            if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).map(mana -> mana.getMana() >= CommonConfig.staffMana).orElse(false)) {
+            if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).getMana() >= CommonConfig.staffMana) {
                 player.startUsingItem(hand);
                 return InteractionResultHolder.consume(stack);
             }
@@ -49,12 +48,12 @@ public class StaffItem extends Item {
 
     @Override
     public void releaseUsing(ItemStack stack, Level level, LivingEntity entity, int timeLeft) {
-        int i = this.getUseDuration(stack) - timeLeft;
+        int i = this.getUseDuration(stack, entity) - timeLeft;
         if (i < 15) {
             return;
         }
         if (!level.isClientSide) {
-            if (!(entity instanceof Player player) || player.isCreative() || Platform.INSTANCE.getPlayerData(player).map(mana -> mana.useMana(player, CommonConfig.staffMana)).orElse(false)) {
+            if (!(entity instanceof Player player) || player.isCreative() || Platform.INSTANCE.getPlayerData(player).useMana(player, CommonConfig.staffMana)) {
                 MagicBeam beam = new MagicBeam(level, entity);
                 beam.setPos(entity.getEyePosition().add(0, 2, 0));
                 Vec3 target = entity.position().add(entity.getLookAngle().scale(16));
@@ -69,7 +68,7 @@ public class StaffItem extends Item {
     }
 
     @Override
-    public int getUseDuration(ItemStack stack) {
+    public int getUseDuration(ItemStack stack, LivingEntity entity) {
         return 72000;
     }
 

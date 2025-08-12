@@ -8,9 +8,9 @@ import io.github.flemmli97.fateubw.api.datapack.AttributeHolderProperties;
 import io.github.flemmli97.fateubw.api.datapack.ServantProperties;
 import io.github.flemmli97.fateubw.common.datapack.EntityPropsManager;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.HashCache;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,7 +24,7 @@ public record EntityPropsGen(DataGenerator gen) implements DataProvider {
     private static final Logger LOGGER = LogManager.getLogger();
 
     @Override
-    public void run(HashCache cache) {
+    public void run(CachedOutput cache) {
         FateEntities.getServantProperties().forEach((res, prop) -> {
             Path path = this.gen.getOutputFolder().resolve("data/" + res.getNamespace() + "/" + EntityPropsManager.DIRECTORY + "/" + res.getPath() + ".json");
             try {

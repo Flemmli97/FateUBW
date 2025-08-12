@@ -1,7 +1,7 @@
 package io.github.flemmli97.fateubw.fabric.mixin;
 
+import io.github.flemmli97.fateubw.client.ClientCalls;
 import io.github.flemmli97.fateubw.common.event.EventCalls;
-import io.github.flemmli97.fateubw.fabric.FateUBWFabric;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,7 +16,9 @@ public abstract class LivingEntityMixin {
 
     @Inject(method = "tick", at = @At("HEAD"))
     private void tickCall(CallbackInfo info) {
-        FateUBWFabric.entityTick((LivingEntity) (Object) this);
+        EventCalls.tick((LivingEntity) (Object) this);
+        if (((LivingEntity) (Object) this).level().isClientSide)
+            ClientCalls.tick((LivingEntity) (Object) this);
     }
 
     @Inject(method = "hurt", at = @At(value = "HEAD"), cancellable = true)

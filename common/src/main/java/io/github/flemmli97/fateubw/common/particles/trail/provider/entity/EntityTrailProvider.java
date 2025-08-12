@@ -1,13 +1,14 @@
 package io.github.flemmli97.fateubw.common.particles.trail.provider.entity;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailPositions;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailProviderRegistry;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.TrailData;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.TrailProvider;
-import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
-import io.github.flemmli97.tenshilib.api.entity.IAnimated;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimatedEntity;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -17,7 +18,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EntityTrailProvider<T extends Entity & IAnimated & EntityTrailHolderProvider> implements TrailProvider {
+public class EntityTrailProvider<T extends Entity & AnimatedEntity & EntityTrailHolderProvider> implements TrailProvider {
 
     public static final String TRAIL_START = "weapon_swing_start";
     public static final String TRAIL_END = "weapon_swing_end";
@@ -53,7 +54,7 @@ public class EntityTrailProvider<T extends Entity & IAnimated & EntityTrailHolde
         this.lastUpdateTick -= 1;
         this.addBatchedData();
         if (this.valid) {
-            AnimatedAction anim = this.entity.getAnimationHandler().getAnimation();
+            AnimationState anim = this.entity.getAnimationHandler().getAnimation();
             if (!this.entity.isAlive() || anim == null || anim.isPast(this.data.animationEnd)) {
                 this.valid = false;
                 this.last = this.position.getLast();
@@ -132,7 +133,7 @@ public class EntityTrailProvider<T extends Entity & IAnimated & EntityTrailHolde
     public record EntityTrailData(int entityId, String context, boolean left,
                                   String animationEnd) implements TrailData {
 
-        public static final Codec<EntityTrailData> CODEC = RecordCodecBuilder.create((builder) -> builder.group(
+        public static final MapCodec<EntityTrailData> CODEC = RecordCodecBuilder.mapCodec((builder) -> builder.group(
                         Codec.INT.fieldOf("entity_id").forGetter(d -> d.entityId),
                         Codec.STRING.fieldOf("context").forGetter(d -> d.context),
                         Codec.BOOL.fieldOf("left").forGetter(d -> d.left),

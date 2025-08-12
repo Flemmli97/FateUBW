@@ -1,92 +1,41 @@
 package io.github.flemmli97.fateubw.neoforge.platform;
 
-import io.github.flemmli97.fateubw.common.attachment.ItemStackData;
 import io.github.flemmli97.fateubw.common.attachment.PlayerData;
-import io.github.flemmli97.fateubw.neoforge.attachment.CapabilityInsts;
-import io.github.flemmli97.fateubw.neoforge.common.item.EAForge;
-import io.github.flemmli97.fateubw.neoforge.common.item.ExcaliburForge;
+import io.github.flemmli97.fateubw.neoforge.registry.FateAttachments;
 import io.github.flemmli97.fateubw.platform.Platform;
-import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.advancements.CriterionTrigger;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.BowItem;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tier;
-import net.minecraft.world.level.BaseSpawner;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.NaturalSpawner;
-import net.minecraftforge.data.loading.DatagenModLoader;
-import net.minecraftforge.eventbus.api.Event;
-
-import java.util.Optional;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.neoforged.neoforge.event.EventHooks;
 
 public class PlatformImpl implements Platform {
 
     @Override
-    public boolean isDatagen() {
-        return DatagenModLoader.isRunningDataGen();
+    public PlayerData getPlayerData(Player player) {
+        return player.getData(FateAttachments.PLAYER_DATA.get());
     }
 
     @Override
-    public Optional<PlayerData> getPlayerData(Player player) {
-        return player.getCapability(CapabilityInsts.PLAYERCAP).resolve();
+    public boolean canSpawnEvent(Mob mob, ServerLevelAccessor level, MobSpawnType spawnReason) {
+        return EventHooks.checkSpawnPosition(mob, level, spawnReason);
     }
 
     @Override
-    public Optional<ItemStackData> getItemStackData(Object stack) {
-        if (stack instanceof ItemStack itemStack)
-            return itemStack.getCapability(CapabilityInsts.ITEMSTACKCAP).resolve();
-        return Optional.empty();
+    public CreativeModeTab.Builder tabBuilder() {
+        return CreativeModeTab.builder();
     }
 
     @Override
-    public boolean canSpawnEvent(Mob entity, LevelAccessor level, double x, double y, double z, BaseSpawner spawner, MobSpawnType spawnReason, SpawnPlacements.Type place) {
-        Event.Result canSpawn = net.minecraftforge.event.ForgeEventFactory.canEntitySpawn(entity, level, x, y, z, spawner, spawnReason);
-        return canSpawn == Event.Result.ALLOW ||
-                (canSpawn == Event.Result.DEFAULT && (NaturalSpawner.isSpawnPositionOk(place, level, entity.blockPosition(), entity.getType()) && entity.checkSpawnObstruction(level)));
-    }
-
-    @Override
-    public <T extends CriterionTrigger<?>> T registerCriteriaTrigger(T criterion) {
-        return CriteriaTriggers.register(criterion);
-    }
-
-    @Override
-    public Item createExcalibur(Item.Properties props) {
-        return new ExcaliburForge(props);
-    }
-
-    @Override
-    public Item createEA(Item.Properties props) {
-        return new EAForge(props);
-    }
-
-    @Override
-    public AxeItem createAxe(Tier tier, float baseAttack, float speed, Item.Properties props) {
-        return new AxeItem(tier, baseAttack, speed, props);
-    }
-
-    @Override
-    public DamageSource setBypassArmor(DamageSource source) {
-        return source.bypassArmor();
-    }
-
-    @Override
-    public DamageSource setBypassMagic(DamageSource source) {
-        return source.bypassMagic();
-    }
-
-    @Override
-    public AbstractArrow customBowArrow(BowItem item, AbstractArrow def) {
-        return item.customArrow(def);
+    public AbstractArrow customBowArrow(AbstractArrow arrow, ItemStack projectileStack, ItemStack weaponStack) {
+        if (weaponStack.getItem() instanceof BowItem bow)
+            return bow.customArrow(arrow, projectileStack, weaponStack);
+        return arrow;
     }
 
     @Override

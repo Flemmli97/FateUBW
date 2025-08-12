@@ -1,6 +1,7 @@
 package io.github.flemmli97.fateubw.common.particles.trail.provider;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailPositions;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailProviderRegistry;
@@ -93,7 +94,7 @@ public class MotionTrailProvider implements TrailProvider {
                 ).apply(builder, Vec3::new)
         );
 
-        public static final Codec<MotionTrailData> CODEC = RecordCodecBuilder.create((builder) -> builder.group(
+        public static final MapCodec<MotionTrailData> CODEC = RecordCodecBuilder.mapCodec((builder) -> builder.group(
                         VEC_3_CODEC.fieldOf("motion").forGetter(d -> d.motion),
                         VEC_3_CODEC.optionalFieldOf("sweer").forGetter(d -> Optional.ofNullable(d.sweerDirection)),
                         VEC_3_CODEC.optionalFieldOf("normal").forGetter(d -> Optional.ofNullable(d.normal)),

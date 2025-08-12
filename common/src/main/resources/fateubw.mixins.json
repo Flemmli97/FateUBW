@@ -4,9 +4,11 @@
   "package": "io.github.flemmli97.fateubw.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
+    "AbstractArrowMixin",
     "AttributeMapAccessor",
     "CombatTrackerAccessor",
-    "Matrix4fMixin",
+    "SynchedEntityDataAccessor",
+    "ClientboundSetEntityDataPacketAccessor",
     "PathFinderMixin",
     "PathNavigationMixin"
   ],

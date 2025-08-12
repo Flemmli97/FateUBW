@@ -1,6 +1,9 @@
 package io.github.flemmli97.fateubw.neoforge.data;
 
 import io.github.flemmli97.fateubw.Fate;
+import io.github.flemmli97.fateubw.neoforge.data.tags.BlockTagGen;
+import io.github.flemmli97.fateubw.neoforge.data.tags.EntityTagGen;
+import io.github.flemmli97.fateubw.neoforge.data.tags.ItemTagGen;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;

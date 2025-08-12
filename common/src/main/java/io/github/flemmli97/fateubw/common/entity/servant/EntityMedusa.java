@@ -138,7 +138,7 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
     }
 
     @Override
-    protected void defineSynchedData() {
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData();
         this.getEntityData().define(THROWN_DAGGER, false);
     }
@@ -175,7 +175,7 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
     @Override
     public void tick() {
         super.tick();
-        if (!this.level.isClientSide && this.dagger != null) {
+        if (!this.level().isClientSide && this.dagger != null) {
             if (!this.dagger.isAlive()) {
                 this.dagger = null;
                 this.getEntityData().set(THROWN_DAGGER, false);
@@ -236,7 +236,7 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
             if (target != null && !anim.isPast(0.28)) {
                 this.lookAtNow(target, 60, 30);
             }
-            this.level.getEntities(EntityTypeTest.forClass(LivingEntity.class),
+            this.level().getEntities(EntityTypeTest.forClass(LivingEntity.class),
                             this.getBoundingBox().inflate(12, 8, 12),
                             this.targetPred)
                     .forEach(e -> {
@@ -312,14 +312,14 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
     }
 
     public void throwDaggerAt(@Nullable LivingEntity target) {
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             ChainDagger dagger = new ChainDagger(this.level, this, true);
             if (target == null) {
                 dagger.shoot(this, this.getXRot(), this.getYRot(), 0, 3, 0);
             } else {
                 dagger.shootAtEntity(target, 3, 0);
             }
-            this.level.addFreshEntity(dagger);
+            this.level().addFreshEntity(dagger);
             this.dagger = dagger;
             this.throwCooldown = this.random.nextInt(50) + 45;
             this.getEntityData().set(THROWN_DAGGER, true);
@@ -327,7 +327,7 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
     }
 
     public void summonPegasus() {
-        if (this.level instanceof ServerLevel serverLevel) {
+        if (this.level() instanceof ServerLevel serverLevel) {
             if (!this.forcedNP && !this.useMana(this.props().hogouMana()))
                 return;
             Pegasus peg = FateEntities.PEGASUS.get().create(serverLevel, null, null, null, this.blockPosition(), MobSpawnType.MOB_SUMMONED, false, false);
@@ -338,7 +338,7 @@ public class EntityMedusa extends BaseServant implements DaggerHitNotifiable {
             peg.yHeadRotO = this.getYRot();
             peg.yBodyRot = this.getYRot();
             peg.yBodyRotO = this.getYRot();
-            this.level.addFreshEntity(peg);
+            this.level().addFreshEntity(peg);
             this.startRiding(peg, true);
             this.revealServant();
         }

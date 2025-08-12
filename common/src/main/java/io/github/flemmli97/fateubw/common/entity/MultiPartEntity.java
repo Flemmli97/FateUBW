@@ -81,7 +81,7 @@ public class MultiPartEntity extends Entity {
     }
 
     @Override
-    protected void defineSynchedData() {
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
         this.entityData.define(PARENT_UUID, Optional.empty());
         this.entityData.define(SIZE_X, 0f);
         this.entityData.define(SIZE_Y, 0f);
@@ -108,7 +108,7 @@ public class MultiPartEntity extends Entity {
     @Override
     public void tick() {
         if (this.getParent() == null || !this.getParent().isAlive()) {
-            if (!this.level.isClientSide) {
+            if (!this.level().isClientSide) {
                 this.remove(RemovalReason.KILLED);
             }
             return;
@@ -202,7 +202,7 @@ public class MultiPartEntity extends Entity {
     }
 
     public MultiPartEntity setSize(float x, float y) {
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             this.entityData.set(SIZE_X, x);
             this.entityData.set(SIZE_Y, y);
         }

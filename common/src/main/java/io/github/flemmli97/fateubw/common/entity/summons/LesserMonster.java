@@ -103,7 +103,7 @@ public class LesserMonster extends PathfinderMob implements IAnimated, OwnableEn
     @Override
     public void tick() {
         super.tick();
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             this.livingTicks++;
             if (this.livingTicks > this.maxLivingTicks)
                 this.remove(RemovalReason.KILLED);

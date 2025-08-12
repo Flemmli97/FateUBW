@@ -153,7 +153,7 @@ public class EntityIskander extends BaseServant {
             if (target != null && !anim.isPast(0.28)) {
                 this.lookAtNow(target, 60, 30);
             }
-            this.level.getEntities(EntityTypeTest.forClass(LivingEntity.class),
+            this.level().getEntities(EntityTypeTest.forClass(LivingEntity.class),
                             this.getBoundingBox().inflate(12, 8, 12),
                             this.targetPred)
                     .forEach(e -> {
@@ -220,30 +220,30 @@ public class EntityIskander extends BaseServant {
     public boolean summonChariot() {
         if (!this.forcedNP && !this.useMana(this.props().hogouMana()))
             return false;
-        if (this.isPassenger() || this.level.isClientSide)
+        if (this.isPassenger() || this.level().isClientSide)
             return false;
         GordiusWheel wheel = FateEntities.GORDIUS_WHEEL.get().create(this.level);
         wheel.setPos(this.getX(), this.getY(), this.getZ());
-        this.level.addFreshEntity(wheel);
+        this.level().addFreshEntity(wheel);
         this.boardingCooldown = 0;
         this.startRiding(wheel);
         for (int i = 0; i < 5; i++) {
             LightningBolt lightningboltentity = EntityType.LIGHTNING_BOLT.create(this.level);
             lightningboltentity.moveTo(this.getX() + this.random.nextGaussian() * 2, this.getY(), this.getZ() + this.random.nextGaussian() * 2);
             lightningboltentity.setVisualOnly(true);
-            this.level.addFreshEntity(lightningboltentity);
+            this.level().addFreshEntity(lightningboltentity);
         }
         this.revealServant();
         return true;
     }
 
     public boolean summonHorse() {
-        if (this.isPassenger() || this.level.isClientSide)
+        if (this.isPassenger() || this.level().isClientSide)
             return false;
         Horse horse = EntityType.HORSE.create(this.level);
         horse.setPos(this.getX(), this.getY(), this.getZ());
         horse.setTamed(true);
-        this.level.addFreshEntity(horse);
+        this.level().addFreshEntity(horse);
         horse.getAttribute(Attributes.MAX_HEALTH).setBaseValue(horse.getAttributeBaseValue(Attributes.MAX_HEALTH) + 30);
         horse.getAttribute(Attributes.ARMOR).setBaseValue(2);
         horse.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(horse.getAttributeBaseValue(Attributes.MOVEMENT_SPEED) + 0.15);
@@ -253,7 +253,7 @@ public class EntityIskander extends BaseServant {
             LightningBolt lightningboltentity = EntityType.LIGHTNING_BOLT.create(this.level);
             lightningboltentity.moveTo(this.getX() + this.random.nextGaussian() * 2, this.getY(), this.getZ() + this.random.nextGaussian() * 2);
             lightningboltentity.setVisualOnly(true);
-            this.level.addFreshEntity(lightningboltentity);
+            this.level().addFreshEntity(lightningboltentity);
         }
         this.revealServant();
         return true;

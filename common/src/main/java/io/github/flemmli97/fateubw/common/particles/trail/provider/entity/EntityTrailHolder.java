@@ -1,13 +1,13 @@
 package io.github.flemmli97.fateubw.common.particles.trail.provider.entity;
 
-import io.github.flemmli97.tenshilib.api.entity.IAnimated;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimatedEntity;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class EntityTrailHolder<T extends Entity & IAnimated & EntityTrailHolderProvider> {
+public class EntityTrailHolder<T extends Entity & AnimatedEntity & EntityTrailHolderProvider> {
 
     private final Set<EntityTrailProvider<T>> trailPositionTracker = new HashSet<>();
 

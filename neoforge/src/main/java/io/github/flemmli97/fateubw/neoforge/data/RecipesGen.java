@@ -12,9 +12,9 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.Nullable;
 import vazkii.patchouli.common.recipe.ShapelessBookRecipe;
 
@@ -37,17 +37,17 @@ public class RecipesGen extends RecipeProvider {
                 .requires(FateItems.CRYSTAL_YELLOW.get())
                 .unlockedBy("dummy", new ImpossibleTrigger.TriggerInstance()).save(consumer);
         ShapedRecipeBuilder.shaped(FateItems.ALTAR.get())
-                .define('T', Items.TORCH)
-                .define('R', Items.RED_WOOL)
-                .define('L', FateTags.FABRIC_LAPIS_BLOCK)
+                .define('T', net.minecraft.world.item.Items.TORCH)
+                .define('R', net.minecraft.world.item.Items.RED_WOOL)
+                .define('L', Tags.Items.STORAGE_BLOCKS_LAPIS)
                 .define('G', FateItems.MANA_GEM.get())
-                .define('D', FateTags.FABRIC_DIAMOND_BLOCK)
+                .define('D', Tags.Items.STORAGE_BLOCKS_DIAMOND)
                 .pattern("RTR").pattern("GDG").pattern("LGL")
                 .unlockedBy("dummy", new ImpossibleTrigger.TriggerInstance()).save(consumer);
         ShapedRecipeBuilder.shaped(FateItems.CHALK.get())
-                .define('B', FateTags.FABRIC_DYE_TAG)
-                .define('S', FateTags.FABRIC_STICK_TAG)
-                .define('C', FateTags.CRYSTALS)
+                .define('B', Tags.Items.DYES)
+                .define('S', Tags.Items.RODS_WOODEN)
+                .define('C', FateTags.Items.CRYSTALS)
                 .pattern("  B").pattern(" S ").pattern("C  ")
                 .unlockedBy("dummy", new ImpossibleTrigger.TriggerInstance()).save(consumer);
 
@@ -55,7 +55,7 @@ public class RecipesGen extends RecipeProvider {
             @Override
             public void serializeRecipeData(JsonObject json) {
                 JsonArray jsonArray = new JsonArray();
-                List<Ingredient> ings = List.of(Ingredient.of(FateTags.CRYSTALS), Ingredient.of(Items.BOOK));
+                List<Ingredient> ings = List.of(Ingredient.of(FateTags.Items.CRYSTALS), Ingredient.of(net.minecraft.world.item.Items.BOOK));
 
                 for (Ingredient ing : ings)
                     jsonArray.add(ing.toJson());

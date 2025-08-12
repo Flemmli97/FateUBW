@@ -1,9 +1,8 @@
 package io.github.flemmli97.fateubw.common.entity.misc;
 
-import com.mojang.math.Vector3f;
+import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
-import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.particle.ColoredParticleData;
 import net.minecraft.nbt.CompoundTag;
@@ -16,6 +15,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
 
 public class MagicShot extends BaseProjectile {
 
@@ -32,9 +32,9 @@ public class MagicShot extends BaseProjectile {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(TYPE_DATA, 0);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(TYPE_DATA, 0);
     }
 
     @Override
@@ -65,11 +65,11 @@ public class MagicShot extends BaseProjectile {
     @Override
     public void tick() {
         super.tick();
-        if (this.level.isClientSide) {
+        if (this.level().isClientSide) {
             Vector3f color = this.colorType.particleColor;
             Vec3 delta = this.getDeltaMovement().scale(0.5);
             for (int i = 0; i < 8; i++) {
-                this.level.addParticle(new ColoredParticleData(FateParticles.LIGHT.get(), color.x(), color.y(), color.z(), 0.5f, 0.5f),
+                this.level().addParticle(new ColoredParticleData(FateParticles.LIGHT.get(), color.x(), color.y(), color.z(), 0.5f, 0.5f),
                         this.getX() + this.random.nextGaussian() * delta.x(), this.getY() + 0.35 + this.random.nextGaussian() * delta.y(), this.getZ() + this.random.nextGaussian() * delta.z(),
                         this.random.nextGaussian() * 0.01, Math.abs(this.random.nextGaussian() * 0.03), this.random.nextGaussian() * 0.01);
             }
@@ -89,7 +89,7 @@ public class MagicShot extends BaseProjectile {
     @Override
     protected boolean entityRayTraceHit(EntityHitResult result) {
         this.discard();
-        return result.getEntity().hurt(CustomDamageSource.magicShot(this, this.getOwner()), Utils.magicDamage(this.getOwner()));
+        return result.getEntity().hurt(FateDamageTypes.indirect(FateDamageTypes.MAGIC_SHOT, this, this.getOwner()), Utils.magicDamage(this.getOwner()));
     }
 
     @Override

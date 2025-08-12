@@ -12,7 +12,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -23,8 +22,8 @@ public class GrimoireItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+        super.appendHoverText(stack, context, tooltipComponents, isAdvanced);
         if (CommonConfig.grimoireMana > 0)
             tooltipComponents.add(Component.translatable("fateubw.tooltip.item.mana", CommonConfig.grimoireMana).withStyle(ChatFormatting.AQUA));
     }
@@ -32,7 +31,7 @@ public class GrimoireItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         if (!level.isClientSide) {
-            if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).map(mana -> mana.useMana(player, CommonConfig.grimoireMana)).orElse(false)) {
+            if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).useMana(player, CommonConfig.grimoireMana)) {
                 this.spawn(player, player.getItemInHand(hand));
                 return InteractionResultHolder.consume(player.getItemInHand(hand));
             }
@@ -43,14 +42,14 @@ public class GrimoireItem extends Item {
     }
 
     private void spawn(Player player, ItemStack stack) {
-        LesserMonster monster = new LesserMonster(player.level, player);
+        LesserMonster monster = new LesserMonster(player.level(), player);
         double x = player.getX() + player.getRandom().nextInt(8) - 4.0;
         double y = player.getY() + player.getRandom().nextInt(2) - 1.0;
         double z = player.getZ() + player.getRandom().nextInt(8) - 4.0;
         monster.setPos(x, y, z);
         int tries = 0;
         while (tries < 10) {
-            if (player.level.noCollision(monster)) {
+            if (player.level().noCollision(monster)) {
                 break;
             }
             x = player.getX() + player.getRandom().nextInt(8) - 4.0;
@@ -59,9 +58,9 @@ public class GrimoireItem extends Item {
             monster.setPos(x, y, z);
             tries++;
         }
-        if (tries == 10 && !player.level.noCollision(monster))
+        if (tries == 10 && !player.level().noCollision(monster))
             return;
-        player.level.addFreshEntity(monster);
+        player.level().addFreshEntity(monster);
         if (player.getLastHurtMob() != null)
             monster.setTarget(player.getLastHurtMob());
         player.getCooldowns().addCooldown(stack.getItem(), 50);

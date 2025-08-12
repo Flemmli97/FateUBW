@@ -123,13 +123,13 @@ public class EntityCuchulainn extends BaseServant {
     @Override
     public void tick() {
         super.tick();
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             this.gaeBolgThrowTick = Math.max(0, --this.gaeBolgThrowTick);
             if (this.gaeBolgThrowTick == 1 && this.getMainHandItem().getItem() != FateItems.GAEBOLG.get())
                 this.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(FateItems.GAEBOLG.get()));
             if (this.getHealth() < 0.25 * this.getMaxHealth() && this.getHealth() > 0) {
                 if (!this.critHealth) {
-                    this.level.getServer().getPlayerList().broadcastMessage(Component.translatable("fateubw.chat.servant.cuchulainn").withStyle(ChatFormatting.GOLD), ChatType.SYSTEM);
+                    this.level().getServer().getPlayerList().broadcastMessage(Component.translatable("fateubw.chat.servant.cuchulainn").withStyle(ChatFormatting.GOLD), ChatType.SYSTEM);
                     this.critHealth = true;
                 }
                 this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 1, 2, false, false));
@@ -187,7 +187,7 @@ public class EntityCuchulainn extends BaseServant {
         this.forcedNP = false;
         GaeBolg gaeBolg = new GaeBolg(this.level, this);
         gaeBolg.shootAtPosition(pos.x(), pos.y(), pos.z(), 1.5F, 0);
-        this.level.addFreshEntity(gaeBolg);
+        this.level().addFreshEntity(gaeBolg);
         this.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
         this.gaeBolgThrowTick = 100;
         this.revealServant();

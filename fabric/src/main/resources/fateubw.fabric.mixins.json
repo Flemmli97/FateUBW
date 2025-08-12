@@ -4,17 +4,14 @@
   "package": "io.github.flemmli97.fateubw.fabric.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "DamageSourceAccessor",
     "ItemRendererAccessor",
     "PlayerMixin",
     "LivingEntityMixin",
-    "ItemStackMixin",
-    "ServerPlayerMixin",
-    "EnchantmentMixin"
+    "ServerPlayerMixin"
   ],
   "client": [
     "CameraAccessor",
-    "GameRendererMixin",
+    "CameraMixin",
     "ParticleEngineMixin"
   ],
   "injectors": {

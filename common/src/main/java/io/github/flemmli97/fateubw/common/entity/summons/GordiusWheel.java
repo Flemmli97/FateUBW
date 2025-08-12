@@ -8,7 +8,7 @@ import io.github.flemmli97.fateubw.common.entity.StandingVehicle;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
-import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
+import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
@@ -144,7 +144,7 @@ public class GordiusWheel extends PathfinderMob implements IAnimated, StandingVe
     }
 
     @Override
-    protected void defineSynchedData() {
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData();
         this.entityData.define(LOCKED_YAW, 0f);
         this.entityData.define(WHEEL, 0);
@@ -176,14 +176,14 @@ public class GordiusWheel extends PathfinderMob implements IAnimated, StandingVe
     public void baseTick() {
         this.getAnimationHandler().tick();
         this.chargingHandler.tick();
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             if (this.wheels == null) {
                 this.wheels = this.createWheels();
             }
             if (!this.wheels.isAddedToLevel()) {
                 this.wheels.setParent(this);
                 this.wheels.maxUpStep = 3;
-                this.level.addFreshEntity(this.wheels);
+                this.level().addFreshEntity(this.wheels);
             }
             this.getAnimationHandler().runIfNotNull(this::handleAttack);
             if (this.getTarget() == null) {
@@ -201,10 +201,10 @@ public class GordiusWheel extends PathfinderMob implements IAnimated, StandingVe
             if (anim.isPast("attack")) {
                 this.setDeltaMovement(this.chargeMotion.x(), this.getDeltaMovement().y(), this.chargeMotion.z());
                 OrientedBoundingBox obb = this.prepareAttackBox(anim, null, 0.2, false);
-                List<LivingEntity> list = this.level.getEntitiesOfClass(LivingEntity.class, obb.getEncompassingBox(),
+                List<LivingEntity> list = this.level().getEntitiesOfClass(LivingEntity.class, obb.getEncompassingBox(),
                         entity -> this.targetPred.test(entity) && obb.intersects(entity.getBoundingBox()));
                 for (LivingEntity e : list) {
-                    e.hurt(CustomDamageSource.gordiusTrample(this), (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE));
+                    e.hurt(FateDamageTypes.direct(FateDamageTypes.GORDIUS_TRAMPLE, this), (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE));
                 }
                 this.playSound(SoundEvents.COW_STEP, 0.4F, 0.4F);
                 S2CAttackDebug.sendDebugPacket(obb, S2CAttackDebug.EnumAABBType.ATTACK, this);
@@ -226,9 +226,9 @@ public class GordiusWheel extends PathfinderMob implements IAnimated, StandingVe
 
     public void mobAttack(AnimatedAction anim, LivingEntity target, Consumer<LivingEntity> cons) {
         OrientedBoundingBox obb = this.prepareAttackBox(anim, target, 0.2, false);
-        this.level.getEntitiesOfClass(LivingEntity.class, obb.getEncompassingBox(),
+        this.level().getEntitiesOfClass(LivingEntity.class, obb.getEncompassingBox(),
                 entity -> this.targetPred.test(entity) && obb.intersects(entity.getBoundingBox())).forEach(cons);
-        if (!this.level.isClientSide)
+        if (!this.level().isClientSide)
             S2CAttackDebug.sendDebugPacket(obb, S2CAttackDebug.EnumAABBType.ATTACK, this);
     }
 
@@ -343,17 +343,17 @@ public class GordiusWheel extends PathfinderMob implements IAnimated, StandingVe
 
     @Nullable
     public MultiPartEntity getWheelEntity() {
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             if (this.wheels == null) {
                 this.wheels = this.createWheels();
             }
             if (!this.wheels.isAddedToLevel()) {
                 this.wheels.setParent(this);
                 this.wheels.maxUpStep = 3;
-                this.level.addFreshEntity(this.wheels);
+                this.level().addFreshEntity(this.wheels);
             }
         } else if (this.wheels == null || !this.wheels.isAddedToLevel() || !this.wheels.isAlive()) {
-            Entity entity = this.level.getEntity(this.entityData.get(WHEEL));
+            Entity entity = this.level().getEntity(this.entityData.get(WHEEL));
             if (entity instanceof MultiPartEntity part && part.getParent() == this) {
                 this.wheels = part;
             }

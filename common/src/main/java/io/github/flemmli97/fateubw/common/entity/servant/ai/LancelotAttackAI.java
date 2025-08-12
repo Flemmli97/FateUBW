@@ -62,7 +62,7 @@ public class LancelotAttackAI {
                 ItemStack itemstack = entity.getProjectile(entity.getItemInHand(ProjectileUtil.getWeaponHoldingHand(entity, Items.BOW)));
                 AbstractArrow abstractarrowentity = ProjectileUtil.getMobArrow(entity, itemstack, BowItem.getPowerForTime(entity.getTicksUsingItem()));
                 if (entity.getMainHandItem().getItem() instanceof BowItem)
-                    abstractarrowentity = Platform.INSTANCE.customBowArrow((BowItem) entity.getMainHandItem().getItem(), abstractarrowentity);
+                    abstractarrowentity = Platform.INSTANCE.customBowArrow((BowItem) entity.getMainHandItem().getItem(), abstractarrowentity, entity.getMainHandItem(), itemstack);
                 double dX = target.getX() - entity.getX();
                 double dY = target.getY(0.3) - abstractarrowentity.getY();
                 double dZ = target.getZ() - entity.getZ();

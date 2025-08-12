@@ -10,21 +10,21 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class GaeBolgItem extends SpearItem {
+public class GaeBolgItem extends TieredItem {
 
     public GaeBolgItem(Item.Properties props) {
-        super(ItemTiers.GAE_BOLG, props, -2f, 4);
+        super(ItemTiers.GAE_BOLG, props);
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+        super.appendHoverText(stack, context, tooltipComponents, isAdvanced);
         if (CommonConfig.gaeBolgMana > 0)
             tooltipComponents.add(Component.translatable("fateubw.tooltip.item.mana", CommonConfig.gaeBolgMana).withStyle(ChatFormatting.AQUA));
     }
@@ -33,7 +33,7 @@ public class GaeBolgItem extends SpearItem {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!level.isClientSide) {
-            if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).map(mana -> mana.useMana(player, CommonConfig.gaeBolgMana)).orElse(false)) {
+            if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).useMana(player, CommonConfig.gaeBolgMana)) {
                 io.github.flemmli97.fateubw.common.entity.misc.GaeBolg gaeBolg = new io.github.flemmli97.fateubw.common.entity.misc.GaeBolg(level, player);
                 gaeBolg.shoot(player, player.getXRot(), player.getYRot(), 0, 1.5F, 0);
                 level.addFreshEntity(gaeBolg);

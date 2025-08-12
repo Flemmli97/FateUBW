@@ -1,41 +1,24 @@
 package io.github.flemmli97.fateubw.neoforge.event;
 
-import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.client.ClientCalls;
 import io.github.flemmli97.fateubw.common.commands.CommandHandler;
 import io.github.flemmli97.fateubw.common.event.EventCalls;
-import io.github.flemmli97.fateubw.common.network.S2CPlayerCap;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
-import io.github.flemmli97.fateubw.neoforge.attachment.PlayerCap;
-import io.github.flemmli97.fateubw.platform.Platform;
-import io.github.flemmli97.tenshilib.loader.LoaderNetwork;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.event.entity.living.LivingHealEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingHealEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
 
 public class EventHandler {
-
-    public static final ResourceLocation PLAYER_CAP = new ResourceLocation(Fate.MODID, "player_cap");
-    public static final ResourceLocation ITEMSTACK_CAP = new ResourceLocation(Fate.MODID, "itemstack_cap");
-
-    @SubscribeEvent
-    public static void attachCapability(AttachCapabilitiesEvent<Entity> event) {
-        if (event.getObject() instanceof Player)
-            event.addCapability(PLAYER_CAP, new PlayerCap());
-    }
 
     @SubscribeEvent
     public static void command(RegisterCommandsEvent event) {
@@ -43,51 +26,45 @@ public class EventHandler {
     }
 
     @SubscribeEvent
-    public static void joinWorld(EntityJoinWorldEvent event) {
+    public static void joinWorld(EntityJoinLevelEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer)
             EventCalls.joinWorld(serverPlayer);
     }
 
     @SubscribeEvent
-    public static void updateGrailWar(TickEvent.WorldTickEvent event) {
-        if (event.phase == TickEvent.Phase.END && event.world instanceof ServerLevel serverLevel && serverLevel.dimension() == Level.OVERWORLD) {
+    public static void updateGrailWar(LevelTickEvent.Post event) {
+        if (event.getLevel() instanceof ServerLevel serverLevel && serverLevel.dimension() == Level.OVERWORLD) {
             GrailWarHandler.get(serverLevel.getServer()).tick(serverLevel);
         }
     }
 
     @SubscribeEvent
     public static void clone(PlayerEvent.Clone event) {
-        if (event.getPlayer() instanceof ServerPlayer serverPlayer) {
-            boolean rev = Platform.INSTANCE.getPlayerData(event.getOriginal()).isPresent();
-            if (!rev)
-                event.getOriginal().reviveCaps();
-            Platform.INSTANCE.getPlayerData(serverPlayer).ifPresent(data -> data.from(Platform.INSTANCE.getPlayerData(event.getOriginal()).orElseThrow(() -> new NullPointerException("Capability of old player is null!"))));
-            LoaderNetwork.INSTANCE.sendToPlayer(new S2CPlayerCap(Platform.INSTANCE.getPlayerData(serverPlayer).orElseThrow(() -> new NullPointerException("Capability of player is null!"))), serverPlayer);
-            if (!rev)
-                event.getOriginal().invalidateCaps();
+        EventCalls.clone(event.getOriginal(), event.getEntity());
+    }
+
+    @SubscribeEvent
+    public static void updateLivingTick(EntityTickEvent.Post event) {
+        if (event.getEntity() instanceof LivingEntity living) {
+            EventCalls.tick(living);
+            if (living.level().isClientSide)
+                ClientCalls.tick(living);
         }
     }
 
     @SubscribeEvent
-    public static void updateLivingTick(LivingEvent.LivingUpdateEvent event) {
-        EventCalls.tick(event.getEntityLiving());
-        if (event.getEntityLiving().level.isClientSide)
-            ClientCalls.tick(event.getEntityLiving());
-    }
-
-    @SubscribeEvent
     public static void healingEvent(LivingHealEvent event) {
-        if (!EventCalls.canHeal(event.getEntityLiving()))
+        if (!EventCalls.canHeal(event.getEntity()))
             event.setCanceled(true);
     }
 
     @SubscribeEvent
-    public void livingAttack(LivingAttackEvent event) {
-        event.setCanceled(EventCalls.onHurt(event.getEntityLiving(), event.getSource(), event.getAmount()));
+    public void livingAttack(LivingIncomingDamageEvent event) {
+        event.setCanceled(EventCalls.onHurt(event.getEntity(), event.getSource(), event.getAmount()));
     }
 
     @SubscribeEvent
-    public void damageCalculation(LivingHurtEvent event) {
-        event.setAmount(EventCalls.damageCalculation(event.getEntityLiving(), event.getSource(), event.getAmount()));
+    public void damageCalculation(LivingDamageEvent.Pre event) {
+        event.setNewDamage(EventCalls.damageCalculation(event.getEntity(), event.getSource(), event.getNewDamage()));
     }
 }

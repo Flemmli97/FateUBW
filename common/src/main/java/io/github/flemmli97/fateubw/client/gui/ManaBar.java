@@ -1,13 +1,13 @@
 package io.github.flemmli97.fateubw.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.attachment.PlayerData;
 import io.github.flemmli97.fateubw.common.config.ClientConfig;
 import io.github.flemmli97.fateubw.platform.Platform;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 
 public class ManaBar extends GuiComponent {
@@ -21,7 +21,7 @@ public class ManaBar extends GuiComponent {
         this.mc = mc;
     }
 
-    public void renderBar(PoseStack stack) {
+    public void renderBar(GuiGraphics graphics) {
         if (this.mc.player.isCreative() || this.mc.player.isSpectator())
             return;
         int mana = Platform.INSTANCE.getPlayerData(this.mc.player).map(PlayerData::getMana).orElse(0);
@@ -32,9 +32,9 @@ public class ManaBar extends GuiComponent {
         int xPos = ClientConfig.manaBarPosition.positionX(guiWidth, width, ClientConfig.manaX);
         int yPos = ClientConfig.manaBarPosition.positionY(guiHeight, height, ClientConfig.manaY);
         RenderSystem.setShaderTexture(0, TEXTUREPATH);
-        this.blit(stack, xPos, yPos, 0, 0, width, height);
+        this.blit(graphics, xPos, yPos, 0, 0, width, height);
         double perc = (mana / 100.);
         int manabarwidth = (int) (perc * (width - 2));
-        this.blit(stack, xPos + 1, yPos + 1, 1, 8, manabarwidth, height - 2);
+        this.blit(graphics, xPos + 1, yPos + 1, 1, 8, manabarwidth, height - 2);
     }
 }

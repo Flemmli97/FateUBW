@@ -8,8 +8,8 @@ import io.github.flemmli97.fateubw.common.registry.FateGrailLootSerializer;
 import io.github.flemmli97.fateubw.platform.Platform;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 public class ServantEntry extends GrailLootEntry<ServantEntry> {
@@ -20,7 +20,7 @@ public class ServantEntry extends GrailLootEntry<ServantEntry> {
     private final boolean loot;
 
     public ServantEntry(boolean loot) {
-        super(new LootItemCondition[0]);
+        super(List.of());
         this.loot = loot;
     }
 
@@ -31,6 +31,6 @@ public class ServantEntry extends GrailLootEntry<ServantEntry> {
 
     @Override
     public void accept(ServerPlayer player, LootContext lootContext) {
-        Platform.INSTANCE.getPlayerData(player).ifPresent(d -> d.restoreServant(player, this.loot));
+        Platform.INSTANCE.getPlayerData(player).restoreServant(player, this.loot);
     }
 }

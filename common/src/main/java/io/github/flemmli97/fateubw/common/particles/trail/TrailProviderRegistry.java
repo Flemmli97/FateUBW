@@ -1,6 +1,7 @@
 package io.github.flemmli97.fateubw.common.particles.trail;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.MotionTrailProvider;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.TrailData;
@@ -18,10 +19,10 @@ public class TrailProviderRegistry {
 
     public static final Codec<TrailData> CODEC = ResourceLocation.CODEC.dispatch(TrailData::id, r -> DECODERS.get(r).codec);
 
-    public static final ResourceLocation ENTITY_TRAIL = register(new ResourceLocation(Fate.MODID, "entity_trail"), EntityTrailProvider.EntityTrailData::new, EntityTrailProvider.EntityTrailData.CODEC);
-    public static final ResourceLocation MOTION_TRAIL = register(new ResourceLocation(Fate.MODID, "motion_trail"), MotionTrailProvider.MotionTrailData::new, MotionTrailProvider.MotionTrailData.CODEC);
+    public static final ResourceLocation ENTITY_TRAIL = register(Fate.modRes("entity_trail"), EntityTrailProvider.EntityTrailData::new, EntityTrailProvider.EntityTrailData.CODEC);
+    public static final ResourceLocation MOTION_TRAIL = register(Fate.modRes("motion_trail"), MotionTrailProvider.MotionTrailData::new, MotionTrailProvider.MotionTrailData.CODEC);
 
-    public static synchronized <T extends TrailData> ResourceLocation register(ResourceLocation res, Function<FriendlyByteBuf, T> decoder, Codec<T> codec) {
+    public static synchronized <T extends TrailData> ResourceLocation register(ResourceLocation res, Function<FriendlyByteBuf, T> decoder, MapCodec<T> codec) {
         if (DECODERS.containsKey(res))
             throw new IllegalStateException("Entry with key " + res + " is already registered");
         DECODERS.put(res, new TrailEntry<>(decoder, codec));
@@ -41,6 +42,6 @@ public class TrailProviderRegistry {
         data.write(buf);
     }
 
-    public record TrailEntry<T extends TrailData>(Function<FriendlyByteBuf, T> decoder, Codec<T> codec) {
+    public record TrailEntry<T extends TrailData>(Function<FriendlyByteBuf, T> decoder, MapCodec<T> codec) {
     }
 }

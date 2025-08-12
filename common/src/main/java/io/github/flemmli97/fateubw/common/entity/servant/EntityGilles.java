@@ -123,7 +123,7 @@ public class EntityGilles extends BaseServant {
     }
 
     public void cthulhu() {
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             //EntityMonster minion = new EntityMonster(this.world, this);
             //this.world.spawnEntity(minion);
             //minion.setAttackTarget(this.getAttackTarget());
@@ -131,12 +131,12 @@ public class EntityGilles extends BaseServant {
     }
 
     protected boolean canSummonMore() {
-        return this.level.getEntitiesOfClass(LesserMonster.class, this.getBoundingBox().inflate(16),
+        return this.level().getEntitiesOfClass(LesserMonster.class, this.getBoundingBox().inflate(16),
                 monster -> this.getUUID().equals(monster.getOwnerUUID())).size() < this.props().getConfig(ServantExtraData.GILLES_MONSTER_MAX);
     }
 
     public void attackWithRangedAttack() {
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             if (this.canSummonMore()) {
                 int amount = 1;
                 if (this.getHealth() < 0.5 * this.getMaxHealth())
@@ -145,8 +145,8 @@ public class EntityGilles extends BaseServant {
                     LesserMonster minion = new LesserMonster(this.level, this);
                     BlockPos pos = RayTraceUtils.randomPosAround(this.level, minion, this.blockPosition(), 9, true, this.getRandom());
                     if (pos != null) {
-                        minion.moveTo(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5, Mth.wrapDegrees(this.level.random.nextFloat() * 360.0F), 0.0F);
-                        this.level.addFreshEntity(minion);
+                        minion.moveTo(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5, Mth.wrapDegrees(this.level().random.nextFloat() * 360.0F), 0.0F);
+                        this.level().addFreshEntity(minion);
                         minion.setTarget(this.getTarget());
                         this.revealServant();
                     }
@@ -162,7 +162,7 @@ public class EntityGilles extends BaseServant {
         } else {
             proj.shoot(this, this.getXRot(), this.getYRot(), 0, 1, 0);
         }
-        this.level.addFreshEntity(proj);
+        this.level().addFreshEntity(proj);
     }
 
     @Override

@@ -41,8 +41,7 @@ public class CommonConfig {
     public static float gaeBolgDmg = 18;
     public static PotionEffectsConfig gaeBolgEffect = new PotionEffectsConfig(
             List.of(new PotionEffectsConfig.EffectInstance(MobEffects.WITHER, 600, 3),
-                    new PotionEffectsConfig.EffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 300, 7),
-                    new PotionEffectsConfig.EffectInstance(MobEffects.JUMP, 200, 128))
+                    new PotionEffectsConfig.EffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 300, 7))
     );
 
     public static int excaliburMana = 70;

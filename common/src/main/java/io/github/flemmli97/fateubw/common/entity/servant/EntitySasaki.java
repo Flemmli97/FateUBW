@@ -1,6 +1,5 @@
 package io.github.flemmli97.fateubw.common.entity.servant;
 
-
 import com.mojang.math.Vector3f;
 import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
@@ -8,9 +7,9 @@ import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.MotionTrailProvider;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailProvider;
+import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
-import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
@@ -181,11 +180,11 @@ public class EntitySasaki extends BaseServant {
     @Override
     public void tick() {
         super.tick();
-        if (this.level.isClientSide) {
+        if (this.level().isClientSide) {
             AnimatedAction anim = this.getAnimationHandler().getAnimation();
             if (anim != null) {
                 if (anim.isAt(EntityTrailProvider.TRAIL_START)) {
-                    this.level.addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
+                    this.level().addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
                                     TrailInfo.builder(EntityTrailProvider.EntityTrailData.create(this, anim.getID(), false))
                                             .setColor(37 / 255f, 37 / 255f, 88 / 255f, 0.4f)
                                             .setColor2(181 / 255f, 189 / 255f, 206 / 255f, 0.1f)
@@ -213,7 +212,7 @@ public class EntitySasaki extends BaseServant {
             Vec3 dir = baseDir.zRot(angle).yRot(yRot);
             Vec3 sweer = baseSweer.zRot(angle).yRot(yRot);
             Vec3 normal = baseNormal.zRot(angle).yRot(yRot);
-            if (this.level instanceof ServerLevel serverLevel) {
+            if (this.level() instanceof ServerLevel serverLevel) {
                 serverLevel.sendParticles(new TrailParticleData(FateParticles.TRAIL.get(),
                                 TrailInfo.builder(new MotionTrailProvider.MotionTrailData(dir, sweer, normal,
                                                 1, 4, duration))
@@ -225,7 +224,7 @@ public class EntitySasaki extends BaseServant {
                                         .build()),
                         at.x() + pos.x(), at.y() + pos.y(), at.z() + pos.z(), 0, 0, 0, 0, 1);
             } else {
-                this.level.addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
+                this.level().addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
                                 TrailInfo.builder(new MotionTrailProvider.MotionTrailData(dir, sweer, normal,
                                                 1, 4, duration))
                                         .setColor(72 / 255f, 13 / 255f, 161 / 255f, 0.7f)
@@ -256,7 +255,7 @@ public class EntitySasaki extends BaseServant {
                         dir = dir.normalize().scale(11);
                 } else {
                     Vec3 look = Vec3.directionFromRotation(0, this.getYHeadRot()).scale(11);
-                    HitResult res = this.level.clip(new ClipContext(this.getEyePosition(), this.getEyePosition().add(look), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+                    HitResult res = this.level().clip(new ClipContext(this.getEyePosition(), this.getEyePosition().add(look), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
                     dir = res.getLocation().subtract(this.getEyePosition());
                 }
                 this.hikenPos = this.position().add(dir);
@@ -269,7 +268,7 @@ public class EntitySasaki extends BaseServant {
                 S2CAttackDebug.sendDebugPacket(obb, S2CAttackDebug.EnumAABBType.ATTACK, this);
                 boolean damage = false;
                 this.hiken = true;
-                for (LivingEntity entity : this.level.getEntitiesOfClass(LivingEntity.class, obb.getEncompassingBox(),
+                for (LivingEntity entity : this.level().getEntitiesOfClass(LivingEntity.class, obb.getEncompassingBox(),
                         entity -> this.targetPred.test(entity) && obb.intersects(entity.getBoundingBox()))) {
                     if (this.doHurtTarget(entity) && !damage)
                         damage = true;
@@ -281,7 +280,7 @@ public class EntitySasaki extends BaseServant {
                 this.hiken = false;
                 this.tsubameParticles(this.position().add(0, this.getEyeHeight(), 0).add(dir.scale(0.5)));
                 if (damage) {
-                    this.level.playSound(null, this, SoundEvents.PLAYER_ATTACK_CRIT, this.getSoundSource(), 0.7f, 0.9f);
+                    this.level().playSound(null, this, SoundEvents.PLAYER_ATTACK_CRIT, this.getSoundSource(), 0.7f, 0.9f);
                 }
                 this.teleportTo(this.hikenPos.x(), this.hikenPos.y(), this.hikenPos.z());
             }
@@ -325,7 +324,7 @@ public class EntitySasaki extends BaseServant {
 
     @Override
     protected DamageSource damageSourceAttack(Entity target) {
-        return this.hiken ? CustomDamageSource.hiKen(this) : DamageSource.mobAttack(this);
+        return this.hiken ? FateDamageTypes.direct(FateDamageTypes.TSUBAME, this) : DamageSource.mobAttack(this);
     }
 
     @Override

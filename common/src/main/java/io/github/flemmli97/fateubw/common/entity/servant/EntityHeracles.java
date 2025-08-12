@@ -168,7 +168,7 @@ public class EntityHeracles extends BaseServant {
     }
 
     @Override
-    protected void defineSynchedData() {
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData();
         this.entityData.define(DEATH_COUNT, 0);
     }
@@ -184,7 +184,7 @@ public class EntityHeracles extends BaseServant {
     @Override
     public void tick() {
         super.tick();
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             AnimatedAction anim = this.getAnimationHandler().getAnimation();
             if (anim != null && anim.isAt("roar")) {
                 this.playSound(FateSounds.HERACLES_ROAR.get(), 1, 1);
@@ -205,7 +205,7 @@ public class EntityHeracles extends BaseServant {
         if (this.getLastDamageSource() == DamageSource.OUT_OF_WORLD || this.getLastDamageSource() == CustomDamageSource.GRAIL_DAMAGE || this.voidDeath) {
             this.voidDeath = true;
             super.tickDeath();
-        } else if (!this.level.isClientSide) {
+        } else if (!this.level().isClientSide) {
             int maxDeaths = this.props().getConfig(ServantExtraData.HERACLES_DEATH_MAX);
             if (this.getDeaths() < maxDeaths) {
                 this.deathTime++;
@@ -272,7 +272,7 @@ public class EntityHeracles extends BaseServant {
             if (anim.isPast("attempt") && !anim.done(0)) {
                 OrientedBoundingBox obb = this.calculateAttackAABB(anim, null, 0);
                 S2CAttackDebug.sendDebugPacket(obb, S2CAttackDebug.EnumAABBType.ATTEMPT, this);
-                List<LivingEntity> hits = this.level.getEntitiesOfClass(LivingEntity.class, obb.getEncompassingBox(),
+                List<LivingEntity> hits = this.level().getEntitiesOfClass(LivingEntity.class, obb.getEncompassingBox(),
                         entity -> this.targetPred.test(entity) && obb.intersects(entity.getBoundingBox()));
                 if (!hits.isEmpty()) {
                     S2CAttackDebug.sendDebugPacket(obb, S2CAttackDebug.EnumAABBType.ATTACK, this);

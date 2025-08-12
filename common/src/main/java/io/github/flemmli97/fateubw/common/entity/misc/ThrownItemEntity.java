@@ -1,9 +1,10 @@
 package io.github.flemmli97.fateubw.common.entity.misc;
 
+import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
-import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.tenshilib.common.utils.ItemUtils;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -17,8 +18,6 @@ import net.minecraft.world.phys.EntityHitResult;
 public class ThrownItemEntity extends BaseProjectile {
 
     protected static final EntityDataAccessor<ItemStack> WEAPON_TYPE = SynchedEntityData.defineId(ThrownItemEntity.class, EntityDataSerializers.ITEM_STACK);
-
-    private double dmg;
 
     public ThrownItemEntity(EntityType<? extends ThrownItemEntity> type, Level level) {
         super(type, level);
@@ -34,9 +33,9 @@ public class ThrownItemEntity extends BaseProjectile {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(WEAPON_TYPE, ItemStack.EMPTY);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(WEAPON_TYPE, ItemStack.EMPTY);
     }
 
     @Override
@@ -51,7 +50,9 @@ public class ThrownItemEntity extends BaseProjectile {
 
     @Override
     protected boolean entityRayTraceHit(EntityHitResult result) {
-        boolean res = result.getEntity().hurt(CustomDamageSource.thrownItem(this, this.getOwner()), (float) this.dmg);
+        float damage = this.getOwner() instanceof LivingEntity living ? ItemUtils.damage(living, result.getEntity(), this.getWeapon()) :
+                ItemUtils.damageRaw(this.getWeapon());
+        boolean res = result.getEntity().hurt(FateDamageTypes.indirect(FateDamageTypes.THROWN_ITEM, this, this.getOwner()), damage);
         this.discard();
         return res;
     }
@@ -68,19 +69,18 @@ public class ThrownItemEntity extends BaseProjectile {
     public void setWeapon(ItemStack stack) {
         if (!stack.isEmpty()) {
             this.entityData.set(WEAPON_TYPE, stack);
-            this.dmg = ItemUtils.damage(stack);
         }
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
-        compound.put("Weapon", this.getWeapon().save(new CompoundTag()));
+        compound.put("Weapon", ItemStack.CODEC.encodeStart(this.registryAccess().createSerializationContext(NbtOps.INSTANCE), this.getWeapon()).getOrThrow());
     }
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        this.setWeapon(ItemStack.of(compound.getCompound("Weapon")));
+        this.setWeapon(ItemStack.CODEC.parse(this.registryAccess().createSerializationContext(NbtOps.INSTANCE), compound.get("Weapon")).getOrThrow());
     }
 }

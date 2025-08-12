@@ -14,20 +14,18 @@ import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Optional;
 
-public class MedusaDaggerItem extends SwordItem {
+public class MedusasDaggerItem extends SwordItem {
 
-    public MedusaDaggerItem(Tier tier, int baseDmg, float speed, Properties props) {
-        super(tier, baseDmg, speed, props);
+    public MedusasDaggerItem(Tier tier, Properties props) {
+        super(tier, props);
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+        super.appendHoverText(stack, context, tooltipComponents, isAdvanced);
         if (CommonConfig.chainMana > 0)
             tooltipComponents.add(Component.translatable("fateubw.tooltip.item.mana", CommonConfig.chainMana).withStyle(ChatFormatting.AQUA));
     }
@@ -35,14 +33,14 @@ public class MedusaDaggerItem extends SwordItem {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         if (!level.isClientSide) {
-            Optional<PlayerData> opt = Platform.INSTANCE.getPlayerData(player);
-            ChainDagger thrownDagger = opt.map(PlayerData::getThrownDagger).orElse(null);
+            PlayerData data = Platform.INSTANCE.getPlayerData(player);
+            ChainDagger thrownDagger = data.getThrownDagger();
             if (thrownDagger == null) {
-                if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).map(mana -> mana.useMana(player, CommonConfig.chainMana)).orElse(false)) {
+                if (player.isCreative() || data.useMana(player, CommonConfig.chainMana)) {
                     ChainDagger dagger = new ChainDagger(level, player, hand == InteractionHand.MAIN_HAND);
                     dagger.shoot(player, player.getXRot(), player.getYRot(), 0, 1.5f, 0);
                     level.addFreshEntity(dagger);
-                    opt.ifPresent(data -> data.setThrownDagger(dagger));
+                    data.setThrownDagger(dagger);
                     return InteractionResultHolder.consume(player.getItemInHand(hand));
                 }
                 player.sendSystemMessage(Component.translatable("fateubw.chat.mana.missing").withStyle(ChatFormatting.AQUA));

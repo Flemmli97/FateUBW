@@ -127,7 +127,7 @@ public class EntityGilgamesh extends BaseServant {
 
     private final AnimationHandler<EntityGilgamesh> animationHandler = new AnimationHandler<>(this, ANIMS)
             .withChangeListener(anim -> {
-                if (!this.level.isClientSide()) {
+                if (!this.level().isClientSide()) {
                     if (anim == null) {
                         if (this.getAnimationHandler().isCurrent(EA)) {
                             this.switchableWeapon.switchItems(true);
@@ -242,7 +242,7 @@ public class EntityGilgamesh extends BaseServant {
         EnumaElish ea = new EnumaElish(this.level, this);
         if (pos != null)
             ea.setRotationTo(pos.x(), pos.y(), pos.z(), 0);
-        this.level.addFreshEntity(ea);
+        this.level().addFreshEntity(ea);
         this.revealServant();
         this.stopUsingItem();
         Platform.INSTANCE.getItemStackData(this.getMainHandItem()).ifPresent(data -> data.setInUse(this, false, true));

@@ -1,12 +1,11 @@
 package io.github.flemmli97.fateubw.common.entity.misc;
 
-import com.mojang.math.Vector3f;
 import io.github.flemmli97.fateubw.client.ShakeHandler;
 import io.github.flemmli97.fateubw.common.config.CommonConfig;
+import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.registry.FateSounds;
-import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.particle.ColoredParticleData;
 import net.minecraft.world.entity.EntityType;
@@ -74,15 +73,14 @@ public class Excalibur extends BaseBeam {
     @Override
     public HitResult getHitRay() {
         HitResult res = super.getHitRay();
-        this.up = this.getUpVector(1).normalize().scale(this.radius());
         this.dir = res.getLocation().subtract(this.position());
-        this.side = new Vec3(HitResult.rotatedAround(this.dir, new Vector3f(this.up), 90))
-                .normalize().scale(this.radius());
+        this.up = this.calculateViewVector(this.getXRot() - 90, this.getYRot()).scale(this.radius());
+        this.side = this.dir.cross(this.up).normalize().scale(this.radius());
         return res;
     }
 
     @Override
     public void onImpact(EntityHitResult result) {
-        result.getEntity().hurt(CustomDamageSource.excalibur(this, this.getOwner()), Utils.magicDamage(this.getOwner()) + CommonConfig.excaliburDamage);
+        result.getEntity().hurt(FateDamageTypes.indirect(FateDamageTypes.EXCALIBUR, this, this.getOwner()), Utils.magicDamage(this.getOwner()) + CommonConfig.excaliburDamage);
     }
 }

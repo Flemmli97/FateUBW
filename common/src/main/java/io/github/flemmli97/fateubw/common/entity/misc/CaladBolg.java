@@ -2,8 +2,8 @@ package io.github.flemmli97.fateubw.common.entity.misc;
 
 import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
+import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
-import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -53,7 +53,7 @@ public class CaladBolg extends BaseProjectile {
 
     private void doExplosion(double x, double y, double z, Entity hit) {
         this.doExplosion(hit);
-        this.level.playSound(null, x, y, z, SoundEvents.GENERIC_EXPLODE, this.getSoundSource(), 1.0f, 1.0f);
+        this.level().playSound(null, x, y, z, SoundEvents.GENERIC_EXPLODE, this.getSoundSource(), 1.0f, 1.0f);
         this.discard();
         S2CScreenShake.sendAround(this, 9, 8, 2);
     }
@@ -61,18 +61,18 @@ public class CaladBolg extends BaseProjectile {
     protected void doExplosion(Entity hit) {
         float dmg = Utils.magicDamage(this.getOwner()) + CommonConfig.caladBolgDmg;
         if (hit != null)
-            hit.hurt(CustomDamageSource.caladBolg(this, this.getOwner()), dmg);
+            hit.hurt(FateDamageTypes.indirect(FateDamageTypes.CALADBOLG, this, this.getOwner()), dmg);
         Vec3 pos = hit != null ? hit.position() : this.position();
-        List<Entity> list = this.level.getEntities(this, new AABB(-6, -6, -6, 6, 6, 6).move(pos));
+        List<Entity> list = this.level().getEntities(this, new AABB(-6, -6, -6, 6, 6, 6).move(pos));
         for (Entity e : list) {
             double dist;
             if ((dist = e.distanceToSqr(this)) > 36 || (e != hit && !this.canHit(e)))
                 continue;
             dist -= 8;
             float dmgPerc = (float) Mth.clamp(1 - (dist / 26f), 0.15f, 1);
-            e.hurt(CustomDamageSource.caladBolg(this, this.getOwner()), dmg * dmgPerc);
+            e.hurt(FateDamageTypes.indirect(FateDamageTypes.CALADBOLG, this, this.getOwner()), dmg * dmgPerc);
         }
-        if (this.level instanceof ServerLevel serverLevel)
+        if (this.level() instanceof ServerLevel serverLevel)
             serverLevel.sendParticles(ParticleTypes.EXPLOSION_EMITTER, pos.x(), pos.y(), pos.z(), 2, 1.0, 0.0, 0.0, 1);
     }
 }

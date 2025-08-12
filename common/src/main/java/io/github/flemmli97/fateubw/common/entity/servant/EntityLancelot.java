@@ -232,12 +232,12 @@ public class EntityLancelot extends BaseServant {
     public boolean hurt(DamageSource damageSource, float damage) {
         if (this.isPassenger())
             return this.getVehicle().hurt(damageSource, damage);
-        if (!damageSource.isBypassInvul() && !this.level.isClientSide) {
+        if (!damageSource.isBypassInvul() && !this.level().isClientSide) {
             if (damageSource.isProjectile() && !damageSource.isBypassArmor()) {
                 if (this.getRandom().nextFloat() < this.props().getConfig(ServantExtraData.LANCELOT_REFLECT_CHANCE) && damageSource.getDirectEntity() != null
                         && !(damageSource.getDirectEntity() instanceof LivingEntity)) {
                     this.reflectProjectile(damageSource.getDirectEntity());
-                    this.level.playSound(null, this.blockPosition(), SoundEvents.ANVIL_PLACE, SoundSource.NEUTRAL, 1, 1);
+                    this.level().playSound(null, this.blockPosition(), SoundEvents.ANVIL_PLACE, SoundSource.NEUTRAL, 1, 1);
                     return false;
                 }
             }
@@ -249,9 +249,9 @@ public class EntityLancelot extends BaseServant {
     public void tick() {
         super.tick();
         --this.pickupDelay;
-        if (this.level.isClientSide) {
+        if (this.level().isClientSide) {
             for (int x = 0; x < 2; x++) {
-                this.level.addParticle(
+                this.level().addParticle(
                         ParticleTypes.LARGE_SMOKE,
                         this.getX() + (this.random.nextDouble() - 0.5D) * this.getBbWidth(),
                         this.getY() + this.random.nextDouble() * this.getBbHeight(),
@@ -518,7 +518,7 @@ public class EntityLancelot extends BaseServant {
             } else {
                 this.shootProj(e, -e.getDeltaMovement().x, -e.getDeltaMovement().y, -e.getDeltaMovement().z, velocity, 1);
             }
-            this.level.addFreshEntity(e);
+            this.level().addFreshEntity(e);
         }
     }
 

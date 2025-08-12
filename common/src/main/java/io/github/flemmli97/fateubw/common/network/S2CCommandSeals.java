@@ -34,7 +34,7 @@ public class S2CCommandSeals implements CustomPacketPayload {
     }
 
     public static void handle(S2CCommandSeals pkt, Player player) {
-        Platform.INSTANCE.getPlayerData(player).ifPresent(data -> data.setCommandSeals(player, pkt.commandSeals));
+        Platform.INSTANCE.getPlayerData(player).setCommandSeals(player, pkt.commandSeals);
     }
 
     @Override

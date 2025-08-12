@@ -1,9 +1,9 @@
 package io.github.flemmli97.fateubw.common.entity.misc;
 
 import io.github.flemmli97.fateubw.common.config.CommonConfig;
+import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
-import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.particle.ColoredParticleData;
 import net.minecraft.nbt.CompoundTag;
@@ -57,12 +57,12 @@ public class MagicBeam extends BaseBeam {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(SHOOT_TIME, this.random.nextInt(15) + 10);
-        this.entityData.define(PRE_SHOOT_TICK, 0);
-        this.entityData.define(SPAWN_ROT_Y, 0f);
-        this.entityData.define(SPAWN_ROT_X, 0f);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(SHOOT_TIME, this.random.nextInt(15) + 10);
+        builder.define(PRE_SHOOT_TICK, 0);
+        builder.define(SPAWN_ROT_Y, 0f);
+        builder.define(SPAWN_ROT_X, 0f);
     }
 
     public float getSpawnRotY() {
@@ -91,8 +91,8 @@ public class MagicBeam extends BaseBeam {
 
     @Override
     public void tick() {
-        if (this.level.isClientSide) {
-            this.level.addParticle(new ColoredParticleData(FateParticles.LIGHT.get(), 205 / 255F, 13 / 255F, 205 / 255F, 1, 0.15f), this.getX(), this.getY(), this.getZ(), this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01);
+        if (this.level().isClientSide) {
+            this.level().addParticle(new ColoredParticleData(FateParticles.LIGHT.get(), 205 / 255F, 13 / 255F, 205 / 255F, 1, 0.15f), this.getX(), this.getY(), this.getZ(), this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01);
         } else if (!this.setSpawnRot) {
             this.setSpawnRot = true;
             this.entityData.set(SPAWN_ROT_Y, this.getYRot());
@@ -108,7 +108,7 @@ public class MagicBeam extends BaseBeam {
         }
         if (this.getPreShootTick() > this.entityData.get(SHOOT_TIME)) {
             this.idle = false;
-            if (!this.level.isClientSide) {
+            if (!this.level().isClientSide) {
                 if (thrower == null || !thrower.isAlive()) {
                     this.remove(RemovalReason.KILLED);
                     return;
@@ -120,7 +120,7 @@ public class MagicBeam extends BaseBeam {
 
     @Override
     public void onImpact(EntityHitResult result) {
-        result.getEntity().hurt(CustomDamageSource.magicBeam(this, this.getOwner()), (Utils.magicDamage(this.getOwner()) + CommonConfig.magicBeam) * this.damageMultiplier);
+        result.getEntity().hurt(FateDamageTypes.indirect(FateDamageTypes.MAGIC_BEAM, this, this.getOwner()), (Utils.magicDamage(this.getOwner()) + CommonConfig.magicBeam) * this.damageMultiplier);
     }
 
     private int getPreShootTick() {
@@ -146,7 +146,7 @@ public class MagicBeam extends BaseBeam {
     }
 
     @Override
-    public boolean firstPerson3d(Entity entity) {
+    public boolean shouldRender3d(Entity entity, int state) {
         return true;
     }
 }

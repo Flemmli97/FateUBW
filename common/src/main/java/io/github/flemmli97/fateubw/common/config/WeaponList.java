@@ -1,13 +1,13 @@
 package io.github.flemmli97.fateubw.common.config;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TieredItem;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class WeaponList {
 
@@ -37,7 +37,7 @@ public class WeaponList {
         return List.copyOf(this.blacklist);
     }
 
-    public ItemStack getRandomWeapon(Random rand) {
+    public ItemStack getRandomWeapon(RandomSource rand) {
         if (this.weapons == null) {
             this.weapons = new ArrayList<>();
             BuiltInRegistries.ITEM.entrySet().forEach(entry -> {

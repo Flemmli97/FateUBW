@@ -101,7 +101,7 @@ public class EntityMedea extends BaseServant {
     public final AnimatedAttackGoal<EntityMedea> attack = new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS);
 
     private final AnimationHandler<EntityMedea> animationHandler = new AnimationHandler<>(this, ANIMS).withChangeListener(anim -> {
-        if (!this.level.isClientSide()) {
+        if (!this.level().isClientSide()) {
             if (this.getAnimationHandler().isCurrent(RULE_BREAKER)) {
                 this.switchableWeapon.switchItems(true);
             } else if (anim != null && anim.is(RULE_BREAKER)) {
@@ -160,13 +160,13 @@ public class EntityMedea extends BaseServant {
         super.tick();
         --this.circleDelay;
         --this.aiCircledelay;
-        if (this.level.isClientSide) {
+        if (this.level().isClientSide) {
             if (this.getAnimationHandler().isCurrent(MAGIC_CIRCLE) && this.getAnimationHandler().getAnimation().isAt("attack")) {
                 this.sphereParticles();
             }
         } else {
             if (this.tickCount % 10 == 0 && this.circlePos != null) {
-                if (this.level.getEntities(EntityTypeTest.forClass(MagicBufCircle.class), new AABB(this.circlePos.add(-2, -2, -2),
+                if (this.level().getEntities(EntityTypeTest.forClass(MagicBufCircle.class), new AABB(this.circlePos.add(-2, -2, -2),
                         this.circlePos.add(2, 2, 2)), e -> e.getOwner() == this).isEmpty()) {
                     this.circlePos = null;
                 }
@@ -228,7 +228,7 @@ public class EntityMedea extends BaseServant {
                 this.makeCircle();
             }
             if (anim.isAt("push")) {
-                this.level.getEntities(EntityTypeTest.forClass(LivingEntity.class),
+                this.level().getEntities(EntityTypeTest.forClass(LivingEntity.class),
                                 this.getBoundingBox().inflate(12, 8, 12),
                                 this.targetPred)
                         .forEach(e -> {
@@ -250,7 +250,7 @@ public class EntityMedea extends BaseServant {
                     dir = this.getTarget().position().subtract(this.position());
                 } else {
                     Vec3 look = Vec3.directionFromRotation(0, this.getYHeadRot()).scale(11);
-                    HitResult res = this.level.clip(new ClipContext(this.getEyePosition(), this.getEyePosition().add(look), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+                    HitResult res = this.level().clip(new ClipContext(this.getEyePosition(), this.getEyePosition().add(look), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
                     dir = res.getLocation().subtract(this.getEyePosition());
                 }
                 Vec3 off = dir.normalize();
@@ -315,7 +315,7 @@ public class EntityMedea extends BaseServant {
             Vec3 dir = this.getLookAngle();
             beam.setRotationToDir(dir.x(), dir.y(), dir.z(), 0);
         }
-        this.level.addFreshEntity(beam);
+        this.level().addFreshEntity(beam);
         this.revealServant();
     }
 
@@ -335,15 +335,15 @@ public class EntityMedea extends BaseServant {
                 Vec3 dir = this.getLookAngle();
                 beam.setRotationToDir(dir.x(), dir.y(), dir.z(), 0);
             }
-            this.level.addFreshEntity(beam);
+            this.level().addFreshEntity(beam);
         }
         this.revealServant();
     }
 
     public void makeCircle() {
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             MagicBufCircle circle = new MagicBufCircle(this.level, this, this.props().getConfig(ServantExtraData.MEDEA_CIRCLE_RANGE));
-            this.level.addFreshEntity(circle);
+            this.level().addFreshEntity(circle);
             int duration = this.props().getConfig(ServantExtraData.MEDEA_CIRCLE_DURATION);
             this.circleDelay = duration + this.random.nextInt(100);
             this.aiCircledelay = (int) (this.random.nextInt(400) + duration * 0.5);
@@ -362,7 +362,7 @@ public class EntityMedea extends BaseServant {
             double x = Math.cos(theta) * Math.sin(phi);
             double y = Math.sin(theta) * Math.sin(phi);
             double z = Math.cos(phi);
-            this.level.addParticle(ParticleTypes.WITCH, this.getX() + x, this.getY(0.5) + y, this.getZ() + z, x * 0.15, y * 0.15, z * 0.15);
+            this.level().addParticle(ParticleTypes.WITCH, this.getX() + x, this.getY(0.5) + y, this.getZ() + z, x * 0.15, y * 0.15, z * 0.15);
         }
     }
 

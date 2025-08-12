@@ -2,10 +2,9 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 
 import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.common.entity.ai.AnimationRunner;
-import io.github.flemmli97.fateubw.common.items.weapons.SpearItem;
+import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateMobEffects;
-import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.fateubw.common.utils.TeleportUtils;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
@@ -19,6 +18,7 @@ import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTarget
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTargetRunner;
 import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.WrappedRunner;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
@@ -131,7 +131,7 @@ public class EntityDiarmuid extends BaseServant {
     @Override
     public void tick() {
         super.tick();
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             --this.unsealedDuration;
             if (this.unsealedDuration == 0) {
                 this.unsealWeapon(this.getMainHandItem(), false);
@@ -200,7 +200,7 @@ public class EntityDiarmuid extends BaseServant {
                         for (int i = 0; i < 10; ++i) {
                             Vec3 posAway = DefaultRandomPos.getPosAway(this, 8, 7, this.getTarget().position());
                             if (posAway != null) {
-                                HitResult res = this.level.clip(new ClipContext(this.position(), posAway, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+                                HitResult res = this.level().clip(new ClipContext(this.position(), posAway, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
                                 target = res.getLocation();
                                 break;
                             }
@@ -210,12 +210,12 @@ public class EntityDiarmuid extends BaseServant {
                         if (dir.lengthSqr() > 100) {
                             dir = dir.normalize().scale(10);
                         }
-                        HitResult res = this.level.clip(new ClipContext(this.position(), this.position().add(dir), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+                        HitResult res = this.level().clip(new ClipContext(this.position(), this.position().add(dir), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
                         target = res.getLocation();
                     }
                 } else {
                     Vec3 look = Vec3.directionFromRotation(0, this.getYHeadRot()).scale(11);
-                    HitResult res = this.level.clip(new ClipContext(this.position(), this.position().add(look), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+                    HitResult res = this.level().clip(new ClipContext(this.position(), this.position().add(look), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
                     target = res.getLocation();
                 }
                 if (target != null) {
@@ -312,7 +312,7 @@ public class EntityDiarmuid extends BaseServant {
 
     @Override
     protected DamageSource damageSourceAttack(Entity target) {
-        return this.deargAttackFlag ? CustomDamageSource.gaeDearg(this) : DamageSource.mobAttack(this);
+        return this.deargAttackFlag ? FateDamageTypes.direct(FateDamageTypes.GAE_DEARG, this) : DamageSource.mobAttack(this);
     }
 
     @Override
@@ -320,7 +320,7 @@ public class EntityDiarmuid extends BaseServant {
         if (this.deargAttackFlag) {
             if (!playerUseItem.isEmpty() && playerUseItem.getItem() instanceof ShieldItem) {
                 player.getCooldowns().addCooldown(Items.SHIELD, 200);
-                this.level.broadcastEntityEvent(player, (byte) 30);
+                this.level().broadcastEntityEvent(player, (byte) 30);
             }
         } else {
             super.tryDisableShield(player, stack, playerUseItem);
@@ -344,15 +344,17 @@ public class EntityDiarmuid extends BaseServant {
             double x = Math.cos(theta) * Math.sin(phi);
             double y = Math.sin(theta) * Math.sin(phi);
             double z = Math.cos(phi);
-            this.level.addParticle(ParticleTypes.WITCH, this.getX() + x, this.getY(0.5) + y, this.getZ() + z, x * 0.15, y * 0.15, z * 0.15);
+            this.level().addParticle(ParticleTypes.WITCH, this.getX() + x, this.getY(0.5) + y, this.getZ() + z, x * 0.15, y * 0.15, z * 0.15);
         }
     }
 
     private void unsealWeapon(ItemStack stack, boolean unseal) {
         if (stack.getItem() == FateItems.GAEBUIDHE.get() || stack.getItem() == FateItems.GAEDEARG.get()) {
-            SpearItem.applyFoil(stack, !unseal);
             if (unseal) {
+                stack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
                 this.playSound(SoundEvents.ENCHANTMENT_TABLE_USE, 1, 1);
+            } else {
+                stack.remove(DataComponents.ENCHANTMENT_GLINT_OVERRIDE);
             }
         }
     }

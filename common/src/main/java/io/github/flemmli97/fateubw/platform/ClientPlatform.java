@@ -20,7 +20,7 @@ public interface ClientPlatform {
 
     ClientPlatform INSTANCE = LoaderInitializer.getImplInstance(ClientPlatform.class,
             "io.github.flemmli97.fateubw.fabric.platform.ClientPlatformImpl",
-            "io.github.flemmli97.fateubw.forge.platform.ClientPlatformImpl");
+            "io.github.flemmli97.fateubw.neoforge.platform.ClientPlatformImpl");
 
     <T extends LivingEntity, M extends EntityModel<T>> boolean renderLivingEvent(LivingEntity entity, LivingEntityRenderer<T, M> renderer, float partialTick, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, boolean pre);
 

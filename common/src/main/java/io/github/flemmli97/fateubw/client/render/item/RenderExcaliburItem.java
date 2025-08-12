@@ -11,10 +11,10 @@ import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
 public class RenderExcaliburItem extends BlockEntityWithoutLevelRenderer {
@@ -26,7 +26,7 @@ public class RenderExcaliburItem extends BlockEntityWithoutLevelRenderer {
     }
 
     @Override
-    public void renderByItem(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
+    public void renderByItem(ItemStack stack, ItemDisplayContext transformType, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
         render(stack, transformType, matrixStack, buffer, combinedLight, combinedOverlay, this.beam);
     }
 
@@ -37,14 +37,14 @@ public class RenderExcaliburItem extends BlockEntityWithoutLevelRenderer {
         return beam;
     }
 
-    public static void render(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay, RenderUtils.BeamBuilder beam) {
+    public static void render(ItemStack stack, ItemDisplayContext transformType, PoseStack poseStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay, RenderUtils.BeamBuilder beam) {
         ItemRenderer renderer = Minecraft.getInstance().getItemRenderer();
         BakedModel model = renderer.getItemModelShaper().getItemModel(stack);
         RenderType rendertype = ItemBlockRenderTypes.getRenderType(stack, true);
         VertexConsumer ivertexbuilder = ItemRenderer.getFoilBufferDirect(buffer, rendertype, true, stack.hasFoil());
         ClientPlatform.INSTANCE.renderModelList(renderer, model, stack, combinedLight, combinedOverlay, poseStack, ivertexbuilder);
 
-        if (transformType != ItemTransforms.TransformType.GUI) {
+        if (transformType != ItemDisplayContext.GUI) {
             poseStack.pushPose();
             poseStack.translate(0.5, 0.5, 0.5);
             RenderUtils.renderGradientBeams3d(poseStack, buffer, 1.5f, 0.5f, ClientHandler.clientTick, ClientHandler.getPartialTicks(), 90 / 200f, 20, beam);

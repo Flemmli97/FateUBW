@@ -1,10 +1,10 @@
 package io.github.flemmli97.fateubw.common.blocks;
 
+import com.mojang.serialization.MapCodec;
 import io.github.flemmli97.fateubw.common.blocks.entity.AltarBlockEntity;
 import io.github.flemmli97.fateubw.common.registry.FateBlocks;
 import io.github.flemmli97.fateubw.common.registry.FateCriterionTriggers;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
-import io.github.flemmli97.fateubw.platform.Platform;
 import io.github.flemmli97.tenshilib.common.utils.VoxelUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -16,8 +16,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -39,9 +40,9 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Random;
-
 public class AltarBlock extends BaseEntityBlock {
+
+    public static final MapCodec<AltarBlock> CODEC = simpleCodec(AltarBlock::new);
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     private static final double PIXEL = 0.0625;
@@ -95,6 +96,11 @@ public class AltarBlock extends BaseEntityBlock {
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
+
     public static boolean placeSummoningStructure(ServerLevel level, BlockPos pos, AltarBlockEntity altar, Direction facing) {
         for (int x = -2; x <= 2; x++)
             for (int z = -2; z <= 2; z++) {
@@ -127,7 +133,6 @@ public class AltarBlock extends BaseEntityBlock {
         return RenderShape.MODEL;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
         return SHAPES[state.getValue(FACING).get2DDataValue()];
@@ -138,7 +143,6 @@ public class AltarBlock extends BaseEntityBlock {
         return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
         if (!state.is(oldState.getBlock())) {
@@ -163,8 +167,8 @@ public class AltarBlock extends BaseEntityBlock {
     }
 
     @Override
-    public void animateTick(BlockState state, Level level, BlockPos pos, Random random) {
-        for (int l = 0; l < 5; ++l) {
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
+        for (int i = 0; i < 5; ++i) {
             double d0 = pos.getX() + random.nextFloat();
             double d1 = pos.getY() + random.nextFloat();
             double d2 = pos.getZ() + random.nextFloat();
@@ -200,59 +204,55 @@ public class AltarBlock extends BaseEntityBlock {
         }
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult res) {
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
-        ItemStack stack = player.getItemInHand(hand);
         if (!(blockEntity instanceof AltarBlockEntity altar))
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         if (!(player instanceof ServerPlayer serverPlayer)) {
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
         if (altar.addItem(player, stack)) {
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.CONSUME;
         }
         if (player.isShiftKeyDown()) {
             if (altar.removeItem(player))
-                return InteractionResult.SUCCESS;
-            return InteractionResult.FAIL;
+                return ItemInteractionResult.CONSUME;
+            return ItemInteractionResult.FAIL;
         } else if (altar.addItem(player, stack)) {
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.CONSUME;
         }
         if (!altar.isComplete()) {
             boolean placeRes = placeSummoningStructure((ServerLevel) level, pos, altar, state.getValue(FACING).getOpposite());
             if (!placeRes) {
                 player.sendSystemMessage(Component.translatable("fateubw.chat.altar.incomplete").withStyle(ChatFormatting.DARK_RED));
             }
-            return placeRes ? InteractionResult.SUCCESS : InteractionResult.PASS;
+            return placeRes ? ItemInteractionResult.CONSUME : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
-        return Platform.INSTANCE.getPlayerData(player).map(data -> {
-            GrailWarHandler tracker = GrailWarHandler.get(serverPlayer.getServer());
-            if (tracker.getServant(serverPlayer) == null) {
-                if (!altar.canSummon()) {
-                    player.sendSystemMessage(Component.translatable("fateubw.chat.altar.missing.catalyst").withStyle(ChatFormatting.DARK_RED));
-                    return InteractionResult.FAIL;
-                }
-                if (!altar.isSummoning()) {
-                    GrailWarHandler.JoinResult joinResult = tracker.checkJoining(player);
-                    if (joinResult != GrailWarHandler.JoinResult.SUCCESS) {
-                        player.sendSystemMessage(Component.translatable(joinResult.translationKey).withStyle(ChatFormatting.DARK_RED));
-                        return InteractionResult.FAIL;
-                    }
-                    if (!player.isCreative())
-                        stack.shrink(1);
-                    if (altar.setSummoning(player)) {
-                        FateCriterionTriggers.JOIN_GRAIL_WAR.get().trigger(serverPlayer);
-                        return InteractionResult.SUCCESS;
-                    }
-                    return InteractionResult.FAIL;
-                }
-            } else {
-                player.sendSystemMessage(Component.translatable("fateubw.chat.altar.servant.existing").withStyle(ChatFormatting.DARK_RED));
+        GrailWarHandler tracker = GrailWarHandler.get(serverPlayer.getServer());
+        if (tracker.getServant(serverPlayer) == null) {
+            if (!altar.canSummon()) {
+                player.sendSystemMessage(Component.translatable("fateubw.chat.altar.missing.catalyst").withStyle(ChatFormatting.DARK_RED));
+                return ItemInteractionResult.FAIL;
             }
-            return InteractionResult.FAIL;
-        }).orElse(InteractionResult.FAIL);
+            if (!altar.isSummoning()) {
+                GrailWarHandler.JoinResult joinResult = tracker.checkJoining(player);
+                if (joinResult != GrailWarHandler.JoinResult.SUCCESS) {
+                    player.sendSystemMessage(Component.translatable(joinResult.translationKey).withStyle(ChatFormatting.DARK_RED));
+                    return ItemInteractionResult.FAIL;
+                }
+                if (!player.isCreative())
+                    stack.shrink(1);
+                if (altar.setSummoning(player)) {
+                    FateCriterionTriggers.JOIN_GRAIL_WAR.get().trigger(serverPlayer);
+                    return ItemInteractionResult.CONSUME;
+                }
+                return ItemInteractionResult.FAIL;
+            }
+        } else {
+            player.sendSystemMessage(Component.translatable("fateubw.chat.altar.servant.existing").withStyle(ChatFormatting.DARK_RED));
+        }
+        return ItemInteractionResult.FAIL;
     }
 
     @Override

@@ -13,10 +13,10 @@ import io.github.flemmli97.tenshilib.client.render.RenderUtils;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
 public class RenderEAItem extends BlockEntityWithoutLevelRenderer {
@@ -33,7 +33,7 @@ public class RenderEAItem extends BlockEntityWithoutLevelRenderer {
     }
 
     @Override
-    public void renderByItem(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
+    public void renderByItem(ItemStack stack, ItemDisplayContext transformType, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
         render(stack, transformType, matrixStack, buffer, combinedLight, combinedOverlay, this.beam, this.model);
     }
 
@@ -44,7 +44,7 @@ public class RenderEAItem extends BlockEntityWithoutLevelRenderer {
         return beam;
     }
 
-    public static void render(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay, RenderUtils.BeamBuilder beam, ModelEA model) {
+    public static void render(ItemStack stack, ItemDisplayContext transformType, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay, RenderUtils.BeamBuilder beam, ModelEA model) {
         matrixStack.pushPose();
         matrixStack.scale(1.0F, -1.0F, -1.0F);
 
@@ -58,7 +58,7 @@ public class RenderEAItem extends BlockEntityWithoutLevelRenderer {
         model.renderToBuffer(matrixStack, builder2, combinedLight, combinedOverlay, 1, 0, 0, 1);
         matrixStack.popPose();
 
-        if (Platform.INSTANCE.getItemStackData(stack).map(ItemStackData::inUse).orElse(false) && transformType != ItemTransforms.TransformType.GUI) {
+        if (Platform.INSTANCE.getItemStackData(stack).map(ItemStackData::inUse).orElse(false) && transformType != ItemDisplayContext.GUI) {
             matrixStack.pushPose();
             matrixStack.translate(0, -0.6, 0);
             beam.setEndColor(255, 0, 0, 0);

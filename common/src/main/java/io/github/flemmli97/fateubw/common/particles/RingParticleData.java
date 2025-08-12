@@ -1,17 +1,17 @@
 package io.github.flemmli97.fateubw.common.particles;
 
-import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.tenshilib.common.particle.ColoredParticleData;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 
 public class RingParticleData extends ColoredParticleData {
 
-    public static Codec<RingParticleData> CODEC = RecordCodecBuilder.create((builder) -> builder.group(
+    public static final MapCodec<RingParticleData> CODEC = RecordCodecBuilder.mapCodec((builder) -> builder.group(
                     Codec.FLOAT.fieldOf("r").forGetter(RingParticleData::getRed),
                     Codec.FLOAT.fieldOf("g").forGetter(RingParticleData::getGreen),
                     Codec.FLOAT.fieldOf("b").forGetter(RingParticleData::getBlue),
@@ -22,33 +22,23 @@ public class RingParticleData extends ColoredParticleData {
                     Codec.FLOAT.fieldOf("growth").forGetter(RingParticleData::getGrowth))
             .apply(builder, RingParticleData::new));
 
-    @SuppressWarnings("deprecation")
-    public static final Deserializer<RingParticleData> DESERIALIZER = new Deserializer<>() {
+    public static final StreamCodec<RegistryFriendlyByteBuf, RingParticleData> STREAM_CODEC = new StreamCodec<>() {
         @Override
-        public RingParticleData fromCommand(ParticleType<RingParticleData> type, StringReader reader) throws CommandSyntaxException {
-            reader.expect(' ');
-            float r = reader.readFloat();
-            reader.expect(' ');
-            float g = reader.readFloat();
-            reader.expect(' ');
-            float b = reader.readFloat();
-            reader.expect(' ');
-            float a = reader.readFloat();
-            reader.expect(' ');
-            float scale = reader.readFloat();
-            reader.expect(' ');
-            float rotY = reader.readFloat();
-            reader.expect(' ');
-            float rotX = reader.readFloat();
-            reader.expect(' ');
-            float growth = reader.readFloat();
-            return new RingParticleData(r, g, b, a, scale, rotY, rotX, growth);
+        public RingParticleData decode(RegistryFriendlyByteBuf buf) {
+            return new RingParticleData(buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(),
+                    buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat());
         }
 
         @Override
-        public RingParticleData fromNetwork(ParticleType<RingParticleData> type, FriendlyByteBuf buffer) {
-            return new RingParticleData(buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat(),
-                    buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
+        public void encode(RegistryFriendlyByteBuf buffer, RingParticleData data) {
+            buffer.writeFloat(data.getRed());
+            buffer.writeFloat(data.getGreen());
+            buffer.writeFloat(data.getBlue());
+            buffer.writeFloat(data.getAlpha());
+            buffer.writeFloat(data.getScale());
+            buffer.writeFloat(data.getRotY());
+            buffer.writeFloat(data.getRotX());
+            buffer.writeFloat(data.getGrowth());
         }
     };
 

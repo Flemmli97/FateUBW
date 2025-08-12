@@ -1,6 +1,6 @@
 package io.github.flemmli97.fateubw.common.particles.trail.provider.entity;
 
-import com.mojang.math.Vector4f;
+import org.joml.Vector4f;
 
 public interface EntityTrailHolderProvider {
 
