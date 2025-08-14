@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class PlayerMixin implements PlayerDataGet {
 
     @Unique
-    private final PlayerData fateData = new PlayerData();
+    private final PlayerData fate$Data = new PlayerData();
 
     @ModifyVariable(method = "actuallyHurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;getDamageAfterArmorAbsorb(Lnet/minecraft/world/damagesource/DamageSource;F)F"), argsOnly = true)
     private float hurt(float origin, DamageSource source) {
@@ -27,16 +27,16 @@ public abstract class PlayerMixin implements PlayerDataGet {
 
     @Inject(method = "readAdditionalSaveData", at = @At("RETURN"))
     private void loadData(CompoundTag compound, CallbackInfo info) {
-        this.fateData.load(compound.getCompound(Fate.MODID + ":data"));
+        this.fate$Data.load(compound.getCompound(Fate.MODID + ":data"));
     }
 
     @Inject(method = "addAdditionalSaveData", at = @At("RETURN"))
     private void saveData(CompoundTag compound, CallbackInfo info) {
-        compound.put(Fate.MODID + ":data", this.fateData.save(new CompoundTag()));
+        compound.put(Fate.MODID + ":data", this.fate$Data.save(new CompoundTag()));
     }
 
     @Override
     public PlayerData fateubw$getData() {
-        return this.fateData;
+        return this.fate$Data;
     }
 }

@@ -1,14 +1,10 @@
 package io.github.flemmli97.fateubw.common.entity.servant;
 
-import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.api.datapack.ServantProperties;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
-import io.github.flemmli97.fateubw.common.entity.StandingVehicle;
-import io.github.flemmli97.fateubw.common.entity.TargetableOpponent;
-import io.github.flemmli97.fateubw.common.entity.ai.FollowMasterGoal;
-import io.github.flemmli97.fateubw.common.entity.ai.HurtByTargetPredicateGoal;
-import io.github.flemmli97.fateubw.common.entity.ai.StandStillGoal;
-import io.github.flemmli97.fateubw.common.entity.ai.TargetNoneGoal;
+import io.github.flemmli97.fateubw.common.entity.utils.MoveStateTracker;
+import io.github.flemmli97.fateubw.common.entity.utils.MoveType;
+import io.github.flemmli97.fateubw.common.entity.utils.TargetableOpponent;
 import io.github.flemmli97.fateubw.common.lib.FateTags;
 import io.github.flemmli97.fateubw.common.network.C2SServantCommand;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
@@ -21,26 +17,27 @@ import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
-import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
-import io.github.flemmli97.tenshilib.api.entity.AoeAttackEntity;
-import io.github.flemmli97.tenshilib.api.entity.IAnimated;
+import io.github.flemmli97.tenshilib.common.entity.AOEAttackEntity;
 import io.github.flemmli97.tenshilib.common.entity.ai.MoveControllerPlus;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimatedEntity;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinition;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
 import io.github.flemmli97.tenshilib.common.item.SpawnEgg;
 import io.github.flemmli97.tenshilib.common.particle.ColoredParticleData;
-import io.github.flemmli97.tenshilib.common.utils.OrientedBoundingBox;
+import io.github.flemmli97.tenshilib.common.utils.math.OrientedBoundingBox;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
@@ -59,12 +56,7 @@ import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.FloatGoal;
-import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.MoveTowardsRestrictionGoal;
-import net.minecraft.world.entity.ai.goal.OpenDoorGoal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
@@ -80,6 +72,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector4f;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -89,9 +82,10 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public abstract class BaseServant extends PathfinderMob implements IAnimated, OwnableEntity, AoeAttackEntity, TargetableOpponent, EntityTrailHolderProvider {
+public abstract class BaseServant extends PathfinderMob implements AnimatedEntity, OwnableEntity, AOEAttackEntity, TargetableOpponent, EntityTrailHolderProvider {
 
     public static final TicketType<ChunkPos> TRACKINGTICKET = TicketType.create("servant", Comparator.comparingLong(ChunkPos::toLong), 5);
+    public static final int MOVE_TICK_MAX = 3;
 
     protected static final EntityDataAccessor<Boolean> SHOW_SERVANT = SynchedEntityData.defineId(BaseServant.class, EntityDataSerializers.BOOLEAN);
     protected static final EntityDataAccessor<Boolean> STATIONARY = SynchedEntityData.defineId(BaseServant.class, EntityDataSerializers.BOOLEAN);
@@ -126,15 +120,13 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     public NearestAttackableTargetGoal<Player> targetPlayer = new NearestAttackableTargetGoal<>(this, Player.class, 20, true, true, this.targetPred);
     public NearestAttackableTargetGoal<Mob> targetMob = new NearestAttackableTargetGoal<>(this, Mob.class, 10, true, true, this.targetPred);
 
-    public FollowMasterGoal<BaseServant> follow = new FollowMasterGoal<>(this, 16.0D, 9.0F, 3.0F, BaseServant::isStaying);
-    public HurtByTargetPredicateGoal targetHurt = new HurtByTargetPredicateGoal(this, this.retaliatePred);
+    //    public FollowMasterGoal<BaseServant> follow = new FollowMasterGoal<>(this, 16.0D, 9.0F, 3.0F, BaseServant::isStaying);
+//    public HurtByTargetPredicateGoal targetHurt = new HurtByTargetPredicateGoal(this, this.retaliatePred);
     public MoveTowardsRestrictionGoal restrictArea = new MoveTowardsRestrictionGoal(this, 1.0D);
     public WaterAvoidingRandomStrollGoal wander = new WaterAvoidingRandomStrollGoal(this, 1.0D);
     protected Vec3 targetPosition;
 
-    private int moveTick;
-
-    public static final int MOVE_TICK_MAX = 3;
+    private final MoveStateTracker moveStateTracker = new MoveStateTracker(MOVE_TICK_MAX, this::getMoveFlag);
 
     private final List<ServerPlayer> tracked = new ArrayList<>();
     private boolean sendToOwnerData;
@@ -146,28 +138,27 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         super(entityType, level);
         this.moveControl = new MoveControllerPlus(this);
         this.xpReward = 35;
-        ResourceLocation id = Registry.ENTITY_TYPE.getKey(this.getType());
-        this.prop = DatapackHandler.SERVANT_PROPS.get(id);
+        this.prop = DatapackHandler.SERVANT_PROPS.get(this.getType());
         if (!level.isClientSide) {
             this.goals();
             this.updateAttributes();
         }
-        this.hogou = Component.translatable(id + ".hogou");
+        this.hogou = Component.translatable(BuiltInRegistries.ENTITY_TYPE.getKey(this.getType()) + ".hogou");
     }
 
     protected void goals() {
-        this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(1, new StandStillGoal(this));
-        this.goalSelector.addGoal(2, this.follow);
-        this.goalSelector.addGoal(3, this.restrictArea);
-        this.goalSelector.addGoal(4, this.wander);
-        this.goalSelector.addGoal(5, new RandomLookAroundGoal(this));
-        this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        this.goalSelector.addGoal(7, new OpenDoorGoal(this, true));
-        this.targetSelector.addGoal(0, new TargetNoneGoal(this));
-        this.targetSelector.addGoal(1, this.targetHurt);
-        this.targetSelector.addGoal(2, this.targetServant);
-        this.targetSelector.addGoal(3, this.targetPlayer);
+//        this.goalSelector.addGoal(0, new FloatGoal(this));
+//        this.goalSelector.addGoal(1, new StandStillGoal(this));
+//        this.goalSelector.addGoal(2, this.follow);
+//        this.goalSelector.addGoal(3, this.restrictArea);
+//        this.goalSelector.addGoal(4, this.wander);
+//        this.goalSelector.addGoal(5, new RandomLookAroundGoal(this));
+//        this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
+//        this.goalSelector.addGoal(7, new OpenDoorGoal(this, true));
+//        this.targetSelector.addGoal(0, new TargetNoneGoal(this));
+//        this.targetSelector.addGoal(1, this.targetHurt);
+//        this.targetSelector.addGoal(2, this.targetServant);
+//        this.targetSelector.addGoal(3, this.targetPlayer);
     }
 
     //=========Servant specific data
@@ -215,17 +206,17 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        super.defineSynchedData();
-        this.entityData.define(STATIONARY, false);
-        this.entityData.define(SHOW_SERVANT, false);
-        this.entityData.define(OWNER_UUID, Optional.empty());
-        this.entityData.define(MOVE_FLAGS, (byte) 0);
+        super.defineSynchedData(builder);
+        builder.define(STATIONARY, false);
+        builder.define(SHOW_SERVANT, false);
+        builder.define(OWNER_UUID, Optional.empty());
+        builder.define(MOVE_FLAGS, (byte) 0);
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType reason, SpawnGroupData data, CompoundTag nbt) {
-        super.finalizeSpawn(world, difficulty, reason, data, nbt);
-        this.populateDefaultEquipmentSlots(difficulty);
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType reason, SpawnGroupData data) {
+        super.finalizeSpawn(world, difficulty, reason, data);
+        this.populateDefaultEquipmentSlots(this.getRandom(), difficulty);
         for (EquipmentSlot type : EquipmentSlot.values())
             this.setDropChance(type, 0);
         this.setLeftHanded(false);
@@ -237,12 +228,12 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         return data;
     }
 
-    protected AnimatedAction getSummonAnimation() {
+    protected String getSummonAnimation() {
         return null;
     }
 
-    public float getSummonProgress(float partialTicks) {
-        AnimatedAction summon = this.getSummonAnimation();
+    public double getSummonProgress(float partialTicks) {
+        String summon = this.getSummonAnimation();
         if (summon != null && this.getAnimationHandler().isCurrent(summon)) {
             return this.getAnimationHandler().getAnimation().progress(partialTicks);
         }
@@ -257,10 +248,10 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         return Monster.createMonsterAttributes()
                 .add(Attributes.FOLLOW_RANGE, 24.0)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1)
-                .add(FateAttributes.MAGIC_ATTACK.get()).add(FateAttributes.MAGIC_RESISTANCE.get())
-                .add(FateAttributes.PROJECTILE_BLOCK_CHANCE.get()).add(FateAttributes.PROJECTILE_RESISTANCE.get())
-                .add(FateAttributes.COMBAT_REGEN.get())
-                .add(FateAttributes.PASSIVE_REGEN.get());
+                .add(FateAttributes.MAGIC_ATTACK.asHolder()).add(FateAttributes.MAGIC_RESISTANCE.asHolder())
+                .add(FateAttributes.PROJECTILE_BLOCK_CHANCE.asHolder()).add(FateAttributes.PROJECTILE_RESISTANCE.asHolder())
+                .add(FateAttributes.COMBAT_REGEN.asHolder())
+                .add(FateAttributes.PASSIVE_REGEN.asHolder());
     }
 
     private void updateAttributes() {
@@ -373,44 +364,44 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
 
     //=====Entity AI updating
 
-    public abstract Goal getAttackAI();
+//    public abstract Goal getAttackAI();
 
     public void updateAI(C2SServantCommand.Type behaviour) {
         this.commandBehaviour = behaviour;
-        this.goalSelector.addGoal(0, this.getAttackAI());
+//        this.goalSelector.addGoal(0, this.getAttackAI());
         switch (behaviour) {
-            case NORMAL -> {
-                this.targetSelector.removeGoal(this.targetMob);
-                this.targetSelector.addGoal(1, this.targetHurt);
-                this.targetSelector.addGoal(2, this.targetServant);
-                this.targetSelector.addGoal(3, this.targetPlayer);
-            }
-            case AGGRESSIVE -> {
-                this.targetSelector.addGoal(1, this.targetHurt);
-                this.targetSelector.addGoal(2, this.targetServant);
-                this.targetSelector.addGoal(3, this.targetPlayer);
-                this.targetSelector.addGoal(4, this.targetMob);
-            }
-            case DEFENSIVE -> {
-                this.targetSelector.addGoal(1, this.targetHurt);
-                this.targetSelector.removeGoal(this.targetServant);
-                this.targetSelector.removeGoal(this.targetPlayer);
-                this.targetSelector.removeGoal(this.targetMob);
-            }
+//            case NORMAL -> {
+//                this.targetSelector.removeGoal(this.targetMob);
+//                this.targetSelector.addGoal(1, this.targetHurt);
+//                this.targetSelector.addGoal(2, this.targetServant);
+//                this.targetSelector.addGoal(3, this.targetPlayer);
+//            }
+//            case AGGRESSIVE -> {
+//                this.targetSelector.addGoal(1, this.targetHurt);
+//                this.targetSelector.addGoal(2, this.targetServant);
+//                this.targetSelector.addGoal(3, this.targetPlayer);
+//                this.targetSelector.addGoal(4, this.targetMob);
+//            }
+//            case DEFENSIVE -> {
+//                this.targetSelector.addGoal(1, this.targetHurt);
+//                this.targetSelector.removeGoal(this.targetServant);
+//                this.targetSelector.removeGoal(this.targetPlayer);
+//                this.targetSelector.removeGoal(this.targetMob);
+//            }
             case FOLLOW -> {
-                this.goalSelector.addGoal(2, this.follow);
+//                this.goalSelector.addGoal(2, this.follow);
                 this.setStaying(false);
                 this.clearRestriction();
             }
             case STAY -> {
-                this.goalSelector.removeGoal(this.getAttackAI());
+//                this.goalSelector.removeGoal(this.getAttackAI());
                 this.setStaying(true);
                 this.getNavigation().stop();
                 this.setTarget(null);
             }
             case GUARD -> {
                 this.setStaying(false);
-                this.goalSelector.removeGoal(this.follow);
+//                this.goalSelector.removeGoal(this.follow);
                 this.restrictTo(this.getOwner().blockPosition(), 8);
             }
         }
@@ -421,7 +412,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         if (player.isShiftKeyDown() && player.getUUID().equals(this.getOwnerUUID())) {
             if (player instanceof ServerPlayer serverPlayer)
                 S2CServantGui.sendServantGui(serverPlayer, this);
-            return InteractionResult.sidedSuccess(player.level.isClientSide);
+            return InteractionResult.sidedSuccess(player.level().isClientSide);
         }
         return InteractionResult.FAIL;
     }
@@ -441,6 +432,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         super.tick();
         this.getAnimationHandler().tick();
         this.getTrailHolder().tick();
+        this.moveStateTracker.tick();
         if (this.getSummonAnimation() != null && this.getAnimationHandler().isCurrent(this.getSummonAnimation())) {
             this.setDeltaMovement(Vec3.ZERO);
             this.getNavigation().stop();
@@ -466,17 +458,12 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
             if (this.getTarget() != null && this.getTarget().getVehicle() instanceof LivingEntity)
                 this.setTarget((LivingEntity) this.getTarget().getVehicle());
         }
-        if (this.getMoveFlag() != MoveType.NONE) {
-            this.moveTick = Math.min(MOVE_TICK_MAX, ++this.moveTick);
-        } else {
-            this.moveTick = Math.max(0, --this.moveTick);
-        }
     }
 
     @Override
     public void customServerAiStep() {
         super.customServerAiStep();
-        if (!this.canBeControlledByRider() && this.isMoving() && this.isAlive()) {
+        if (!(this.getControllingPassenger() instanceof Player) && this.isMoving() && this.isAlive()) {
             double d0 = this.getMoveControl().getSpeedModifier();
             MoveType move;
             if (d0 > 1) {
@@ -501,7 +488,11 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     }
 
     public float interpolatedMoveTick(float partialTicks) {
-        return Mth.clamp((this.moveTick + (this.getMoveFlag() != MoveType.NONE ? partialTicks : -partialTicks)) / (float) MOVE_TICK_MAX, 0, 1);
+        return this.moveStateTracker.interpolatedMoveTick(partialTicks);
+    }
+
+    public float interpolatedMoveTickOf(MoveType moveType, float partialTicks) {
+        return this.moveStateTracker.interpolatedMoveTickOf(moveType, partialTicks);
     }
 
     public void setMovingFlag(MoveType type) {
@@ -536,11 +527,6 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
 
     public void setSentOwnerData(boolean send) {
         this.sendToOwnerData = send;
-    }
-
-    @Override
-    public double getMyRidingOffset() {
-        return StandingVehicle.shouldSit(this) ? -0.35 : 0;
     }
 
     //=====Death Handling
@@ -580,7 +566,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
                     handler.broadcastParticipants(Component.translatable("fateubw.chat.servant.death").withStyle(ChatFormatting.RED));
                 }
                 this.playSound(SoundEvents.WITHER_SPAWN, 1.0F, 1.0F);
-                this.getAnimationHandler().setAnimation(this.deathAnim());
+                this.getAnimationHandler().setAnimation(this.getDeathAnimation());
             }
             if (this.getLastDamageSource() == null || !this.getLastDamageSource().is(FateDamageTypes.GRAIL)) {
                 if (this.deathTime > 15 && this.deathTime % 5 == 0 && (this.lastHurtByPlayerTime > 0 || this.isAlwaysExperienceDropper()) && this.shouldDropExperience() && this.level().getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
@@ -589,18 +575,18 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
                     while (exp > 0) {
                         splitExp = ExperienceOrb.getExperienceValue(exp);
                         exp -= splitExp;
-                        this.level().addFreshEntity(new ExperienceOrb(this.level, this.getX(), this.getY(), this.getZ(), splitExp));
+                        this.level().addFreshEntity(new ExperienceOrb(this.level(), this.getX(), this.getY(), this.getZ(), splitExp));
                     }
                 }
             }
-            AnimatedAction anim = this.getAnimationHandler().getAnimation();
+            AnimationState anim = this.getAnimationHandler().getAnimation();
             if (this.deathTime >= this.maxDeathTick() && (anim == null || anim.done(0))) {
                 this.remove(RemovalReason.KILLED);
             }
         }
     }
 
-    public AnimatedAction deathAnim() {
+    public String getDeathAnimation() {
         return null;
     }
 
@@ -614,13 +600,13 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
 
     //=====Entity attack etc.
 
-    public void setupAttack(AnimatedAction anim) {
+    public void setupAttack(AnimationDefinition anim) {
         if (this.getTarget() != null) {
             this.targetPosition = this.getTarget().position();
         }
     }
 
-    public void handleAttack(AnimatedAction anim) {
+    public void handleAttack(AnimationState anim) {
         if (anim.is(this.getSummonAnimation()))
             return;
         this.getNavigation().stop();
@@ -639,7 +625,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
         this.yBodyRot = this.yHeadRot;
     }
 
-    public void mobAttack(AnimatedAction anim, LivingEntity target, Consumer<LivingEntity> cons) {
+    public void mobAttack(AnimationState anim, LivingEntity target, Consumer<LivingEntity> cons) {
         OrientedBoundingBox obb = this.calculateAttackAABB(anim, this.targetPosition != null || target == null ? this.targetPosition : target.position(), 0.2);
         this.level().getEntitiesOfClass(LivingEntity.class, obb.getEncompassingBox(),
                 entity -> this.targetPred.test(entity) && obb.intersects(entity.getBoundingBox())).forEach(cons);
@@ -647,36 +633,45 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
             S2CAttackDebug.sendDebugPacket(obb, S2CAttackDebug.EnumAABBType.ATTACK, this);
     }
 
-    public OrientedBoundingBox calculateAttackAABB(AnimatedAction anim, Vec3 target, double grow) {
-        float yRot = this.getYRot();
-        float xRot = this.getXRot();
-        Vec3 dir;
-        if (target != null && !this.canBeControlledByRider()) {
-            dir = target.subtract(this.position()).normalize();
-            float[] xYRot = MathsHelper.XYRotFrom(dir);
-            yRot = xYRot[0];
-            xRot = xYRot[1];
-        } else if (this.getControllingPassenger() instanceof Player player) {
-            yRot = player.getYRot();
-            xRot = player.getXRot();
-        }
-        double off = this.getBbHeight() * 0.5;
-        return new OrientedBoundingBox(this.attackBB(anim)
-                .inflate(grow, 0, grow)
-                .move(0, -off, grow), yRot, -Mth.clamp(xRot, -15, 15), this.position().add(0, off, 0));
-    }
-
     @Override
-    public OrientedBoundingBox prepareAttackBox(AnimatedAction anim, LivingEntity target, double grow, boolean debug) {
-        OrientedBoundingBox obb = this.calculateAttackAABB(anim, target.position(), grow);
+    public OrientedBoundingBox prepareAttackBox(String anim, Entity target, double grow, boolean debug) {
+        OrientedBoundingBox obb = this.calculateAttackAABB(this.getAnimationHandler().createDefaulted(anim),
+                target != null ? target.position() : null, grow);
         if (debug)
             S2CAttackDebug.sendDebugPacket(obb, S2CAttackDebug.EnumAABBType.ATTEMPT, this);
         return obb;
     }
 
-    public AABB attackBB(AnimatedAction anim) {
+    public OrientedBoundingBox calculateAttackAABB(AnimationState anim, @Nullable Vec3 target, double grow) {
+        float yRot = this.getYHeadRot();
+        float xRot = this.getXRot();
+        if (this.getControllingPassenger() instanceof Player player) {
+            yRot = player.getYHeadRot();
+            xRot = player.getXRot();
+        } else if (target != null) {
+            Vec3 dir = target.subtract(this.position()).normalize();
+            float[] yXRot = MathsHelper.YXRotFrom(dir);
+            yRot = yXRot[0];
+            xRot = -yXRot[1];
+        }
+        double off = this.getBbHeight() * 0.5;
+        return new OrientedBoundingBox(this.attackBB(anim)
+                .inflate(grow, 0, grow)
+                .move(0, -off, grow), yRot, Mth.clamp(xRot, -15, 15), this.position().add(0, off, 0));
+    }
+
+    public AABB attackBB(AnimationState anim) {
         double range = 1;
-        return new AABB(-range * 0.5, -0.02, 0, range * 0.5, this.getBbHeight() + 0.02, range);
+        return new AABB(-range * 0.5, -0.02, 0, range * 0.5, this.vehicleDependentHeight() + 0.02, range);
+    }
+
+    public final double vehicleDependentHeight() {
+        double height = this.getBbHeight();
+        Entity entity = this.getVehicle();
+        if (entity != null) {
+            height = this.getAttackBoundingBox().maxY - entity.getBoundingBox().minY;
+        }
+        return height;
     }
 
     @Override
@@ -686,7 +681,7 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
 
     @Override
     public boolean hurt(DamageSource damageSource, float damage) {
-        if (damageSource.isBypassInvul()) {
+        if (damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             return super.hurt(damageSource, damage);
         } else {
             if (damageSource.getEntity() == null || !damageSource.getEntity().getType().is(FateTags.EntityTypes.STRONG_MOB))
@@ -702,29 +697,25 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
 
     protected boolean mobHurtTarget(Entity target) {
         float damage = (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE);
-        float knockback = (float) this.getAttributeValue(Attributes.ATTACK_KNOCKBACK);
-        if (target instanceof LivingEntity living) {
-            damage += EnchantmentHelper.getDamageBonus(this.getMainHandItem(), living.getMobType());
-            knockback += EnchantmentHelper.getKnockbackBonus(this);
-        }
-        int fireAspect = EnchantmentHelper.getFireAspect(this);
-        if (fireAspect > 0) {
-            target.setSecondsOnFire(fireAspect * 4);
+        DamageSource damageSource = this.damageSourceAttack(target);
+        if (this.level() instanceof ServerLevel serverLevel) {
+            damage = EnchantmentHelper.modifyDamage(serverLevel, this.getWeaponItem(), target, damageSource, damage);
         }
         damage *= this.damageModifier(target);
-        boolean bl = target.hurt(this.damageSourceAttack(target), damage);
-        if (bl) {
-            if (knockback > 0.0F && target instanceof LivingEntity) {
-                ((LivingEntity) target).knockback(knockback * 0.5F, Mth.sin(this.getYRot() * Mth.DEG_TO_RAD), -Mth.cos(this.getYRot() * Mth.DEG_TO_RAD));
-                this.setDeltaMovement(this.getDeltaMovement().multiply(0.6, 1.0, 0.6));
+        boolean result = target.hurt(damageSource, damage);
+        if (result) {
+            float knockback = this.getKnockback(target, damageSource);
+            if (knockback > 0 && target instanceof LivingEntity livingEntity) {
+                livingEntity.knockback(knockback * 0.5, Mth.sin(this.getYRot() * Mth.DEG_TO_RAD), -Mth.cos(this.getYRot() * Mth.DEG_TO_RAD));
+                this.setDeltaMovement(this.getDeltaMovement().multiply(0.6, 1, 0.6));
             }
-            if (target instanceof Player player) {
-                this.tryDisableShield(player, this.getMainHandItem(), player.isUsingItem() ? player.getUseItem() : ItemStack.EMPTY);
+            if (this.level() instanceof ServerLevel serverLevel) {
+                EnchantmentHelper.doPostAttackEffects(serverLevel, target, damageSource);
             }
-            this.doEnchantDamageEffects(this, target);
             this.setLastHurtMob(target);
+            this.playAttackSound();
         }
-        return bl;
+        return result;
     }
 
     public float damageModifier(Entity target) {
@@ -732,21 +723,18 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     }
 
     protected DamageSource damageSourceAttack(Entity target) {
-        return DamageSource.mobAttack(this);
+        return this.damageSources().mobAttack(this);
     }
 
     protected void tryDisableShield(Player player, ItemStack stack, ItemStack playerUseItem) {
         if (!stack.isEmpty() && !playerUseItem.isEmpty() && stack.getItem() instanceof AxeItem && playerUseItem.is(Items.SHIELD)) {
-            float f = 0.25F + (float) EnchantmentHelper.getBlockEfficiency(this) * 0.05F;
-            if (this.random.nextFloat() < f) {
-                player.getCooldowns().addCooldown(Items.SHIELD, 100);
-                this.level().broadcastEntityEvent(player, (byte) 30);
-            }
+            player.getCooldowns().addCooldown(Items.SHIELD, 100);
+            this.level().broadcastEntityEvent(player, (byte) 30);
         }
     }
 
     @Override
-    protected boolean shouldDropExperience() {
+    public boolean shouldDropExperience() {
         if (this.getServer() != null && GrailWarHandler.get(this.getServer()).isParticipant(this))
             return false;
         return super.shouldDropExperience();
@@ -785,12 +773,5 @@ public abstract class BaseServant extends PathfinderMob implements IAnimated, Ow
     @Override
     public EntityTrailHolder<BaseServant> getTrailHolder() {
         return this.trailHolder;
-    }
-
-    public enum MoveType {
-        NONE,
-        WALK,
-        RUN,
-        SNEAK
     }
 }

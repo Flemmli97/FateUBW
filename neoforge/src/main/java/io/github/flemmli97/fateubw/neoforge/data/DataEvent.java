@@ -4,72 +4,43 @@ import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.neoforge.data.tags.BlockTagGen;
 import io.github.flemmli97.fateubw.neoforge.data.tags.EntityTagGen;
 import io.github.flemmli97.fateubw.neoforge.data.tags.ItemTagGen;
+import io.github.flemmli97.fateubw.neoforge.data.worldgen.FeatureWorldGen;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.resources.Resource;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
+import net.minecraft.data.PackOutput;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 
-import java.io.IOException;
-import java.util.Collections;
+import java.util.concurrent.CompletableFuture;
 
-@Mod.EventBusSubscriber(modid = Fate.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = Fate.MODID)
 public class DataEvent {
 
     @SubscribeEvent
     public static void data(GatherDataEvent event) {
         DataGenerator data = event.getGenerator();
-        if (event.includeClient()) {
-            data.addProvider(new BlockStates(data, event.getExistingFileHelper()));
-            data.addProvider(new ItemModels(data, event.getExistingFileHelper()));
-            data.addProvider(new Lang(data));
-            data.addProvider(new ParticleGen(data));
-            data.addProvider(new SoundGen(data, new IgnoreFileHelper(event.getExistingFileHelper(), true)));
-        }
-        if (event.includeServer()) {
-            data.addProvider(new Loottables(data));
-            BlockTagGen blocks = new BlockTagGen(data, event.getExistingFileHelper());
-            data.addProvider(blocks);
-            data.addProvider(new ItemTagGen(data, blocks, event.getExistingFileHelper()));
-            data.addProvider(new EntityTagGen(data, event.getExistingFileHelper()));
-            data.addProvider(new RecipesGen(data));
-            data.addProvider(new GrailLoottables(data));
-            data.addProvider(new AdvancementsGen(data));
-            data.addProvider(new PatchouliGen(data));
-            data.addProvider(new EntityPropsGen(data));
-        }
-    }
+        PackOutput output = event.getGenerator().getPackOutput();
+        CompletableFuture<HolderLookup.Provider> provider = event.getLookupProvider();
 
+        BlockTagGen blocks = new BlockTagGen(output, provider, event.getExistingFileHelper());
+        data.addProvider(true, blocks);
+        data.addProvider(true, new DamageTypeGen(output, provider, event.getExistingFileHelper()));
+        data.addProvider(true, new EntityTagGen(output, provider, event.getExistingFileHelper()));
+        data.addProvider(true, new ItemTagGen(output, provider, blocks.contentsGetter(), event.getExistingFileHelper()));
 
-    protected static class IgnoreFileHelper extends ExistingFileHelper {
+        data.addProvider(true, new AdvancementsGen(output, provider, event.getExistingFileHelper()));
+        data.addProvider(true, new BlockStatesGen(output, event.getExistingFileHelper()));
+        data.addProvider(true, new DamageTypeGen(output, provider, event.getExistingFileHelper()));
+        data.addProvider(true, new EntityPropsGen(output, provider));
+        data.addProvider(true, new GrailLoottables(output, provider));
+        data.addProvider(true, new ItemModels(output, event.getExistingFileHelper()));
+        data.addProvider(true, new Lang(output));
+        data.addProvider(true, new Loottables(output, provider));
+        data.addProvider(true, new ParticleGen(output, event.getExistingFileHelper()));
+        data.addProvider(true, new RecipesGen(output, provider));
+        data.addProvider(true, new SoundGen(output, event.getExistingFileHelper()));
 
-        private final ExistingFileHelper wrapper;
-        private final boolean vanillaOnly;
-
-        public IgnoreFileHelper(ExistingFileHelper wrapper, boolean vanillaOnly) {
-            super(Collections.emptySet(), Collections.emptySet(), false, null, null);
-            this.wrapper = wrapper;
-            this.vanillaOnly = vanillaOnly;
-        }
-
-        @Override
-        public boolean exists(ResourceLocation loc, PackType type, String pathSuffix, String pathPrefix) {
-            if (!this.vanillaOnly || loc.getNamespace().equals("minecraft"))
-                return true;
-            return this.wrapper.exists(loc, type, pathSuffix, pathPrefix);
-        }
-
-        @Override
-        public Resource getResource(ResourceLocation loc, PackType type, String pathSuffix, String pathPrefix) throws IOException {
-            return this.wrapper.getResource(loc, type, pathSuffix, pathPrefix);
-        }
-
-        @Override
-        public boolean isEnabled() {
-            return this.wrapper.isEnabled();
-        }
+        data.addProvider(true, new FeatureWorldGen(output, provider));
     }
 }

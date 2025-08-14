@@ -1,6 +1,6 @@
 package io.github.flemmli97.fateubw.common.entity.misc;
 
-import io.github.flemmli97.fateubw.common.entity.TargetableOpponent;
+import io.github.flemmli97.fateubw.common.entity.utils.TargetableOpponent;
 import io.github.flemmli97.tenshilib.common.entity.BeamEntity;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;

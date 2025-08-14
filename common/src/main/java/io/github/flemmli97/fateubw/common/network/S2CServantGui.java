@@ -68,7 +68,7 @@ public class S2CServantGui implements CustomPacketPayload {
     }
 
     public static void handle(S2CServantGui pkt) {
-            ClientHandler.displayCommandGui(pkt.data, pkt.open);
+        ClientHandler.displayCommandGui(pkt.data, pkt.open);
     }
 
     @Override

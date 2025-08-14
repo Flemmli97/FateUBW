@@ -39,9 +39,7 @@ public record C2SServantCommand(Type command, int entityId) implements CustomPac
     public static void handle(C2SServantCommand pkt, ServerPlayer sender) {
         if (sender == null)
             return;
-        PlayerData data = Platform.INSTANCE.getPlayerData(sender).orElse(null);
-        if (data == null)
-            return;
+        PlayerData data = Platform.INSTANCE.getPlayerData(sender);
         BaseServant servant = getServant(sender, pkt.entityId);
         if (servant == null)
             return;
@@ -103,7 +101,7 @@ public record C2SServantCommand(Type command, int entityId) implements CustomPac
                 }
             }
             case BOOST -> {
-                if (Platform.INSTANCE.getPlayerData(sender).map(d -> d.useCommandSeal(sender)).orElse(false)) {
+                if (data.useCommandSeal(sender)) {
                     for (MobEffectInstance effect : CommonConfig.npBoostEffect.potions())
                         servant.addEffect(effect);
                     sender.sendSystemMessage(Component.translatable("fateubw.chat.command.spell.success").withStyle(ChatFormatting.RED));

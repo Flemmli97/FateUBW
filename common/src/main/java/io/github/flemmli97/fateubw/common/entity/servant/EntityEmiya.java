@@ -1,25 +1,18 @@
 package io.github.flemmli97.fateubw.common.entity.servant;
 
-
-import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.common.entity.SwitchableWeapon;
 import io.github.flemmli97.fateubw.common.entity.misc.ArcherArrow;
 import io.github.flemmli97.fateubw.common.entity.misc.CaladBolg;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.utils.Utils;
-import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
-import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.AnimatedAttackGoal;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.GoalAttackAction;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.IdleAction;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.KeepDistanceRunner;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveAwayRunner;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTargetAttackRunner;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTargetRunner;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.WrappedRunner;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinition;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionContainer;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationsBuilder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.random.WeightedEntry;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
@@ -27,88 +20,85 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-
-import java.util.List;
+import org.joml.Vector4f;
 
 public class EntityEmiya extends BaseServant {
 
-    public static final AnimatedAction DUAL_SLASH_1 = AnimatedAction.builder(1.4, "dual_slash_1")
-            .marker("attack", 0.52, 1).marker("step", 0.52, 1).build();
-    public static final AnimatedAction DUAL_SLASH_2 = AnimatedAction.builder(1, "dual_slash_2")
-            .marker("attack", 0.4, 0.76).marker("step", 0.4, 0.76).build();
-    public static final AnimatedAction DUAL_SLASH_3 = AnimatedAction.builder(0.76, "dual_slash_3").marker("attack", 0.44).build();
-    public static final AnimatedAction DUAL_SLASH_4 = AnimatedAction.builder(0.84, "dual_slash_4")
-            .marker("attack", 0.4).marker("step", 0.52).build();
-    public static final AnimatedAction DUAL_SLASH_5 = AnimatedAction.builder(0.84, "dual_slash_5")
-            .marker("attack", 0.4).marker("step", 0.52).build();
-    public static final AnimatedAction DUAL_SLASH_6 = AnimatedAction.builder(0.92, "dual_slash_6")
-            .marker("attack", 0.48).marker("leap", 0.12).build();
+    public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
+    public static final String DUAL_SLASH_1 = BUILDER.add("dual_slash_1", AnimationsBuilder.definition(1.4)
+            .marker("attack", 0.52, 1).marker("step", 0.52, 1));
+    public static final String DUAL_SLASH_2 = BUILDER.add("dual_slash_2", AnimationsBuilder.definition(1)
+            .marker("attack", 0.4, 0.76).marker("step", 0.4, 0.76));
+    public static final String DUAL_SLASH_3 = BUILDER.add("dual_slash_3", AnimationsBuilder.definition(0.76).marker("attack", 0.44));
+    public static final String DUAL_SLASH_4 = BUILDER.add("dual_slash_4", AnimationsBuilder.definition(0.84)
+            .marker("attack", 0.4).marker("step", 0.52));
+    public static final String DUAL_SLASH_5 = BUILDER.add("dual_slash_5", AnimationsBuilder.definition(0.84)
+            .marker("attack", 0.4).marker("step", 0.52));
+    public static final String DUAL_SLASH_6 = BUILDER.add("dual_slash_6", AnimationsBuilder.definition(0.92)
+            .marker("attack", 0.48).marker("leap", 0.12));
 
-    public static final AnimatedAction BOW_1 = AnimatedAction.builder(1.24, "bow_1").marker("attack", 1).build();
-    public static final AnimatedAction BOW_2 = AnimatedAction.builder(1.44, "bow_2")
-            .marker("attack", 1).marker("leap", 0.2).build();
-    public static final AnimatedAction CALADBOLG = AnimatedAction.builder(2.48, "caladbolg").marker("attack", 2.16).build();
-    public static final AnimatedAction SUMMON = AnimatedAction.builder(2., "summon").build();
-    private static final AnimatedAction[] ANIMS = {DUAL_SLASH_1, DUAL_SLASH_2, DUAL_SLASH_3, DUAL_SLASH_4, DUAL_SLASH_5, DUAL_SLASH_6, BOW_1, BOW_2, CALADBOLG, SUMMON};
+    public static final String BOW_1 = BUILDER.add("bow_1", AnimationsBuilder.definition(1.24).marker("attack", 1));
+    public static final String BOW_2 = BUILDER.add("bow_2", AnimationsBuilder.definition(1.44)
+            .marker("attack", 1).marker("leap", 0.2));
+    public static final String CALADBOLG = BUILDER.add("caladbolg", AnimationsBuilder.definition(2.48).marker("attack", 2.16));
+    public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2.));
+    public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
 
-    public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityEmiya>>> ATTACKS = List.of(
-            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.DUAL_SLASH_1)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 7)
-                    .withCondition((goal, target, previous) -> goal.distanceToTargetSq < 40)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 8),
-            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.DUAL_SLASH_2)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 7)
-                    .withCondition((goal, target, previous) -> goal.distanceToTargetSq < 40)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 8),
-            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.DUAL_SLASH_3)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 7)
-                    .withCondition((goal, target, previous) -> goal.distanceToTargetSq < 40)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 8),
-            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.DUAL_SLASH_4)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 7)
-                    .withCondition((goal, target, previous) -> goal.distanceToTargetSq < 40)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 8),
-            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.DUAL_SLASH_5)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 7)
-                    .withCondition((goal, target, previous) -> goal.distanceToTargetSq < 40)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 8),
-            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.DUAL_SLASH_6)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 7)
-                    .withCondition((goal, target, previous) -> goal.distanceToTargetSq < 40)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 8),
-            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.BOW_1)
-                    .cooldown(e -> e.getRandom().nextInt(25) + 10)
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 14, 1.2))), 10),
-            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.BOW_2)
-                    .cooldown(e -> e.getRandom().nextInt(25) + 10)
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(4, 10, 1.2))), 7),
-            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.BOW_1)
-                    .cooldown(e -> e.getRandom().nextInt(25) + 10)
-                    .withCondition((goal, target, previous) -> goal.distanceToTargetSq > 25)
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(6, 14, 1.2))), 13),
-            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.BOW_2)
-                    .cooldown(e -> e.getRandom().nextInt(25) + 10)
-                    .withCondition((goal, target, previous) -> goal.distanceToTargetSq > 25)
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(4, 10, 1.2))), 9),
-            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.CALADBOLG)
-                    .cooldown(e -> e.getRandom().nextInt(30) + 10)
-                    .withCondition(Utils.npCheck())
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(8, 14, 1.3))), 15)
-    );
-    public static final List<WeightedEntry.Wrapper<IdleAction<EntityEmiya>>> IDLE_ACTIONS = List.of(
-            WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(6, 1.1, 2)), 6),
-            WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1, 3)), 4)
-    );
-
-    public final AnimatedAttackGoal<EntityEmiya> attack = new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS);
+//    public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityEmiya>>> ATTACKS = List.of(
+//            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.DUAL_SLASH_1)
+//                    .cooldown(e -> e.getRandom().nextInt(15) + 7)
+//                    .withCondition((goal, target, previous) -> goal.distanceToTargetSq < 40)
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 8),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.DUAL_SLASH_2)
+//                    .cooldown(e -> e.getRandom().nextInt(15) + 7)
+//                    .withCondition((goal, target, previous) -> goal.distanceToTargetSq < 40)
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 8),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.DUAL_SLASH_3)
+//                    .cooldown(e -> e.getRandom().nextInt(15) + 7)
+//                    .withCondition((goal, target, previous) -> goal.distanceToTargetSq < 40)
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 8),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.DUAL_SLASH_4)
+//                    .cooldown(e -> e.getRandom().nextInt(15) + 7)
+//                    .withCondition((goal, target, previous) -> goal.distanceToTargetSq < 40)
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 8),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.DUAL_SLASH_5)
+//                    .cooldown(e -> e.getRandom().nextInt(15) + 7)
+//                    .withCondition((goal, target, previous) -> goal.distanceToTargetSq < 40)
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 8),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.DUAL_SLASH_6)
+//                    .cooldown(e -> e.getRandom().nextInt(15) + 7)
+//                    .withCondition((goal, target, previous) -> goal.distanceToTargetSq < 40)
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 8),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.BOW_1)
+//                    .cooldown(e -> e.getRandom().nextInt(25) + 10)
+//                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 14, 1.2))), 10),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.BOW_2)
+//                    .cooldown(e -> e.getRandom().nextInt(25) + 10)
+//                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(4, 10, 1.2))), 7),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.BOW_1)
+//                    .cooldown(e -> e.getRandom().nextInt(25) + 10)
+//                    .withCondition((goal, target, previous) -> goal.distanceToTargetSq > 25)
+//                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(6, 14, 1.2))), 13),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.BOW_2)
+//                    .cooldown(e -> e.getRandom().nextInt(25) + 10)
+//                    .withCondition((goal, target, previous) -> goal.distanceToTargetSq > 25)
+//                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(4, 10, 1.2))), 9),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityEmiya>(EntityEmiya.CALADBOLG)
+//                    .cooldown(e -> e.getRandom().nextInt(30) + 10)
+//                    .withCondition(Utils.npCheck())
+//                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(8, 14, 1.3))), 15)
+//    );
+//    public static final List<WeightedEntry.Wrapper<IdleAction<EntityEmiya>>> IDLE_ACTIONS = List.of(
+//            WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(6, 1.1, 2)), 6),
+//            WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1, 3)), 4)
+//    );
+//
+//    public final AnimatedAttackGoal<EntityEmiya> attack = new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS);
 
     private final AnimationHandler<EntityEmiya> animationHandler = new AnimationHandler<>(this, ANIMS)
             .withChangeListener(anim -> {
@@ -130,18 +120,11 @@ public class EntityEmiya extends BaseServant {
 
     public EntityEmiya(EntityType<? extends EntityEmiya> entityType, Level level) {
         super(entityType, level);
-        if (!level.isClientSide)
-            this.goalSelector.addGoal(0, this.attack);
     }
 
     @Override
-    protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
+    protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty) {
         this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(FateItems.KANSHOU.get()));
-    }
-
-    @Override
-    public Goal getAttackAI() {
-        return this.attack;
     }
 
     @Override
@@ -158,7 +141,7 @@ public class EntityEmiya extends BaseServant {
     }
 
     @Override
-    public void setupAttack(AnimatedAction anim) {
+    public void setupAttack(AnimationDefinition anim) {
         if (anim.is(DUAL_SLASH_1, DUAL_SLASH_2) && this.getTarget() != null) {
             this.lookAtNow(this.getTarget(), 360, 90);
             this.targetPosition = this.getTarget().position();
@@ -167,7 +150,7 @@ public class EntityEmiya extends BaseServant {
     }
 
     @Override
-    public void handleAttack(AnimatedAction anim) {
+    public void handleAttack(AnimationState anim) {
         if (anim.is(CALADBOLG)) {
             LivingEntity target = this.getTarget();
             if (anim.isAt(0.24))
@@ -232,7 +215,7 @@ public class EntityEmiya extends BaseServant {
     }
 
     @Override
-    public AABB attackBB(AnimatedAction anim) {
+    public AABB attackBB(AnimationState anim) {
         double width = this.getBbWidth() + 0.3;
         double length = 1;
         if (anim.is(DUAL_SLASH_1, DUAL_SLASH_2)) {
@@ -257,22 +240,14 @@ public class EntityEmiya extends BaseServant {
     public void attackWithRangedAttack(LivingEntity target) {
         ItemStack stack = this.getItemInHand(this.bowHand());
         if (!this.level().isClientSide) {
-            ArcherArrow arrow = new ArcherArrow(this.level, this);
+            ArcherArrow arrow = new ArcherArrow(this.level(), this, stack);
             double dX = target.getX() - this.getX();
             double dY = target.getY(0.3333333333333333) - arrow.getY();
             double dZ = target.getZ() - this.getZ();
             double l = Math.sqrt(dX * dX + dZ * dZ);
             arrow.setCritArrow(true);
-            int j;
-            if ((j = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack)) > 0) {
-                arrow.setBaseDamage(arrow.getBaseDamage() + (double) j * 0.5 + 0.5);
-            }
-            if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FLAMING_ARROWS, stack) > 0) {
-                arrow.setSecondsOnFire(100);
-            }
             arrow.shoot(dX, dY + l * 0.13, dZ, 2.2F, 2);
             arrow.setBaseDamage(arrow.getBaseDamage() + this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.7);
-            arrow.setKnockback(0);
             this.playSound(SoundEvents.SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
             this.level().addFreshEntity(arrow);
         }
@@ -281,23 +256,15 @@ public class EntityEmiya extends BaseServant {
     public void attackWithRangedAttackBarrage(LivingEntity target) {
         ItemStack stack = this.getItemInHand(this.bowHand());
         for (int i = 0; i < 6; i++) {
-            ArcherArrow arrow = new ArcherArrow(this.level, this);
+            ArcherArrow arrow = new ArcherArrow(this.level(), this, stack);
             if (!this.level().isClientSide) {
                 double dX = target.getX() - this.getX();
                 double dY = target.getY(0.33) - arrow.getY();
                 double dZ = target.getZ() - this.getZ();
                 double l = Math.sqrt(dX * dX + dZ * dZ);
                 arrow.setCritArrow(true);
-                int j;
-                if ((j = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, stack)) > 0) {
-                    arrow.setBaseDamage(arrow.getBaseDamage() + (double) j * 0.5 + 0.5);
-                }
-                if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FLAMING_ARROWS, stack) > 0) {
-                    arrow.setSecondsOnFire(100);
-                }
                 arrow.shoot(dX, dY + l * 0.13, dZ, 2.2F, 7);
                 arrow.setBaseDamage(arrow.getBaseDamage() + this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.7);
-                arrow.setKnockback(0);
                 this.playSound(SoundEvents.SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
                 this.level().addFreshEntity(arrow);
             }
@@ -307,7 +274,7 @@ public class EntityEmiya extends BaseServant {
     public void caladBolg(LivingEntity target) {
         if (!this.forcedNP && !this.useMana(this.props().hogouMana()))
             return;
-        CaladBolg bolg = new CaladBolg(this.level, this);
+        CaladBolg bolg = new CaladBolg(this.level(), this);
         if (target != null)
             bolg.shootAtEntity(target, 2F, 0);
         else
@@ -320,13 +287,13 @@ public class EntityEmiya extends BaseServant {
     @Override
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
-        this.switchableWeapon.save(tag);
+        this.switchableWeapon.save(tag, this.registryAccess());
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
-        this.switchableWeapon.read(tag);
+        this.switchableWeapon.read(tag, this.registryAccess());
     }
 
     protected boolean hasBow() {
@@ -344,7 +311,7 @@ public class EntityEmiya extends BaseServant {
     }
 
     @Override
-    protected AnimatedAction getSummonAnimation() {
+    protected String getSummonAnimation() {
         return SUMMON;
     }
 

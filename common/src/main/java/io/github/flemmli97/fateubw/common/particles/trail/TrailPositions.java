@@ -127,5 +127,6 @@ public class TrailPositions {
     }
 
     public record TrailPosition(Vec3 pos, @Nullable Vec3 normal) {
+
     }
 }

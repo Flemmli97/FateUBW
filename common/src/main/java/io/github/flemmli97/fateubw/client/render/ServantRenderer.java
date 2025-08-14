@@ -1,43 +1,29 @@
 package io.github.flemmli97.fateubw.client.render;
 
+import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
-import com.mojang.math.Vector4f;
-import io.github.flemmli97.fateubw.client.model.BaseServantModel;
-import io.github.flemmli97.fateubw.client.model.ModelServant;
+import com.mojang.math.Axis;
+import io.github.flemmli97.fateubw.client.model.ServantModel;
 import io.github.flemmli97.fateubw.client.render.layer.ItemTrailLayer;
-import io.github.flemmli97.fateubw.client.render.layer.LayerHand;
 import io.github.flemmli97.fateubw.client.render.layer.TrailPoseGetter;
-import io.github.flemmli97.fateubw.common.entity.StandingVehicle;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
-import io.github.flemmli97.fateubw.platform.ClientPlatform;
-import net.minecraft.client.Minecraft;
+import io.github.flemmli97.tenshilib.client.render.layer.ItemLayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
-import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Pose;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ServantRenderer<T extends BaseServant, M extends BaseServantModel<T>> extends LivingEntityRenderer<T, BaseServantModel<T>> implements TrailPoseGetter {
+public class ServantRenderer<T extends BaseServant, M extends ServantModel<T>> extends LivingEntityRenderer<T, ServantModel<T>> implements TrailPoseGetter {
 
-    private static boolean DEBUG_RENDER = true;
-    private static final ResourceLocation DEFAULT_RES_LOC = new ResourceLocation("textures/entity/steve.png");
+    private static final MultiBufferSource.BufferSource SEP = MultiBufferSource.immediate(new ByteBufferBuilder(1536));
 
-    private static final MultiBufferSource.BufferSource SEP = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-
-    private final BaseServantModel<T> defaultModel;
-    private final M servantModel;
     private final ResourceLocation texture;
 
     /**
@@ -48,93 +34,19 @@ public class ServantRenderer<T extends BaseServant, M extends BaseServantModel<T
     public ServantRenderer(EntityRendererProvider.Context ctx, M model, ResourceLocation texture, float shadow) {
         super(ctx, model, shadow);
         this.texture = texture;
-        this.defaultModel = new ModelServant<>(ctx.bakeLayer(ModelServant.LAYER_LOCATION), "default_servant");
-        this.servantModel = model;
-        this.addLayer(new LayerHand<>(this));
-        this.addLayer(new CustomHeadLayer<>(this, ctx.getModelSet()));
+        this.addLayer(new ItemLayer<>(this, ctx.getItemInHandRenderer()));
+        this.addLayer(new CustomHeadLayer<>(this, ctx.getModelSet(), ctx.getItemInHandRenderer()));
         this.addLayer(new ItemTrailLayer<>(this));
     }
 
     @Override
-    public void render(T entity, float yaw, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int light) {
-        boolean showIdentity = ServantRenderer.showIdentity(entity);
-        this.model = showIdentity ? this.servantModel : this.defaultModel;
+    public void render(T entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int light) {
         this.model.update(entity);
-        if (ClientPlatform.INSTANCE.renderLivingEvent(entity, this, partialTicks, matrixStack, buffer, light, true))
-            return;
-        matrixStack.pushPose();
-        this.plainPose = new PoseStack();
-        this.model.attackTime = this.getAttackAnim(entity, partialTicks);
-
-        boolean shouldSit = StandingVehicle.shouldSit(entity);
-        this.model.riding = shouldSit;
-        this.model.young = entity.isBaby();
-        float yawOffset = Mth.rotLerp(partialTicks, entity.yBodyRotO, entity.yBodyRot);
-        float yawHead = Mth.rotLerp(partialTicks, entity.yHeadRotO, entity.yHeadRot);
-        float yawHeadAct = yawHead - yawOffset;
-        if (shouldSit && entity.getVehicle() instanceof LivingEntity livingentity) {
-            yawOffset = Mth.rotLerp(partialTicks, livingentity.yBodyRotO, livingentity.yBodyRot);
-            yawHeadAct = yawHead - yawOffset;
-            float wrappedYaw = Mth.wrapDegrees(yawHeadAct);
-            if (wrappedYaw < -85.0F) {
-                wrappedYaw = -85.0F;
-            }
-
-            if (wrappedYaw >= 85.0F) {
-                wrappedYaw = 85.0F;
-            }
-
-            yawOffset = yawHead - wrappedYaw;
-            if (wrappedYaw * wrappedYaw > 2500.0F) {
-                yawOffset += wrappedYaw * 0.2F;
-            }
-
-            yawHeadAct = yawHead - yawOffset;
-        }
-
-        float pitch = Mth.lerp(partialTicks, entity.xRotO, entity.getXRot());
-        if (entity.getPose() == Pose.SLEEPING) {
-            Direction direction = entity.getBedOrientation();
-            if (direction != null) {
-                float f4 = entity.getEyeHeight(Pose.STANDING) - 0.1F;
-                this.plainPose.translate(-direction.getStepX() * f4, 0.0D, -direction.getStepZ() * f4);
-            }
-        }
-
-        float ageTicks = this.getBob(entity, partialTicks);
-        this.setupRotations(entity, this.plainPose, ageTicks, yawOffset, partialTicks);
-        this.plainPose.scale(-1.0F, -1.0F, 1.0F);
-        this.scale(entity, this.plainPose, partialTicks);
-        this.plainPose.translate(0.0D, -1.5F, 0.0D);
-        // Apply to the main one
-        matrixStack.last().pose().multiply(this.plainPose.last().pose());
-        matrixStack.last().normal().mul(this.plainPose.last().normal());
-        float limgSwingAmount = 0.0F;
-        float maxLimbSwing = 0.0F;
-        if (!shouldSit && entity.isAlive()) {
-            limgSwingAmount = Mth.lerp(partialTicks, entity.animationSpeedOld, entity.animationSpeed);
-            maxLimbSwing = entity.animationPosition - entity.animationSpeed * (1.0F - partialTicks);
-            if (entity.isBaby()) {
-                maxLimbSwing *= 3.0F;
-            }
-
-            if (limgSwingAmount > 1.0F) {
-                limgSwingAmount = 1.0F;
-            }
-        }
-
-        this.model.prepareMobModel(entity, maxLimbSwing, limgSwingAmount, partialTicks);
-        this.model.setupAnim(entity, maxLimbSwing, limgSwingAmount, ageTicks, yawHeadAct, pitch);
-        Minecraft minecraft = Minecraft.getInstance();
-        boolean visible = this.isBodyVisible(entity);
-        boolean transparent = (!visible || entity.isDeadOrDying()) && !entity.isInvisibleTo(minecraft.player) && entity.transparentOnDeath();
-        boolean outline = minecraft.shouldEntityAppearGlowing(entity);
-        RenderType rendertype = this.getRenderType(entity, visible, transparent, outline);
-        float summonProgress = entity.getSummonProgress(partialTicks);
+        float summonProgress = (float) entity.getSummonProgress(partialTicks);
         Vector4f clip;
         if (summonProgress >= 0 && summonProgress < 1) {
             Vector3f normal = new Vector3f(0, 0, 1);
-            normal.transform(Vector3f.XP.rotationDegrees(-90));
+            normal.rotate(Axis.XP.rotationDegrees(-90));
             clip = FateRenders.createClippingPlane(normal, entity, -(entity.getBbHeight() + 0.3f) * (1 - summonProgress));
         } else
             clip = null;
@@ -149,30 +61,17 @@ public class ServantRenderer<T extends BaseServant, M extends BaseServantModel<T
                 state.set(2);
             return cons;
         } : buffer;
-        if (rendertype != null) {
-            VertexConsumer ivertexbuilder = buf.getBuffer(rendertype);
-            int i = getOverlayCoords(entity, this.getWhiteOverlayProgress(entity, partialTicks));
-            float alpha = entity.isDeadOrDying() ? Math.max(0.15f, 1 - (entity.getDeathTick() / (float) entity.maxDeathTick())) : transparent ? 0.15f : 1;
-            this.model.renderToBuffer(matrixStack, ivertexbuilder, light, i, 1.0F, 1.0F, 1.0F, alpha);
-        }
-
-        if (!entity.isSpectator()) {
-            for (RenderLayer<T, BaseServantModel<T>> layerrenderer : this.layers) {
-                layerrenderer.render(matrixStack, buf, light, entity, maxLimbSwing, limgSwingAmount, partialTicks, ageTicks, yawHeadAct, pitch);
-            }
-        }
+        super.render(entity, yaw, partialTicks, new TransformRecordingStack(poseStack), buf, light);
         if (state.get() != 0) // other buffersource was used
             SEP.endBatch();
-
-        matrixStack.popPose();
-        this.nameTag(entity, yaw, partialTicks, matrixStack, buffer, light);
-        ClientPlatform.INSTANCE.renderLivingEvent(entity, this, partialTicks, matrixStack, buffer, light, false);
     }
 
-    private void nameTag(T entity, float yaw, float partialTicks, PoseStack stack, MultiBufferSource buffer, int light) {
-        Component name = ClientPlatform.INSTANCE.nameTagRenderEvent(entity, entity.getDisplayName(), this, stack, buffer, light, partialTicks, this::shouldShowName);
-        if (name != null) {
-            this.renderNameTag(entity, name, stack, buffer, light);
+    @Override
+    protected void scale(T livingEntity, PoseStack poseStack, float partialTickTime) {
+        super.scale(livingEntity, poseStack, partialTickTime);
+        if (poseStack instanceof TransformRecordingStack stack) {
+            this.plainPose = stack.getApplied();
+            stack.applyWrapped();
         }
     }
 
@@ -182,25 +81,12 @@ public class ServantRenderer<T extends BaseServant, M extends BaseServantModel<T
     }
 
     @Override
-    protected void setupRotations(T entityLiving, PoseStack matrixStackIn, float ageInTicks, float rotationYaw, float partialTicks) {
-        super.setupRotations(entityLiving, matrixStackIn, ageInTicks, rotationYaw, partialTicks);
-    }
-
-    @Override
     protected float getFlipDegrees(T livingEntity) {
         return 0;
     }
 
     @Override
     public ResourceLocation getTextureLocation(T servant) {
-        return showIdentity(servant) ? this.servantTexture(servant) : DEFAULT_RES_LOC;
-    }
-
-    public static boolean showIdentity(BaseServant servant) {
-        return DEBUG_RENDER || servant.isDeadOrDying() || servant.showServant() || Minecraft.getInstance().player.equals(servant.getOwner());
-    }
-
-    public ResourceLocation servantTexture(T servant) {
         return this.texture;
     }
 

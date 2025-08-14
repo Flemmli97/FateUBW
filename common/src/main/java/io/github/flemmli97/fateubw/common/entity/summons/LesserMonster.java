@@ -3,51 +3,39 @@ package io.github.flemmli97.fateubw.common.entity.summons;
 import io.github.flemmli97.fateubw.api.datapack.AttributeHolderProperties;
 import io.github.flemmli97.fateubw.api.datapack.ServantExtraData;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
-import io.github.flemmli97.fateubw.common.entity.ai.TargetOwnerEnemyGoal;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
-import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
-import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
-import io.github.flemmli97.tenshilib.api.entity.IAnimated;
-import io.github.flemmli97.tenshilib.common.entity.EntityUtil;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.AnimatedAttackGoal;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.GoalAttackAction;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.IdleAction;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTargetRunner;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.WrappedRunner;
-import net.minecraft.core.Registry;
+import io.github.flemmli97.tenshilib.common.entity.EntityUtils;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimatedEntity;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionContainer;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationsBuilder;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.FloatGoal;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
-import java.util.List;
 import java.util.UUID;
 
-public class LesserMonster extends PathfinderMob implements IAnimated, OwnableEntity {
+public class LesserMonster extends PathfinderMob implements AnimatedEntity, OwnableEntity {
 
-    public static final AnimatedAction ATTACK = AnimatedAction.builder(0.76, "attack").marker("attack", 0.52).build();
-    private static final AnimatedAction[] ANIMS = {ATTACK};
+    public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
+    public static final String ATTACK = BUILDER.add("attack", AnimationsBuilder.definition(0.76).marker("attack", 0.52));
+    public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
 
-    public static final List<WeightedEntry.Wrapper<GoalAttackAction<LesserMonster>>> ATTACKS = List.of(
-            WeightedEntry.wrap(new GoalAttackAction<LesserMonster>(LesserMonster.ATTACK)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetRunner<>(1, 0.5))), 1)
-    );
-    public static final List<WeightedEntry.Wrapper<IdleAction<LesserMonster>>> IDLE_ACTIONS = List.of(
-            WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1, 0.5)), 1)
-    );
+//    public static final List<WeightedEntry.Wrapper<GoalAttackAction<LesserMonster>>> ATTACKS = List.of(
+//            WeightedEntry.wrap(new GoalAttackAction<LesserMonster>(LesserMonster.ATTACK)
+//                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetRunner<>(1, 0.5))), 1)
+//    );
+//    public static final List<WeightedEntry.Wrapper<IdleAction<LesserMonster>>> IDLE_ACTIONS = List.of(
+//            WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1, 0.5)), 1)
+//    );
 
     private UUID ownerUUID;
     private LivingEntity owner;
@@ -64,10 +52,10 @@ public class LesserMonster extends PathfinderMob implements IAnimated, OwnableEn
     public LesserMonster(EntityType<? extends LesserMonster> type, Level level) {
         super(type, level);
         if (!level.isClientSide) {
-            this.goals();
             this.updateAttributes();
         }
-        this.maxLivingTicks = DatapackHandler.SERVANT_PROPS.get(FateEntities.GILLES.getID()).getConfig(ServantExtraData.GILLES_MONSTER_DURATION);
+        this.maxLivingTicks = DatapackHandler.SERVANT_PROPS.get(FateEntities.GILLES.get())
+                .getConfig(ServantExtraData.GILLES_MONSTER_DURATION);
     }
 
     public LesserMonster(Level level, LivingEntity owner) {
@@ -77,8 +65,7 @@ public class LesserMonster extends PathfinderMob implements IAnimated, OwnableEn
     }
 
     protected void updateAttributes() {
-        ResourceLocation id = Registry.ENTITY_TYPE.getKey(this.getType());
-        AttributeHolderProperties props = DatapackHandler.SERVANT_PROPS.getGeneric(id);
+        AttributeHolderProperties props = DatapackHandler.SERVANT_PROPS.getGeneric(this.getType());
         props.attributes().forEach((att, val) -> {
             AttributeInstance inst = this.getAttribute(att);
             if (inst != null) {
@@ -90,14 +77,13 @@ public class LesserMonster extends PathfinderMob implements IAnimated, OwnableEn
     }
 
     protected void goals() {
-        this.goalSelector.addGoal(2, new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS));
-        this.goalSelector.addGoal(3, new FloatGoal(this));
-        this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
-        this.goalSelector.addGoal(5, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        this.targetSelector.addGoal(0, new TargetOwnerEnemyGoal<>(this));
-        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, true,
-                LesserMonster.this::canAttackTarget));
-
+//        this.goalSelector.addGoal(2, new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS));
+//        this.goalSelector.addGoal(3, new FloatGoal(this));
+//        this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
+//        this.goalSelector.addGoal(5, new LookAtPlayerGoal(this, Player.class, 8.0F));
+//        this.targetSelector.addGoal(0, new TargetOwnerEnemyGoal<>(this));
+//        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, true,
+//                LesserMonster.this::canAttackTarget));
     }
 
     @Override
@@ -107,10 +93,10 @@ public class LesserMonster extends PathfinderMob implements IAnimated, OwnableEn
             this.livingTicks++;
             if (this.livingTicks > this.maxLivingTicks)
                 this.remove(RemovalReason.KILLED);
-            AnimatedAction anim = this.getAnimationHandler().getAnimation();
+            AnimationState anim = this.getAnimationHandler().getAnimation();
             if (anim != null && anim.is(ATTACK) && anim.isAt("attack")) {
                 LivingEntity target = this.getTarget();
-                if (target != null && this.distanceToSqr(target) <= this.getMeleeAttackRangeSqr(target)) {
+                if (target != null && this.getAttackBoundingBox().intersects(target.getBoundingBox())) {
                     this.doHurtTarget(target);
                 }
             }
@@ -134,7 +120,7 @@ public class LesserMonster extends PathfinderMob implements IAnimated, OwnableEn
     @Override
     public LivingEntity getOwner() {
         if (this.owner == null && this.ownerUUID != null) {
-            this.owner = EntityUtil.findFromUUID(LivingEntity.class, this.level, this.ownerUUID);
+            this.owner = EntityUtils.findFromUUID(LivingEntity.class, this.level(), this.ownerUUID);
         }
         return this.owner;
     }

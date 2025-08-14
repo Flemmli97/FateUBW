@@ -14,8 +14,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
@@ -96,11 +94,6 @@ public class AltarBlock extends BaseEntityBlock {
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
-    }
-
     public static boolean placeSummoningStructure(ServerLevel level, BlockPos pos, AltarBlockEntity altar, Direction facing) {
         for (int x = -2; x <= 2; x++)
             for (int z = -2; z <= 2; z++) {
@@ -122,10 +115,14 @@ public class AltarBlock extends BaseEntityBlock {
         return true;
     }
 
-    public static void removeSummoningStructure(Level level, BlockPos pos) {
-        level.playSound(null, pos, SoundEvents.GENERIC_EXPLODE.value(), SoundSource.AMBIENT, 0.4F, 1F);
-        level.removeBlockEntity(pos);
-        level.destroyBlock(pos, false);
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(FACING);
     }
 
     @Override
@@ -253,11 +250,6 @@ public class AltarBlock extends BaseEntityBlock {
             player.sendSystemMessage(Component.translatable("fateubw.chat.altar.servant.existing").withStyle(ChatFormatting.DARK_RED));
         }
         return ItemInteractionResult.FAIL;
-    }
-
-    @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING);
     }
 
     @Nullable

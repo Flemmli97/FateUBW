@@ -1,35 +1,29 @@
 package io.github.flemmli97.fateubw.common.entity.servant;
 
-
-import com.mojang.math.Vector4f;
+import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.api.datapack.ServantExtraData;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.particles.RingParticleData;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateSounds;
-import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
-import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
-import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.AnimatedAttackGoal;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.GoalAttackAction;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.IdleAction;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.DoNothingRunner;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveAwayRunner;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTargetAttackRunner;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTargetRunner;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.WrappedRunner;
-import io.github.flemmli97.tenshilib.common.utils.OrientedBoundingBox;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionContainer;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationsBuilder;
+import io.github.flemmli97.tenshilib.common.utils.math.OrientedBoundingBox;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
-import net.minecraft.util.random.WeightedEntry;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -41,89 +35,87 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector4f;
 
 import java.util.List;
-import java.util.UUID;
 
 public class EntityHeracles extends BaseServant {
 
     protected static final EntityDataAccessor<Integer> DEATH_COUNT = SynchedEntityData.defineId(EntityHeracles.class, EntityDataSerializers.INT);
 
-    private static final UUID DEATH_MOD = UUID.fromString("5f642c37-7ed0-409a-91a5-0095001eb6e3");
+    private static final ResourceLocation DEATH_MOD = Fate.modRes("heracles_death_modifier");
 
-    private static final AnimatedAction ONE_HAND_HEAVY_1 = AnimatedAction.builder(0.7, "one_hand_heavy_1").marker("attack", 0.6).build();
-    private static final AnimatedAction ONE_HAND_HEAVY_2 = AnimatedAction.builder(0.7, "one_hand_heavy_2").marker("attack", 0.52).build();
-    private static final AnimatedAction ONE_HAND_HEAVY_3 = AnimatedAction.builder(0.7, "one_hand_heavy_3").marker("attack", 0.52).build();
-    private static final AnimatedAction TWO_HAND_HEAVY_1 = AnimatedAction.builder(0.82, "two_hand_heavy_1").marker("attack", 0.72).build();
-    private static final AnimatedAction TWO_HAND_HEAVY_2 = AnimatedAction.builder(0.78, "two_hand_heavy_2").marker("attack", 0.6).build();
-    private static final AnimatedAction UPPER_CUT = AnimatedAction.builder(1.04, "upper_cut").marker("attack", 0.64).build();
-    private static final AnimatedAction JUMP = AnimatedAction.builder(0.8, "jump")
-            .marker("jump", 0.12).marker("attempt", 0.24).infinite().build();
-    private static final AnimatedAction JUMP_HIT = AnimatedAction.builder(0.32, "jump_hit")
-            .marker("attack", 0.12).infinite().build();
-    private static final AnimatedAction LAND = AnimatedAction.builder(0.44, "land").build();
+    public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
+    private static final String ONE_HAND_HEAVY_1 = BUILDER.add("one_hand_heavy_1", AnimationsBuilder.definition(0.7).marker("attack", 0.6));
+    private static final String ONE_HAND_HEAVY_2 = BUILDER.add("one_hand_heavy_2", AnimationsBuilder.definition(0.7).marker("attack", 0.52));
+    private static final String ONE_HAND_HEAVY_3 = BUILDER.add("one_hand_heavy_3", AnimationsBuilder.definition(0.7).marker("attack", 0.52));
+    private static final String TWO_HAND_HEAVY_1 = BUILDER.add("two_hand_heavy_1", AnimationsBuilder.definition(0.82).marker("attack", 0.72));
+    private static final String TWO_HAND_HEAVY_2 = BUILDER.add("two_hand_heavy_2", AnimationsBuilder.definition(0.78).marker("attack", 0.6));
+    private static final String UPPER_CUT = BUILDER.add("upper_cut", AnimationsBuilder.definition(1.04).marker("attack", 0.64));
+    private static final String JUMP = BUILDER.add("jump", AnimationsBuilder.definition(0.8)
+            .marker("jump", 0.12).marker("attempt", 0.24).infinite());
+    private static final String JUMP_HIT = BUILDER.add("jump_hit", AnimationsBuilder.definition(0.32)
+            .marker("attack", 0.12).infinite());
+    private static final String LAND = BUILDER.add("land", AnimationsBuilder.definition(0.44));
 
-    private static final AnimatedAction DEATH = AnimatedAction.builder(0.68, "death").infinite().build();
-    private static final AnimatedAction FAKE_DEATH = AnimatedAction.builder(5.92, "fake_death")
-            .marker("roar", 5.).build();
-    private static final AnimatedAction SUMMON = AnimatedAction.builder(2, "summon")
-            .marker("roar", 0.84).build();
-    private static final AnimatedAction[] ANIMS = {ONE_HAND_HEAVY_1, ONE_HAND_HEAVY_2, ONE_HAND_HEAVY_3, TWO_HAND_HEAVY_1, TWO_HAND_HEAVY_2, UPPER_CUT, JUMP, JUMP_HIT, LAND, DEATH, FAKE_DEATH, SUMMON};
+    private static final String DEATH = BUILDER.add("death", AnimationsBuilder.definition(0.68).infinite());
+    private static final String FAKE_DEATH = BUILDER.add("fake_death", AnimationsBuilder.definition(5.92)
+            .marker("roar", 5.));
+    private static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2)
+            .marker("roar", 0.84));
+    public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
 
-    public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityHeracles>>> ATTACKS = List.of(
-            WeightedEntry.wrap(new GoalAttackAction<EntityHeracles>(EntityHeracles.ONE_HAND_HEAVY_1)
-                    .cooldown(e -> e.getRandom().nextInt(20) + 15)
-                    .chain(GoalAttackAction.<EntityHeracles>chainBuilder(EntityHeracles.ONE_HAND_HEAVY_2, 2, 0.24f, 5)
-                            .or(EntityHeracles.ONE_HAND_HEAVY_3, 2, 0.24f, 5)
-                            .withChance(0.5f))
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 12),
-            WeightedEntry.wrap(new GoalAttackAction<EntityHeracles>(EntityHeracles.ONE_HAND_HEAVY_2)
-                    .cooldown(e -> e.getRandom().nextInt(20) + 15)
-                    .chain(GoalAttackAction.<EntityHeracles>chainBuilder(EntityHeracles.ONE_HAND_HEAVY_1, 2, 0.24f, 1)
-                            .or(EntityHeracles.TWO_HAND_HEAVY_1, 2, 0.28f, 1)
-                            .or(EntityHeracles.TWO_HAND_HEAVY_2, 2, 0.28f, 1)
-                            .chain(EntityHeracles.ONE_HAND_HEAVY_3, 2, 0.24f)
-                            .withChance(0.5f))
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 12),
-            WeightedEntry.wrap(new GoalAttackAction<EntityHeracles>(EntityHeracles.TWO_HAND_HEAVY_1)
-                    .cooldown(e -> e.getRandom().nextInt(20) + 15)
-                    .chain(GoalAttackAction.<EntityHeracles>chainBuilder(EntityHeracles.TWO_HAND_HEAVY_2, 2, 0.28f, 5)
-                            .or(EntityHeracles.TWO_HAND_HEAVY_2, 2, 0.28f, 2)
-                            .chain(EntityHeracles.ONE_HAND_HEAVY_2, 2, 0.24f)
-                            .withChance(0.5f))
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 12),
-            WeightedEntry.wrap(new GoalAttackAction<EntityHeracles>(EntityHeracles.JUMP)
-                    .cooldown(e -> e.getRandom().nextInt(30) + 15)
-                    .withCondition(((goal, target, previous) -> {
-                        if (target.getY() - goal.attacker.getY() > 4) {
-                            Vec3 pos = goal.attacker.position();
-                            Vec3 targetPos = target.position();
-                            Vec3 dir = targetPos.subtract(pos);
-                            HitResult hit = ProjectileUtil.getEntityHitResult(goal.attacker.level, goal.attacker, pos, targetPos, goal.attacker.getBoundingBox().expandTowards(dir),
-                                    e -> e == target);
-                            return hit != null;
-                        }
-                        return false;
-                    }))
-                    .prepare(() -> new WrappedRunner<>(new DoNothingRunner<>(true))), 10),
-            WeightedEntry.wrap(new GoalAttackAction<EntityHeracles>(EntityHeracles.UPPER_CUT)
-                    .cooldown(e -> e.getRandom().nextInt(30) + 20)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 5)
-    );
-    public static final List<WeightedEntry.Wrapper<IdleAction<EntityHeracles>>> IDLE_ACTIONS = List.of(
-            WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1.1, 0.5)), 6),
-            WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(1.1, 1, 6)), 4)
-    );
-
-    public final AnimatedAttackGoal<EntityHeracles> attack = new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS);
+//    public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityHeracles>>> ATTACKS = List.of(
+//            WeightedEntry.wrap(new GoalAttackAction<EntityHeracles>(EntityHeracles.ONE_HAND_HEAVY_1)
+//                    .cooldown(e -> e.getRandom().nextInt(20) + 15)
+//                    .chain(GoalAttackAction.<EntityHeracles>chainBuilder(EntityHeracles.ONE_HAND_HEAVY_2, 2, 0.24f, 5)
+//                            .or(EntityHeracles.ONE_HAND_HEAVY_3, 2, 0.24f, 5)
+//                            .withChance(0.5f))
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 12),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityHeracles>(EntityHeracles.ONE_HAND_HEAVY_2)
+//                    .cooldown(e -> e.getRandom().nextInt(20) + 15)
+//                    .chain(GoalAttackAction.<EntityHeracles>chainBuilder(EntityHeracles.ONE_HAND_HEAVY_1, 2, 0.24f, 1)
+//                            .or(EntityHeracles.TWO_HAND_HEAVY_1, 2, 0.28f, 1)
+//                            .or(EntityHeracles.TWO_HAND_HEAVY_2, 2, 0.28f, 1)
+//                            .chain(EntityHeracles.ONE_HAND_HEAVY_3, 2, 0.24f)
+//                            .withChance(0.5f))
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 12),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityHeracles>(EntityHeracles.TWO_HAND_HEAVY_1)
+//                    .cooldown(e -> e.getRandom().nextInt(20) + 15)
+//                    .chain(GoalAttackAction.<EntityHeracles>chainBuilder(EntityHeracles.TWO_HAND_HEAVY_2, 2, 0.28f, 5)
+//                            .or(EntityHeracles.TWO_HAND_HEAVY_2, 2, 0.28f, 2)
+//                            .chain(EntityHeracles.ONE_HAND_HEAVY_2, 2, 0.24f)
+//                            .withChance(0.5f))
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 12),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityHeracles>(EntityHeracles.JUMP)
+//                    .cooldown(e -> e.getRandom().nextInt(30) + 15)
+//                    .withCondition(((goal, target, previous) -> {
+//                        if (target.getY() - goal.attacker.getY() > 4) {
+//                            Vec3 pos = goal.attacker.position();
+//                            Vec3 targetPos = target.position();
+//                            Vec3 dir = targetPos.subtract(pos);
+//                            HitResult hit = ProjectileUtil.getEntityHitResult(goal.attacker.level, goal.attacker, pos, targetPos, goal.attacker.getBoundingBox().expandTowards(dir),
+//                                    e -> e == target);
+//                            return hit != null;
+//                        }
+//                        return false;
+//                    }))
+//                    .prepare(() -> new WrappedRunner<>(new DoNothingRunner<>(true))), 10),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityHeracles>(EntityHeracles.UPPER_CUT)
+//                    .cooldown(e -> e.getRandom().nextInt(30) + 20)
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 5)
+//    );
+//    public static final List<WeightedEntry.Wrapper<IdleAction<EntityHeracles>>> IDLE_ACTIONS = List.of(
+//            WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1.1, 0.5)), 6),
+//            WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(1.1, 1, 6)), 4)
+//    );
+//
+//    public final AnimatedAttackGoal<EntityHeracles> attack = new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS);
 
     private final AnimationHandler<EntityHeracles> animationHandler = new AnimationHandler<>(this, ANIMS).withChangeListener(anim -> {
         if (anim == null && this.getAnimationHandler().isCurrent(UPPER_CUT)) {
@@ -132,7 +124,7 @@ public class EntityHeracles extends BaseServant {
                 this.getAnimationHandler().setAnimation(JUMP);
                 return true;
             }
-        } else if (UPPER_CUT.is(anim)) {
+        } else if (anim != null && anim.is(UPPER_CUT)) {
             this.upperCutTarget = null;
         }
         return false;
@@ -148,18 +140,11 @@ public class EntityHeracles extends BaseServant {
 
     public EntityHeracles(EntityType<? extends BaseServant> entityType, Level level) {
         super(entityType, level);
-        if (!level.isClientSide)
-            this.goalSelector.addGoal(0, this.attack);
     }
 
     @Override
-    protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
+    protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty) {
         this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(FateItems.HERACLES_AXE.get()));
-    }
-
-    @Override
-    public Goal getAttackAI() {
-        return this.attack;
     }
 
     @Override
@@ -169,8 +154,8 @@ public class EntityHeracles extends BaseServant {
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        super.defineSynchedData();
-        this.entityData.define(DEATH_COUNT, 0);
+        super.defineSynchedData(builder);
+        builder.define(DEATH_COUNT, 0);
     }
 
     public void setDeathNumber(int death) {
@@ -185,7 +170,7 @@ public class EntityHeracles extends BaseServant {
     public void tick() {
         super.tick();
         if (!this.level().isClientSide) {
-            AnimatedAction anim = this.getAnimationHandler().getAnimation();
+            AnimationState anim = this.getAnimationHandler().getAnimation();
             if (anim != null && anim.isAt("roar")) {
                 this.playSound(FateSounds.HERACLES_ROAR.get(), 1, 1);
                 S2CScreenShake.sendAround(this, 24, 16, 2);
@@ -195,14 +180,14 @@ public class EntityHeracles extends BaseServant {
 
     @Override
     public boolean hurt(DamageSource damageSource, float damage) {
-        if (!damageSource.isBypassInvul() && (damage -= 3) < 0)
+        if (!damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && (damage -= 3) < 0)
             return false;
         return super.hurt(damageSource, damage);
     }
 
     @Override
     protected void tickDeath() {
-        if (this.getLastDamageSource() == DamageSource.OUT_OF_WORLD || this.getLastDamageSource() == CustomDamageSource.GRAIL_DAMAGE || this.voidDeath) {
+        if (this.getLastDamageSource() != null && this.getLastDamageSource().is(DamageTypeTags.BYPASSES_INVULNERABILITY) || this.voidDeath) {
             this.voidDeath = true;
             super.tickDeath();
         } else if (!this.level().isClientSide) {
@@ -212,8 +197,8 @@ public class EntityHeracles extends BaseServant {
                 if (this.deathTime == 1) {
                     this.getAnimationHandler().setAnimation(FAKE_DEATH);
                 }
-                AnimatedAction anim = this.getAnimationHandler().getAnimation();
-                if (anim == null || !anim.getID().equals(FAKE_DEATH.getID())) {
+                AnimationState anim = this.getAnimationHandler().getAnimation();
+                if (anim == null || !anim.is(FAKE_DEATH)) {
                     this.setDeathNumber(this.getDeaths() + 1);
                     double mod = ((double) this.getDeaths() / maxDeaths) * 0.7;
                     this.applyDeathMod(mod);
@@ -234,13 +219,13 @@ public class EntityHeracles extends BaseServant {
         AttributeInstance dmg = this.getAttribute(Attributes.ATTACK_DAMAGE);
         dmg.removeModifier(DEATH_MOD);
         if (mod != 0) {
-            att.addPermanentModifier(new AttributeModifier(DEATH_MOD, "fate.death.mod", -mod, AttributeModifier.Operation.MULTIPLY_TOTAL));
-            dmg.addPermanentModifier(new AttributeModifier(DEATH_MOD, "fate.death.mod", mod * 0.35, AttributeModifier.Operation.MULTIPLY_TOTAL));
+            att.addPermanentModifier(new AttributeModifier(DEATH_MOD, -mod, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+            dmg.addPermanentModifier(new AttributeModifier(DEATH_MOD, mod * 0.35, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
         }
     }
 
     @Override
-    public void handleAttack(AnimatedAction anim) {
+    public void handleAttack(AnimationState anim) {
         if (anim.is(UPPER_CUT)) {
             if (anim.isAt("attack")) {
                 Vec3 dir = Vec3.directionFromRotation(0, this.getYRot()).scale(2);
@@ -298,7 +283,7 @@ public class EntityHeracles extends BaseServant {
                     }
                 });
                 if (!this.hits.isEmpty()) {
-                    ((ServerLevel) this.level)
+                    ((ServerLevel) this.level())
                             .sendParticles(new RingParticleData(0.9f, 0.9f, 0.9f, 1, 1, this.getYRot(), 40, 3f), this.getX(), this.getY(), this.getZ(),
                                     0, 0, 0, 0, 1);
                 }
@@ -320,15 +305,15 @@ public class EntityHeracles extends BaseServant {
         }
     }
 
-    private void handleAirFall(AnimatedAction anim) {
+    private void handleAirFall(AnimationState anim) {
         this.fallDistance = 0;
         if (anim.done(0)) {
-            if (this.isOnGround()) {
+            if (this.onGround()) {
                 this.getAnimationHandler().setAnimation(LAND);
             }
         }
         // Stuck check. Or e.g. if in water
-        if (anim.isPast(6.0) && (!this.getFeetBlockState().is(Blocks.AIR) || !this.getBlockStateOn().is(Blocks.AIR))) {
+        if (anim.isPast(6.0) && (!this.getInBlockState().is(Blocks.AIR) || !this.getBlockStateOn().is(Blocks.AIR))) {
             this.getAnimationHandler().setAnimation(LAND);
         }
     }
@@ -339,7 +324,7 @@ public class EntityHeracles extends BaseServant {
         if (hurt) {
             if (this.lastHitTick != this.tickCount) {
                 S2CScreenShake.sendAround(this, 12, 8, 2);
-                this.playSound(SoundEvents.GENERIC_EXPLODE, 1, this.getRandom().nextFloat() * 0.2f + 0.9f);
+                this.playSound(SoundEvents.GENERIC_EXPLODE.value(), 1, this.getRandom().nextFloat() * 0.2f + 0.9f);
             }
             this.lastHitTick = this.tickCount;
         }
@@ -347,7 +332,7 @@ public class EntityHeracles extends BaseServant {
     }
 
     @Override
-    public AABB attackBB(AnimatedAction anim) {
+    public AABB attackBB(AnimationState anim) {
         if (anim.is(JUMP)) {
             double widthH = this.getBbWidth() * 0.5 + 1.3;
             double length = this.getBbWidth() + 2.5;
@@ -384,7 +369,7 @@ public class EntityHeracles extends BaseServant {
     }
 
     @Override
-    public AnimatedAction deathAnim() {
+    public String getDeathAnimation() {
         return DEATH;
     }
 
@@ -403,13 +388,13 @@ public class EntityHeracles extends BaseServant {
     }
 
     @Override
-    protected AnimatedAction getSummonAnimation() {
+    protected String getSummonAnimation() {
         return SUMMON;
     }
 
     @Override
-    public float getSummonProgress(float partialTicks) {
-        float prog = super.getSummonProgress(partialTicks);
+    public double getSummonProgress(float partialTicks) {
+        double prog = super.getSummonProgress(partialTicks);
         return prog >= 0 ? Mth.clamp(prog * 2, 0, 1) : prog;
     }
 

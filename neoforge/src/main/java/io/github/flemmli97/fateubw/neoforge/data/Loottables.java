@@ -1,19 +1,20 @@
 package io.github.flemmli97.fateubw.neoforge.data;
 
-import com.google.common.collect.ImmutableList;
-import com.mojang.datafixers.util.Pair;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.registry.FateBlocks;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
-import net.minecraft.advancements.critereon.EnchantmentPredicate;
-import net.minecraft.advancements.critereon.ItemPredicate;
-import net.minecraft.advancements.critereon.MinMaxBounds;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.loot.BlockLoot;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.WritableRegistry;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.data.loot.LootTableProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.data.loot.LootTableSubProvider;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
@@ -22,45 +23,43 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.ValidationContext;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.entries.LootPoolSingletonContainer;
-import net.minecraft.world.level.storage.loot.entries.LootTableReference;
+import net.minecraft.world.level.storage.loot.entries.NestedLootTable;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraft.world.level.storage.loot.predicates.MatchTool;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class Loottables extends LootTableProvider {
 
-    private final List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>>, LootContextParamSet>> loot = ImmutableList.of(Pair.of(EntityLoot::new, LootContextParamSets.ENTITY), Pair.of(BlockLootProvider::new, LootContextParamSets.BLOCK));
-
-    public Loottables(DataGenerator gen) {
-        super(gen);
+    public Loottables(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
+        super(output, Set.of(), List.of(
+                new SubProviderEntry(EntityLoot::new, LootContextParamSets.ENTITY),
+                new SubProviderEntry(BlockLoot::new, LootContextParamSets.BLOCK)
+        ), registries);
     }
 
     @Override
-    protected List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>>, LootContextParamSet>> getTables() {
-        return this.loot;
+    protected void validate(WritableRegistry<LootTable> writableregistry, ValidationContext validationcontext, ProblemReporter.Collector problemreporter$collector) {
     }
 
-    @Override
-    protected void validate(Map<ResourceLocation, LootTable> map, ValidationContext validationtracker) {
+    static class EntityLoot implements LootTableSubProvider {
 
-    }
+        protected final Map<ResourceKey<LootTable>, LootTable.Builder> lootTables = new HashMap<>();
 
-    static class EntityLoot implements Consumer<BiConsumer<ResourceLocation, LootTable.Builder>> {
+        protected final HolderLookup.Provider provider;
 
-        private final Map<ResourceLocation, LootTable.Builder> lootTables = new HashMap<>();
+        EntityLoot(HolderLookup.Provider provider) {
+            this.provider = provider;
+        }
 
         private void init() {
             this.registerLootTable(FateEntities.ARTHUR.get(), this.getDefault(FateItems.EXCALIBUR.get()));
@@ -90,39 +89,46 @@ public class Loottables extends LootTableProvider {
         }
 
         @Override
-        public void accept(BiConsumer<ResourceLocation, LootTable.Builder> cons) {
+        public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> output) {
             this.init();
-            this.lootTables.forEach(cons);
+            this.lootTables.forEach(output);
         }
     }
 
-    static class BlockLootProvider extends BlockLoot {
+    static class BlockLoot extends BlockLootSubProvider {
 
-        private final Map<ResourceLocation, LootTable.Builder> loots = new HashMap<>();
+        private final Map<ResourceKey<LootTable>, LootTable.Builder> loots = new HashMap<>();
 
-        private static final LootItemCondition.Builder SILK_TOUCH = MatchTool.toolMatches(ItemPredicate.Builder.item().hasEnchantment(new EnchantmentPredicate(Enchantments.SILK_TOUCH, MinMaxBounds.Ints.atLeast(1))));
-
-        @Override
-        public void accept(BiConsumer<ResourceLocation, LootTable.Builder> cons) {
-            this.dropSelf(FateBlocks.ALTAR.get());
-            this.add(FateBlocks.ARTIFACT_ORE.get(), drop -> createSingleItemTableWithSilkTouch(drop, FateItems.CHARM_NONE.get()));
-            this.add(FateBlocks.DEEP_SLATE_ARTIFACT_ORE.get(), drop -> createSingleItemTableWithSilkTouch(drop, FateItems.CHARM_NONE.get()));
-            ResourceLocation crystal = new ResourceLocation(Fate.MODID, "blocks/crystals");
-            this.registerLootTable(crystal, createLootPool(5, FateItems.CRYSTAL_YELLOW.get(), FateItems.CRYSTAL_GREEN.get(), FateItems.CRYSTAL_BLUE.get(), FateItems.CRYSTAL_BLACK.get(), FateItems.CRYSTAL_RED.get()));
-            this.add(FateBlocks.GEM_ORE.get(), drop -> createSilkTouchDispatchTable(drop, LootTableReference.lootTableReference(crystal)));
-            this.add(FateBlocks.DEEP_SLATE_GEM_ORE.get(), drop -> createSilkTouchDispatchTable(drop, LootTableReference.lootTableReference(crystal)));
-            this.loots.forEach(cons);
+        BlockLoot(HolderLookup.Provider registries) {
+            super(Set.of(), FeatureFlagSet.of(), registries);
         }
 
-        protected static LootTable.Builder createLootPool(int weight, ItemLike... items) {
+        @Override
+        protected void generate() {
+        }
+
+        @Override
+        public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> output) {
+            this.dropSelf(FateBlocks.ALTAR.get());
+            this.add(FateBlocks.ARTIFACT_ORE.get(), drop -> this.createSingleItemTableWithSilkTouch(drop, FateItems.CHARM_NONE.get()));
+            this.add(FateBlocks.DEEP_SLATE_ARTIFACT_ORE.get(), drop -> this.createSingleItemTableWithSilkTouch(drop, FateItems.CHARM_NONE.get()));
+            ResourceKey<LootTable> crystal = ResourceKey.create(Registries.LOOT_TABLE, Fate.modRes("blocks/crystals"));
+            this.registerLootTable(crystal, this.createLootPool(5, FateItems.CRYSTAL_YELLOW.get(), FateItems.CRYSTAL_GREEN.get(), FateItems.CRYSTAL_BLUE.get(), FateItems.CRYSTAL_BLACK.get(), FateItems.CRYSTAL_RED.get()));
+            this.add(FateBlocks.GEM_ORE.get(), drop -> this.createSilkTouchDispatchTable(drop, NestedLootTable.lootTableReference(crystal)));
+            this.add(FateBlocks.DEEP_SLATE_GEM_ORE.get(), drop -> this.createSilkTouchDispatchTable(drop, NestedLootTable.lootTableReference(crystal)));
+            this.loots.forEach(output);
+        }
+
+        protected LootTable.Builder createLootPool(int weight, ItemLike... items) {
             LootPool.Builder build = LootPool.lootPool().setRolls(ConstantValue.exactly(1));
             for (ItemLike item : items)
-                build.add(ore(weight, item));
+                build.add(this.ore(weight, item));
             return LootTable.lootTable().withPool(build);
         }
 
-        private static LootPoolSingletonContainer.Builder<?> ore(int weight, ItemLike item) {
-            return LootItem.lootTableItem(item).apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 3.0F))).apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE)).setWeight(weight);
+        private LootPoolSingletonContainer.Builder<?> ore(int weight, ItemLike item) {
+            return LootItem.lootTableItem(item).apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 3.0F)))
+                    .apply(ApplyBonusCount.addOreBonusCount(this.registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE))).setWeight(weight);
         }
 
         @Override
@@ -135,8 +141,8 @@ public class Loottables extends LootTableProvider {
             this.loots.put(block.getLootTable(), builder);
         }
 
-        protected void registerLootTable(ResourceLocation s, LootTable.Builder builder) {
-            this.loots.put(s, builder);
+        protected void registerLootTable(ResourceKey<LootTable> id, LootTable.Builder builder) {
+            this.loots.put(id, builder);
         }
     }
 }

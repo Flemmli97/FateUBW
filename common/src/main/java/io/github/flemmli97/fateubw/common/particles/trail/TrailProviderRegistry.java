@@ -43,5 +43,6 @@ public class TrailProviderRegistry {
     }
 
     public record TrailEntry<T extends TrailData>(Function<FriendlyByteBuf, T> decoder, MapCodec<T> codec) {
+
     }
 }

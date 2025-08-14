@@ -11,5 +11,4 @@ public interface PathNavigationEx {
      * Creates a path that contains the given positions along it in order.
      */
     Path fateubw$createPathFor(List<BlockPos> targets, int accuracy);
-
 }

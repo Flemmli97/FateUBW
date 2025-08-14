@@ -29,7 +29,7 @@ import java.util.function.Consumer;
 
 public class CommandGui extends Screen {
 
-    private final static ResourceLocation GUI_BACK_GROUND = new ResourceLocation(Fate.MODID, "textures/gui/command_gui_1.png");
+    private final static ResourceLocation GUI_BACK_GROUND = Fate.modRes("textures/gui/command_gui_1.png");
 
     private final Map<String, Component> translationCache = new HashMap<>();
 

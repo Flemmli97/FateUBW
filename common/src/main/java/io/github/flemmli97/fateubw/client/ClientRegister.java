@@ -1,15 +1,7 @@
 package io.github.flemmli97.fateubw.client;
 
 import io.github.flemmli97.fateubw.Fate;
-import io.github.flemmli97.fateubw.client.model.BaseServantModel;
-import io.github.flemmli97.fateubw.client.model.ModelEA;
-import io.github.flemmli97.fateubw.client.model.ModelGordiusWheel;
-import io.github.flemmli97.fateubw.client.model.ModelHassanClone;
-import io.github.flemmli97.fateubw.client.model.ModelHeracles;
-import io.github.flemmli97.fateubw.client.model.ModelMedea;
-import io.github.flemmli97.fateubw.client.model.ModelPegasus;
-import io.github.flemmli97.fateubw.client.model.ModelServant;
-import io.github.flemmli97.fateubw.client.model.ModelStarfishDemon;
+import io.github.flemmli97.fateubw.client.model.ServantModel;
 import io.github.flemmli97.fateubw.client.particles.RingParticle;
 import io.github.flemmli97.fateubw.client.particles.TrailParticle;
 import io.github.flemmli97.fateubw.client.render.RenderEmpty;
@@ -35,12 +27,8 @@ import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.tenshilib.client.particles.ColoredParticle;
-import io.github.flemmli97.tenshilib.platform.registry.RegistryEntrySupplier;
+import io.github.flemmli97.tenshilib.loader.registry.RegistryEntrySupplier;
 import net.minecraft.client.KeyMapping;
-import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.builders.CubeDeformation;
-import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.RenderType;
@@ -58,7 +46,6 @@ import org.lwjgl.glfw.GLFW;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class ClientRegister {
 
@@ -93,12 +80,11 @@ public class ClientRegister {
         registerServant(consumer, FateEntities.EMIYA);
         registerServant(consumer, FateEntities.GILGAMESH);
         registerServant(consumer, FateEntities.MEDEA);
-        consumer.register(FateEntities.MEDEA.get(), getServantRenderer(ModelMedea::new, ModelMedea.LAYER_LOCATION, servantTexture(FateEntities.MEDEA), 0.5f));
         registerServant(consumer, FateEntities.GILLES);
-        consumer.register(FateEntities.HERACLES.get(), getServantRenderer(ModelHeracles::new, ModelHeracles.LAYER_LOCATION, servantTexture(FateEntities.HERACLES), 1f));
+        registerServant(consumer, FateEntities.HERACLES, 1);
         registerServant(consumer, FateEntities.LANCELOT);
         registerServant(consumer, FateEntities.ISKANDER);
-        registerServant(consumer, FateEntities.MEDUSA, true);
+        registerServant(consumer, FateEntities.MEDUSA);
         registerServant(consumer, FateEntities.HASSAN);
         registerServant(consumer, FateEntities.SASAKI);
 
@@ -123,50 +109,40 @@ public class ClientRegister {
         consumer.register(FateEntities.MULTIPART.get(), EmptyRender::new);
     }
 
-    private static <T extends BaseServant, M extends BaseServantModel<T>> EntityRendererProvider<? super T> getServantRenderer(Function<ModelPart, M> model, ModelLayerLocation layerLocation, ResourceLocation texture, float shadow) {
-        return manager -> new ServantRenderer<>(manager, model.apply(manager.bakeLayer(layerLocation)), texture, shadow);
+    private static <T extends BaseServant> void registerServant(EntityRendererRegister consumer, RegistryEntrySupplier<EntityType<?>, EntityType<T>> reg) {
+        registerServant(consumer, reg, 0.5f);
     }
 
-    private static <T extends BaseServant> void registerServant(EntityRendererRegister consumer, RegistryEntrySupplier<EntityType<T>> reg) {
-        registerServant(consumer, reg, false);
+    private static <T extends BaseServant> void registerServant(EntityRendererRegister consumer, RegistryEntrySupplier<EntityType<?>, EntityType<T>> reg, float shadow) {
+        consumer.register(reg.get(), manager -> new ServantRenderer<>(manager, new ServantModel<>(servantLocation(reg)), servantTexture(reg), 0.5f));
     }
 
-    private static <T extends BaseServant> void registerServant(EntityRendererRegister consumer, RegistryEntrySupplier<EntityType<T>> reg, boolean slim) {
-        consumer.register(reg.get(), getServantRenderer(root -> new ModelServant<>(root, reg.getID().getPath()), slim ? ModelServant.LAYER_LOCATION_SLIM : ModelServant.LAYER_LOCATION, servantTexture(reg), 0.5f));
+    public static <T extends Entity> ResourceLocation servantLocation(RegistryEntrySupplier<EntityType<?>, EntityType<T>> reg) {
+        return Fate.modRes("/servant/" + reg.getID().getPath());
     }
 
-    public static <T extends Entity> ResourceLocation servantTexture(RegistryEntrySupplier<EntityType<T>> reg) {
-        return new ResourceLocation(Fate.MODID, "textures/entity/servant/" + reg.getID().getPath() + ".png");
+    public static <T extends Entity> ResourceLocation servantTexture(RegistryEntrySupplier<EntityType<?>, EntityType<T>> reg) {
+        return Fate.modRes("textures/entity/servant/" + reg.getID().getPath() + ".png");
     }
 
-    public static void layerRegister(BiConsumer<ModelLayerLocation, Supplier<LayerDefinition>> cons) {
-        cons.accept(ModelServant.LAYER_LOCATION, () -> ModelServant.createBodyLayer(new CubeDeformation(0), false));
-        cons.accept(ModelServant.LAYER_LOCATION_SLIM, () -> ModelServant.createBodyLayer(new CubeDeformation(0), true));
-        cons.accept(ModelHeracles.LAYER_LOCATION, ModelHeracles::createBodyLayer);
-        cons.accept(ModelMedea.LAYER_LOCATION, ModelMedea::createBodyLayer);
-        cons.accept(ModelGordiusWheel.LAYER_LOCATION, ModelGordiusWheel::createBodyLayer);
-        cons.accept(ModelHassanClone.LAYER_LOCATION, ModelHassanClone::createBodyLayer);
-        cons.accept(ModelStarfishDemon.LAYER_LOCATION, ModelStarfishDemon::createBodyLayer);
-        cons.accept(ModelPegasus.LAYER_LOCATION, ModelPegasus::createBodyLayer);
-
-        cons.accept(ModelEA.LAYER_LOCATION, ModelEA::createBodyLayer);
-    }
-
-    public static <T extends ParticleOptions> void registerParticles(PartileRegister consumer) {
+    public static void registerParticles(PartileRegister consumer) {
         consumer.register(FateParticles.LIGHT.get(), ColoredParticle.NoGravityParticleFactory::new);
         consumer.register(FateParticles.TRAIL.get(), TrailParticle.Factory::new);
         consumer.register(FateParticles.RING.get(), RingParticle.Factory::new);
     }
 
     public interface EntityRendererRegister {
+
         <T extends Entity> void register(EntityType<? extends T> type, EntityRendererProvider<T> provider);
     }
 
     public interface PartileRegister {
+
         <T extends ParticleOptions> void register(ParticleType<T> type, Function<SpriteSet, ParticleProvider<T>> provider);
     }
 
     public interface ItemModelPropsRegister {
+
         void register(Item item, ResourceLocation res, ClampedItemPropertyFunction function);
     }
 }

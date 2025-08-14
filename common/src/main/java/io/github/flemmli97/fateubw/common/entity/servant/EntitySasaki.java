@@ -1,7 +1,5 @@
 package io.github.flemmli97.fateubw.common.entity.servant;
 
-import com.mojang.math.Vector3f;
-import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
@@ -12,130 +10,123 @@ import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
-import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
-import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.AnimatedAttackGoal;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.GoalAttackAction;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.IdleAction;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.KeepDistanceRunner;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveAwayRunner;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTargetAttackRunner;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTargetRunner;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.WrappedRunner;
-import io.github.flemmli97.tenshilib.common.utils.OrientedBoundingBox;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionContainer;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationsBuilder;
+import io.github.flemmli97.tenshilib.common.utils.math.OrientedBoundingBox;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
-import net.minecraft.util.random.WeightedEntry;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-
-import java.util.List;
+import org.joml.Vector4f;
 
 public class EntitySasaki extends BaseServant {
 
-    public static final AnimatedAction TWO_HAND_1 = AnimatedAction.builder(0.78, "two_hand_1")
+    public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
+    public static final String TWO_HAND_1 = BUILDER.add("two_hand_1", AnimationsBuilder.definition(0.78)
             .marker("attack", 0.64).marker("step", 0.68)
-            .marker(EntityTrailProvider.TRAIL_START, 0.4).build();
-    public static final AnimatedAction TWO_HAND_2 = AnimatedAction.builder(0.7, "two_hand_2")
+            .marker(EntityTrailProvider.TRAIL_START, 0.4));
+    public static final String TWO_HAND_2 = BUILDER.add("two_hand_2", AnimationsBuilder.definition(0.7)
             .marker("attack", 0.56).marker("step", 0.6)
-            .marker(EntityTrailProvider.TRAIL_START, 0.36).build();
-    public static final AnimatedAction TWO_HAND_3 = AnimatedAction.builder(0.7, "two_hand_3")
+            .marker(EntityTrailProvider.TRAIL_START, 0.36));
+    public static final String TWO_HAND_3 = BUILDER.add("two_hand_3", AnimationsBuilder.definition(0.7)
             .marker("attack", 0.48).marker("step", 0.56)
-            .marker(EntityTrailProvider.TRAIL_START, 0.36).build();
-    public static final AnimatedAction TWO_HAND_4 = AnimatedAction.builder(0.7, "two_hand_4")
+            .marker(EntityTrailProvider.TRAIL_START, 0.36));
+    public static final String TWO_HAND_4 = BUILDER.add("two_hand_4", AnimationsBuilder.definition(0.7)
             .marker("attack", 0.48).marker("step", 0.56)
-            .marker(EntityTrailProvider.TRAIL_START, 0.36).build();
-    public static final AnimatedAction TWO_HAND_5 = AnimatedAction.builder(0.7, "two_hand_5")
+            .marker(EntityTrailProvider.TRAIL_START, 0.36));
+    public static final String TWO_HAND_5 = BUILDER.add("two_hand_5", AnimationsBuilder.definition(0.7)
             .marker("attack", 0.52).marker("step", 0.56)
-            .marker(EntityTrailProvider.TRAIL_START, 0.4).build();
-    public static final AnimatedAction TWO_HAND_6 = AnimatedAction.builder(0.7, "two_hand_6")
+            .marker(EntityTrailProvider.TRAIL_START, 0.4));
+    public static final String TWO_HAND_6 = BUILDER.add("two_hand_6", AnimationsBuilder.definition(0.7)
             .marker("attack", 0.56).marker("step", 0.6)
-            .marker(EntityTrailProvider.TRAIL_START, 0.4).build();
-    public static final AnimatedAction TWO_HAND_7 = AnimatedAction.builder(0.7, "two_hand_7")
+            .marker(EntityTrailProvider.TRAIL_START, 0.4));
+    public static final String TWO_HAND_7 = BUILDER.add("two_hand_7", AnimationsBuilder.definition(0.7)
             .marker("attack", 0.6).marker("step", 0.52)
-            .marker(EntityTrailProvider.TRAIL_START, 0.4).build();
-    public static final AnimatedAction ONE_HAND_1 = AnimatedAction.builder(0.62, "one_hand_1")
+            .marker(EntityTrailProvider.TRAIL_START, 0.4));
+    public static final String ONE_HAND_1 = BUILDER.add("one_hand_1", AnimationsBuilder.definition(0.62)
             .marker("attack", 0.44).marker("step", 0.48)
-            .marker(EntityTrailProvider.TRAIL_START, 0.32).build();
-    public static final AnimatedAction KATANA_1 = AnimatedAction.builder(0.78, "katana_1")
-            .marker("attack", 0.6).marker("step", 0.64).build();
+            .marker(EntityTrailProvider.TRAIL_START, 0.32));
+    public static final String KATANA_1 = BUILDER.add("katana_1", AnimationsBuilder.definition(0.78)
+            .marker("attack", 0.6).marker("step", 0.64));
 
-    private static final AnimatedAction TSUBAME_GAESHI = AnimatedAction.builder(2, "tsubame_gaeshi")
+    private static final String TSUBAME_GAESHI = BUILDER.add("tsubame_gaeshi", AnimationsBuilder.definition(2)
             .marker("attack_prepare", 1.2).marker("attack", 1.28)
-            .marker("particle", 1.24).build();
-    public static final AnimatedAction SUMMON = new AnimatedAction(4., "summon");
-    private static final AnimatedAction[] ANIMS = {TWO_HAND_1, TWO_HAND_2, TWO_HAND_3, TWO_HAND_4, TWO_HAND_5, TWO_HAND_6, TWO_HAND_7, ONE_HAND_1, KATANA_1, TSUBAME_GAESHI, SUMMON};
+            .marker("particle", 1.24));
+    public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(4.));
+    public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
 
-    public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntitySasaki>>> ATTACKS = List.of(
-            WeightedEntry.wrap(new GoalAttackAction<EntitySasaki>(EntitySasaki.TWO_HAND_1)
-                    .cooldown(e -> e.getRandom().nextInt(20) + 15)
-                    .chain(GoalAttackAction.<EntitySasaki>chainBuilder(EntitySasaki.TWO_HAND_2, 2, 0.24f, 1)
-                            .or(EntitySasaki.TWO_HAND_2, 2, 0.24f, 1).chain(EntitySasaki.TWO_HAND_1, 2, 0.24f)
-                            .or(EntitySasaki.TWO_HAND_2, 2, 0.24f, 1).chain(EntitySasaki.TWO_HAND_3, 2, 0.24f)
-                            .or(EntitySasaki.TWO_HAND_2, 2, 0.24f, 1).chain(EntitySasaki.TWO_HAND_5, 2, 0.24f)
-                            .or(EntitySasaki.TWO_HAND_2, 2, 0.24f, 1).chain(EntitySasaki.ONE_HAND_1, 2, 0.24f)
-                            .or(EntitySasaki.TWO_HAND_4, 2, 0.24f, 4)
-                            .or(EntitySasaki.TWO_HAND_4, 2, 0.24f, 1).chain(EntitySasaki.TWO_HAND_5, 2, 0.24f)
-                            .or(EntitySasaki.TWO_HAND_6, 2, 0.24f, 4)
-                            .withChance(0.5f))
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 10),
-            WeightedEntry.wrap(new GoalAttackAction<EntitySasaki>(EntitySasaki.TWO_HAND_2)
-                    .cooldown(e -> e.getRandom().nextInt(20) + 15)
-                    .chain(GoalAttackAction.<EntitySasaki>chainBuilder(EntitySasaki.TWO_HAND_1, 2, 0.24f, 1)
-                            .or(EntitySasaki.TWO_HAND_1, 2, 0.24f, 1).chain(EntitySasaki.TWO_HAND_2, 2, 0.24f)
-                            .or(EntitySasaki.TWO_HAND_1, 2, 0.24f, 1).chain(EntitySasaki.TWO_HAND_4, 2, 0.24f)
-                            .or(EntitySasaki.TWO_HAND_1, 2, 0.24f, 1).chain(EntitySasaki.TWO_HAND_6, 2, 0.24f)
-                            .or(EntitySasaki.TWO_HAND_3, 2, 0.24f, 4)
-                            .or(EntitySasaki.TWO_HAND_3, 2, 0.24f, 1).chain(EntitySasaki.TWO_HAND_6, 2, 0.24f)
-                            .or(EntitySasaki.TWO_HAND_5, 2, 0.24f, 4)
-                            .withChance(0.5f))
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 10),
-            WeightedEntry.wrap(new GoalAttackAction<EntitySasaki>(EntitySasaki.TWO_HAND_3)
-                    .cooldown(e -> e.getRandom().nextInt(20) + 15)
-                    .chain(GoalAttackAction.<EntitySasaki>chainBuilder(EntitySasaki.TWO_HAND_6, 2, 0.24f, 1)
-                            .chain(EntitySasaki.TWO_HAND_2, 2, 0.24f)
-                            .or(EntitySasaki.TWO_HAND_6, 2, 0.24f, 4)
-                            .withChance(0.6f))
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 10),
-            WeightedEntry.wrap(new GoalAttackAction<EntitySasaki>(EntitySasaki.TWO_HAND_4)
-                    .cooldown(e -> e.getRandom().nextInt(20) + 15)
-                    .chain(GoalAttackAction.<EntitySasaki>chainBuilder(EntitySasaki.TWO_HAND_5, 2, 0.24f, 1)
-                            .chain(EntitySasaki.TWO_HAND_1, 2, 0.24f)
-                            .or(EntitySasaki.TWO_HAND_5, 2, 0.24f, 4)
-                            .withChance(0.6f))
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 10),
-            WeightedEntry.wrap(new GoalAttackAction<EntitySasaki>(EntitySasaki.TWO_HAND_7)
-                    .cooldown(e -> e.getRandom().nextInt(20) + 15)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 10),
-            WeightedEntry.wrap(new GoalAttackAction<EntitySasaki>(EntitySasaki.KATANA_1)
-                    .cooldown(e -> e.getRandom().nextInt(20) + 15)
-                    .chain(GoalAttackAction.<EntitySasaki>chainBuilder(EntitySasaki.TWO_HAND_5, 2, 0.24f, 2)
-                            .or(EntitySasaki.ONE_HAND_1, 2, 0.24f, 1)
-                            .withChance(0.7f))
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 10),
-            WeightedEntry.wrap(new GoalAttackAction<EntitySasaki>(EntitySasaki.TSUBAME_GAESHI)
-                    .cooldown(e -> e.getRandom().nextInt(25) + 20)
-                    .withCondition(Utils.npCheck())
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(4, 8, 1.2))), 25)
-    );
-    public static final List<WeightedEntry.Wrapper<IdleAction<EntitySasaki>>> IDLE_ACTIONS = List.of(
-            WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1, 0.5)), 5),
-            WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(1, 1.1, 6)), 3)
-    );
-
-    public final AnimatedAttackGoal<EntitySasaki> attack = new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS);
+//    public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntitySasaki>>> ATTACKS = List.of(
+//            WeightedEntry.wrap(new GoalAttackAction<EntitySasaki>(EntitySasaki.TWO_HAND_1)
+//                    .cooldown(e -> e.getRandom().nextInt(20) + 15)
+//                    .chain(GoalAttackAction.<EntitySasaki>chainBuilder(EntitySasaki.TWO_HAND_2, 2, 0.24f, 1)
+//                            .or(EntitySasaki.TWO_HAND_2, 2, 0.24f, 1).chain(EntitySasaki.TWO_HAND_1, 2, 0.24f)
+//                            .or(EntitySasaki.TWO_HAND_2, 2, 0.24f, 1).chain(EntitySasaki.TWO_HAND_3, 2, 0.24f)
+//                            .or(EntitySasaki.TWO_HAND_2, 2, 0.24f, 1).chain(EntitySasaki.TWO_HAND_5, 2, 0.24f)
+//                            .or(EntitySasaki.TWO_HAND_2, 2, 0.24f, 1).chain(EntitySasaki.ONE_HAND_1, 2, 0.24f)
+//                            .or(EntitySasaki.TWO_HAND_4, 2, 0.24f, 4)
+//                            .or(EntitySasaki.TWO_HAND_4, 2, 0.24f, 1).chain(EntitySasaki.TWO_HAND_5, 2, 0.24f)
+//                            .or(EntitySasaki.TWO_HAND_6, 2, 0.24f, 4)
+//                            .withChance(0.5f))
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 10),
+//            WeightedEntry.wrap(new GoalAttackAction<EntitySasaki>(EntitySasaki.TWO_HAND_2)
+//                    .cooldown(e -> e.getRandom().nextInt(20) + 15)
+//                    .chain(GoalAttackAction.<EntitySasaki>chainBuilder(EntitySasaki.TWO_HAND_1, 2, 0.24f, 1)
+//                            .or(EntitySasaki.TWO_HAND_1, 2, 0.24f, 1).chain(EntitySasaki.TWO_HAND_2, 2, 0.24f)
+//                            .or(EntitySasaki.TWO_HAND_1, 2, 0.24f, 1).chain(EntitySasaki.TWO_HAND_4, 2, 0.24f)
+//                            .or(EntitySasaki.TWO_HAND_1, 2, 0.24f, 1).chain(EntitySasaki.TWO_HAND_6, 2, 0.24f)
+//                            .or(EntitySasaki.TWO_HAND_3, 2, 0.24f, 4)
+//                            .or(EntitySasaki.TWO_HAND_3, 2, 0.24f, 1).chain(EntitySasaki.TWO_HAND_6, 2, 0.24f)
+//                            .or(EntitySasaki.TWO_HAND_5, 2, 0.24f, 4)
+//                            .withChance(0.5f))
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 10),
+//            WeightedEntry.wrap(new GoalAttackAction<EntitySasaki>(EntitySasaki.TWO_HAND_3)
+//                    .cooldown(e -> e.getRandom().nextInt(20) + 15)
+//                    .chain(GoalAttackAction.<EntitySasaki>chainBuilder(EntitySasaki.TWO_HAND_6, 2, 0.24f, 1)
+//                            .chain(EntitySasaki.TWO_HAND_2, 2, 0.24f)
+//                            .or(EntitySasaki.TWO_HAND_6, 2, 0.24f, 4)
+//                            .withChance(0.6f))
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 10),
+//            WeightedEntry.wrap(new GoalAttackAction<EntitySasaki>(EntitySasaki.TWO_HAND_4)
+//                    .cooldown(e -> e.getRandom().nextInt(20) + 15)
+//                    .chain(GoalAttackAction.<EntitySasaki>chainBuilder(EntitySasaki.TWO_HAND_5, 2, 0.24f, 1)
+//                            .chain(EntitySasaki.TWO_HAND_1, 2, 0.24f)
+//                            .or(EntitySasaki.TWO_HAND_5, 2, 0.24f, 4)
+//                            .withChance(0.6f))
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 10),
+//            WeightedEntry.wrap(new GoalAttackAction<EntitySasaki>(EntitySasaki.TWO_HAND_7)
+//                    .cooldown(e -> e.getRandom().nextInt(20) + 15)
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 10),
+//            WeightedEntry.wrap(new GoalAttackAction<EntitySasaki>(EntitySasaki.KATANA_1)
+//                    .cooldown(e -> e.getRandom().nextInt(20) + 15)
+//                    .chain(GoalAttackAction.<EntitySasaki>chainBuilder(EntitySasaki.TWO_HAND_5, 2, 0.24f, 2)
+//                            .or(EntitySasaki.ONE_HAND_1, 2, 0.24f, 1)
+//                            .withChance(0.7f))
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 10),
+//            WeightedEntry.wrap(new GoalAttackAction<EntitySasaki>(EntitySasaki.TSUBAME_GAESHI)
+//                    .cooldown(e -> e.getRandom().nextInt(25) + 20)
+//                    .withCondition(Utils.npCheck())
+//                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(4, 8, 1.2))), 25)
+//    );
+//    public static final List<WeightedEntry.Wrapper<IdleAction<EntitySasaki>>> IDLE_ACTIONS = List.of(
+//            WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1, 0.5)), 5),
+//            WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(1, 1.1, 6)), 3)
+//    );
+//
+//    public final AnimatedAttackGoal<EntitySasaki> attack = new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS);
 
     private final AnimationHandler<EntitySasaki> animationHandler = new AnimationHandler<>(this, ANIMS);
 
@@ -144,18 +135,11 @@ public class EntitySasaki extends BaseServant {
 
     public EntitySasaki(EntityType<? extends BaseServant> entityType, Level level) {
         super(entityType, level);
-        if (!level.isClientSide)
-            this.goalSelector.addGoal(0, this.attack);
     }
 
     @Override
-    protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
+    protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty) {
         this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(FateItems.MONOHOSHI_ZAO.get()));
-    }
-
-    @Override
-    public Goal getAttackAI() {
-        return this.attack;
     }
 
     @Override
@@ -173,15 +157,15 @@ public class EntitySasaki extends BaseServant {
 
     @Override
     public boolean hurt(DamageSource damageSource, float damage) {
-        AnimatedAction anim = this.getAnimationHandler().getAnimation();
-        return !(TSUBAME_GAESHI.is(anim) && anim.isBetween(0.8, 1.64)) && super.hurt(damageSource, damage);
+        AnimationState anim = this.getAnimationHandler().getAnimation();
+        return anim != null && !(anim.is(TSUBAME_GAESHI) && anim.isBetween(0.8, 1.64)) && super.hurt(damageSource, damage);
     }
 
     @Override
     public void tick() {
         super.tick();
         if (this.level().isClientSide) {
-            AnimatedAction anim = this.getAnimationHandler().getAnimation();
+            AnimationState anim = this.getAnimationHandler().getAnimation();
             if (anim != null) {
                 if (anim.isAt(EntityTrailProvider.TRAIL_START)) {
                     this.level().addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
@@ -239,7 +223,7 @@ public class EntitySasaki extends BaseServant {
     }
 
     @Override
-    public void handleAttack(AnimatedAction anim) {
+    public void handleAttack(AnimationState anim) {
         if (anim.is(TSUBAME_GAESHI)) {
             if (!anim.isPast("attack_prepare")) {
                 if (this.getTarget() != null) {
@@ -294,7 +278,7 @@ public class EntitySasaki extends BaseServant {
     }
 
     @Override
-    public AABB attackBB(AnimatedAction anim) {
+    public AABB attackBB(AnimationState anim) {
         double width = this.getBbWidth() + 0.3;
         double length = 1;
         if (anim.is(TWO_HAND_1, TWO_HAND_2, TWO_HAND_3, TWO_HAND_4)) {
@@ -324,24 +308,24 @@ public class EntitySasaki extends BaseServant {
 
     @Override
     protected DamageSource damageSourceAttack(Entity target) {
-        return this.hiken ? FateDamageTypes.direct(FateDamageTypes.TSUBAME, this) : DamageSource.mobAttack(this);
+        return this.hiken ? FateDamageTypes.direct(FateDamageTypes.TSUBAME, this) : super.damageSourceAttack(target);
     }
 
     @Override
-    public float getSummonProgress(float partialTicks) {
-        float prog = super.getSummonProgress(partialTicks);
+    public double getSummonProgress(float partialTicks) {
+        double prog = super.getSummonProgress(partialTicks);
         return prog >= 0 ? Mth.clamp(prog * 2, 0, 1) : prog;
     }
 
     @Override
-    protected AnimatedAction getSummonAnimation() {
+    protected String getSummonAnimation() {
         return SUMMON;
     }
 
     @Override
     public Vector4f[] weaponTrailEdge(boolean left) {
         Vector4f[] edge = super.weaponTrailEdge(left);
-        edge[1].mul(new Vector3f(2, 2, 2));
+        edge[1].mul(new Vector4f(2, 2, 2, 1));
         return edge;
     }
 }

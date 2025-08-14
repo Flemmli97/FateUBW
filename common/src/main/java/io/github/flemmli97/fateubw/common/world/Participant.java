@@ -117,5 +117,6 @@ public class Participant {
     }
 
     private record ParticipantId(UUID participant, UUID servant) {
+
     }
 }

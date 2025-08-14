@@ -68,6 +68,7 @@ public class BabylonWeapon extends BaseProjectile {
         this(level, shootingEntity);
         this.target = target;
     }
+
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);

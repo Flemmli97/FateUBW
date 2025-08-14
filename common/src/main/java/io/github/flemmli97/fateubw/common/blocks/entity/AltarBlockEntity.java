@@ -1,6 +1,5 @@
 package io.github.flemmli97.fateubw.common.blocks.entity;
 
-import io.github.flemmli97.fateubw.common.blocks.AltarBlock;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.network.S2CAltarUpdate;
 import io.github.flemmli97.fateubw.common.registry.FateBlocks;
@@ -56,7 +55,7 @@ public class AltarBlockEntity extends BlockEntity {
                             altar.servant.lookAt(EntityAnchorArgument.Anchor.EYES, altar.servant.getOwner().position());
                         level.addFreshEntity(altar.servant);
                     }
-                    AltarBlock.removeSummoningStructure(level, pos);
+                    level.destroyBlock(pos, false);
                 }
             }
         } else {
@@ -187,7 +186,7 @@ public class AltarBlockEntity extends BlockEntity {
             if (servant != null) {
                 this.isSummoning = true;
                 LoaderNetwork.INSTANCE.sendToTracking(new S2CAltarUpdate(this.getBlockPos(), this.isSummoning), serverPlayer.serverLevel(), new ChunkPos(this.getBlockPos()));
-                Platform.INSTANCE.getPlayerData(serverPlayer).ifPresent(data -> data.setCommandSeals(serverPlayer, 3));
+                Platform.INSTANCE.getPlayerData(serverPlayer).setCommandSeals(serverPlayer, 3);
                 this.servant = servant;
                 return true;
             }

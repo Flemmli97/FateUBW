@@ -8,11 +8,8 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
-import com.mojang.math.Vector3f;
-import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.mixin.RenderTypeAccessor;
-import io.github.flemmli97.tenshilib.client.CustomRenderTypesHelper;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.minecraft.Util;
 import net.minecraft.client.Camera;
@@ -23,6 +20,8 @@ import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import java.io.IOException;
 import java.util.function.Consumer;
@@ -51,7 +50,7 @@ public class FateRenders extends RenderType {
         RenderSystem.defaultBlendFunc();
     });
 
-    public static final ResourceLocation CORRUPTED_TEXTURE = new ResourceLocation(Fate.MODID, "textures/misc/corrupted_overlay.png");
+    public static final ResourceLocation CORRUPTED_TEXTURE = Fate.modRes("textures/misc/corrupted_overlay.png");
 
     public static final VertexFormat POSITION_COLOR_TEX_TIME = new VertexFormat(ImmutableMap.<String, VertexFormatElement>builder()
             .put("Position", DefaultVertexFormat.ELEMENT_POSITION)
@@ -98,15 +97,15 @@ public class FateRenders extends RenderType {
 
     public static void registerShader(ShaderRegister register) {
         try {
-            register.register(new ResourceLocation(Fate.MODID, "rendertype_corrupted"), DefaultVertexFormat.POSITION_TEX,
+            register.register(Fate.modRes("rendertype_corrupted"), DefaultVertexFormat.POSITION_TEX,
                     shaderInstance -> FateRenders.CORRUPTED_SHADER_INSTANCE = shaderInstance);
-            register.register(new ResourceLocation(Fate.MODID, "rendertype_clipped"), DefaultVertexFormat.NEW_ENTITY,
+            register.register(Fate.modRes("rendertype_clipped"), DefaultVertexFormat.NEW_ENTITY,
                     shaderInstance -> FateRenders.CLIPPED_SHADER_INSTANCE = shaderInstance);
-            register.register(new ResourceLocation(Fate.MODID, "pulsing_entity_text"), DefaultVertexFormat.NEW_ENTITY,
+            register.register(Fate.modRes("pulsing_entity_text"), DefaultVertexFormat.NEW_ENTITY,
                     shaderInstance -> FateRenders.PULSING_TEXT_SHADER = shaderInstance);
-            register.register(new ResourceLocation(Fate.MODID, "babylon"), POSITION_COLOR_TEX_TIME,
+            register.register(Fate.modRes("babylon"), POSITION_COLOR_TEX_TIME,
                     shaderInstance -> FateRenders.BABYLON_SHADER_INSTANCE = shaderInstance);
-            register.register(new ResourceLocation(Fate.MODID, "particle_color_add"), DefaultVertexFormat.PARTICLE,
+            register.register(Fate.modRes("particle_color_add"), DefaultVertexFormat.PARTICLE,
                     shaderInstance -> FateRenders.PARTICLE_COLOR_ADD_SHADER_INSTANCE = shaderInstance);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -156,6 +155,5 @@ public class FateRenders extends RenderType {
     public interface ClipRenderFactory {
 
         RenderType get(RenderType wrapped, Vector4f plane, Vector4f color, float width);
-
     }
 }

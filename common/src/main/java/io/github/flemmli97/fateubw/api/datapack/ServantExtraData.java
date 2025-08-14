@@ -122,5 +122,4 @@ public class ServantExtraData {
             return this.id.toString();
         }
     }
-
 }

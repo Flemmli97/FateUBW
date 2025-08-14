@@ -2,9 +2,7 @@ package io.github.flemmli97.fateubw.client.render.misc;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.entity.misc.ChainDagger;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
@@ -22,8 +20,8 @@ import net.minecraft.world.phys.Vec3;
 
 public class RenderChainDagger extends EntityRenderer<ChainDagger> {
 
-    public static final ResourceLocation TEX = new ResourceLocation(Fate.MODID, "textures/entity/chain_dagger_tip.png");
-    public static final ResourceLocation CHAIN = new ResourceLocation(Fate.MODID, "textures/entity/chain.png");
+    public static final ResourceLocation TEX = Fate.modRes("textures/entity/chain_dagger_tip.png");
+    public static final ResourceLocation CHAIN = Fate.modRes("textures/entity/chain.png");
 
     private static final RenderType RENDER_TYPE = RenderType.entityCutout(TEX);
     private static final RenderType CHAIN_RENDER = RenderType.entityCutout(CHAIN);
@@ -36,29 +34,25 @@ public class RenderChainDagger extends EntityRenderer<ChainDagger> {
     public void render(ChainDagger entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
         Entity owner = entity.getOwner();
         poseStack.pushPose();
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(partialTicks, entity.yRotO, entity.getYRot()) - 90.0F));
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(Mth.lerp(partialTicks, entity.xRotO, entity.getXRot())));
+        poseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, entity.yRotO, entity.getYRot()) - 90.0F));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(partialTicks, entity.xRotO, entity.getXRot())));
         if (entity.retracting())
-            poseStack.mulPose(Vector3f.YP.rotationDegrees(180));
+            poseStack.mulPose(Axis.YP.rotationDegrees(180));
         VertexConsumer vertexConsumer = buffer.getBuffer(RENDER_TYPE);
         PoseStack.Pose pose = poseStack.last();
-        Matrix4f matrix4f = pose.pose();
-        Matrix3f matrix3f = pose.normal();
 
         poseStack.translate(0.05D, 0.15D, 0.0D);
         for (int r = 0; r < 4; ++r) {
-            poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
-            this.vertex(matrix4f, matrix3f, vertexConsumer, -0.25f, -0.25f, 0, 0.0F, 0.0F, 0, 1, 0, packedLight);
-            this.vertex(matrix4f, matrix3f, vertexConsumer, 0.25f, -0.25f, 0, 1, 0.0F, 0, 1, 0, packedLight);
-            this.vertex(matrix4f, matrix3f, vertexConsumer, 0.25f, 0.25f, 0, 1, 1, 0, 1, 0, packedLight);
-            this.vertex(matrix4f, matrix3f, vertexConsumer, -0.25f, 0.25f, 0, 0.0F, 1, 0, 1, 0, packedLight);
+            poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
+            this.vertex(pose, vertexConsumer, -0.25f, -0.25f, 0, 0.0F, 0.0F, 0, 1, 0, packedLight);
+            this.vertex(pose, vertexConsumer, 0.25f, -0.25f, 0, 1, 0.0F, 0, 1, 0, packedLight);
+            this.vertex(pose, vertexConsumer, 0.25f, 0.25f, 0, 1, 1, 0, 1, 0, packedLight);
+            this.vertex(pose, vertexConsumer, -0.25f, 0.25f, 0, 0.0F, 1, 0, 1, 0, packedLight);
         }
         poseStack.popPose();
         poseStack.pushPose();
         if (owner instanceof LivingEntity living) {
             pose = poseStack.last();
-            matrix4f = pose.pose();
-            matrix3f = pose.normal();
             int i = entity.fromMainHand() ? 1 : -1;
             if (i == 1 && living.getMainHandItem().isEmpty() && living.getOffhandItem().getItem() == FateItems.MEDUSA_DAGGER.get())
                 i = -1;
@@ -69,7 +63,7 @@ public class RenderChainDagger extends EntityRenderer<ChainDagger> {
             float zOffset;
             if ((this.entityRenderDispatcher.options == null || this.entityRenderDispatcher.options.getCameraType().isFirstPerson()) && living == Minecraft.getInstance().player) {
                 Vec3 vec3 = this.entityRenderDispatcher.camera.getNearPlane().getPointOnPlane((float) i * 0.8F, -0.2F);
-                vec3 = vec3.scale(960.0D / this.entityRenderDispatcher.options.fov);
+                vec3 = vec3.scale(960.0D / this.entityRenderDispatcher.options.fov().get());
                 float attackAnim = living.getAttackAnim(partialTicks);
                 float g = Mth.sin(Mth.sqrt(attackAnim) * Mth.PI);
                 vec3 = vec3.yRot(g * 0.5F);
@@ -100,8 +94,8 @@ public class RenderChainDagger extends EntityRenderer<ChainDagger> {
             float lenHorizontal = Mth.sqrt(dX * dX + dZ * dZ);
             float pitch = Mth.wrapDegrees((float) (-(Mth.atan2(dY, lenHorizontal) * Mth.RAD_TO_DEG)));
             float yaw = -Mth.wrapDegrees((float) (Mth.atan2(dZ, dX) * Mth.RAD_TO_DEG) - 180);
-            poseStack.mulPose(Vector3f.YP.rotationDegrees(yaw));
-            poseStack.mulPose(Vector3f.ZP.rotationDegrees(pitch));
+            poseStack.mulPose(Axis.YP.rotationDegrees(yaw));
+            poseStack.mulPose(Axis.ZP.rotationDegrees(pitch));
             poseStack.translate(-entity.getBbWidth() * 0.5, entity.getBbHeight() * 0.5, 0);
 
             float seg = Mth.sqrt(dX * dX + dY * dY + dZ * dZ) + living.getBbWidth() * 0.5f;
@@ -111,11 +105,11 @@ public class RenderChainDagger extends EntityRenderer<ChainDagger> {
             vertexConsumer = buffer.getBuffer(CHAIN_RENDER);
             for (int w = 0; w <= amount - 2; ++w) {
                 for (int r = 0; r < 4; ++r) {
-                    poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
-                    this.vertex(matrix4f, matrix3f, vertexConsumer, -0.4f - seg * (w + 1), -0.25f, 0, 0.0F, 0.0F, 0, 1, 0, packedLight);
-                    this.vertex(matrix4f, matrix3f, vertexConsumer, 0.1f - seg * w, -0.25f, 0, 1, 0.0F, 0, 1, 0, packedLight);
-                    this.vertex(matrix4f, matrix3f, vertexConsumer, 0.1f - seg * w, 0.25f, 0, 1, 1, 0, 1, 0, packedLight);
-                    this.vertex(matrix4f, matrix3f, vertexConsumer, -0.4f - seg * (w + 1), 0.25f, 0, 0.0F, 1, 0, 1, 0, packedLight);
+                    poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
+                    this.vertex(pose, vertexConsumer, -0.4f - seg * (w + 1), -0.25f, 0, 0.0F, 0.0F, 0, 1, 0, packedLight);
+                    this.vertex(pose, vertexConsumer, 0.1f - seg * w, -0.25f, 0, 1, 0.0F, 0, 1, 0, packedLight);
+                    this.vertex(pose, vertexConsumer, 0.1f - seg * w, 0.25f, 0, 1, 1, 0, 1, 0, packedLight);
+                    this.vertex(pose, vertexConsumer, -0.4f - seg * (w + 1), 0.25f, 0, 0.0F, 1, 0, 1, 0, packedLight);
                 }
             }
         }
@@ -124,8 +118,8 @@ public class RenderChainDagger extends EntityRenderer<ChainDagger> {
         super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
     }
 
-    public void vertex(Matrix4f matrix, Matrix3f normals, VertexConsumer vertexBuilder, float x, float y, float z, float textureX, float textureY, float normalX, float normalY, float normalZ, int packedLight) {
-        vertexBuilder.vertex(matrix, x, y, z).color(255, 255, 255, 255).uv(textureX, textureY).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(packedLight).normal(normals, normalX, normalZ, normalY).endVertex();
+    public void vertex(PoseStack.Pose pose, VertexConsumer vertexBuilder, float x, float y, float z, float textureX, float textureY, float normalX, float normalY, float normalZ, int packedLight) {
+        vertexBuilder.addVertex(pose, x, y, z).setColor(255, 255, 255, 255).setUv(textureX, textureY).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(pose, normalX, normalZ, normalY);
     }
 
     @Override

@@ -1,25 +1,17 @@
 package io.github.flemmli97.fateubw.common.entity.servant;
 
-
-import com.mojang.math.Vector4f;
-import io.github.flemmli97.fateubw.common.entity.StandingVehicle;
 import io.github.flemmli97.fateubw.common.entity.summons.GordiusWheel;
+import io.github.flemmli97.fateubw.common.entity.utils.StandingVehicle;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.utils.Utils;
-import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
-import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.AnimatedAttackGoal;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.GoalAttackAction;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.IdleAction;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.KeepDistanceRunner;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveAwayRunner;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTargetAttackRunner;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTargetRunner;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.RandomMoveAroundRunner;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.WrappedRunner;
-import io.github.flemmli97.tenshilib.common.utils.OrientedBoundingBox;
-import net.minecraft.util.random.WeightedEntry;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionContainer;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationsBuilder;
+import io.github.flemmli97.tenshilib.common.utils.math.OrientedBoundingBox;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -28,79 +20,78 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.animal.horse.Horse;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-
-import java.util.List;
+import org.joml.Vector4f;
 
 public class EntityIskander extends BaseServant {
 
-    public static final AnimatedAction ONE_HAND_1 = AnimatedAction.builder(0.62, "one_hand_1")
-            .marker("attack", 0.48).marker("step", 0.44).build();
-    public static final AnimatedAction ONE_HAND_2 = AnimatedAction.builder(0.62, "one_hand_2")
-            .marker("attack", 0.4).marker("step", 0.44).build();
-    public static final AnimatedAction ONE_HAND_3 = AnimatedAction.builder(0.58, "one_hand_3")
-            .marker("attack", 0.44).marker("step", 0.44).build();
-    public static final AnimatedAction ONE_HAND_4 = AnimatedAction.builder(0.54, "one_hand_4")
-            .marker("attack", 0.44).marker("step", 0.4).build();
-    public static final AnimatedAction ONE_HAND_5 = AnimatedAction.builder(0.58, "one_hand_5")
-            .marker("attack", 0.4).marker("step", 0.4).build();
-    public static final AnimatedAction ONE_HAND_6 = AnimatedAction.builder(0.58, "one_hand_6")
-            .marker("attack", 0.48).marker("step", 0.44).build();
-    public static final AnimatedAction ONE_HAND_7 = AnimatedAction.builder(0.58, "one_hand_7")
-            .marker("attack", 0.48).marker("step", 0.4).build();
+    public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
+    public static final String ONE_HAND_1 = BUILDER.add("one_hand_1", AnimationsBuilder.definition(0.62)
+            .marker("attack", 0.48).marker("step", 0.44));
+    public static final String ONE_HAND_2 = BUILDER.add("one_hand_2", AnimationsBuilder.definition(0.62)
+            .marker("attack", 0.4).marker("step", 0.44));
+    public static final String ONE_HAND_3 = BUILDER.add("one_hand_3", AnimationsBuilder.definition(0.58)
+            .marker("attack", 0.44).marker("step", 0.44));
+    public static final String ONE_HAND_4 = BUILDER.add("one_hand_4", AnimationsBuilder.definition(0.54)
+            .marker("attack", 0.44).marker("step", 0.4));
+    public static final String ONE_HAND_5 = BUILDER.add("one_hand_5", AnimationsBuilder.definition(0.58)
+            .marker("attack", 0.4).marker("step", 0.4));
+    public static final String ONE_HAND_6 = BUILDER.add("one_hand_6", AnimationsBuilder.definition(0.58)
+            .marker("attack", 0.48).marker("step", 0.44));
+    public static final String ONE_HAND_7 = BUILDER.add("one_hand_7", AnimationsBuilder.definition(0.58)
+            .marker("attack", 0.48).marker("step", 0.4));
 
-    private static final AnimatedAction CHARIOT = AnimatedAction.builder(1.64, "chariot_summon").marker("attack", 0.68).build();
-    private static final AnimatedAction SUMMON_HORSE = AnimatedAction.copyOf(CHARIOT, "horse");
-    public static final AnimatedAction SUMMON = AnimatedAction.builder(2., "summon").build();
-    private static final AnimatedAction[] ANIMS = {ONE_HAND_1, ONE_HAND_2, ONE_HAND_3, ONE_HAND_4, ONE_HAND_5, ONE_HAND_6, ONE_HAND_7, CHARIOT, SUMMON_HORSE, SUMMON};
+    private static final String CHARIOT = BUILDER.add("chariot_summon", AnimationsBuilder.definition(1.64).marker("attack", 0.68));
+    private static final String SUMMON_HORSE = BUILDER.add("horse", CHARIOT);
+    public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2.));
+    public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
 
-    public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityIskander>>> ATTACKS = List.of(
-            WeightedEntry.wrap(new GoalAttackAction<EntityIskander>(EntityIskander.ONE_HAND_1)
-                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
-            WeightedEntry.wrap(new GoalAttackAction<EntityIskander>(EntityIskander.ONE_HAND_2)
-                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
-            WeightedEntry.wrap(new GoalAttackAction<EntityIskander>(EntityIskander.ONE_HAND_3)
-                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
-            WeightedEntry.wrap(new GoalAttackAction<EntityIskander>(EntityIskander.ONE_HAND_4)
-                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
-            WeightedEntry.wrap(new GoalAttackAction<EntityIskander>(EntityIskander.ONE_HAND_5)
-                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
-                    .withCondition((goal, target, previous) -> !goal.attacker.isPassenger())
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
-            WeightedEntry.wrap(new GoalAttackAction<EntityIskander>(EntityIskander.ONE_HAND_6)
-                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
-                    .withCondition((goal, target, previous) -> !goal.attacker.isPassenger())
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
-            WeightedEntry.wrap(new GoalAttackAction<EntityIskander>(EntityIskander.ONE_HAND_7)
-                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
-            WeightedEntry.wrap(new GoalAttackAction<EntityIskander>(EntityIskander.SUMMON_HORSE)
-                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
-                    .withCondition((goal, target, prev) -> !goal.attacker.isPassenger())
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(5, 8, 1.2))), 6),
-            WeightedEntry.wrap(new GoalAttackAction<EntityIskander>(EntityIskander.CHARIOT)
-                    .cooldown(e -> e.getRandom().nextInt(25) + 10)
-                    .withCondition((goal, target, prev) -> !goal.attacker.isPassenger() && (goal.attacker.canUseNP() && goal.attacker.getOwner() == null && goal.attacker.getMana() >= goal.attacker.props().hogouMana()) || goal.attacker.forcedNP)
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(5, 8, 1.2))), 14)
-    );
-    public static final List<WeightedEntry.Wrapper<IdleAction<EntityIskander>>> IDLE_ACTIONS = List.of(
-            WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1, 0.5)), 6),
-            WeightedEntry.wrap(new IdleAction<>(() -> new RandomMoveAroundRunner<EntityIskander>(8, 6))
-                    .withCondition(((goal, target) -> goal.attacker.isPassenger())), 7),
-            WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(1, 1, 6)), 2)
-    );
-
-    public final AnimatedAttackGoal<EntityIskander> attack = new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS);
+//    public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityIskander>>> ATTACKS = List.of(
+//            WeightedEntry.wrap(new GoalAttackAction<EntityIskander>(EntityIskander.ONE_HAND_1)
+//                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityIskander>(EntityIskander.ONE_HAND_2)
+//                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityIskander>(EntityIskander.ONE_HAND_3)
+//                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityIskander>(EntityIskander.ONE_HAND_4)
+//                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityIskander>(EntityIskander.ONE_HAND_5)
+//                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
+//                    .withCondition((goal, target, previous) -> !goal.attacker.isPassenger())
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityIskander>(EntityIskander.ONE_HAND_6)
+//                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
+//                    .withCondition((goal, target, previous) -> !goal.attacker.isPassenger())
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityIskander>(EntityIskander.ONE_HAND_7)
+//                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 10),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityIskander>(EntityIskander.SUMMON_HORSE)
+//                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
+//                    .withCondition((goal, target, prev) -> !goal.attacker.isPassenger())
+//                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(5, 8, 1.2))), 6),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityIskander>(EntityIskander.CHARIOT)
+//                    .cooldown(e -> e.getRandom().nextInt(25) + 10)
+//                    .withCondition((goal, target, prev) -> !goal.attacker.isPassenger() && (goal.attacker.canUseNP() && goal.attacker.getOwner() == null && goal.attacker.getMana() >= goal.attacker.props().hogouMana()) || goal.attacker.forcedNP)
+//                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(5, 8, 1.2))), 14)
+//    );
+//    public static final List<WeightedEntry.Wrapper<IdleAction<EntityIskander>>> IDLE_ACTIONS = List.of(
+//            WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1, 0.5)), 6),
+//            WeightedEntry.wrap(new IdleAction<>(() -> new RandomMoveAroundRunner<EntityIskander>(8, 6))
+//                    .withCondition(((goal, target) -> goal.attacker.isPassenger())), 7),
+//            WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(1, 1, 6)), 2)
+//    );
+//
+//    public final AnimatedAttackGoal<EntityIskander> attack = new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS);
 
     private final AnimationHandler<EntityIskander> animationHandler = new AnimationHandler<>(this, ANIMS);
     private final Vector4f summonColor = new Vector4f(112 / 255f, 23 / 255f, 21 / 255f, 0.7f);
@@ -108,8 +99,6 @@ public class EntityIskander extends BaseServant {
     public EntityIskander(EntityType<? extends EntityIskander> entityType, Level level) {
         super(entityType, level);
         this.canUseNP = true;
-        if (!level.isClientSide)
-            this.goalSelector.addGoal(0, this.attack);
     }
 
     protected boolean useStandingAnim() {
@@ -121,13 +110,8 @@ public class EntityIskander extends BaseServant {
     }
 
     @Override
-    protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
+    protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty) {
         this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(FateItems.KUPRIOTS.get()));
-    }
-
-    @Override
-    public Goal getAttackAI() {
-        return this.attack;
     }
 
     @Override
@@ -137,7 +121,7 @@ public class EntityIskander extends BaseServant {
 
     @Override
     public boolean hurt(DamageSource damageSource, float damage) {
-        if (damageSource.isBypassInvul()) {
+        if (damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             return super.hurt(damageSource, damage);
         } else if (this.getVehicle() != null) {
             damage *= 0.5;
@@ -147,7 +131,7 @@ public class EntityIskander extends BaseServant {
     }
 
     @Override
-    public void handleAttack(AnimatedAction anim) {
+    public void handleAttack(AnimationState anim) {
         if (anim.is(CHARIOT, SUMMON_HORSE)) {
             LivingEntity target = this.getTarget();
             if (target != null && !anim.isPast(0.28)) {
@@ -180,7 +164,7 @@ public class EntityIskander extends BaseServant {
     }
 
     @Override
-    public OrientedBoundingBox calculateAttackAABB(AnimatedAction anim, Vec3 target, double grow) {
+    public OrientedBoundingBox calculateAttackAABB(AnimationState anim, Vec3 target, double grow) {
         if (this.getVehicle() != null) {
             Entity vehicle = this.getVehicle();
             if (this.getVehicle() instanceof GordiusWheel gordiusWheel && gordiusWheel.getWheelEntity() != null) {
@@ -195,7 +179,7 @@ public class EntityIskander extends BaseServant {
     }
 
     @Override
-    public AABB attackBB(AnimatedAction anim) {
+    public AABB attackBB(AnimationState anim) {
         double width = this.getBbWidth() + 0.3;
         double length = 1;
         if (anim.is(ONE_HAND_1)) {
@@ -222,13 +206,13 @@ public class EntityIskander extends BaseServant {
             return false;
         if (this.isPassenger() || this.level().isClientSide)
             return false;
-        GordiusWheel wheel = FateEntities.GORDIUS_WHEEL.get().create(this.level);
+        GordiusWheel wheel = FateEntities.GORDIUS_WHEEL.get().create(this.level());
         wheel.setPos(this.getX(), this.getY(), this.getZ());
         this.level().addFreshEntity(wheel);
         this.boardingCooldown = 0;
         this.startRiding(wheel);
         for (int i = 0; i < 5; i++) {
-            LightningBolt lightningboltentity = EntityType.LIGHTNING_BOLT.create(this.level);
+            LightningBolt lightningboltentity = EntityType.LIGHTNING_BOLT.create(this.level());
             lightningboltentity.moveTo(this.getX() + this.random.nextGaussian() * 2, this.getY(), this.getZ() + this.random.nextGaussian() * 2);
             lightningboltentity.setVisualOnly(true);
             this.level().addFreshEntity(lightningboltentity);
@@ -240,7 +224,7 @@ public class EntityIskander extends BaseServant {
     public boolean summonHorse() {
         if (this.isPassenger() || this.level().isClientSide)
             return false;
-        Horse horse = EntityType.HORSE.create(this.level);
+        Horse horse = EntityType.HORSE.create(this.level());
         horse.setPos(this.getX(), this.getY(), this.getZ());
         horse.setTamed(true);
         this.level().addFreshEntity(horse);
@@ -250,7 +234,7 @@ public class EntityIskander extends BaseServant {
         this.boardingCooldown = 0;
         this.startRiding(horse);
         for (int i = 0; i < 5; i++) {
-            LightningBolt lightningboltentity = EntityType.LIGHTNING_BOLT.create(this.level);
+            LightningBolt lightningboltentity = EntityType.LIGHTNING_BOLT.create(this.level());
             lightningboltentity.moveTo(this.getX() + this.random.nextGaussian() * 2, this.getY(), this.getZ() + this.random.nextGaussian() * 2);
             lightningboltentity.setVisualOnly(true);
             this.level().addFreshEntity(lightningboltentity);
@@ -260,7 +244,7 @@ public class EntityIskander extends BaseServant {
     }
 
     @Override
-    protected AnimatedAction getSummonAnimation() {
+    protected String getSummonAnimation() {
         return SUMMON;
     }
 

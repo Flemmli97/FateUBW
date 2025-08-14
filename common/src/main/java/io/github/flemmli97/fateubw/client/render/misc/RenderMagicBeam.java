@@ -1,10 +1,10 @@
 package io.github.flemmli97.fateubw.client.render.misc;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicBeam;
-import io.github.flemmli97.tenshilib.client.render.RenderBeam;
+import io.github.flemmli97.tenshilib.client.render.BeamRenderer;
 import io.github.flemmli97.tenshilib.client.render.RenderUtils;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -12,10 +12,10 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
-public class RenderMagicBeam extends RenderBeam<MagicBeam> {
+public class RenderMagicBeam extends BeamRenderer<MagicBeam> {
 
-    public static final ResourceLocation TEX = new ResourceLocation(Fate.MODID, "textures/entity/magic_beam.png");
-    public static final ResourceLocation TEX_CIRCLE = new ResourceLocation(Fate.MODID, "textures/entity/medea_beam_circle.png");
+    public static final ResourceLocation TEX = Fate.modRes("textures/entity/magic_beam.png");
+    public static final ResourceLocation TEX_CIRCLE = Fate.modRes("textures/entity/medea_beam_circle.png");
 
     private final RenderUtils.TextureBuilder textureBuilder = new RenderUtils.TextureBuilder();
 
@@ -31,8 +31,8 @@ public class RenderMagicBeam extends RenderBeam<MagicBeam> {
         if (projectile.idle) {
             stack.pushPose();
             stack.scale(1.6f, 1.6f, 1.6f);
-            stack.mulPose(Vector3f.YP.rotationDegrees(-projectile.getSpawnRotY()));
-            stack.mulPose(Vector3f.XP.rotationDegrees(projectile.getSpawnRotX()));
+            stack.mulPose(Axis.YP.rotationDegrees(-projectile.getSpawnRotY()));
+            stack.mulPose(Axis.XP.rotationDegrees(projectile.getSpawnRotX()));
             this.textureBuilder.setLight(0xf000f0);
             RenderUtils.renderTexture(stack, buffer.getBuffer(RenderType.entityCutoutNoCull(TEX_CIRCLE)), 1, 1, this.textureBuilder);
             stack.popPose();

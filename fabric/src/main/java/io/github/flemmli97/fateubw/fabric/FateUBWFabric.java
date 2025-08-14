@@ -9,7 +9,6 @@ import io.github.flemmli97.fateubw.common.config.specs.ConfigSpecs;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.datapack.EntityPropsManager;
 import io.github.flemmli97.fateubw.common.datapack.GrailLootManager;
-import io.github.flemmli97.fateubw.common.entity.servant.ai.LancelotAttackAI;
 import io.github.flemmli97.fateubw.common.event.EventCalls;
 import io.github.flemmli97.fateubw.common.registry.FateAttributes;
 import io.github.flemmli97.fateubw.common.registry.FateBlocks;
@@ -28,14 +27,14 @@ import io.github.flemmli97.fateubw.fabric.network.PacketHandler;
 import io.github.flemmli97.tenshilib.fabric.loader.events.CommonSetupEvent;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
-import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.PackType;
@@ -52,7 +51,6 @@ public class FateUBWFabric implements ModInitializer {
     @Override
     public void onInitialize() {
         this.registerContent();
-        this.setup();
         NeoForgeModConfigEvents.loading(Fate.MODID).register(config -> {
             if (config.getSpec() == ConfigSpecs.CLIENT_SPEC)
                 ConfigLoader.loadClient();
@@ -102,7 +100,10 @@ public class FateUBWFabric implements ModInitializer {
                 return EntityPropsManager.ID;
             }
         });
-        LancelotAttackAI.register(FabricLoader.getInstance()::isModLoaded);
+        FateFeatures.createFeatures(null, feat ->
+                BiomeModifications.addFeature(ctx -> ctx.getBiomeRegistryEntry().is(feat.tag()),
+                        feat.decoration(), ResourceKey.create(Registries.PLACED_FEATURE, feat.placedFeature())));
+//        LancelotAttackAI.register(FabricLoader.getInstance()::isModLoaded);
 
         CommonSetupEvent.EVENT.register(listener -> listener.enqueue(Fate.MODID, () -> {
             FateEntities.registeredAttributes().forEach(FabricDefaultAttributeRegistry::register);
@@ -123,7 +124,5 @@ public class FateUBWFabric implements ModInitializer {
         FateMobEffects.EFFECTS.registerContent();
         FateParticles.PARTICLES.registerContent();
         FateSounds.SOUND_EVENTS.registerContent();
-        FateFeatures.register();
-        FateFeatures.registerToBiomes((dec, holder) -> BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), dec, holder.unwrapKey().orElseThrow()));
     }
 }

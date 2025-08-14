@@ -19,5 +19,4 @@ public class FateParticles {
     public static final RegistryEntrySupplier<ParticleType<?>, ParticleType<ColoredParticleData>> LIGHT = PARTICLES.register("light", () -> new ColoredParticleType(false));
     public static final RegistryEntrySupplier<ParticleType<?>, ParticleType<TrailParticleData>> TRAIL = PARTICLES.register("trail", () -> new ParticleTypeContainer<>(false, TrailParticleData::codec, TrailParticleData::streamCodec));
     public static final RegistryEntrySupplier<ParticleType<?>, ParticleType<RingParticleData>> RING = PARTICLES.register("ring", () -> new ParticleTypeContainer<>(false, RingParticleData.CODEC, RingParticleData.STREAM_CODEC));
-
 }

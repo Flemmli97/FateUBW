@@ -1,31 +1,23 @@
 package io.github.flemmli97.fateubw.common.entity.servant;
 
-import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.api.datapack.ServantExtraData;
 import io.github.flemmli97.fateubw.common.entity.SwitchableWeapon;
-import io.github.flemmli97.fateubw.common.entity.ai.TeleportRunner;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicBeam;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicBufCircle;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.utils.TeleportUtils;
 import io.github.flemmli97.fateubw.common.utils.Utils;
-import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
-import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.AnimatedAttackGoal;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.GoalAttackAction;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.IdleAction;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.DoNothingRunner;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.JumpEvadeAction;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.KeepDistanceRunner;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveAwayRunner;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.WrappedRunner;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionContainer;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationsBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.random.WeightedEntry;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -33,7 +25,6 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -41,64 +32,64 @@ import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-
-import java.util.List;
+import org.joml.Vector4f;
 
 public class EntityMedea extends BaseServant {
 
-    public static final AnimatedAction CAST_1 = AnimatedAction.builder(0.86, "cast_1").marker("attack", 0.28).build();
-    public static final AnimatedAction CAST_2 = AnimatedAction.builder(1.06, "cast_2").marker("attack", 0.6).build();
-    public static final AnimatedAction CAST_3 = AnimatedAction.builder(1.58, "cast_3").marker("attack", 1.24).build();
-    public static final AnimatedAction CAST_4 = AnimatedAction.builder(2.88, "cast_4")
+    public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
+    public static final String CAST_1 = BUILDER.add("cast_1", AnimationsBuilder.definition(0.86).marker("attack", 0.28));
+    public static final String CAST_2 = BUILDER.add("cast_2", AnimationsBuilder.definition(1.06).marker("attack", 0.6));
+    public static final String CAST_3 = BUILDER.add("cast_3", AnimationsBuilder.definition(1.58).marker("attack", 1.24));
+    public static final String CAST_4 = BUILDER.add("cast_4", AnimationsBuilder.definition(2.88)
             .marker("attack_start", 0.6).marker("attack_end", 2.12)
-            .marker("teleport_start", 0.2).marker("teleport_end", 2.4).build();
-    public static final AnimatedAction MAGIC_CIRCLE = AnimatedAction.builder(2.2, "magic_circle")
-            .marker("attack", 1.04).marker("push", 0.52).build();
+            .marker("teleport_start", 0.2).marker("teleport_end", 2.4));
+    public static final String MAGIC_CIRCLE = BUILDER.add("magic_circle", AnimationsBuilder.definition(2.2)
+            .marker("attack", 1.04).marker("push", 0.52));
 
-    public static final AnimatedAction RULE_BREAKER = AnimatedAction.builder(2.76, "rule_breaker")
-            .marker("attack", 1.88).marker("teleport_start", 0.8).marker("teleport_end", 2.44).build();
-    public static final AnimatedAction SUMMON = new AnimatedAction(2., "summon");
+    public static final String RULE_BREAKER = BUILDER.add("rule_breaker", AnimationsBuilder.definition(2.76)
+            .marker("attack", 1.88).marker("teleport_start", 0.8).marker("teleport_end", 2.44));
+    public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2.));
 
-    private static final AnimatedAction[] ANIMS = {CAST_1, CAST_2, CAST_3, CAST_4, MAGIC_CIRCLE, RULE_BREAKER, SUMMON};
+    public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
 
-    public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityMedea>>> ATTACKS = List.of(
-            WeightedEntry.wrap(new GoalAttackAction<EntityMedea>(EntityMedea.CAST_1)
-                    .cooldown(e -> e.getRandom().nextInt(25) + 20)
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(6, 15, 1.1))), 20),
-            WeightedEntry.wrap(new GoalAttackAction<EntityMedea>(EntityMedea.CAST_2)
-                    .cooldown(e -> e.getRandom().nextInt(25) + 20)
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(6, 15, 1.1))), 20),
-            WeightedEntry.wrap(new GoalAttackAction<EntityMedea>(EntityMedea.CAST_3)
-                    .cooldown(e -> e.getRandom().nextInt(25) + 20)
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(6, 15, 1.1))), 12),
-            WeightedEntry.wrap(new GoalAttackAction<EntityMedea>(EntityMedea.CAST_4)
-                    .cooldown(e -> e.getRandom().nextInt(25) + 20)
-                    .prepare(() -> new WrappedRunner<>(new DoNothingRunner<>(true))), 6),
-            WeightedEntry.wrap(new GoalAttackAction<EntityMedea>(EntityMedea.CAST_1)
-                    .cooldown(e -> e.getRandom().nextInt(25) + 20)
-                    .withCondition((goal, target, prev) -> goal.distanceToTargetSq < 9)
-                    .prepare(() -> new WrappedRunner<>(new JumpEvadeAction<>(3, 2, 1, 1, 0, new DoNothingRunner<>(true)))), 23),
-            WeightedEntry.wrap(new GoalAttackAction<EntityMedea>(EntityMedea.CAST_3)
-                    .cooldown(e -> e.getRandom().nextInt(25) + 20)
-                    .withCondition((goal, target, prev) -> goal.distanceToTargetSq < 9)
-                    .prepare(() -> new WrappedRunner<>(new JumpEvadeAction<>(3, 2, 1, 1, 0, new DoNothingRunner<>(true)))), 23),
-            WeightedEntry.wrap(new GoalAttackAction<EntityMedea>(EntityMedea.MAGIC_CIRCLE)
-                    .cooldown(e -> e.getRandom().nextInt(40) + 20)
-                    .withCondition(((goal, target, previous) -> goal.attacker.aiCircledelay < 0))
-                    .prepare(() -> new WrappedRunner<>(new DoNothingRunner<>(true))), 4),
-            WeightedEntry.wrap(new GoalAttackAction<EntityMedea>(EntityMedea.RULE_BREAKER)
-                    .cooldown(e -> e.getRandom().nextInt(25) + 20)
-                    .withCondition(Utils.npCheck())
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 12, 1.2))), 50)
-    );
-    public static final List<WeightedEntry.Wrapper<IdleAction<EntityMedea>>> IDLE_ACTIONS = List.of(
-            WeightedEntry.wrap(new IdleAction<>(() -> new TeleportRunner<>(5, 12, 6, 12)), 1),
-            WeightedEntry.wrap(new IdleAction<>(() -> new TeleportRunner<EntityMedea>(5, 12, 6, 12))
-                    .withCondition(((goal, target) -> goal.distanceToTargetSq < 25)), 7),
-            WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(1, 1.2, 6)), 20)
-    );
-
-    public final AnimatedAttackGoal<EntityMedea> attack = new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS);
+//    public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityMedea>>> ATTACKS = List.of(
+//            WeightedEntry.wrap(new GoalAttackAction<EntityMedea>(EntityMedea.CAST_1)
+//                    .cooldown(e -> e.getRandom().nextInt(25) + 20)
+//                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(6, 15, 1.1))), 20),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityMedea>(EntityMedea.CAST_2)
+//                    .cooldown(e -> e.getRandom().nextInt(25) + 20)
+//                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(6, 15, 1.1))), 20),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityMedea>(EntityMedea.CAST_3)
+//                    .cooldown(e -> e.getRandom().nextInt(25) + 20)
+//                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(6, 15, 1.1))), 12),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityMedea>(EntityMedea.CAST_4)
+//                    .cooldown(e -> e.getRandom().nextInt(25) + 20)
+//                    .prepare(() -> new WrappedRunner<>(new DoNothingRunner<>(true))), 6),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityMedea>(EntityMedea.CAST_1)
+//                    .cooldown(e -> e.getRandom().nextInt(25) + 20)
+//                    .withCondition((goal, target, prev) -> goal.distanceToTargetSq < 9)
+//                    .prepare(() -> new WrappedRunner<>(new JumpEvadeAction<>(3, 2, 1, 1, 0, new DoNothingRunner<>(true)))), 23),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityMedea>(EntityMedea.CAST_3)
+//                    .cooldown(e -> e.getRandom().nextInt(25) + 20)
+//                    .withCondition((goal, target, prev) -> goal.distanceToTargetSq < 9)
+//                    .prepare(() -> new WrappedRunner<>(new JumpEvadeAction<>(3, 2, 1, 1, 0, new DoNothingRunner<>(true)))), 23),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityMedea>(EntityMedea.MAGIC_CIRCLE)
+//                    .cooldown(e -> e.getRandom().nextInt(40) + 20)
+//                    .withCondition(((goal, target, previous) -> goal.attacker.aiCircledelay < 0))
+//                    .prepare(() -> new WrappedRunner<>(new DoNothingRunner<>(true))), 4),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityMedea>(EntityMedea.RULE_BREAKER)
+//                    .cooldown(e -> e.getRandom().nextInt(25) + 20)
+//                    .withCondition(Utils.npCheck())
+//                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 12, 1.2))), 50)
+//    );
+//    public static final List<WeightedEntry.Wrapper<IdleAction<EntityMedea>>> IDLE_ACTIONS = List.of(
+//            WeightedEntry.wrap(new IdleAction<>(() -> new TeleportRunner<>(5, 12, 6, 12)), 1),
+//            WeightedEntry.wrap(new IdleAction<>(() -> new TeleportRunner<EntityMedea>(5, 12, 6, 12))
+//                    .withCondition(((goal, target) -> goal.distanceToTargetSq < 25)), 7),
+//            WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(1, 1.2, 6)), 20)
+//    );
+//
+//    public final AnimatedAttackGoal<EntityMedea> attack = new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS);
 
     private final AnimationHandler<EntityMedea> animationHandler = new AnimationHandler<>(this, ANIMS).withChangeListener(anim -> {
         if (!this.level().isClientSide()) {
@@ -128,18 +119,11 @@ public class EntityMedea extends BaseServant {
 
     public EntityMedea(EntityType<? extends BaseServant> entityType, Level level) {
         super(entityType, level);
-        if (!level.isClientSide)
-            this.goalSelector.addGoal(0, this.attack);
     }
 
     @Override
-    protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
+    protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty) {
         this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(FateItems.STAFF.get()));
-    }
-
-    @Override
-    public Goal getAttackAI() {
-        return this.attack;
     }
 
     @Override
@@ -180,17 +164,19 @@ public class EntityMedea extends BaseServant {
     }
 
     private boolean transit(boolean teleportOnly) {
-        AnimatedAction anim = this.getAnimationHandler().getAnimation();
-        if (CAST_4.is(anim)) {
+        AnimationState anim = this.getAnimationHandler().getAnimation();
+        if (anim == null)
+            return false;
+        if (anim.is(CAST_4)) {
             if (!teleportOnly)
                 return anim.isPast("teleport_start", 0.56);
             return anim.isPast("teleport_start", 0.56) || anim.isPast("teleport_end");
         }
-        return RULE_BREAKER.is(anim) && (anim.isPast("teleport_start", 1.32) || anim.isPast("teleport_end", 2.6));
+        return anim.is(RULE_BREAKER) && (anim.isPast("teleport_start", 1.32) || anim.isPast("teleport_end", 2.6));
     }
 
     @Override
-    public void handleAttack(AnimatedAction anim) {
+    public void handleAttack(AnimationState anim) {
         if (anim.is(CAST_1, CAST_2, CAST_3)) {
             LivingEntity target = this.getTarget();
             if (target != null) {
@@ -274,7 +260,7 @@ public class EntityMedea extends BaseServant {
     }
 
     @Override
-    public AABB attackBB(AnimatedAction anim) {
+    public AABB attackBB(AnimationState anim) {
         double width = this.getBbWidth() + 0.3;
         double length = 1;
         if (anim.is(RULE_BREAKER)) {
@@ -296,7 +282,7 @@ public class EntityMedea extends BaseServant {
         if (!this.forcedNP)
             this.useMana(this.props().hogouMana());
         this.forcedNP = false;
-        this.mobAttack(RULE_BREAKER, this.getTarget(), this::doHurtTarget);
+        this.mobAttack(this.getAnimationHandler().getAnimation(), this.getTarget(), this::doHurtTarget);
         this.revealServant();
     }
 
@@ -305,7 +291,7 @@ public class EntityMedea extends BaseServant {
         MobEffectInstance eff = this.getEffect(MobEffects.DAMAGE_BOOST);
         if (eff != null)
             strength = eff.getAmplifier();
-        MagicBeam beam = new MagicBeam(this.level, this, target);
+        MagicBeam beam = new MagicBeam(this.level(), this, target);
         Vec3 look = this.getLookAngle();
         beam.setPos(this.getEyePosition().add(look.x(), 2, look.z()));
         beam.setDamageMultiplier(1 + strength * 0.15f);
@@ -326,7 +312,7 @@ public class EntityMedea extends BaseServant {
             strength = eff.getAmplifier();
         int amount = this.getRandom().nextInt(2) + 1;
         for (Vec3 offset : Utils.randomSidedPositions(this, amount, 6)) {
-            MagicBeam beam = new MagicBeam(this.level, this, target);
+            MagicBeam beam = new MagicBeam(this.level(), this, target);
             beam.setDamageMultiplier(1 + strength * 0.1f);
             beam.setPos(offset.x, offset.y, offset.z);
             if (target != null)
@@ -342,14 +328,14 @@ public class EntityMedea extends BaseServant {
 
     public void makeCircle() {
         if (!this.level().isClientSide) {
-            MagicBufCircle circle = new MagicBufCircle(this.level, this, this.props().getConfig(ServantExtraData.MEDEA_CIRCLE_RANGE));
+            MagicBufCircle circle = new MagicBufCircle(this.level(), this, this.props().getConfig(ServantExtraData.MEDEA_CIRCLE_RANGE));
             this.level().addFreshEntity(circle);
             int duration = this.props().getConfig(ServantExtraData.MEDEA_CIRCLE_DURATION);
             this.circleDelay = duration + this.random.nextInt(100);
             this.aiCircledelay = (int) (this.random.nextInt(400) + duration * 0.5);
             this.circlePos = circle.position();
             if (this.getOwner() != null)
-                this.getOwner().sendMessage(Component.translatable("fateubw.chat.medea.circle.spawn"));
+                this.getOwner().sendSystemMessage(Component.translatable("fateubw.chat.medea.circle.spawn"));
             this.playSound(SoundEvents.BEACON_POWER_SELECT, 1, 1);
         }
     }
@@ -373,7 +359,7 @@ public class EntityMedea extends BaseServant {
 
     @Override
     public BlockPos getRestrictCenter() {
-        return this.circlePos != null ? new BlockPos(this.circlePos) : super.getRestrictCenter();
+        return this.circlePos != null ? BlockPos.containing(this.circlePos) : super.getRestrictCenter();
     }
 
     @Override
@@ -420,7 +406,7 @@ public class EntityMedea extends BaseServant {
     }
 
     @Override
-    protected AnimatedAction getSummonAnimation() {
+    protected String getSummonAnimation() {
         return SUMMON;
     }
 

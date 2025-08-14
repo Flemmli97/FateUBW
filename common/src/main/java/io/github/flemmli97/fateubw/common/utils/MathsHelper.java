@@ -5,11 +5,11 @@ import net.minecraft.world.phys.Vec3;
 
 public class MathsHelper {
 
-    public static float[] XYRotFrom(Vec3 direction) {
+    public static float[] YXRotFrom(Vec3 direction) {
         return new float[]{YRotFrom(direction.x(), direction.z()), XRotFrom(direction.x(), direction.y(), direction.z())};
     }
 
-    public static float[] XYRotFrom(double x, double y, double z) {
+    public static float[] YXRotFrom(double x, double y, double z) {
         return new float[]{YRotFrom(x, z), XRotFrom(x, y, z)};
     }
 

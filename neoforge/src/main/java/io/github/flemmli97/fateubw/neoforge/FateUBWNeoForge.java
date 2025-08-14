@@ -4,14 +4,12 @@ import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.config.specs.ConfigLoader;
 import io.github.flemmli97.fateubw.common.config.specs.ConfigSpecs;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
-import io.github.flemmli97.fateubw.common.entity.servant.ai.LancelotAttackAI;
 import io.github.flemmli97.fateubw.common.registry.FateAttributes;
 import io.github.flemmli97.fateubw.common.registry.FateBlocks;
 import io.github.flemmli97.fateubw.common.registry.FateCreativeTab;
 import io.github.flemmli97.fateubw.common.registry.FateCriterionTriggers;
 import io.github.flemmli97.fateubw.common.registry.FateDataComponents;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
-import io.github.flemmli97.fateubw.common.registry.FateFeatures;
 import io.github.flemmli97.fateubw.common.registry.FateGrailLootSerializer;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateMobEffects;
@@ -20,15 +18,12 @@ import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.neoforge.client.ClientEvents;
 import io.github.flemmli97.fateubw.neoforge.event.EventHandler;
 import io.github.flemmli97.fateubw.neoforge.network.PacketHandler;
-import net.minecraft.world.level.biome.Biome;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
@@ -41,7 +36,6 @@ public class FateUBWNeoForge {
         container.registerConfig(ModConfig.Type.CLIENT, ConfigSpecs.CLIENT_SPEC, Fate.MODID + "/client.toml");
         container.registerConfig(ModConfig.Type.COMMON, ConfigSpecs.COMMON_SPEC, Fate.MODID + "/common.toml");
         registerContent(modBus);
-        modBus.addListener(this::setup);
         modBus.addListener(this::configLoading);
         modBus.addListener(this::configReloading);
         modBus.addListener(this::attributes);
@@ -52,9 +46,8 @@ public class FateUBWNeoForge {
         IEventBus eventBus = NeoForge.EVENT_BUS;
         eventBus.register(EventHandler.class);
         eventBus.addListener(this::reloadListener);
-        eventBus.addListener(this::biomeLoadEvent);
 
-        LancelotAttackAI.register(ModList.get()::isLoaded);
+//        LancelotAttackAI.register(ModList.get()::isLoaded);
     }
 
     public static void registerContent(IEventBus modbus) {
@@ -71,10 +64,6 @@ public class FateUBWNeoForge {
         FateMobEffects.EFFECTS.registerContent(modbus);
         FateParticles.PARTICLES.registerContent(modbus);
         FateSounds.SOUND_EVENTS.registerContent(modbus);
-    }
-
-    public void setup(FMLCommonSetupEvent event) {
-        event.enqueueWork(FateFeatures::register);
     }
 
     public void configLoading(ModConfigEvent.Loading event) {
@@ -99,11 +88,5 @@ public class FateUBWNeoForge {
     public void attributes(EntityAttributeCreationEvent event) {
         FateEntities.registeredAttributes()
                 .forEach((type, builder) -> event.put(type, builder.build()));
-    }
-
-    public void biomeLoadEvent(BiomeLoadingEvent event) {
-        if (event.getCategory() != Biome.BiomeCategory.THEEND && event.getCategory() != Biome.BiomeCategory.NETHER) {
-            FateFeatures.registerToBiomes((dec, holder) -> event.getGeneration().addFeature(dec, holder));
-        }
     }
 }

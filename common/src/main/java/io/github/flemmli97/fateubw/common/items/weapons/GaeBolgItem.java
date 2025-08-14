@@ -39,7 +39,6 @@ public class GaeBolgItem extends TieredItem {
                 level.addFreshEntity(gaeBolg);
                 stack.shrink(1);
                 return InteractionResultHolder.consume(stack);
-
             }
             player.sendSystemMessage(Component.translatable("fateubw.chat.mana.missing").withStyle(ChatFormatting.AQUA));
             return InteractionResultHolder.fail(stack);

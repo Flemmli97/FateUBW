@@ -27,5 +27,4 @@ public interface ClientPlatform {
     <T extends Entity> Component nameTagRenderEvent(T entity, Component content, EntityRenderer<?> entityRenderer, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, float partialTick, Predicate<T> shouldRender);
 
     void renderModelList(ItemRenderer renderer, BakedModel model, ItemStack stack, int combinedLight, int combinedOverlay, PoseStack poseStack, VertexConsumer buffer);
-
 }

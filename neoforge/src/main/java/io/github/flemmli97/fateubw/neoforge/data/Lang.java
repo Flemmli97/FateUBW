@@ -1,39 +1,30 @@
 package io.github.flemmli97.fateubw.neoforge.data;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.registry.FateAttributes;
 import io.github.flemmli97.fateubw.common.registry.FateBlocks;
+import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateMobEffects;
-import io.github.flemmli97.fateubw.common.utils.CustomDamageSource;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import io.github.flemmli97.tenshilib.common.item.SpawnEgg;
-import io.github.flemmli97.tenshilib.platform.registry.RegistryEntrySupplier;
-import net.minecraft.data.DataGenerator;
+import io.github.flemmli97.tenshilib.loader.registry.RegistryEntrySupplier;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.HashCache;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.Block;
-import org.apache.commons.lang3.text.translate.JavaUnicodeEscaper;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-import java.util.function.Supplier;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -42,22 +33,18 @@ import java.util.stream.Stream;
  */
 public class Lang implements DataProvider {
 
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-    private final Map<String, String> data = new LinkedHashMap<>();
-    private final DataGenerator gen;
-    private final String modid;
-    private final String locale;
+    private final Map<String, String> data = new HashMap<>();
+    private final PackOutput packOutput;
+    private final String modid, locale;
 
-    private static final Comparator<String> ORDER = Comparator.comparingInt(o -> LangType.get(o).ordinal());
-
-    public Lang(DataGenerator gen) {
-        this.gen = gen;
+    public Lang(PackOutput packOutput) {
+        this.packOutput = packOutput;
         this.modid = Fate.MODID;
         this.locale = "en_us";
     }
 
     protected void addTranslations() {
-        for (RegistryEntrySupplier<Item> reg : FateItems.ITEMS.getEntries()) {
+        for (RegistryEntrySupplier<Item, ?> reg : FateItems.ITEMS.getEntries()) {
             if (reg.get() instanceof SpawnEgg || reg.getID().getPath().startsWith("gem") || reg.getID().getPath().startsWith("artifact"))
                 continue;
             if (reg == FateItems.ENUMAELISH)
@@ -80,11 +67,11 @@ public class Lang implements DataProvider {
         this.add(FateItems.CHARM_CASTER.get(), "Artifact (Caster)");
         this.add(FateItems.CHARM_RIDER.get(), "Artifact (Rider)");
 
-        for (RegistryEntrySupplier<EntityType<?>> type : FateEntities.ENTITIES.getEntries()) {
+        for (RegistryEntrySupplier<EntityType<?>, ?> type : FateEntities.ENTITIES.getEntries()) {
             SpawnEgg.fromType(type.get()).ifPresent(egg -> this.add(egg, "%s" + " Spawn Egg"));
         }
 
-        for (RegistryEntrySupplier<Block> type : FateBlocks.BLOCKS.getEntries()) {
+        for (RegistryEntrySupplier<Block, ?> type : FateBlocks.BLOCKS.getEntries()) {
             this.add(type.get(), this.simpleOfRegName(type.getID()));
         }
 
@@ -122,17 +109,17 @@ public class Lang implements DataProvider {
         this.add(FateEntities.HASSAN_COPY.get(), "Hassan-i-Sabbah");
         this.add(FateEntities.PEGASUS.get(), "Pegasus");
 
-        for (RegistryEntrySupplier<EntityType<?>> reg : FateEntities.ENTITIES.getEntries()) {
+        for (RegistryEntrySupplier<EntityType<?>, ?> reg : FateEntities.ENTITIES.getEntries()) {
             if (!this.data.containsKey(reg.get().getDescriptionId())) {
                 this.add(reg.get(), this.simpleOfRegName(reg.getID()));
             }
         }
 
-        for (RegistryEntrySupplier<Attribute> reg : FateAttributes.ATTRIBUTES.getEntries()) {
+        for (RegistryEntrySupplier<Attribute, ?> reg : FateAttributes.ATTRIBUTES.getEntries()) {
             this.add(reg.get().getDescriptionId(), this.simpleOfRegName(reg.getID()));
         }
 
-        for (RegistryEntrySupplier<MobEffect> reg : FateMobEffects.EFFECTS.getEntries()) {
+        for (RegistryEntrySupplier<MobEffect, ?> reg : FateMobEffects.EFFECTS.getEntries()) {
             this.add(reg.get().getDescriptionId(), this.simpleOfRegName(reg.getID()));
         }
 
@@ -243,7 +230,7 @@ public class Lang implements DataProvider {
 
         this.add("fateubw.gui.holy_grail", "Holy Grail");
 
-        CustomDamageSource.defaultTranslations().forEach(this::add);
+        FateDamageTypes.TRANSLATIONS.values().forEach(t -> t.add(this::add));
 
         this.add("fateubw.advancements.title", "Welcome to the §k__§r grailwar");
         this.add("fateubw.advancements.description", "Mine some gem shards to start");
@@ -334,12 +321,15 @@ public class Lang implements DataProvider {
     }
 
     @Override
-    public void run(HashCache cache) throws IOException {
+    public CompletableFuture<?> run(CachedOutput cache) {
         this.addTranslations();
-        Map<String, String> sort = this.data.entrySet().stream().sorted((e, e2) -> ORDER.compare(e.getKey(), e2.getKey()))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (old, v) -> old, LinkedHashMap::new));
-        if (!this.data.isEmpty())
-            this.save(cache, sort, this.gen.getOutputFolder().resolve("assets/" + this.modid + "/lang/" + this.locale + ".json"));
+        if (!this.data.isEmpty()) {
+            Path path = this.packOutput.getOutputFolder(PackOutput.Target.RESOURCE_PACK).resolve(this.modid + "/lang/" + this.locale + ".json");
+            JsonObject json = new JsonObject();
+            this.data.forEach(json::addProperty);
+            return DataProvider.saveStable(cache, json, path);
+        }
+        return CompletableFuture.allOf();
     }
 
     @Override
@@ -347,65 +337,13 @@ public class Lang implements DataProvider {
         return "Languages: " + this.locale;
     }
 
-    @SuppressWarnings("deprecation")
-    private void save(HashCache cache, Object object, Path target) throws IOException {
-        String data = GSON.toJson(object);
-        data = JavaUnicodeEscaper.outsideOf(0, 0x7f).translate(data); // Escape unicode after the fact so that it's not double escaped by GSON
-        String hash = DataProvider.SHA1.hashUnencodedChars(data).toString();
-        if (!Objects.equals(cache.getHash(target), hash) || !Files.exists(target)) {
-            Files.createDirectories(target.getParent());
-
-            try (BufferedWriter bufferedwriter = Files.newBufferedWriter(target)) {
-                bufferedwriter.write(data);
-            }
-        }
-
-        cache.putNew(target, hash);
-    }
-
-    public void addBlock(Supplier<? extends Block> key, String name) {
-        this.add(key.get(), name);
-    }
-
     public void add(Block key, String name) {
         if (!this.data.containsKey(key.getDescriptionId()))
             this.add(key.getDescriptionId(), name);
     }
 
-    public void addItem(Supplier<? extends Item> key, String name) {
-        this.add(key.get(), name);
-    }
-
     public void add(Item key, String name) {
         this.add(key.getDescriptionId(), name);
-    }
-
-    public void addItemStack(Supplier<ItemStack> key, String name) {
-        this.add(key.get(), name);
-    }
-
-    public void add(ItemStack key, String name) {
-        this.add(key.getDescriptionId(), name);
-    }
-
-    public void addEnchantment(Supplier<? extends Enchantment> key, String name) {
-        this.add(key.get(), name);
-    }
-
-    public void add(Enchantment key, String name) {
-        this.add(key.getDescriptionId(), name);
-    }
-
-    public void addEffect(Supplier<? extends MobEffect> key, String name) {
-        this.add(key.get(), name);
-    }
-
-    public void add(MobEffect key, String name) {
-        this.add(key.getDescriptionId(), name);
-    }
-
-    public void addEntityType(Supplier<? extends EntityType<?>> key, String name) {
-        this.add(key.get(), name);
     }
 
     public void add(EntityType<?> key, String name) {
@@ -415,34 +353,5 @@ public class Lang implements DataProvider {
     public void add(String key, String value) {
         if (this.data.put(key, value) != null)
             throw new IllegalStateException("Duplicate translation key " + key);
-    }
-
-    enum LangType {
-        ITEM,
-        BLOCK,
-        ENTITY,
-        CONTAINER,
-        TOOLTIP,
-        DEATH,
-        ITEMGROUP,
-        OTHER;
-
-        public static LangType get(String s) {
-            if (s.startsWith("item."))
-                return ITEM;
-            if (s.startsWith("block."))
-                return BLOCK;
-            if (s.startsWith("entity."))
-                return ENTITY;
-            if (s.startsWith("container."))
-                return CONTAINER;
-            if (s.startsWith("tooltip."))
-                return TOOLTIP;
-            if (s.startsWith("death."))
-                return DEATH;
-            if (s.startsWith("itemGroup."))
-                return ITEMGROUP;
-            return OTHER;
-        }
     }
 }

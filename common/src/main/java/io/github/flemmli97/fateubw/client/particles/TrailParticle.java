@@ -50,15 +50,15 @@ public class TrailParticle extends TextureSheetParticle {
         this.y = this.yo;
         this.z = this.zo;
         this.friction = 0;
-        this.bbWidth = Math.max(this.trail.width, this.trail.width2) * 2;
-        this.trailProvider = this.trail.data.createProvider(level);
+        this.bbWidth = Math.max(this.trail.width(), this.trail.width2()) * 2;
+        this.trailProvider = this.trail.data().createProvider(level);
         if (this.trailProvider != null) {
             TrailPositions pos = this.trailProvider.positions();
             if (pos != null)
-                this.setBoundingBox(pos.getBounds(Math.max(this.trail.width, this.trail.width2))
+                this.setBoundingBox(pos.getBounds(Math.max(this.trail.width(), this.trail.width2()))
                         .move(this.originPos.x(), this.originPos.y(), this.originPos.z()));
             this.pickSprite(spriteSet);
-            this.setSprite(this.trail.textureIndex);
+            this.setSprite(this.trail.textureIndex());
         }
     }
 
@@ -105,15 +105,15 @@ public class TrailParticle extends TextureSheetParticle {
             float v0 = this.getV0();
             float v1 = this.getV1();
 
-            float r = (this.trail.r2 - this.trail.r) * prog + this.trail.r;
-            float g = (this.trail.g2 - this.trail.g) * prog + this.trail.g;
-            float b = (this.trail.b2 - this.trail.b) * prog + this.trail.b;
-            float a = (this.trail.a2 - this.trail.a) * prog + this.trail.a;
+            float r = (this.trail.r2() - this.trail.r()) * prog + this.trail.r();
+            float g = (this.trail.g2() - this.trail.g()) * prog + this.trail.g();
+            float b = (this.trail.b2() - this.trail.b()) * prog + this.trail.b();
+            float a = (this.trail.a2() - this.trail.a()) * prog + this.trail.a();
 
-            float r2 = (this.trail.r2 - this.trail.r) * progPre + this.trail.r;
-            float g2 = (this.trail.g2 - this.trail.g) * progPre + this.trail.g;
-            float b2 = (this.trail.b2 - this.trail.b) * progPre + this.trail.b;
-            float a2 = (this.trail.a2 - this.trail.a) * progPre + this.trail.a;
+            float r2 = (this.trail.r2() - this.trail.r()) * progPre + this.trail.r();
+            float g2 = (this.trail.g2() - this.trail.g()) * progPre + this.trail.g();
+            float b2 = (this.trail.b2() - this.trail.b()) * progPre + this.trail.b();
+            float a2 = (this.trail.a2() - this.trail.a()) * progPre + this.trail.a();
 
             this.draw(buffer, vertices, u0, u1, v0, v1, r, g, b, a, r2, g2, b2, a2, light);
         }
@@ -125,10 +125,10 @@ public class TrailParticle extends TextureSheetParticle {
     }
 
     protected void draw(VertexConsumer buffer, Vector4f[] vertices, float u0, float u1, float v0, float v1, float r, float g, float b, float a, float r2, float g2, float b2, float a2, int light) {
-        buffer.vertex(vertices[0].x(), vertices[0].y(), vertices[0].z()).uv(u0, v1).color(r2, g2, b2, a2).uv2(0xff00ff).endVertex();
-        buffer.vertex(vertices[1].x(), vertices[1].y(), vertices[1].z()).uv(u0, v0).color(r2, g2, b2, a2).uv2(0xff00ff).endVertex();
-        buffer.vertex(vertices[2].x(), vertices[2].y(), vertices[2].z()).uv(u1, v0).color(r, g, b, a).uv2(0xff00ff).endVertex();
-        buffer.vertex(vertices[3].x(), vertices[3].y(), vertices[3].z()).uv(u1, v1).color(r, g, b, a).uv2(0xff00ff).endVertex();
+        buffer.addVertex(vertices[0].x(), vertices[0].y(), vertices[0].z()).setUv(u0, v1).setColor(r2, g2, b2, a2).setLight(0xff00ff);
+        buffer.addVertex(vertices[1].x(), vertices[1].y(), vertices[1].z()).setUv(u0, v0).setColor(r2, g2, b2, a2).setLight(0xff00ff);
+        buffer.addVertex(vertices[2].x(), vertices[2].y(), vertices[2].z()).setUv(u1, v0).setColor(r, g, b, a).setLight(0xff00ff);
+        buffer.addVertex(vertices[3].x(), vertices[3].y(), vertices[3].z()).setUv(u1, v1).setColor(r, g, b, a).setLight(0xff00ff);
     }
 
     private Vector4f[] vertices(TrailPositions.TrailPosition current, TrailPositions.TrailPosition last, TrailPositions.TrailPosition lastTwo,
@@ -138,13 +138,13 @@ public class TrailParticle extends TextureSheetParticle {
         float progPre = Mth.clamp((currentIdx + 1 + partialTicks) / length, 0, 1);
         float progPreTwo = Mth.clamp((currentIdx + 2 + partialTicks) / length, 0, 1);
 
-        float scale = Mth.lerp(prog, this.trail.width, this.trail.width2);
-        float scalePre = Mth.lerp(progPre, this.trail.width, this.trail.width2);
-        float scalePreTwo = Mth.lerp(progPreTwo, this.trail.width, this.trail.width2);
+        float scale = Mth.lerp(prog, this.trail.width(), this.trail.width2());
+        float scalePre = Mth.lerp(progPre, this.trail.width(), this.trail.width2());
+        float scalePreTwo = Mth.lerp(progPreTwo, this.trail.width(), this.trail.width2());
 
-        Vec3 dir = (current.normal() == null ? MathUtils.NORMAL_Y : current.normal()).scale(scale);
-        Vec3 dirPre = (last.normal() == null ? MathUtils.NORMAL_Y : last.normal()).scale(scalePre);
-        Vec3 dirPreTwo = (lastTwo.normal() == null ? MathUtils.NORMAL_Y : lastTwo.normal()).scale(scalePreTwo);
+        Vec3 dir = (current.setNormal() == null ? MathUtils.NORMAL_Y : current.setNormal()).scale(scale);
+        Vec3 dirPre = (last.setNormal() == null ? MathUtils.NORMAL_Y : last.setNormal()).scale(scalePre);
+        Vec3 dirPreTwo = (lastTwo.setNormal() == null ? MathUtils.NORMAL_Y : lastTwo.setNormal()).scale(scalePreTwo);
 
         Vector4f vert_1 = lerp(partialTicks, lastTwo.pos().add(-dirPreTwo.x(), -dirPreTwo.y(), -dirPreTwo.z()), last.pos().add(-dirPre.x(), -dirPre.y(), -dirPre.z()));
         Vector4f vert_2 = lerp(partialTicks, lastTwo.pos().add(dirPreTwo), last.pos().add(dirPre));
@@ -169,14 +169,14 @@ public class TrailParticle extends TextureSheetParticle {
         TrailPositions poss = this.trailProvider.positions();
         if (poss != null) {
             this.sizeO = poss.size();
-            this.setBoundingBox(poss.getBounds(Math.max(this.trail.width, this.trail.width2))
+            this.setBoundingBox(poss.getBounds(Math.max(this.trail.width(), this.trail.width2()))
                     .move(this.originPos.x(), this.originPos.y(), this.originPos.z()));
         }
     }
 
     @Override
     public ParticleRenderType getRenderType() {
-        return this.trail.visual == TrailInfo.Visual.SOLID ? SOLID_COLOR_PARTICLE : COLOR_PARTICLE;
+        return this.trail.visual() == TrailInfo.Visual.SOLID ? SOLID_COLOR_PARTICLE : COLOR_PARTICLE;
     }
 
     private static Vector4f lerp(float delta, Vec3 start, Vec3 end) {

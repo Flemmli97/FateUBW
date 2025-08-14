@@ -11,8 +11,9 @@ import org.joml.Vector4f;
 import java.util.Optional;
 import java.util.function.Function;
 
-
-public class TrailInfo {
+public record TrailInfo(float r, float g, float b, float a, float width, float r2, float g2, float b2, float a2,
+                        float width2, TrailInfo.Visual visual,
+                        int textureIndex, TrailData data) {
 
     private static final Function<String, Codec<Vector4f>> COLOR = suffix -> RecordCodecBuilder.create((builder) -> builder.group(
             Codec.FLOAT.fieldOf("r" + suffix).forGetter(Vector4f::x),
@@ -59,29 +60,6 @@ public class TrailInfo {
             TrailProviderRegistry.toBuffer(data.data, buf);
         }
     };
-
-    public final float r, g, b, a, width;
-    public final float r2, g2, b2, a2, width2;
-    public final Visual visual;
-    public final int textureIndex;
-
-    public final TrailData data;
-
-    public TrailInfo(float r, float g, float b, float a, float width, float r2, float g2, float b2, float a2, float width2, Visual visual, int textureIndex, TrailData data) {
-        this.r = r;
-        this.g = g;
-        this.b = b;
-        this.a = a;
-        this.width = width;
-        this.r2 = r2;
-        this.g2 = g2;
-        this.b2 = b2;
-        this.a2 = a2;
-        this.width2 = width2;
-        this.visual = visual;
-        this.textureIndex = textureIndex;
-        this.data = data;
-    }
 
     public static TrailInfo.Builder builder(TrailData provider) {
         return new TrailInfo.Builder(provider);

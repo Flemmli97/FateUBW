@@ -1,7 +1,7 @@
 package io.github.flemmli97.fateubw.fabric.client;
 
 import io.github.flemmli97.fateubw.client.ClientRegister;
-import io.github.flemmli97.fateubw.client.model.ModelEA;
+import io.github.flemmli97.fateubw.client.model.EAModel;
 import io.github.flemmli97.fateubw.client.render.RenderAltar;
 import io.github.flemmli97.fateubw.client.render.item.RenderEAItem;
 import io.github.flemmli97.fateubw.client.render.item.RenderExcaliburItem;
@@ -12,9 +12,7 @@ import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
@@ -34,7 +32,6 @@ public class FabricClientRegister {
         BlockEntityRenderers.register(FateBlocks.ALTAR_BLOCK_ENTITY.get(), RenderAltar::new);
         ClientRegister.registerItemProps(ItemProperties::register);
         ClientRegister.registerRenderers(EntityRendererRegistry::register);
-        ClientRegister.layerRegister((loc, sup) -> EntityModelLayerRegistry.registerModelLayer(loc, sup::get));
         ClientRegister.registerParticles(new ClientRegister.PartileRegister() {
             @Override
             public <T extends ParticleOptions> void register(ParticleType<T> type, Function<SpriteSet, ParticleProvider<T>> provider) {
@@ -47,13 +44,13 @@ public class FabricClientRegister {
     private static final RenderUtils.BeamBuilder EXCALIBUR_BEAM = RenderExcaliburItem.createBeam();
     private static final RenderUtils.BeamBuilder EA_BEAM = RenderEAItem.createBeam();
 
-    private static ModelEA EA_MODEL;
+    private static EAModel EA_MODEL;
 
     public static void registerBEWLR() {
         BuiltinItemRendererRegistry.INSTANCE.register(FateItems.EXCALIBUR.get(), ((stack, mode, matrices, vertexConsumers, light, overlay) -> RenderExcaliburItem.render(stack, mode, matrices, vertexConsumers, light, overlay, EXCALIBUR_BEAM)));
         BuiltinItemRendererRegistry.INSTANCE.register(FateItems.ENUMAELISH.get(), ((stack, mode, matrices, vertexConsumers, light, overlay) -> {
             if (EA_MODEL == null)
-                EA_MODEL = new ModelEA(Minecraft.getInstance().getEntityModels().bakeLayer(ModelEA.LAYER_LOCATION));
+                EA_MODEL = new EAModel();
             RenderEAItem.render(stack, mode, matrices, vertexConsumers, light, overlay, EA_BEAM, EA_MODEL);
         }));
     }

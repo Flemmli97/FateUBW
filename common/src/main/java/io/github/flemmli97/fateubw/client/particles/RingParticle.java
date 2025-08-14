@@ -1,6 +1,7 @@
 package io.github.flemmli97.fateubw.client.particles;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import io.github.flemmli97.fateubw.common.particles.RingParticleData;
@@ -40,8 +41,8 @@ public class RingParticle extends ColoredParticle {
         float y = (float) (Mth.lerp(partialTicks, this.yo, this.y) - vec3.y());
         float z = (float) (Mth.lerp(partialTicks, this.zo, this.z) - vec3.z());
 
-        quaternion.mul(Vector3f.YP.rotationDegrees(-this.yRot));
-        quaternion.mul(Vector3f.XP.rotationDegrees(this.xRot));
+        quaternion.mul(Axis.YP.rotationDegrees(-this.yRot));
+        quaternion.mul(Axis.XP.rotationDegrees(this.xRot));
 
         Vector3f[] vertices = new Vector3f[]{new Vector3f(-1.0f, -1.0f, 0.0f), new Vector3f(-1.0f, 1.0f, 0.0f), new Vector3f(1.0f, 1.0f, 0.0f), new Vector3f(1.0f, -1.0f, 0.0f)};
         float scale = this.getQuadSize(partialTicks);
@@ -57,15 +58,15 @@ public class RingParticle extends ColoredParticle {
         float v1 = this.getV1();
         int light = this.getLightColor(partialTicks);
         float alpha = this.alpha * (1 - this.fadeProgress(partialTicks));
-        buffer.vertex(vertices[0].x(), vertices[0].y(), vertices[0].z()).uv(u1, v1).color(this.rCol, this.gCol, this.bCol, alpha).uv2(light).endVertex();
-        buffer.vertex(vertices[1].x(), vertices[1].y(), vertices[1].z()).uv(u1, v0).color(this.rCol, this.gCol, this.bCol, alpha).uv2(light).endVertex();
-        buffer.vertex(vertices[2].x(), vertices[2].y(), vertices[2].z()).uv(u0, v0).color(this.rCol, this.gCol, this.bCol, alpha).uv2(light).endVertex();
-        buffer.vertex(vertices[3].x(), vertices[3].y(), vertices[3].z()).uv(u0, v1).color(this.rCol, this.gCol, this.bCol, alpha).uv2(light).endVertex();
+        buffer.addVertex(vertices[0].x(), vertices[0].y(), vertices[0].z()).setUv(u1, v1).setColor(this.rCol, this.gCol, this.bCol, alpha).setLight(light);
+        buffer.addVertex(vertices[1].x(), vertices[1].y(), vertices[1].z()).setUv(u1, v0).setColor(this.rCol, this.gCol, this.bCol, alpha).setLight(light);
+        buffer.addVertex(vertices[2].x(), vertices[2].y(), vertices[2].z()).setUv(u0, v0).setColor(this.rCol, this.gCol, this.bCol, alpha).setLight(light);
+        buffer.addVertex(vertices[3].x(), vertices[3].y(), vertices[3].z()).setUv(u0, v1).setColor(this.rCol, this.gCol, this.bCol, alpha).setLight(light);
 
-        buffer.vertex(vertices[3].x(), vertices[3].y(), vertices[3].z()).uv(u0, v1).color(this.rCol, this.gCol, this.bCol, alpha).uv2(light).endVertex();
-        buffer.vertex(vertices[2].x(), vertices[2].y(), vertices[2].z()).uv(u0, v0).color(this.rCol, this.gCol, this.bCol, alpha).uv2(light).endVertex();
-        buffer.vertex(vertices[1].x(), vertices[1].y(), vertices[1].z()).uv(u1, v0).color(this.rCol, this.gCol, this.bCol, alpha).uv2(light).endVertex();
-        buffer.vertex(vertices[0].x(), vertices[0].y(), vertices[0].z()).uv(u1, v1).color(this.rCol, this.gCol, this.bCol, alpha).uv2(light).endVertex();
+        buffer.addVertex(vertices[3].x(), vertices[3].y(), vertices[3].z()).setUv(u0, v1).setColor(this.rCol, this.gCol, this.bCol, alpha).setLight(light);
+        buffer.addVertex(vertices[2].x(), vertices[2].y(), vertices[2].z()).setUv(u0, v0).setColor(this.rCol, this.gCol, this.bCol, alpha).setLight(light);
+        buffer.addVertex(vertices[1].x(), vertices[1].y(), vertices[1].z()).setUv(u1, v0).setColor(this.rCol, this.gCol, this.bCol, alpha).setLight(light);
+        buffer.addVertex(vertices[0].x(), vertices[0].y(), vertices[0].z()).setUv(u1, v1).setColor(this.rCol, this.gCol, this.bCol, alpha).setLight(light);
     }
 
     public float fadeProgress(float partialTicks) {

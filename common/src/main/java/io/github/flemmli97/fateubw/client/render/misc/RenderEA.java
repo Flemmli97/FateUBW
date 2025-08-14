@@ -2,14 +2,14 @@ package io.github.flemmli97.fateubw.client.render.misc;
 
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.entity.misc.EnumaElish;
-import io.github.flemmli97.tenshilib.client.render.RenderBeam;
+import io.github.flemmli97.tenshilib.client.render.BeamRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
-public class RenderEA extends RenderBeam<EnumaElish> {
+public class RenderEA extends BeamRenderer<EnumaElish> {
 
-    public static final ResourceLocation TEX = new ResourceLocation(Fate.MODID, "textures/entity/ea.png");
+    public static final ResourceLocation TEX = Fate.modRes("textures/entity/ea.png");
 
     private final float widthMod;
 

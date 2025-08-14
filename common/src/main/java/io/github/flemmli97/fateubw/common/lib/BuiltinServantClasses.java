@@ -13,5 +13,4 @@ public class BuiltinServantClasses {
     public static final ResourceLocation BERSERKER = Fate.modRes("berserker");
     public static final ResourceLocation RIDER = Fate.modRes("rider");
     public static final ResourceLocation ASSASSIN = Fate.modRes("assassin");
-
 }

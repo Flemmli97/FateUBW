@@ -19,7 +19,7 @@ import java.util.Map;
 
 public class GuiHolyGrail extends Screen {
 
-    private static final ResourceLocation TEX = new ResourceLocation(Fate.MODID, "textures/gui/grail_reward.png");
+    private static final ResourceLocation TEX = Fate.modRes("textures/gui/grail_reward.png");
 
     private final Map<ResourceLocation, Component> rewards;
     private int page;

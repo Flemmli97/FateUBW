@@ -1,49 +1,41 @@
 package io.github.flemmli97.fateubw.neoforge.data;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
+import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
 import io.github.flemmli97.fateubw.api.datapack.AttributeHolderProperties;
 import io.github.flemmli97.fateubw.api.datapack.ServantProperties;
 import io.github.flemmli97.fateubw.common.datapack.EntityPropsManager;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import net.minecraft.data.PackOutput;
+import net.minecraft.resources.RegistryOps;
 
-import java.io.IOException;
 import java.nio.file.Path;
+import java.util.concurrent.CompletableFuture;
 
-public record EntityPropsGen(DataGenerator gen) implements DataProvider {
-
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-
-    private static final Logger LOGGER = LogManager.getLogger();
+public record EntityPropsGen(PackOutput output,
+                             CompletableFuture<HolderLookup.Provider> provider) implements DataProvider {
 
     @Override
-    public void run(CachedOutput cache) {
-        FateEntities.getServantProperties().forEach((res, prop) -> {
-            Path path = this.gen.getOutputFolder().resolve("data/" + res.getNamespace() + "/" + EntityPropsManager.DIRECTORY + "/" + res.getPath() + ".json");
-            try {
-                JsonElement obj = ServantProperties.CODEC.encodeStart(JsonOps.INSTANCE, prop.build())
-                        .getOrThrow(false, LOGGER::error);
-                DataProvider.save(GSON, cache, obj, path);
-            } catch (IOException e) {
-                LOGGER.error("Couldn't save entity properties {}", path, e);
-            }
-        });
-        FateEntities.getEntityProps().forEach((res, prop) -> {
-            Path path = this.gen.getOutputFolder().resolve("data/" + res.getNamespace() + "/" + EntityPropsManager.DIRECTORY + "/" + res.getPath() + ".json");
-            try {
-                JsonElement obj = AttributeHolderProperties.CODEC.encodeStart(JsonOps.INSTANCE, prop.build())
-                        .getOrThrow(false, LOGGER::error);
-                DataProvider.save(GSON, cache, obj, path);
-            } catch (IOException e) {
-                LOGGER.error("Couldn't save entity properties {}", path, e);
-            }
+    public CompletableFuture<?> run(CachedOutput cache) {
+        return this.provider.thenApply(provider -> {
+            DynamicOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, provider);
+            ImmutableList.Builder<CompletableFuture<?>> futures = new ImmutableList.Builder<>();
+            FateEntities.getServantProperties().forEach((res, prop) -> {
+                Path path = this.output.getOutputFolder(PackOutput.Target.DATA_PACK).resolve(res.getNamespace() + "/" + EntityPropsManager.DIRECTORY + "/" + res.getPath() + ".json");
+                JsonElement obj = ServantProperties.CODEC.encodeStart(ops, prop.build()).getOrThrow();
+                futures.add(DataProvider.saveStable(cache, obj, path));
+            });
+            FateEntities.getEntityProps().forEach((res, prop) -> {
+                Path path = this.output.getOutputFolder(PackOutput.Target.DATA_PACK).resolve(res.getNamespace() + "/" + EntityPropsManager.DIRECTORY + "/" + res.getPath() + ".json");
+                JsonElement obj = AttributeHolderProperties.CODEC.encodeStart(ops, prop.build()).getOrThrow();
+                futures.add(DataProvider.saveStable(cache, obj, path));
+            });
+            return CompletableFuture.allOf(futures.build().toArray(CompletableFuture[]::new));
         });
     }
 

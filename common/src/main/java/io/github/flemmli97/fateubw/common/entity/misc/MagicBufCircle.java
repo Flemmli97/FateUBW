@@ -35,7 +35,7 @@ public class MagicBufCircle extends Entity implements OwnableEntity {
 
     public MagicBufCircle(EntityType<?> entityTypeIn, Level level) {
         super(entityTypeIn, level);
-        this.maxLivingTicks = DatapackHandler.SERVANT_PROPS.get(FateEntities.MEDEA.getID())
+        this.maxLivingTicks = DatapackHandler.SERVANT_PROPS.get(FateEntities.MEDEA.get())
                 .getConfig(ServantExtraData.MEDEA_CIRCLE_DURATION);
     }
 

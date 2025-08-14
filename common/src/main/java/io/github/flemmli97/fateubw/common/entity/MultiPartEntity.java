@@ -256,6 +256,7 @@ public class MultiPartEntity extends Entity {
     }
 
     public record Position(Vec3 anchorOffset, Vec3 positionOffset) {
+
         public static final Position DEFAULT = new Position(Vec3.ZERO, Vec3.ZERO);
     }
 }

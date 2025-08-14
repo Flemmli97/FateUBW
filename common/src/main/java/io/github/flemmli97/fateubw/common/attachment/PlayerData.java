@@ -99,7 +99,7 @@ public class PlayerData {
             } else {
                 Entity entity = this.savedServant.getFirst().create(serverLevel);
                 if (entity instanceof BaseServant servant) {
-                    servant.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(servant.blockPosition()), MobSpawnType.TRIGGERED, null, null);
+                    servant.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(servant.blockPosition()), MobSpawnType.TRIGGERED, null);
                     entity.load(this.savedServant.getSecond());
                     Vec3 look = player.getLookAngle();
                     entity.setPos(player.getX() + look.x, player.getY(), player.getZ() + look.z);

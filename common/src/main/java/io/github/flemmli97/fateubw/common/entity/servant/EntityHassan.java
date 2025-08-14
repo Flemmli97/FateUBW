@@ -1,23 +1,14 @@
 package io.github.flemmli97.fateubw.common.entity.servant;
 
-
-import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.api.datapack.ServantExtraData;
-import io.github.flemmli97.fateubw.common.entity.ai.MoveBehindAttackRunner;
 import io.github.flemmli97.fateubw.common.entity.misc.ThrownItemEntity;
 import io.github.flemmli97.fateubw.common.entity.summons.HassanClone;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.utils.Utils;
-import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
-import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.AnimatedAttackGoal;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.GoalAttackAction;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.IdleAction;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.KeepDistanceRunner;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveAwayRunner;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTargetAttackRunner;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTargetRunner;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.WrappedRunner;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionContainer;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationsBuilder;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -27,7 +18,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
-import net.minecraft.util.random.WeightedEntry;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
@@ -38,12 +29,12 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector4f;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -53,71 +44,72 @@ import java.util.UUID;
 
 public class EntityHassan extends BaseServant {
 
-    public static final AnimatedAction DAGGER_1 = AnimatedAction.builder(0.58, "dagger_1")
-            .marker("attack", 0.44).marker("step", 0.4).build();
-    public static final AnimatedAction DAGGER_2 = AnimatedAction.builder(0.54, "dagger_2")
-            .marker("attack", 0.4).marker("step", 0.4).build();
-    public static final AnimatedAction DAGGER_3 = AnimatedAction.builder(0.58, "dagger_3")
-            .marker("attack", 0.48).marker("step", 0.44).build();
-    public static final AnimatedAction DAGGER_4 = AnimatedAction.builder(0.58, "dagger_4")
-            .marker("attack", 0.32).marker("step", 0.32).build();
-    public static final AnimatedAction TOP_STAB = AnimatedAction.builder(0.7, "top_stab").marker("attack", 0.36).build();
-    public static final AnimatedAction THROW = AnimatedAction.builder(1.16, "dagger_throw")
-            .marker("attack_1", 0.28).marker("attack_2", 0.84).build();
+    public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
+    public static final String DAGGER_1 = BUILDER.add("dagger_1", AnimationsBuilder.definition(0.58)
+            .marker("attack", 0.44).marker("step", 0.4));
+    public static final String DAGGER_2 = BUILDER.add("dagger_2", AnimationsBuilder.definition(0.54)
+            .marker("attack", 0.4).marker("step", 0.4));
+    public static final String DAGGER_3 = BUILDER.add("dagger_3", AnimationsBuilder.definition(0.58)
+            .marker("attack", 0.48).marker("step", 0.44));
+    public static final String DAGGER_4 = BUILDER.add("dagger_4", AnimationsBuilder.definition(0.58)
+            .marker("attack", 0.32).marker("step", 0.32));
+    public static final String TOP_STAB = BUILDER.add("top_stab", AnimationsBuilder.definition(0.7).marker("attack", 0.36));
+    public static final String THROW = BUILDER.add("dagger_throw", AnimationsBuilder.definition(1.16)
+            .marker("attack_1", 0.28).marker("attack_2", 0.84));
 
-    public static final AnimatedAction DUPE = AnimatedAction.builder(1.4, "dupe").marker("attack", 0.84).build();
-    public static final AnimatedAction SUMMON = AnimatedAction.builder(2., "summon").build();
-    private static final AnimatedAction[] ANIMS = {DAGGER_1, DAGGER_2, DAGGER_3, DAGGER_4, TOP_STAB, THROW, DUPE, SUMMON};
+    public static final String DUPE = BUILDER.add("dupe", AnimationsBuilder.definition(1.4).marker("attack", 0.84));
+    public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2.));
+    public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
 
     private static final byte SMOKE = 64;
 
-    public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityHassan>>> ATTACKS = List.of(
-            WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.DAGGER_1)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .chain(GoalAttackAction.<EntityHassan>chainBuilder(EntityHassan.DAGGER_2, 2, 0.2f, 1)
-                            .or(EntityHassan.DAGGER_3, 2, 0.2f, 1)
-                            .or(EntityHassan.DAGGER_4, 2, 0.16f, 1)
-                            .withChance(0.6f))
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 11),
-            WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.DAGGER_1)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .chain(GoalAttackAction.<EntityHassan>chainBuilder(EntityHassan.DAGGER_2, 2, 0.2f, 1)
-                            .or(EntityHassan.DAGGER_3, 2, 0.2f, 1)
-                            .or(EntityHassan.DAGGER_4, 2, 0.16f, 1)
-                            .withChance(0.6f))
-                    .prepare(() -> new WrappedRunner<>(new MoveBehindAttackRunner<>(1))), 9),
-            WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.DAGGER_3)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .chain(GoalAttackAction.<EntityHassan>chainBuilder(EntityHassan.DAGGER_1, 2, 0.2f, 1)
-                            .chain(EntityHassan.DAGGER_2, 2, 0.2f)
-                            .or(EntityHassan.DAGGER_1, 2, 0.2f, 1)
-                            .chain(EntityHassan.DAGGER_4, 2, 0.16f)
-                            .withChance(0.6f))
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.2))), 11),
-            WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.TOP_STAB)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.2))), 8),
-            WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.TOP_STAB)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .prepare(() -> new WrappedRunner<>(new MoveBehindAttackRunner<>(1.2))), 10),
-            WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.THROW)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 10)
-                    .withCondition(((goal, target, previous) -> goal.distanceToTargetSq > 25 || goal.attacker.getRandom().nextFloat() < 0.5))
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 14, 1.3))), 12),
-            WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.DUPE)
-                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
-                    .withCondition((goal, target, prev) -> Utils.<EntityHassan>npCheck().test(goal, target, prev) && goal.attacker.gatherCopies().isEmpty())
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(4, 6, 1.3))), 20)
-    );
-    public static final List<WeightedEntry.Wrapper<IdleAction<EntityHassan>>> IDLE_ACTIONS = List.of(
-            WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1, 0.5)), 6),
-            WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(1, 1.1, 6)), 2)
-    );
-
-    public final AnimatedAttackGoal<EntityHassan> attack = new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS);
+//    public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityHassan>>> ATTACKS = List.of(
+//            WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.DAGGER_1)
+//                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
+//                    .chain(GoalAttackAction.<EntityHassan>chainBuilder(EntityHassan.DAGGER_2, 2, 0.2f, 1)
+//                            .or(EntityHassan.DAGGER_3, 2, 0.2f, 1)
+//                            .or(EntityHassan.DAGGER_4, 2, 0.16f, 1)
+//                            .withChance(0.6f))
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 11),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.DAGGER_1)
+//                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
+//                    .chain(GoalAttackAction.<EntityHassan>chainBuilder(EntityHassan.DAGGER_2, 2, 0.2f, 1)
+//                            .or(EntityHassan.DAGGER_3, 2, 0.2f, 1)
+//                            .or(EntityHassan.DAGGER_4, 2, 0.16f, 1)
+//                            .withChance(0.6f))
+//                    .prepare(() -> new WrappedRunner<>(new MoveBehindAttackRunner<>(1))), 9),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.DAGGER_3)
+//                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
+//                    .chain(GoalAttackAction.<EntityHassan>chainBuilder(EntityHassan.DAGGER_1, 2, 0.2f, 1)
+//                            .chain(EntityHassan.DAGGER_2, 2, 0.2f)
+//                            .or(EntityHassan.DAGGER_1, 2, 0.2f, 1)
+//                            .chain(EntityHassan.DAGGER_4, 2, 0.16f)
+//                            .withChance(0.6f))
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.2))), 11),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.TOP_STAB)
+//                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.2))), 8),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.TOP_STAB)
+//                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
+//                    .prepare(() -> new WrappedRunner<>(new MoveBehindAttackRunner<>(1.2))), 10),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.THROW)
+//                    .cooldown(e -> e.getRandom().nextInt(15) + 10)
+//                    .withCondition(((goal, target, previous) -> goal.distanceToTargetSq > 25 || goal.attacker.getRandom().nextFloat() < 0.5))
+//                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(7, 14, 1.3))), 12),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityHassan>(EntityHassan.DUPE)
+//                    .cooldown(e -> e.getRandom().nextInt(15) + 8)
+//                    .withCondition((goal, target, prev) -> Utils.<EntityHassan>npCheck().test(goal, target, prev) && goal.attacker.gatherCopies().isEmpty())
+//                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(4, 6, 1.3))), 20)
+//    );
+//    public static final List<WeightedEntry.Wrapper<IdleAction<EntityHassan>>> IDLE_ACTIONS = List.of(
+//            WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1, 0.5)), 6),
+//            WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(1, 1.1, 6)), 2)
+//    );
+//
+//    public final AnimatedAttackGoal<EntityHassan> attack = new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS);
 
     private final AnimationHandler<EntityHassan> animationHandler = new AnimationHandler<>(this, ANIMS).withChangeListener(anim -> {
-        if (!SUMMON.is(anim)) {
+        if (anim == null || !anim.is(SUMMON)) {
             if (!this.offHandCache.isEmpty()) {
                 this.setItemInHand(InteractionHand.OFF_HAND, this.offHandCache);
                 this.offHandCache = ItemStack.EMPTY;
@@ -140,12 +132,17 @@ public class EntityHassan extends BaseServant {
 
     public EntityHassan(EntityType<? extends EntityHassan> entityType, Level level) {
         super(entityType, level);
-        if (!level.isClientSide)
-            this.goalSelector.addGoal(0, this.attack);
+    }
+
+    public static boolean behind(Entity source, Entity target) {
+        Vec3 vec3 = target.getViewVector(1.0f);
+        Vec3 vec31 = source.position().vectorTo(target.position()).normalize();
+        vec31 = new Vec3(vec31.x, 0.0, vec31.z);
+        return vec31.dot(vec3) > 0.0;
     }
 
     @Override
-    protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
+    protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty) {
         this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(FateItems.ASSASSIN_DAGGER.get()));
     }
 
@@ -155,17 +152,12 @@ public class EntityHassan extends BaseServant {
     }
 
     @Override
-    public Goal getAttackAI() {
-        return this.attack;
-    }
-
-    @Override
     public AnimationHandler<EntityHassan> getAnimationHandler() {
         return this.animationHandler;
     }
 
     @Override
-    public void handleAttack(AnimatedAction anim) {
+    public void handleAttack(AnimationState anim) {
         if (anim.is(DUPE)) {
             if (anim.isAt(0.72)) {
                 this.level().broadcastEntityEvent(this, SMOKE);
@@ -189,7 +181,7 @@ public class EntityHassan extends BaseServant {
     }
 
     @Override
-    public AABB attackBB(AnimatedAction anim) {
+    public AABB attackBB(AnimationState anim) {
         double width = this.getBbWidth() + 0.3;
         double length = 1;
         if (anim.is(DAGGER_1)) {
@@ -213,7 +205,7 @@ public class EntityHassan extends BaseServant {
 
     @Override
     public boolean doHurtTarget(Entity entity) {
-        this.behind = MoveBehindAttackRunner.behind(this, entity);
+        this.behind = behind(this, entity);
         boolean hurt = super.doHurtTarget(entity);
         if (this.behind && hurt) {
             this.level().playSound(null, this, SoundEvents.PLAYER_ATTACK_CRIT, this.getSoundSource(), 0.7f, 0.9f);
@@ -272,14 +264,14 @@ public class EntityHassan extends BaseServant {
     }
 
     public void summonClones() {
-        if (this.gatherCopies().isEmpty()) {
+        if (!this.level().isClientSide && this.gatherCopies().isEmpty()) {
             if (!this.forcedNP && !this.useMana(this.props().hogouMana()))
                 return;
             this.copies.clear();
             for (int i = 0; i < this.props().getConfig(ServantExtraData.HASSAN_COPIES); i++) {
-                HassanClone hassan = new HassanClone(this.level, this);
+                HassanClone hassan = new HassanClone(this.level(), this);
                 hassan.moveTo(this.getX(), this.getY(), this.getZ(), Mth.wrapDegrees(this.level().random.nextFloat() * 360.0F), 0.0F);
-                hassan.finalizeSpawn((ServerLevelAccessor) this.level, this.level().getCurrentDifficultyAt(this.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
+                hassan.finalizeSpawn((ServerLevelAccessor) this.level(), this.level().getCurrentDifficultyAt(this.blockPosition()), MobSpawnType.MOB_SUMMONED, null);
                 this.level().addFreshEntity(hassan);
                 this.addCopy(hassan);
             }
@@ -294,7 +286,7 @@ public class EntityHassan extends BaseServant {
     }
 
     public void throwItem(boolean main) {
-        ThrownItemEntity item = new ThrownItemEntity(this.level, this);
+        ThrownItemEntity item = new ThrownItemEntity(this.level(), this);
         item.setWeapon(this.getWeaponToThrowAndReplace(main));
         if (this.getTarget() != null) {
             item.shootAtEntity(this.getTarget(), 1.2f, 7 - this.level().getDifficulty().getId() * 2);
@@ -328,20 +320,20 @@ public class EntityHassan extends BaseServant {
         ListTag copies = new ListTag();
         this.copies.forEach(hassan -> copies.add(NbtUtils.createUUID(hassan)));
         tag.put("Copies", copies);
-        tag.put("MainHandCache", this.mainHandCache.save(new CompoundTag()));
-        tag.put("OffHandCache", this.offHandCache.save(new CompoundTag()));
+        tag.put("MainHandCache", this.mainHandCache.save(this.registryAccess(), new CompoundTag()));
+        tag.put("OffHandCache", this.offHandCache.save(this.registryAccess(), new CompoundTag()));
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
         tag.getList("Copies", Tag.TAG_INT_ARRAY).forEach(nbt -> this.copies.add(NbtUtils.loadUUID(nbt)));
-        this.mainHandCache = ItemStack.of(tag.getCompound("MainHandCache"));
-        this.offHandCache = ItemStack.of(tag.getCompound("OffHandCache"));
+        this.mainHandCache = ItemStack.parseOptional(this.registryAccess(), tag.getCompound("MainHandCache"));
+        this.offHandCache = ItemStack.parseOptional(this.registryAccess(), tag.getCompound("OffHandCache"));
     }
 
     @Override
-    protected AnimatedAction getSummonAnimation() {
+    protected String getSummonAnimation() {
         return SUMMON;
     }
 

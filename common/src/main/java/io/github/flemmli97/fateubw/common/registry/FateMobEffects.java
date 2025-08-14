@@ -13,5 +13,4 @@ public class FateMobEffects {
     public static final LoaderRegister<MobEffect> EFFECTS = LoaderRegistryAccess.INSTANCE.of(Registries.MOB_EFFECT, Fate.MODID);
 
     public static final RegistryEntrySupplier<MobEffect, MobEffect> GAE_BUIDHE = EFFECTS.register("cursed_wounds", GaeBuidheCurse::new);
-
 }

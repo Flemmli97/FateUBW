@@ -29,5 +29,5 @@ public class FateBlocks {
     public static final RegistryEntrySupplier<Block, DropExperienceBlock> DEEP_SLATE_ARTIFACT_ORE = BLOCKS.register("deepslate_artifact_ore", () -> new DropExperienceBlock(UniformInt.of(20, 30), BlockBehaviour.Properties.of().mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops().strength(6, 8)));
     public static final RegistryEntrySupplier<Block, ChalkBlock> CHALK = BLOCKS.register("chalk_line", () -> new ChalkBlock(BlockBehaviour.Properties.of().mapColor(MapColor.WOOL).sound(SoundType.WOOL).noOcclusion().strength(0.1f, 10)));
 
-    public static final RegistryEntrySupplier<BlockEntityType<?>, BlockEntityType<AltarBlockEntity>> ALTAR_BLOCK_ENTITY = BLOCK_ENTITIES.register("altar_block_entity", () -> BlockEntityType.Builder.of(AltarBlockEntity::new, FateBlocks.ALTAR.get()));
+    public static final RegistryEntrySupplier<BlockEntityType<?>, BlockEntityType<AltarBlockEntity>> ALTAR_BLOCK_ENTITY = BLOCK_ENTITIES.register("altar_block_entity", () -> BlockEntityType.Builder.<AltarBlockEntity>of(AltarBlockEntity::new, FateBlocks.ALTAR.get()).build(null));
 }

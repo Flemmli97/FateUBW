@@ -29,7 +29,7 @@ import java.util.UUID;
 
 public class TeamGui extends Screen {
 
-    private static final ResourceLocation WIDGETS = new ResourceLocation(Fate.MODID, "textures/gui/widgets.png");
+    private static final ResourceLocation WIDGETS = Fate.modRes("textures/gui/widgets.png");
 
     private int leftPos, topPos;
 
@@ -290,10 +290,10 @@ public class TeamGui extends Screen {
 
     private enum Pages {
 
-        MAIN(new ResourceLocation(Fate.MODID, "textures/gui/team_gui_1.png"), null, 220, 160),
-        INVITES(new ResourceLocation(Fate.MODID, "textures/gui/team_gui_2.png"), Component.translatable("fateubw.gui.team.invites"), 220, 206),
-        ALLIES(new ResourceLocation(Fate.MODID, "textures/gui/team_gui_2.png"), Component.translatable("fateubw.gui.team.allies"), 220, 206),
-        MEMBERS(new ResourceLocation(Fate.MODID, "textures/gui/team_gui_2.png"), Component.translatable("fateubw.gui.team.members"), 220, 206);
+        MAIN(Fate.modRes("textures/gui/team_gui_1.png"), null, 220, 160),
+        INVITES(Fate.modRes("textures/gui/team_gui_2.png"), Component.translatable("fateubw.gui.team.invites"), 220, 206),
+        ALLIES(Fate.modRes("textures/gui/team_gui_2.png"), Component.translatable("fateubw.gui.team.allies"), 220, 206),
+        MEMBERS(Fate.modRes("textures/gui/team_gui_2.png"), Component.translatable("fateubw.gui.team.members"), 220, 206);
 
         public final ResourceLocation texture;
         public final Component title;

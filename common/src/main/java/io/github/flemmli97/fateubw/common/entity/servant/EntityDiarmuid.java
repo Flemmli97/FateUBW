@@ -1,29 +1,20 @@
 package io.github.flemmli97.fateubw.common.entity.servant;
 
-import com.mojang.math.Vector4f;
-import io.github.flemmli97.fateubw.common.entity.ai.AnimationRunner;
 import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateMobEffects;
 import io.github.flemmli97.fateubw.common.utils.TeleportUtils;
 import io.github.flemmli97.fateubw.common.utils.Utils;
-import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
-import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.AnimatedAttackGoal;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.GoalAttackAction;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.IdleAction;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.KeepDistanceRunner;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveAwayRunner;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTargetAttackRunner;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTargetRunner;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.WrappedRunner;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionContainer;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationsBuilder;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.Mth;
-import net.minecraft.util.random.WeightedEntry;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -32,7 +23,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -43,59 +33,59 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-
-import java.util.List;
+import org.joml.Vector4f;
 
 public class EntityDiarmuid extends BaseServant {
 
-    public static final AnimatedAction DUAL_SPEAR_1 = AnimatedAction.builder(0.86, "dual_spear_1")
-            .marker("attack_right", 0.4).marker("attack_left", 0.72).marker("step", 0.44, 0.72).build();
-    public static final AnimatedAction DUAL_SPEAR_2 = AnimatedAction.builder(0.9, "dual_spear_2")
-            .marker("attack_right", 0.4).marker("attack_left", 0.8).marker("step", 0.48).build();
-    public static final AnimatedAction DUAL_SPEAR_3 = AnimatedAction.builder(0.78, "dual_spear_3")
-            .marker("attack_right", 0.32).marker("attack_left", 0.56).build();
-    public static final AnimatedAction DUAL_SPEAR_4 = AnimatedAction.builder(0.58, "dual_spear_4")
-            .marker("attack", 0.48).build();
-    public static final AnimatedAction BLINK = AnimatedAction.builder(1.12, "blink")
-            .marker("teleport_start", 0.28).marker("teleport", 0.5).marker("teleport_end", 0.84).build();
-    public static final AnimatedAction BLINK_AWAY = AnimatedAction.copyOf(BLINK, "blink_away");
+    public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
+    public static final String DUAL_SPEAR_1 = BUILDER.add("dual_spear_1", AnimationsBuilder.definition(0.86)
+            .marker("attack_right", 0.4).marker("attack_left", 0.72).marker("step", 0.44, 0.72));
+    public static final String DUAL_SPEAR_2 = BUILDER.add("dual_spear_2", AnimationsBuilder.definition(0.9)
+            .marker("attack_right", 0.4).marker("attack_left", 0.8).marker("step", 0.48));
+    public static final String DUAL_SPEAR_3 = BUILDER.add("dual_spear_3", AnimationsBuilder.definition(0.78)
+            .marker("attack_right", 0.32).marker("attack_left", 0.56));
+    public static final String DUAL_SPEAR_4 = BUILDER.add("dual_spear_4", AnimationsBuilder.definition(0.58)
+            .marker("attack", 0.48));
+    public static final String BLINK = BUILDER.add("blink", AnimationsBuilder.definition(1.12)
+            .marker("teleport_start", 0.28).marker("teleport", 0.5).marker("teleport_end", 0.84));
+    public static final String BLINK_AWAY = BUILDER.add("blink_away", BLINK);
 
-    public static final AnimatedAction UNSEAL = AnimatedAction.builder(5.04, "hogou_unseal")
+    public static final String UNSEAL = BUILDER.add("hogou_unseal", AnimationsBuilder.definition(5.04)
             .marker("unseal_1", 2.12).marker("unseal_2", 3.88)
-            .marker("unsealed", 4.8).build();
-    public static final AnimatedAction SUMMON = new AnimatedAction(2., "summon");
-    private static final AnimatedAction[] ANIMS = {DUAL_SPEAR_1, DUAL_SPEAR_2, DUAL_SPEAR_3, DUAL_SPEAR_4, BLINK, BLINK_AWAY, UNSEAL, SUMMON};
-
-    public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityDiarmuid>>> ATTACKS = List.of(
-            WeightedEntry.wrap(new GoalAttackAction<EntityDiarmuid>(EntityDiarmuid.DUAL_SPEAR_1)
-                    .cooldown(e -> e.getRandom().nextInt(18) + 10)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 10),
-            WeightedEntry.wrap(new GoalAttackAction<EntityDiarmuid>(EntityDiarmuid.DUAL_SPEAR_2)
-                    .cooldown(e -> e.getRandom().nextInt(18) + 10)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 10),
-            WeightedEntry.wrap(new GoalAttackAction<EntityDiarmuid>(EntityDiarmuid.DUAL_SPEAR_3)
-                    .cooldown(e -> e.getRandom().nextInt(18) + 10)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 10),
-            WeightedEntry.wrap(new GoalAttackAction<EntityDiarmuid>(EntityDiarmuid.DUAL_SPEAR_4)
-                    .cooldown(e -> e.getRandom().nextInt(18) + 10)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 10),
-            WeightedEntry.wrap(new GoalAttackAction<EntityDiarmuid>(EntityDiarmuid.UNSEAL)
-                    .cooldown(e -> e.getRandom().nextInt(25) + 20)
-                    .withCondition((goal, target, prev) -> goal.attacker.unsealedDuration < 0
-                            && ((goal.attacker.canUseNP() && goal.attacker.getOwner() == null && goal.attacker.getMana() >= goal.attacker.props().hogouMana()) || goal.attacker.forcedNP))
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(10, 18, 1.3))), 30)
-    );
-    public static final List<WeightedEntry.Wrapper<IdleAction<EntityDiarmuid>>> IDLE_ACTIONS = List.of(
-            WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1, 0.5)), 12),
-            WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(1, 1.2, 6)), 7),
-            WeightedEntry.wrap(new IdleAction<EntityDiarmuid>(() -> new AnimationRunner<>(BLINK))
-                    .duration(e -> Mth.ceil(BLINK.getLength()) + 1)
-                    .withCondition(((goal, target) -> goal.distanceToTargetSq > 49)), 8),
-            WeightedEntry.wrap(new IdleAction<EntityDiarmuid>(() -> new AnimationRunner<>(BLINK_AWAY))
-                    .duration(e -> Mth.ceil(BLINK_AWAY.getLength()) + 1), 3)
-    );
-
-    public final AnimatedAttackGoal<EntityDiarmuid> attack = new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS);
+            .marker("unsealed", 4.8));
+    public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2.));
+    public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
+//
+//    public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityDiarmuid>>> ATTACKS = List.of(
+//            WeightedEntry.wrap(new GoalAttackAction<EntityDiarmuid>(EntityDiarmuid.DUAL_SPEAR_1)
+//                    .cooldown(e -> e.getRandom().nextInt(18) + 10)
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 10),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityDiarmuid>(EntityDiarmuid.DUAL_SPEAR_2)
+//                    .cooldown(e -> e.getRandom().nextInt(18) + 10)
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 10),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityDiarmuid>(EntityDiarmuid.DUAL_SPEAR_3)
+//                    .cooldown(e -> e.getRandom().nextInt(18) + 10)
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 10),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityDiarmuid>(EntityDiarmuid.DUAL_SPEAR_4)
+//                    .cooldown(e -> e.getRandom().nextInt(18) + 10)
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1.1))), 10),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityDiarmuid>(EntityDiarmuid.UNSEAL)
+//                    .cooldown(e -> e.getRandom().nextInt(25) + 20)
+//                    .withCondition((goal, target, prev) -> goal.attacker.unsealedDuration < 0
+//                            && ((goal.attacker.canUseNP() && goal.attacker.getOwner() == null && goal.attacker.getMana() >= goal.attacker.props().hogouMana()) || goal.attacker.forcedNP))
+//                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(10, 18, 1.3))), 30)
+//    );
+//    public static final List<WeightedEntry.Wrapper<IdleAction<EntityDiarmuid>>> IDLE_ACTIONS = List.of(
+//            WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1, 0.5)), 12),
+//            WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(1, 1.2, 6)), 7),
+//            WeightedEntry.wrap(new IdleAction<EntityDiarmuid>(() -> new AnimationRunner<>(BLINK))
+//                    .duration(e -> Mth.ceil(BLINK.getLength()) + 1)
+//                    .withCondition(((goal, target) -> goal.distanceToTargetSq > 49)), 8),
+//            WeightedEntry.wrap(new IdleAction<EntityDiarmuid>(() -> new AnimationRunner<>(BLINK_AWAY))
+//                    .duration(e -> Mth.ceil(BLINK_AWAY.getLength()) + 1), 3)
+//    );
+//
+//    public final AnimatedAttackGoal<EntityDiarmuid> attack = new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS);
 
     private final AnimationHandler<EntityDiarmuid> animationHandler = new AnimationHandler<>(this, ANIMS);
     private final Vector4f summonColor = new Vector4f(50 / 255f, 63 / 255f, 64 / 255f, 0.7f);
@@ -108,19 +98,12 @@ public class EntityDiarmuid extends BaseServant {
 
     public EntityDiarmuid(EntityType<? extends EntityDiarmuid> entityType, Level level) {
         super(entityType, level);
-        if (!level.isClientSide)
-            this.goalSelector.addGoal(0, this.attack);
     }
 
     @Override
-    protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
+    protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty) {
         this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(FateItems.GAEDEARG.get()));
         this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(FateItems.GAEBUIDHE.get()));
-    }
-
-    @Override
-    public Goal getAttackAI() {
-        return this.attack;
     }
 
     @Override
@@ -145,8 +128,8 @@ public class EntityDiarmuid extends BaseServant {
             }
             this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 1, 1, false, false));
         } else {
-            AnimatedAction anim = this.getAnimationHandler().getAnimation();
-            if (UNSEAL.is(anim)) {
+            AnimationState anim = this.getAnimationHandler().getAnimation();
+            if (anim != null && anim.is(UNSEAL)) {
                 if (anim.isAt("unseal_1")) {
                     this.sphereParticles();
                 }
@@ -178,7 +161,7 @@ public class EntityDiarmuid extends BaseServant {
     }
 
     @Override
-    public void handleAttack(AnimatedAction anim) {
+    public void handleAttack(AnimationState anim) {
         if (anim.is(UNSEAL)) {
             if (this.getMana() >= this.props().hogouMana()) {
                 if (anim.isAt("unseal_1")) {
@@ -250,7 +233,7 @@ public class EntityDiarmuid extends BaseServant {
     }
 
     @Override
-    public AABB attackBB(AnimatedAction anim) {
+    public AABB attackBB(AnimationState anim) {
         double width = this.getBbWidth() + 0.3;
         double length = 1;
         if (anim.is(DUAL_SPEAR_1, DUAL_SPEAR_2)) {
@@ -293,12 +276,12 @@ public class EntityDiarmuid extends BaseServant {
             if (leftHandAttack) {
                 if (entity instanceof LivingEntity living) {
                     living.removeEffect(MobEffects.REGENERATION);
-                    MobEffectInstance eff = living.getEffect(FateMobEffects.GAE_BUIDHE.get());
+                    MobEffectInstance eff = living.getEffect(FateMobEffects.GAE_BUIDHE.asHolder());
                     int amplifier = 0;
                     if (eff != null && this.getRandom().nextFloat() < 1 - (eff.getAmplifier() * 0.2)) {
                         amplifier = Math.min(4, eff.getAmplifier() + 1);
                     }
-                    living.addEffect(new MobEffectInstance(FateMobEffects.GAE_BUIDHE.get(), 200 + (amplifier * 100), amplifier));
+                    living.addEffect(new MobEffectInstance(FateMobEffects.GAE_BUIDHE.asHolder(), 200 + (amplifier * 100), amplifier));
                 }
             }
             if (rightHandAttack) {
@@ -312,7 +295,7 @@ public class EntityDiarmuid extends BaseServant {
 
     @Override
     protected DamageSource damageSourceAttack(Entity target) {
-        return this.deargAttackFlag ? FateDamageTypes.direct(FateDamageTypes.GAE_DEARG, this) : DamageSource.mobAttack(this);
+        return this.deargAttackFlag ? FateDamageTypes.direct(FateDamageTypes.GAE_DEARG, this) : super.damageSourceAttack(target);
     }
 
     @Override
@@ -330,7 +313,7 @@ public class EntityDiarmuid extends BaseServant {
     @Override
     public boolean isInvisible() {
         if (this.getAnimationHandler().isCurrent(BLINK, BLINK_AWAY)) {
-            AnimatedAction anim = this.getAnimationHandler().getAnimation();
+            AnimationState anim = this.getAnimationHandler().getAnimation();
             return anim.isPast("teleport_start") && !anim.isPast("teleport_end");
         }
         return super.isInvisible();
@@ -376,7 +359,7 @@ public class EntityDiarmuid extends BaseServant {
     }
 
     @Override
-    protected AnimatedAction getSummonAnimation() {
+    protected String getSummonAnimation() {
         return SUMMON;
     }
 

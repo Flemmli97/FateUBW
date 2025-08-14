@@ -1,7 +1,7 @@
 package io.github.flemmli97.fateubw.common.entity.misc;
 
 import io.github.flemmli97.fateubw.common.attachment.PlayerData;
-import io.github.flemmli97.fateubw.common.entity.DaggerHitNotifiable;
+import io.github.flemmli97.fateubw.common.entity.utils.DaggerHitNotifiable;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.platform.Platform;
 import io.github.flemmli97.tenshilib.common.utils.HitResultUtils;

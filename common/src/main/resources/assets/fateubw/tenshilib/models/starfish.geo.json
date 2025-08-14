@@ -1,0 +1,580 @@
+{
+  "format_version": "1.12.0",
+  "minecraft:geometry": [
+    {
+      "description": {
+        "identifier": "geometry.unknown",
+        "texture_width": 32,
+        "texture_height": 32,
+        "visible_bounds_width": 3,
+        "visible_bounds_height": 3.5,
+        "visible_bounds_offset": [0, 1.25, 0]
+      },
+      "bones": [
+        {
+          "name": "MouthBottom",
+          "pivot": [0, 11, 0],
+          "rotation": [90, 0, 30],
+          "cubes": [
+            {
+              "origin": [-3, 10, -3],
+              "size": [6, 1, 6],
+              "uv": [0, 3]
+            }
+          ]
+        },
+        {
+          "name": "MouthSide1",
+          "parent": "MouthBottom",
+          "pivot": [0, 11, -3],
+          "cubes": [
+            {
+              "origin": [-2, 10, -3.5],
+              "size": [4, 2, 1],
+              "uv": [0, 0],
+              "mirror": true
+            }
+          ]
+        },
+        {
+          "name": "TentacleP1S1",
+          "parent": "MouthSide1",
+          "pivot": [0, 11, -3.1],
+          "rotation": [-30, 0, 0],
+          "cubes": [
+            {
+              "origin": [-2, 10, -8.1],
+              "size": [4, 2, 5],
+              "uv": [16, 10],
+              "mirror": true
+            },
+            {
+              "origin": [-0.5, 11, -5.1],
+              "size": [1, 2, 1],
+              "uv": [0, 10],
+              "mirror": true
+            },
+            {
+              "origin": [-0.5, 11, -7.1],
+              "size": [1, 2, 1],
+              "uv": [0, 10],
+              "mirror": true
+            }
+          ]
+        },
+        {
+          "name": "TentacleP2S1",
+          "parent": "TentacleP1S1",
+          "pivot": [0, 11, -7.7],
+          "rotation": [50, 0, 0],
+          "cubes": [
+            {
+              "origin": [-1.5, 10, -12.7],
+              "size": [3, 2, 5],
+              "uv": [0, 10],
+              "mirror": true
+            },
+            {
+              "origin": [-0.5, 11, -9.7],
+              "size": [1, 2, 1],
+              "uv": [0, 10],
+              "mirror": true
+            },
+            {
+              "origin": [-0.5, 11, -11.7],
+              "size": [1, 2, 1],
+              "uv": [0, 10],
+              "mirror": true
+            }
+          ]
+        },
+        {
+          "name": "TentacleP3S1",
+          "parent": "TentacleP2S1",
+          "pivot": [0, 11, -12.2],
+          "rotation": [-90, 0, 0],
+          "cubes": [
+            {
+              "origin": [-1, 10.5, -16.2],
+              "size": [2, 1, 4],
+              "uv": [0, 17],
+              "mirror": true
+            },
+            {
+              "origin": [-0.5, 11, -14.4],
+              "size": [1, 1, 1],
+              "uv": [0, 10],
+              "mirror": true
+            },
+            {
+              "origin": [-0.5, 11, -16],
+              "size": [1, 1, 1],
+              "uv": [0, 10],
+              "mirror": true
+            }
+          ]
+        },
+        {
+          "name": "MouthSide2",
+          "parent": "MouthBottom",
+          "pivot": [2.6, 11, -1.5],
+          "rotation": [0, -60, 0],
+          "cubes": [
+            {
+              "origin": [0.6, 10, -2],
+              "size": [4, 2, 1],
+              "uv": [0, 0],
+              "mirror": true
+            }
+          ]
+        },
+        {
+          "name": "TentacleP1S2",
+          "parent": "MouthSide2",
+          "pivot": [2.6, 11, -1.6],
+          "rotation": [-30, 0, 0],
+          "cubes": [
+            {
+              "origin": [0.6, 10, -6.6],
+              "size": [4, 2, 5],
+              "uv": [16, 10],
+              "mirror": true
+            },
+            {
+              "origin": [2.1, 11, -3.6],
+              "size": [1, 2, 1],
+              "uv": [0, 10],
+              "mirror": true
+            },
+            {
+              "origin": [2.1, 11, -5.6],
+              "size": [1, 2, 1],
+              "uv": [0, 10],
+              "mirror": true
+            }
+          ]
+        },
+        {
+          "name": "TentacleP2S2",
+          "parent": "TentacleP1S2",
+          "pivot": [2.6, 11, -6.2],
+          "rotation": [50, 0, 0],
+          "cubes": [
+            {
+              "origin": [1.1, 10, -11.2],
+              "size": [3, 2, 5],
+              "uv": [0, 10],
+              "mirror": true
+            },
+            {
+              "origin": [2.1, 11, -8.2],
+              "size": [1, 2, 1],
+              "uv": [0, 10],
+              "mirror": true
+            },
+            {
+              "origin": [2.1, 11, -10.2],
+              "size": [1, 2, 1],
+              "uv": [0, 10],
+              "mirror": true
+            }
+          ]
+        },
+        {
+          "name": "TentacleP3S2",
+          "parent": "TentacleP2S2",
+          "pivot": [2.6, 11, -10.7],
+          "rotation": [-90, 0, 0],
+          "cubes": [
+            {
+              "origin": [1.6, 10.5, -14.7],
+              "size": [2, 1, 4],
+              "uv": [0, 17],
+              "mirror": true
+            },
+            {
+              "origin": [2.1, 11, -12.9],
+              "size": [1, 1, 1],
+              "uv": [0, 10],
+              "mirror": true
+            },
+            {
+              "origin": [2.1, 11, -14.5],
+              "size": [1, 1, 1],
+              "uv": [0, 10],
+              "mirror": true
+            }
+          ]
+        },
+        {
+          "name": "MouthSide3",
+          "parent": "MouthBottom",
+          "pivot": [2.6, 11, 1.5],
+          "rotation": [0, -120, 0],
+          "cubes": [
+            {
+              "origin": [0.6, 10, 1],
+              "size": [4, 2, 1],
+              "uv": [0, 0],
+              "mirror": true
+            }
+          ]
+        },
+        {
+          "name": "TentacleP1S3",
+          "parent": "MouthSide3",
+          "pivot": [2.6, 11, 1.4],
+          "rotation": [-10, 0, 0],
+          "cubes": [
+            {
+              "origin": [0.6, 10, -3.6],
+              "size": [4, 2, 5],
+              "uv": [16, 10],
+              "mirror": true
+            },
+            {
+              "origin": [2.1, 11, -0.6],
+              "size": [1, 2, 1],
+              "uv": [0, 10],
+              "mirror": true
+            },
+            {
+              "origin": [2.1, 11, -2.6],
+              "size": [1, 2, 1],
+              "uv": [0, 10],
+              "mirror": true
+            }
+          ]
+        },
+        {
+          "name": "TentacleP2S3",
+          "parent": "TentacleP1S3",
+          "pivot": [2.6, 11, -3.2],
+          "rotation": [-20, 0, 0],
+          "cubes": [
+            {
+              "origin": [1.1, 10, -8.2],
+              "size": [3, 2, 5],
+              "uv": [0, 10],
+              "mirror": true
+            },
+            {
+              "origin": [2.1, 11, -5.2],
+              "size": [1, 2, 1],
+              "uv": [0, 10],
+              "mirror": true
+            },
+            {
+              "origin": [2.1, 11, -7.2],
+              "size": [1, 2, 1],
+              "uv": [0, 10],
+              "mirror": true
+            }
+          ]
+        },
+        {
+          "name": "TentacleP3S3",
+          "parent": "TentacleP2S3",
+          "pivot": [2.6, 11, -7.7],
+          "rotation": [-30, 0, 0],
+          "cubes": [
+            {
+              "origin": [1.6, 10.5, -11.7],
+              "size": [2, 1, 4],
+              "uv": [0, 17],
+              "mirror": true
+            },
+            {
+              "origin": [2.1, 11, -9.9],
+              "size": [1, 1, 1],
+              "uv": [0, 10],
+              "mirror": true
+            },
+            {
+              "origin": [2.1, 11, -11.5],
+              "size": [1, 1, 1],
+              "uv": [0, 10],
+              "mirror": true
+            }
+          ]
+        },
+        {
+          "name": "MouthSide4",
+          "parent": "MouthBottom",
+          "pivot": [0, 11, 3],
+          "rotation": [0, -180, 0],
+          "cubes": [
+            {
+              "origin": [-2, 10, 2.5],
+              "size": [4, 2, 1],
+              "uv": [0, 0],
+              "mirror": true
+            }
+          ]
+        },
+        {
+          "name": "TentacleP1S4",
+          "parent": "MouthSide4",
+          "pivot": [0, 11, 2.9],
+          "rotation": [-10, 0, 0],
+          "cubes": [
+            {
+              "origin": [-2, 10, -2.1],
+              "size": [4, 2, 5],
+              "uv": [16, 10],
+              "mirror": true
+            },
+            {
+              "origin": [-0.5, 11, 0.9],
+              "size": [1, 2, 1],
+              "uv": [0, 10],
+              "mirror": true
+            },
+            {
+              "origin": [-0.5, 11, -1.1],
+              "size": [1, 2, 1],
+              "uv": [0, 10],
+              "mirror": true
+            }
+          ]
+        },
+        {
+          "name": "TentacleP2S4",
+          "parent": "TentacleP1S4",
+          "pivot": [0, 11, -1.7],
+          "rotation": [-20, 0, 0],
+          "cubes": [
+            {
+              "origin": [-1.5, 10, -6.7],
+              "size": [3, 2, 5],
+              "uv": [0, 10],
+              "mirror": true
+            },
+            {
+              "origin": [-0.5, 11, -3.7],
+              "size": [1, 2, 1],
+              "uv": [0, 10],
+              "mirror": true
+            },
+            {
+              "origin": [-0.5, 11, -5.7],
+              "size": [1, 2, 1],
+              "uv": [0, 10],
+              "mirror": true
+            }
+          ]
+        },
+        {
+          "name": "TentacleP3S4",
+          "parent": "TentacleP2S4",
+          "pivot": [0, 11, -6.2],
+          "rotation": [-30, 0, 0],
+          "cubes": [
+            {
+              "origin": [-1, 10.5, -10.2],
+              "size": [2, 1, 4],
+              "uv": [0, 17],
+              "mirror": true
+            },
+            {
+              "origin": [-0.5, 11, -8.4],
+              "size": [1, 1, 1],
+              "uv": [0, 10],
+              "mirror": true
+            },
+            {
+              "origin": [-0.5, 11, -10],
+              "size": [1, 1, 1],
+              "uv": [0, 10],
+              "mirror": true
+            }
+          ]
+        },
+        {
+          "name": "MouthSide5",
+          "parent": "MouthBottom",
+          "pivot": [-2.6, 11, 1.5],
+          "rotation": [0, -240, 0],
+          "cubes": [
+            {
+              "origin": [-4.6, 10, 1],
+              "size": [4, 2, 1],
+              "uv": [0, 0],
+              "mirror": true
+            }
+          ]
+        },
+        {
+          "name": "TentacleP1S5",
+          "parent": "MouthSide5",
+          "pivot": [-2.6, 11, 1.4],
+          "rotation": [-10, 0, 0],
+          "cubes": [
+            {
+              "origin": [-4.6, 10, -3.6],
+              "size": [4, 2, 5],
+              "uv": [16, 10],
+              "mirror": true
+            },
+            {
+              "origin": [-3.1, 11, -0.6],
+              "size": [1, 2, 1],
+              "uv": [0, 10],
+              "mirror": true
+            },
+            {
+              "origin": [-3.1, 11, -2.6],
+              "size": [1, 2, 1],
+              "uv": [0, 10],
+              "mirror": true
+            }
+          ]
+        },
+        {
+          "name": "TentacleP2S5",
+          "parent": "TentacleP1S5",
+          "pivot": [-2.6, 11, -3.2],
+          "rotation": [-20, 0, 0],
+          "cubes": [
+            {
+              "origin": [-4.1, 10, -8.2],
+              "size": [3, 2, 5],
+              "uv": [0, 10],
+              "mirror": true
+            },
+            {
+              "origin": [-3.1, 11, -5.2],
+              "size": [1, 2, 1],
+              "uv": [0, 10],
+              "mirror": true
+            },
+            {
+              "origin": [-3.1, 11, -7.2],
+              "size": [1, 2, 1],
+              "uv": [0, 10],
+              "mirror": true
+            }
+          ]
+        },
+        {
+          "name": "TentacleP3S5",
+          "parent": "TentacleP2S5",
+          "pivot": [-2.6, 11, -7.7],
+          "rotation": [-30, 0, 0],
+          "cubes": [
+            {
+              "origin": [-3.6, 10.5, -11.7],
+              "size": [2, 1, 4],
+              "uv": [0, 17],
+              "mirror": true
+            },
+            {
+              "origin": [-3.1, 11, -9.9],
+              "size": [1, 1, 1],
+              "uv": [0, 10],
+              "mirror": true
+            },
+            {
+              "origin": [-3.1, 11, -11.5],
+              "size": [1, 1, 1],
+              "uv": [0, 10],
+              "mirror": true
+            }
+          ]
+        },
+        {
+          "name": "MouthSide6",
+          "parent": "MouthBottom",
+          "pivot": [-2.6, 11, -1.5],
+          "rotation": [0, -300, 0],
+          "cubes": [
+            {
+              "origin": [-4.6, 10, -2],
+              "size": [4, 2, 1],
+              "uv": [0, 0],
+              "mirror": true
+            }
+          ]
+        },
+        {
+          "name": "TentacleP1S6",
+          "parent": "MouthSide6",
+          "pivot": [-2.6, 11, -1.6],
+          "rotation": [-10, 0, 0],
+          "cubes": [
+            {
+              "origin": [-4.6, 10, -6.6],
+              "size": [4, 2, 5],
+              "uv": [16, 10],
+              "mirror": true
+            },
+            {
+              "origin": [-3.1, 11, -3.6],
+              "size": [1, 2, 1],
+              "uv": [0, 10],
+              "mirror": true
+            },
+            {
+              "origin": [-3.1, 11, -5.6],
+              "size": [1, 2, 1],
+              "uv": [0, 10],
+              "mirror": true
+            }
+          ]
+        },
+        {
+          "name": "TentacleP2S6",
+          "parent": "TentacleP1S6",
+          "pivot": [-2.6, 11, -6.2],
+          "rotation": [-20, 0, 0],
+          "cubes": [
+            {
+              "origin": [-4.1, 10, -11.2],
+              "size": [3, 2, 5],
+              "uv": [0, 10],
+              "mirror": true
+            },
+            {
+              "origin": [-3.1, 11, -8.2],
+              "size": [1, 2, 1],
+              "uv": [0, 10],
+              "mirror": true
+            },
+            {
+              "origin": [-3.1, 11, -10.2],
+              "size": [1, 2, 1],
+              "uv": [0, 10],
+              "mirror": true
+            }
+          ]
+        },
+        {
+          "name": "TentacleP3S6",
+          "parent": "TentacleP2S6",
+          "pivot": [-2.6, 11, -10.7],
+          "rotation": [-30, 0, 0],
+          "cubes": [
+            {
+              "origin": [-3.6, 10.5, -14.7],
+              "size": [2, 1, 4],
+              "uv": [0, 17],
+              "mirror": true
+            },
+            {
+              "origin": [-3.1, 11, -12.9],
+              "size": [1, 1, 1],
+              "uv": [0, 10],
+              "mirror": true
+            },
+            {
+              "origin": [-3.1, 11, -14.5],
+              "size": [1, 1, 1],
+              "uv": [0, 10],
+              "mirror": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

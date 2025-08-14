@@ -2,11 +2,11 @@ package io.github.flemmli97.fateubw.client.render.misc;
 
 import io.github.flemmli97.fateubw.common.entity.misc.GaeBolg;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
-import io.github.flemmli97.tenshilib.client.render.RenderProjectileItem;
+import io.github.flemmli97.tenshilib.client.render.ItemProjectileRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.item.ItemStack;
 
-public class RenderGaeBolg extends RenderProjectileItem<GaeBolg> {
+public class RenderGaeBolg extends ItemProjectileRenderer<GaeBolg> {
 
     private final ItemStack stack = new ItemStack(FateItems.GAEBOLG.get());
 
@@ -23,5 +23,4 @@ public class RenderGaeBolg extends RenderProjectileItem<GaeBolg> {
     public Type getRenderType(GaeBolg entity) {
         return Type.WEAPON;
     }
-
 }

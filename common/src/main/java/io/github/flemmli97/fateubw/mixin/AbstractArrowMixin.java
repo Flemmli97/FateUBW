@@ -1,7 +1,7 @@
 package io.github.flemmli97.fateubw.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import io.github.flemmli97.fateubw.common.entity.CustomArrowDamageSource;
+import io.github.flemmli97.fateubw.common.entity.utils.CustomArrowDamageSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import org.spongepowered.asm.mixin.Mixin;

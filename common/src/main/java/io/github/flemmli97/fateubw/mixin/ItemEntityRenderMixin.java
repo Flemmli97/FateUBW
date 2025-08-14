@@ -18,5 +18,4 @@ public abstract class ItemEntityRenderMixin {
     private void onRender(ItemEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight, CallbackInfo info) {
         GrailItemRender.renderBeams(entity, poseStack, buffer, partialTicks);
     }
-
 }

@@ -1,7 +1,6 @@
 package io.github.flemmli97.fateubw.client;
 
 import io.github.flemmli97.fateubw.Fate;
-import io.github.flemmli97.fateubw.common.attachment.PlayerData;
 import io.github.flemmli97.fateubw.common.entity.misc.ChainDagger;
 import io.github.flemmli97.fateubw.common.entity.servant.EntityEmiya;
 import io.github.flemmli97.fateubw.common.entity.servant.EntityMedusa;
@@ -28,7 +27,7 @@ public class ItemModelProps {
     public static final ClampedItemPropertyFunction THROWN_DAGGER_PROP = (stack, world, entity, seed) -> {
         boolean thrown = false;
         if (entity instanceof Player player) {
-            ChainDagger dagger = Platform.INSTANCE.getPlayerData(player).map(PlayerData::getThrownDagger).orElse(null);
+            ChainDagger dagger = Platform.INSTANCE.getPlayerData(player).getThrownDagger();
             if (dagger != null) {
                 thrown = dagger.fromMainHand() ? player.getMainHandItem() == stack : player.getOffhandItem() == stack;
             }

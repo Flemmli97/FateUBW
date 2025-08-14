@@ -1,7 +1,7 @@
 package io.github.flemmli97.fateubw.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import io.github.flemmli97.fateubw.common.entity.StandingVehicle;
+import io.github.flemmli97.fateubw.common.entity.utils.StandingVehicle;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;

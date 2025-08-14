@@ -6,27 +6,21 @@ import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailProvider;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.utils.Utils;
-import io.github.flemmli97.tenshilib.api.entity.AnimatedAction;
-import io.github.flemmli97.tenshilib.api.entity.AnimationHandler;
-import io.github.flemmli97.tenshilib.common.entity.EntityUtil;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.AnimatedAttackGoal;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.GoalAttackAction;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.IdleAction;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.KeepDistanceRunner;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveAwayRunner;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTargetAttackRunner;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.MoveToTargetRunner;
-import io.github.flemmli97.tenshilib.common.entity.ai.animated.impl.WrappedRunner;
-import io.github.flemmli97.tenshilib.common.utils.OrientedBoundingBox;
+import io.github.flemmli97.tenshilib.common.entity.EntityUtils;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionContainer;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationsBuilder;
+import io.github.flemmli97.tenshilib.common.utils.math.OrientedBoundingBox;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
+import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.util.random.WeightedEntry;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
@@ -35,7 +29,6 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -46,79 +39,79 @@ import java.util.List;
 
 public class EntityArthur extends BaseServant {
 
-    public static final AnimatedAction TWO_HAND_1 = AnimatedAction.builder(0.78, "two_hand_1")
+    public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
+    public static final String TWO_HAND_1 = BUILDER.add("two_hand_1", AnimationsBuilder.definition(0.78)
             .marker("attack", 0.64).marker("step", 0.68)
-            .marker(EntityTrailProvider.TRAIL_START, 0.36).build();
-    public static final AnimatedAction TWO_HAND_2 = AnimatedAction.builder(0.7, "two_hand_2")
+            .marker(EntityTrailProvider.TRAIL_START, 0.36));
+    public static final String TWO_HAND_2 = BUILDER.add("two_hand_2", AnimationsBuilder.definition(0.7)
             .marker("attack", 0.56).marker("step", 0.6)
-            .marker(EntityTrailProvider.TRAIL_START, 0.36).build();
-    public static final AnimatedAction TWO_HAND_3 = AnimatedAction.builder(0.7, "two_hand_3")
+            .marker(EntityTrailProvider.TRAIL_START, 0.36));
+    public static final String TWO_HAND_3 = BUILDER.add("two_hand_3", AnimationsBuilder.definition(0.7)
             .marker("attack", 0.56).marker("step", 0.6)
-            .marker(EntityTrailProvider.TRAIL_START, 0.4).build();
-    public static final AnimatedAction TWO_HAND_4 = AnimatedAction.builder(0.7, "two_hand_4")
+            .marker(EntityTrailProvider.TRAIL_START, 0.4));
+    public static final String TWO_HAND_4 = BUILDER.add("two_hand_4", AnimationsBuilder.definition(0.7)
             .marker("attack", 0.56).marker("step", 0.6)
-            .marker(EntityTrailProvider.TRAIL_START, 0.36).build();
-    public static final AnimatedAction ONE_HAND_1 = AnimatedAction.builder(0.68, "one_hand_1")
+            .marker(EntityTrailProvider.TRAIL_START, 0.36));
+    public static final String ONE_HAND_1 = BUILDER.add("one_hand_1", AnimationsBuilder.definition(0.68)
             .marker("attack", 0.48).marker("step", 0.48)
-            .marker(EntityTrailProvider.TRAIL_START, 0.32).build();
-    public static final AnimatedAction STAB_1 = AnimatedAction.builder(1.02, "stab_1").marker("attack", 0.56).build();
-    public static final AnimatedAction INVISIBLE_BURST = AnimatedAction.builder(0.8, "invisible_burst").marker("attack", 0.28).build();
-    public static final AnimatedAction INVISIBLE_BURST_HIT = AnimatedAction.builder(0.76, "invisible_burst_hit").marker("attack", 0.44).build();
-
-    public static final AnimatedAction EXCALIBAA = AnimatedAction.builder(1.68, "excalibur").marker("attack", 0.72).build();
-    public static final AnimatedAction SUMMON = new AnimatedAction(2., "summon");
-    public static final AnimatedAction[] ANIMS = {TWO_HAND_1, TWO_HAND_2, TWO_HAND_3, TWO_HAND_4, ONE_HAND_1, STAB_1, INVISIBLE_BURST, INVISIBLE_BURST_HIT, EXCALIBAA, SUMMON};
+            .marker(EntityTrailProvider.TRAIL_START, 0.32));
+    public static final String STAB_1 = BUILDER.add("stab_1", AnimationsBuilder.definition(1.02).marker("attack", 0.56));
+    public static final String INVISIBLE_BURST = BUILDER.add("invisible_burst", AnimationsBuilder.definition(0.8).marker("attack", 0.28));
+    public static final String INVISIBLE_BURST_HIT = BUILDER.add("invisible_burst_hit", AnimationsBuilder.definition(0.76).marker("attack", 0.44));
+    public static final String EXCALIBAA = BUILDER.add("excalibur", AnimationsBuilder.definition(1.68).marker("attack", 0.72));
+    public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2.));
+    public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
 
     protected static final EntityDataAccessor<Float> LOCKED_YAW = SynchedEntityData.defineId(EntityArthur.class, EntityDataSerializers.FLOAT);
 
-    public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityArthur>>> ATTACKS = List.of(
-            WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.TWO_HAND_1)
-                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
-                    .chain(GoalAttackAction.<EntityArthur>chainBuilder(EntityArthur.TWO_HAND_2, 2, 0.24f, 1)
-                            .or(EntityArthur.TWO_HAND_3, 2, 0.24f, 1)
-                            .withChance(0.5f))
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 5),
-            WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.TWO_HAND_2)
-                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
-                    .chain(GoalAttackAction.<EntityArthur>chainBuilder(EntityArthur.TWO_HAND_4, 2, 0.24f, 1)
-                            .or(EntityArthur.TWO_HAND_1, 2, 0.24f, 1)
-                            .or(EntityArthur.TWO_HAND_1, 2, 0.24f, 1)
-                            .chain(EntityArthur.STAB_1, 2, 6.4f)
-                            .withChance(0.5f))
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 5),
-            WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.TWO_HAND_3)
-                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
-                    .chain(GoalAttackAction.<EntityArthur>chainBuilder(EntityArthur.TWO_HAND_1, 2, 0.24f, 1)
-                            .or(EntityArthur.ONE_HAND_1, 2, 0.24f, 1)
-                            .withChance(0.5f))
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 5),
-            WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.TWO_HAND_4)
-                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
-                    .chain(GoalAttackAction.<EntityArthur>chainBuilder(EntityArthur.TWO_HAND_2, 2, 0.24f, 1)
-                            .or(EntityArthur.TWO_HAND_3, 2, 0.24f, 1)
-                            .withChance(0.5f))
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 5),
-            WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.ONE_HAND_1)
-                    .cooldown(e -> e.getRandom().nextInt(20) + 5)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 4),
-            WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.STAB_1)
-                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 4),
-            WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.INVISIBLE_BURST)
-                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
-                    .withCondition(((goal, target, previous) -> goal.distanceToTargetSq > 25))
-                    .prepare(() -> new WrappedRunner<>(new MoveToTargetRunner<>(1, 14))), 6),
-            WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.EXCALIBAA)
-                    .cooldown(e -> e.getRandom().nextInt(25) + 20)
-                    .withCondition(Utils.npCheck())
-                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(3, 8, 1.2))), 15)
-    );
-    public static final List<WeightedEntry.Wrapper<IdleAction<EntityArthur>>> IDLE_ACTIONS = List.of(
-            WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1, 0.5)), 6),
-            WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(1, 1, 6)), 2)
-    );
-
-    public final AnimatedAttackGoal<EntityArthur> attack = new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS);
+//    public static final List<WeightedEntry.Wrapper<GoalAttackAction<EntityArthur>>> ATTACKS = List.of(
+//            WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.TWO_HAND_1)
+//                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
+//                    .chain(GoalAttackAction.<EntityArthur>chainBuilder(EntityArthur.TWO_HAND_2, 2, 0.24f, 1)
+//                            .or(EntityArthur.TWO_HAND_3, 2, 0.24f, 1)
+//                            .withChance(0.5f))
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 5),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.TWO_HAND_2)
+//                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
+//                    .chain(GoalAttackAction.<EntityArthur>chainBuilder(EntityArthur.TWO_HAND_4, 2, 0.24f, 1)
+//                            .or(EntityArthur.TWO_HAND_1, 2, 0.24f, 1)
+//                            .or(EntityArthur.TWO_HAND_1, 2, 0.24f, 1)
+//                            .chain(EntityArthur.STAB_1, 2, 6.4f)
+//                            .withChance(0.5f))
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 5),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.TWO_HAND_3)
+//                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
+//                    .chain(GoalAttackAction.<EntityArthur>chainBuilder(EntityArthur.TWO_HAND_1, 2, 0.24f, 1)
+//                            .or(EntityArthur.ONE_HAND_1, 2, 0.24f, 1)
+//                            .withChance(0.5f))
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 5),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.TWO_HAND_4)
+//                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
+//                    .chain(GoalAttackAction.<EntityArthur>chainBuilder(EntityArthur.TWO_HAND_2, 2, 0.24f, 1)
+//                            .or(EntityArthur.TWO_HAND_3, 2, 0.24f, 1)
+//                            .withChance(0.5f))
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 5),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.ONE_HAND_1)
+//                    .cooldown(e -> e.getRandom().nextInt(20) + 5)
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 4),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.STAB_1)
+//                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 4),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.INVISIBLE_BURST)
+//                    .cooldown(e -> e.getRandom().nextInt(20) + 10)
+//                    .withCondition(((goal, target, previous) -> goal.distanceToTargetSq > 25))
+//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetRunner<>(1, 14))), 6),
+//            WeightedEntry.wrap(new GoalAttackAction<EntityArthur>(EntityArthur.EXCALIBAA)
+//                    .cooldown(e -> e.getRandom().nextInt(25) + 20)
+//                    .withCondition(Utils.npCheck())
+//                    .prepare(() -> new WrappedRunner<>(new KeepDistanceRunner<>(3, 8, 1.2))), 15)
+//    );
+//    public static final List<WeightedEntry.Wrapper<IdleAction<EntityArthur>>> IDLE_ACTIONS = List.of(
+//            WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1, 0.5)), 6),
+//            WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(1, 1, 6)), 2)
+//    );
+//
+//    public final AnimatedAttackGoal<EntityArthur> attack = new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS);
 
     private final AnimationHandler<EntityArthur> animationHandler = new AnimationHandler<>(this, ANIMS).withChangeListener(anim -> {
         if (!this.level().isClientSide()) {
@@ -145,24 +138,17 @@ public class EntityArthur extends BaseServant {
 
     public EntityArthur(EntityType<? extends EntityArthur> entityType, Level level) {
         super(entityType, level);
-        if (!level.isClientSide)
-            this.goalSelector.addGoal(0, this.attack);
     }
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        super.defineSynchedData();
-        this.entityData.define(LOCKED_YAW, 0f);
+        super.defineSynchedData(builder);
+        builder.define(LOCKED_YAW, 0f);
     }
 
     @Override
-    protected void populateDefaultEquipmentSlots(DifficultyInstance difficulty) {
+    protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty) {
         this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(FateItems.INVISEXCALIBUR.get()));
-    }
-
-    @Override
-    public Goal getAttackAI() {
-        return this.attack;
     }
 
     @Override
@@ -185,7 +171,7 @@ public class EntityArthur extends BaseServant {
         if (this.getHealth() < 0.25 * this.getMaxHealth() && this.getHealth() > 0) {
             if (!this.critHealth) {
                 if (!this.level().isClientSide)
-                    this.level().getServer().getPlayerList().broadcastMessage(Component.translatable("fateubw.chat.servant.avalon").withStyle(ChatFormatting.GOLD), ChatType.SYSTEM);
+                    this.level().getServer().getPlayerList().broadcastSystemMessage(Component.translatable("fateubw.chat.servant.avalon").withStyle(ChatFormatting.GOLD), true);
                 this.critHealth = true;
             }
             if (!this.hasEffect(MobEffects.REGENERATION))
@@ -200,27 +186,26 @@ public class EntityArthur extends BaseServant {
                 this.yRotO = yRot;
                 this.setYRot(yRot);
                 for (int i = 0; i < 8; i++)
-                    this.level().addParticle(ParticleTypes.ENTITY_EFFECT, this.getX(this.getRandom().nextGaussian() * 0.5), this.getY(this.getRandom().nextGaussian() * 0.5), this.getZ(this.getRandom().nextGaussian() * 0.5), 1, 1, 1);
+                    this.level().addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 1, 1, 1), this.getX(this.getRandom().nextGaussian() * 0.5), this.getY(this.getRandom().nextGaussian() * 0.5), this.getZ(this.getRandom().nextGaussian() * 0.5), 0, 0, 0);
             }
         }
     }
 
     @Override
-    public void handleAttack(AnimatedAction anim) {
+    public void handleAttack(AnimationState anim) {
         if (anim.is(EXCALIBAA)) {
             LivingEntity target = this.getTarget();
             if (target != null && !anim.isPast(0.28)) {
                 this.lookAtNow(target, 60, 30);
             }
             if (anim.isAt(0.4)) {
-                this.targetPosition = target != null ? EntityUtil.getStraightProjectileTarget(this.position()
+                this.targetPosition = target != null ? EntityUtils.getStraightProjectileTarget(this.position()
                         .add(0, this.getEyeHeight() - 0.1, 0), target) :
                         this.position().add(this.getLookAngle().scale(8));
             }
             if (anim.isAt(0.72)) {
                 this.excalibur(this.targetPosition);
             }
-
         } else if (anim.is(INVISIBLE_BURST)) {
             if (anim.isAt(0.2)) {
                 Vec3 dir = this.getTarget() != null ? this.getTarget().position().subtract(this.position()) : this.position().add(this.getLookAngle());
@@ -254,7 +239,7 @@ public class EntityArthur extends BaseServant {
     }
 
     @Override
-    public AABB attackBB(AnimatedAction anim) {
+    public AABB attackBB(AnimationState anim) {
         double width = this.getBbWidth() + 0.3;
         double length = 1;
         if (anim.is(TWO_HAND_1, TWO_HAND_2, TWO_HAND_3, TWO_HAND_4)) {
@@ -277,12 +262,12 @@ public class EntityArthur extends BaseServant {
     }
 
     private boolean duringBurst() {
-        AnimatedAction anim = this.getAnimationHandler().getAnimation();
+        AnimationState anim = this.getAnimationHandler().getAnimation();
         return anim != null && anim.is(INVISIBLE_BURST) && anim.isPast(0.28) && !anim.isPast(0.8);
     }
 
     @Override
-    public OrientedBoundingBox calculateAttackAABB(AnimatedAction anim, Vec3 target, double grow) {
+    public OrientedBoundingBox calculateAttackAABB(AnimationState anim, Vec3 target, double grow) {
         if (!anim.is(INVISIBLE_BURST))
             return super.calculateAttackAABB(anim, target, grow);
         double width = this.getBbWidth();
@@ -295,7 +280,7 @@ public class EntityArthur extends BaseServant {
         if (!this.forcedNP && !this.useMana(this.props().hogouMana()))
             return;
         this.forcedNP = false;
-        Excalibur excalibur = new Excalibur(this.level, this);
+        Excalibur excalibur = new Excalibur(this.level(), this);
         if (pos != null)
             excalibur.setRotationTo(pos.x(), pos.y(), pos.z(), 0);
         this.level().addFreshEntity(excalibur);
@@ -304,7 +289,7 @@ public class EntityArthur extends BaseServant {
     }
 
     @Override
-    protected AnimatedAction getSummonAnimation() {
+    protected String getSummonAnimation() {
         return SUMMON;
     }
 }

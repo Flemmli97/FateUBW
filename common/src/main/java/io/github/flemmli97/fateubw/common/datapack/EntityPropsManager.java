@@ -34,8 +34,8 @@ public class EntityPropsManager extends SimpleJsonResourceReloadListener {
     public static final String DIRECTORY = String.format("%s/%s", ID.getNamespace(), ID.getPath());
     private static final Gson GSON = new GsonBuilder().create();
 
-    private Map<ResourceLocation, ServantProperties> props = ImmutableMap.of();
-    private Map<ResourceLocation, AttributeHolderProperties> genericProps = ImmutableMap.of();
+    private Map<EntityType<?>, ServantProperties> props = ImmutableMap.of();
+    private Map<EntityType<?>, AttributeHolderProperties> genericProps = ImmutableMap.of();
 
     private Set<EntityTypeAndID> servants = ImmutableSet.of();
 
@@ -43,12 +43,12 @@ public class EntityPropsManager extends SimpleJsonResourceReloadListener {
         super(GSON, DIRECTORY);
     }
 
-    public ServantProperties get(ResourceLocation entityType) {
-        return this.props.getOrDefault(entityType, ServantProperties.DEFAULT);
+    public ServantProperties get(EntityType<?> type) {
+        return this.props.getOrDefault(type, ServantProperties.DEFAULT);
     }
 
-    public AttributeHolderProperties getGeneric(ResourceLocation entityType) {
-        return this.genericProps.getOrDefault(entityType, AttributeHolderProperties.DEFAULT);
+    public AttributeHolderProperties getGeneric(EntityType<?> type) {
+        return this.genericProps.getOrDefault(type, AttributeHolderProperties.DEFAULT);
     }
 
     public Set<EntityTypeAndID> getServants() {
@@ -57,17 +57,19 @@ public class EntityPropsManager extends SimpleJsonResourceReloadListener {
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> data, ResourceManager manager, ProfilerFiller profiler) {
-        ImmutableMap.Builder<ResourceLocation, ServantProperties> builder = ImmutableMap.builder();
-        ImmutableMap.Builder<ResourceLocation, AttributeHolderProperties> attBuilder = ImmutableMap.builder();
+        ImmutableMap.Builder<EntityType<?>, ServantProperties> builder = ImmutableMap.builder();
+        ImmutableMap.Builder<EntityType<?>, AttributeHolderProperties> attBuilder = ImmutableMap.builder();
         data.forEach((fres, el) -> {
             try {
-                Optional<ServantProperties> servantProps = ServantProperties.CODEC.parse(JsonOps.INSTANCE, el).result();
-                if (servantProps.isPresent()) {
-                    builder.put(fres, servantProps.get());
-                } else {
-                    AttributeHolderProperties props = AttributeHolderProperties.CODEC.parse(JsonOps.INSTANCE, el).getOrThrow();
-                    attBuilder.put(fres, props);
-                }
+                BuiltInRegistries.ENTITY_TYPE.getOptional(fres).ifPresent(type -> {
+                    Optional<ServantProperties> servantProps = ServantProperties.CODEC.parse(JsonOps.INSTANCE, el).result();
+                    if (servantProps.isPresent()) {
+                        builder.put(type, servantProps.get());
+                    } else {
+                        AttributeHolderProperties props = AttributeHolderProperties.CODEC.parse(JsonOps.INSTANCE, el).getOrThrow();
+                        attBuilder.put(type, props);
+                    }
+                });
             } catch (Exception ex) {
                 Fate.LOGGER.error("Couldn't parse entity properties json {} {}", fres, ex);
                 ex.fillInStackTrace();
@@ -76,19 +78,19 @@ public class EntityPropsManager extends SimpleJsonResourceReloadListener {
         this.props = builder.build();
         this.genericProps = attBuilder.build();
         Set<EntityTypeAndID> servants = new HashSet<>();
-        this.props.forEach((id, prop) -> BuiltInRegistries.ENTITY_TYPE.getHolder(id).ifPresent(type -> {
+        this.props.forEach((type, prop) -> {
             if (!prop.getServantClass().equals(BuiltinServantClasses.NONE)) {
-                servants.add(new EntityTypeAndID(id, type, id, prop.weight()));
+                servants.add(new EntityTypeAndID(BuiltInRegistries.ENTITY_TYPE.wrapAsHolder(type), prop.getServantClass(), prop.weight()));
             }
-        }));
+        });
         this.servants = ImmutableSet.copyOf(servants);
     }
 
-    public record EntityTypeAndID(ResourceLocation id, Holder<EntityType<?>> type, ResourceLocation servantClass,
+    public record EntityTypeAndID(Holder<EntityType<?>> type, ResourceLocation servantClass,
                                   Weight weight) implements WeightedEntry {
 
-        public EntityTypeAndID(ResourceLocation id, Holder<EntityType<?>> type, ResourceLocation servantClass, int weight) {
-            this(id, type, servantClass, Weight.of(weight));
+        public EntityTypeAndID(Holder<EntityType<?>> type, ResourceLocation servantClass, int weight) {
+            this(type, servantClass, Weight.of(weight));
         }
 
         public EntityTypeAndID updatedWeight(@Nullable ItemStack stack) {
@@ -105,7 +107,11 @@ public class EntityPropsManager extends SimpleJsonResourceReloadListener {
             }
             if (this.weight.asInt() == weight)
                 return this;
-            return new EntityTypeAndID(this.id(), this.type(), this.servantClass(), Weight.of(weight));
+            return new EntityTypeAndID(this.type(), this.servantClass(), Weight.of(weight));
+        }
+
+        public ResourceLocation id() {
+            return this.type().unwrapKey().orElseThrow().location();
         }
 
         @Override

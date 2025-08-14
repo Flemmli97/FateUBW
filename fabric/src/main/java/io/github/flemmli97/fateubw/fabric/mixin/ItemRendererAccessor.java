@@ -13,5 +13,4 @@ public interface ItemRendererAccessor {
 
     @Invoker("renderModelLists")
     void doRenderModelLists(BakedModel model, ItemStack stack, int combinedLight, int combinedOverlay, PoseStack matrixStack, VertexConsumer buffer);
-
 }

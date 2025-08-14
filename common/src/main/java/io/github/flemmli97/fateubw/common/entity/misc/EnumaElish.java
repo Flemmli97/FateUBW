@@ -30,7 +30,6 @@ public class EnumaElish extends BaseBeam {
         super(FateEntities.EA.get(), level, shooter);
         Vec3 off = new Vec3(shooter.getLookAngle().x, 0, shooter.getLookAngle().z).normalize().scale(shooter.getBbWidth() * 0.5);
         this.setPos(this.getX() + off.x, this.getY(), this.getZ() + off.z);
-
     }
 
     @Override

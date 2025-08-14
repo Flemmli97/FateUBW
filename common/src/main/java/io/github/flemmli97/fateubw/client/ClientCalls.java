@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.network.C2SGuiOpenRequest;
 import io.github.flemmli97.fateubw.common.network.C2SServantCommand;
-import io.github.flemmli97.fateubw.platform.NetworkCalls;
+import io.github.flemmli97.tenshilib.loader.LoaderNetwork;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 
@@ -12,16 +12,16 @@ public class ClientCalls {
 
     public static void keyEvent() {
         if (ClientHandler.gui.consumeClick()) {
-            NetworkCalls.INSTANCE.sendToServer(new C2SGuiOpenRequest());
+            LoaderNetwork.INSTANCE.sendToServer(C2SGuiOpenRequest.INSTANCE);
         }
         if (ClientHandler.special.consumeClick()) {
-            NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.NP, -1));
+            LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.NP, -1));
         }
         if (ClientHandler.boost.consumeClick()) {
-            NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.BOOST, -1));
+            LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.BOOST, -1));
         }
         if (ClientHandler.target.consumeClick()) {
-            NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.TARGET, -1));
+            LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.TARGET, -1));
         }
     }
 

@@ -7,6 +7,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 
 public class FateTags {
@@ -33,6 +34,11 @@ public class FateTags {
     public static class DamageTypes {
 
         public static final TagKey<DamageType> IS_MAGIC = TagKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath("c", "is_magic"));
+    }
+
+    public static class Biomes {
+
+        public static final TagKey<Biome> FATE_ORE_GEN = TagKey.create(Registries.BIOME, Fate.modRes("ore_generation"));
     }
 
     public static TagKey<Item> tagCommon(String name) {

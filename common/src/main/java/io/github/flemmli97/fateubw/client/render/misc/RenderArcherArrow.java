@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class RenderArcherArrow extends ArrowRenderer<ArcherArrow> {
 
-    public static final ResourceLocation LOCATION = new ResourceLocation(Fate.MODID, "textures/entity/arrows.png");
+    public static final ResourceLocation LOCATION = Fate.modRes("textures/entity/arrows.png");
 
     public RenderArcherArrow(EntityRendererProvider.Context ctx) {
         super(ctx);

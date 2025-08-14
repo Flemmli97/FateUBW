@@ -1,6 +1,6 @@
 package io.github.flemmli97.fateubw.common.entity.misc;
 
-import io.github.flemmli97.fateubw.common.entity.CustomArrowDamageSource;
+import io.github.flemmli97.fateubw.common.entity.utils.CustomArrowDamageSource;
 import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import net.minecraft.world.damagesource.DamageSource;

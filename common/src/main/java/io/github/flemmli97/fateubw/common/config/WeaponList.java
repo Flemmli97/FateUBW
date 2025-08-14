@@ -11,16 +11,16 @@ import java.util.List;
 
 public class WeaponList {
 
+    private List<String> config;
     private List<Item> weapons;
-    private List<String> blacklist;
     private boolean whiteList;
 
-    public WeaponList(String... blacklist) {
-        this.blacklist = List.of(blacklist);
+    public WeaponList(String... config) {
+        this.config = List.of(config);
     }
 
     public WeaponList read(List<String> s) {
-        this.blacklist = List.copyOf(s);
+        this.config = List.copyOf(s);
         this.weapons = null;
         return this;
     }
@@ -34,7 +34,7 @@ public class WeaponList {
     }
 
     public List<String> write() {
-        return List.copyOf(this.blacklist);
+        return List.copyOf(this.config);
     }
 
     public ItemStack getRandomWeapon(RandomSource rand) {
@@ -42,8 +42,8 @@ public class WeaponList {
             this.weapons = new ArrayList<>();
             BuiltInRegistries.ITEM.entrySet().forEach(entry -> {
                 if (entry.getValue() instanceof TieredItem) {
-                    boolean blackListed = this.blacklist.contains(entry.getKey().location().getNamespace()) ||
-                            this.blacklist.contains(entry.getKey().location().toString());
+                    boolean blackListed = this.config.contains(entry.getKey().location().getNamespace()) ||
+                            this.config.contains(entry.getKey().location().toString());
                     if (blackListed == this.whiteList)
                         this.weapons.add(entry.getValue());
                 }

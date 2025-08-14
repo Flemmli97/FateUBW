@@ -1,0 +1,19 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "spin": {
+      "loop": true,
+      "bones": {
+        "blade1": {
+          "rotation": [0, "query.anim_time * 90", 0]
+        },
+        "blade2": {
+          "rotation": [0, "-query.anim_time * 90", 0]
+        },
+        "blade3": {
+          "rotation": [0, "query.anim_time * 90", 0]
+        }
+      }
+    }
+  }
+}

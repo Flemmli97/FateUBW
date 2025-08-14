@@ -2,7 +2,6 @@ package io.github.flemmli97.fateubw.client.render.layer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
 import io.github.flemmli97.fateubw.client.render.FateRenders;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -11,6 +10,7 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import org.joml.Matrix4f;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -37,15 +37,15 @@ public class PortalLayerRenderer<T extends Entity, M extends EntityModel<T>> ext
             this.transform.accept(poseStack);
             Matrix4f mat = poseStack.last().pose();
             VertexConsumer vert = buffer.getBuffer(FateRenders.getPulsingEntityText(this.texture));
-            vert.vertex(mat, this.size, this.size, 0).color(255, 255, 255, 255).uv(0, 0).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xff00ff).normal(1, 0, 0).endVertex();
-            vert.vertex(mat, this.size, -this.size, 0).color(255, 255, 255, 255).uv(0, 1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xff00ff).normal(1, 0, 0).endVertex();
-            vert.vertex(mat, -this.size, -this.size, 0).color(255, 255, 255, 255).uv(1, 1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xff00ff).normal(1, 0, 0).endVertex();
-            vert.vertex(mat, -this.size, this.size, 0).color(255, 255, 255, 255).uv(1, 0).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xff00ff).normal(1, 0, 0).endVertex();
+            vert.addVertex(mat, this.size, this.size, 0).setColor(255, 255, 255, 255).setUv(0, 0).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xff00ff).setNormal(1, 0, 0);
+            vert.addVertex(mat, this.size, -this.size, 0).setColor(255, 255, 255, 255).setUv(0, 1).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xff00ff).setNormal(1, 0, 0);
+            vert.addVertex(mat, -this.size, -this.size, 0).setColor(255, 255, 255, 255).setUv(1, 1).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xff00ff).setNormal(1, 0, 0);
+            vert.addVertex(mat, -this.size, this.size, 0).setColor(255, 255, 255, 255).setUv(1, 0).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xff00ff).setNormal(1, 0, 0);
 
-            vert.vertex(mat, -this.size, this.size, 0).color(255, 255, 255, 255).uv(1, 0).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xff00ff).normal(1, 0, 0).endVertex();
-            vert.vertex(mat, -this.size, -this.size, 0).color(255, 255, 255, 255).uv(1, 1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xff00ff).normal(1, 0, 0).endVertex();
-            vert.vertex(mat, this.size, -this.size, 0).color(255, 255, 255, 255).uv(0, 1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xff00ff).normal(1, 0, 0).endVertex();
-            vert.vertex(mat, this.size, this.size, 0).color(255, 255, 255, 255).uv(0, 0).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xff00ff).normal(1, 0, 0).endVertex();
+            vert.addVertex(mat, -this.size, this.size, 0).setColor(255, 255, 255, 255).setUv(1, 0).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xff00ff).setNormal(1, 0, 0);
+            vert.addVertex(mat, -this.size, -this.size, 0).setColor(255, 255, 255, 255).setUv(1, 1).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xff00ff).setNormal(1, 0, 0);
+            vert.addVertex(mat, this.size, -this.size, 0).setColor(255, 255, 255, 255).setUv(0, 1).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xff00ff).setNormal(1, 0, 0);
+            vert.addVertex(mat, this.size, this.size, 0).setColor(255, 255, 255, 255).setUv(0, 0).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xff00ff).setNormal(1, 0, 0);
 
             poseStack.popPose();
         }

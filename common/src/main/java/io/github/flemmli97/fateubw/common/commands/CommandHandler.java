@@ -7,6 +7,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import io.github.flemmli97.fateubw.Fate;
+import io.github.flemmli97.fateubw.common.attachment.PlayerData;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.loot.GrailLootTable;
 import io.github.flemmli97.fateubw.common.loot.entry.AttributeEntry;
@@ -91,14 +92,15 @@ public class CommandHandler {
     private static int modifyCommandspell(CommandContext<CommandSourceStack> ctx, CommnandMode mode) throws CommandSyntaxException {
         Collection<ServerPlayer> players = EntityArgument.getPlayers(ctx, "players");
         int amount = IntegerArgumentType.getInteger(ctx, "amount");
-        players.forEach(player -> Platform.INSTANCE.getPlayerData(player).ifPresent(d -> {
+        players.forEach(player -> {
+            PlayerData data = Platform.INSTANCE.getPlayerData(player);
             int count = switch (mode) {
                 case SET -> amount;
-                case TAKE -> d.getCommandSeals() - amount;
-                case ADD -> d.getCommandSeals() + amount;
+                case TAKE -> data.getCommandSeals() - amount;
+                case ADD -> data.getCommandSeals() + amount;
             };
-            d.setCommandSeals(player, count);
-        }));
+            data.setCommandSeals(player, count);
+        });
         switch (mode) {
             case SET ->
                     ctx.getSource().sendSuccess(() -> Component.translatable("fateubw.command.spells.set", players, amount), false);

@@ -57,5 +57,4 @@ public class GrailLootManager extends SimpleJsonResourceReloadListener {
         });
         this.lootTables = builder.build();
     }
-
 }

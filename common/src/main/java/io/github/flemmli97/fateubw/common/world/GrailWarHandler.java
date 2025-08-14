@@ -411,7 +411,7 @@ public class GrailWarHandler extends SavedData {
         Entity entity = WeightedRandom.getRandomItem(level.random, entities)
                 .map(t -> t.type().value()
                         .create(level, null, BlockPos.containing(pos),
-                        MobSpawnType.MOB_SUMMONED, false, false))
+                                MobSpawnType.MOB_SUMMONED, false, false))
                 .orElse(null);
         if (!(entity instanceof BaseServant servant))
             return null;
