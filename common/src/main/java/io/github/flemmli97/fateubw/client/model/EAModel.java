@@ -29,6 +29,7 @@ public class EAModel extends Model implements ExtendedModel {
     }
 
     public void spinBlade(int tick, float partialTicks) {
+        this.model.get().resetPoses();
         this.animation.get().doAnimation(this, "spin", tick, partialTicks);
     }
 

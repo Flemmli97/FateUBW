@@ -21,14 +21,13 @@ import net.minecraft.world.item.ItemStack;
 
 public class RenderEAItem extends BlockEntityWithoutLevelRenderer {
 
-    private static final ResourceLocation TEXTURE = Fate.modRes("textures/items/enuma_elish.png");
+    private static final ResourceLocation TEXTURE = Fate.modRes("textures/item/enuma_elish.png");
 
-    private final EAModel model;
+    private final EAModel model = new EAModel();
     private final RenderUtils.BeamBuilder beam = createBeam();
 
     public RenderEAItem(BlockEntityRenderDispatcher blockEntityRenderDispatcher, EntityModelSet entityModelSet) {
         super(blockEntityRenderDispatcher, entityModelSet);
-        this.model = new EAModel();
     }
 
     @Override

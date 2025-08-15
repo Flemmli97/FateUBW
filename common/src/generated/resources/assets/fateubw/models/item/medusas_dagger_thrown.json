@@ -7,15 +7,15 @@
         90,
         -25
       ],
-      "translation": [
-        1.13,
-        6.3,
-        1.13
-      ],
       "scale": [
         0.68,
         0.68,
         0.68
+      ],
+      "translation": [
+        1.13,
+        6.3,
+        1.13
       ]
     },
     "firstperson_righthand": {
@@ -24,19 +24,19 @@
         -90,
         25
       ],
-      "translation": [
-        1.13,
-        6.3,
-        1.13
-      ],
       "scale": [
         0.68,
         0.68,
         0.68
+      ],
+      "translation": [
+        1.13,
+        6.3,
+        1.13
       ]
     }
   },
   "textures": {
-    "layer0": "fateubw:items/medusas_dagger_thrown"
+    "layer0": "fateubw:item/medusas_dagger_thrown"
   }
 }

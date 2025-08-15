@@ -11,6 +11,7 @@ import io.github.flemmli97.fateubw.common.registry.FateCriterionTriggers;
 import io.github.flemmli97.fateubw.common.registry.FateDataComponents;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateGrailLootSerializer;
+import io.github.flemmli97.fateubw.common.registry.FateItemSubPredicates;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateMobEffects;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
@@ -18,6 +19,7 @@ import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.neoforge.client.ClientEvents;
 import io.github.flemmli97.fateubw.neoforge.event.EventHandler;
 import io.github.flemmli97.fateubw.neoforge.network.PacketHandler;
+import io.github.flemmli97.fateubw.neoforge.registry.FateAttachments;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -51,6 +53,7 @@ public class FateUBWNeoForge {
     }
 
     public static void registerContent(IEventBus modbus) {
+        FateAttachments.ATTACHMENT_TYPES.register(modbus);
         FateAttributes.ATTRIBUTES.registerContent(modbus);
         FateBlocks.BLOCK_ENTITIES.registerContent(modbus);
         FateBlocks.BLOCKS.registerContent(modbus);
@@ -61,6 +64,7 @@ public class FateUBWNeoForge {
         FateGrailLootSerializer.LOOT_FUNCTION.registerContent(modbus);
         FateGrailLootSerializer.SERIALIZER.register().registerContent(modbus);
         FateItems.ITEMS.registerContent(modbus);
+        FateItemSubPredicates.SUB_PREDICATES.registerContent(modbus);
         FateMobEffects.EFFECTS.registerContent(modbus);
         FateParticles.PARTICLES.registerContent(modbus);
         FateSounds.SOUND_EVENTS.registerContent(modbus);
@@ -81,8 +85,10 @@ public class FateUBWNeoForge {
     }
 
     public void reloadListener(AddReloadListenerEvent event) {
-        event.addListener(DatapackHandler.LOOT_TABLES);
-        event.addListener(DatapackHandler.SERVANT_PROPS);
+        DatapackHandler.addListeners(ext -> {
+            ext.insertRegistryAccess(event.getServerResources().getRegistryLookup());
+            event.addListener(ext);
+        });
     }
 
     public void attributes(EntityAttributeCreationEvent event) {

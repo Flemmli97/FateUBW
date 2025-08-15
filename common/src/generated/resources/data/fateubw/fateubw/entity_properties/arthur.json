@@ -1,0 +1,16 @@
+{
+  "attributes": {
+    "fateubw:combat_regen": 2.0,
+    "fateubw:magic_attack": 15.0,
+    "fateubw:passive_regen": 10.0,
+    "fateubw:projectile_block_chance": 0.15000000596046448,
+    "fateubw:projectile_resistance": 3.0,
+    "minecraft:generic.armor": 16.0,
+    "minecraft:generic.attack_damage": 15.0,
+    "minecraft:generic.max_health": 400.0,
+    "minecraft:generic.movement_speed": 0.33
+  },
+  "class": "fateubw:saber",
+  "nobel_phantasm_cost": 80,
+  "weight": 1
+}

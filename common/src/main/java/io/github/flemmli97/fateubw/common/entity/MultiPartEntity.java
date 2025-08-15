@@ -1,62 +1,64 @@
 package io.github.flemmli97.fateubw.common.entity;
 
-import io.github.flemmli97.fateubw.common.network.S2CMultipartDataPkt;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
-import io.github.flemmli97.tenshilib.common.entity.EntityUtil;
-import io.github.flemmli97.tenshilib.common.utils.MathUtils;
-import io.github.flemmli97.tenshilib.loader.LoaderNetwork;
+import io.github.flemmli97.tenshilib.common.entity.EntityUtils;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.entity.EntityInLevelCallback;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.UUID;
 
-public class MultiPartEntity extends Entity {
+public class MultiPartEntity extends Entity implements OwnableEntity {
 
     private static final EntityDataAccessor<Optional<UUID>> PARENT_UUID = SynchedEntityData.defineId(MultiPartEntity.class, EntityDataSerializers.OPTIONAL_UUID);
     private static final EntityDataAccessor<Float> SIZE_X = SynchedEntityData.defineId(MultiPartEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> SIZE_Y = SynchedEntityData.defineId(MultiPartEntity.class, EntityDataSerializers.FLOAT);
 
-    private Entity parent;
-    private EntityDimensions dimensions = EntityDimensions.fixed(1, 1);
+    private LivingEntity parent;
     private boolean addedToLevel, isHead;
 
-    private boolean smoothMovement;
-    private Position offset = Position.DEFAULT;
+    private MultipartPosition relativePosition = MultipartPosition.DEFAULT;
 
-    // Vanilla is not lerping correctly
-    public float viewYRot, viewYRotO, viewXRot, viewXRotO;
+    private int lerpSteps;
+    private double lerpX;
+    private double lerpY;
+    private double lerpZ;
+    private double lerpYRot;
+    private double lerpXRot;
 
     public MultiPartEntity(EntityType<MultiPartEntity> multipartType, Level level) {
         super(multipartType, level);
-        this.setNoGravity(true);
     }
 
-    public MultiPartEntity(Level level, float width, float height, Position offset) {
-        this(FateEntities.MULTIPART.get(), level);
+    public MultiPartEntity(LivingEntity parent, float width, float height) {
+        super(FateEntities.MULTIPART.get(), parent.level());
         this.setSize(width, height);
-        this.offset = offset;
+        this.setParent(parent);
     }
 
-    public void setParent(Entity parent) {
+    public void setParent(LivingEntity parent) {
         this.entityData.set(PARENT_UUID, Optional.of(parent.getUUID()));
         this.parent = parent;
     }
@@ -66,30 +68,62 @@ public class MultiPartEntity extends Entity {
         return this;
     }
 
-    public MultiPartEntity smoothMovement() {
-        this.smoothMovement = true;
+    public MultiPartEntity setSizeX(float x) {
+        this.setSize(x, this.entityData.get(SIZE_Y));
         return this;
     }
 
-    public MultiPartEntity gravity() {
-        this.setNoGravity(false);
+    public MultiPartEntity setSizeY(float y) {
+        this.setSize(this.entityData.get(SIZE_X), y);
         return this;
     }
 
-    public void setOffset(Position offset) {
-        this.offset = offset;
+    public MultiPartEntity setSize(float x, float y) {
+        if (!this.level().isClientSide) {
+            this.entityData.set(SIZE_X, x);
+            this.entityData.set(SIZE_Y, y);
+        }
+        this.refreshDimensions();
+        return this;
+    }
+
+    public MultiPartEntity updatePosition(Vec3 relativePosition) {
+        return this.updatePosition(new MultipartPosition(relativePosition));
+    }
+
+    public MultiPartEntity updatePosition(MultipartPosition relativePosition) {
+        this.relativePosition = relativePosition;
+        return this;
     }
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        this.entityData.define(PARENT_UUID, Optional.empty());
-        this.entityData.define(SIZE_X, 0f);
-        this.entityData.define(SIZE_Y, 0f);
+        builder.define(PARENT_UUID, Optional.empty());
+        builder.define(SIZE_X, 0f);
+        builder.define(SIZE_Y, 0f);
+    }
+
+    @Override
+    public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
+        super.onSyncedDataUpdated(key);
+        if (SIZE_Y.equals(key)) {
+            this.setSize(this.entityData.get(SIZE_X), this.entityData.get(SIZE_Y));
+        }
     }
 
     @Override
     public EntityDimensions getDimensions(Pose pose) {
-        return this.dimensions;
+        return this.getDefaultDimensions().scale(this.getOwner() != null ? this.getOwner().getScale() : 1);
+    }
+
+    protected EntityDimensions getDefaultDimensions() {
+        float ageScale = this.getOwner() != null ? this.getOwner().getAgeScale() : 1;
+        return EntityDimensions.scalable(ageScale * this.entityData.get(SIZE_X), ageScale * this.entityData.get(SIZE_Y));
+    }
+
+    @Override
+    public Component getName() {
+        return this.parent.getName();
     }
 
     @Override
@@ -101,137 +135,84 @@ public class MultiPartEntity extends Entity {
     }
 
     @Override
-    public Packet<?> getAddEntityPacket() {
-        return new ClientboundAddEntityPacket(this);
-    }
-
-    @Override
     public void tick() {
-        if (this.getParent() == null || !this.getParent().isAlive()) {
-            if (!this.level().isClientSide) {
-                this.remove(RemovalReason.KILLED);
-            }
-            return;
-        }
-        this.viewXRotO = this.viewXRot;
-        this.viewYRotO = this.viewYRot;
-        super.tick();
-        float parentRotY = Mth.wrapDegrees(this.getParent().getYHeadRot());
-        Vec3 anchorOffset = MathUtils.rotate(new Vec3(0, 1, 0), this.offset.anchorOffset, -parentRotY * Mth.DEG_TO_RAD);
-        Vec3 anchor = this.getParent().position().add(anchorOffset);
-        Vec3 dir = anchor.subtract(this.position());
-        Vec3 delta = this.getDeltaMovement().scale(0.3);
-        if (this.smoothMovement) {
-            double dirLen = dir.lengthSqr();
-            double offLen = this.offset.positionOffset.lengthSqr();
-            if (dirLen > offLen * 5) {
-                Vec3 offset = MathUtils.rotate(new Vec3(0, 1, 0), this.offset.positionOffset, -parentRotY * Mth.DEG_TO_RAD);
-                this.updatePositionTo(anchor.x() + offset.x, anchor.y(), anchor.z() + offset.z, true);
-            } else {
-                if (dirLen > offLen || Math.abs(this.getParent().getY() - this.getY()) > 1.5) {
-                    this.setOldPosAndRot();
-                    delta = dir.scale(0.2).add(0, -0.08, 0);
-                }
-            }
-        } else {
-            Vec3 offset = MathUtils.rotate(new Vec3(0, 1, 0), this.offset.positionOffset, -parentRotY * Mth.DEG_TO_RAD);
-            this.updatePositionTo(anchor.x() + offset.x, anchor.y(), anchor.z() + offset.z, true);
-        }
-        this.hasImpulse = true;
-        double d = dir.horizontalDistance();
-        float yRot = -(float) (Mth.atan2(dir.x, dir.z) * Mth.RAD_TO_DEG);
-        yRot = Mth.wrapDegrees(yRot - this.getYRot());
-        this.setRot(this.getYRot() + Mth.clamp(yRot, -8, 8), -(float) (Mth.atan2(dir.y, d) * Mth.RAD_TO_DEG));
-        this.setViewRotation(this.getYRot(), this.getXRot());
-        this.setDeltaMovement(delta);
-        this.move(MoverType.SELF, this.getDeltaMovement());
-    }
-
-    public void forceUpdatePosition() {
-        Vec3 offset = MathUtils.rotate(new Vec3(0, 1, 0), this.offset.positionOffset, -this.getParent().getYRot() * Mth.DEG_TO_RAD);
-        Vec3 anchorOffset = MathUtils.rotate(new Vec3(0, 1, 0), this.offset.anchorOffset, -this.getParent().getYRot() * Mth.DEG_TO_RAD);
-        Vec3 anchor = this.getParent().position().add(anchorOffset);
-        this.updatePositionTo(anchor.x() + offset.x, anchor.y(), anchor.z() + offset.z, true);
-    }
-
-    @Override
-    public boolean hurt(DamageSource source, float amount) {
-        return this.getParent() != null && this.getParent().hurt(source, amount);
-    }
-
-    @Override
-    public InteractionResult interact(Player player, InteractionHand hand) {
-        return this.getParent() != null ? this.getParent().interact(player, hand) : InteractionResult.PASS;
-    }
-
-    @Override
-    public boolean canCollideWith(Entity entity) {
-        return false;
-    }
-
-    @Override
-    public boolean isInvulnerableTo(DamageSource source) {
-        if (this.getParent() != null && this.getParent().isInvulnerableTo(source))
-            return true;
-        return source == DamageSource.FALL || source == DamageSource.DROWN || (!this.isHead && source == DamageSource.IN_WALL) || super.isInvulnerableTo(source);
-    }
-
-    public Entity getParent() {
-        if (this.parent != null && this.parent.isAlive())
-            return this.parent;
-        this.entityData.get(PARENT_UUID).ifPresent(uuid -> this.parent = EntityUtil.findFromUUID(Entity.class, this.level, uuid));
-        return this.parent;
-    }
-
-    @Override
-    public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
-        super.onSyncedDataUpdated(key);
-        if (SIZE_Y.equals(key)) {
-            this.setSize(this.entityData.get(SIZE_X), this.entityData.get(SIZE_Y));
-        }
-    }
-
-    public MultiPartEntity setSizeX(float x) {
-        this.setSize(x, this.dimensions.height);
-        return this;
-    }
-
-    public MultiPartEntity setSizeY(float y) {
-        this.setSize(this.dimensions.width, y);
-        return this;
-    }
-
-    public MultiPartEntity setSize(float x, float y) {
         if (!this.level().isClientSide) {
-            this.entityData.set(SIZE_X, x);
-            this.entityData.set(SIZE_Y, y);
+            if (this.getOwner() == null || !this.getOwner().isAlive()) {
+                this.remove(Entity.RemovalReason.KILLED);
+                return;
+            }
         }
-        this.dimensions = EntityDimensions.fixed(x, y);
-        this.refreshDimensions();
-        return this;
+        super.tick();
     }
 
     @Override
-    public boolean isPickable() {
-        return this.getParent() != null;
+    public void baseTick() {
+        this.level().getProfiler().push("entityBaseTick");
+        this.ejectPassengers();
+        this.xRotO = this.getXRot();
+        this.yRotO = this.getYRot();
+        this.clearFire();
+        if (this.isInLava()) {
+            this.lavaHurt();
+            this.fallDistance *= 0.5F;
+        }
+        this.checkBelowWorld();
+        if (!this.level().isClientSide) {
+            Vec3 newPos = this.getOwner().position().add(this.relativePosition.getPosition(this.getOwner()));
+            this.moveTo(newPos.x(), newPos.y(), newPos.z(), this.relativePosition.noPhysics());
+        }
+        if (this.lerpSteps > 0) {
+            this.lerpPositionAndRotationStep(this.lerpSteps, this.lerpX, this.lerpY, this.lerpZ, this.lerpYRot, this.lerpXRot);
+            this.lerpSteps--;
+        }
+        this.level().getProfiler().pop();
     }
 
     @Override
-    public void setLevelCallback(EntityInLevelCallback entityInLevelCallback) {
-        super.setLevelCallback(entityInLevelCallback);
-        this.addedToLevel = true;
+    public void lerpTo(double x, double y, double z, float yRot, float xRot, int steps) {
+        this.lerpX = x;
+        this.lerpY = y;
+        this.lerpZ = z;
+        this.lerpYRot = yRot;
+        this.lerpXRot = xRot;
+        this.lerpSteps = steps;
     }
 
-    public boolean isAddedToLevel() {
-        return this.addedToLevel;
+    @Override
+    public double lerpTargetX() {
+        return this.lerpSteps > 0 ? this.lerpX : this.getX();
     }
 
-    public void updatePositionTo(double x, double y, double z, boolean simple) {
+    @Override
+    public double lerpTargetY() {
+        return this.lerpSteps > 0 ? this.lerpY : this.getY();
+    }
+
+    @Override
+    public double lerpTargetZ() {
+        return this.lerpSteps > 0 ? this.lerpZ : this.getZ();
+    }
+
+    @Override
+    public float lerpTargetXRot() {
+        return this.lerpSteps > 0 ? (float) this.lerpXRot : this.getXRot();
+    }
+
+    @Override
+    public float lerpTargetYRot() {
+        return this.lerpSteps > 0 ? (float) this.lerpYRot : this.getYRot();
+    }
+
+    private void moveTo(double x, double y, double z, boolean simple) {
+        if (this.getOwner() != null && !this.isEntityAddedToLevel()) {
+            this.setPos(x, y, z);
+            this.level().addFreshEntity(this);
+        }
         Vec3 old = this.position();
         this.setOldPosAndRot();
-        if (simple)
+        if (simple) {
             this.setPos(x, y, z);
-        else {
+        } else {
             this.setOnGround(true);
             double vy = y - old.y;
             if (vy >= 0 && vy < 1.5) {
@@ -244,19 +225,108 @@ public class MultiPartEntity extends Entity {
         }
     }
 
+    /**
+     * Spawns this part entity if not spawned. Call this in parent tick
+     */
+    public void parentTick() {
+        if (this.getOwner() != null && !this.getOwner().level().isClientSide && !this.isEntityAddedToLevel()) {
+            this.setPos(this.getOwner().position());
+            this.level().addFreshEntity(this);
+        }
+    }
+
     @Override
-    public void startSeenByPlayer(ServerPlayer serverPlayer) {
-        super.startSeenByPlayer(serverPlayer);
-        LoaderNetwork.INSTANCE.sendToPlayer(new S2CMultipartDataPkt(this.getId(), this.offset, this.smoothMovement), serverPlayer);
+    public boolean hurt(DamageSource source, float amount) {
+        return this.getOwner() != null && this.getOwner().hurt(source, amount);
     }
 
-    public void setViewRotation(float rotY, float rotX) {
-        this.viewYRot = rotY % 360;
-        this.viewXRot = rotX % 360;
+    @Override
+    public InteractionResult interact(Player player, InteractionHand hand) {
+        return this.getOwner() != null ? this.getOwner().interact(player, hand) : InteractionResult.PASS;
     }
 
-    public record Position(Vec3 anchorOffset, Vec3 positionOffset) {
+    @Override
+    public boolean canCollideWith(Entity entity) {
+        return false;
+    }
 
-        public static final Position DEFAULT = new Position(Vec3.ZERO, Vec3.ZERO);
+    @Override
+    public boolean isInvulnerableTo(DamageSource source) {
+        if (this.getOwner() != null && this.getOwner().isInvulnerableTo(source))
+            return true;
+        return source.is(DamageTypeTags.IS_FALL) || source.is(DamageTypeTags.IS_DROWNING) || (!this.isHead && source.is(DamageTypes.IN_WALL)) || super.isInvulnerableTo(source);
+    }
+
+    @Override
+    public boolean isOnFire() {
+        return this.getOwner() != null && this.getOwner().isOnFire();
+    }
+
+    @Override
+    public int getTicksFrozen() {
+        return this.getOwner() != null ? this.getOwner().getTicksFrozen() : 0;
+    }
+
+    @Override
+    public boolean isPickable() {
+        return this.getOwner() != null;
+    }
+
+    @Override
+    public ItemStack getPickResult() {
+        return this.getOwner() != null ? this.getOwner().getPickResult() : null;
+    }
+
+    @Override
+    public void setLevelCallback(EntityInLevelCallback entityInLevelCallback) {
+        super.setLevelCallback(entityInLevelCallback);
+        this.addedToLevel = true;
+    }
+
+    public boolean isEntityAddedToLevel() {
+        return this.addedToLevel;
+    }
+
+    @Override
+    public boolean isNoGravity() {
+        return true;
+    }
+
+    @Nullable
+    @Override
+    public UUID getOwnerUUID() {
+        return this.entityData.get(PARENT_UUID).orElse(null);
+    }
+
+    @Override
+    public LivingEntity getOwner() {
+        if (this.parent != null && this.parent.isAlive())
+            return this.parent;
+        this.entityData.get(PARENT_UUID).ifPresent(uuid -> this.parent = EntityUtils.findFromUUID(LivingEntity.class, this.level(), uuid));
+        return this.parent;
+    }
+
+    interface PositionUpdater {
+
+        PositionUpdater FROM_YROT = (relative, parent) -> relative.yRot(-parent.yBodyRot * Mth.DEG_TO_RAD);
+
+        Vec3 from(Vec3 relative, LivingEntity parent);
+    }
+
+    public record MultipartPosition(Vec3 relative, PositionUpdater updater, boolean noPhysics) {
+
+        public static final MultipartPosition DEFAULT = new MultipartPosition(Vec3.ZERO);
+
+        public MultipartPosition(Vec3 relative) {
+            this(relative, PositionUpdater.FROM_YROT, true);
+        }
+
+        public MultipartPosition(Vec3 relative, boolean noPhysics) {
+            this(relative, PositionUpdater.FROM_YROT, noPhysics);
+        }
+
+        public Vec3 getPosition(LivingEntity parent) {
+            return this.updater().from(this.relative(), parent);
+        }
     }
 }

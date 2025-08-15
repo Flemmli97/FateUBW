@@ -1,13 +1,17 @@
 package io.github.flemmli97.fateubw.neoforge.data;
 
 import io.github.flemmli97.fateubw.Fate;
+import io.github.flemmli97.fateubw.common.advancements.DataComponentPresentPredicate;
 import io.github.flemmli97.fateubw.common.registry.FateCriterionTriggers;
+import io.github.flemmli97.fateubw.common.registry.FateDataComponents;
+import io.github.flemmli97.fateubw.common.registry.FateItemSubPredicates;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.PlayerTrigger;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -38,8 +42,9 @@ public class AdvancementsGen extends AdvancementProvider {
                     .addCriterion("gem_wind", InventoryChangeTrigger.TriggerInstance.hasItems(FateItems.CRYSTAL_GREEN.get()))
                     .addCriterion("gem_void", InventoryChangeTrigger.TriggerInstance.hasItems(FateItems.CRYSTAL_BLACK.get()))
                     .requirements(AdvancementRequirements.Strategy.OR).save(cons, Fate.MODID + ":root");
-            AdvancementHolder charm = Advancement.Builder.advancement().parent(root).display(FateItems.CHARM_NONE.get(), Component.translatable("fateubw.advancements.charm.title"), Component.translatable("fateubw.advancements.charm.description"), null, AdvancementType.TASK, true, true, true)
-                    .addCriterion("charm", InventoryChangeTrigger.TriggerInstance.hasItems(FateItems.CHARM_NONE.get())).save(cons, Fate.MODID + ":charm");
+            AdvancementHolder artifact = Advancement.Builder.advancement().parent(root).display(FateItems.ARTIFACT_SABER.get(), Component.translatable("fateubw.advancements.artifact.title"), Component.translatable("fateubw.advancements.artifact.description"), null, AdvancementType.TASK, true, true, true)
+                    .addCriterion("artifact", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item()
+                            .withSubPredicate(FateItemSubPredicates.COMPONENT_PRESENT.get(), DataComponentPresentPredicate.builder().expect(FateDataComponents.CLASS_RELIC.get()).build()))).save(cons, Fate.MODID + ":artifact");
             AdvancementHolder summon = Advancement.Builder.advancement().parent(root).display(FateItems.ALTAR.get(), Component.translatable("fateubw.advancements.join.title"), Component.translatable("fateubw.advancements.join.description"), null, AdvancementType.TASK, true, false, true)
                     .addCriterion("join", FateCriterionTriggers.JOIN_GRAIL_WAR.get().createCriterion(new PlayerTrigger.TriggerInstance(Optional.empty()))).save(cons, Fate.MODID + ":summon");
             AdvancementHolder win = Advancement.Builder.advancement().parent(summon).display(FateItems.GRAIL.get(), Component.translatable("fateubw.advancements.win.title"), Component.translatable("fateubw.advancements.win.description"), null, AdvancementType.CHALLENGE, true, true, true)

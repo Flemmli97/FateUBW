@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "fateubw:gui/command_seal_4"
+    "layer0": "fateubw:item/command_seal_4"
   }
 }

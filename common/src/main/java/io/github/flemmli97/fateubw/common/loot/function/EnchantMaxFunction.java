@@ -38,7 +38,7 @@ public class EnchantMaxFunction extends LootItemConditionalFunction {
     }
 
     @Override
-    public LootItemFunctionType getType() {
+    public LootItemFunctionType<EnchantMaxFunction> getType() {
         return FateGrailLootSerializer.MAX_ENCHANT.get();
     }
 

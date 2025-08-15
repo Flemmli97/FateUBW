@@ -1,6 +1,6 @@
 {
   "parent": "fateubw:item/32x32_weapon",
   "textures": {
-    "layer0": "fateubw:items/medeas_staff"
+    "layer0": "fateubw:item/medeas_staff"
   }
 }

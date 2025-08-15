@@ -1,0 +1,14 @@
+{
+  "attributes": {
+    "fateubw:combat_regen": 1.0,
+    "fateubw:passive_regen": 10.0,
+    "fateubw:projectile_resistance": 4.0,
+    "minecraft:generic.armor": 10.0,
+    "minecraft:generic.attack_damage": 13.0,
+    "minecraft:generic.max_health": 350.0,
+    "minecraft:generic.movement_speed": 0.35
+  },
+  "class": "fateubw:archer",
+  "nobel_phantasm_cost": 50,
+  "weight": 1
+}

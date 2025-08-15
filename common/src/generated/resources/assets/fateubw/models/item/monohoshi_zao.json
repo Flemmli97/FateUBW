@@ -1,6 +1,6 @@
 {
   "parent": "fateubw:item/32x32_weapon",
   "textures": {
-    "layer0": "fateubw:items/monohoshi_zao"
+    "layer0": "fateubw:item/monohoshi_zao"
   }
 }

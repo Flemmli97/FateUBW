@@ -110,16 +110,30 @@ public class Loottables extends LootTableProvider {
         @Override
         public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> output) {
             this.dropSelf(FateBlocks.ALTAR.get());
-            this.add(FateBlocks.ARTIFACT_ORE.get(), drop -> this.createSingleItemTableWithSilkTouch(drop, FateItems.CHARM_NONE.get()));
-            this.add(FateBlocks.DEEP_SLATE_ARTIFACT_ORE.get(), drop -> this.createSingleItemTableWithSilkTouch(drop, FateItems.CHARM_NONE.get()));
+            ResourceKey<LootTable> artifacts = ResourceKey.create(Registries.LOOT_TABLE, Fate.modRes("blocks/artifacts"));
+            this.registerLootTable(artifacts, this.artifactLoot());
+            this.add(FateBlocks.ARTIFACT_ORE.get(), drop -> this.createSilkTouchDispatchTable(drop, this.applyExplosionCondition(drop, NestedLootTable.lootTableReference(artifacts))));
+            this.add(FateBlocks.DEEP_SLATE_ARTIFACT_ORE.get(), drop -> this.createSilkTouchDispatchTable(drop, this.applyExplosionCondition(drop, NestedLootTable.lootTableReference(artifacts))));
             ResourceKey<LootTable> crystal = ResourceKey.create(Registries.LOOT_TABLE, Fate.modRes("blocks/crystals"));
-            this.registerLootTable(crystal, this.createLootPool(5, FateItems.CRYSTAL_YELLOW.get(), FateItems.CRYSTAL_GREEN.get(), FateItems.CRYSTAL_BLUE.get(), FateItems.CRYSTAL_BLACK.get(), FateItems.CRYSTAL_RED.get()));
+            this.registerLootTable(crystal, this.createOreLootPool(5, FateItems.CRYSTAL_YELLOW.get(), FateItems.CRYSTAL_GREEN.get(), FateItems.CRYSTAL_BLUE.get(), FateItems.CRYSTAL_BLACK.get(), FateItems.CRYSTAL_RED.get()));
             this.add(FateBlocks.GEM_ORE.get(), drop -> this.createSilkTouchDispatchTable(drop, NestedLootTable.lootTableReference(crystal)));
             this.add(FateBlocks.DEEP_SLATE_GEM_ORE.get(), drop -> this.createSilkTouchDispatchTable(drop, NestedLootTable.lootTableReference(crystal)));
             this.loots.forEach(output);
         }
 
-        protected LootTable.Builder createLootPool(int weight, ItemLike... items) {
+        protected LootTable.Builder artifactLoot() {
+            LootPool.Builder build = LootPool.lootPool().setRolls(ConstantValue.exactly(1));
+            build.add(LootItem.lootTableItem(FateItems.ARTIFACT_SABER.get()));
+            build.add(LootItem.lootTableItem(FateItems.ARTIFACT_ARCHER.get()));
+            build.add(LootItem.lootTableItem(FateItems.ARTIFACT_LANCER.get()));
+            build.add(LootItem.lootTableItem(FateItems.ARTIFACT_CASTER.get()));
+            build.add(LootItem.lootTableItem(FateItems.ARTIFACT_BERSERKER.get()));
+            build.add(LootItem.lootTableItem(FateItems.ARTIFACT_RIDER.get()));
+            build.add(LootItem.lootTableItem(FateItems.ARTIFACT_ASSASSIN.get()));
+            return LootTable.lootTable().withPool(build);
+        }
+
+        protected LootTable.Builder createOreLootPool(int weight, ItemLike... items) {
             LootPool.Builder build = LootPool.lootPool().setRolls(ConstantValue.exactly(1));
             for (ItemLike item : items)
                 build.add(this.ore(weight, item));

@@ -1,0 +1,14 @@
+{
+  "attributes": {
+    "fateubw:combat_regen": 1.5,
+    "fateubw:passive_regen": 10.0,
+    "fateubw:projectile_resistance": 6.0,
+    "minecraft:generic.armor": 12.0,
+    "minecraft:generic.attack_damage": 11.0,
+    "minecraft:generic.max_health": 350.0,
+    "minecraft:generic.movement_speed": 0.36
+  },
+  "class": "fateubw:rider",
+  "nobel_phantasm_cost": 70,
+  "weight": 1
+}

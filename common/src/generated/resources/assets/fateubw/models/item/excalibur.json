@@ -1,14 +1,14 @@
 {
   "parent": "fateubw:item/32x32_weapon",
-  "textures": {
-    "layer0": "fateubw:items/excalibur"
-  },
   "overrides": [
     {
+      "model": "fateubw:item/excalibur_active",
       "predicate": {
         "fateubw:active": 1.0
-      },
-      "model": "fateubw:item/excalibur_active"
+      }
     }
-  ]
+  ],
+  "textures": {
+    "layer0": "fateubw:item/excalibur"
+  }
 }

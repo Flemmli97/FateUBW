@@ -42,6 +42,8 @@ public class ServantRenderer<T extends BaseServant, M extends ServantModel<T>> e
     @Override
     public void render(T entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int light) {
         this.model.update(entity);
+        DoublePoseStack recording = new DoublePoseStack(poseStack);
+        this.plainPose = recording.getApplied();
         float summonProgress = (float) entity.getSummonProgress(partialTicks);
         Vector4f clip;
         if (summonProgress >= 0 && summonProgress < 1) {
@@ -61,18 +63,9 @@ public class ServantRenderer<T extends BaseServant, M extends ServantModel<T>> e
                 state.set(2);
             return cons;
         } : buffer;
-        super.render(entity, yaw, partialTicks, new TransformRecordingStack(poseStack), buf, light);
+        super.render(entity, yaw, partialTicks, recording, buf, light);
         if (state.get() != 0) // other buffersource was used
             SEP.endBatch();
-    }
-
-    @Override
-    protected void scale(T livingEntity, PoseStack poseStack, float partialTickTime) {
-        super.scale(livingEntity, poseStack, partialTickTime);
-        if (poseStack instanceof TransformRecordingStack stack) {
-            this.plainPose = stack.getApplied();
-            stack.applyWrapped();
-        }
     }
 
     @Override

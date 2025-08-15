@@ -6,9 +6,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ServerLevelAccessor;
 
 public interface Platform {
@@ -22,8 +20,6 @@ public interface Platform {
     boolean canSpawnEvent(Mob mob, ServerLevelAccessor level, MobSpawnType spawnReason);
 
     CreativeModeTab.Builder tabBuilder();
-
-    AbstractArrow customBowArrow(AbstractArrow arrow, ItemStack projectile, ItemStack weapon);
 
     default boolean shouldSit(Entity entity) {
         return entity.getVehicle() != null;

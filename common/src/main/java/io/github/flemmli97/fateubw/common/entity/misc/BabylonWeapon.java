@@ -23,7 +23,9 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
@@ -197,8 +199,8 @@ public class BabylonWeapon extends BaseProjectile {
 
     @Override
     protected boolean entityRayTraceHit(EntityHitResult result) {
-        float damage = this.getOwner() instanceof LivingEntity living ? ItemUtils.damage(living, result.getEntity(), this.getWeapon()) :
-                ItemUtils.damageRaw(this.getWeapon());
+        float damage = (float) (this.getOwner() instanceof LivingEntity living ? ItemUtils.damage(living, result.getEntity(), this.getWeapon()) :
+                ItemUtils.attribute(this.getWeapon(), Attributes.ATTACK_DAMAGE, 1, EquipmentSlotGroup.MAINHAND));
         boolean res = Utils.runWithInvulTimer(null, result.getEntity(),
                 e -> e.hurt(FateDamageTypes.indirect(FateDamageTypes.BABYLON, this, this.getOwner()),
                         damage * CommonConfig.babylonScale), 2);

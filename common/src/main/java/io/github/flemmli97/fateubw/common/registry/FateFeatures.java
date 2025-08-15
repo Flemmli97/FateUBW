@@ -3,10 +3,10 @@ package io.github.flemmli97.fateubw.common.registry;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.lib.FateTags;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
@@ -24,7 +24,6 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -39,40 +38,50 @@ public class FateFeatures {
     public static void createFeatures(@Nullable FeatureRegister register,
                                       Consumer<FeatureBiomeModifier> placedFeatureHandler) {
         if (register != null) {
-            register.registerConfigured(FateFeatures.CONFIGURED_CLASS_ARTIFACT_ORE.location(), provider -> new ConfiguredFeature<>(OreFeature.ORE,
+            register.registerConfigured(FateFeatures.CONFIGURED_CLASS_ARTIFACT_ORE, provider -> new ConfiguredFeature<>(OreFeature.ORE,
                     new OreConfiguration(List.of(OreConfiguration.target(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), FateBlocks.ARTIFACT_ORE.get().defaultBlockState()),
                             OreConfiguration.target(new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES), FateBlocks.DEEP_SLATE_ARTIFACT_ORE.get().defaultBlockState())), 2)));
-            register.registerConfigured(FateFeatures.CONFIGURED_GEM_ORES.location(), provider -> new ConfiguredFeature<>(OreFeature.ORE,
+            register.registerConfigured(FateFeatures.CONFIGURED_GEM_ORES, provider -> new ConfiguredFeature<>(OreFeature.ORE,
                     new OreConfiguration(List.of(OreConfiguration.target(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), FateBlocks.GEM_ORE.get().defaultBlockState()),
                             OreConfiguration.target(new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES), FateBlocks.DEEP_SLATE_GEM_ORE.get().defaultBlockState())), 9)));
-            register.registerPlaced(FateFeatures.CLASS_ARTIFACT_ORE.location(), FateFeatures.CONFIGURED_CLASS_ARTIFACT_ORE.location(), (provider, configured) ->
-                    new PlacedFeature(configured,
+            register.registerPlaced(FateFeatures.CLASS_ARTIFACT_ORE, provider ->
+                    new PlacedFeature(provider.get(FateFeatures.CONFIGURED_CLASS_ARTIFACT_ORE),
                             List.of(CountPlacement.of(4),
                                     InSquarePlacement.spread(),
                                     BiomeFilter.biome(),
                                     HeightRangePlacement.uniform(VerticalAnchor.absolute(-80), VerticalAnchor.absolute(32)))));
-            register.registerPlaced(FateFeatures.GEM_ORES.location(), FateFeatures.CONFIGURED_GEM_ORES.location(), (provider, configured) ->
-                    new PlacedFeature(configured,
+            register.registerPlaced(FateFeatures.GEM_ORES, provider ->
+                    new PlacedFeature(provider.get(FateFeatures.CONFIGURED_GEM_ORES),
                             List.of(CountPlacement.of(9),
                                     InSquarePlacement.spread(),
                                     BiomeFilter.biome(),
                                     HeightRangePlacement.uniform(VerticalAnchor.absolute(-33), VerticalAnchor.absolute(50)))));
         }
         placedFeatureHandler.accept(new FeatureBiomeModifier(FateTags.Biomes.FATE_ORE_GEN, GenerationStep.Decoration.UNDERGROUND_DECORATION,
-                FateFeatures.CLASS_ARTIFACT_ORE.location()));
+                ResourceKey.create(Registries.PLACED_FEATURE, FateFeatures.CLASS_ARTIFACT_ORE.location())));
         placedFeatureHandler.accept(new FeatureBiomeModifier(FateTags.Biomes.FATE_ORE_GEN, GenerationStep.Decoration.UNDERGROUND_DECORATION,
-                FateFeatures.GEM_ORES.location()));
+                ResourceKey.create(Registries.PLACED_FEATURE, FateFeatures.GEM_ORES.location())));
     }
 
     public interface FeatureRegister {
 
-        void registerConfigured(ResourceLocation id, Function<HolderLookup.Provider, ConfiguredFeature<?, ?>> feature);
+        void registerConfigured(ResourceKey<ConfiguredFeature<?, ?>> id, Function<HolderGetterLookup, ConfiguredFeature<?, ?>> register);
 
-        void registerPlaced(ResourceLocation id, ResourceLocation configuredID, BiFunction<HolderLookup.Provider, Holder<ConfiguredFeature<?, ?>>, PlacedFeature> placed);
+        void registerPlaced(ResourceKey<PlacedFeature> id, Function<HolderGetterLookup, PlacedFeature> register);
+    }
+
+    public interface HolderGetterLookup {
+
+        default <S> Holder<S> get(ResourceKey<S> key) {
+            return this.lookup(key.registryKey())
+                    .getOrThrow(key);
+        }
+
+        <S> HolderGetter<S> lookup(ResourceKey<? extends Registry<? extends S>> key);
     }
 
     public record FeatureBiomeModifier(TagKey<Biome> tag, GenerationStep.Decoration decoration,
-                                       ResourceLocation placedFeature) {
+                                       ResourceKey<PlacedFeature> placedFeature) {
 
     }
 }

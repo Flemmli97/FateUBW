@@ -59,12 +59,12 @@ public class EventHandler {
     }
 
     @SubscribeEvent
-    public void livingAttack(LivingIncomingDamageEvent event) {
+    public static void livingAttack(LivingIncomingDamageEvent event) {
         event.setCanceled(EventCalls.onHurt(event.getEntity(), event.getSource(), event.getAmount()));
     }
 
     @SubscribeEvent
-    public void damageCalculation(LivingDamageEvent.Pre event) {
+    public static void damageCalculation(LivingDamageEvent.Pre event) {
         event.setNewDamage(EventCalls.damageCalculation(event.getEntity(), event.getSource(), event.getNewDamage()));
     }
 }

@@ -12,7 +12,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.RegistryOps;
 
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
@@ -23,7 +22,7 @@ public record EntityPropsGen(PackOutput output,
     @Override
     public CompletableFuture<?> run(CachedOutput cache) {
         return this.provider.thenApply(provider -> {
-            DynamicOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, provider);
+            DynamicOps<JsonElement> ops = provider.createSerializationContext(JsonOps.INSTANCE);
             ImmutableList.Builder<CompletableFuture<?>> futures = new ImmutableList.Builder<>();
             FateEntities.getServantProperties().forEach((res, prop) -> {
                 Path path = this.output.getOutputFolder(PackOutput.Target.DATA_PACK).resolve(res.getNamespace() + "/" + EntityPropsManager.DIRECTORY + "/" + res.getPath() + ".json");

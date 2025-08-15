@@ -1,14 +1,14 @@
 {
 	"credit": "Made with Blockbench, a free, modern block model editor by JannisX11",
 	"textures": {
-		"0": "fateubw:blocks/summoning_altar/side",
-		"1": "fateubw:blocks/summoning_altar/top",
-		"2": "fateubw:blocks/summoning_altar/top_bot",
-		"3": "fateubw:blocks/summoning_altar/wood_side",
-		"4": "fateubw:blocks/summoning_altar/wood_leg",
-		"5": "fateubw:blocks/summoning_altar/empty",
-		"6": "fateubw:blocks/summoning_altar/candle",
-   	 	"particle": "fateubw:blocks/summoning_altar/side"
+      "0": "fateubw:block/summoning_altar/side",
+      "1": "fateubw:block/summoning_altar/top",
+      "2": "fateubw:block/summoning_altar/top_bot",
+      "3": "fateubw:block/summoning_altar/wood_side",
+      "4": "fateubw:block/summoning_altar/wood_leg",
+      "5": "fateubw:block/summoning_altar/empty",
+      "6": "fateubw:block/summoning_altar/candle",
+      "particle": "fateubw:block/summoning_altar/side"
 	},
 	"elements": [
 		{

@@ -2,11 +2,11 @@ package io.github.flemmli97.fateubw.client.render.misc;
 
 import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.github.flemmli97.fateubw.client.render.FateRenders;
 import io.github.flemmli97.fateubw.common.entity.misc.BabylonWeapon;
+import io.github.flemmli97.tenshilib.client.VertexUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -47,39 +47,48 @@ public class RenderBabylon extends EntityRenderer<BabylonWeapon> {
             float size = 1.5f;
             Matrix4f matrix4f = stack.last().pose();
             VertexConsumer consumer = buffer.getBuffer(FateRenders.BABYLON_RENDER);
-            int tick = projectile.tickCount + projectile.renderRand;
-            VertexHelper.time(
+            float tick = projectile.tickCount + projectile.renderRand;
+            tick = ((tick % 24000) + partialTicks) / 24000.0f;
+            VertexUtils.addVertexData(
                     consumer.addVertex(matrix4f, -size, -size, 0).setColor(this.color.x(), this.color.y(), this.color.z(), 1).setUv(0, 0),
-                    tick, partialTicks
+                    VertexUtils.SINGLE_FLOAT.get(),
+                    tick
             );
-            VertexHelper.time(
+            VertexUtils.addVertexData(
                     consumer.addVertex(matrix4f, size, -size, 0).setColor(this.color.x(), this.color.y(), this.color.z(), 1).setUv(1, 0),
-                    tick, partialTicks
+                    VertexUtils.SINGLE_FLOAT.get(),
+                    tick
             );
-            VertexHelper.time(
+            VertexUtils.addVertexData(
                     consumer.addVertex(matrix4f, size, size, 0).setColor(this.color.x(), this.color.y(), this.color.z(), 1).setUv(1, 1),
-                    tick, partialTicks
+                    VertexUtils.SINGLE_FLOAT.get(),
+                    tick
             );
-            VertexHelper.time(
+            VertexUtils.addVertexData(
                     consumer.addVertex(matrix4f, -size, size, 0).setColor(this.color.x(), this.color.y(), this.color.z(), 1).setUv(0, 1),
-                    tick, partialTicks
+                    VertexUtils.SINGLE_FLOAT.get(),
+                    tick
             );
-            VertexHelper.time(
+            VertexUtils.addVertexData(
                     consumer.addVertex(matrix4f, -size, size, 0).setColor(this.color.x(), this.color.y(), this.color.z(), 1).setUv(0, 1),
-                    tick, partialTicks
+                    VertexUtils.SINGLE_FLOAT.get(),
+                    tick
             );
 
-            VertexHelper.time(
+            VertexUtils.addVertexData(
                     consumer.addVertex(matrix4f, size, size, 0).setColor(this.color.x(), this.color.y(), this.color.z(), 1).setUv(1, 1),
-                    tick, partialTicks
+                    VertexUtils.SINGLE_FLOAT.get(),
+                    tick
             );
-            VertexHelper.time(
+            VertexUtils.addVertexData(
                     consumer.addVertex(matrix4f, size, -size, 0).setColor(this.color.x(), this.color.y(), this.color.z(), 1).setUv(1, 0),
-                    tick, partialTicks
+                    VertexUtils.SINGLE_FLOAT.get(),
+                    tick
             );
-            VertexHelper.time(
+            VertexUtils.addVertexData(
                     consumer.addVertex(matrix4f, -size, -size, 0).setColor(this.color.x(), this.color.y(), this.color.z(), 1).setUv(0, 0),
-                    tick, partialTicks
+                    VertexUtils.SINGLE_FLOAT.get(),
+                    tick
             );
             stack.popPose();
         }

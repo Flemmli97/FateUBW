@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "tag": "fateubw:crystals"
+    },
+    {
+      "item": "minecraft:book"
+    }
+  ],
+  "result": {
+    "components": {
+      "modopedia:book": "fateubw:fateubw_book"
+    },
+    "count": 1,
+    "id": "modopedia:book"
+  }
+}

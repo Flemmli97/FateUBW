@@ -1,6 +1,6 @@
 {
   "parent": "fateubw:item/spear_item",
   "textures": {
-    "layer0": "fateubw:items/gae_buidhe"
+    "layer0": "fateubw:item/gae_buidhe"
   }
 }

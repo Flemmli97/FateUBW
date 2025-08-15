@@ -1,6 +1,7 @@
 package io.github.flemmli97.fateubw.client;
 
 import io.github.flemmli97.fateubw.Fate;
+import io.github.flemmli97.fateubw.client.model.MedeaModel;
 import io.github.flemmli97.fateubw.client.model.ServantModel;
 import io.github.flemmli97.fateubw.client.particles.RingParticle;
 import io.github.flemmli97.fateubw.client.particles.TrailParticle;
@@ -80,6 +81,7 @@ public class ClientRegister {
         registerServant(consumer, FateEntities.EMIYA);
         registerServant(consumer, FateEntities.GILGAMESH);
         registerServant(consumer, FateEntities.MEDEA);
+        consumer.register(FateEntities.MEDEA.get(), manager -> new ServantRenderer<>(manager, new MedeaModel<>(), servantTexture(FateEntities.MEDEA), 0.5f));
         registerServant(consumer, FateEntities.GILLES);
         registerServant(consumer, FateEntities.HERACLES, 1);
         registerServant(consumer, FateEntities.LANCELOT);
@@ -114,11 +116,11 @@ public class ClientRegister {
     }
 
     private static <T extends BaseServant> void registerServant(EntityRendererRegister consumer, RegistryEntrySupplier<EntityType<?>, EntityType<T>> reg, float shadow) {
-        consumer.register(reg.get(), manager -> new ServantRenderer<>(manager, new ServantModel<>(servantLocation(reg)), servantTexture(reg), 0.5f));
+        consumer.register(reg.get(), manager -> new ServantRenderer<>(manager, new ServantModel<>(servantLocation(reg)), servantTexture(reg), shadow));
     }
 
     public static <T extends Entity> ResourceLocation servantLocation(RegistryEntrySupplier<EntityType<?>, EntityType<T>> reg) {
-        return Fate.modRes("/servant/" + reg.getID().getPath());
+        return Fate.modRes("servant/" + reg.getID().getPath());
     }
 
     public static <T extends Entity> ResourceLocation servantTexture(RegistryEntrySupplier<EntityType<?>, EntityType<T>> reg) {

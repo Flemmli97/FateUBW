@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/handheld",
   "textures": {
-    "layer0": "fateubw:items/kupriots"
+    "layer0": "fateubw:item/kupriots"
   }
 }

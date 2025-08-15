@@ -70,14 +70,13 @@ public class FateItems {
     public static final RegistryEntrySupplier<Item, BlockItem> DEEP_SLATE_GEM_ORE = register("deepslate_gem_ore", () -> new BlockItem(FateBlocks.DEEP_SLATE_GEM_ORE.get(), new Item.Properties()));
     public static final RegistryEntrySupplier<Item, BlockItem> DEEP_SLATE_ARTIFACT_ORE = register("deepslate_artifact_ore", () -> new BlockItem(FateBlocks.DEEP_SLATE_ARTIFACT_ORE.get(), new Item.Properties()));
 
-    public static final RegistryEntrySupplier<Item, Item> CHARM_NONE = registerCharm(BuiltinServantClasses.NONE);
-    public static final RegistryEntrySupplier<Item, Item> CHARM_SABER = registerCharm(BuiltinServantClasses.SABER);
-    public static final RegistryEntrySupplier<Item, Item> CHARM_ARCHER = registerCharm(BuiltinServantClasses.ARCHER);
-    public static final RegistryEntrySupplier<Item, Item> CHARM_LANCER = registerCharm(BuiltinServantClasses.LANCER);
-    public static final RegistryEntrySupplier<Item, Item> CHARM_CASTER = registerCharm(BuiltinServantClasses.CASTER);
-    public static final RegistryEntrySupplier<Item, Item> CHARM_BERSERKER = registerCharm(BuiltinServantClasses.BERSERKER);
-    public static final RegistryEntrySupplier<Item, Item> CHARM_RIDER = registerCharm(BuiltinServantClasses.RIDER);
-    public static final RegistryEntrySupplier<Item, Item> CHARM_ASSASSIN = registerCharm(BuiltinServantClasses.ASSASSIN);
+    public static final RegistryEntrySupplier<Item, Item> ARTIFACT_SABER = registerArtifact(BuiltinServantClasses.SABER);
+    public static final RegistryEntrySupplier<Item, Item> ARTIFACT_ARCHER = registerArtifact(BuiltinServantClasses.ARCHER);
+    public static final RegistryEntrySupplier<Item, Item> ARTIFACT_LANCER = registerArtifact(BuiltinServantClasses.LANCER);
+    public static final RegistryEntrySupplier<Item, Item> ARTIFACT_CASTER = registerArtifact(BuiltinServantClasses.CASTER);
+    public static final RegistryEntrySupplier<Item, Item> ARTIFACT_BERSERKER = registerArtifact(BuiltinServantClasses.BERSERKER);
+    public static final RegistryEntrySupplier<Item, Item> ARTIFACT_RIDER = registerArtifact(BuiltinServantClasses.RIDER);
+    public static final RegistryEntrySupplier<Item, Item> ARTIFACT_ASSASSIN = registerArtifact(BuiltinServantClasses.ASSASSIN);
     public static final RegistryEntrySupplier<Item, Item> CRYSTAL_RED = register("gem_shard_red", () -> new Item(new Item.Properties()));
     public static final RegistryEntrySupplier<Item, Item> CRYSTAL_GREEN = register("gem_shard_green", () -> new Item(new Item.Properties()));
     public static final RegistryEntrySupplier<Item, Item> CRYSTAL_YELLOW = register("gem_shard_yellow", () -> new Item(new Item.Properties()));
@@ -105,7 +104,7 @@ public class FateItems {
         };
     };
 
-    private static RegistryEntrySupplier<Item, Item> registerCharm(ResourceLocation type) {
+    private static RegistryEntrySupplier<Item, Item> registerArtifact(ResourceLocation type) {
         return register("artifact_" + type.getPath(), () -> new Item(new Item.Properties()
                 .stacksTo(8)
                 .rarity(Rarity.RARE)
@@ -117,7 +116,7 @@ public class FateItems {
     }
 
     private static <T extends Item> RegistryEntrySupplier<Item, T> register(String name, Supplier<T> sup, boolean withTab) {
-        RegistryEntrySupplier<Item, T> item = register(name, sup);
+        RegistryEntrySupplier<Item, T> item = ITEMS.register(name, sup);
         if (withTab) {
             FateCreativeTab.addToTab(item);
         }

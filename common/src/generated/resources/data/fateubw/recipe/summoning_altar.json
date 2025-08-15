@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": {
+      "tag": "c:storage_blocks/diamond"
+    },
+    "G": {
+      "item": "fateubw:mana_gem"
+    },
+    "L": {
+      "tag": "c:storage_blocks/lapis"
+    },
+    "R": {
+      "item": "minecraft:red_wool"
+    },
+    "T": {
+      "item": "minecraft:torch"
+    }
+  },
+  "pattern": [
+    "RTR",
+    "GDG",
+    "LGL"
+  ],
+  "result": {
+    "count": 1,
+    "id": "fateubw:summoning_altar"
+  }
+}

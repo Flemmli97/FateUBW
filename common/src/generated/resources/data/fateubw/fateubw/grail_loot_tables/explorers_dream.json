@@ -1,0 +1,139 @@
+{
+  "loot_pools": [
+    {
+      "type": "fateubw:xp_entry",
+      "range": {
+        "type": "minecraft:uniform",
+        "max": 17000.0,
+        "min": 10000.0
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "loot_pool": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "add": false,
+            "count": {
+              "type": "minecraft:uniform",
+              "max": 4.0,
+              "min": 2.0
+            },
+            "function": "minecraft:set_count"
+          }
+        ],
+        "name": "minecraft:diamond"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "loot_pool": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "add": false,
+            "count": {
+              "type": "minecraft:uniform",
+              "max": 3.0,
+              "min": 1.0
+            },
+            "function": "minecraft:set_count"
+          }
+        ],
+        "name": "minecraft:heart_of_the_sea"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "loot_pool": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "add": false,
+            "count": {
+              "type": "minecraft:uniform",
+              "max": 2.0,
+              "min": 1.0
+            },
+            "function": "minecraft:set_count"
+          }
+        ],
+        "name": "minecraft:enchanted_golden_apple"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "loot_pool": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "add": false,
+            "count": {
+              "type": "minecraft:uniform",
+              "max": 8.0,
+              "min": 3.0
+            },
+            "function": "minecraft:set_count"
+          }
+        ],
+        "name": "minecraft:enchanted_golden_apple"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "loot_pool": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "add": false,
+            "count": 1.0,
+            "function": "minecraft:set_count"
+          }
+        ],
+        "name": "minecraft:piglin_banner_pattern"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "loot_pool": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "add": false,
+            "count": 1.0,
+            "function": "minecraft:set_count"
+          }
+        ],
+        "name": "minecraft:music_disc_pigstep"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "loot_pool": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "add": false,
+            "count": {
+              "type": "minecraft:uniform",
+              "max": 1.0,
+              "min": 0.0
+            },
+            "function": "minecraft:set_count"
+          }
+        ],
+        "name": "minecraft:elytra"
+      }
+    },
+    {
+      "type": "fateubw:loot_table_entry",
+      "loot_tables": [
+        "minecraft:chests/end_city_treasure",
+        "minecraft:chests/buried_treasure",
+        "minecraft:chests/shipwreck_treasure"
+      ]
+    }
+  ],
+  "name": "fateubw.loot.explorers_dream"
+}

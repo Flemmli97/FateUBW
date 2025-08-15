@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "fateubw:items/artifact_caster"
+    "layer0": "fateubw:item/artifact_caster"
   }
 }

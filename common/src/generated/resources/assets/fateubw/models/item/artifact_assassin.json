@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "fateubw:items/artifact_assassin"
+    "layer0": "fateubw:item/artifact_assassin"
   }
 }

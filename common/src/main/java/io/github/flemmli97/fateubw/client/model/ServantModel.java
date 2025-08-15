@@ -3,8 +3,8 @@ package io.github.flemmli97.fateubw.client.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.flemmli97.fateubw.client.ClientHandler;
-import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.utils.MoveType;
+import io.github.flemmli97.fateubw.common.entity.utils.ServantLike;
 import io.github.flemmli97.tenshilib.client.data.GeoAnimationManager;
 import io.github.flemmli97.tenshilib.client.data.GeoModelManager;
 import io.github.flemmli97.tenshilib.client.data.ReloadableCache;
@@ -28,7 +28,7 @@ import org.joml.Vector3f;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ServantModel<T extends LivingEntity & AnimatedEntity> extends EntityModel<T> implements ItemHolderModel, HeadedModel, IPreRenderUpdate<T>, ExtendedModel {
+public class ServantModel<T extends LivingEntity & AnimatedEntity & ServantLike> extends EntityModel<T> implements ItemHolderModel, HeadedModel, IPreRenderUpdate<T>, ExtendedModel {
 
     protected final ReloadableCache<ModelPartsContainer> model;
     protected final ReloadableCache<BedrockAnimations> animation;
@@ -119,18 +119,19 @@ public class ServantModel<T extends LivingEntity & AnimatedEntity> extends Entit
                     && this.leftItemDetached.zScale != 0 && this.leftItemDetached.visible;
             if (detached) {
                 this.leftItemDetached.translateAndRotateWithParents(stack);
-            } else if (this.leftArm != null) {
-                this.leftArm.translateAndRotateWithParents(stack);
+            } else if (this.leftItem != null) {
+                this.leftItem.translateAndRotateWithParents(stack);
             }
         } else {
             boolean detached = this.rightItemDetached != null && this.rightItemDetached.xScale != 0 && this.rightItemDetached.yScale != 0
                     && this.rightItemDetached.zScale != 0 && this.rightItemDetached.visible;
             if (detached) {
                 this.rightItemDetached.translateAndRotateWithParents(stack);
-            } else if (this.rightArm != null) {
-                this.rightArm.translateAndRotateWithParents(stack);
+            } else if (this.rightItem != null) {
+                this.rightItem.translateAndRotateWithParents(stack);
             }
         }
+        stack.translate(0, 3 / 16d, -2 / 16d);
     }
 
     @Override

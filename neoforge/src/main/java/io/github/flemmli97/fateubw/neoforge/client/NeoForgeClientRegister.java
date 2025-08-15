@@ -34,9 +34,11 @@ import java.util.function.Function;
 
 public class NeoForgeClientRegister {
 
+    @SuppressWarnings("deprecation")
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
+            // Cause multi loader
             ClientRegister.setupRenderLayers(ItemBlockRenderTypes::setRenderLayer);
             BlockEntityRenderers.register(FateBlocks.ALTAR_BLOCK_ENTITY.get(), RenderAltar::new);
             ClientRegister.registerItemProps(ItemProperties::register);

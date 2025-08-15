@@ -1,21 +1,21 @@
 {
   "parent": "minecraft:item/handheld",
-  "textures": {
-    "layer0": "fateubw:items/medusas_dagger"
-  },
   "overrides": [
     {
+      "model": "fateubw:item/medusas_dagger_held",
       "predicate": {
-        "fateubw:thrown": 0.0,
-        "fateubw:held": 1.0
-      },
-      "model": "fateubw:item/medusas_dagger_held"
+        "fateubw:held": 1.0,
+        "fateubw:thrown": 0.0
+      }
     },
     {
+      "model": "fateubw:item/medusas_dagger_thrown",
       "predicate": {
         "fateubw:thrown": 1.0
-      },
-      "model": "fateubw:item/medusas_dagger_thrown"
+      }
     }
-  ]
+  ],
+  "textures": {
+    "layer0": "fateubw:item/medusas_dagger"
+  }
 }

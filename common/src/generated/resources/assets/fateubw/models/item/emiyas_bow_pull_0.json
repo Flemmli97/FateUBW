@@ -1,6 +1,6 @@
 {
   "parent": "fateubw:item/emiyas_bow",
   "textures": {
-    "layer0": "fateubw:items/emiyas_bow_pull_0"
+    "layer0": "fateubw:item/emiyas_bow_pull_0"
   }
 }

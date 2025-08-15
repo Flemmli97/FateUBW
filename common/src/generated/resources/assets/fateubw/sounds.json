@@ -1,12 +1,5 @@
 {
-  "entity.babylon.spawn": {
-    "subtitle": "fateubw:entity.babylon.spawn",
-    "sounds": [
-      "block/beacon/activate"
-    ]
-  },
   "entity.babylon.shoot": {
-    "subtitle": "fateubw:entity.babylon.shoot",
     "sounds": [
       "entity/player/attack/sweep1",
       "entity/player/attack/sweep2",
@@ -15,30 +8,37 @@
       "entity/player/attack/sweep5",
       "entity/player/attack/sweep6",
       "entity/player/attack/sweep7"
-    ]
+    ],
+    "subtitle": "fateubw:entity.babylon.shoot"
   },
-  "entity.excalibur.shoot": {
-    "subtitle": "fateubw:entity.excalibur.shoot",
+  "entity.babylon.spawn": {
     "sounds": [
-      "random/explode1",
-      "random/explode2",
-      "random/explode3",
-      "random/explode4"
-    ]
+      "block/beacon/activate"
+    ],
+    "subtitle": "fateubw:entity.babylon.spawn"
   },
   "entity.ea.shoot": {
-    "subtitle": "fateubw:entity.ea.shoot",
     "sounds": [
       "random/explode1",
       "random/explode2",
       "random/explode3",
       "random/explode4"
-    ]
+    ],
+    "subtitle": "fateubw:entity.ea.shoot"
+  },
+  "entity.excalibur.shoot": {
+    "sounds": [
+      "random/explode1",
+      "random/explode2",
+      "random/explode3",
+      "random/explode4"
+    ],
+    "subtitle": "fateubw:entity.excalibur.shoot"
   },
   "entity.heracles.roar": {
-    "subtitle": "fateubw:entity.heracles.roar",
     "sounds": [
       "fateubw:entity/heracles/roar"
-    ]
+    ],
+    "subtitle": "fateubw:entity.heracles.roar"
   }
 }

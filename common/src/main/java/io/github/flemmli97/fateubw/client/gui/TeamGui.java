@@ -1,24 +1,23 @@
 package io.github.flemmli97.fateubw.client.gui;
 
 import com.mojang.authlib.GameProfile;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import io.github.flemmli97.fateubw.Fate;
-import io.github.flemmli97.fateubw.client.gui.widget.CustomButton;
 import io.github.flemmli97.fateubw.common.network.C2STeamMessage;
 import io.github.flemmli97.fateubw.common.network.C2STeamUuidMessage;
 import io.github.flemmli97.fateubw.common.world.GrailTeam;
-import io.github.flemmli97.fateubw.platform.NetworkCalls;
+import io.github.flemmli97.tenshilib.client.gui.widget.TexturedButton;
 import io.github.flemmli97.tenshilib.client.gui.widget.list.SelectableEntry;
 import io.github.flemmli97.tenshilib.client.gui.widget.list.SelectableListWidget;
 import io.github.flemmli97.tenshilib.client.gui.widget.list.SelectableText;
+import io.github.flemmli97.tenshilib.loader.LoaderNetwork;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import org.jetbrains.annotations.Nullable;
@@ -30,6 +29,14 @@ import java.util.UUID;
 public class TeamGui extends Screen {
 
     private static final ResourceLocation WIDGETS = Fate.modRes("textures/gui/widgets.png");
+    private static final WidgetSprites ACCEPT = new WidgetSprites(Fate.modRes("icon/team/accept"), Fate.modRes("icon/team/accept_highlighted"));
+    private static final WidgetSprites DEMOTE = new WidgetSprites(Fate.modRes("icon/team/demote"), Fate.modRes("icon/team/demote_highlighted"));
+    private static final WidgetSprites DENY = new WidgetSprites(Fate.modRes("icon/team/deny"), Fate.modRes("icon/team/deny_highlighted"));
+    private static final WidgetSprites INVITE = new WidgetSprites(Fate.modRes("icon/team/invite"), Fate.modRes("icon/team/invite_highlighted"));
+    private static final WidgetSprites PROMOTE = new WidgetSprites(Fate.modRes("icon/team/promote"), Fate.modRes("icon/team/promote_highlighted"));
+    private static final WidgetSprites UNDO = new WidgetSprites(Fate.modRes("icon/team/undo"), Fate.modRes("icon/team/undo_highlighted"));
+    private static final WidgetSprites BACK = new WidgetSprites(Fate.modRes("widget/button_back"), Fate.modRes("widget/button_back_disabled")
+            , Fate.modRes("widget/button_back_highlighted"));
 
     private int leftPos, topPos;
 
@@ -70,39 +77,39 @@ public class TeamGui extends Screen {
                 if (this.info.team().isPresent()) {
                     GrailTeam.ShortTeamInfo team = this.info.team().get();
                     y = this.topPos + 12 + 24;
-                    Button invite = this.addRenderableWidget(new Button(x, y, 80, 20,
-                            Component.translatable("fateubw.gui.team.invites"), b -> this.changePage(Pages.INVITES)));
+                    Button invite = this.addRenderableWidget(Button.builder(
+                            Component.translatable("fateubw.gui.team.invites"), b -> this.changePage(Pages.INVITES)).bounds(x, y, 80, 20).build());
                     invite.active = team.admin();
                     y += 24;
-                    this.addRenderableWidget(new Button(x, y, 80, 20,
-                            Component.translatable("fateubw.gui.team.allies"), b -> this.changePage(Pages.ALLIES)));
+                    this.addRenderableWidget(Button.builder(
+                            Component.translatable("fateubw.gui.team.allies"), b -> this.changePage(Pages.ALLIES)).bounds(x, y, 80, 20).build());
                     y += 24;
-                    this.addRenderableWidget(new Button(x, y, 80, 20,
-                            Component.translatable("fateubw.gui.team.members"), b -> this.changePage(Pages.MEMBERS)));
+                    this.addRenderableWidget(Button.builder(
+                            Component.translatable("fateubw.gui.team.members"), b -> this.changePage(Pages.MEMBERS)).bounds(x, y, 80, 20).build());
 
                     if (this.admin) {
                         this.box = this.addRenderableWidget(new EditBox(this.font, x, this.topPos + 10, 80, 16,
-                                new TextComponent("")));
+                                Component.empty()));
                         this.box.visible = false;
                     }
 
-                    this.leaveButton = this.addRenderableWidget(new Button(this.leftPos + this.sizeX - padding - 80, this.topPos + this.sizeY - padding - 20, 80, 20,
+                    this.leaveButton = this.addRenderableWidget(Button.builder(
                             Component.translatable(team.creator().equals(this.minecraft.player.getUUID()) ?
                                     "fateubw.gui.team.disband" : "fateubw.gui.team.leave").withStyle(ChatFormatting.RED),
-                            b -> NetworkCalls.INSTANCE.sendToServer(new C2STeamMessage(C2STeamMessage.Type.LEAVE, ""))));
+                            b -> LoaderNetwork.INSTANCE.sendToServer(new C2STeamMessage(C2STeamMessage.Type.LEAVE, ""))).bounds(this.leftPos + this.sizeX - padding - 80, this.topPos + this.sizeY - padding - 20, 80, 20).build());
                     this.leaveButton.active = false;
                 } else {
-                    this.addRenderableWidget(new Button(this.leftPos + this.sizeX - padding - 80, this.topPos + y, 80, 20,
-                            Component.translatable("fateubw.gui.team.invites"), b -> this.changePage(Pages.INVITES)));
+                    this.addRenderableWidget(Button.builder(
+                            Component.translatable("fateubw.gui.team.invites"), b -> this.changePage(Pages.INVITES)).bounds(this.leftPos + this.sizeX - padding - 80, this.topPos + y, 80, 20).build());
                     y = this.topPos + this.sizeY - padding - 20 - 24;
                     this.box = this.addRenderableWidget(new EditBox(this.font, this.leftPos + this.sizeX / 2 - 60, y, 120, 20,
-                            new TextComponent("")));
+                            Component.empty()));
                     y += 24;
-                    Button create = this.addRenderableWidget(new Button(this.leftPos + this.sizeX / 2 - 60, y, 120, 20,
+                    Button create = this.addRenderableWidget(Button.builder(
                             Component.translatable("fateubw.gui.team.create"), b -> {
-                        NetworkCalls.INSTANCE.sendToServer(new C2STeamMessage(C2STeamMessage.Type.CREATE, this.box.getValue()));
-                        b.active = false;
-                    }));
+                                LoaderNetwork.INSTANCE.sendToServer(new C2STeamMessage(C2STeamMessage.Type.CREATE, this.box.getValue()));
+                                b.active = false;
+                            }).bounds(this.leftPos + this.sizeX / 2 - 60, y, 120, 20).build());
                     create.active = false;
                     this.box.setResponder(s -> create.active = !s.isEmpty());
                 }
@@ -128,8 +135,8 @@ public class TeamGui extends Screen {
                                     .with(this.getButton(C2STeamUuidMessage.Type.ACCEPT_INVITE, t.id()),
                                             this.getButton(C2STeamUuidMessage.Type.DENY_INVITE, t.id()))).toList()));
                 }
-                this.addRenderableWidget(new CustomButton(this.leftPos + 8, this.topPos + 8, 20, 20,
-                        new TextComponent(""), b -> this.changePage(Pages.MAIN)).setTexture(WIDGETS, 0, 0));
+                this.addRenderableWidget(new TexturedButton(this.leftPos + 8, this.topPos + 8, 20, 20,
+                        Component.empty(), b -> this.changePage(Pages.MAIN)).withSprite(BACK));
             }
             case ALLIES -> {
                 this.addRenderableWidget(new SelectableListWidget(this.leftPos + 25, this.topPos + 37, 170, 128, this.font,
@@ -149,8 +156,8 @@ public class TeamGui extends Screen {
                                         .with(this.getButton(C2STeamUuidMessage.Type.REQUEST_ALLY, t.getFirst().id()));
                             }
                         }).toList()));
-                this.addRenderableWidget(new CustomButton(this.leftPos + 8, this.topPos + 8, 20, 20,
-                        new TextComponent(""), b -> this.changePage(Pages.MAIN)).setTexture(WIDGETS, 0, 0));
+                this.addRenderableWidget(new TexturedButton(this.leftPos + 8, this.topPos + 8, 20, 20,
+                        Component.empty(), b -> this.changePage(Pages.MAIN)).withSprite(BACK));
             }
             case MEMBERS -> {
                 List<Pair<GameProfile, GrailTeam.TeamPosition>> members = this.info.players().stream().filter(p -> p.getSecond().isInTeam()).toList();
@@ -170,16 +177,15 @@ public class TeamGui extends Screen {
                                 }
                             }).toList()));
                 }
-                this.addRenderableWidget(new CustomButton(this.leftPos + 8, this.topPos + 8, 20, 20,
-                        new TextComponent(""), b -> this.changePage(Pages.MAIN)).setTexture(WIDGETS, 0, 0));
+                this.addRenderableWidget(new TexturedButton(this.leftPos + 8, this.topPos + 8, 20, 20,
+                        Component.empty(), b -> this.changePage(Pages.MAIN)).withSprite(BACK));
             }
         }
     }
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
-        RenderSystem.setShaderTexture(0, this.page.texture);
-        this.blit(stack, this.leftPos, this.topPos, 0, 0, this.sizeX, this.sizeY);
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+        graphics.blit(this.page.texture, this.leftPos, this.topPos, 0, 0, this.sizeX, this.sizeY);
         if (this.leaveButton != null) {
             this.leaveButton.active = hasShiftDown();
         }
@@ -187,52 +193,52 @@ public class TeamGui extends Screen {
             if (this.info.team().isPresent()) {
                 Component txt = Component.translatable("fateubw.gui.team.name", this.info.team().get().name());
                 int width = this.font.width(txt);
-                this.font.draw(stack, txt,
-                        this.leftPos + this.sizeX / 2 - width / 2, this.topPos + 15, 0);
+                graphics.drawString(this.font, txt,
+                        this.leftPos + this.sizeX / 2 - width / 2, this.topPos + 15, 0, true);
                 if (this.box != null && !this.box.canConsumeInput()) {
                     boolean vis = this.box.visible;
                     this.box.visible = true;
                     if (this.box.isMouseOver(mouseX, mouseY)) {
-                        this.renderTooltip(stack, Component.translatable("fateubw.gui.team.rename"), mouseX, mouseY);
+                        graphics.renderTooltip(this.font, Component.translatable("fateubw.gui.team.rename"), mouseX, mouseY);
                     }
                     this.box.visible = vis;
                 }
             } else {
                 int y = 0;
                 for (FormattedCharSequence lines : this.font.split(Component.translatable("fateubw.gui.team.none"), this.sizeX / 2 - 18)) {
-                    this.font.draw(stack, lines,
-                            this.leftPos + 18, this.topPos + 18 + y * 11, 0);
+                    graphics.drawString(this.font, lines,
+                            this.leftPos + 18, this.topPos + 18 + y * 11, 0, true);
                     y += 1;
                 }
             }
         } else {
             Component txt = this.page.title;
             int width = this.font.width(txt);
-            this.font.draw(stack, txt, this.leftPos + this.sizeX / 2 - width / 2, this.topPos + 12, 0);
+            graphics.drawString(this.font, txt, this.leftPos + this.sizeX / 2 - width / 2, this.topPos + 12, 0, true);
         }
-        super.render(stack, mouseX, mouseY, partialTicks);
+        super.render(graphics, mouseX, mouseY, partialTicks);
     }
 
     private SelectableText.SelectButton getButton(C2STeamUuidMessage.Type type, UUID uuid) {
         return switch (type) {
-            case INVITE, REQUEST_ALLY -> new SelectableText.SelectButton(WIDGETS, 21, 0,
-                    () -> NetworkCalls.INSTANCE.sendToServer(new C2STeamUuidMessage(type, uuid)), () -> this.admin);
-            case RETRACT_INVITE, RETRACT_REQUEST -> new SelectableText.SelectButton(WIDGETS, 33, 0,
-                    () -> NetworkCalls.INSTANCE.sendToServer(new C2STeamUuidMessage(type, uuid)), () -> this.admin);
-            case ACCEPT_INVITE -> new SelectableText.SelectButton(WIDGETS, 45, 0,
-                    () -> NetworkCalls.INSTANCE.sendToServer(new C2STeamUuidMessage(type, uuid)));
-            case DENY_INVITE -> new SelectableText.SelectButton(WIDGETS, 57, 0,
-                    () -> NetworkCalls.INSTANCE.sendToServer(new C2STeamUuidMessage(type, uuid)));
-            case ACCEPT_ALLY -> new SelectableText.SelectButton(WIDGETS, 45, 0,
-                    () -> NetworkCalls.INSTANCE.sendToServer(new C2STeamUuidMessage(type, uuid)), () -> this.admin);
-            case DENY_ALLY -> new SelectableText.SelectButton(WIDGETS, 57, 0,
-                    () -> NetworkCalls.INSTANCE.sendToServer(new C2STeamUuidMessage(type, uuid)), () -> this.admin);
-            case KICK, DISSOLVE_ALLY -> new SelectableText.SelectButton(WIDGETS, 57, 0,
-                    () -> NetworkCalls.INSTANCE.sendToServer(new C2STeamUuidMessage(type, uuid)), () -> this.admin && Screen.hasShiftDown());
-            case PROMOTE -> new SelectableText.SelectButton(WIDGETS, 69, 0,
-                    () -> NetworkCalls.INSTANCE.sendToServer(new C2STeamUuidMessage(type, uuid)), () -> this.admin);
-            case DEMOTE -> new SelectableText.SelectButton(WIDGETS, 81, 0,
-                    () -> NetworkCalls.INSTANCE.sendToServer(new C2STeamUuidMessage(type, uuid)), () -> this.admin && Screen.hasShiftDown());
+            case INVITE, REQUEST_ALLY -> new SelectableText.SelectButton(INVITE,
+                    () -> LoaderNetwork.INSTANCE.sendToServer(new C2STeamUuidMessage(type, uuid)), () -> this.admin);
+            case RETRACT_INVITE, RETRACT_REQUEST -> new SelectableText.SelectButton(UNDO,
+                    () -> LoaderNetwork.INSTANCE.sendToServer(new C2STeamUuidMessage(type, uuid)), () -> this.admin);
+            case ACCEPT_INVITE -> new SelectableText.SelectButton(ACCEPT,
+                    () -> LoaderNetwork.INSTANCE.sendToServer(new C2STeamUuidMessage(type, uuid)));
+            case DENY_INVITE -> new SelectableText.SelectButton(DENY,
+                    () -> LoaderNetwork.INSTANCE.sendToServer(new C2STeamUuidMessage(type, uuid)));
+            case ACCEPT_ALLY -> new SelectableText.SelectButton(ACCEPT,
+                    () -> LoaderNetwork.INSTANCE.sendToServer(new C2STeamUuidMessage(type, uuid)), () -> this.admin);
+            case DENY_ALLY -> new SelectableText.SelectButton(DENY,
+                    () -> LoaderNetwork.INSTANCE.sendToServer(new C2STeamUuidMessage(type, uuid)), () -> this.admin);
+            case KICK, DISSOLVE_ALLY -> new SelectableText.SelectButton(DENY,
+                    () -> LoaderNetwork.INSTANCE.sendToServer(new C2STeamUuidMessage(type, uuid)), () -> this.admin && Screen.hasShiftDown());
+            case PROMOTE -> new SelectableText.SelectButton(PROMOTE,
+                    () -> LoaderNetwork.INSTANCE.sendToServer(new C2STeamUuidMessage(type, uuid)), () -> this.admin);
+            case DEMOTE -> new SelectableText.SelectButton(DEMOTE,
+                    () -> LoaderNetwork.INSTANCE.sendToServer(new C2STeamUuidMessage(type, uuid)), () -> this.admin && Screen.hasShiftDown());
         };
     }
 
@@ -247,7 +253,7 @@ public class TeamGui extends Screen {
             this.box.visible = true;
             if (this.box.isMouseOver(mouseX, mouseY)) {
                 this.box.setValue(this.info.team().get().name());
-                this.box.setFocus(true);
+                this.box.setFocused(true);
             } else {
                 this.box.visible = false;
             }
@@ -259,9 +265,9 @@ public class TeamGui extends Screen {
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (this.box != null && this.info.team().isPresent() && keyCode == GLFW.GLFW_KEY_ENTER) {
             this.box.visible = false;
-            this.box.setFocus(false);
+            this.box.setFocused(false);
             if (!this.box.getValue().isEmpty())
-                NetworkCalls.INSTANCE.sendToServer(new C2STeamMessage(C2STeamMessage.Type.RENAME, this.box.getValue()));
+                LoaderNetwork.INSTANCE.sendToServer(new C2STeamMessage(C2STeamMessage.Type.RENAME, this.box.getValue()));
             return true;
         }
         if ((this.box == null || !this.box.canConsumeInput()) && this.minecraft.options.keyInventory.matches(keyCode, scanCode)) {
@@ -274,7 +280,7 @@ public class TeamGui extends Screen {
     @Override
     public void onClose() {
         super.onClose();
-        NetworkCalls.INSTANCE.sendToServer(new C2STeamMessage(C2STeamMessage.Type.CLOSE, ""));
+        LoaderNetwork.INSTANCE.sendToServer(new C2STeamMessage(C2STeamMessage.Type.CLOSE, ""));
     }
 
     public void update(GrailTeam.ClientTeamInfo info, boolean reInit) {

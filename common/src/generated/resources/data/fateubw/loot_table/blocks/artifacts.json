@@ -1,0 +1,40 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "fateubw:artifact_saber"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "fateubw:artifact_archer"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "fateubw:artifact_lancer"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "fateubw:artifact_caster"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "fateubw:artifact_berserker"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "fateubw:artifact_rider"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "fateubw:artifact_assassin"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "fateubw:blocks/artifacts"
+}

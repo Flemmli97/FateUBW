@@ -50,31 +50,31 @@ public class ItemModels extends ItemModelProvider {
                                 .end());
             } else if (reg == FateItems.ARCHBOW) {
                 this.withExistingParent(reg.getID().getPath(), ModelLocationUtils.decorateItemModelLocation("generated"))
-                        .texture("layer0", "fateubw:items/emiyas_bow")
+                        .texture("layer0", Fate.modRes("item/emiyas_bow"))
                         .override().predicate(ItemModelProps.BOW_PULL_ID, 0.05f)
                         .predicate(ItemModelProps.CALADBOLG_ID, 0)
                         .model(this.withExistingParent(reg.getID().getPath() + "_pull_0", Fate.modRes("item/" + reg.getID().getPath()))
-                                .texture("layer0", "fateubw:items/emiyas_bow_pull_0")).end()
+                                .texture("layer0", Fate.modRes("item/emiyas_bow_pull_0"))).end()
                         .override().predicate(ItemModelProps.BOW_PULL_ID, 0.65f)
                         .predicate(ItemModelProps.CALADBOLG_ID, 0)
                         .model(this.withExistingParent(reg.getID().getPath() + "_pull_1", Fate.modRes("item/" + reg.getID().getPath()))
-                                .texture("layer0", "fateubw:items/emiyas_bow_pull_1")).end()
+                                .texture("layer0", Fate.modRes("item/emiyas_bow_pull_1"))).end()
                         .override().predicate(ItemModelProps.BOW_PULL_ID, 0.9f)
                         .predicate(ItemModelProps.CALADBOLG_ID, 0)
                         .model(this.withExistingParent(reg.getID().getPath() + "_pull_2", Fate.modRes("item/" + reg.getID().getPath()))
-                                .texture("layer0", "fateubw:items/emiyas_bow_pull_2")).end()
+                                .texture("layer0", Fate.modRes("item/emiyas_bow_pull_2"))).end()
                         .override().predicate(ItemModelProps.BOW_PULL_ID, 0.05f)
                         .predicate(ItemModelProps.CALADBOLG_ID, 1)
                         .model(this.withExistingParent(reg.getID().getPath() + "_caladbolg_pull_0", Fate.modRes("item/" + reg.getID().getPath()))
-                                .texture("layer0", "fateubw:items/emiyas_bow_caladbolg_pull_0")).end()
+                                .texture("layer0", Fate.modRes("item/emiyas_bow_caladbolg_pull_0"))).end()
                         .override().predicate(ItemModelProps.BOW_PULL_ID, 0.65f)
                         .predicate(ItemModelProps.CALADBOLG_ID, 1)
                         .model(this.withExistingParent(reg.getID().getPath() + "_caladbolg_pull_1", Fate.modRes("item/" + reg.getID().getPath()))
-                                .texture("layer0", "fateubw:items/emiyas_bow_caladbolg_pull_1")).end()
+                                .texture("layer0", Fate.modRes("item/emiyas_bow_caladbolg_pull_1"))).end()
                         .override().predicate(ItemModelProps.BOW_PULL_ID, 0.9f)
                         .predicate(ItemModelProps.CALADBOLG_ID, 1)
                         .model(this.withExistingParent(reg.getID().getPath() + "_caladbolg_pull_2", Fate.modRes("item/" + reg.getID().getPath()))
-                                .texture("layer0", "fateubw:items/emiyas_bow_caladbolg_pull_2")).end()
+                                .texture("layer0", Fate.modRes("item/emiyas_bow_caladbolg_pull_2"))).end()
                         .transforms().transform(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND)
                         .rotation(-80, 260, -40)
                         .translation(-1, -2, 2.5f)
@@ -109,7 +109,7 @@ public class ItemModels extends ItemModelProvider {
                         .texture("layer0", this.itemTexture(reg.getID()));
             } else if (reg == FateItems.EXCALIBUR) {
                 this.withExistingParent(reg.getID().getPath(), Fate.modRes("item/32x32_weapon"))
-                        .texture("layer0", "fateubw:items/excalibur")
+                        .texture("layer0", Fate.modRes("item/excalibur"))
                         .override().predicate(ItemModelProps.ACTIVE_ID, 1).model(this.getExistingFile(Fate.modRes("excalibur_active")));
             } else if (reg.get() instanceof BlockItem blockItem) {
                 this.simpleBlockItem(blockItem.getBlock());
@@ -118,7 +118,7 @@ public class ItemModels extends ItemModelProvider {
                         .texture("layer0", this.itemTexture(reg.getID()));
             } else if (reg == FateItems.ICON_0 || reg == FateItems.ICON_1 || reg == FateItems.ICON_2 || reg == FateItems.ICON_3) {
                 this.withExistingParent(reg.getID().getPath(), ModelLocationUtils.decorateItemModelLocation("generated"))
-                        .texture("layer0", ResourceLocation.fromNamespaceAndPath(reg.getID().getNamespace(), "gui/command_seal_" + sealid));
+                        .texture("layer0", Fate.modRes("item/command_seal_" + sealid));
                 sealid++;
             } else if (reg == FateItems.CRYSTAL_RED || reg == FateItems.CRYSTAL_YELLOW || reg == FateItems.CRYSTAL_BLACK || reg == FateItems.CRYSTAL_BLUE || reg == FateItems.CRYSTAL_GREEN) {
                 this.withExistingParent(reg.getID().getPath(), Fate.modRes("item/gem_shard"))
@@ -133,10 +133,10 @@ public class ItemModels extends ItemModelProvider {
     }
 
     private ResourceLocation itemTexture(ResourceLocation item) {
-        return ResourceLocation.fromNamespaceAndPath(item.getNamespace(), "items/" + item.getPath());
+        return ResourceLocation.fromNamespaceAndPath(item.getNamespace(), "item/" + item.getPath());
     }
 
     private ResourceLocation itemTexture(String texture) {
-        return Fate.modRes("items/" + texture);
+        return Fate.modRes("item/" + texture);
     }
 }

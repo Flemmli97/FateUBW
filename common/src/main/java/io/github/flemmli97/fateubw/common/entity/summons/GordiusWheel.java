@@ -4,6 +4,8 @@ import io.github.flemmli97.fateubw.api.datapack.AttributeHolderProperties;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.entity.MultiPartEntity;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
+import io.github.flemmli97.fateubw.common.entity.utils.MoveStateTracker;
+import io.github.flemmli97.fateubw.common.entity.utils.MoveType;
 import io.github.flemmli97.fateubw.common.entity.utils.StandingVehicle;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
@@ -95,6 +97,7 @@ public class GordiusWheel extends PathfinderMob implements AnimatedEntity, Stand
     private MultiPartEntity wheels;
 
     private Vec3 chargeMotion;
+    private final MoveStateTracker moveStateTracker = new MoveStateTracker(3, () -> MoveType.NONE);
 
     public GordiusWheel(EntityType<? extends GordiusWheel> type, Level level) {
         super(type, level);
@@ -112,10 +115,10 @@ public class GordiusWheel extends PathfinderMob implements AnimatedEntity, Stand
     }
 
     protected MultiPartEntity createWheels() {
-        MultiPartEntity entity = new MultiPartEntity(this.level(), 2.2f, 1.6f,
-                new MultiPartEntity.Position(new Vec3(0, 0, -1), new Vec3(0, 0, -1.6)))
-                .smoothMovement()
-                .gravity();
+        MultiPartEntity entity = new MultiPartEntity(this, 2.2f, 1.6f);
+//                new MultiPartEntity.Position(new Vec3(0, 0, -1), new Vec3(0, 0, -1.6)))
+//                .smoothMovement()
+//                .gravity();
         this.entityData.set(WHEEL, entity.getId());
         return entity;
     }
@@ -137,6 +140,14 @@ public class GordiusWheel extends PathfinderMob implements AnimatedEntity, Stand
         super.defineSynchedData(builder);
         builder.define(LOCKED_YAW, 0f);
         builder.define(WHEEL, 0);
+    }
+
+    public float interpolatedMoveTick(float partialTicks) {
+        return this.moveStateTracker.interpolatedMoveTick(partialTicks);
+    }
+
+    public float interpolatedMoveTickOf(MoveType moveType, float partialTicks) {
+        return this.moveStateTracker.interpolatedMoveTickOf(moveType, partialTicks);
     }
 
     @Override
@@ -168,10 +179,10 @@ public class GordiusWheel extends PathfinderMob implements AnimatedEntity, Stand
             if (this.wheels == null) {
                 this.wheels = this.createWheels();
             }
-            if (!this.wheels.isAddedToLevel()) {
-                this.wheels.setParent(this);
-                this.level().addFreshEntity(this.wheels);
-            }
+//            if (!this.wheels.tick();) {
+//                this.wheels.setParent(this);
+//                this.level().addFreshEntity(this.wheels);
+//            }
             this.getAnimationHandler().runIfNotNull(this::handleAttack);
             if (this.getTarget() == null) {
                 if (this.getFirstPassenger() instanceof Mob mob) {
@@ -248,7 +259,7 @@ public class GordiusWheel extends PathfinderMob implements AnimatedEntity, Stand
     @Override
     public void moveTo(double x, double y, double z) {
         super.moveTo(x, y, z);
-        this.wheels.forceUpdatePosition();
+//        this.wheels.forceUpdatePosition();
     }
 
     @Override
@@ -321,20 +332,20 @@ public class GordiusWheel extends PathfinderMob implements AnimatedEntity, Stand
 
     @Nullable
     public MultiPartEntity getWheelEntity() {
-        if (!this.level().isClientSide) {
-            if (this.wheels == null) {
-                this.wheels = this.createWheels();
-            }
-            if (!this.wheels.isAddedToLevel()) {
-                this.wheels.setParent(this);
-                this.level().addFreshEntity(this.wheels);
-            }
-        } else if (this.wheels == null || !this.wheels.isAddedToLevel() || !this.wheels.isAlive()) {
-            Entity entity = this.level().getEntity(this.entityData.get(WHEEL));
-            if (entity instanceof MultiPartEntity part && part.getParent() == this) {
-                this.wheels = part;
-            }
-        }
+//        if (!this.level().isClientSide) {
+//            if (this.wheels == null) {
+//                this.wheels = this.createWheels();
+//            }
+//            if (!this.wheels.isAddedToLevel()) {
+//                this.wheels.setParent(this);
+//                this.level().addFreshEntity(this.wheels);
+//            }
+//        } else if (this.wheels == null || !this.wheels.isAddedToLevel() || !this.wheels.isAlive()) {
+//            Entity entity = this.level().getEntity(this.entityData.get(WHEEL));
+//            if (entity instanceof MultiPartEntity part && part.getParent() == this) {
+//                this.wheels = part;
+//            }
+//        }
         return this.wheels;
     }
 

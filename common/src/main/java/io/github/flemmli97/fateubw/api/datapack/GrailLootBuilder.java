@@ -39,6 +39,6 @@ public class GrailLootBuilder {
     }
 
     public GrailLootTable build() {
-        return new GrailLootTable(this.name, this.descriptions, ImmutableList.copyOf(this.pools), this.conditions.toArray(new LootItemCondition[0]));
+        return new GrailLootTable(this.name, this.descriptions, ImmutableList.copyOf(this.pools), this.conditions);
     }
 }

@@ -5,6 +5,8 @@ import io.github.flemmli97.fateubw.api.datapack.AttributeHolderProperties;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.entity.misc.ThrownItemEntity;
 import io.github.flemmli97.fateubw.common.entity.servant.EntityHassan;
+import io.github.flemmli97.fateubw.common.entity.utils.MoveType;
+import io.github.flemmli97.fateubw.common.entity.utils.ServantLike;
 import io.github.flemmli97.fateubw.common.entity.utils.TargetableOpponent;
 import io.github.flemmli97.fateubw.common.lib.FateTags;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
@@ -60,7 +62,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class HassanClone extends PathfinderMob implements AnimatedEntity, OwnableEntity, AOEAttackEntity, TargetableOpponent {
+public class HassanClone extends PathfinderMob implements AnimatedEntity, OwnableEntity, AOEAttackEntity, TargetableOpponent, ServantLike {
 
     public static final ResourceLocation BACKSTAB_MODIFIER = Fate.modRes("hassan_backstab");
 
@@ -431,5 +433,25 @@ public class HassanClone extends PathfinderMob implements AnimatedEntity, Ownabl
     @Override
     public Predicate<LivingEntity> validTargetPredicate() {
         return this.targetPred;
+    }
+
+    @Override
+    public float interpolatedMoveTick(float partialTicks) {
+        return 0;
+    }
+
+    @Override
+    public float interpolatedMoveTickOf(MoveType moveType, float partialTicks) {
+        return 0;
+    }
+
+    @Override
+    public boolean flipAnimation() {
+        return false;
+    }
+
+    @Override
+    public boolean isStaying() {
+        return false;
     }
 }

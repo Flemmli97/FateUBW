@@ -1,0 +1,77 @@
+{
+  "criteria": {
+    "gem_earth": {
+      "conditions": {
+        "items": [
+          {
+            "items": "fateubw:gem_shard_yellow"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "gem_fire": {
+      "conditions": {
+        "items": [
+          {
+            "items": "fateubw:gem_shard_red"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "gem_void": {
+      "conditions": {
+        "items": [
+          {
+            "items": "fateubw:gem_shard_black"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "gem_water": {
+      "conditions": {
+        "items": [
+          {
+            "items": "fateubw:gem_shard_blue"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "gem_wind": {
+      "conditions": {
+        "items": [
+          {
+            "items": "fateubw:gem_shard_green"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "background": "minecraft:textures/gui/advancements/backgrounds/stone.png",
+    "description": {
+      "translate": "fateubw.advancements.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "fateubw:icon_0"
+    },
+    "title": {
+      "translate": "fateubw.advancements.title"
+    }
+  },
+  "requirements": [
+    [
+      "gem_fire",
+      "gem_water",
+      "gem_earth",
+      "gem_wind",
+      "gem_void"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

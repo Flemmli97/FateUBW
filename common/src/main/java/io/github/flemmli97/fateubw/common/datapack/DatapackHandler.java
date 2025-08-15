@@ -7,11 +7,17 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class DatapackHandler {
 
     public static final GrailLootManager LOOT_TABLES = new GrailLootManager();
     public static final EntityPropsManager SERVANT_PROPS = new EntityPropsManager();
+
+    public static void addListeners(Consumer<ListenerExtension> cons) {
+        cons.accept(LOOT_TABLES);
+        cons.accept(SERVANT_PROPS);
+    }
 
     public static Optional<GrailLootTable> getLootTable(ResourceLocation res) {
         return Optional.ofNullable(LOOT_TABLES.get(res));

@@ -8,13 +8,16 @@ import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateMobEffects;
+import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import io.github.flemmli97.tenshilib.common.item.SpawnEgg;
 import io.github.flemmli97.tenshilib.loader.registry.RegistryEntrySupplier;
+import net.minecraft.core.Holder;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -50,7 +53,7 @@ public class Lang implements DataProvider {
             if (reg == FateItems.ENUMAELISH)
                 this.add(reg.get(), "EA");
             else
-                this.add(reg.get(), this.simpleOfRegName(reg.getID()));
+                this.add(reg.get(), this.simpleTranslation(reg.getID()));
         }
 
         this.add(FateItems.CRYSTAL_RED.get(), "Red Gem Shard");
@@ -58,21 +61,21 @@ public class Lang implements DataProvider {
         this.add(FateItems.CRYSTAL_YELLOW.get(), "Green Gem Shard");
         this.add(FateItems.CRYSTAL_GREEN.get(), "Yellow Gem Shard");
         this.add(FateItems.CRYSTAL_BLACK.get(), "Black Gem Shard");
-        this.add(FateItems.CHARM_NONE.get(), "Artifact");
-        this.add(FateItems.CHARM_SABER.get(), "Artifact (Saber)");
-        this.add(FateItems.CHARM_ARCHER.get(), "Artifact (Archer)");
-        this.add(FateItems.CHARM_LANCER.get(), "Artifact (Lancer)");
-        this.add(FateItems.CHARM_BERSERKER.get(), "Artifact (Berserker)");
-        this.add(FateItems.CHARM_ASSASSIN.get(), "Artifact (Assassin)");
-        this.add(FateItems.CHARM_CASTER.get(), "Artifact (Caster)");
-        this.add(FateItems.CHARM_RIDER.get(), "Artifact (Rider)");
+
+        this.add(FateItems.ARTIFACT_SABER.get(), "Artifact (Saber)");
+        this.add(FateItems.ARTIFACT_ARCHER.get(), "Artifact (Archer)");
+        this.add(FateItems.ARTIFACT_LANCER.get(), "Artifact (Lancer)");
+        this.add(FateItems.ARTIFACT_BERSERKER.get(), "Artifact (Berserker)");
+        this.add(FateItems.ARTIFACT_ASSASSIN.get(), "Artifact (Assassin)");
+        this.add(FateItems.ARTIFACT_CASTER.get(), "Artifact (Caster)");
+        this.add(FateItems.ARTIFACT_RIDER.get(), "Artifact (Rider)");
 
         for (RegistryEntrySupplier<EntityType<?>, ?> type : FateEntities.ENTITIES.getEntries()) {
             SpawnEgg.fromType(type.get()).ifPresent(egg -> this.add(egg, "%s" + " Spawn Egg"));
         }
 
         for (RegistryEntrySupplier<Block, ?> type : FateBlocks.BLOCKS.getEntries()) {
-            this.add(type.get(), this.simpleOfRegName(type.getID()));
+            this.add(type.get(), this.simpleTranslation(type.getID()));
         }
 
         this.add(FateEntities.ARTHUR.get(), "King Arthur");
@@ -111,16 +114,20 @@ public class Lang implements DataProvider {
 
         for (RegistryEntrySupplier<EntityType<?>, ?> reg : FateEntities.ENTITIES.getEntries()) {
             if (!this.data.containsKey(reg.get().getDescriptionId())) {
-                this.add(reg.get(), this.simpleOfRegName(reg.getID()));
+                this.add(reg.get(), this.simpleTranslation(reg.getID()));
             }
         }
 
         for (RegistryEntrySupplier<Attribute, ?> reg : FateAttributes.ATTRIBUTES.getEntries()) {
-            this.add(reg.get().getDescriptionId(), this.simpleOfRegName(reg.getID()));
+            this.add(reg.get().getDescriptionId(), this.simpleTranslation(reg.getID()));
         }
 
         for (RegistryEntrySupplier<MobEffect, ?> reg : FateMobEffects.EFFECTS.getEntries()) {
-            this.add(reg.get().getDescriptionId(), this.simpleOfRegName(reg.getID()));
+            this.add(reg.get().getDescriptionId(), this.simpleTranslation(reg.getID()));
+        }
+
+        for (RegistryEntrySupplier<SoundEvent, ? extends SoundEvent> reg : FateSounds.SOUND_EVENTS.getEntries()) {
+            this.add(reg.asHolder());
         }
 
         this.add("itemGroup." + Fate.MODID + ".tab", "The Fate Universe");
@@ -234,8 +241,8 @@ public class Lang implements DataProvider {
 
         this.add("fateubw.advancements.title", "Welcome to the §k__§r grailwar");
         this.add("fateubw.advancements.description", "Mine some gem shards to start");
-        this.add("fateubw.advancements.charm.title", "To get the strongest servant");
-        this.add("fateubw.advancements.charm.description", "Find a charm to increase the odds of a class");
+        this.add("fateubw.advancements.artifact.title", "To get the strongest servant");
+        this.add("fateubw.advancements.artifact.description", "Find a class artifact to increase the odds of that specific class");
         this.add("fateubw.advancements.join.title", "A fight between heroes");
         this.add("fateubw.advancements.join.description", "Join or start a grailwar");
         this.add("fateubw.advancements.win.title", "People die if they are killed");
@@ -312,8 +319,12 @@ public class Lang implements DataProvider {
         this.add("fateubw.patchouli.entry.xp.1", "Grants random amount of xp points");
     }
 
-    private String simpleOfRegName(ResourceLocation res) {
+    private String simpleTranslation(ResourceLocation res) {
         String s = res.getPath();
+        return this.simpleTranslation(s);
+    }
+
+    private String simpleTranslation(String s) {
         return Stream.of(s.trim().split("_"))
                 .filter(word -> !word.isEmpty())
                 .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1))
@@ -348,6 +359,12 @@ public class Lang implements DataProvider {
 
     public void add(EntityType<?> key, String name) {
         this.add(key.getDescriptionId(), name);
+    }
+
+    public void add(Holder<SoundEvent> key) {
+        String path = key.getKey().location().getPath();
+        path.substring(path.indexOf(".")).replace(".", "_");
+        this.add(key.getKey().location().toString(), this.simpleTranslation(path.substring(path.indexOf(".")).replace(".", "_")));
     }
 
     public void add(String key, String value) {

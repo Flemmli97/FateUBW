@@ -8,8 +8,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector4f;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.client.render.FateRenders;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
@@ -17,7 +15,7 @@ import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailPositions;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.TrailProvider;
 import io.github.flemmli97.fateubw.mixinhelper.SpriteList;
-import io.github.flemmli97.tenshilib.common.utils.MathUtils;
+import io.github.flemmli97.tenshilib.common.utils.math.MathUtils;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
@@ -30,6 +28,8 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
+import org.joml.Vector4f;
 
 public class TrailParticle extends TextureSheetParticle {
 
@@ -91,7 +91,7 @@ public class TrailParticle extends TextureSheetParticle {
                 previousTwo = previous;
             Vector4f[] vertices = this.vertices(pos, previous, previousTwo, i, partialTicks, position.size());
             for (Vector4f vert : vertices) {
-                vert.transform(mat);
+                vert.mulTranspose(mat);
             }
 
             float size = Mth.lerp(partialTicks, this.sizeO, position.size());
@@ -142,9 +142,9 @@ public class TrailParticle extends TextureSheetParticle {
         float scalePre = Mth.lerp(progPre, this.trail.width(), this.trail.width2());
         float scalePreTwo = Mth.lerp(progPreTwo, this.trail.width(), this.trail.width2());
 
-        Vec3 dir = (current.setNormal() == null ? MathUtils.NORMAL_Y : current.setNormal()).scale(scale);
-        Vec3 dirPre = (last.setNormal() == null ? MathUtils.NORMAL_Y : last.setNormal()).scale(scalePre);
-        Vec3 dirPreTwo = (lastTwo.setNormal() == null ? MathUtils.NORMAL_Y : lastTwo.setNormal()).scale(scalePreTwo);
+        Vec3 dir = (current.normal() == null ? MathUtils.NORMAL_Y : current.normal()).scale(scale);
+        Vec3 dirPre = (last.normal() == null ? MathUtils.NORMAL_Y : last.normal()).scale(scalePre);
+        Vec3 dirPreTwo = (lastTwo.normal() == null ? MathUtils.NORMAL_Y : lastTwo.normal()).scale(scalePreTwo);
 
         Vector4f vert_1 = lerp(partialTicks, lastTwo.pos().add(-dirPreTwo.x(), -dirPreTwo.y(), -dirPreTwo.z()), last.pos().add(-dirPre.x(), -dirPre.y(), -dirPre.z()));
         Vector4f vert_2 = lerp(partialTicks, lastTwo.pos().add(dirPreTwo), last.pos().add(dirPre));
@@ -188,18 +188,13 @@ public class TrailParticle extends TextureSheetParticle {
     public static final ParticleRenderType SOLID_COLOR_PARTICLE = new ParticleRenderType() {
 
         @Override
-        public void begin(BufferBuilder builder, TextureManager textureManager) {
+        public BufferBuilder begin(Tesselator tesselator, TextureManager textureManager) {
             RenderSystem.depthMask(true);
             RenderSystem.enableBlend();
             RenderSystem.disableCull();
             RenderSystem.setShader(GameRenderer::getPositionColorLightmapShader);
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-            builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_LIGHTMAP);
-        }
-
-        @Override
-        public void end(Tesselator tesselator) {
-            tesselator.end();
+            return tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_LIGHTMAP);
         }
 
         public String toString() {
@@ -210,18 +205,13 @@ public class TrailParticle extends TextureSheetParticle {
     public static final ParticleRenderType COLOR_PARTICLE = new ParticleRenderType() {
 
         @Override
-        public void begin(BufferBuilder builder, TextureManager textureManager) {
+        public @Nullable BufferBuilder begin(Tesselator tesselator, TextureManager textureManager) {
             RenderSystem.depthMask(true);
             RenderSystem.enableBlend();
             RenderSystem.disableCull();
             RenderSystem.setShader(FateRenders::getParticleColorAddShaderInstance);
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-            builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
-        }
-
-        @Override
-        public void end(Tesselator tesselator) {
-            tesselator.end();
+            return tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
         }
 
         public String toString() {

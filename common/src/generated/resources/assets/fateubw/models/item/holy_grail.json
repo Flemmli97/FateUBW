@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "fateubw:items/holy_grail"
+    "layer0": "fateubw:item/holy_grail"
   }
 }

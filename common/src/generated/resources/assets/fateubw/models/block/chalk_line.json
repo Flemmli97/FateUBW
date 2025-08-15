@@ -1,11 +1,22 @@
 {
   "parent": "minecraft:block/thin_block",
-  "textures": {
-    "texture": "fateubw:blocks/chalk_line",
-    "particle": "fateubw:blocks/chalk_line"
-  },
   "elements": [
     {
+      "faces": {
+        "down": {
+          "cullface": "down",
+          "texture": "#texture",
+          "uv": [
+            0.0,
+            16.0,
+            16.0,
+            0.0
+          ]
+        },
+        "up": {
+          "texture": "#texture"
+        }
+      },
       "from": [
         0,
         0,
@@ -15,22 +26,11 @@
         16,
         0.5,
         16
-      ],
-      "faces": {
-        "down": {
-          "texture": "#texture",
-          "uv": [
-            0.0,
-            16.0,
-            16.0,
-            0.0
-          ],
-          "cullface": "down"
-        },
-        "up": {
-          "texture": "#texture"
-        }
-      }
+      ]
     }
-  ]
+  ],
+  "textures": {
+    "particle": "fateubw:block/chalk_line",
+    "texture": "fateubw:block/chalk_line"
+  }
 }

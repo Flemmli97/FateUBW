@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "tag": "c:dyes"
+    },
+    "C": {
+      "tag": "fateubw:crystals"
+    },
+    "S": {
+      "tag": "c:rods/wooden"
+    }
+  },
+  "pattern": [
+    "  B",
+    " S ",
+    "C  "
+  ],
+  "result": {
+    "count": 1,
+    "id": "fateubw:chalk"
+  }
+}

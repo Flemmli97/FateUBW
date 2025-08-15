@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "fateubw:items/chalk"
+    "layer0": "fateubw:item/chalk"
   }
 }

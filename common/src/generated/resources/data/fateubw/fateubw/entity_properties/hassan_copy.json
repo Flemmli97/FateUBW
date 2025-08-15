@@ -1,0 +1,9 @@
+{
+  "attributes": {
+    "fateubw:projectile_resistance": 10.0,
+    "minecraft:generic.armor": 8.0,
+    "minecraft:generic.attack_damage": 7.0,
+    "minecraft:generic.max_health": 50.0,
+    "minecraft:generic.movement_speed": 0.35
+  }
+}

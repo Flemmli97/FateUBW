@@ -4,6 +4,7 @@ import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.api.datapack.ServantExtraData;
 import io.github.flemmli97.fateubw.common.lib.FateTags;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
+import io.github.flemmli97.fateubw.common.registry.FateDataComponents;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
@@ -21,6 +22,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.Unit;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.SimpleContainer;
@@ -29,12 +31,12 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ArrowItem;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.CrossbowItem;
+import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.FireworkRocketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -258,7 +260,8 @@ public class EntityLancelot extends BaseServant {
     public ItemStack equipItemIfPossible(ItemStack stack) {
         if (this.pickupDelay > 0)
             return ItemStack.EMPTY;
-        EquipmentSlot equipmentSlot = Mob.getEquipmentSlotForItem(stack);
+        Equipable equipable = Equipable.get(stack);
+        EquipmentSlot equipmentSlot = equipable != null ? equipable.getEquipmentSlot() : EquipmentSlot.MAINHAND;
         boolean special = this.specialWeapons(stack);
         if (special) {
             equipmentSlot = EquipmentSlot.OFFHAND;
@@ -294,7 +297,7 @@ public class EntityLancelot extends BaseServant {
             else {
                 this.inventory.setItem(slot, stack);
             }
-            this.equipEventAndSound(stack);
+//            this.equipso(stack);
             this.revealServant();
             return stack;
         }
@@ -324,15 +327,16 @@ public class EntityLancelot extends BaseServant {
     }
 
     protected boolean specialWeapons(ItemStack stack) {
-        return LancelotAttackAI.getFor(stack) != null
-                || stack.getItem() instanceof SpearItem
-                || stack.getItem().getDescriptionId().contains("spear")
-                || stack.getItem() instanceof ArrowItem || stack.getItem() instanceof FireworkRocketItem;
+        return false;
+//        return LancelotAttackAI.getFor(stack) != null
+//                || stack.getItem() instanceof SpearItem
+//                || stack.getItem().getDescriptionId().contains("spear")
+//                || stack.getItem() instanceof ArrowItem || stack.getItem() instanceof FireworkRocketItem;
     }
 
     @Override
     protected boolean canReplaceCurrentItem(ItemStack candidate, ItemStack existing) {
-        boolean better = ItemUtils.isItemBetter(candidate, existing);
+        boolean better = ItemUtils.isItemBetter(this, null, candidate, existing);
         if (!better) {
             // No way to actually tell if item is better so we check for simply enchantments
             if (candidate.getItem() instanceof TridentItem && existing.getItem() instanceof TridentItem) {
@@ -360,12 +364,12 @@ public class EntityLancelot extends BaseServant {
             if (anim.isPast("jump")) {
                 this.fallDistance = 0;
                 if (anim.done(0)) {
-                    if (this.isOnGround()) {
+                    if (this.onGround()) {
                         this.getAnimationHandler().setAnimation(JUMP_LAND);
                     }
                 }
                 // Stuck check. Or e.g. if in water
-                if (anim.isPast(6.0) && (!this.getFeetBlockState().is(Blocks.AIR) || !this.getBlockStateOn().is(Blocks.AIR))) {
+                if (anim.isPast(6.0) && (!this.getInBlockState().is(Blocks.AIR) || !this.getBlockStateOn().is(Blocks.AIR))) {
                     this.getAnimationHandler().setAnimation(JUMP_LAND);
                 }
             }
@@ -375,16 +379,16 @@ public class EntityLancelot extends BaseServant {
                 this.startUsingItem(this.toUseHand());
             if (anim.isAt("attack")) {
                 if (target != null && this.getSensing().hasLineOfSight(target)) {
-                    LancelotAttackAI.ItemAI ai = LancelotAttackAI.getFor(this.getUseItem());
-                    if (ai != null) {
-                        this.useItemRemaining = 1;
-                        this.lookAtNow(target, 360, 90);
-                        this.releaseUsingItem();
-                        boolean used = ai.attack(this, target, this.getUsedItemHand());
-                        if (used) {
-                            this.setItemInHand(this.getUsedItemHand(), ItemStack.EMPTY);
-                        }
-                    }
+//                    LancelotAttackAI.ItemAI ai = LancelotAttackAI.getFor(this.getUseItem());
+//                    if (ai != null) {
+//                        this.useItemRemaining = 1;
+//                        this.lookAtNow(target, 360, 90);
+//                        this.releaseUsingItem();
+//                        boolean used = ai.attack(this, target, this.getUsedItemHand());
+//                        if (used) {
+//                            this.setItemInHand(this.getUsedItemHand(), ItemStack.EMPTY);
+//                        }
+//                    }
                 }
                 this.stopUsingItem();
             }
@@ -398,7 +402,7 @@ public class EntityLancelot extends BaseServant {
             }
             if (anim.isAt("attack") && anim.is(JUMP_LAND)) {
                 S2CScreenShake.sendAround(this, 10, 8, 3);
-                this.playSound(SoundEvents.GENERIC_EXPLODE, 1.0f, 0.9f);
+                this.playSound(SoundEvents.GENERIC_EXPLODE.value(), 1.0f, 0.9f);
             }
             super.handleAttack(anim);
         }
@@ -434,7 +438,7 @@ public class EntityLancelot extends BaseServant {
     @Override
     public void setItemSlot(EquipmentSlot slot, ItemStack stack) {
         if (stack.getItem() != FateItems.ARONDIGHT.get())
-            stack.getOrCreateTag().putBoolean(CORRUPTED_ITEM, true);
+            stack.set(FateDataComponents.CORRUPTED_ITEM.get(), Unit.INSTANCE);
         super.setItemSlot(slot, stack);
     }
 
@@ -449,16 +453,15 @@ public class EntityLancelot extends BaseServant {
 
     @Override
     public ItemEntity spawnAtLocation(ItemStack stack) {
-        if (stack.hasTag())
-            stack.getTag().remove(CORRUPTED_ITEM);
+        stack.remove(FateDataComponents.CORRUPTED_ITEM.get());
         return super.spawnAtLocation(stack);
     }
 
     @Override
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
-        tag.put("Inventory", this.inventory.createTag());
-        tag.put("Swapped", this.swapped.createTag());
+        tag.put("Inventory", this.inventory.createTag(this.registryAccess()));
+        tag.put("Swapped", this.swapped.createTag(this.registryAccess()));
         tag.putInt("SelectedSlot", this.inventorySlotForAttack);
     }
 
@@ -532,8 +535,8 @@ public class EntityLancelot extends BaseServant {
 
     @Override
     public boolean flipAnimation() {
-        return this.toUseHand() == InteractionHand.OFF_HAND
-                || (this.inventorySlotFor(STAB_1) == 1);
+        return this.toUseHand() == InteractionHand.OFF_HAND;
+//                || (this.inventorySlotFor(STAB_1) == 1);
     }
 
     @Override

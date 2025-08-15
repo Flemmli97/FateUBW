@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.api.datapack.AttributeHolderProperties;
@@ -12,6 +13,7 @@ import io.github.flemmli97.fateubw.api.datapack.ServantProperties;
 import io.github.flemmli97.fateubw.common.lib.BuiltinServantClasses;
 import io.github.flemmli97.fateubw.common.registry.FateDataComponents;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -28,7 +30,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-public class EntityPropsManager extends SimpleJsonResourceReloadListener {
+public class EntityPropsManager extends SimpleJsonResourceReloadListener implements ListenerExtension {
 
     public static final ResourceLocation ID = Fate.modRes("entity_properties");
     public static final String DIRECTORY = String.format("%s/%s", ID.getNamespace(), ID.getPath());
@@ -38,6 +40,8 @@ public class EntityPropsManager extends SimpleJsonResourceReloadListener {
     private Map<EntityType<?>, AttributeHolderProperties> genericProps = ImmutableMap.of();
 
     private Set<EntityTypeAndID> servants = ImmutableSet.of();
+
+    private HolderLookup.Provider provider;
 
     public EntityPropsManager() {
         super(GSON, DIRECTORY);
@@ -59,14 +63,15 @@ public class EntityPropsManager extends SimpleJsonResourceReloadListener {
     protected void apply(Map<ResourceLocation, JsonElement> data, ResourceManager manager, ProfilerFiller profiler) {
         ImmutableMap.Builder<EntityType<?>, ServantProperties> builder = ImmutableMap.builder();
         ImmutableMap.Builder<EntityType<?>, AttributeHolderProperties> attBuilder = ImmutableMap.builder();
+        DynamicOps<JsonElement> ops = this.provider.createSerializationContext(JsonOps.INSTANCE);
         data.forEach((fres, el) -> {
             try {
                 BuiltInRegistries.ENTITY_TYPE.getOptional(fres).ifPresent(type -> {
-                    Optional<ServantProperties> servantProps = ServantProperties.CODEC.parse(JsonOps.INSTANCE, el).result();
+                    Optional<ServantProperties> servantProps = ServantProperties.CODEC.parse(ops, el).result();
                     if (servantProps.isPresent()) {
                         builder.put(type, servantProps.get());
                     } else {
-                        AttributeHolderProperties props = AttributeHolderProperties.CODEC.parse(JsonOps.INSTANCE, el).getOrThrow();
+                        AttributeHolderProperties props = AttributeHolderProperties.CODEC.parse(ops, el).getOrThrow();
                         attBuilder.put(type, props);
                     }
                 });
@@ -84,6 +89,16 @@ public class EntityPropsManager extends SimpleJsonResourceReloadListener {
             }
         });
         this.servants = ImmutableSet.copyOf(servants);
+    }
+
+    @Override
+    public ResourceLocation id() {
+        return ID;
+    }
+
+    @Override
+    public void insertRegistryAccess(HolderLookup.Provider provider) {
+        this.provider = provider;
     }
 
     public record EntityTypeAndID(Holder<EntityType<?>> type, ResourceLocation servantClass,

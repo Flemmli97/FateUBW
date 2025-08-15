@@ -1,0 +1,16 @@
+{
+  "attributes": {
+    "fateubw:passive_regen": 10.0,
+    "fateubw:projectile_resistance": 8.0,
+    "minecraft:generic.armor": 18.0,
+    "minecraft:generic.attack_damage": 10.0,
+    "minecraft:generic.max_health": 250.0,
+    "minecraft:generic.movement_speed": 0.3
+  },
+  "class": "fateubw:berserker",
+  "configs": {
+    "fateubw:heracles_death_max": 2
+  },
+  "nobel_phantasm_cost": 0,
+  "weight": 1
+}

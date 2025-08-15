@@ -1,0 +1,135 @@
+{
+  "loot_pools": [
+    {
+      "type": "fateubw:xp_entry",
+      "range": {
+        "type": "minecraft:uniform",
+        "max": 9000.0,
+        "min": 5000.0
+      }
+    },
+    {
+      "type": "fateubw:servant_entry",
+      "as_loot": false
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "loot_pool": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:set_potion",
+            "id": "minecraft:strong_healing"
+          }
+        ],
+        "name": "minecraft:splash_potion"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "loot_pool": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:set_potion",
+            "id": "minecraft:strong_healing"
+          }
+        ],
+        "name": "minecraft:splash_potion"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "loot_pool": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:set_potion",
+            "id": "minecraft:strong_healing"
+          },
+          {
+            "add": false,
+            "count": {
+              "type": "minecraft:uniform",
+              "max": 1.0,
+              "min": 0.0
+            },
+            "function": "minecraft:set_count"
+          }
+        ],
+        "name": "minecraft:splash_potion"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "loot_pool": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:set_potion",
+            "id": "minecraft:strong_healing"
+          },
+          {
+            "add": false,
+            "count": {
+              "type": "minecraft:uniform",
+              "max": 1.0,
+              "min": 0.0
+            },
+            "function": "minecraft:set_count"
+          }
+        ],
+        "name": "minecraft:splash_potion"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "loot_pool": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:set_potion",
+            "id": "minecraft:strong_strength"
+          }
+        ],
+        "name": "minecraft:splash_potion"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "loot_pool": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:set_potion",
+            "id": "minecraft:strong_strength"
+          }
+        ],
+        "name": "minecraft:splash_potion"
+      }
+    },
+    {
+      "type": "fateubw:vanilla_entry",
+      "loot_pool": {
+        "type": "minecraft:item",
+        "functions": [
+          {
+            "function": "minecraft:set_potion",
+            "id": "minecraft:strong_strength"
+          },
+          {
+            "add": false,
+            "count": {
+              "type": "minecraft:uniform",
+              "max": 1.0,
+              "min": 0.0
+            },
+            "function": "minecraft:set_count"
+          }
+        ],
+        "name": "minecraft:splash_potion"
+      }
+    }
+  ],
+  "name": "fateubw.loot.eternal_pact"
+}

@@ -43,8 +43,6 @@ public class ItemTrailLayer<T extends LivingEntity & AnimatedEntity & EntityTrai
         this.getParentModel().transform(left ? HumanoidArm.LEFT : HumanoidArm.RIGHT, stack);
         stack.mulPose(Axis.XP.rotationDegrees(-90.0F));
         stack.mulPose(Axis.YP.rotationDegrees(180.0F));
-        this.getParentModel().postTransform(left, stack);
-        stack.mulPose(Axis.XP.rotationDegrees(90.0F));
 
         Vector4f[] edge = entity.weaponTrailEdge(left);
         Vector4f start = edge[0];

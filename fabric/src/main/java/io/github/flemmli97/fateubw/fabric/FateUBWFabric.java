@@ -7,8 +7,6 @@ import io.github.flemmli97.fateubw.common.commands.CommandHandler;
 import io.github.flemmli97.fateubw.common.config.specs.ConfigLoader;
 import io.github.flemmli97.fateubw.common.config.specs.ConfigSpecs;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
-import io.github.flemmli97.fateubw.common.datapack.EntityPropsManager;
-import io.github.flemmli97.fateubw.common.datapack.GrailLootManager;
 import io.github.flemmli97.fateubw.common.event.EventCalls;
 import io.github.flemmli97.fateubw.common.registry.FateAttributes;
 import io.github.flemmli97.fateubw.common.registry.FateBlocks;
@@ -18,6 +16,7 @@ import io.github.flemmli97.fateubw.common.registry.FateDataComponents;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateFeatures;
 import io.github.flemmli97.fateubw.common.registry.FateGrailLootSerializer;
+import io.github.flemmli97.fateubw.common.registry.FateItemSubPredicates;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateMobEffects;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
@@ -33,8 +32,6 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.PackType;
@@ -78,31 +75,22 @@ public class FateUBWFabric implements ModInitializer {
         });
         PacketHandler.register();
 
-        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new IdentifiableResourceReloadListener() {
+        DatapackHandler.addListeners(listener -> ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(listener.id(), reg -> new IdentifiableResourceReloadListener() {
             @Override
             public CompletableFuture<Void> reload(PreparationBarrier preparationBarrier, ResourceManager resourceManager, ProfilerFiller preparationsProfiler, ProfilerFiller reloadProfiler, Executor backgroundExecutor, Executor gameExecutor) {
-                return DatapackHandler.LOOT_TABLES.reload(preparationBarrier, resourceManager, preparationsProfiler, reloadProfiler, backgroundExecutor, gameExecutor);
+                listener.insertRegistryAccess(reg);
+                return listener.reload(preparationBarrier, resourceManager, preparationsProfiler, reloadProfiler, backgroundExecutor, gameExecutor);
             }
 
             @Override
             public ResourceLocation getFabricId() {
-                return GrailLootManager.ID;
+                return listener.id();
             }
-        });
-        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new IdentifiableResourceReloadListener() {
-            @Override
-            public CompletableFuture<Void> reload(PreparationBarrier preparationBarrier, ResourceManager resourceManager, ProfilerFiller preparationsProfiler, ProfilerFiller reloadProfiler, Executor backgroundExecutor, Executor gameExecutor) {
-                return DatapackHandler.SERVANT_PROPS.reload(preparationBarrier, resourceManager, preparationsProfiler, reloadProfiler, backgroundExecutor, gameExecutor);
-            }
+        }));
 
-            @Override
-            public ResourceLocation getFabricId() {
-                return EntityPropsManager.ID;
-            }
-        });
         FateFeatures.createFeatures(null, feat ->
                 BiomeModifications.addFeature(ctx -> ctx.getBiomeRegistryEntry().is(feat.tag()),
-                        feat.decoration(), ResourceKey.create(Registries.PLACED_FEATURE, feat.placedFeature())));
+                        feat.decoration(), feat.placedFeature()));
 //        LancelotAttackAI.register(FabricLoader.getInstance()::isModLoaded);
 
         CommonSetupEvent.EVENT.register(listener -> listener.enqueue(Fate.MODID, () -> {
@@ -121,6 +109,7 @@ public class FateUBWFabric implements ModInitializer {
         FateGrailLootSerializer.LOOT_FUNCTION.registerContent();
         FateGrailLootSerializer.SERIALIZER.register().registerContent();
         FateItems.ITEMS.registerContent();
+        FateItemSubPredicates.SUB_PREDICATES.registerContent();
         FateMobEffects.EFFECTS.registerContent();
         FateParticles.PARTICLES.registerContent();
         FateSounds.SOUND_EVENTS.registerContent();

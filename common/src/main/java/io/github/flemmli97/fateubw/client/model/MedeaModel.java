@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class MedeaModel<T extends EntityMedea> extends ServantModel<T> {
 
-    public static final ResourceLocation LOCATION = Fate.modRes("servants/medea");
+    public static final ResourceLocation LOCATION = Fate.modRes("servant/medea");
 
     private ModelPartsContainer.ModelPartExtended cloak;
     private ModelPartsContainer.ModelPartExtended hat;

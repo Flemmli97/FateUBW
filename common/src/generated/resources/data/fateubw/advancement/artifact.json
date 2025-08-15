@@ -1,0 +1,38 @@
+{
+  "parent": "fateubw:root",
+  "criteria": {
+    "artifact": {
+      "conditions": {
+        "items": [
+          {
+            "predicates": {
+              "fateubw:component_present": [
+                "fateubw:class_relice"
+              ]
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "fateubw.advancements.artifact.description"
+    },
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "fateubw:artifact_saber"
+    },
+    "title": {
+      "translate": "fateubw.advancements.artifact.title"
+    }
+  },
+  "requirements": [
+    [
+      "artifact"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

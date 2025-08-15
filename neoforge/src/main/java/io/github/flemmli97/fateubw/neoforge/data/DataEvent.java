@@ -2,6 +2,7 @@ package io.github.flemmli97.fateubw.neoforge.data;
 
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.neoforge.data.tags.BlockTagGen;
+import io.github.flemmli97.fateubw.neoforge.data.tags.DamageTypeTagGen;
 import io.github.flemmli97.fateubw.neoforge.data.tags.EntityTagGen;
 import io.github.flemmli97.fateubw.neoforge.data.tags.ItemTagGen;
 import io.github.flemmli97.fateubw.neoforge.data.worldgen.FeatureWorldGen;
@@ -23,24 +24,24 @@ public class DataEvent {
         PackOutput output = event.getGenerator().getPackOutput();
         CompletableFuture<HolderLookup.Provider> provider = event.getLookupProvider();
 
-        BlockTagGen blocks = new BlockTagGen(output, provider, event.getExistingFileHelper());
-        data.addProvider(true, blocks);
-        data.addProvider(true, new DamageTypeGen(output, provider, event.getExistingFileHelper()));
-        data.addProvider(true, new EntityTagGen(output, provider, event.getExistingFileHelper()));
-        data.addProvider(true, new ItemTagGen(output, provider, blocks.contentsGetter(), event.getExistingFileHelper()));
+        FeatureWorldGen.createWorldgenFeatures(event::createDatapackRegistryObjects);
 
         data.addProvider(true, new AdvancementsGen(output, provider, event.getExistingFileHelper()));
         data.addProvider(true, new BlockStatesGen(output, event.getExistingFileHelper()));
         data.addProvider(true, new DamageTypeGen(output, provider, event.getExistingFileHelper()));
         data.addProvider(true, new EntityPropsGen(output, provider));
+        data.addProvider(true, new Loottables(output, provider));
         data.addProvider(true, new GrailLoottables(output, provider));
         data.addProvider(true, new ItemModels(output, event.getExistingFileHelper()));
         data.addProvider(true, new Lang(output));
-        data.addProvider(true, new Loottables(output, provider));
         data.addProvider(true, new ParticleGen(output, event.getExistingFileHelper()));
         data.addProvider(true, new RecipesGen(output, provider));
         data.addProvider(true, new SoundGen(output, event.getExistingFileHelper()));
 
-        data.addProvider(true, new FeatureWorldGen(output, provider));
+        BlockTagGen blocks = new BlockTagGen(output, provider, event.getExistingFileHelper());
+        data.addProvider(true, blocks);
+        data.addProvider(true, new DamageTypeTagGen(output, provider, event.getExistingFileHelper()));
+        data.addProvider(true, new EntityTagGen(output, provider, event.getExistingFileHelper()));
+        data.addProvider(true, new ItemTagGen(output, provider, blocks.contentsGetter(), event.getExistingFileHelper()));
     }
 }

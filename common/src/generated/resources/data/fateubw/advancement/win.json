@@ -1,0 +1,28 @@
+{
+  "parent": "fateubw:summon",
+  "criteria": {
+    "win": {
+      "trigger": "fateubw:win_grail_war"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "fateubw.advancements.win.description"
+    },
+    "frame": "challenge",
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "fateubw:holy_grail"
+    },
+    "title": {
+      "translate": "fateubw.advancements.win.title"
+    }
+  },
+  "requirements": [
+    [
+      "win"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

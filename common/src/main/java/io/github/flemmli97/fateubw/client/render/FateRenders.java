@@ -1,15 +1,15 @@
 package io.github.flemmli97.fateubw.client.render;
 
-import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.shaders.Uniform;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.mixin.RenderTypeAccessor;
+import io.github.flemmli97.tenshilib.client.VertexUtils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.minecraft.Util;
 import net.minecraft.client.Camera;
@@ -36,13 +36,13 @@ public class FateRenders extends RenderType {
     private static ShaderInstance BABYLON_SHADER_INSTANCE;
     private static ShaderInstance PARTICLE_COLOR_ADD_SHADER_INSTANCE;
 
-    public static final ShaderStateShard CORRUPTED_SHADER = new ShaderStateShard(() -> CORRUPTED_SHADER_INSTANCE);
-    public static final ShaderStateShard CLIPPED_SHADER = new ShaderStateShard(() -> CLIPPED_SHADER_INSTANCE);
-    public static final ShaderStateShard BLOOM_SHADER = new ShaderStateShard(() -> PULSING_TEXT_SHADER);
-    public static final ShaderStateShard BABYLON_SHADER = new ShaderStateShard(() -> BABYLON_SHADER_INSTANCE);
-    public static final ShaderStateShard PARTICLE_COLOR_ADD_SHADER = new ShaderStateShard(() -> PARTICLE_COLOR_ADD_SHADER_INSTANCE);
+    private static final ShaderStateShard CORRUPTED_SHADER = new ShaderStateShard(() -> CORRUPTED_SHADER_INSTANCE);
+    private static final ShaderStateShard CLIPPED_SHADER = new ShaderStateShard(() -> CLIPPED_SHADER_INSTANCE);
+    private static final ShaderStateShard BLOOM_SHADER = new ShaderStateShard(() -> PULSING_TEXT_SHADER);
+    private static final ShaderStateShard BABYLON_SHADER = new ShaderStateShard(() -> BABYLON_SHADER_INSTANCE);
+    private static final ShaderStateShard PARTICLE_COLOR_ADD_SHADER = new ShaderStateShard(() -> PARTICLE_COLOR_ADD_SHADER_INSTANCE);
 
-    public static final TransparencyStateShard CORRUPTED_OVERLAY_TRANSPARENCY = new TransparencyStateShard("fateubw:corrupted_overlay_transparency", () -> {
+    private static final TransparencyStateShard CORRUPTED_OVERLAY_TRANSPARENCY = new TransparencyStateShard("fateubw:corrupted_overlay_transparency", () -> {
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.SRC_COLOR);
     }, () -> {
@@ -52,18 +52,18 @@ public class FateRenders extends RenderType {
 
     public static final ResourceLocation CORRUPTED_TEXTURE = Fate.modRes("textures/misc/corrupted_overlay.png");
 
-    public static final VertexFormat POSITION_COLOR_TEX_TIME = new VertexFormat(ImmutableMap.<String, VertexFormatElement>builder()
-            .put("Position", DefaultVertexFormat.ELEMENT_POSITION)
-            .put("Color", DefaultVertexFormat.ELEMENT_COLOR)
-            .put("UV0", DefaultVertexFormat.ELEMENT_UV0)
-            .put("Time", VertexHelper.TIME).build());
+    public static final VertexFormat POSITION_COLOR_TEX_TIME = VertexFormat.builder()
+            .add("Position", VertexFormatElement.POSITION)
+            .add("Color", VertexFormatElement.COLOR)
+            .add("UV0", VertexFormatElement.UV0)
+            .add("Time", VertexUtils.SINGLE_FLOAT.get()).build();
 
-    public static final RenderType BABYLON_RENDER = CustomRenderTypesHelper.createType("fateubw:babylon", POSITION_COLOR_TEX_TIME, VertexFormat.Mode.QUADS, 256, false, false, CompositeState.builder()
+    public static final RenderType BABYLON_RENDER = RenderType.create("fateubw:babylon", POSITION_COLOR_TEX_TIME, VertexFormat.Mode.QUADS, 256, false, false, CompositeState.builder()
             .setShaderState(BABYLON_SHADER)
             .setTransparencyState(RenderType.TRANSLUCENT_TRANSPARENCY)
             .createCompositeState(false));
-    public static final RenderType TRANSLUCENTCOLOR = CustomRenderTypesHelper.createType("fateubw:translucent_color", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, true, CustomRenderTypesHelper.createBuilder().setWriteMaskState(COLOR_DEPTH_WRITE).setTransparencyState(TRANSLUCENT_TRANSPARENCY).setOutputState(WEATHER_TARGET).setShaderState(RENDERTYPE_LIGHTNING_SHADER).createCompositeState(false));
-    public static final RenderType CORRUPTED_OVERLAY = CustomRenderTypesHelper.createType("fateubw:corrupted_overlay", DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS, 256, false, false, RenderType.CompositeState.builder().setShaderState(CORRUPTED_SHADER).setTextureState(new RenderStateShard.TextureStateShard(CORRUPTED_TEXTURE, true, false)).setWriteMaskState(COLOR_WRITE).setCullState(NO_CULL).setDepthTestState(EQUAL_DEPTH_TEST).setTransparencyState(CORRUPTED_OVERLAY_TRANSPARENCY).setTexturingState(GLINT_TEXTURING).createCompositeState(false));
+    public static final RenderType TRANSLUCENTCOLOR = RenderType.create("fateubw:translucent_color", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder().setWriteMaskState(COLOR_DEPTH_WRITE).setTransparencyState(TRANSLUCENT_TRANSPARENCY).setOutputState(WEATHER_TARGET).setShaderState(RENDERTYPE_LIGHTNING_SHADER).createCompositeState(false));
+    public static final RenderType CORRUPTED_OVERLAY = RenderType.create("fateubw:corrupted_overlay", DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS, 256, false, false, RenderType.CompositeState.builder().setShaderState(CORRUPTED_SHADER).setTextureState(new RenderStateShard.TextureStateShard(CORRUPTED_TEXTURE, true, false)).setWriteMaskState(COLOR_WRITE).setCullState(NO_CULL).setDepthTestState(EQUAL_DEPTH_TEST).setTransparencyState(CORRUPTED_OVERLAY_TRANSPARENCY).setTexturingState(GLINT_TEXTURING).createCompositeState(false));
 
     private static final ClipRenderFactory CLIPPED = (wrapped, plane, color, width) ->
             new RenderType("rendertype_clipped_" + wrapped.toString(), wrapped.format(), wrapped.mode(), wrapped.bufferSize(),
@@ -90,7 +90,7 @@ public class FateRenders extends RenderType {
 
     private static final Function<ResourceLocation, RenderType> TRANSLUCENT_BLOOM_TEX = Util.memoize((resourceLocation) -> {
         CompositeState compositeState = RenderType.CompositeState.builder().setShaderState(BLOOM_SHADER).setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false)).setTransparencyState(TRANSLUCENT_TRANSPARENCY).setLightmapState(LIGHTMAP).setWriteMaskState(RenderStateShard.COLOR_DEPTH_WRITE).createCompositeState(true);
-        return CustomRenderTypesHelper.createType("fateubw:entity_translucent_bloom", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, true, compositeState);
+        return RenderType.create("fateubw:entity_translucent_bloom", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, true, compositeState);
     });
 
     private static boolean init;
@@ -112,11 +112,11 @@ public class FateRenders extends RenderType {
         }
     }
 
-    public static void addRendertype(Object2ObjectLinkedOpenHashMap<RenderType, BufferBuilder> map) {
+    public static void addRendertype(Object2ObjectLinkedOpenHashMap<RenderType, ByteBufferBuilder> map) {
         if (init)
             return;
         init = true;
-        map.computeIfAbsent(FateRenders.CORRUPTED_OVERLAY, e -> new BufferBuilder(FateRenders.CORRUPTED_OVERLAY.bufferSize()));
+        map.computeIfAbsent(FateRenders.CORRUPTED_OVERLAY, e -> new ByteBufferBuilder(FateRenders.CORRUPTED_OVERLAY.bufferSize()));
     }
 
     public static RenderType getClippedRendertype(RenderType origin, Vector4f clippingPlane) {

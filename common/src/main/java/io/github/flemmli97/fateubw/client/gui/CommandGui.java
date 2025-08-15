@@ -1,7 +1,5 @@
 package io.github.flemmli97.fateubw.client.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.attachment.PlayerData;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
@@ -9,13 +7,14 @@ import io.github.flemmli97.fateubw.common.network.C2SMessageGui;
 import io.github.flemmli97.fateubw.common.network.C2SServantCommand;
 import io.github.flemmli97.fateubw.common.network.C2SServantSpecial;
 import io.github.flemmli97.fateubw.common.network.S2CServantGui;
-import io.github.flemmli97.fateubw.platform.NetworkCalls;
 import io.github.flemmli97.fateubw.platform.Platform;
+import io.github.flemmli97.tenshilib.client.render.RenderUtils;
+import io.github.flemmli97.tenshilib.loader.LoaderNetwork;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -30,6 +29,10 @@ import java.util.function.Consumer;
 public class CommandGui extends Screen {
 
     private final static ResourceLocation GUI_BACK_GROUND = Fate.modRes("textures/gui/command_gui_1.png");
+    private static final ResourceLocation SEAL_1 = Fate.modRes("icon/command_seal_1");
+    private static final ResourceLocation SEAL_2 = Fate.modRes("icon/command_seal_2");
+    private static final ResourceLocation SEAL_3 = Fate.modRes("icon/command_seal_3");
+    private static final ResourceLocation SEAL_4 = Fate.modRes("icon/command_seal_4");
 
     private final Map<String, Component> translationCache = new HashMap<>();
 
@@ -61,45 +64,42 @@ public class CommandGui extends Screen {
     }
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(stack);
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         Player player = this.minecraft.player;
-        PlayerData capSync = Platform.INSTANCE.getPlayerData(player).orElse(null);
-        if (capSync == null)
+        PlayerData data = Platform.INSTANCE.getPlayerData(player);
+        if (data == null)
             return;
-        RenderSystem.setShaderTexture(0, GUI_BACK_GROUND);
-        this.blit(stack, this.width / 2 - 100, this.height / 2 - 100, 0, 0, 201, 210);
-        this.drawCommand(stack, capSync.getCommandSeals());
+        graphics.blit(GUI_BACK_GROUND, this.width / 2 - 100, this.height / 2 - 100, 0, 0, 201, 210);
+        this.drawCommand(graphics, data.getCommandSeals());
 
-        this.minecraft.font.draw(stack, this.getComponent("fateubw.gui.name", c -> c.withStyle(ChatFormatting.DARK_RED)), this.width / 2 - 90, this.height / 2 - 5, 1);
-        this.minecraft.font.draw(stack, this.getComponent("fateubw.gui.nobel_phantasm", c -> c.withStyle(ChatFormatting.DARK_RED)), this.width / 2 - 90, this.height / 2 + 15, 1);
-        this.minecraft.font.draw(stack, this.getComponent("fateubw.gui.nobel_phantasm_cost", c -> c.withStyle(ChatFormatting.DARK_RED)), this.width / 2 - 90, this.height / 2 + 35, 1);
+        graphics.drawString(this.font, this.getComponent("fateubw.gui.name", c -> c.withStyle(ChatFormatting.DARK_RED)), this.width / 2 - 90, this.height / 2 - 5, 1, true);
+        graphics.drawString(this.font, this.getComponent("fateubw.gui.nobel_phantasm", c -> c.withStyle(ChatFormatting.DARK_RED)), this.width / 2 - 90, this.height / 2 + 15, 1, true);
+        graphics.drawString(this.font, this.getComponent("fateubw.gui.nobel_phantasm_cost", c -> c.withStyle(ChatFormatting.DARK_RED)), this.width / 2 - 90, this.height / 2 + 35, 1, true);
         if (this.servant != null) {
-            this.minecraft.font.draw(stack, this.servant.getRealName(), this.width / 2 - 90, this.height / 2 + 5, 1);
-            this.minecraft.font.draw(stack, this.servant.nobelPhantasm(), this.width / 2 - 90, this.height / 2 + 25, 1);
-            this.minecraft.font.draw(stack, "" + this.data.npCost(), this.width / 2 - 90, this.height / 2 + 45, 1);
-            float mouseXNew = (float) ((this.width - 200) / 2 + 51) - mouseX;
-            float mouseYNew = (float) ((this.height - 180) / 2 + 75 - 50) - mouseY;
-            InventoryScreen.renderEntityInInventory(this.width / 2 - 50, this.height / 2 - 20, 29, mouseXNew, mouseYNew, this.servant);
+            graphics.drawString(this.font, this.servant.getRealName(), this.width / 2 - 90, this.height / 2 + 5, 1, true);
+            graphics.drawString(this.font, this.servant.nobelPhantasm(), this.width / 2 - 90, this.height / 2 + 25, 1, true);
+            graphics.drawString(this.font, "" + this.data.npCost(), this.width / 2 - 90, this.height / 2 + 45, 1, true);
+            RenderUtils.renderScaledEntityGui(graphics, this.width / 2 - 50, this.height / 2 - 20, 29 * 3,
+                    29 * 3, 29, 0, mouseX, mouseY, this.servant);
         }
-        super.render(stack, mouseX, mouseY, partialTicks);
+        super.render(graphics, mouseX, mouseY, partialTicks);
     }
 
-    private void drawCommand(PoseStack stack, int amount) {
+    private void drawCommand(GuiGraphics graphics, int amount) {
         int[] command = {this.command1, this.command2, this.command3};
         for (int i = 0; i < amount; i++) {
             switch (command[i]) {
                 case 0:
-                    this.blit(stack, this.width / 2 + 105, this.height / 2 - 100 + 35 * i, 226, 0, 30, 30);
+                    graphics.blitSprite(SEAL_1, this.width / 2 + 105, this.height / 2 - 100 + 35 * i, 32, 32);
                     break;
                 case 1:
-                    this.blit(stack, this.width / 2 + 105, this.height / 2 - 100 + 35 * i, 226, 32, 30, 30);
+                    graphics.blitSprite(SEAL_2, this.width / 2 + 105, this.height / 2 - 100 + 35 * i, 32, 32);
                     break;
                 case 2:
-                    this.blit(stack, this.width / 2 + 105, this.height / 2 - 100 + 35 * i, 226, 63, 30, 30);
+                    graphics.blitSprite(SEAL_3, this.width / 2 + 105, this.height / 2 - 100 + 35 * i, 32, 32);
                     break;
                 case 3:
-                    this.blit(stack, this.width / 2 + 105, this.height / 2 - 100 + 35 * i, 226, 94, 30, 30);
+                    graphics.blitSprite(SEAL_4, this.width / 2 + 105, this.height / 2 - 100 + 35 * i, 32, 32);
                     break;
             }
         }
@@ -114,63 +114,66 @@ public class CommandGui extends Screen {
     protected void init() {
         super.init();
         if (this.currentPage == Pages.MENU) {
-            this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 82, 80, 20
-                    , Component.translatable("fateubw.gui.command.attack"), b -> {
+            this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.command.attack"), b -> {
                 this.currentPage = Pages.ATTACK;
                 this.init(this.minecraft, this.width, this.height);
-            }));
-            this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 52, 80, 20
-                    , Component.translatable("fateubw.gui.command.movement"), b -> {
+            }).bounds(this.width / 2 + 10, this.height / 2 - 82, 80, 20).build());
+            this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.command.movement"), b -> {
                 this.currentPage = Pages.MOVEMENT;
                 this.init(this.minecraft, this.width, this.height);
-            }));
-            this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 22, 80, 20
-                    , Component.translatable("fateubw.gui.team"), b -> {
-                NetworkCalls.INSTANCE.sendToServer(new C2SMessageGui(C2SMessageGui.Type.TEAM));
+            }).bounds(this.width / 2 + 10, this.height / 2 - 52, 80, 20).build());
+            this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.team"), b -> {
+                LoaderNetwork.INSTANCE.sendToServer(new C2SMessageGui(C2SMessageGui.Type.TEAM));
                 this.onClose();
-            }));
-            this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 + 8, 80, 20
-                    , Component.translatable("fateubw.gui.command.kill"), b -> {
-                NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.KILL, this.entityId()));
-                NetworkCalls.INSTANCE.sendToServer(new C2SMessageGui(C2SMessageGui.Type.SERVANT));
-            }));
+            }).bounds(this.width / 2 + 10, this.height / 2 - 22, 80, 20).build());
+            this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.command.kill"), b -> {
+                LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.KILL, this.entityId()));
+                LoaderNetwork.INSTANCE.sendToServer(new C2SMessageGui(C2SMessageGui.Type.SERVANT));
+            }).bounds(this.width / 2 + 10, this.height / 2 + 8, 80, 20).build());
             if (this.servant != null) {
                 if (this.servant.specialCommands() != null)
-                    this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 + 38, 80, 20
-                            , Component.translatable("fateubw.gui.command.special"), b -> {
+                    this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.command.special"), b -> {
                         this.currentPage = Pages.SPECIAL;
                         this.init(this.minecraft, this.width, this.height);
-                    }));
+                    }).bounds(this.width / 2 + 10, this.height / 2 + 38, 80, 20).build());
             }
         } else if (this.currentPage == Pages.ATTACK) {
-            this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 82, 80, 20
-                    , Component.translatable("fateubw.gui.back"), this::backButton));
-            this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 52, 80, 20
-                    , Component.translatable("fateubw.gui.command.aggressive"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.AGGRESSIVE, this.entityId()))));
-            this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 22, 80, 20
-                    , Component.translatable("fateubw.gui.command.normal"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.NORMAL, this.entityId()))));
-            this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 + 8, 80, 20
-                    , Component.translatable("fateubw.gui.command.defensive"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.DEFENSIVE, this.entityId()))));
+            this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.back"), this::backButton)
+                    .bounds(this.width / 2 + 10, this.height / 2 - 82, 80, 20).build());
+            this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.command.aggressive"),
+                            b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.AGGRESSIVE, this.entityId())))
+                    .bounds(this.width / 2 + 10, this.height / 2 - 52, 80, 20).build());
+            this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.command.normal"),
+                            b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.NORMAL, this.entityId())))
+                    .bounds(this.width / 2 + 10, this.height / 2 - 22, 80, 20).build());
+            this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.command.defensive"),
+                            b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.DEFENSIVE, this.entityId())))
+                    .bounds(this.width / 2 + 10, this.height / 2 + 8, 80, 20).build());
         } else if (this.currentPage == Pages.MOVEMENT) {
-            this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 82, 80, 20
-                    , Component.translatable("fateubw.gui.back"), this::backButton));
-            this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 52, 80, 20
-                    , Component.translatable("fateubw.gui.command.follow"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.FOLLOW, this.entityId()))));
-            this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 22, 80, 20
-                    , Component.translatable("fateubw.gui.command.stay"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.STAY, this.entityId()))));
-            this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 + 8, 80, 20
-                    , Component.translatable("fateubw.gui.command.protect"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.GUARD, this.entityId()))));
-            this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 + 38, 80, 20
-                    , Component.translatable("fateubw.gui.command.call"), b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.TELEPORT, this.entityId()))));
+            this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.back"), this::backButton)
+                    .bounds(this.width / 2 + 10, this.height / 2 - 82, 80, 20).build());
+            this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.command.follow"),
+                            b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.FOLLOW, this.entityId())))
+                    .bounds(this.width / 2 + 10, this.height / 2 - 52, 80, 20).build());
+            this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.command.stay"),
+                            b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.STAY, this.entityId())))
+                    .bounds(this.width / 2 + 10, this.height / 2 - 22, 80, 20).build());
+            this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.command.protect"),
+                            b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.GUARD, this.entityId())))
+                    .bounds(this.width / 2 + 10, this.height / 2 + 8, 80, 20).build());
+            this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.command.call"),
+                            b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.TELEPORT, this.entityId())))
+                    .bounds(this.width / 2 + 10, this.height / 2 + 38, 80, 20).build());
         } else if (this.currentPage == Pages.SPECIAL) {
-            this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 82, 80, 20
-                    , Component.translatable("fateubw.gui.back"), this::backButton));
+            this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.back"), this::backButton)
+                    .bounds(this.width / 2 + 10, this.height / 2 - 82, 80, 20).build());
             if (this.servant != null)
                 for (int i = 0; i < this.servant.specialCommands().length; i++) {
                     String id = this.servant.specialCommands()[i];
-                    this.addRenderableWidget(new Button(this.width / 2 + 10, this.height / 2 - 52, 80, 20,
-                            Component.translatable(id),
-                            b -> NetworkCalls.INSTANCE.sendToServer(new C2SServantSpecial(id, this.entityId()))));
+                    this.addRenderableWidget(Button.builder(
+                                    Component.translatable(id),
+                                    b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantSpecial(id, this.entityId())))
+                            .bounds(this.width / 2 + 10, this.height / 2 - 52, 80, 20).build());
                 }
         }
     }
@@ -183,7 +186,7 @@ public class CommandGui extends Screen {
     @Override
     public void removed() {
         super.removed();
-        NetworkCalls.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.CLOSE, this.entityId()));
+        LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.CLOSE, this.entityId()));
     }
 
     @Override

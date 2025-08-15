@@ -9,7 +9,9 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
@@ -50,8 +52,8 @@ public class ThrownItemEntity extends BaseProjectile {
 
     @Override
     protected boolean entityRayTraceHit(EntityHitResult result) {
-        float damage = this.getOwner() instanceof LivingEntity living ? ItemUtils.damage(living, result.getEntity(), this.getWeapon()) :
-                ItemUtils.damageRaw(this.getWeapon());
+        float damage = (float) (this.getOwner() instanceof LivingEntity living ? ItemUtils.damage(living, result.getEntity(), this.getWeapon()) :
+                ItemUtils.attribute(this.getWeapon(), Attributes.ATTACK_DAMAGE, 1, EquipmentSlotGroup.MAINHAND));
         boolean res = result.getEntity().hurt(FateDamageTypes.indirect(FateDamageTypes.THROWN_ITEM, this, this.getOwner()), damage);
         this.discard();
         return res;

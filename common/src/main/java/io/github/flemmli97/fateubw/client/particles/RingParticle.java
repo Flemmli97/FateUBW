@@ -2,8 +2,6 @@ package io.github.flemmli97.fateubw.client.particles;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
 import io.github.flemmli97.fateubw.common.particles.RingParticleData;
 import io.github.flemmli97.tenshilib.client.particles.ColoredParticle;
 import net.minecraft.client.Camera;
@@ -14,6 +12,8 @@ import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 public class RingParticle extends ColoredParticle {
 
@@ -35,7 +35,7 @@ public class RingParticle extends ColoredParticle {
 
     @Override
     public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
-        Quaternion quaternion = new Quaternion(0.0F, 0.0F, 0.0F, 1.0F);
+        Quaternionf quaternion = new Quaternionf(0.0F, 0.0F, 0.0F, 1.0F);
         Vec3 vec3 = renderInfo.getPosition();
         float x = (float) (Mth.lerp(partialTicks, this.xo, this.x) - vec3.x());
         float y = (float) (Mth.lerp(partialTicks, this.yo, this.y) - vec3.y());
@@ -48,7 +48,7 @@ public class RingParticle extends ColoredParticle {
         float scale = this.getQuadSize(partialTicks);
         for (int k = 0; k < 4; ++k) {
             Vector3f vertice = vertices[k];
-            vertice.transform(quaternion);
+            vertice.rotate(quaternion);
             vertice.mul(scale);
             vertice.add(x, y, z);
         }

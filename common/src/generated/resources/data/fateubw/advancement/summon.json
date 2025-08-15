@@ -1,0 +1,28 @@
+{
+  "parent": "fateubw:root",
+  "criteria": {
+    "join": {
+      "trigger": "fateubw:join_grail_war"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "fateubw.advancements.join.description"
+    },
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "fateubw:summoning_altar"
+    },
+    "title": {
+      "translate": "fateubw.advancements.join.title"
+    }
+  },
+  "requirements": [
+    [
+      "join"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

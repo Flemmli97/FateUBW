@@ -1,0 +1,17 @@
+{
+  "attributes": {
+    "fateubw:combat_regen": 1.0,
+    "fateubw:passive_regen": 10.0,
+    "fateubw:projectile_resistance": 12.0,
+    "minecraft:generic.armor": 10.0,
+    "minecraft:generic.attack_damage": 10.0,
+    "minecraft:generic.max_health": 320.0,
+    "minecraft:generic.movement_speed": 0.36
+  },
+  "class": "fateubw:assassin",
+  "configs": {
+    "fateubw:hassan_copies": 5
+  },
+  "nobel_phantasm_cost": 40,
+  "weight": 1
+}

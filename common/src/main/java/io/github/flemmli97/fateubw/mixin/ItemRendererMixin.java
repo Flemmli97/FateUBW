@@ -1,6 +1,5 @@
 package io.github.flemmli97.fateubw.mixin;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexMultiConsumer;
@@ -24,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ItemRenderer.class)
 public abstract class ItemRendererMixin {
 
-    @WrapOperation(method = "render", at = @At("HEAD"))
+    @Inject(method = "render", at = @At("HEAD"))
     private void onRenderItem(ItemStack itemStack, ItemDisplayContext displayContext, boolean leftHand, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLight, int combinedOverlay, BakedModel model, CallbackInfo ci) {
         ClientMixinUtils.renderCorruptedItem = itemStack.has(FateDataComponents.CORRUPTED_ITEM.get());
     }

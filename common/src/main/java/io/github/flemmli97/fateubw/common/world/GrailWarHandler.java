@@ -331,7 +331,7 @@ public class GrailWarHandler extends SavedData {
         for (EntityPropsManager.EntityTypeAndID entry : DatapackHandler.SERVANT_PROPS.getServants()) {
             boolean canSpawn = CommonConfig.allowDuplicateServant || !this.servantsTypes.contains(entry.id());
             if (canSpawn && (CommonConfig.allowDuplicateClass
-                    || !this.servantClasses.contains(DatapackHandler.SERVANT_PROPS.get(entry.id()).getServantClass())))
+                    || !this.servantClasses.contains(DatapackHandler.SERVANT_PROPS.get(entry.type().value()).getServantClass())))
                 return true;
         }
         return false;
@@ -422,7 +422,7 @@ public class GrailWarHandler extends SavedData {
         if (!servant.checkSpawnObstruction(level) || (event && !Platform.INSTANCE.canSpawnEvent(servant, level, MobSpawnType.TRIGGERED)))
             return null;
         this.join(servant);
-        servant.finalizeSpawn(level, level.getCurrentDifficultyAt(servant.blockPosition()), MobSpawnType.TRIGGERED, null, null);
+        servant.finalizeSpawn(level, level.getCurrentDifficultyAt(servant.blockPosition()), MobSpawnType.TRIGGERED, null);
         if (addToLevel)
             level.addFreshEntity(servant);
         return servant;
