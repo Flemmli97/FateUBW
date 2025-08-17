@@ -33,6 +33,7 @@ import io.github.flemmli97.fateubw.common.entity.servant.EntityLancelot;
 import io.github.flemmli97.fateubw.common.entity.servant.EntityMedea;
 import io.github.flemmli97.fateubw.common.entity.servant.EntityMedusa;
 import io.github.flemmli97.fateubw.common.entity.servant.EntitySasaki;
+import io.github.flemmli97.fateubw.common.entity.summons.GordiusChariot;
 import io.github.flemmli97.fateubw.common.entity.summons.GordiusWheel;
 import io.github.flemmli97.fateubw.common.entity.summons.HassanClone;
 import io.github.flemmli97.fateubw.common.entity.summons.LesserMonster;
@@ -214,7 +215,7 @@ public class FateEntities {
             0x87595c, 0x981a24,
             new AttributeHolderProperties.Builder()
                     .putAttributes(Attributes.MAX_HEALTH, 120).putAttributes(Attributes.ATTACK_DAMAGE, 15)
-                    .putAttributes(Attributes.ARMOR, 6).putAttributes(Attributes.MOVEMENT_SPEED, 0.37)
+                    .putAttributes(Attributes.ARMOR, 6).putAttributes(Attributes.MOVEMENT_SPEED, 0.34)
                     .putAttributes(Attributes.KNOCKBACK_RESISTANCE, 1));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<HassanClone>> HASSAN_COPY = hassanClone(new AttributeHolderProperties.Builder()
             .putAttributes(Attributes.MAX_HEALTH, 50).putAttributes(Attributes.ATTACK_DAMAGE, 7)
@@ -229,6 +230,8 @@ public class FateEntities {
                     .putAttributes(Attributes.FLYING_SPEED, 0.85));
 
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<MultiPartEntity>> MULTIPART = reg("multi_part", EntityType.Builder.<MultiPartEntity>of(MultiPartEntity::new, MobCategory.MISC)
+            .noSave().noSummon().sized(0.25F, 0.25F));
+    public static final RegistryEntrySupplier<EntityType<?>, EntityType<GordiusChariot>> GORDIUS_CHARIOT = reg("gordius_chariot", EntityType.Builder.<GordiusChariot>of(GordiusChariot::new, MobCategory.MISC)
             .noSave().noSummon().sized(0.25F, 0.25F));
 
     @SuppressWarnings({"rawtypes", "unchecked"})
@@ -298,7 +301,7 @@ public class FateEntities {
         map.put(FateEntities.SASAKI.get(), BaseServant.createAttributes());
 
         map.put(FateEntities.LESSER_MONSTER.get(), BaseServant.createAttributes());
-        map.put(FateEntities.GORDIUS_WHEEL.get(), BaseServant.createAttributes());
+        map.put(FateEntities.GORDIUS_WHEEL.get(), GordiusWheel.createAttributes());
         map.put(FateEntities.PEGASUS.get(), BaseServant.createAttributes().add(Attributes.FLYING_SPEED, 0.85));
         map.put(FateEntities.HASSAN_COPY.get(), BaseServant.createAttributes());
         return map;

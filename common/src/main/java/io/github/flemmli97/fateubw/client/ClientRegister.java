@@ -109,6 +109,7 @@ public class ClientRegister {
         consumer.register(FateEntities.DAGGER_HOOK.get(), RenderChainDagger::new);
 
         consumer.register(FateEntities.MULTIPART.get(), EmptyRender::new);
+        consumer.register(FateEntities.GORDIUS_CHARIOT.get(), EmptyRender::new);
     }
 
     private static <T extends BaseServant> void registerServant(EntityRendererRegister consumer, RegistryEntrySupplier<EntityType<?>, EntityType<T>> reg) {

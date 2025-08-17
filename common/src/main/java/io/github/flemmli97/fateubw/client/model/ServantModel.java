@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.flemmli97.fateubw.client.ClientHandler;
 import io.github.flemmli97.fateubw.common.entity.utils.MoveType;
-import io.github.flemmli97.fateubw.common.entity.utils.ServantLike;
+import io.github.flemmli97.fateubw.common.entity.utils.ServantModelLike;
 import io.github.flemmli97.tenshilib.client.data.GeoAnimationManager;
 import io.github.flemmli97.tenshilib.client.data.GeoModelManager;
 import io.github.flemmli97.tenshilib.client.data.ReloadableCache;
@@ -28,7 +28,7 @@ import org.joml.Vector3f;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ServantModel<T extends LivingEntity & AnimatedEntity & ServantLike> extends EntityModel<T> implements ItemHolderModel, HeadedModel, IPreRenderUpdate<T>, ExtendedModel {
+public class ServantModel<T extends LivingEntity & AnimatedEntity & ServantModelLike> extends EntityModel<T> implements ItemHolderModel, HeadedModel, IPreRenderUpdate<T>, ExtendedModel {
 
     protected final ReloadableCache<ModelPartsContainer> model;
     protected final ReloadableCache<BedrockAnimations> animation;

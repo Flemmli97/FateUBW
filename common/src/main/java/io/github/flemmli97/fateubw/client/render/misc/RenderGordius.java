@@ -18,6 +18,11 @@ public class RenderGordius extends MobRenderer<GordiusWheel, GordiusWheelModel> 
     }
 
     @Override
+    protected float getFlipDegrees(GordiusWheel livingEntity) {
+        return 0;
+    }
+
+    @Override
     public ResourceLocation getTextureLocation(GordiusWheel gordiusWheel) {
         return TEX;
     }

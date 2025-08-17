@@ -4,7 +4,7 @@ import io.github.flemmli97.fateubw.api.datapack.ServantProperties;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.entity.utils.MoveStateTracker;
 import io.github.flemmli97.fateubw.common.entity.utils.MoveType;
-import io.github.flemmli97.fateubw.common.entity.utils.ServantLike;
+import io.github.flemmli97.fateubw.common.entity.utils.ServantModelLike;
 import io.github.flemmli97.fateubw.common.entity.utils.TargetableOpponent;
 import io.github.flemmli97.fateubw.common.lib.FateTags;
 import io.github.flemmli97.fateubw.common.network.C2SServantCommand;
@@ -83,7 +83,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public abstract class BaseServant extends PathfinderMob implements AnimatedEntity, OwnableEntity, AOEAttackEntity, TargetableOpponent, EntityTrailHolderProvider, ServantLike {
+public abstract class BaseServant extends PathfinderMob implements AnimatedEntity, OwnableEntity, AOEAttackEntity, TargetableOpponent, EntityTrailHolderProvider, ServantModelLike {
 
     public static final TicketType<ChunkPos> TRACKINGTICKET = TicketType.create("servant", Comparator.comparingLong(ChunkPos::toLong), 5);
     public static final int MOVE_TICK_MAX = 3;
@@ -191,6 +191,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
         return this.entityData.get(SHOW_SERVANT);
     }
 
+    @Override
     public boolean isStaying() {
         return this.entityData.get(STATIONARY);
     }
@@ -488,10 +489,12 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
         return this.getDeltaMovement().x != 0 || this.getDeltaMovement().z != 0;
     }
 
+    @Override
     public float interpolatedMoveTick(float partialTicks) {
         return this.moveStateTracker.interpolatedMoveTick(partialTicks);
     }
 
+    @Override
     public float interpolatedMoveTickOf(MoveType moveType, float partialTicks) {
         return this.moveStateTracker.interpolatedMoveTickOf(moveType, partialTicks);
     }
@@ -767,6 +770,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
         return SpawnEgg.fromType(this.getType()).map(ItemStack::new).orElse(null);
     }
 
+    @Override
     public boolean flipAnimation() {
         return false;
     }

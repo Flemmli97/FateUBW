@@ -1,6 +1,5 @@
 package io.github.flemmli97.fateubw.common.entity;
 
-import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.tenshilib.common.entity.EntityUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -48,12 +47,12 @@ public class MultiPartEntity extends Entity implements OwnableEntity {
     private double lerpYRot;
     private double lerpXRot;
 
-    public MultiPartEntity(EntityType<MultiPartEntity> multipartType, Level level) {
+    public MultiPartEntity(EntityType<? extends MultiPartEntity> multipartType, Level level) {
         super(multipartType, level);
     }
 
-    public MultiPartEntity(LivingEntity parent, float width, float height) {
-        super(FateEntities.MULTIPART.get(), parent.level());
+    public MultiPartEntity(EntityType<? extends MultiPartEntity> multipartType, LivingEntity parent, float width, float height) {
+        super(multipartType, parent.level());
         this.setSize(width, height);
         this.setParent(parent);
     }
@@ -111,6 +110,10 @@ public class MultiPartEntity extends Entity implements OwnableEntity {
         }
     }
 
+    protected MultipartPosition relativePosition() {
+        return relativePosition;
+    }
+
     @Override
     public EntityDimensions getDimensions(Pose pose) {
         return this.getDefaultDimensions().scale(this.getOwner() != null ? this.getOwner().getScale() : 1);
@@ -123,7 +126,8 @@ public class MultiPartEntity extends Entity implements OwnableEntity {
 
     @Override
     public Component getName() {
-        return this.parent.getName();
+        LivingEntity owner = this.getOwner();
+        return owner != null ? owner.getName() : super.getName();
     }
 
     @Override
@@ -158,14 +162,19 @@ public class MultiPartEntity extends Entity implements OwnableEntity {
         }
         this.checkBelowWorld();
         if (!this.level().isClientSide) {
-            Vec3 newPos = this.getOwner().position().add(this.relativePosition.getPosition(this.getOwner()));
-            this.moveTo(newPos.x(), newPos.y(), newPos.z(), this.relativePosition.noPhysics());
+            this.updatePosition();
         }
         if (this.lerpSteps > 0) {
             this.lerpPositionAndRotationStep(this.lerpSteps, this.lerpX, this.lerpY, this.lerpZ, this.lerpYRot, this.lerpXRot);
             this.lerpSteps--;
         }
+        this.firstTick = false;
         this.level().getProfiler().pop();
+    }
+
+    protected void updatePosition() {
+        Vec3 newPos = this.getOwner().position().add(this.relativePosition.getPosition(this.getOwner()));
+        this.moveTo(newPos.x(), newPos.y(), newPos.z(), this.relativePosition.noPhysics());
     }
 
     @Override
@@ -203,7 +212,7 @@ public class MultiPartEntity extends Entity implements OwnableEntity {
         return this.lerpSteps > 0 ? (float) this.lerpYRot : this.getYRot();
     }
 
-    private void moveTo(double x, double y, double z, boolean simple) {
+    protected void moveTo(double x, double y, double z, boolean simple) {
         if (this.getOwner() != null && !this.isEntityAddedToLevel()) {
             this.setPos(x, y, z);
             this.level().addFreshEntity(this);
@@ -228,11 +237,13 @@ public class MultiPartEntity extends Entity implements OwnableEntity {
     /**
      * Spawns this part entity if not spawned. Call this in parent tick
      */
-    public void parentTick() {
+    public boolean parentTick() {
         if (this.getOwner() != null && !this.getOwner().level().isClientSide && !this.isEntityAddedToLevel()) {
             this.setPos(this.getOwner().position());
             this.level().addFreshEntity(this);
+            return true;
         }
+        return false;
     }
 
     @Override

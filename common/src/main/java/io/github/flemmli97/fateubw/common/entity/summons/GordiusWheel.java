@@ -1,8 +1,12 @@
 package io.github.flemmli97.fateubw.common.entity.summons;
 
+import com.mojang.datafixers.util.Pair;
+import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.api.datapack.AttributeHolderProperties;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.entity.MultiPartEntity;
+import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
+import io.github.flemmli97.fateubw.common.entity.ai.behaviour.SetTargetFromRider;
 import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.utils.MoveStateTracker;
 import io.github.flemmli97.fateubw.common.entity.utils.MoveType;
@@ -13,14 +17,21 @@ import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.entity.AOEAttackEntity;
+import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
+import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetMoveToRestriction;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimatedEntity;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionContainer;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationsBuilder;
+import io.github.flemmli97.tenshilib.common.entity.data.SyncableDatas;
+import io.github.flemmli97.tenshilib.common.entity.data.SyncedDataContainer;
+import io.github.flemmli97.tenshilib.common.entity.data.SyncedMobDataHandler;
+import io.github.flemmli97.tenshilib.common.utils.TypedResource;
 import io.github.flemmli97.tenshilib.common.utils.math.OrientedBoundingBox;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.protocol.game.DebugPackets;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -36,48 +47,52 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.ai.control.MoveControl;
-import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.tslat.smartbrainlib.api.SmartBrainOwner;
+import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
+import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
+import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliate;
+import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.object.MemoryTest;
+import net.tslat.smartbrainlib.util.BrainUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class GordiusWheel extends PathfinderMob implements AnimatedEntity, StandingVehicle, AOEAttackEntity {
+public class GordiusWheel extends PathfinderMob implements AnimatedEntity, StandingVehicle, AOEAttackEntity, SmartBrainOwner<GordiusWheel>, SyncedMobDataHandler {
 
-    private static final EntityDataAccessor<Float> LOCKED_YAW = SynchedEntityData.defineId(GordiusWheel.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> WHEEL = SynchedEntityData.defineId(GordiusWheel.class, EntityDataSerializers.INT);
+    protected static final EntityDataAccessor<Byte> MOVE_FLAGS = SynchedEntityData.defineId(GordiusWheel.class, EntityDataSerializers.BYTE);
+    public static final TypedResource<Vec3> CHARGE_MOTION = new TypedResource<>(Fate.modRes("charge_motion"));
 
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
-    public static final String STOMP = BUILDER.add("stomp", AnimationsBuilder.definition(0.52).marker("attack", 0.28));
-    public static final String CHARGING = BUILDER.add("charge", AnimationsBuilder.definition(1.4).marker("attack", 0.25));
+    public static final String STOMP = BUILDER.add("stomp", AnimationsBuilder.definition(0.8).marker("attack", 0.52));
+    public static final String CHARGING = BUILDER.add("charge", AnimationsBuilder.definition(2.6)
+            .marker("charge_start", 0.48).marker("charge_end", 2.16));
     public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
-
-//    private static final List<WeightedEntry.Wrapper<GoalAttackAction<GordiusWheel>>> ATTACKS = List.of(
-//            WeightedEntry.wrap(new GoalAttackAction<GordiusWheel>(GordiusWheel.STOMP)
-//                    .cooldown(e -> e.getRandom().nextInt(30) + 10)
-//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 4),
-//            WeightedEntry.wrap(new GoalAttackAction<GordiusWheel>(GordiusWheel.CHARGING)
-//                    .cooldown(e -> e.getRandom().nextInt(45) + 25)
-//                    .withCondition(((goal, target, previous) -> goal.distanceToTargetSq > 25 || goal.attacker.getRandom().nextFloat() < 0.4))
-//                    .prepare(ChargeTo::new), 5)
-//    );
-//    private static final List<WeightedEntry.Wrapper<IdleAction<GordiusWheel>>> IDLE_ACTIONS = List.of(
-//            WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<>(1, 0.5)), 3),
-//            WeightedEntry.wrap(new IdleAction<>(() -> new RandomMoveAroundRunner<>(12, 5)), 5),
-//            WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<>(1, 1, 5)), 5)
-//    );
 
     public final Predicate<LivingEntity> targetPred = target -> {
         if (target == this)
@@ -94,33 +109,27 @@ public class GordiusWheel extends PathfinderMob implements AnimatedEntity, Stand
 
     private final AnimationHandler<GordiusWheel> animationHandler = new AnimationHandler<>(this, ANIMS);
 
+    private final SyncedDataContainer<GordiusWheel> syncedDataContainer = SyncedDataContainer.builder(this)
+            .define(CHARGE_MOTION, SyncableDatas.VEC_3, null).build();
+
     private MultiPartEntity wheels;
 
-    private Vec3 chargeMotion;
-    private final MoveStateTracker moveStateTracker = new MoveStateTracker(3, () -> MoveType.NONE);
+    private final MoveStateTracker moveStateTracker = new MoveStateTracker(2, this::getMoveType);
+
+    public int wheelMoveTick;
+    public float wheelPartial;
 
     public GordiusWheel(EntityType<? extends GordiusWheel> type, Level level) {
         super(type, level);
         if (!level.isClientSide) {
-            this.wheels = this.createWheels();
             this.updateAttributes();
         }
         this.lookControl = new GordiusLookControl(this);
         this.moveControl = new GordiusMoveControl(this);
-        this.goalSelector.addGoal(0, new RandomStrollGoal(this, 1, 10));
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        return Mob.createMobAttributes().add(Attributes.STEP_HEIGHT, 1.6);
-    }
-
-    protected MultiPartEntity createWheels() {
-        MultiPartEntity entity = new MultiPartEntity(this, 2.2f, 1.6f);
-//                new MultiPartEntity.Position(new Vec3(0, 0, -1), new Vec3(0, 0, -1.6)))
-//                .smoothMovement()
-//                .gravity();
-        this.entityData.set(WHEEL, entity.getId());
-        return entity;
+        return BaseServant.createAttributes().add(Attributes.STEP_HEIGHT, 1.6);
     }
 
     private void updateAttributes() {
@@ -138,8 +147,133 @@ public class GordiusWheel extends PathfinderMob implements AnimatedEntity, Stand
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
-        builder.define(LOCKED_YAW, 0f);
-        builder.define(WHEEL, 0);
+        builder.define(WHEEL, -1);
+        builder.define(MOVE_FLAGS, (byte) 0);
+    }
+
+    @Override
+    public SyncedDataContainer<?> getDataContainer() {
+        return this.syncedDataContainer;
+    }
+
+    @Override
+    public void baseTick() {
+        super.baseTick();
+        this.getAnimationHandler().tick();
+        if (!this.level().isClientSide) {
+            if (this.wheels == null) {
+                this.wheels = new GordiusChariot(this, 2.2f, 1.6f);
+            }
+            if (this.wheels.parentTick()) {
+                this.entityData.set(WHEEL, this.wheels.getId());
+            }
+            this.getAnimationHandler().runIfNotNull(this::handleAttack);
+            if (this.getTarget() == null) {
+                if (this.getFirstPassenger() instanceof Mob mob) {
+                    if (mob.getTarget() != this.getTarget())
+                        this.setTarget(mob.getTarget());
+                }
+            }
+        }
+        this.moveStateTracker.tick();
+        if (this.getMoveType() != MoveType.NONE)
+            ++this.wheelMoveTick;
+        Vec3 lookDir = this.directionToLookAt();
+        if (lookDir != null) {
+            float[] yxRot = MathsHelper.YXRotFrom(lookDir);
+            this.setYRot(MathsHelper.rotlerp(this.getYRot(), yxRot[0], 30));
+            this.setXRot(MathsHelper.rotlerp(this.getXRot(), yxRot[1], 30));
+            this.setYBodyRot(this.getYRot());
+            this.setYHeadRot(this.getYRot());
+        }
+    }
+
+    private Vec3 directionToLookAt() {
+        if (this.isCharging())
+            return this.getChargeMotion();
+        return null;
+    }
+
+    @Override
+    protected void customServerAiStep() {
+        super.customServerAiStep();
+        this.tickBrain(this);
+        if (!(this.getControllingPassenger() instanceof Player) && this.getDeltaMovement().horizontalDistanceSqr() > 0.003 && this.isAlive()) {
+            double speedMod = this.getMoveControl().getSpeedModifier();
+            MoveType move;
+            if (speedMod > 1 || (speedMod >= 1 && this.getTarget() != null)) {
+                move = MoveType.RUN;
+            } else if (speedMod <= 0.8) {
+                move = MoveType.SNEAK;
+            } else {
+                move = MoveType.WALK;
+            }
+            if (this.isImmobile())
+                move = MoveType.NONE;
+            this.setMovingFlag(move);
+        } else {
+            this.setMovingFlag(MoveType.NONE);
+            this.setShiftKeyDown(false);
+            this.setSprinting(false);
+        }
+    }
+
+    @Override
+    public List<? extends ExtendedSensor<? extends GordiusWheel>> getSensors() {
+        return List.of();
+    }
+
+    @Override
+    public BrainActivityGroup<? extends GordiusWheel> getCoreTasks() {
+        return BrainActivityGroup.coreTasks(
+                new FloatToSurfaceOfFluid<GordiusWheel>(),
+                new SetTargetFromRider<>());
+    }
+
+    @Override
+    public BrainActivityGroup<? extends GordiusWheel> getIdleTasks() {
+        return BrainActivityGroup.idleTasks(
+                new MoveToWalkTarget<>(),
+                new FirstApplicableBehaviour<>(
+                        new TargetOrRetaliate<GordiusWheel>(),
+                        new SetMoveToRestriction<GordiusWheel>(),
+                        new SetRandomWalkTarget<>().startCondition(m -> m.getRandom().nextInt(120) == 0)
+                )
+        );
+    }
+
+    @Override
+    public BrainActivityGroup<? extends GordiusWheel> getFightTasks() {
+        return BrainActivityGroup.fightTasks(
+                new InvalidateAttackTarget<GordiusWheel>(),
+                new FirstApplicableBehaviour<>(
+                        new Idle<GordiusWheel>().startCondition(GordiusWheel::runCooldownBehaviour)
+                                .stopIf(e -> !e.runCooldownBehaviour()),
+                        AttackBehaviourBuilder.<GordiusWheel>create()
+                                .start(STOMP).play(BehaviourUtils.cooldownedPlay((anim, entity) -> entity.getRandom().nextInt(30) + 10))
+                                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.moveAttack())
+                                .end(1)
+                                .start(CHARGING).play(BehaviourUtils.cooldownedPlay((anim, entity) -> entity.getRandom().nextInt(30) + 10))
+                                .prepare(new SetChargeTarget())
+                                .end(1)
+                                .build()
+                ).startCondition(m -> m.getTarget() != null)
+        );
+    }
+
+    protected boolean runCooldownBehaviour() {
+        return !this.getAnimationHandler().hasAnimation() && BrainUtils.hasMemory(this, MemoryModuleType.ATTACK_COOLING_DOWN);
+    }
+
+    @Override
+    protected Brain.Provider<?> brainProvider() {
+        return new SmartBrainProvider<>(this);
+    }
+
+    @Override
+    protected void sendDebugPackets() {
+        super.sendDebugPackets();
+        DebugPackets.sendEntityBrain(this);
     }
 
     public float interpolatedMoveTick(float partialTicks) {
@@ -150,9 +284,61 @@ public class GordiusWheel extends PathfinderMob implements AnimatedEntity, Stand
         return this.moveStateTracker.interpolatedMoveTickOf(moveType, partialTicks);
     }
 
+    public void setMovingFlag(MoveType type) {
+        this.entityData.set(MOVE_FLAGS, (byte) type.ordinal());
+    }
+
+    public MoveType getMoveType() {
+        return MoveType.values()[this.entityData.get(MOVE_FLAGS)];
+    }
+
     @Override
-    public AnimationHandler<GordiusWheel> getAnimationHandler() {
-        return this.animationHandler;
+    public Vec3 getPassengerRidingPosition(Entity passenger) {
+        if (this.hasPassenger(passenger)) {
+            Entity wheel = this.getWheelEntity();
+            if (wheel != null)
+                return wheel.getPassengerRidingPosition(passenger);
+        }
+        return super.getPassengerRidingPosition(passenger);
+    }
+
+    @Nullable
+    public MultiPartEntity getWheelEntity() {
+        if (this.level().isClientSide && this.wheels == null) {
+            Entity entity = this.level().getEntity(this.entityData.get(WHEEL));
+            if (entity instanceof GordiusChariot part && part.getOwner() == this) {
+                this.wheels = part;
+            }
+        }
+        return this.wheels;
+    }
+
+    public Vec3 getWheelJoint() {
+        Vec3 offset = new Vec3(0, 0, -1);
+        offset.scale(this.getScale());
+        return this.position().add(offset.yRot(-this.getYRot() * Mth.DEG_TO_RAD));
+    }
+
+    @Override
+    public LivingEntity getTarget() {
+        return BrainUtils.getTargetOfEntity(this);
+    }
+
+    public LivingEntity getGoalTarget() {
+        return super.getTarget();
+    }
+
+    @Override
+    public void setTarget(@Nullable LivingEntity target) {
+        super.setTarget(target);
+        // In case setTarget is called without BrainUtils
+        // Sync to memory
+        // If BrainUtils is used it will override the brain target anyway
+        if (this.getGoalTarget() == null) {
+            BrainUtils.clearMemory(this, MemoryModuleType.ATTACK_TARGET);
+        } else {
+            BrainUtils.setMemory(this, MemoryModuleType.ATTACK_TARGET, this.getGoalTarget());
+        }
     }
 
     @Override
@@ -160,53 +346,29 @@ public class GordiusWheel extends PathfinderMob implements AnimatedEntity, Stand
         return false;
     }
 
-    public boolean isCharging() {
-        if (this.getAnimationHandler() == null)
-            return false;
-        AnimationState anim = this.getAnimationHandler().getAnimation();
-        return anim != null && anim.is(CHARGING) && anim.isPast("attack");
-    }
-
     @Override
-    public float getYRot() {
-        return this.isCharging() ? this.entityData.get(LOCKED_YAW) : super.getYRot();
-    }
-
-    @Override
-    public void baseTick() {
-        this.getAnimationHandler().tick();
-        if (!this.level().isClientSide) {
-            if (this.wheels == null) {
-                this.wheels = this.createWheels();
-            }
-//            if (!this.wheels.tick();) {
-//                this.wheels.setParent(this);
-//                this.level().addFreshEntity(this.wheels);
-//            }
-            this.getAnimationHandler().runIfNotNull(this::handleAttack);
-            if (this.getTarget() == null) {
-                if (this.getFirstPassenger() instanceof Mob mob) {
-                    if (mob.getTarget() != this.getTarget())
-                        this.setTarget(mob.getTarget());
-                }
-            }
-        }
-        super.baseTick();
+    public boolean hurt(DamageSource damageSource, float damage) {
+        if (!damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && this.isCharging())
+            damage *= 0.5f;
+        return super.hurt(damageSource, damage);
     }
 
     public void handleAttack(AnimationState anim) {
         if (anim.is(CHARGING)) {
-            if (anim.isPast("attack")) {
-                this.setDeltaMovement(this.chargeMotion.x(), this.getDeltaMovement().y(), this.chargeMotion.z());
-                OrientedBoundingBox obb = this.prepareAttackBox(anim.getAnimation(), null, 0.2, false);
-                List<LivingEntity> list = this.level().getEntitiesOfClass(LivingEntity.class, obb.getEncompassingBox(),
-                        entity -> this.targetPred.test(entity) && obb.intersects(entity.getBoundingBox()));
-                for (LivingEntity e : list) {
-                    e.hurt(FateDamageTypes.direct(FateDamageTypes.GORDIUS_TRAMPLE, this), (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE));
+            if (anim.isPast("charge_start") && !anim.isPast("charge_end")) {
+                Vec3 dir = this.getChargeMotion();
+                if (dir != null) {
+                    this.setDeltaMovement(dir.x(), this.getDeltaMovement().y(), dir.z());
+                    OrientedBoundingBox obb = this.prepareAttackBox(anim.getAnimation(), null, 0.2, false);
+                    List<LivingEntity> list = this.level().getEntitiesOfClass(LivingEntity.class, obb.getEncompassingBox(),
+                            entity -> this.targetPred.test(entity) && obb.intersects(entity.getBoundingBox()));
+                    for (LivingEntity e : list) {
+                        e.hurt(FateDamageTypes.direct(FateDamageTypes.GORDIUS_TRAMPLE, this), (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE));
+                    }
+                    this.playSound(SoundEvents.COW_STEP, 0.4F, 0.4F);
+                    S2CAttackDebug.sendDebugPacket(obb, S2CAttackDebug.EnumAABBType.ATTACK, this);
+                    S2CScreenShake.sendAround(this, 14, 4, 1.5f);
                 }
-                this.playSound(SoundEvents.COW_STEP, 0.4F, 0.4F);
-                S2CAttackDebug.sendDebugPacket(obb, S2CAttackDebug.EnumAABBType.ATTACK, this);
-                S2CScreenShake.sendAround(this, 14, 4, 1.5f);
             }
         } else {
             this.getNavigation().stop();
@@ -215,11 +377,6 @@ public class GordiusWheel extends PathfinderMob implements AnimatedEntity, Stand
                 S2CScreenShake.sendAround(this, 6, 8, 2);
             }
         }
-    }
-
-    @Override
-    public void lookAt(Entity entity, float maxYRotIncrease, float maxXRotIncrease) {
-        super.lookAt(entity, Math.min(maxYRotIncrease, 12), maxXRotIncrease);
     }
 
     public void mobAttack(AnimationState anim, LivingEntity target, Consumer<LivingEntity> cons) {
@@ -257,27 +414,34 @@ public class GordiusWheel extends PathfinderMob implements AnimatedEntity, Stand
     }
 
     @Override
-    public void moveTo(double x, double y, double z) {
-        super.moveTo(x, y, z);
-//        this.wheels.forceUpdatePosition();
-    }
-
-    @Override
-    @Nullable
-    public LivingEntity getControllingPassenger() {
-        return this.getPassengers().isEmpty() || !(this.getPassengers().getFirst() instanceof Player player) ? null : player;
-    }
-
-    @Override
-    public boolean hurt(DamageSource damageSource, float damage) {
-        if (!damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && this.isCharging())
-            damage *= 0.5f;
-        return super.hurt(damageSource, damage);
-    }
-
-    @Override
     public boolean doHurtTarget(Entity entity) {
         return Utils.runWithInvulTimer(this, entity, super::doHurtTarget, 0);
+    }
+
+    @Override
+    public AnimationHandler<GordiusWheel> getAnimationHandler() {
+        return this.animationHandler;
+    }
+
+    public Vec3 getChargeMotion() {
+        return this.getDataContainer().get(CHARGE_MOTION);
+    }
+
+    public void setChargeTo(Vec3 pos) {
+        Vec3 dir = pos.subtract(this.position());
+        dir = new Vec3(dir.x(), 0, dir.z());
+        this.setChargeMotion(dir.normalize().scale(0.55));
+    }
+
+    public void setChargeMotion(Vec3 chargeMotion) {
+        this.getDataContainer().set(CHARGE_MOTION, chargeMotion);
+    }
+
+    public boolean isCharging() {
+        if (this.getAnimationHandler() == null)
+            return false;
+        AnimationState anim = this.getAnimationHandler().getAnimation();
+        return anim != null && anim.is(CHARGING) && anim.isPast("attack");
     }
 
     @Override
@@ -317,91 +481,49 @@ public class GordiusWheel extends PathfinderMob implements AnimatedEntity, Stand
         return super.canAttack(entity);
     }
 
-    public void setChargeTo(Vec3 pos) {
-        Vec3 dir = pos.subtract(this.position());
-        dir = new Vec3(dir.x(), 0, dir.z());
-        this.chargeMotion = dir.normalize().scale(0.55);
-        float[] xYRot = MathsHelper.YXRotFrom(dir);
-        float targetYRot = xYRot[0];
-        float targetXRot = xYRot[1];
-        this.setYRot(targetYRot);
-        this.setXRot(targetXRot);
-        this.yHeadRot = this.getYRot();
-        this.yBodyRot = this.getYRot();
-    }
+    public static class SetChargeTarget extends ExtendedBehaviour<GordiusWheel> {
 
-    @Nullable
-    public MultiPartEntity getWheelEntity() {
-//        if (!this.level().isClientSide) {
-//            if (this.wheels == null) {
-//                this.wheels = this.createWheels();
-//            }
-//            if (!this.wheels.isAddedToLevel()) {
-//                this.wheels.setParent(this);
-//                this.level().addFreshEntity(this.wheels);
-//            }
-//        } else if (this.wheels == null || !this.wheels.isAddedToLevel() || !this.wheels.isAlive()) {
-//            Entity entity = this.level().getEntity(this.entityData.get(WHEEL));
-//            if (entity instanceof MultiPartEntity part && part.getParent() == this) {
-//                this.wheels = part;
-//            }
-//        }
-        return this.wheels;
-    }
+        private static final MemoryTest MEMORIES = MemoryTest.builder(1)
+                .hasMemories(MemoryModuleType.ATTACK_TARGET);
 
-    private float rotlerpDiff(float start, float end) {
-        while (start < 0) {
-            start += 360;
+        private Vec3 targetPos;
+
+        @Override
+        protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+            return MEMORIES;
         }
-        while (end < 0) {
-            end += 360;
+
+        @Override
+        protected boolean shouldKeepRunning(GordiusWheel entity) {
+            double dX = this.targetPos.x() - entity.getX();
+            double dZ = this.targetPos.z() - entity.getZ();
+            float yRot = MathsHelper.YRotFrom(dX, dZ);
+            float diffY = Mth.degreesDifference(entity.getYRot(), yRot);
+            if (Math.abs(diffY) < 16) {
+                entity.setChargeTo(this.targetPos);
+                return false;
+            }
+            return true;
         }
-        start = start % 360;
-        end = end % 360;
-        float diff1 = end - start;
-        float diff2 = (Math.min(start, end) + 360) - Math.max(start, end);
-        if (Math.abs(diff2) > Math.abs(diff1)) {
-            return diff1;
+
+        @Override
+        protected void start(GordiusWheel entity) {
+            this.targetPos = BrainUtils.getTargetOfEntity(entity).getEyePosition();
         }
-        return diff2;
+
+        @Override
+        protected void tick(GordiusWheel entity) {
+            super.tick(entity);
+            double dY = this.targetPos.y() - entity.getEyeY();
+            double dX = this.targetPos.x() - entity.getX();
+            double dZ = this.targetPos.z() - entity.getZ();
+            float[] yXRot = MathsHelper.YXRotFrom(dX, dY, dZ);
+            entity.setYRot(MathsHelper.rotlerp(entity.getYRot(), yXRot[0], 17));
+            entity.setXRot(MathsHelper.rotlerp(entity.getXRot(), yXRot[1], 30));
+            entity.setYBodyRot(entity.getYRot());
+            entity.setYHeadRot(entity.getYRot());
+        }
     }
-//
-//    public static class ChargeTo implements ActionStart<GordiusWheel> {
-//
-//        private Vec3 targetPos;
-//
-//        @Override
-//        public GoalAttackAction.IntProvider<GordiusWheel> timeout() {
-//            return e -> 20;
-//        }
-//
-//        @Override
-//        public boolean start(AnimatedAttackGoal<GordiusWheel> goal, LivingEntity target) {
-//            if (goal.current == null)
-//                return false;
-//            if (this.targetPos == null) {
-//                this.targetPos = target.getEyePosition();
-//            }
-//            double dY = this.targetPos.y() - goal.attacker.getEyeY();
-//            double dX = this.targetPos.x() - goal.attacker.getX();
-//            double dZ = this.targetPos.z() - goal.attacker.getZ();
-//            float[] xYRot = MathsHelper.YXRotFrom(dX, dY, dZ);
-//            float yRot = xYRot[0];
-//            float xRot = xYRot[1];
-//
-//            float diffY = Mth.degreesDifference(goal.attacker.getYRot(), yRot);
-//            goal.attacker.setXRot(xRot);
-//            if (Math.abs(diffY) < 16) {
-//                goal.attacker.setChargeTo(this.targetPos);
-//                return true;
-//            }
-//            goal.attacker.setYRot(goal.attacker.getYRot() + Mth.clamp(diffY, -16, 16));
-//            goal.attacker.yBodyRot = goal.attacker.getYRot();
-//            goal.attacker.yHeadRot = goal.attacker.getYRot();
-//            goal.attacker.hasImpulse = true;
-//            return false;
-//        }
-//    }
 
     protected class GordiusMoveControl extends MoveControl {
 

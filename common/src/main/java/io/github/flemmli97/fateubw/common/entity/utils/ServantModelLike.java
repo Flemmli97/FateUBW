@@ -1,12 +1,16 @@
 package io.github.flemmli97.fateubw.common.entity.utils;
 
-public interface ServantLike {
+public interface ServantModelLike {
 
     float interpolatedMoveTick(float partialTicks);
 
     float interpolatedMoveTickOf(MoveType moveType, float partialTicks);
 
-    boolean flipAnimation();
+    default boolean flipAnimation() {
+        return false;
+    }
 
-    boolean isStaying();
+    default boolean isStaying() {
+        return false;
+    }
 }

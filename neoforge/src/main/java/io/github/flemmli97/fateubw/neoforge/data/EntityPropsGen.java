@@ -21,7 +21,7 @@ public record EntityPropsGen(PackOutput output,
 
     @Override
     public CompletableFuture<?> run(CachedOutput cache) {
-        return this.provider.thenApply(provider -> {
+        return this.provider.thenCompose(provider -> {
             DynamicOps<JsonElement> ops = provider.createSerializationContext(JsonOps.INSTANCE);
             ImmutableList.Builder<CompletableFuture<?>> futures = new ImmutableList.Builder<>();
             FateEntities.getServantProperties().forEach((res, prop) -> {

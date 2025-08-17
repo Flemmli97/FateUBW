@@ -90,7 +90,7 @@ public class FateDamageTypes {
     }
 
     public static DamageSource direct(ResourceKey<DamageType> key, Entity direct) {
-        return create(key, direct.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE), direct, null);
+        return create(key, direct.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE), direct, direct);
     }
 
     public static DamageSource indirect(ResourceKey<DamageType> key, Entity direct, Entity causing) {

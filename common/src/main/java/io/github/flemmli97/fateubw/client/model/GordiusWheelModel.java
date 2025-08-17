@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.client.ClientHandler;
 import io.github.flemmli97.fateubw.common.entity.summons.GordiusWheel;
-import io.github.flemmli97.fateubw.common.utils.MathsHelper;
+import io.github.flemmli97.fateubw.common.entity.utils.MoveType;
 import io.github.flemmli97.tenshilib.client.data.GeoAnimationManager;
 import io.github.flemmli97.tenshilib.client.data.GeoModelManager;
 import io.github.flemmli97.tenshilib.client.data.ReloadableCache;
@@ -23,7 +23,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class GordiusWheelModel extends EntityModel<GordiusWheel> implements ExtendedModel, RideableModel<GordiusWheel> {
 
-    public static final ResourceLocation LOCATION = Fate.modRes("gordius");
+    public static final ResourceLocation LOCATION = Fate.modRes("gordius_wheel");
 
     protected final ReloadableCache<ModelPartsContainer> model;
     protected final ReloadableCache<BedrockAnimations> anim;
@@ -57,10 +57,42 @@ public class GordiusWheelModel extends EntityModel<GordiusWheel> implements Exte
         float partialTicks = ClientHandler.getPartialTicks();
         if (entity.deathTime <= 0) {
             this.anim.get().doAnimation(this, "idle", entity.tickCount, partialTicks);
-            this.anim.get().doAnimation(this, "move", entity.tickCount, partialTicks, entity.interpolatedMoveTick(partialTicks), false, true);
-            this.anim.get().doAnimation(this, "move", entity.tickCount, partialTicks, entity.interpolatedMoveTick(partialTicks), false, true);
+            this.anim.get().doAnimation(this, "move", entity.tickCount, partialTicks, entity.interpolatedMoveTick(partialTicks));
+            this.anim.get().doAnimation(this, "run", entity.tickCount, partialTicks, entity.interpolatedMoveTickOf(MoveType.RUN, partialTicks));
+            if (entity.getMoveType() != MoveType.NONE)
+                entity.wheelPartial = partialTicks;
+            this.anim.get().doAnimation(this, "wheel_move", entity.wheelMoveTick, entity.wheelPartial, 1);
         }
         this.anim.get().doAnimation(this, entity.getAnimationHandler(), partialTicks);
+
+        if (entity.getWheelEntity() != null) {
+            float yRot = lerpClamped(partialTicks, entity.getWheelEntity().yRotO, entity.getWheelEntity().getYRot());
+            float pYRot = lerpClamped(partialTicks, entity.yRotO, entity.getYRot());
+            this.backBeam.yRot -= pYRot * Mth.DEG_TO_RAD;
+            this.backBeam.yRot += yRot * Mth.DEG_TO_RAD;
+            float xRot = Mth.lerp(partialTicks, entity.getWheelEntity().xRotO, entity.getWheelEntity().getXRot());
+            float chariotX = Mth.clamp(xRot, -15, 15);
+            this.centerBeam.xRot += chariotX * Mth.DEG_TO_RAD;
+            chariotX = Mth.clamp(xRot - chariotX, -40, 40);
+            this.backBeam.xRot += chariotX * Mth.DEG_TO_RAD;
+        }
+    }
+
+    private static float lerpClamped(float partialTicks, float start, float end) {
+        while (start < 0) {
+            start += 360;
+        }
+        while (end < 0) {
+            end += 360;
+        }
+        start = start % 360;
+        end = end % 360;
+        float diff1 = end - start;
+        float diff2 = (Math.min(start, end) + 360) - Math.max(start, end);
+        if (Math.abs(diff2) > Math.abs(diff1)) {
+            return start + partialTicks * diff1;
+        }
+        return start + partialTicks * diff2;
     }
 
     @Override
@@ -79,6 +111,6 @@ public class GordiusWheelModel extends EntityModel<GordiusWheel> implements Exte
         Vec3 attach = rider.getVehicleAttachmentPoint(entity);
         float scale = entity.getScale();
         poseStack.scale(1 / scale, 1 / scale, 1 / scale);
-        poseStack.translate(attach.x(), attach.y(), attach.z());
+        poseStack.translate(attach.x(), 0, attach.z());
     }
 }
