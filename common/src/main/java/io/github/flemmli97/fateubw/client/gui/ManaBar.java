@@ -32,6 +32,7 @@ public class ManaBar {
         graphics.blitSprite(MANA_BAR_BACKGROUND, xPos, yPos, width, height);
         double perc = (mana / 100.);
         int manabarwidth = (int) (perc * (width - 2));
-        graphics.blitSprite(MANA_BAR, xPos, yPos, manabarwidth, height);
+        graphics.blitSprite(MANA_BAR, width, height, 0, 0, xPos, yPos,
+                manabarwidth, height);
     }
 }

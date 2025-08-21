@@ -2,6 +2,7 @@ package io.github.flemmli97.fateubw.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.client.ClientHandler;
 import io.github.flemmli97.fateubw.common.entity.utils.MoveType;
 import io.github.flemmli97.fateubw.common.entity.utils.ServantModelLike;
@@ -19,6 +20,7 @@ import net.minecraft.client.model.HeadedModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
@@ -30,8 +32,11 @@ import java.util.HashMap;
 
 public class ServantModel<T extends LivingEntity & AnimatedEntity & ServantModelLike> extends EntityModel<T> implements ItemHolderModel, HeadedModel, IPreRenderUpdate<T>, ExtendedModel {
 
+    public static final ResourceLocation DEFAULT_ANIMATION = Fate.modRes("servant/generic");
+
     protected final ReloadableCache<ModelPartsContainer> model;
     protected final ReloadableCache<BedrockAnimations> animation;
+    protected final ReloadableCache<BedrockAnimations> defaultAnimations;
 
     public ModelPartsContainer.ModelPartExtended head;
     public ModelPartsContainer.ModelPartExtended body;
@@ -60,6 +65,8 @@ public class ServantModel<T extends LivingEntity & AnimatedEntity & ServantModel
     protected final ModelPart dummyHead = new ModelPart(new ArrayList<>(), new HashMap<>());
 
     public int heldItemMain, heldItemOff;
+
+    private float alpha = -1;
 
     public ServantModel(ResourceLocation location) {
         this(location, location);
@@ -96,6 +103,7 @@ public class ServantModel<T extends LivingEntity & AnimatedEntity & ServantModel
             this.modelReloadListener(model);
         });
         this.animation = GeoAnimationManager.getInstance().getAnimation(animationLocation);
+        this.defaultAnimations = GeoAnimationManager.getInstance().getAnimation(DEFAULT_ANIMATION);
     }
 
     protected void modelReloadListener(ModelPartsContainer model) {
@@ -172,55 +180,75 @@ public class ServantModel<T extends LivingEntity & AnimatedEntity & ServantModel
             this.body.y += v.y() - this.bodyVehicleOffset.y;
             this.body.z += v.z() - this.bodyVehicleOffset.z;
         }
+        this.alpha = entity.isDeadOrDying() && entity.getDeathAnimation() == null ?
+                Math.max(0.15f, 1 - (entity.deathTime / (float) entity.maxDeathTick())) : -1;
     }
 
     public void preAnimSetup(T entity, float limbSwing, float limbSwingAmount, float netHeadYaw, float headPitch, float partialTicks) {
         this.model.get().resetPoses();
-
         BedrockAnimations animation = this.animation.get();
+        this.setupAnimationValues(animation, limbSwing, limbSwingAmount, netHeadYaw, headPitch);
+        BedrockAnimations defaulted = this.defaultAnimations.get();
+        this.setupAnimationValues(defaulted, limbSwing, limbSwingAmount, netHeadYaw, headPitch);
+
+        String idle = this.getWeaponBasedAnimationFor(entity, animation, "idle_with_weapon", "idle", null);
+        if (idle == null) {
+            defaulted.doAnimation(this, "idle", entity.tickCount, partialTicks, 1);
+        } else {
+            animation.doAnimation(this, idle, entity.tickCount, partialTicks, 1);
+        }
+        String walk = this.getWeaponBasedAnimationFor(entity, animation, "walk_with_weapon", "walk", null);
+        if (walk == null) {
+            defaulted.doAnimation(this, "walk", entity.tickCount, partialTicks, 1, false, true);
+        } else {
+            animation.doAnimation(this, walk, entity.tickCount, partialTicks, entity.interpolatedMoveTick(partialTicks), false, true);
+        }
+        animation.doAnimation(this, this.getWeaponBasedAnimationFor(entity, animation, "run_with_weapon", "run"), entity.tickCount, partialTicks, entity.interpolatedMoveTickOf(MoveType.RUN, partialTicks), false, true);
+        if (entity.isPassenger() && entity.getVehicle() != null) {
+            if (this.riding) {
+                if (animation.has("riding")) {
+                    animation.doAnimation(this, "riding", entity.tickCount, partialTicks, 1, false, true);
+                } else {
+                    defaulted.doAnimation(this, "riding", entity.tickCount, partialTicks, 1, false, true);
+                }
+            } else {
+                if (animation.has("riding_standing")) {
+                    animation.doAnimation(this, "riding_standing", entity.tickCount, partialTicks, 1, false, true);
+                } else {
+                    defaulted.doAnimation(this, "riding_standing", entity.tickCount, partialTicks, 1, false, true);
+                }
+            }
+        }
+    }
+
+    protected void setupAnimationValues(BedrockAnimations animation, float limbSwing, float limbSwingAmount, float netHeadYaw, float headPitch) {
         animation.setVariable("query.head_x_rotation", () -> headPitch);
         animation.setVariable("query.head_y_rotation", () -> netHeadYaw);
         animation.setVariable("left_held", () -> this.heldItemOff);
         animation.setVariable("left_arm_x_rot", () -> this.leftArm != null ? this.leftArm.xRot * Mth.RAD_TO_DEG : 0);
         animation.setVariable("right_held", () -> this.heldItemMain);
         animation.setVariable("right_arm_x_rot", () -> this.rightArm != null ? this.rightArm.xRot * Mth.RAD_TO_DEG : 0);
+        animation.setVariable("limb_swing", () -> limbSwing * Mth.RAD_TO_DEG);
+        animation.setVariable("limb_swing_amount", () -> limbSwingAmount * Mth.RAD_TO_DEG);
+    }
 
-        animation.doAnimation(this, "idle", entity.tickCount, partialTicks, 1, false, true);
-        animation.doAnimation(this, "head_look", entity.tickCount, partialTicks, 1, false, true);
-        animation.doAnimation(this, "item_holding", entity.tickCount, partialTicks, 1, false, true);
+    protected String getWeaponBasedAnimationFor(T entity, BedrockAnimations animations, String either, String or) {
+        return this.getWeaponBasedAnimationFor(entity, animations, either, or, or);
+    }
 
-        animation.doAnimation(this, "idle", entity.tickCount, partialTicks, 1);
-        boolean defaultedAnimation = animation.doAnimation(this, "walk", entity.tickCount, partialTicks, entity.interpolatedMoveTick(partialTicks), false, true);
-        defaultedAnimation = defaultedAnimation || animation.doAnimation(this, "run", entity.tickCount, partialTicks, entity.interpolatedMoveTickOf(MoveType.RUN, partialTicks), false, true);
-        if (!defaultedAnimation) {
-            if (this.rightArm != null) {
-                this.rightArm.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 2.0F * limbSwingAmount * 0.5F;
-                this.rightArm.zRot = 0;
-            }
-            if (this.leftArm != null) {
-                this.leftArm.xRot = Mth.cos(limbSwing * 0.6662F) * 2.0F * limbSwingAmount * 0.5F;
-                this.leftArm.zRot = 0;
-            }
-            if (this.rightLeg != null) {
-                this.rightLeg.xRot = Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
-                this.rightLeg.yRot = 0;
-            }
-            if (this.leftLeg != null) {
-                this.leftLeg.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
-                this.leftLeg.yRot = 0;
-            }
+    protected String getWeaponBasedAnimationFor(T entity, BedrockAnimations animations, String either, String either2, String or) {
+        if (entity.hasOwnWeapon() && animations.has(either)) {
+            return either;
         }
-        if (entity.isPassenger() && entity.getVehicle() != null) {
-            if (this.riding) {
-                animation.doAnimation(this, "riding", entity.tickCount, partialTicks, 1, false, true);
-            } else {
-                animation.doAnimation(this, "riding_standing", entity.tickCount, partialTicks, 1, false, true);
-            }
-        }
+        if (animations.has(either2))
+            return either2;
+        return or;
     }
 
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
+        if (this.alpha != -1)
+            color = FastColor.ARGB32.color((int) (this.alpha * 255), color);
         this.model.get().getRoot().render(poseStack, buffer, packedLight, packedOverlay, color);
     }
 

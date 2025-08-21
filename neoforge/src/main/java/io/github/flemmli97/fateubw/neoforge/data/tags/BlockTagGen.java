@@ -9,6 +9,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.common.Tags;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -24,5 +25,11 @@ public class BlockTagGen extends IntrinsicHolderTagsProvider<Block> {
                 .add(FateBlocks.GEM_ORE.get(), FateBlocks.ARTIFACT_ORE.get(), FateBlocks.DEEP_SLATE_GEM_ORE.get(), FateBlocks.DEEP_SLATE_ARTIFACT_ORE.get());
         this.tag(BlockTags.NEEDS_IRON_TOOL)
                 .add(FateBlocks.GEM_ORE.get(), FateBlocks.ARTIFACT_ORE.get(), FateBlocks.DEEP_SLATE_GEM_ORE.get(), FateBlocks.DEEP_SLATE_ARTIFACT_ORE.get());
+        this.tag(Tags.Blocks.ORES)
+                .add(FateBlocks.GEM_ORE.get(), FateBlocks.ARTIFACT_ORE.get(), FateBlocks.DEEP_SLATE_GEM_ORE.get(), FateBlocks.DEEP_SLATE_ARTIFACT_ORE.get());
+        this.tag(Tags.Blocks.ORES_IN_GROUND_STONE)
+                .add(FateBlocks.GEM_ORE.get(), FateBlocks.ARTIFACT_ORE.get());
+        this.tag(Tags.Blocks.ORES_IN_GROUND_DEEPSLATE)
+                .add(FateBlocks.DEEP_SLATE_GEM_ORE.get(), FateBlocks.DEEP_SLATE_ARTIFACT_ORE.get());
     }
 }

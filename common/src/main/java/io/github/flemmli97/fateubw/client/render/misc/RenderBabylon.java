@@ -37,7 +37,7 @@ public class RenderBabylon extends EntityRenderer<BabylonWeapon> {
 
     @Override
     public void render(BabylonWeapon projectile, float rotation, float partialTicks, PoseStack stack, MultiBufferSource buffer, int packedLight) {
-        if (projectile.idle) {
+        if (projectile.preparing()) {
             stack.pushPose();
             float scale = Math.min(1, (projectile.tickCount + partialTicks) / 6f);
             stack.scale(scale, scale, scale);
@@ -94,7 +94,7 @@ public class RenderBabylon extends EntityRenderer<BabylonWeapon> {
         }
         stack.pushPose();
         stack.scale(2, 2, 2);
-        if (projectile.idle) {
+        if (projectile.preparing()) {
             float yRot = Mth.lerp(partialTicks, projectile.yRotO, projectile.getYRot());
             float xRot = Mth.lerp(partialTicks, projectile.xRotO, projectile.getXRot());
             stack.mulPose(Axis.YP.rotationDegrees(yRot));
@@ -107,13 +107,13 @@ public class RenderBabylon extends EntityRenderer<BabylonWeapon> {
         // Use separate buffersource for that instead
         AtomicInteger state = new AtomicInteger();
         Vector4f clip;
-        if (projectile.idle) {
+        if (projectile.preparing()) {
             Vector3f normal = new Vector3f(0, 0, 1);
             Matrix3f matrix3f = new Matrix3f();
             matrix3f.identity();
             matrix3f.rotate(Axis.YP.rotationDegrees(180 + Mth.lerp(partialTicks, projectile.yRotO, projectile.getYRot())));
             matrix3f.rotate(Axis.XP.rotationDegrees(-Mth.lerp(partialTicks, projectile.xRotO, projectile.getXRot())));
-            normal.mulTranspose(matrix3f);
+            normal.mul(matrix3f);
             clip = FateRenders.createClippingPlane(normal, projectile, 0.25f);
         } else if (projectile.despawning()) {
             Vector3f normal = new Vector3f(0, 0, 1);
@@ -121,7 +121,7 @@ public class RenderBabylon extends EntityRenderer<BabylonWeapon> {
             matrix3f.identity();
             matrix3f.rotate(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, projectile.yRotO, projectile.getYRot())));
             matrix3f.rotate(Axis.XP.rotationDegrees(-Mth.lerp(partialTicks, projectile.xRotO, projectile.getXRot())));
-            normal.mulTranspose(matrix3f);
+            normal.mul(matrix3f);
             clip = FateRenders.createClippingPlane(normal, projectile, -projectile.despawnProgress() * 2f + 1f);
         } else {
             clip = null;
@@ -137,9 +137,6 @@ public class RenderBabylon extends EntityRenderer<BabylonWeapon> {
             return cons;
         } : buffer;
         stack.translate(0, 0.15f, 0);
-        if (projectile.idle) {
-            stack.mulPose(Axis.YP.rotationDegrees(180));
-        }
         stack.mulPose(Axis.YP.rotationDegrees(90 + Mth.lerp(partialTicks, projectile.yRotO, projectile.getYRot())));
         stack.mulPose(Axis.ZP.rotationDegrees(135 - Mth.lerp(partialTicks, projectile.xRotO, projectile.getXRot())));
         Minecraft.getInstance().getItemRenderer().renderStatic(this.getRenderItemStack(projectile), ItemDisplayContext.GROUND, 0xff00ff, OverlayTexture.NO_OVERLAY, stack, buf, projectile.level(), projectile.getId());

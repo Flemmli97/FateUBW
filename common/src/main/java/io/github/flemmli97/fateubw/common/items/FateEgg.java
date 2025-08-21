@@ -1,7 +1,7 @@
 package io.github.flemmli97.fateubw.common.items;
 
 import io.github.flemmli97.fateubw.common.components.ServantSpawneggData;
-import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
+import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.network.S2CSpawnEggScreen;
 import io.github.flemmli97.fateubw.common.registry.FateDataComponents;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;

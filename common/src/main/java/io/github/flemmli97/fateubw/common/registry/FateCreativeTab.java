@@ -6,6 +6,7 @@ import io.github.flemmli97.tenshilib.loader.LoaderRegistryAccess;
 import io.github.flemmli97.tenshilib.loader.registry.LoaderRegister;
 import io.github.flemmli97.tenshilib.loader.registry.RegistryEntrySupplier;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -20,8 +21,9 @@ public class FateCreativeTab {
 
     public static final LoaderRegister<CreativeModeTab> TABS = LoaderRegistryAccess.INSTANCE.of(Registries.CREATIVE_MODE_TAB, Fate.MODID);
 
-    public static final RegistryEntrySupplier<CreativeModeTab, CreativeModeTab> TAB = TABS.register("tab", () -> Platform.INSTANCE.tabBuilder()
+    public static final RegistryEntrySupplier<CreativeModeTab, CreativeModeTab> TAB = TABS.register("tab", id -> Platform.INSTANCE.tabBuilder()
             .icon(() -> new ItemStack(FateItems.RANDOM_ICON.get()))
+            .title(Component.translatable("itemGroup." + id.getNamespace() + "." + id.getPath()))
             .displayItems((params, output) -> CONTENTS.forEach(s -> output.accept(s.get()))).build());
 
     public static synchronized void addToTab(RegistryEntrySupplier<Item, ?> entry) {

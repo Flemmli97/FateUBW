@@ -68,6 +68,7 @@ public class GrailLootManager extends SimpleJsonResourceReloadListener implement
         return ID;
     }
 
+    @Override
     public void insertRegistryAccess(HolderLookup.Provider provider) {
         this.provider = provider;
     }

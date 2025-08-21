@@ -1,0 +1,69 @@
+{
+  "assigned_items": [],
+  "icon": {
+    "count": 1,
+    "id": "fateubw:summoning_altar"
+  },
+  "pages": [
+    {
+      "components": [
+        {
+          "type": "modopedia:text",
+          "text": "At the heart of all Grail rituals lies the Summoning Altar—a carefully constructed array designed to bridge the gap between the mortal world and the Throne of Heroes. "
+        },
+        {
+          "recipe": "fateubw:summoning_altar",
+          "template": "modopedia:recipe/crafting",
+          "y": 80
+        }
+      ]
+    },
+    {
+      "components": [
+        {
+          "type": "modopedia:multiblock",
+          "multiblock": {
+            "type": "modopedia:dense",
+            "key": {
+              "a": {
+                "type": "modopedia:simple",
+                "states": [
+                  "fateubw:summoning_altar"
+                ]
+              },
+              "c": {
+                "type": "modopedia:simple",
+                "states": [
+                  "fateubw:chalk_line"
+                ]
+              }
+            },
+            "pattern": [
+              [
+                "ccccc",
+                "ccccc",
+                "ccacc",
+                "ccccc",
+                "ccccc"
+              ]
+            ]
+          }
+        },
+        {
+          "type": "modopedia:text",
+          "text": "To begin inscribe a 5x5 area using chalk centered around the altar. Right clicking the altar should then complete it.",
+          "y": 90
+        }
+      ]
+    },
+    {
+      "components": [
+        {
+          "type": "modopedia:text",
+          "text": "By offering 8 mana crystals and right clicking once again will start the summoning process calling forth your servant. If you possess an artifact you may place it on the altar before activation. These can boost you chance of increasing the odds that a servant of that class will heed your call."
+        }
+      ]
+    }
+  ],
+  "title": "Summoning Altar"
+}

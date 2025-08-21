@@ -37,11 +37,11 @@ public class EntityTrailProvider<T extends Entity & AnimatedEntity & EntityTrail
     private TrailPositions.TrailPosition last;
     private int invalidTicks;
 
-    public EntityTrailProvider(EntityTrailData data, T entity) {
+    public EntityTrailProvider(EntityTrailData data, int size, T entity) {
         this.data = data;
         this.entity = entity;
-        this.size = 4;
-        this.position = new TrailPositions(this.size * PARTIAL_INTERVALS);
+        this.size = size;
+        this.position = new TrailPositions(size * PARTIAL_INTERVALS);
     }
 
     @Override
@@ -95,7 +95,7 @@ public class EntityTrailProvider<T extends Entity & AnimatedEntity & EntityTrail
         if (!this.batched.isEmpty()) {
             int missing = PARTIAL_INTERVALS - this.batched.size();
             if (this.batched.size() == 1) {
-                TrailPositions.TrailPosition last = this.batched.get(0);
+                TrailPositions.TrailPosition last = this.batched.getFirst();
                 this.position.add(last);
                 for (int i = 0; i < missing; i++) {
                     this.position.add(last);
@@ -131,26 +131,32 @@ public class EntityTrailProvider<T extends Entity & AnimatedEntity & EntityTrail
     }
 
     public record EntityTrailData(int entityId, String context, boolean left,
+                                  int size,
                                   String animationEnd) implements TrailData {
 
         public static final MapCodec<EntityTrailData> CODEC = RecordCodecBuilder.mapCodec((builder) -> builder.group(
                         Codec.INT.fieldOf("entity_id").forGetter(d -> d.entityId),
                         Codec.STRING.fieldOf("context").forGetter(d -> d.context),
                         Codec.BOOL.fieldOf("left").forGetter(d -> d.left),
+                Codec.INT.fieldOf("size").forGetter(d -> d.size),
                         Codec.STRING.fieldOf("end").forGetter(d -> d.animationEnd)
                 ).apply(builder, EntityTrailData::new)
         );
 
-        public EntityTrailData(int entityId, String context, boolean left) {
-            this(entityId, context, left, EntityTrailProvider.TRAIL_END);
+        public EntityTrailData(int entityId, String context, int size, boolean left) {
+            this(entityId, context, left, size, EntityTrailProvider.TRAIL_END);
         }
 
         public EntityTrailData(FriendlyByteBuf buf) {
-            this(buf.readInt(), buf.readUtf(), buf.readBoolean(), buf.readUtf());
+            this(buf.readInt(), buf.readUtf(), buf.readBoolean(), buf.readInt(), buf.readUtf());
         }
 
         public static <T extends Entity & EntityTrailHolderProvider> EntityTrailData create(T entity, String context, boolean left) {
-            return new EntityTrailData(entity.getId(), context, left);
+            return new EntityTrailData(entity.getId(), context, 3, left);
+        }
+
+        public static <T extends Entity & EntityTrailHolderProvider> EntityTrailData create(T entity, String context, int size, boolean left) {
+            return new EntityTrailData(entity.getId(), context, size, left);
         }
 
         @Override
@@ -163,6 +169,7 @@ public class EntityTrailProvider<T extends Entity & AnimatedEntity & EntityTrail
             buf.writeInt(this.entityId);
             buf.writeUtf(this.context);
             buf.writeBoolean(this.left);
+            buf.writeInt(this.size);
             buf.writeUtf(this.animationEnd);
         }
 

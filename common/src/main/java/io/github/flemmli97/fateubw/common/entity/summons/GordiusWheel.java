@@ -4,10 +4,10 @@ import com.mojang.datafixers.util.Pair;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.api.datapack.AttributeHolderProperties;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
+import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.MultiPartEntity;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.SetTargetFromRider;
-import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.utils.MoveStateTracker;
 import io.github.flemmli97.fateubw.common.entity.utils.MoveType;
 import io.github.flemmli97.fateubw.common.entity.utils.StandingVehicle;
@@ -157,6 +157,64 @@ public class GordiusWheel extends PathfinderMob implements AnimatedEntity, Stand
     }
 
     @Override
+    public List<? extends ExtendedSensor<? extends GordiusWheel>> getSensors() {
+        return List.of();
+    }
+
+    @Override
+    public BrainActivityGroup<? extends GordiusWheel> getCoreTasks() {
+        return BrainActivityGroup.coreTasks(
+                new FloatToSurfaceOfFluid<GordiusWheel>(),
+                new SetTargetFromRider<>());
+    }
+
+    @Override
+    public BrainActivityGroup<? extends GordiusWheel> getIdleTasks() {
+        return BrainActivityGroup.idleTasks(
+                new MoveToWalkTarget<>(),
+                new FirstApplicableBehaviour<>(
+                        new TargetOrRetaliate<GordiusWheel>(),
+                        new SetMoveToRestriction<GordiusWheel>(),
+                        new SetRandomWalkTarget<>().startCondition(m -> m.getRandom().nextInt(120) == 0)
+                )
+        );
+    }
+
+    @Override
+    public BrainActivityGroup<? extends GordiusWheel> getFightTasks() {
+        return BrainActivityGroup.fightTasks(
+                new InvalidateAttackTarget<GordiusWheel>(),
+                new FirstApplicableBehaviour<>(
+                        new Idle<GordiusWheel>().startCondition(GordiusWheel::runCooldownBehaviour)
+                                .stopIf(e -> !e.runCooldownBehaviour()),
+                        AttackBehaviourBuilder.<GordiusWheel>create()
+                                .start(STOMP).play(BehaviourUtils.cooldownedPlay(true, 10, 40))
+                                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.moveAttack())
+                                .end(1)
+                                .start(CHARGING).play(BehaviourUtils.cooldownedPlay(false, 10, 40))
+                                .prepare(new SetChargeTarget())
+                                .end(1)
+                                .build()
+                ).startCondition(m -> m.getTarget() != null)
+        );
+    }
+
+    protected boolean runCooldownBehaviour() {
+        return !this.getAnimationHandler().hasAnimation() && BrainUtils.hasMemory(this, MemoryModuleType.ATTACK_COOLING_DOWN);
+    }
+
+    @Override
+    protected Brain.Provider<?> brainProvider() {
+        return new SmartBrainProvider<>(this);
+    }
+
+    @Override
+    protected void sendDebugPackets() {
+        super.sendDebugPackets();
+        DebugPackets.sendEntityBrain(this);
+    }
+
+    @Override
     public void baseTick() {
         super.baseTick();
         this.getAnimationHandler().tick();
@@ -218,64 +276,6 @@ public class GordiusWheel extends PathfinderMob implements AnimatedEntity, Stand
         }
     }
 
-    @Override
-    public List<? extends ExtendedSensor<? extends GordiusWheel>> getSensors() {
-        return List.of();
-    }
-
-    @Override
-    public BrainActivityGroup<? extends GordiusWheel> getCoreTasks() {
-        return BrainActivityGroup.coreTasks(
-                new FloatToSurfaceOfFluid<GordiusWheel>(),
-                new SetTargetFromRider<>());
-    }
-
-    @Override
-    public BrainActivityGroup<? extends GordiusWheel> getIdleTasks() {
-        return BrainActivityGroup.idleTasks(
-                new MoveToWalkTarget<>(),
-                new FirstApplicableBehaviour<>(
-                        new TargetOrRetaliate<GordiusWheel>(),
-                        new SetMoveToRestriction<GordiusWheel>(),
-                        new SetRandomWalkTarget<>().startCondition(m -> m.getRandom().nextInt(120) == 0)
-                )
-        );
-    }
-
-    @Override
-    public BrainActivityGroup<? extends GordiusWheel> getFightTasks() {
-        return BrainActivityGroup.fightTasks(
-                new InvalidateAttackTarget<GordiusWheel>(),
-                new FirstApplicableBehaviour<>(
-                        new Idle<GordiusWheel>().startCondition(GordiusWheel::runCooldownBehaviour)
-                                .stopIf(e -> !e.runCooldownBehaviour()),
-                        AttackBehaviourBuilder.<GordiusWheel>create()
-                                .start(STOMP).play(BehaviourUtils.cooldownedPlay((anim, entity) -> entity.getRandom().nextInt(30) + 10))
-                                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.moveAttack())
-                                .end(1)
-                                .start(CHARGING).play(BehaviourUtils.cooldownedPlay((anim, entity) -> entity.getRandom().nextInt(30) + 10))
-                                .prepare(new SetChargeTarget())
-                                .end(1)
-                                .build()
-                ).startCondition(m -> m.getTarget() != null)
-        );
-    }
-
-    protected boolean runCooldownBehaviour() {
-        return !this.getAnimationHandler().hasAnimation() && BrainUtils.hasMemory(this, MemoryModuleType.ATTACK_COOLING_DOWN);
-    }
-
-    @Override
-    protected Brain.Provider<?> brainProvider() {
-        return new SmartBrainProvider<>(this);
-    }
-
-    @Override
-    protected void sendDebugPackets() {
-        super.sendDebugPackets();
-        DebugPackets.sendEntityBrain(this);
-    }
-
     public float interpolatedMoveTick(float partialTicks) {
         return this.moveStateTracker.interpolatedMoveTick(partialTicks);
     }
@@ -324,20 +324,16 @@ public class GordiusWheel extends PathfinderMob implements AnimatedEntity, Stand
         return BrainUtils.getTargetOfEntity(this);
     }
 
-    public LivingEntity getGoalTarget() {
-        return super.getTarget();
-    }
-
     @Override
     public void setTarget(@Nullable LivingEntity target) {
         super.setTarget(target);
         // In case setTarget is called without BrainUtils
         // Sync to memory
         // If BrainUtils is used it will override the brain target anyway
-        if (this.getGoalTarget() == null) {
+        if (super.getTarget() == null) {
             BrainUtils.clearMemory(this, MemoryModuleType.ATTACK_TARGET);
         } else {
-            BrainUtils.setMemory(this, MemoryModuleType.ATTACK_TARGET, this.getGoalTarget());
+            BrainUtils.setMemory(this, MemoryModuleType.ATTACK_TARGET, super.getTarget());
         }
     }
 

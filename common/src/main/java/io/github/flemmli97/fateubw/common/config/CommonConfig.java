@@ -33,12 +33,12 @@ public class CommonConfig {
 
     // Misc
     public static float babylonScale = 1.5f;
-    public static WeaponList babylonWeapons = new WeaponList(FateItems.ENUMAELISH.getID().toString());
+    public static WeaponList babylonWeapons = new WeaponList(FateItems.ENUMAELISH.getID().toString(), "runecraftory");
     public static float eaDamage = 50;
     public static float excaliburDamage = 35;
     public static float caladBolgDmg = 30;
     public static float magicBeam = 6;
-    public static float gaeBolgDmg = 18;
+    public static float gaeBolgDmg = 25;
     public static PotionEffectsConfig gaeBolgEffect = new PotionEffectsConfig(
             List.of(new PotionEffectsConfig.EffectInstance(MobEffects.WITHER, 600, 3),
                     new PotionEffectsConfig.EffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 300, 7))

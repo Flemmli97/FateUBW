@@ -1,7 +1,7 @@
 package io.github.flemmli97.fateubw.common.network;
 
 import io.github.flemmli97.fateubw.Fate;
-import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
+import io.github.flemmli97.fateubw.api.entity.ServantLike;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -26,9 +26,9 @@ public record C2SServantSpecial(String specialID, int entityId) implements Custo
     public static void handle(C2SServantSpecial pkt, ServerPlayer sender) {
         if (sender == null)
             return;
-        BaseServant servant = C2SServantCommand.getServant(sender, pkt.entityId);
+        ServantLike<?> servant = C2SServantCommand.getServant(sender, pkt.entityId);
         if (servant != null)
-            servant.doSpecialCommand(pkt.specialID);
+            servant.doSpecialCommand(sender, pkt.specialID);
     }
 
     @Override

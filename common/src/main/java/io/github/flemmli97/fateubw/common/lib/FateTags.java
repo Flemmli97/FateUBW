@@ -16,7 +16,7 @@ public class FateTags {
 
         public static final TagKey<Item> CRYSTALS = tag("crystals");
 
-        public static final TagKey<Item> SPEARS = tagCommon("spears");
+        public static final TagKey<Item> SPEARS = tagCommon("tools/spears");
         public static final TagKey<Item> MOD_SPEARS = tag("spears");
     }
 

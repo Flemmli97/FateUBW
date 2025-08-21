@@ -15,13 +15,13 @@ public class ClientCalls {
             LoaderNetwork.INSTANCE.sendToServer(C2SGuiOpenRequest.INSTANCE);
         }
         if (ClientHandler.special.consumeClick()) {
-            LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.NP, -1));
+            LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.ActionType.NP, -1));
         }
         if (ClientHandler.boost.consumeClick()) {
-            LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.BOOST, -1));
+            LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.ActionType.BOOST, -1));
         }
         if (ClientHandler.target.consumeClick()) {
-            LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.TARGET, -1));
+            LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.ActionType.TARGET, -1));
         }
     }
 

@@ -1,0 +1,19 @@
+{
+  "assigned_items": [],
+  "icon": {
+    "count": 1,
+    "id": "minecraft:command_block"
+  },
+  "pages": [
+    {
+      "components": [
+        {
+          "header": "Commands",
+          "template": "modopedia:page/headered_text",
+          "text": "Allows executing of commands"
+        }
+      ]
+    }
+  ],
+  "title": "Commands"
+}

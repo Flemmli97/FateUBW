@@ -77,16 +77,14 @@ public class SpawnEggScreen extends Screen {
     public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         super.renderBackground(graphics, mouseX, mouseY, partialTick);
         graphics.fillGradient(this.leftPos, this.topPos, this.leftPos + this.sizeX, this.topPos + this.sizeY, 0xc0101010, 0xc0101010);
-        int xPadding = 16;
-        int yOff = 16;
-        graphics.drawString(this.font, Component.translatable("fateubw.gui.spawn.master"), this.leftPos + xPadding, this.topPos + yOff, 0xffffff, true);
+        int padding = 16;
+        int yOff = padding;
+        graphics.drawString(this.font, Component.translatable("fateubw.gui.spawn.master"), this.leftPos + padding, this.topPos + yOff, 0xffffff, true);
         yOff += 16 + 20 + 8;
-        graphics.drawString(this.font, Component.translatable("fateubw.gui.spawn.war"), this.leftPos + xPadding, this.topPos + yOff, 0xffffff, true);
+        graphics.drawString(this.font, Component.translatable("fateubw.gui.spawn.war"), this.leftPos + padding, this.topPos + yOff, 0xffffff, true);
         yOff += 16;
-        graphics.drawString(this.font, Component.translatable("fateubw.gui.spawn.war.help"), this.leftPos + xPadding, this.topPos + yOff, 0xffffff, true);
-        int posX = 180;
-        int posY = 100;
-        RenderUtils.renderScaledEntityGui(graphics, this.leftPos + posX, this.topPos + posY, 32 * 3,
+        graphics.drawString(this.font, Component.translatable("fateubw.gui.spawn.war.help"), this.leftPos + padding, this.topPos + yOff, 0xffffff, true);
+        RenderUtils.renderScaledEntityGui(graphics, this.leftPos + this.sizeX - padding - 32 * 3, this.topPos + padding, 32 * 3,
                 32 * 3, 32, 0, mouseX, mouseY, this.entity);
     }
 

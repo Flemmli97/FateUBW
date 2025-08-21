@@ -6,10 +6,10 @@ public interface EntityTrailHolderProvider {
 
     EntityTrailHolder<?> getTrailHolder();
 
-    default Vector4f[] weaponTrailEdge(boolean left) {
-        return new Vector4f[]{
-                new Vector4f(0, 0, 0, 1),
-                new Vector4f(0, -0.1f, -0.5f, 1)
-        };
+    default WeaponTrail weaponTrailEdge(boolean left) {
+        return new WeaponTrail(new Vector4f(0, 0, 0, 1), new Vector4f(0, 0, -0.5f, 1));
+    }
+
+    record WeaponTrail(Vector4f start, Vector4f end) {
     }
 }

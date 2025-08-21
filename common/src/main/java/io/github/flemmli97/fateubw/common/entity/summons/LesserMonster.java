@@ -8,6 +8,7 @@ import io.github.flemmli97.fateubw.common.entity.utils.MoveStateTracker;
 import io.github.flemmli97.fateubw.common.entity.utils.MoveType;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.utils.Utils;
+import io.github.flemmli97.fateubw.mixin.CombatTrackerAccessor;
 import io.github.flemmli97.tenshilib.common.entity.EntityUtils;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.SelectableBehaviourBuilder;
@@ -17,12 +18,16 @@ import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionC
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationsBuilder;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.DebugPackets;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.valueproviders.ConstantFloat;
+import net.minecraft.world.damagesource.CombatEntry;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.OwnableEntity;
@@ -42,7 +47,6 @@ import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtAttackTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FollowEntity;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
@@ -152,19 +156,18 @@ public class LesserMonster extends PathfinderMob implements AnimatedEntity, Owna
         return BrainActivityGroup.coreTasks(
                 new FloatToSurfaceOfFluid<LesserMonster>(),
                 this.lookBehaviour(),
-                new FollowEntity<LesserMonster, LivingEntity>().following(LesserMonster::getOwner),
                 new LookAtTarget<>().runFor(entity -> entity.getRandom().nextIntBetweenInclusive(40, 100))
                         .whenStopping(m -> BrainUtils.clearMemory(m, MemoryModuleType.LOOK_TARGET)));
     }
 
     protected ExtendedBehaviour<? extends LesserMonster> lookBehaviour() {
-        return new AllApplicableBehaviours<LesserMonster>(
+        return new AllApplicableBehaviours<>(
                 new LookAtAttackTarget<>(),
                 new OneRandomBehaviour<>(
                         new SetRandomLookTarget<>().lookChance(ConstantFloat.of(1)),
                         new SetPlayerLookTarget<>()
                 ).startCondition(m -> m.getRandom().nextFloat() < 0.1 && !BrainUtils.hasMemory(m, MemoryModuleType.WALK_TARGET))
-        ).startCondition(e -> !BrainUtils.hasMemory(e, MemoryModuleType.ATTACK_TARGET));
+        );
     }
 
     @Override
@@ -189,7 +192,7 @@ public class LesserMonster extends PathfinderMob implements AnimatedEntity, Owna
                                 .build().startCondition(LesserMonster::runCooldownBehaviour)
                                 .stopIf(e -> !e.runCooldownBehaviour()),
                         AttackBehaviourBuilder.<LesserMonster>create()
-                                .start(ATTACK).play(BehaviourUtils.cooldownedPlay((anim, entity) -> entity.getRandom().nextInt(30) + 10))
+                                .start(ATTACK).play(BehaviourUtils.cooldownedPlay(false, 10, 25))
                                 .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.moveTo())
                                 .end(1)
                                 .build()
@@ -241,6 +244,26 @@ public class LesserMonster extends PathfinderMob implements AnimatedEntity, Owna
     @Override
     public AnimationHandler<LesserMonster> getAnimationHandler() {
         return this.animationHandler;
+    }
+
+    @Override
+    public boolean doHurtTarget(Entity target) {
+        boolean res = super.doHurtTarget(target);
+        if (res && target instanceof LivingEntity living) {
+            List<CombatEntry> entries = ((CombatTrackerAccessor) living.getCombatTracker())
+                    .getEntries();
+            if (!entries.isEmpty() && entries.getLast().source().getEntity() == this) {
+                float damage = Math.max(0, entries.getLast().damage());
+                if (damage > 0 && this.getOwner() != null) {
+                    LivingEntity owner = this.getOwner();
+                    owner.heal(damage * 0.33f);
+                    if (this.level() instanceof ServerLevel serverLevel) {
+                        serverLevel.sendParticles(ParticleTypes.HEART, owner.getX(), owner.getY() + owner.getBbHeight() + 0.5, owner.getZ(), 0, 0, 0.1, 0, 0);
+                    }
+                }
+            }
+        }
+        return res;
     }
 
     @Override

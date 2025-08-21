@@ -1,8 +1,9 @@
 package io.github.flemmli97.fateubw.common.utils;
 
 import com.mojang.datafixers.util.Pair;
-import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
+import io.github.flemmli97.fateubw.api.entity.ServantLike;
 import io.github.flemmli97.fateubw.common.registry.FateAttributes;
+import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import io.github.flemmli97.fateubw.common.world.TeamHandler;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -35,7 +36,8 @@ public class Utils {
     public static float getDamageAfterMagicAbsorb(LivingEntity entity, float damage) {
         if (entity.getAttribute(FateAttributes.MAGIC_RESISTANCE.asHolder()) == null)
             return damage;
-        return (float) (damage * entity.getAttribute(FateAttributes.MAGIC_RESISTANCE.asHolder()).getValue());
+        float reduceAmount = (float) Mth.clamp(1 - entity.getAttribute(FateAttributes.MAGIC_RESISTANCE.asHolder()).getValue(), 0.15, 1);
+        return damage * reduceAmount;
     }
 
     public static float projectileReduce(LivingEntity entity, float damage) {
@@ -72,16 +74,31 @@ public class Utils {
     }
 
     public static boolean alliedTo(@Nullable Entity entity, @Nullable Entity other) {
-        if (entity == null || other == null)
+        if (entity == null || other == null) {
             return false;
-        if (entity == other)
+        }
+        if (entity == other) {
             return false;
-        if (entity.getServer() == null)
+        }
+        if (entity.getServer() == null) {
             return false;
-        if (entity instanceof OwnableEntity ownable && other.getUUID().equals(ownable.getOwnerUUID()))
-            return true;
-        if (other instanceof OwnableEntity ownable && entity.getUUID().equals(ownable.getOwnerUUID()))
-            return true;
+        }
+        if (entity instanceof OwnableEntity ownable) {
+            if (other.getUUID().equals(ownable.getOwnerUUID())) {
+                return true;
+            }
+            if (alliedTo(ownable.getOwner(), other)) {
+                return true;
+            }
+        }
+        if (other instanceof OwnableEntity ownable && entity.getUUID().equals(ownable.getOwnerUUID())) {
+            if (entity.getUUID().equals(ownable.getOwnerUUID())) {
+                return true;
+            }
+            if (alliedTo(entity, ownable.getOwner())) {
+                return true;
+            }
+        }
         return TeamHandler.get(entity.getServer()).areAllies(entity, other);
     }
 
@@ -93,8 +110,10 @@ public class Utils {
                 return true;
             if (entity.hasPassenger(target) || entity.getVehicle() == target)
                 return false;
-            if (entity instanceof BaseServant servant) {
-                if (target instanceof BaseServant || (target instanceof ServerPlayer)) //TODO: only when player is active grailwar participant
+            if (entity instanceof ServantLike<?>) {
+                if (target instanceof ServerPlayer)
+                    return GrailWarHandler.get(target.getServer()).isParticipant(entity);
+                if (target instanceof ServantLike<?>)
                     return true;
             }
             return target instanceof Enemy;

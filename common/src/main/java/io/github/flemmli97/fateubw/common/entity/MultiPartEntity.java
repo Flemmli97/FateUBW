@@ -111,7 +111,7 @@ public class MultiPartEntity extends Entity implements OwnableEntity {
     }
 
     protected MultipartPosition relativePosition() {
-        return relativePosition;
+        return this.relativePosition;
     }
 
     @Override

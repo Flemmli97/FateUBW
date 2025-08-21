@@ -1,0 +1,27 @@
+{
+  "assigned_items": [],
+  "icon": {
+    "count": 1,
+    "id": "fateubw:artifact_saber"
+  },
+  "pages": [
+    {
+      "components": [
+        {
+          "header": "Servant",
+          "template": "modopedia:page/headered_text",
+          "text": "Servants are the physical embodiments of Heroic Spirits, summoned via the $(l:entry.altar)summoning altar$(/l) to serve a Master in battle.$(br)$(br) To manage and issue orders to your Servant, press $(4)($(k:fateubw.key.gui))$() to open a GUI allowing you to command basic behaviors—such as follow, hold position etc. Additionally several keybindings grant you more advanced control during battle:"
+        }
+      ]
+    },
+    {
+      "components": [
+        {
+          "type": "modopedia:text",
+          "text": "$(li)$(4)($(k:fateubw.key.np))$() commands them to use their nobel phantasm at the cost of using up a command spell and your own mana. $(li)$(4)($(k:fateubw.key.boost))$() to expend a Command Spell, releasing a surge of magical energy that greatly enhances your Servant’s combat abilities for a short time.$(li)$(4)($(k:fateubw.key.target))$() while looking at an entity makes your servant prioritize and attack said entity."
+        }
+      ]
+    }
+  ],
+  "title": "Servant"
+}

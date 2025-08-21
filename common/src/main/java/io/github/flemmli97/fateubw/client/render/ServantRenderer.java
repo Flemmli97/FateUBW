@@ -7,7 +7,7 @@ import com.mojang.math.Axis;
 import io.github.flemmli97.fateubw.client.model.ServantModel;
 import io.github.flemmli97.fateubw.client.render.layer.ItemTrailLayer;
 import io.github.flemmli97.fateubw.client.render.layer.TrailPoseGetter;
-import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
+import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.tenshilib.client.render.layer.ItemLayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;

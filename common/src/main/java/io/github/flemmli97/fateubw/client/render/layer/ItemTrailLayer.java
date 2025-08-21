@@ -1,7 +1,6 @@
 package io.github.flemmli97.fateubw.client.render.layer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailHolderProvider;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailProvider;
 import io.github.flemmli97.tenshilib.client.model.ItemHolderModel;
@@ -41,15 +40,13 @@ public class ItemTrailLayer<T extends LivingEntity & AnimatedEntity & EntityTrai
     protected Vec3[] calculatePosition(PoseStack stack, T entity, boolean left) {
         stack.pushPose();
         this.getParentModel().transform(left ? HumanoidArm.LEFT : HumanoidArm.RIGHT, stack);
-        stack.mulPose(Axis.XP.rotationDegrees(-90.0F));
-        stack.mulPose(Axis.YP.rotationDegrees(180.0F));
 
-        Vector4f[] edge = entity.weaponTrailEdge(left);
-        Vector4f start = edge[0];
-        Vector4f end = edge[1];
+        EntityTrailHolderProvider.WeaponTrail edge = entity.weaponTrailEdge(left);
+        Vector4f start = edge.start();
+        Vector4f end = edge.end();
         Matrix4f last = stack.last().pose();
-        start.mulTranspose(last);
-        end.mulTranspose(last);
+        start.mul(last);
+        end.mul(last);
         Vec3 normal = new Vec3(end.x() - start.x(), end.y() - start.y(), end.z() - start.z());
         stack.popPose();
         return new Vec3[]{new Vec3(start.x() + normal.x(), start.y() + normal.y(), start.z() + normal.z()), normal};

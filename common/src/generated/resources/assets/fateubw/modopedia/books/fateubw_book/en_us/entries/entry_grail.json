@@ -1,0 +1,40 @@
+{
+  "assigned_items": [],
+  "icon": {
+    "count": 1,
+    "id": "fateubw:holy_grail"
+  },
+  "pages": [
+    {
+      "components": [
+        {
+          "type": "modopedia:header",
+          "text": "The Holy Grail"
+        },
+        {
+          "type": "modopedia:separator",
+          "y": 10
+        },
+        {
+          "type": "modopedia:showcase",
+          "items": [
+            {
+              "count": 1,
+              "id": "fateubw:holy_grail"
+            }
+          ],
+          "y": 30
+        }
+      ]
+    },
+    {
+      "components": [
+        {
+          "type": "modopedia:text",
+          "text": "By being victorious in the grail war you will be awarded with the holy grail. An object said to be able to grant any wish you want. Upon use you may choose between multiple possible powerful rewards."
+        }
+      ]
+    }
+  ],
+  "title": "The Holy Grail"
+}

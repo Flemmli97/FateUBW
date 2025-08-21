@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.registry.FateAttributes;
 import io.github.flemmli97.fateubw.common.registry.FateBlocks;
+import io.github.flemmli97.fateubw.common.registry.FateCreativeTab;
 import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
@@ -26,6 +27,7 @@ import net.minecraft.world.level.block.Block;
 
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -39,6 +41,9 @@ public class Lang implements DataProvider {
     private final Map<String, String> data = new HashMap<>();
     private final PackOutput packOutput;
     private final String modid, locale;
+
+    private final List<String> servantClasses = FateEntities.DEFAULT_SERVANT_PROPERTIES
+            .values().stream().map(b -> b.build().getServantClass().getPath()).toList();
 
     public Lang(PackOutput packOutput) {
         this.packOutput = packOutput;
@@ -78,43 +83,13 @@ public class Lang implements DataProvider {
             this.add(type.get(), this.simpleTranslation(type.getID()));
         }
 
-        this.add(FateEntities.ARTHUR.get(), "King Arthur");
-        this.add(FateEntities.ARTHUR.getID() + ".hogou", "Excalibur");
-        this.add(FateEntities.CUCHULAINN.get(), "Cuchulainn");
-        this.add(FateEntities.CUCHULAINN.getID() + ".hogou", "Gae Bolg");
-        this.add(FateEntities.DIARMUID.get(), "Diarmuid ua Duibhne");
-        this.add(FateEntities.DIARMUID.getID() + ".hogou", "Gae Dearg/Buidhe");
-        this.add(FateEntities.EMIYA.get(), "Archer Emiya");
-        this.add(FateEntities.EMIYA.getID() + ".hogou", "Caladbolg");
-        this.add(FateEntities.GILGAMESH.get(), "King Gilgamesh");
-        this.add(FateEntities.GILGAMESH.getID() + ".hogou", "Gate of Babylon");
-        this.add(FateEntities.MEDEA.get(), "Medea");
-        this.add(FateEntities.MEDEA.getID() + ".hogou", "Rule Breaker");
-        this.add(FateEntities.MEDEA.getID() + ".circle", "Magic Circle");
-        this.add(FateEntities.GILLES.get(), "Gilles de Rais");
-        this.add(FateEntities.GILLES.getID() + ".hogou", "Prelati's Spellbook");
-        this.add(FateEntities.HERACLES.get(), "Heracles");
-        this.add(FateEntities.HERACLES.getID() + ".hogou", "God Hand");
-        this.add(FateEntities.LANCELOT.get(), "Sir Lancelot");
-        this.add(FateEntities.LANCELOT.getID() + ".hogou", "Knight of Owner");
-        this.add(FateEntities.LANCELOT.getID() + ".drop", "Drop Inventory");
-        this.add(FateEntities.ISKANDER.get(), "Alexander the Great");
-        this.add(FateEntities.ISKANDER.getID() + ".hogou", "Gordius Bulls");
-        this.add(FateEntities.MEDUSA.get(), "Medusa");
-        this.add(FateEntities.MEDUSA.getID() + ".hogou", "Bellerophon");
-        this.add(FateEntities.HASSAN.get(), "Hassan-i-Sabbah");
-        this.add(FateEntities.HASSAN.getID() + ".hogou", "Delusional Illusion");
-        this.add(FateEntities.SASAKI.get(), "Sasaki Kojiro");
-        this.add(FateEntities.SASAKI.getID() + ".hogou", "Tsubame Gaeshi");
-
-        this.add(FateEntities.LESSER_MONSTER.get(), "Monster");
-        this.add(FateEntities.GORDIUS_WHEEL.get(), "Gordius Wheel");
-        this.add(FateEntities.HASSAN_COPY.get(), "Hassan-i-Sabbah");
-        this.add(FateEntities.PEGASUS.get(), "Pegasus");
-
+        this.add(FateEntities.HASSAN_COPY.get(), this.simpleTranslation(FateEntities.HASSAN.getID()));
         for (RegistryEntrySupplier<EntityType<?>, ?> reg : FateEntities.ENTITIES.getEntries()) {
             if (!this.data.containsKey(reg.get().getDescriptionId())) {
                 this.add(reg.get(), this.simpleTranslation(reg.getID()));
+            }
+            if (FateEntities.SERVANT_NOBEL_PHANTASM.containsKey(reg.getID())) {
+                this.add(reg.getID() + ".hogou", FateEntities.SERVANT_NOBEL_PHANTASM.get(reg.getID()));
             }
         }
 
@@ -130,7 +105,7 @@ public class Lang implements DataProvider {
             this.add(reg.asHolder());
         }
 
-        this.add("itemGroup." + Fate.MODID + ".tab", "The Fate Universe");
+        this.add("itemGroup." + FateCreativeTab.TAB.getID().getNamespace() + "." + FateCreativeTab.TAB.getID().getPath(), "The Fate Universe");
 
         this.add("fateubw.chat.item.spawn", "You already have a servant, spawned a masterless one");
         this.add("fateubw.chat.mana.missing", "You don't have enough mana");
@@ -277,46 +252,9 @@ public class Lang implements DataProvider {
         this.add("fateubw.key.boost", "Command Boost");
         this.add("fateubw.key.target", "Target");
 
-        this.add("fateubw_book", "Fate Guidebook");
-        this.add("fateubw.patchouli.landing", "The Holy Grail War... a battle between players who yearn for the power of the wish granting Holy Grail. " +
+        this.add("fateubw.book.title", "Grail War Chronicles");
+        this.add("fateubw.book.landing", "The Holy Grail War... a battle between players who yearn for the power of the wish granting Holy Grail. " +
                 "This book serves as a guide if you wish to also participate in it.");
-        this.add("fateubw.patchouli.category.start", "Getting started");
-        this.add("fateubw.patchouli.category.start.desc", "Grail wars happen regulary in the world. The grail will announce when players are able to join one. " +
-                "During a grailwar enemy servants without players might also spawn. Defeating every servant and being the last one standing will grant the player the holy grail rewarding the player with various loot.");
-        this.add("fateubw.patchouli.entry.ores", "Ores");
-
-        this.add("fateubw.patchouli.entry.ores." + FateBlocks.GEM_ORE.getID().getPath(), "These ores pulse faintly with residual mana. When mined, it yields small pieces of mana shards. " +
-                "Combining the different types of shards and a bit of mana one can create a larger and stronger mana crystal. " +
-                "The created gem itself explodes violently when hurled as a projectile but its true purpose lies in the summoning ritual.");
-        this.add("fateubw.patchouli.entry.ores." + FateBlocks.ARTIFACT_ORE.getID().getPath(), "Deeper still lies the much rarer Artifact Ore. These stones will yield forgotten relics of specific servant classes. " +
-                "These artifacts can be used during a summoning ritual to increasing the chance that a Servant of matching class will heed your call.");
-        this.add("fateubw.patchouli.entry.altar", "Summoning Altar");
-        this.add("fateubw.patchouli.entry.altar.1", "At the heart of all Grail rituals lies the Summoning Altar—a carefully constructed array designed to bridge the gap between the mortal world and the Throne of Heroes. ");
-        this.add("fateubw.patchouli.entry.altar.2", "To begin inscribe a 5x5 area using chalk centered around the altar. Right clicking the altar should then complete it.");
-        this.add("fateubw.patchouli.entry.altar.3", "By offering 8 mana crystals and right clicking once again will start the summoning process calling forth your servant. If you possess an artifact you may place it on the altar before activation. " +
-                "These can boost you chance of increasing the odds that a servant of that class will heed your call.");
-        this.add("fateubw.patchouli.entry.servant", "Servant");
-        this.add("fateubw.patchouli.entry.servant.1", "Servants are the physical embodiments of Heroic Spirits, summoned via the $(l:entry.altar)summoning altar$(/l) to serve a Master in battle.$(br)$(br) " +
-                "To manage and issue orders to your Servant, press $(4)($(k:fateubw.key.gui))$() to open a GUI allowing you to command basic behaviors—such as follow, hold position etc. " +
-                "Additionally several keybindings grant you more advanced control during battle:");
-        this.add("fateubw.patchouli.entry.servant.2", "$(li)$(4)($(k:fateubw.key.np))$() commands them to use their nobel phantasm at the cost of using up a command spell and your own mana. " +
-                "$(li)$(4)($(k:fateubw.key.boost))$() to expend a Command Spell, releasing a surge of magical energy that greatly enhances your Servant’s combat abilities for a short time." +
-                "$(li)$(4)($(k:fateubw.key.target))$() while looking at an entity makes your servant prioritize and attack said entity.");
-        this.add("fateubw.patchouli.entry.grail", "The Holy Grail");
-        this.add("fateubw.patchouli.entry.grail.1", "By being victorious in the grail war you will be awarded with the holy grail. An object said to be able to grant any wish you want. " +
-                "Upon use you may choose between multiple possible powerful rewards.");
-        this.add("fateubw.patchouli.category.loot", "Loot");
-        this.add("fateubw.patchouli.category.loot.desc", "This section is more addressed for pack devs and contains an overview of possible loot to be granted. The actual loot depends on the selected loottable. The server can define custom loottables via datapacks.");
-        this.add("fateubw.patchouli.entry.item", "Items");
-        this.add("fateubw.patchouli.entry.item.1", "Various items as per defined in the loot table");
-        this.add("fateubw.patchouli.entry.attribute", "Attributes");
-        this.add("fateubw.patchouli.entry.attribute.1", "Can grant permant attributes increases like extra health, attack damage etc.");
-        this.add("fateubw.patchouli.entry.loot.servant", "Servant");
-        this.add("fateubw.patchouli.entry.loot.servant.1", "Resummons the servant used in the last grailwar. Or drops the servants loot (i.e. their weapon)");
-        this.add("fateubw.patchouli.entry.commands", "Commands");
-        this.add("fateubw.patchouli.entry.commands.1", "Allows executing of commands");
-        this.add("fateubw.patchouli.entry.xp", "XP");
-        this.add("fateubw.patchouli.entry.xp.1", "Grants random amount of xp points");
     }
 
     private String simpleTranslation(ResourceLocation res) {
@@ -325,10 +263,27 @@ public class Lang implements DataProvider {
     }
 
     private String simpleTranslation(String s) {
-        return Stream.of(s.trim().split("_"))
+        return Stream.of(this.capitalizeHyphen(s).trim().split("_"))
                 .filter(word -> !word.isEmpty())
-                .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1))
+                .map(this::process)
                 .collect(Collectors.joining(" "));
+    }
+
+    private String capitalizeHyphen(String s) {
+        return Stream.of(s.trim().split("-"))
+                .filter(word -> !word.isEmpty())
+                .map(this::process)
+                .collect(Collectors.joining("-"));
+    }
+
+    private String process(String word) {
+        if (word.equals("i") || word.equals("de"))
+            return word;
+        String capitalized = word.substring(0, 1).toUpperCase() + word.substring(1);
+        if (this.servantClasses.contains(word)) {
+            return String.format("(%s)", capitalized);
+        }
+        return capitalized;
     }
 
     @Override

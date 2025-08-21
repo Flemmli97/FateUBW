@@ -1,8 +1,9 @@
 package io.github.flemmli97.fateubw.common.attachment;
 
 import com.mojang.datafixers.util.Pair;
+import io.github.flemmli97.fateubw.api.entity.ServantLike;
+import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.misc.ChainDagger;
-import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.network.S2CCommandSeals;
 import io.github.flemmli97.fateubw.common.network.S2CMana;
 import io.github.flemmli97.fateubw.common.network.S2CPlayerCap;
@@ -16,6 +17,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -74,17 +76,18 @@ public class PlayerData {
         }
     }
 
-    public void saveServant(BaseServant servant) {
+    public void saveServant(ServantLike<?> servant) {
         if (servant != null) {
-            servant.stopRiding();
-            servant.ejectPassengers();
+            Mob entity = servant.get();
+            entity.stopRiding();
+            entity.ejectPassengers();
             CompoundTag nbt = new CompoundTag();
-            servant.saveWithoutId(nbt);
+            entity.saveWithoutId(nbt);
             nbt.remove("Pos");
             nbt.remove("Motion");
             nbt.remove("Rotation");
             nbt.remove("UUID");
-            this.savedServant = Pair.of(servant.getType(), nbt);
+            this.savedServant = Pair.of(entity.getType(), nbt);
         }
     }
 

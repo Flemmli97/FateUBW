@@ -4,6 +4,8 @@ import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.config.specs.ConfigLoader;
 import io.github.flemmli97.fateubw.common.config.specs.ConfigSpecs;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
+import io.github.flemmli97.fateubw.common.entity.servant.lancelot.LancelotAttackAI;
+import io.github.flemmli97.fateubw.common.registry.FateActivities;
 import io.github.flemmli97.fateubw.common.registry.FateAttributes;
 import io.github.flemmli97.fateubw.common.registry.FateBlocks;
 import io.github.flemmli97.fateubw.common.registry.FateCreativeTab;
@@ -13,6 +15,7 @@ import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateGrailLootSerializer;
 import io.github.flemmli97.fateubw.common.registry.FateItemSubPredicates;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
+import io.github.flemmli97.fateubw.common.registry.FateMemoryTypes;
 import io.github.flemmli97.fateubw.common.registry.FateMobEffects;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.registry.FateSounds;
@@ -48,11 +51,11 @@ public class FateUBWNeoForge {
         IEventBus eventBus = NeoForge.EVENT_BUS;
         eventBus.register(EventHandler.class);
         eventBus.addListener(this::reloadListener);
-
-//        LancelotAttackAI.register(ModList.get()::isLoaded);
+        LancelotAttackAI.init();
     }
 
     public static void registerContent(IEventBus modbus) {
+        FateActivities.ACTIVITIES.registerContent(modbus);
         FateAttachments.ATTACHMENT_TYPES.register(modbus);
         FateAttributes.ATTRIBUTES.registerContent(modbus);
         FateBlocks.BLOCK_ENTITIES.registerContent(modbus);
@@ -65,6 +68,7 @@ public class FateUBWNeoForge {
         FateGrailLootSerializer.SERIALIZER.register().registerContent(modbus);
         FateItems.ITEMS.registerContent(modbus);
         FateItemSubPredicates.SUB_PREDICATES.registerContent(modbus);
+        FateMemoryTypes.MEMORIES.registerContent(modbus);
         FateMobEffects.EFFECTS.registerContent(modbus);
         FateParticles.PARTICLES.registerContent(modbus);
         FateSounds.SOUND_EVENTS.registerContent(modbus);

@@ -27,7 +27,6 @@ public class PacketRegistrar {
         register.register(S2CCommandSeals.TYPE, S2CCommandSeals.STREAM_CODEC, S2CCommandSeals::handle);
         register.register(S2CGrailGui.TYPE, S2CGrailGui.STREAM_CODEC, S2CGrailGui::handle);
         register.register(S2CMana.TYPE, S2CMana.STREAM_CODEC, S2CMana::handle);
-        register.register(S2CMultipartDataPkt.TYPE, S2CMultipartDataPkt.STREAM_CODEC, S2CMultipartDataPkt::handle);
         register.register(S2CPlayerCap.TYPE, S2CPlayerCap.STREAM_CODEC, S2CPlayerCap::handle);
         register.register(S2CScreenShake.TYPE, S2CScreenShake.STREAM_CODEC, S2CScreenShake::handle);
         register.register(S2CServantGui.TYPE, S2CServantGui.STREAM_CODEC, S2CServantGui::handle);

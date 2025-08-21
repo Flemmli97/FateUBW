@@ -1,10 +1,10 @@
 package io.github.flemmli97.fateubw.common.world;
 
 import com.google.common.collect.ImmutableSet;
+import io.github.flemmli97.fateubw.api.entity.ServantLike;
 import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.datapack.EntityPropsManager;
-import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.registry.FateCriterionTriggers;
 import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
@@ -30,6 +30,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.util.random.WeightedRandom;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -48,6 +50,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
@@ -62,7 +65,7 @@ public class GrailWarHandler extends SavedData {
     /**
      * Active participants in the current grailwar
      */
-    private final Map<UUID, Participant> participants = new HashMap<>();
+    private final Map<UUID, Participant<?>> participants = new HashMap<>();
     /**
      * The participants that have at one point joined this grailwar. Includes participants that are not eliminated
      */
@@ -101,7 +104,7 @@ public class GrailWarHandler extends SavedData {
     /**
      * Joins the grailwar as a player with the given servant
      */
-    public boolean join(BaseServant servant) {
+    public boolean join(ServantLike<?> servant) {
         Player player = servant.getOwner();
         if (player != null) {
             JoinResult res = this.checkJoining(player);
@@ -127,12 +130,12 @@ public class GrailWarHandler extends SavedData {
         return false;
     }
 
-    private boolean joinInternal(@Nullable Player player, BaseServant servant) {
-        Participant participant = new Participant(servant, player);
+    private boolean joinInternal(@Nullable Player player, ServantLike<?> servant) {
+        Participant<?> participant = new Participant<>(servant, player);
         if (!this.participants.containsKey(participant.getId()) && this.canSpawnServant(servant)) {
             this.participants.put(participant.getId(), participant);
             this.servantClasses.add(servant.props().getServantClass());
-            this.servantsTypes.add(BuiltInRegistries.ENTITY_TYPE.getKey(servant.getType()));
+            this.servantsTypes.add(BuiltInRegistries.ENTITY_TYPE.getKey(servant.get().getType()));
             this.joinedParticipants.add(participant.getId());
             return true;
         }
@@ -162,16 +165,16 @@ public class GrailWarHandler extends SavedData {
     }
 
     public boolean isParticipant(Entity entity) {
-        if (entity instanceof BaseServant servant && servant.getOwnerUUID() != null)
+        if (entity instanceof ServantLike<?> servant && servant.getOwnerUUID() != null)
             return this.participants.containsKey(servant.getOwnerUUID());
         return this.participants.containsKey(entity.getUUID());
     }
 
-    public BaseServant getServant(ServerPlayer player) {
-        Participant participant = this.participants.get(player.getUUID());
+    public Optional<ServantLike<?>> getServant(ServerPlayer player) {
+        Participant<?> participant = this.participants.get(player.getUUID());
         if (participant != null)
-            return participant.getServant(this.server);
-        return null;
+            return Optional.ofNullable(participant.getServant(this.server));
+        return Optional.empty();
     }
 
     /**
@@ -201,7 +204,7 @@ public class GrailWarHandler extends SavedData {
                 this.participants.forEach((id, participant) -> {
                     if (!participant.valid(this.server)) {
                         invalid.add(id);
-                        BaseServant servant = participant.getServant(this.server);
+                        Entity servant = participant.getServant(this.server);
                         if (servant != null)
                             servant.hurt(FateDamageTypes.grail(servant.registryAccess()), Integer.MAX_VALUE);
                     }
@@ -222,10 +225,10 @@ public class GrailWarHandler extends SavedData {
         if (this.servantTickets != null) {
             this.servantTickets.forEach((c, r) -> {
                 if (level.dimension().equals(r))
-                    level.getChunkSource().addRegionTicket(BaseServant.TRACKINGTICKET, c, 2, c);
+                    level.getChunkSource().addRegionTicket(ServantLike.TRACKINGTICKET, c, 2, c);
                 else {
                     ServerLevel w = this.server.getLevel(r);
-                    w.getChunkSource().addRegionTicket(BaseServant.TRACKINGTICKET, c, 2, c);
+                    w.getChunkSource().addRegionTicket(ServantLike.TRACKINGTICKET, c, 2, c);
                 }
             });
             this.servantTickets = null;
@@ -266,7 +269,7 @@ public class GrailWarHandler extends SavedData {
                             .get(participant.getId()).ifPresent(prof ->
                                     this.broadcastParticipants(Component.translatable("fateubw.chat.grailwar.player.out", prof.getName()).withStyle(ChatFormatting.RED)));
                 }
-                BaseServant servant = participant.getServant(this.server);
+                Entity servant = participant.getServant(this.server);
                 if (servant != null)
                     servant.hurt(FateDamageTypes.grail(servant.registryAccess()), Integer.MAX_VALUE);
             }
@@ -280,7 +283,7 @@ public class GrailWarHandler extends SavedData {
                 // Abort grail as no winner
                 this.reset(true);
             } else if (this.participants.size() == 1) {
-                Participant participant = this.participants.values().iterator().next();
+                Participant<?> participant = this.participants.values().iterator().next();
                 ServerPlayer player = participant.getAsPlayer(this.server);
                 if (player != null) {
                     String name = player.getGameProfile().getName();
@@ -310,7 +313,7 @@ public class GrailWarHandler extends SavedData {
 
     public void reset(boolean notify) {
         this.participants.values().forEach(participant -> {
-            BaseServant servant = participant.getServant(this.server);
+            Entity servant = participant.getServant(this.server);
             if (servant != null)
                 servant.hurt(FateDamageTypes.grail(servant.registryAccess()), Integer.MAX_VALUE);
         });
@@ -337,10 +340,10 @@ public class GrailWarHandler extends SavedData {
         return false;
     }
 
-    public boolean canSpawnServant(BaseServant servant) {
+    public boolean canSpawnServant(ServantLike<?> servant) {
         if (this.isFull())
             return false;
-        if (!this.canSpawnServantType(BuiltInRegistries.ENTITY_TYPE.getKey(servant.getType())))
+        if (!this.canSpawnServantType(BuiltInRegistries.ENTITY_TYPE.getKey(servant.get().getType())))
             return false;
         return this.canSpawnServantClass(servant.props().getServantClass());
     }
@@ -378,11 +381,11 @@ public class GrailWarHandler extends SavedData {
             ChunkPos cpos = new ChunkPos(x >> 4, z >> 4);
             LevelChunk chunk = player.serverLevel().getChunk(cpos.x, cpos.z);
             int y = chunk.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) + 1;
-            BaseServant servant = this.summonRandomServant(player.serverLevel(), new Vec3(x, y, z), null, null, true, true);
+            ServantLike<?> servant = this.summonRandomServant(player.serverLevel(), new Vec3(x, y, z), null, null, true, true);
             if (servant != null) {
-                player.serverLevel().getChunkSource().addRegionTicket(BaseServant.TRACKINGTICKET, cpos, 2, cpos);
+                player.serverLevel().getChunkSource().addRegionTicket(ServantLike.TRACKINGTICKET, cpos, 2, cpos);
                 this.timeToNextServant = Mth.nextInt(player.serverLevel().random, CommonConfig.servantMinSpawnDelay, CommonConfig.servantMaxSpawnDelay);
-                if (this.notify(BuiltInRegistries.ENTITY_TYPE.getKey(servant.getType()))) {
+                if (this.notify(BuiltInRegistries.ENTITY_TYPE.getKey(servant.get().getType()))) {
                     if (CommonConfig.notifyAll)
                         this.broadcastParticipants(Component.translatable("fateubw.chat.grailwar.spawn", player.getName()).withStyle(ChatFormatting.GRAY));
                     else
@@ -401,7 +404,7 @@ public class GrailWarHandler extends SavedData {
                 player -> this.isParticipant(player) ? message : null, true);
     }
 
-    public BaseServant summonRandomServant(ServerLevel level, Vec3 pos, @Nullable ServerPlayer player, @Nullable ItemStack stack, boolean event, boolean addToLevel) {
+    public ServantLike<?> summonRandomServant(ServerLevel level, Vec3 pos, @Nullable ServerPlayer player, @Nullable ItemStack stack, boolean event, boolean addToLevel) {
         Collection<EntityPropsManager.EntityTypeAndID> servants = DatapackHandler.SERVANT_PROPS.getServants();
         List<EntityPropsManager.EntityTypeAndID> entities = servants.stream()
                 .filter(entry -> this.canSpawnServantClass(entry.servantClass()) && this.canSpawnServantType(entry.id()))
@@ -413,27 +416,30 @@ public class GrailWarHandler extends SavedData {
                         .create(level, null, BlockPos.containing(pos),
                                 MobSpawnType.MOB_SUMMONED, false, false))
                 .orElse(null);
-        if (!(entity instanceof BaseServant servant))
+        if (!(entity instanceof ServantLike<?> servant))
             return null;
-        servant.moveTo(pos.x(), pos.y(), pos.z(), level.random.nextFloat() * 360.0F, 0);
+        Mob mob = servant.get();
+        mob.moveTo(pos.x(), pos.y(), pos.z(), level.random.nextFloat() * 360.0F, 0);
         if (player != null)
-            servant.lookAt(EntityAnchorArgument.Anchor.EYES, player.position());
+            mob.lookAt(EntityAnchorArgument.Anchor.EYES, player.position());
         servant.setOwner(player);
-        if (!servant.checkSpawnObstruction(level) || (event && !Platform.INSTANCE.canSpawnEvent(servant, level, MobSpawnType.TRIGGERED)))
+        if (!mob.checkSpawnObstruction(level) || event && !Platform.INSTANCE.canSpawnEvent(mob, level, MobSpawnType.TRIGGERED))
             return null;
         this.join(servant);
-        servant.finalizeSpawn(level, level.getCurrentDifficultyAt(servant.blockPosition()), MobSpawnType.TRIGGERED, null);
-        if (addToLevel)
-            level.addFreshEntity(servant);
+        mob.finalizeSpawn(level, level.getCurrentDifficultyAt(mob.blockPosition()), MobSpawnType.TRIGGERED, null);
+        if (addToLevel) {
+            level.addFreshEntity(mob);
+        }
         return servant;
     }
 
     /**
      * Move masterless servant to a random player if too far away
      */
-    public void moveToPlayer(BaseServant servant) {
-        if (servant.hasOwner() || servant.getServer() == null)
+    public void moveToPlayer(ServantLike<?> servantLike) {
+        if (servantLike.getOwnerUUID() != null || servantLike.get().getServer() == null)
             return;
+        LivingEntity servant = servantLike.get();
         if (!this.hasPlayersNearby(servant)) {
             List<ServerPlayer> players = servant.getServer().getPlayerList().getPlayers().stream().filter(this::isParticipant).toList();
             ServerPlayer player = players.get(servant.getRandom().nextInt(players.size()));
@@ -450,11 +456,11 @@ public class GrailWarHandler extends SavedData {
         }
     }
 
-    private boolean hasPlayersNearby(BaseServant servant) {
-        for (Player player : servant.level().players()) {
+    private boolean hasPlayersNearby(Entity entity) {
+        for (Player player : entity.level().players()) {
             if (!this.isParticipant(player))
                 continue;
-            double dist = player.distanceToSqr(servant.getX(), player.getY(), servant.getZ());
+            double dist = player.distanceToSqr(entity.getX(), player.getY(), entity.getZ());
             if (dist < 256 * 256)
                 return true;
         }
@@ -464,7 +470,7 @@ public class GrailWarHandler extends SavedData {
     public void load(CompoundTag compound) {
         ListTag tag = compound.getList("Participants", Tag.TAG_COMPOUND);
         tag.forEach(cT -> {
-            Participant participant = new Participant((CompoundTag) cT);
+            Participant<?> participant = new Participant<>((CompoundTag) cT);
             this.participants.put(participant.getId(), participant);
         });
         ListTag joined = compound.getList("JoinedParticipants", Tag.TAG_INT_ARRAY);
@@ -504,7 +510,7 @@ public class GrailWarHandler extends SavedData {
         compound.putInt("NextServantSpawnTick", this.timeToNextServant);
         CompoundTag tickets = new CompoundTag();
         this.participants.forEach(((uuid, participant) -> {
-            BaseServant servant = participant.getServant(this.server);
+            Entity servant = participant.getServant(this.server);
             if (servant != null) {
                 CompoundTag entryTag = new CompoundTag();
                 entryTag.putLong("Position", ChunkPos.asLong(servant.blockPosition()));

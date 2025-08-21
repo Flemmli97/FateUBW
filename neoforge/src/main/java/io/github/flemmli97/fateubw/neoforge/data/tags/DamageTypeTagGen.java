@@ -11,6 +11,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import java.util.concurrent.CompletableFuture;
@@ -26,19 +27,26 @@ public class DamageTypeTagGen extends TagsProvider<DamageType> {
         this.tag(FateDamageTypes.GRAIL, DamageTypeTags.BYPASSES_ARMOR, DamageTypeTags.BYPASSES_ENCHANTMENTS, DamageTypeTags.BYPASSES_EFFECTS,
                 DamageTypeTags.BYPASSES_SHIELD, DamageTypeTags.BYPASSES_RESISTANCE, DamageTypeTags.BYPASSES_INVULNERABILITY, DamageTypeTags.NO_KNOCKBACK);
 
-        this.tag(FateDamageTypes.EXCALIBUR, DamageTypeTags.BYPASSES_ARMOR, FateTags.DamageTypes.IS_MAGIC, DamageTypeTags.NO_KNOCKBACK);
-        this.tag(FateDamageTypes.ENUMA_ELISH, DamageTypeTags.BYPASSES_ARMOR, FateTags.DamageTypes.IS_MAGIC, DamageTypeTags.NO_KNOCKBACK);
+        this.tag(FateDamageTypes.EXCALIBUR, DamageTypeTags.BYPASSES_ARMOR, FateTags.DamageTypes.IS_MAGIC,
+                DamageTypeTags.BYPASSES_SHIELD, DamageTypeTags.NO_KNOCKBACK);
+        this.tag(FateDamageTypes.ENUMA_ELISH, DamageTypeTags.BYPASSES_ARMOR, FateTags.DamageTypes.IS_MAGIC,
+                DamageTypeTags.BYPASSES_SHIELD, DamageTypeTags.NO_KNOCKBACK);
         this.tag(FateDamageTypes.BABYLON, DamageTypeTags.IS_PROJECTILE);
         this.tag(FateDamageTypes.THROWN_ITEM, DamageTypeTags.IS_PROJECTILE);
-        this.tag(FateDamageTypes.GAE_BOLG, DamageTypeTags.BYPASSES_ARMOR, DamageTypeTags.BYPASSES_SHIELD, FateTags.DamageTypes.IS_MAGIC);
-        this.tag(FateDamageTypes.CALADBOLG, DamageTypeTags.BYPASSES_ARMOR, FateTags.DamageTypes.IS_MAGIC);
+        this.tag(FateDamageTypes.GAE_BOLG, DamageTypeTags.BYPASSES_ARMOR, DamageTypeTags.BYPASSES_SHIELD,
+                DamageTypeTags.BYPASSES_SHIELD, FateTags.DamageTypes.IS_MAGIC);
+        this.tag(FateDamageTypes.CALADBOLG, DamageTypeTags.BYPASSES_ARMOR,
+                DamageTypeTags.BYPASSES_SHIELD, FateTags.DamageTypes.IS_MAGIC);
         this.tag(FateDamageTypes.ARCHER_NORMAL, DamageTypeTags.IS_PROJECTILE);
         this.tag(FateDamageTypes.MAGIC_BEAM, DamageTypeTags.BYPASSES_ARMOR, FateTags.DamageTypes.IS_MAGIC);
         this.tag(FateDamageTypes.MAGIC_SHOT, DamageTypeTags.BYPASSES_ARMOR, DamageTypeTags.IS_PROJECTILE, FateTags.DamageTypes.IS_MAGIC);
         this.tag(FateDamageTypes.TSUBAME, DamageTypeTags.BYPASSES_ARMOR, DamageTypeTags.BYPASSES_SHIELD, DamageTypeTags.BYPASSES_COOLDOWN);
-        this.tag(FateDamageTypes.GAE_DEARG, DamageTypeTags.BYPASSES_ARMOR, DamageTypeTags.BYPASSES_SHIELD);
+        this.tag(FateDamageTypes.GAE_DEARG, DamageTypeTags.BYPASSES_ARMOR, DamageTypeTags.BYPASSES_SHIELD, DamageTypeTags.BYPASSES_ENCHANTMENTS);
         this.tag(FateDamageTypes.GORDIUS_TRAMPLE, DamageTypeTags.IS_LIGHTNING);
         this.tag(FateDamageTypes.PEGASUS_CHARGE, DamageTypeTags.BYPASSES_ARMOR, FateTags.DamageTypes.IS_MAGIC);
+
+        this.tag(Tags.DamageTypes.IS_MAGIC)
+                .addTag(FateTags.DamageTypes.IS_MAGIC);
     }
 
     @SafeVarargs

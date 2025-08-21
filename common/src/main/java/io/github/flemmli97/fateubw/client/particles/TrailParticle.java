@@ -24,6 +24,7 @@ import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
@@ -91,7 +92,7 @@ public class TrailParticle extends TextureSheetParticle {
                 previousTwo = previous;
             Vector4f[] vertices = this.vertices(pos, previous, previousTwo, i, partialTicks, position.size());
             for (Vector4f vert : vertices) {
-                vert.mulTranspose(mat);
+                vert.mul(mat);
             }
 
             float size = Mth.lerp(partialTicks, this.sizeO, position.size());
@@ -204,13 +205,15 @@ public class TrailParticle extends TextureSheetParticle {
 
     public static final ParticleRenderType COLOR_PARTICLE = new ParticleRenderType() {
 
+        @SuppressWarnings("deprecation")
         @Override
-        public @Nullable BufferBuilder begin(Tesselator tesselator, TextureManager textureManager) {
+        public BufferBuilder begin(Tesselator tesselator, TextureManager textureManager) {
             RenderSystem.depthMask(true);
-            RenderSystem.enableBlend();
             RenderSystem.disableCull();
             RenderSystem.setShader(FateRenders::getParticleColorAddShaderInstance);
-            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+            RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
+            RenderSystem.enableBlend();
+            RenderSystem.defaultBlendFunc();
             return tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
         }
 

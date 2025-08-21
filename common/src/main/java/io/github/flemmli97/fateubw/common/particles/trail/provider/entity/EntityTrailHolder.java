@@ -22,7 +22,7 @@ public class EntityTrailHolder<T extends Entity & AnimatedEntity & EntityTrailHo
     }
 
     public EntityTrailProvider<T> createFor(EntityTrailProvider.EntityTrailData data) {
-        EntityTrailProvider<T> provider = new EntityTrailProvider<>(data, this.entity);
+        EntityTrailProvider<T> provider = new EntityTrailProvider<>(data, data.size(), this.entity);
         this.trailPositionTracker.add(provider);
         return provider;
     }

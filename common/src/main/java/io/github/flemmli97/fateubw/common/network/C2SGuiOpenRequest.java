@@ -1,7 +1,7 @@
 package io.github.flemmli97.fateubw.common.network;
 
 import io.github.flemmli97.fateubw.Fate;
-import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
+import io.github.flemmli97.fateubw.api.entity.ServantLike;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -20,7 +20,8 @@ public class C2SGuiOpenRequest implements CustomPacketPayload {
     public static void handle(C2SGuiOpenRequest pkt, ServerPlayer sender) {
         if (sender == null)
             return;
-        BaseServant servant = GrailWarHandler.get(sender.getServer()).getServant(sender);
+        ServantLike<?> servant = GrailWarHandler.get(sender.getServer()).getServant(sender)
+                .orElse(null);
         S2CServantGui.sendServantGui(sender, servant);
     }
 

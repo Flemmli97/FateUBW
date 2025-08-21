@@ -1,6 +1,5 @@
 package io.github.flemmli97.fateubw.client.render.misc;
 
-import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.client.ClientRegister;
 import io.github.flemmli97.fateubw.client.model.ServantModel;
 import io.github.flemmli97.fateubw.common.entity.summons.HassanClone;
@@ -13,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class RenderHassanCopy extends MobRenderer<HassanClone, ServantModel<HassanClone>> {
 
-    public static final ResourceLocation TEXTURES = Fate.modRes("textures/entity/servant/hassan.png");
+    public static final ResourceLocation TEXTURES = ClientRegister.servantTexture(FateEntities.HASSAN);
 
     public RenderHassanCopy(EntityRendererProvider.Context ctx) {
         super(ctx, new ServantModel<>(ClientRegister.servantLocation(FateEntities.HASSAN)), 0.5F);

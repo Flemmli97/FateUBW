@@ -1,7 +1,7 @@
 package io.github.flemmli97.fateubw.common.entity.misc;
 
 import io.github.flemmli97.fateubw.common.config.CommonConfig;
-import io.github.flemmli97.fateubw.common.entity.servant.EntityCuchulainn;
+import io.github.flemmli97.fateubw.common.entity.servant.Cuchulainn;
 import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
@@ -59,8 +59,8 @@ public class GaeBolg extends BaseProjectile {
                     player.level().addFreshEntity(gaeBolg);
                     player.playSound(SoundEvents.ITEM_PICKUP, 0.8f, 1);
                 }
-            } else if (this.getOwner() instanceof EntityCuchulainn) {
-                ((EntityCuchulainn) this.getOwner()).retrieveGaeBolg();
+            } else if (this.getOwner() instanceof Cuchulainn) {
+                ((Cuchulainn) this.getOwner()).retrieveGaeBolg();
             }
         }
         super.remove(removalReason);

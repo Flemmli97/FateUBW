@@ -13,4 +13,14 @@ public interface ServantModelLike {
     default boolean isStaying() {
         return false;
     }
+
+    int maxDeathTick();
+
+    default String getDeathAnimation() {
+        return null;
+    }
+
+    default boolean hasOwnWeapon() {
+        return false;
+    }
 }

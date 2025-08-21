@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Mixin(SynchedEntityData.class)
-public class SynchedEntityDataAccessor implements SynchedEntityDataExtension {
+public abstract class SynchedEntityDataAccessor implements SynchedEntityDataExtension {
 
     @Shadow
     @Final

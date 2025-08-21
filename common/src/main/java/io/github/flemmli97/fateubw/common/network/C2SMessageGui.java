@@ -27,9 +27,8 @@ public record C2SMessageGui(C2SMessageGui.Type message) implements CustomPacketP
             return;
         if (pkt.message == Type.SERVANT) {
             GrailWarHandler grailWar = GrailWarHandler.get(sender.getServer());
-            if (grailWar.getServant(sender) != null) {
-                S2CServantGui.sendServantGui(sender, grailWar.getServant(sender));
-            }
+            grailWar.getServant(sender).ifPresent(servant ->
+                    S2CServantGui.sendServantGui(sender, servant));
         }
         if (pkt.message == Type.TEAM) {
             S2CTeamGuiData.sendTeamData(sender, true);

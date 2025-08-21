@@ -20,21 +20,23 @@ import org.jetbrains.annotations.Nullable;
 public class MagicBeam extends BaseBeam {
 
     protected static final EntityDataAccessor<Integer> SHOOT_TIME = SynchedEntityData.defineId(MagicBeam.class, EntityDataSerializers.INT);
-    protected static final EntityDataAccessor<Integer> PRE_SHOOT_TICK = SynchedEntityData.defineId(MagicBeam.class, EntityDataSerializers.INT);
+    protected static final EntityDataAccessor<Boolean> PREPARING = SynchedEntityData.defineId(MagicBeam.class, EntityDataSerializers.BOOLEAN);
     protected static final EntityDataAccessor<Float> SPAWN_ROT_Y = SynchedEntityData.defineId(MagicBeam.class, EntityDataSerializers.FLOAT);
     protected static final EntityDataAccessor<Float> SPAWN_ROT_X = SynchedEntityData.defineId(MagicBeam.class, EntityDataSerializers.FLOAT);
 
     private LivingEntity target;
     private float damageMultiplier = 1;
-    public boolean idle = true;
     private boolean setSpawnRot;
+    private int preparationTick;
 
     public MagicBeam(EntityType<? extends MagicBeam> type, Level level) {
         super(type, level);
+        this.entityData.set(SHOOT_TIME, this.random.nextInt(15) + 10);
     }
 
     public MagicBeam(Level level, LivingEntity shooter) {
         super(FateEntities.MAGIC_BEAM.get(), level, shooter);
+        this.entityData.set(SHOOT_TIME, this.random.nextInt(15) + 10);
     }
 
     public MagicBeam(Level level, LivingEntity shootingEntity, @Nullable LivingEntity target) {
@@ -59,10 +61,14 @@ public class MagicBeam extends BaseBeam {
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
-        builder.define(SHOOT_TIME, this.random.nextInt(15) + 10);
-        builder.define(PRE_SHOOT_TICK, 0);
+        builder.define(SHOOT_TIME, 20);
+        builder.define(PREPARING, true);
         builder.define(SPAWN_ROT_Y, 0f);
         builder.define(SPAWN_ROT_X, 0f);
+    }
+
+    public boolean preparing() {
+        return this.entityData.get(PREPARING);
     }
 
     public float getSpawnRotY() {
@@ -74,17 +80,11 @@ public class MagicBeam extends BaseBeam {
     }
 
     @Override
-    public void setYRot(float yRot) {
-        super.setYRot(yRot);
+    public void setRotationToDir(double x, double y, double z, float inaccuracy) {
+        super.setRotationToDir(x, y, z, inaccuracy);
         if (!this.setSpawnRot) {
+            this.setSpawnRot = true;
             this.entityData.set(SPAWN_ROT_Y, this.getYRot());
-        }
-    }
-
-    @Override
-    public void setXRot(float xRot) {
-        super.setXRot(xRot);
-        if (!this.setSpawnRot) {
             this.entityData.set(SPAWN_ROT_X, this.getXRot());
         }
     }
@@ -98,17 +98,12 @@ public class MagicBeam extends BaseBeam {
             this.entityData.set(SPAWN_ROT_Y, this.getYRot());
             this.entityData.set(SPAWN_ROT_X, this.getXRot());
         }
-        Entity thrower = this.getOwner();
-        if (this.getPreShootTick() <= this.entityData.get(SHOOT_TIME)) {
-            //this.livingTicks++;
-            this.updatePreShootTick();
-            if (this.getPreShootTick() == 15 && this.target != null) {
-                this.setRotationTo(this.target.getX(), this.target.getY() + this.target.getBbHeight() * 0.5, this.target.getZ(), 0.05f);
-            }
-        }
-        if (this.getPreShootTick() > this.entityData.get(SHOOT_TIME)) {
-            this.idle = false;
+        if (this.preparing()) {
+            this.preparationTick++;
+            this.updatePreparation();
+        } else {
             if (!this.level().isClientSide) {
+                Entity thrower = this.getOwner();
                 if (thrower == null || !thrower.isAlive()) {
                     this.remove(RemovalReason.KILLED);
                     return;
@@ -118,31 +113,34 @@ public class MagicBeam extends BaseBeam {
         }
     }
 
-    @Override
-    public void onImpact(EntityHitResult result) {
-        result.getEntity().hurt(FateDamageTypes.indirect(FateDamageTypes.MAGIC_BEAM, this, this.getOwner()), (Utils.magicDamage(this.getOwner()) + CommonConfig.magicBeam) * this.damageMultiplier);
-    }
-
-    private int getPreShootTick() {
-        return this.entityData.get(PRE_SHOOT_TICK);
-    }
-
-    private void updatePreShootTick() {
-        this.entityData.set(PRE_SHOOT_TICK, this.getPreShootTick() + 1);
+    private void updatePreparation() {
+        this.preparationTick++;
+        if (this.preparing() && this.preparationTick >= this.entityData.get(SHOOT_TIME)) {
+            this.entityData.set(PREPARING, false);
+            if (this.target != null) {
+                this.setRotationTo(this.target.getX(), this.target.getY() + this.target.getBbHeight() * 0.5, this.target.getZ(), 0.05f);
+            }
+        }
     }
 
     @Override
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
-        compound.putInt("PreShoot", this.getPreShootTick());
         compound.putFloat("DamageMultiplier", this.damageMultiplier);
+        compound.putBoolean("Preparing", this.preparing());
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        this.entityData.set(PRE_SHOOT_TICK, compound.getInt("PreShoot"));
         this.damageMultiplier = compound.getFloat("DamageMultieier");
+        this.entityData.set(PREPARING, compound.getBoolean("Preparing"));
+    }
+
+    @Override
+    public void onImpact(EntityHitResult result) {
+        Utils.runWithInvulTimer(null, result.getEntity(),
+                target -> target.hurt(FateDamageTypes.indirect(FateDamageTypes.MAGIC_BEAM, this, this.getOwner()), (Utils.magicDamage(this.getOwner()) + CommonConfig.magicBeam) * this.damageMultiplier), 2);
     }
 
     @Override

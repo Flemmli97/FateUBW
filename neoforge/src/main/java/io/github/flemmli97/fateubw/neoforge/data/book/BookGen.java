@@ -19,8 +19,8 @@ public class BookGen extends BookProvider {
 
     @Override
     protected void build(HolderLookup.Provider provider, BiConsumer<String, Book> biConsumer) {
-        BookBuilder.of("fateubw_book.book.title")
-                .landingText("fateubw_book.book.landing")
+        BookBuilder.of("fateubw.book.title")
+                .landingText("fateubw.book.landing")
                 .tab(FateCreativeTab.TAB.getID())
                 .build("fateubw_book", biConsumer);
     }

@@ -1,8 +1,8 @@
 package io.github.flemmli97.fateubw.client.gui;
 
 import io.github.flemmli97.fateubw.Fate;
+import io.github.flemmli97.fateubw.api.entity.ServantLike;
 import io.github.flemmli97.fateubw.common.attachment.PlayerData;
-import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.common.network.C2SMessageGui;
 import io.github.flemmli97.fateubw.common.network.C2SServantCommand;
 import io.github.flemmli97.fateubw.common.network.C2SServantSpecial;
@@ -43,7 +43,7 @@ public class CommandGui extends Screen {
     private final int command2 = this.rand.nextInt(3);
     private final int command3 = this.rand.nextInt(3);
 
-    private final BaseServant servant;
+    private final ServantLike<?> servant;
     private S2CServantGui.ServantMetaData data;
 
     public CommandGui(S2CServantGui.ServantMetaData data) {
@@ -76,11 +76,11 @@ public class CommandGui extends Screen {
         graphics.drawString(this.font, this.getComponent("fateubw.gui.nobel_phantasm", c -> c.withStyle(ChatFormatting.DARK_RED)), this.width / 2 - 90, this.height / 2 + 15, 1, true);
         graphics.drawString(this.font, this.getComponent("fateubw.gui.nobel_phantasm_cost", c -> c.withStyle(ChatFormatting.DARK_RED)), this.width / 2 - 90, this.height / 2 + 35, 1, true);
         if (this.servant != null) {
-            graphics.drawString(this.font, this.servant.getRealName(), this.width / 2 - 90, this.height / 2 + 5, 1, true);
+            graphics.drawString(this.font, this.servant.get().getName(), this.width / 2 - 90, this.height / 2 + 5, 1, true);
             graphics.drawString(this.font, this.servant.nobelPhantasm(), this.width / 2 - 90, this.height / 2 + 25, 1, true);
             graphics.drawString(this.font, "" + this.data.npCost(), this.width / 2 - 90, this.height / 2 + 45, 1, true);
             RenderUtils.renderScaledEntityGui(graphics, this.width / 2 - 50, this.height / 2 - 20, 29 * 3,
-                    29 * 3, 29, 0, mouseX, mouseY, this.servant);
+                    29 * 3, 29, 0, mouseX, mouseY, this.servant.get());
         }
         super.render(graphics, mouseX, mouseY, partialTicks);
     }
@@ -127,7 +127,7 @@ public class CommandGui extends Screen {
                 this.onClose();
             }).bounds(this.width / 2 + 10, this.height / 2 - 22, 80, 20).build());
             this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.command.kill"), b -> {
-                LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.KILL, this.entityId()));
+                LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.ActionType.KILL, this.entityId()));
                 LoaderNetwork.INSTANCE.sendToServer(new C2SMessageGui(C2SMessageGui.Type.SERVANT));
             }).bounds(this.width / 2 + 10, this.height / 2 + 8, 80, 20).build());
             if (this.servant != null) {
@@ -141,28 +141,28 @@ public class CommandGui extends Screen {
             this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.back"), this::backButton)
                     .bounds(this.width / 2 + 10, this.height / 2 - 82, 80, 20).build());
             this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.command.aggressive"),
-                            b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.AGGRESSIVE, this.entityId())))
+                            b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.ActionType.AGGRESSIVE, this.entityId())))
                     .bounds(this.width / 2 + 10, this.height / 2 - 52, 80, 20).build());
             this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.command.normal"),
-                            b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.NORMAL, this.entityId())))
+                            b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.ActionType.NORMAL, this.entityId())))
                     .bounds(this.width / 2 + 10, this.height / 2 - 22, 80, 20).build());
             this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.command.defensive"),
-                            b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.DEFENSIVE, this.entityId())))
+                            b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.ActionType.DEFENSIVE, this.entityId())))
                     .bounds(this.width / 2 + 10, this.height / 2 + 8, 80, 20).build());
         } else if (this.currentPage == Pages.MOVEMENT) {
             this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.back"), this::backButton)
                     .bounds(this.width / 2 + 10, this.height / 2 - 82, 80, 20).build());
             this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.command.follow"),
-                            b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.FOLLOW, this.entityId())))
+                            b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.ActionType.FOLLOW, this.entityId())))
                     .bounds(this.width / 2 + 10, this.height / 2 - 52, 80, 20).build());
             this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.command.stay"),
-                            b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.STAY, this.entityId())))
+                            b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.ActionType.STAY, this.entityId())))
                     .bounds(this.width / 2 + 10, this.height / 2 - 22, 80, 20).build());
             this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.command.protect"),
-                            b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.GUARD, this.entityId())))
+                            b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.ActionType.GUARD, this.entityId())))
                     .bounds(this.width / 2 + 10, this.height / 2 + 8, 80, 20).build());
             this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.command.call"),
-                            b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.TELEPORT, this.entityId())))
+                            b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.ActionType.TELEPORT, this.entityId())))
                     .bounds(this.width / 2 + 10, this.height / 2 + 38, 80, 20).build());
         } else if (this.currentPage == Pages.SPECIAL) {
             this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.back"), this::backButton)
@@ -186,7 +186,7 @@ public class CommandGui extends Screen {
     @Override
     public void removed() {
         super.removed();
-        LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.CLOSE, this.entityId()));
+        LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.ActionType.CLOSE, this.entityId()));
     }
 
     @Override
@@ -202,21 +202,21 @@ public class CommandGui extends Screen {
         this.data = data;
         if (this.servant != null && data != null) {
             data.equipment().ifPresent(list ->
-                    list.forEach(p -> this.servant.setItemSlot(p.getFirst(), p.getSecond())));
+                    list.forEach(p -> this.servant.get().setItemSlot(p.getFirst(), p.getSecond())));
             if (data.syncedData() != null)
-                this.servant.getEntityData().assignValues(data.syncedData());
+                this.servant.get().getEntityData().assignValues(data.syncedData());
         }
     }
 
-    private BaseServant createFrom(S2CServantGui.ServantMetaData data) {
+    private ServantLike<?> createFrom(S2CServantGui.ServantMetaData data) {
         if (data == null)
             return null;
         Entity fromId = Minecraft.getInstance().level.getEntity(data.entityId());
-        if (fromId instanceof BaseServant s) {
+        if (fromId instanceof ServantLike<?> s) {
             return s;
         }
         Entity created = data.type().create(Minecraft.getInstance().level);
-        if (created instanceof BaseServant s) {
+        if (created instanceof ServantLike<?> s) {
             return s;
         }
         return null;

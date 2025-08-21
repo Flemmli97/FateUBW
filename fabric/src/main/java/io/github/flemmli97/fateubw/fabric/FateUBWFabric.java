@@ -7,7 +7,9 @@ import io.github.flemmli97.fateubw.common.commands.CommandHandler;
 import io.github.flemmli97.fateubw.common.config.specs.ConfigLoader;
 import io.github.flemmli97.fateubw.common.config.specs.ConfigSpecs;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
+import io.github.flemmli97.fateubw.common.entity.servant.lancelot.LancelotAttackAI;
 import io.github.flemmli97.fateubw.common.event.EventCalls;
+import io.github.flemmli97.fateubw.common.registry.FateActivities;
 import io.github.flemmli97.fateubw.common.registry.FateAttributes;
 import io.github.flemmli97.fateubw.common.registry.FateBlocks;
 import io.github.flemmli97.fateubw.common.registry.FateCreativeTab;
@@ -18,6 +20,7 @@ import io.github.flemmli97.fateubw.common.registry.FateFeatures;
 import io.github.flemmli97.fateubw.common.registry.FateGrailLootSerializer;
 import io.github.flemmli97.fateubw.common.registry.FateItemSubPredicates;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
+import io.github.flemmli97.fateubw.common.registry.FateMemoryTypes;
 import io.github.flemmli97.fateubw.common.registry.FateMobEffects;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.registry.FateSounds;
@@ -91,14 +94,13 @@ public class FateUBWFabric implements ModInitializer {
         FateFeatures.createFeatures(null, feat ->
                 BiomeModifications.addFeature(ctx -> ctx.getBiomeRegistryEntry().is(feat.tag()),
                         feat.decoration(), feat.placedFeature()));
-//        LancelotAttackAI.register(FabricLoader.getInstance()::isModLoaded);
+        LancelotAttackAI.init();
 
-        CommonSetupEvent.EVENT.register(listener -> listener.enqueue(Fate.MODID, () -> {
-            FateEntities.registeredAttributes().forEach(FabricDefaultAttributeRegistry::register);
-        }));
+        CommonSetupEvent.EVENT.register(listener -> listener.enqueue(Fate.MODID, () -> FateEntities.registeredAttributes().forEach(FabricDefaultAttributeRegistry::register)));
     }
 
     public void registerContent() {
+        FateActivities.ACTIVITIES.registerContent();
         FateAttributes.ATTRIBUTES.registerContent();
         FateBlocks.BLOCK_ENTITIES.registerContent();
         FateBlocks.BLOCKS.registerContent();
@@ -110,6 +112,7 @@ public class FateUBWFabric implements ModInitializer {
         FateGrailLootSerializer.SERIALIZER.register().registerContent();
         FateItems.ITEMS.registerContent();
         FateItemSubPredicates.SUB_PREDICATES.registerContent();
+        FateMemoryTypes.MEMORIES.registerContent();
         FateMobEffects.EFFECTS.registerContent();
         FateParticles.PARTICLES.registerContent();
         FateSounds.SOUND_EVENTS.registerContent();

@@ -1,0 +1,342 @@
+package io.github.flemmli97.fateubw.common.entity.servant;
+
+import io.github.flemmli97.fateubw.Fate;
+import io.github.flemmli97.fateubw.common.entity.BaseServant;
+import io.github.flemmli97.fateubw.common.entity.SwitchableWeapon;
+import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
+import io.github.flemmli97.fateubw.common.entity.misc.Excalibur;
+import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
+import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
+import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailProvider;
+import io.github.flemmli97.fateubw.common.registry.FateItems;
+import io.github.flemmli97.fateubw.common.registry.FateParticles;
+import io.github.flemmli97.fateubw.common.utils.Utils;
+import io.github.flemmli97.tenshilib.common.entity.ai.TargetPosition;
+import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
+import io.github.flemmli97.tenshilib.common.entity.ai.brain.SelectableBehaviourBuilder;
+import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetWalkTargetAwayFromTarget;
+import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetWalkTargetWithinDist;
+import io.github.flemmli97.tenshilib.common.entity.ai.brain.data.AnimationPlayHolder;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionContainer;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationsBuilder;
+import io.github.flemmli97.tenshilib.common.entity.data.SyncableDatas;
+import io.github.flemmli97.tenshilib.common.entity.data.SyncedDataContainer;
+import io.github.flemmli97.tenshilib.common.utils.TypedResource;
+import io.github.flemmli97.tenshilib.common.utils.math.OrientedBoundingBox;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.particles.ColorParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
+import org.joml.Vector4f;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Arthur extends BaseServant {
+
+    public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
+    public static final String TWO_HAND_1 = BUILDER.add("two_hand_1", AnimationsBuilder.definition(0.78)
+            .marker("attack", 0.64).marker("step", 0.68)
+            .marker(EntityTrailProvider.TRAIL_START, 0.36));
+    public static final String TWO_HAND_2 = BUILDER.add("two_hand_2", AnimationsBuilder.definition(0.7)
+            .marker("attack", 0.56).marker("step", 0.6)
+            .marker(EntityTrailProvider.TRAIL_START, 0.36));
+    public static final String TWO_HAND_3 = BUILDER.add("two_hand_3", AnimationsBuilder.definition(0.7)
+            .marker("attack", 0.56).marker("step", 0.6)
+            .marker(EntityTrailProvider.TRAIL_START, 0.4));
+    public static final String TWO_HAND_4 = BUILDER.add("two_hand_4", AnimationsBuilder.definition(0.7)
+            .marker("attack", 0.56).marker("step", 0.6)
+            .marker(EntityTrailProvider.TRAIL_START, 0.36));
+    public static final String ONE_HAND_1 = BUILDER.add("one_hand_1", AnimationsBuilder.definition(0.68)
+            .marker("attack", 0.48).marker("step", 0.48)
+            .marker(EntityTrailProvider.TRAIL_START, 0.32));
+    public static final String STAB_1 = BUILDER.add("stab_1", AnimationsBuilder.definition(1.02).marker("attack", 0.56));
+    public static final String INVISIBLE_BURST = BUILDER.add("invisible_burst", AnimationsBuilder.definition(0.8).marker("attack", 0.28));
+    public static final String INVISIBLE_BURST_HIT = BUILDER.add("invisible_burst_hit", AnimationsBuilder.definition(0.76).marker("attack", 0.44));
+    public static final String EXCALIBAA = BUILDER.add("excalibur", AnimationsBuilder.definition(1.68).marker("attack", 0.72));
+    public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2.));
+    public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
+
+    public static final TypedResource<Vec3> BURST_DIRECTION = new TypedResource<>(Fate.modRes("burst_direction"));
+
+    private final AnimationHandler<Arthur> animationHandler = new AnimationHandler<>(this, ANIMS).withChangeListener(anim -> {
+        if (!this.level().isClientSide()) {
+            if (anim == null) {
+                this.getDataContainer().set(BURST_DIRECTION, null);
+                if (this.getAnimationHandler().isCurrent(EXCALIBAA)) {
+                    this.switchableWeapon.switchItems(true);
+                }
+            } else if (anim.is(EXCALIBAA)) {
+                this.switchableWeapon.switchItems(false);
+                this.startUsingItem(InteractionHand.MAIN_HAND);
+            } else if (anim.is(INVISIBLE_BURST)) {
+                this.hitEntity = null;
+                this.getDataContainer().set(BURST_DIRECTION, null);
+            }
+        }
+        return false;
+    });
+
+    public final SwitchableWeapon<Arthur> switchableWeapon = new SwitchableWeapon<>(this, new ItemStack(FateItems.EXCALIBUR.get()), ItemStack.EMPTY);
+
+    protected List<LivingEntity> hitEntity;
+
+    public Arthur(EntityType<? extends Arthur> entityType, Level level) {
+        super(entityType, level);
+    }
+
+    @Override
+    protected void definedAdditinoalSyncedData(SyncedDataContainer.Builder<BaseServant> builder) {
+        super.definedAdditinoalSyncedData(builder);
+        builder.define(BURST_DIRECTION, SyncableDatas.VEC_3, null);
+    }
+
+    @Override
+    protected void populateDefaultEquipmentSlots(RandomSource random, DifficultyInstance difficulty) {
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(FateItems.INVISEXCALIBUR.get()));
+    }
+
+    @Override
+    public boolean hasOwnWeapon() {
+        return this.getMainHandItem().is(FateItems.INVISEXCALIBUR.get()) ||
+                this.getMainHandItem().is(FateItems.EXCALIBUR.get());
+    }
+
+    @Override
+    public ExtendedBehaviour<? extends BaseServant> getCombatAI() {
+        return AttackBehaviourBuilder.<BaseServant>create()
+                .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(TWO_HAND_1)
+                        .start(TWO_HAND_2, 2, 0.24f, 1)
+                        .start(TWO_HAND_3, 2, 0.24f, 1)
+                        .chainChance(0.6f).build())).play(BehaviourUtils.cooldownedPlay(true, 15, 30))
+                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .end(5)
+                .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(TWO_HAND_1)
+                        .start(TWO_HAND_2, 2, 0.24f, 1)
+                        .start(TWO_HAND_3, 2, 0.24f, 1)
+                        .chainChance(0.6f).build())).play(BehaviourUtils.cooldownedPlay(true, 15, 30))
+                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .end(5)
+                .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(TWO_HAND_2)
+                        .start(TWO_HAND_1, 2, 0.24f, 1)
+                        .start(TWO_HAND_1, 2, 0.24f, 1)
+                        .chain(STAB_1, 2, 6.4f)
+                        .chainChance(0.6f).build())).play(BehaviourUtils.cooldownedPlay(true, 15, 30))
+                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .end(5)
+                .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(TWO_HAND_3)
+                        .start(TWO_HAND_1, 2, 0.24f, 1)
+                        .chainChance(0.6f).build())).play(BehaviourUtils.cooldownedPlay(true, 15, 30))
+                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .end(5)
+                .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(TWO_HAND_4)
+                        .start(TWO_HAND_3, 2, 0.24f, 1)
+                        .chainChance(0.6f).build())).play(BehaviourUtils.cooldownedPlay(true, 15, 30))
+                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .end(5)
+                .start(ONE_HAND_1).play(BehaviourUtils.cooldownedPlay(true, 13, 25))
+                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .end(4)
+                .start(STAB_1).play(BehaviourUtils.cooldownedPlay(true, 13, 25))
+                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .end(4)
+                .start(INVISIBLE_BURST).play(BehaviourUtils.cooldownedPlay(false, 10, 27))
+                .condition(BehaviourUtils.ifFurtherThan(5))
+                .prepare(new SetWalkTargetToAttackTarget<BaseServant>().closeEnoughDist(BehaviourUtils.closeEnough(16)))
+                .prepareOptional(BehaviourUtils.moveAttack())
+                .end(13)
+                .start(EXCALIBAA).play(BehaviourUtils.cooldownedPlay(false, 20, 35))
+                .condition(BaseServant::canUseNP)
+                .prepare(new SetWalkTargetWithinDist<BaseServant>()
+                        .min(3).max(8).speedMod(1.2f)).prepareOptional(BehaviourUtils.moveAttack())
+                .end(30)
+                .build();
+    }
+
+    @Override
+    public ExtendedBehaviour<? extends BaseServant> getCooldownAI() {
+        return SelectableBehaviourBuilder.<BaseServant>builder()
+                .add(6, new SetWalkTargetToAttackTarget<>(), BehaviourUtils.moveTo())
+                .add(2, new SetWalkTargetAwayFromTarget<BaseServant>()
+                        .radius(5), BehaviourUtils.moveTo()).build();
+    }
+
+    @Override
+    public void baseTick() {
+        super.baseTick();
+        if (this.getHealth() < 0.25 * this.getMaxHealth() && this.getHealth() > 0) {
+            if (!this.critHealth) {
+                if (!this.level().isClientSide)
+                    this.level().getServer().getPlayerList().broadcastSystemMessage(Component.translatable("fateubw.chat.servant.avalon").withStyle(ChatFormatting.GOLD), true);
+                this.critHealth = true;
+            }
+            if (!this.hasEffect(MobEffects.REGENERATION))
+                this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 50, 1, false, false));
+        }
+        if (this.level().isClientSide) {
+            if (this.duringBurst()) {
+                for (int i = 0; i < 8; i++)
+                    this.level().addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 1, 1, 1), this.getX(this.getRandom().nextGaussian() * 0.5), this.getY(this.getRandom().nextGaussian() * 0.5), this.getZ(this.getRandom().nextGaussian() * 0.5), 0, 0, 0);
+            }
+            AnimationState anim = this.getAnimationHandler().getAnimation();
+            if (anim != null) {
+                if (anim.isAt(EntityTrailProvider.TRAIL_START)) {
+                    this.level().addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
+                                    TrailInfo.builder(EntityTrailProvider.EntityTrailData.create(this, anim.getID(), false))
+                                            .setColor(221 / 255f, 199 / 255f, 34 / 255f, 0.3f)
+                                            .setColor2(255 / 255f, 230 / 255f, 131 / 255f, 0.1f)
+                                            .setWidth(1)
+                                            .setWidth2(1)
+                                            .setType(TrailInfo.Visual.TEXTURE, 1)
+                                            .build()),
+                            this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+                }
+            }
+        }
+    }
+
+    @Override
+    protected Vec3 directionToLookAt() {
+        if (this.getAnimationHandler().isCurrent(INVISIBLE_BURST)) {
+            return this.getDataContainer().get(BURST_DIRECTION);
+        }
+        return super.directionToLookAt();
+    }
+
+    @Override
+    public void handleAttack(AnimationState anim) {
+        if (anim.is(EXCALIBAA)) {
+            if (!anim.isPast(0.4)) {
+                LivingEntity target = this.getTarget();
+                if (target != null)
+                    this.setTargetPosition(target);
+                else
+                    this.setTargetPosition(TargetPosition.of(this.position().add(this.getLookAngle().scale(8))));
+            }
+            if (anim.isAt(0.72)) {
+                this.excalibur(this.getTargetPosition());
+            }
+        } else if (anim.is(INVISIBLE_BURST)) {
+            if (anim.isAt(0.2)) {
+                Vec3 dir = this.getTarget() != null ? this.getTarget().position().subtract(this.position()) : this.position().add(this.getLookAngle());
+                dir = new Vec3(dir.x(), 0, dir.z());
+                this.getDataContainer().set(BURST_DIRECTION, dir.normalize().scale(1.3));
+            }
+            if (this.duringBurst()) {
+                this.setDeltaMovement(this.getDataContainer().get(BURST_DIRECTION));
+                if (this.hitEntity == null)
+                    this.hitEntity = new ArrayList<>();
+                this.mobAttack(anim, this.getTarget(), e -> {
+                    if (!this.hitEntity.contains(e)) {
+                        this.hitEntity.add(e);
+                        this.doHurtTarget(e);
+                    }
+                });
+                if (!this.hitEntity.isEmpty()) {
+                    S2CScreenShake.sendAround(this, 12, 8, 2);
+                    this.setDeltaMovement(this.getDeltaMovement().scale(0.05));
+                    this.getAnimationHandler().setAnimation(INVISIBLE_BURST_HIT);
+                }
+            }
+        } else {
+            if (anim.isAt("step")) {
+                Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(0.3);
+                this.setDeltaMovement(this.getDeltaMovement().add(dir));
+            }
+            super.handleAttack(anim);
+        }
+    }
+
+    @Override
+    public AABB attackBB(AnimationState anim) {
+        double width = this.getBbWidth() + 0.3;
+        double length = 1;
+        if (anim.is(TWO_HAND_1, TWO_HAND_2, TWO_HAND_3, TWO_HAND_4)) {
+            width += 1.5;
+            length += 1.1;
+        }
+        if (anim.is(ONE_HAND_1)) {
+            width += 0.3;
+            length += 1.25;
+        }
+        if (anim.is(STAB_1)) {
+            width += 0.3;
+            length += 1.4;
+        }
+        if (anim.is(INVISIBLE_BURST_HIT)) {
+            width += 1.4;
+            length += 1;
+        }
+        return new AABB(-width * 0.5, -0.02, 0, width * 0.5, this.getBbHeight() + 0.02, length);
+    }
+
+    private boolean duringBurst() {
+        AnimationState anim = this.getAnimationHandler().getAnimation();
+        return anim != null && anim.is(INVISIBLE_BURST) && anim.isPast(0.28) && !anim.isPast(0.8);
+    }
+
+    @Override
+    public OrientedBoundingBox calculateAttackAABB(AnimationState anim, Vec3 target, double grow) {
+        if (!anim.is(INVISIBLE_BURST))
+            return super.calculateAttackAABB(anim, target, grow);
+        double width = this.getBbWidth();
+        double speed = Math.max(width, this.getDeltaMovement().length() - width);
+        return new OrientedBoundingBox(OrientedBoundingBox.originAABB(this)
+                .inflate(grow, 0, grow).expandTowards(0, 0, speed), this.getYRot(), this.getXRot(), this.position());
+    }
+
+    @Override
+    public AnimationHandler<Arthur> getAnimationHandler() {
+        return this.animationHandler;
+    }
+
+    @Override
+    protected void actuallyHurt(DamageSource damageSrc, float damageAmount) {
+        super.actuallyHurt(damageSrc, damageAmount);
+        if (!this.canUseNP && !this.isDeadOrDying() && this.getHealth() < 0.5 * this.getMaxHealth()) {
+            this.canUseNP = true;
+            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(FateItems.EXCALIBUR.get()));
+        }
+    }
+
+    public void excalibur(TargetPosition target) {
+        if (!this.attemptUseNobelPhantasm())
+            return;
+        Excalibur excalibur = new Excalibur(this.level(), this);
+        if (target != null) {
+            Vec3 pos = target.asVec(excalibur.position());
+            excalibur.setRotationTo(pos.x(), pos.y(), pos.z(), 0);
+        }
+        this.level().addFreshEntity(excalibur);
+        this.revealServant();
+        this.releaseUsingItem();
+    }
+
+    @Override
+    protected String getSummonAnimation() {
+        return SUMMON;
+    }
+
+    @Override
+    public WeaponTrail weaponTrailEdge(boolean left) {
+        return new WeaponTrail(new Vector4f(0, 0, -0.6f, 1), new Vector4f(0, 0, -1.5f, 1));
+    }
+}

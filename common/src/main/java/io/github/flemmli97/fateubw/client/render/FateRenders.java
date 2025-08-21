@@ -40,7 +40,6 @@ public class FateRenders extends RenderType {
     private static final ShaderStateShard CLIPPED_SHADER = new ShaderStateShard(() -> CLIPPED_SHADER_INSTANCE);
     private static final ShaderStateShard BLOOM_SHADER = new ShaderStateShard(() -> PULSING_TEXT_SHADER);
     private static final ShaderStateShard BABYLON_SHADER = new ShaderStateShard(() -> BABYLON_SHADER_INSTANCE);
-    private static final ShaderStateShard PARTICLE_COLOR_ADD_SHADER = new ShaderStateShard(() -> PARTICLE_COLOR_ADD_SHADER_INSTANCE);
 
     private static final TransparencyStateShard CORRUPTED_OVERLAY_TRANSPARENCY = new TransparencyStateShard("fateubw:corrupted_overlay_transparency", () -> {
         RenderSystem.enableBlend();

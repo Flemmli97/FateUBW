@@ -50,7 +50,7 @@ public class ClientHandler {
         } else if (open)
             Minecraft.getInstance().setScreen(new CommandGui(data));
         else
-            LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.Type.CLOSE, data.entityId()));
+            LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.ActionType.CLOSE, data.entityId()));
     }
 
     public static void openGrailGui(Map<ResourceLocation, Component> rewards) {

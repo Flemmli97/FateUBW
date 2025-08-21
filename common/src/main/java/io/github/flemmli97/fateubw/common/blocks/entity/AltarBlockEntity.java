@@ -1,6 +1,6 @@
 package io.github.flemmli97.fateubw.common.blocks.entity;
 
-import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
+import io.github.flemmli97.fateubw.api.entity.ServantLike;
 import io.github.flemmli97.fateubw.common.network.S2CAltarUpdate;
 import io.github.flemmli97.fateubw.common.registry.FateBlocks;
 import io.github.flemmli97.fateubw.common.registry.FateDataComponents;
@@ -36,7 +36,7 @@ public class AltarBlockEntity extends BlockEntity {
     private ItemStack inventoryCharm = ItemStack.EMPTY;
     private final NonNullList<ItemStack> invCatalyst = NonNullList.withSize(8, ItemStack.EMPTY);
     private int summoningTick, tick;
-    private BaseServant servant;
+    private ServantLike<?> servant;
 
     public AltarBlockEntity(BlockPos pos, BlockState state) {
         super(FateBlocks.ALTAR_BLOCK_ENTITY.get(), pos, state);
@@ -52,8 +52,8 @@ public class AltarBlockEntity extends BlockEntity {
                 if (altar.summoningTick == 150) {
                     if (altar.servant != null) {
                         if (altar.servant.getOwner() != null)
-                            altar.servant.lookAt(EntityAnchorArgument.Anchor.EYES, altar.servant.getOwner().position());
-                        level.addFreshEntity(altar.servant);
+                            altar.servant.get().lookAt(EntityAnchorArgument.Anchor.EYES, altar.servant.getOwner().position());
+                        level.addFreshEntity(altar.servant.get());
                     }
                     level.destroyBlock(pos, false);
                 }
@@ -181,7 +181,7 @@ public class AltarBlockEntity extends BlockEntity {
 
     public boolean setSummoning(Player player) {
         if (player instanceof ServerPlayer serverPlayer) {
-            BaseServant servant = GrailWarHandler.get(serverPlayer.getServer())
+            ServantLike<?> servant = GrailWarHandler.get(serverPlayer.getServer())
                     .summonRandomServant(serverPlayer.serverLevel(), Vec3.atCenterOf(this.worldPosition), serverPlayer, this.inventoryCharm, false, false);
             if (servant != null) {
                 this.isSummoning = true;

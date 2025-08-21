@@ -227,7 +227,7 @@ public class AltarBlock extends BaseEntityBlock {
             return placeRes ? ItemInteractionResult.CONSUME : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         GrailWarHandler tracker = GrailWarHandler.get(serverPlayer.getServer());
-        if (tracker.getServant(serverPlayer) == null) {
+        if (tracker.getServant(serverPlayer).isEmpty()) {
             if (!altar.canSummon()) {
                 player.sendSystemMessage(Component.translatable("fateubw.chat.altar.missing.catalyst").withStyle(ChatFormatting.DARK_RED));
                 return ItemInteractionResult.FAIL;

@@ -3,8 +3,8 @@ package io.github.flemmli97.fateubw.common.network;
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
 import io.github.flemmli97.fateubw.Fate;
+import io.github.flemmli97.fateubw.api.entity.ServantLike;
 import io.github.flemmli97.fateubw.client.ClientHandler;
-import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
 import io.github.flemmli97.fateubw.mixin.ClientboundSetEntityDataPacketAccessor;
 import io.github.flemmli97.fateubw.mixinhelper.SynchedEntityDataExtension;
 import io.github.flemmli97.tenshilib.loader.LoaderNetwork;
@@ -16,6 +16,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
@@ -48,22 +49,22 @@ public class S2CServantGui implements CustomPacketPayload {
         this.data = data;
     }
 
-    private S2CServantGui(ServerPlayer player, BaseServant servant, boolean open) {
+    private S2CServantGui(ServerPlayer player, ServantLike<?> servant, boolean open) {
         this.open = open;
         if (servant != null && player.getUUID().equals(servant.getOwnerUUID())) {
             this.data = ServantMetaData.of(servant, open);
             if (open)
-                servant.setSentOwnerData(true);
+                servant.shouldScheduleEntityDataSync(true);
         } else {
             this.data = null;
         }
     }
 
-    public static void sendServantGui(ServerPlayer player, BaseServant servant) {
+    public static void sendServantGui(ServerPlayer player, ServantLike<?> servant) {
         sendServantGui(player, servant, true);
     }
 
-    public static void sendServantGui(ServerPlayer player, BaseServant servant, boolean open) {
+    public static void sendServantGui(ServerPlayer player, ServantLike<?> servant, boolean open) {
         LoaderNetwork.INSTANCE.sendToPlayer(new S2CServantGui(player, servant, open), player);
     }
 
@@ -103,7 +104,8 @@ public class S2CServantGui implements CustomPacketPayload {
             }
         };
 
-        public static ServantMetaData of(BaseServant servant, boolean full) {
+        public static ServantMetaData of(ServantLike<?> servantLike, boolean full) {
+            Mob servant = servantLike.get();
             Optional<List<Pair<EquipmentSlot, ItemStack>>> equip;
             if (full) {
                 ArrayList<Pair<EquipmentSlot, ItemStack>> list = Lists.newArrayList();
@@ -117,15 +119,7 @@ public class S2CServantGui implements CustomPacketPayload {
                 equip = Optional.empty();
             }
             return new ServantMetaData(servant.getId(), servant.getType(), equip,
-                    full ? ((SynchedEntityDataExtension) servant.getEntityData()).fate$getAll() : servant.getEntityData().packDirty(), servant.props().hogouMana());
-        }
-
-        private static void packSynced() {
-
-        }
-
-        private static void unpackSynced() {
-
+                    full ? ((SynchedEntityDataExtension) servant.getEntityData()).fate$getAll() : servant.getEntityData().packDirty(), servantLike.props().hogouMana());
         }
     }
 }

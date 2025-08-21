@@ -6,6 +6,8 @@ public class ClientConfig {
     public static int manaY = 8;
     public static DisplayPosition manaBarPosition = DisplayPosition.BOTTOMLEFT;
 
+    public static float screenShakeIntensity = 1;
+
     public enum DisplayPosition {
 
         TOPLEFT,

@@ -22,7 +22,7 @@ import io.github.flemmli97.fateubw.client.render.misc.RenderMagicBeam;
 import io.github.flemmli97.fateubw.client.render.misc.RenderPegasus;
 import io.github.flemmli97.fateubw.client.render.misc.RenderStarfish;
 import io.github.flemmli97.fateubw.client.render.misc.RenderThrownItem;
-import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
+import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.registry.FateBlocks;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;

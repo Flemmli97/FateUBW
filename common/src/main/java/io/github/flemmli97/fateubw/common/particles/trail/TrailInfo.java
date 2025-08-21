@@ -35,7 +35,7 @@ public record TrailInfo(float r, float g, float b, float a, float width, float r
                     color_2.x(), color_2.y(), color_2.z(), color_2.w(), scale_2, visual, text.orElse(0), provider)
     ));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, TrailInfo> STREAM_CODEC = new StreamCodec<RegistryFriendlyByteBuf, TrailInfo>() {
+    public static final StreamCodec<RegistryFriendlyByteBuf, TrailInfo> STREAM_CODEC = new StreamCodec<>() {
 
         @Override
         public TrailInfo decode(RegistryFriendlyByteBuf buf) {

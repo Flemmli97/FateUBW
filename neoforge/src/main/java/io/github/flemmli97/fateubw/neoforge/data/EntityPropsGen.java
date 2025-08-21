@@ -24,12 +24,12 @@ public record EntityPropsGen(PackOutput output,
         return this.provider.thenCompose(provider -> {
             DynamicOps<JsonElement> ops = provider.createSerializationContext(JsonOps.INSTANCE);
             ImmutableList.Builder<CompletableFuture<?>> futures = new ImmutableList.Builder<>();
-            FateEntities.getServantProperties().forEach((res, prop) -> {
+            FateEntities.DEFAULT_SERVANT_PROPERTIES.forEach((res, prop) -> {
                 Path path = this.output.getOutputFolder(PackOutput.Target.DATA_PACK).resolve(res.getNamespace() + "/" + EntityPropsManager.DIRECTORY + "/" + res.getPath() + ".json");
                 JsonElement obj = ServantProperties.CODEC.encodeStart(ops, prop.build()).getOrThrow();
                 futures.add(DataProvider.saveStable(cache, obj, path));
             });
-            FateEntities.getEntityProps().forEach((res, prop) -> {
+            FateEntities.DEFAULT_ENTITY_PROPERTIES.forEach((res, prop) -> {
                 Path path = this.output.getOutputFolder(PackOutput.Target.DATA_PACK).resolve(res.getNamespace() + "/" + EntityPropsManager.DIRECTORY + "/" + res.getPath() + ".json");
                 JsonElement obj = AttributeHolderProperties.CODEC.encodeStart(ops, prop.build()).getOrThrow();
                 futures.add(DataProvider.saveStable(cache, obj, path));

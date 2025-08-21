@@ -1,0 +1,19 @@
+{
+  "assigned_items": [],
+  "icon": {
+    "count": 1,
+    "id": "minecraft:stick"
+  },
+  "pages": [
+    {
+      "components": [
+        {
+          "header": "Item Loot",
+          "template": "modopedia:page/headered_text",
+          "text": "Various items as per defined in the loot table"
+        }
+      ]
+    }
+  ],
+  "title": "Item Loot"
+}

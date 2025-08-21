@@ -23,7 +23,7 @@ public class EntityTagGen extends IntrinsicHolderTagsProvider<EntityType<?>> {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
-        for (RegistryEntrySupplier<EntityType<?>, EntityType<?>> type : FateEntities.getServants()) {
+        for (RegistryEntrySupplier<EntityType<?>, EntityType<?>> type : FateEntities.SERVANTS) {
             this.tag(FateTags.EntityTypes.SERVANT).add(type.get());
         }
         this.tag(FateTags.EntityTypes.STRONG_MOB)
@@ -34,6 +34,7 @@ public class EntityTagGen extends IntrinsicHolderTagsProvider<EntityType<?>> {
                 .add(FateEntities.HASSAN_COPY.get());
 
         this.tag(TenshiLib.MULTIPART_ENTITY)
-                .add(FateEntities.MULTIPART.get());
+                .add(FateEntities.MULTIPART.get())
+                .add(FateEntities.GORDIUS_CHARIOT.get());
     }
 }

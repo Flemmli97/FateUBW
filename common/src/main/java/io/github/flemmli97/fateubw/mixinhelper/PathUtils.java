@@ -18,7 +18,7 @@ public class PathUtils {
             nodes.add(path.getNode(i));
         }
         for (BlockPos target : targets) {
-            Node last = nodes.get(nodes.size() - 1);
+            Node last = nodes.getLast();
             Path newPath = pathFunc.apply(target, last);
             if (newPath != null) {
                 for (int i = 0; i < newPath.getNodeCount(); i++) {

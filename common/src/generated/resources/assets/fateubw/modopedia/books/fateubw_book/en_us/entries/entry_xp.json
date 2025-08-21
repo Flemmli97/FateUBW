@@ -1,0 +1,19 @@
+{
+  "assigned_items": [],
+  "icon": {
+    "count": 1,
+    "id": "minecraft:experience_bottle"
+  },
+  "pages": [
+    {
+      "components": [
+        {
+          "header": "XP",
+          "template": "modopedia:page/headered_text",
+          "text": "Grants random amount of xp points"
+        }
+      ]
+    }
+  ],
+  "title": "XP"
+}

@@ -1,17 +1,17 @@
 {
   "values": [
-    "fateubw:arthur",
-    "fateubw:cuchulainn",
-    "fateubw:diarmuid",
-    "fateubw:emiya",
-    "fateubw:gilgamesh",
-    "fateubw:medea",
-    "fateubw:gilles",
-    "fateubw:heracles",
-    "fateubw:lancelot",
-    "fateubw:iskander",
-    "fateubw:medusa",
-    "fateubw:hassan",
-    "fateubw:sasaki"
+    "fateubw:artoria_pendragon_saber",
+    "fateubw:cu_chulainn_lancer",
+    "fateubw:diarmuid_ua_duibhne_lancer",
+    "fateubw:emiya_archer",
+    "fateubw:gilgamesh_archer",
+    "fateubw:medea_caster",
+    "fateubw:gilles_de_rais_caster",
+    "fateubw:heracles_berserker",
+    "fateubw:lancelot_berserker",
+    "fateubw:iskander_rider",
+    "fateubw:medusa_rider",
+    "fateubw:hassan-i-sabbah_assassin",
+    "fateubw:sasaki_kojiro_assassin"
   ]
 }

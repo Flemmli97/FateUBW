@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:entity",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "fateubw:medeas_staff"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "fateubw:rule_breaker"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "fateubw:entities/medea_caster"
+}

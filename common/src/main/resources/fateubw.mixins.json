@@ -4,13 +4,8 @@
   "package": "io.github.flemmli97.fateubw.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "AbstractArrowMixin",
-    "AttributeMapAccessor",
-    "CombatTrackerAccessor",
-    "SynchedEntityDataAccessor",
-    "ClientboundSetEntityDataPacketAccessor",
-    "PathFinderMixin",
-    "PathNavigationMixin"
+    "AbstractArrowMixin", "AbstractHorseMixin", "AttributeMapAccessor", "ClientboundSetEntityDataPacketAccessor",
+    "CombatTrackerAccessor", "CrossbowAccessor", "PathFinderMixin", "PathNavigationMixin", "SynchedEntityDataAccessor"
   ],
   "client": [
     "ItemEntityRenderMixin",

@@ -1,5 +1,6 @@
 package io.github.flemmli97.fateubw.client;
 
+import io.github.flemmli97.fateubw.common.config.ClientConfig;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.phys.Vec3;
@@ -32,8 +33,8 @@ public class ShakeHandler {
         int t = ShakeHandler.shakeTick;
         if (t <= 0)
             return;
-        float strengthPitch = ShakeHandler.shakeStrength;
-        float strengthRoll = ShakeHandler.shakeStrength;
+        float strengthPitch = ShakeHandler.shakeStrength * ClientConfig.screenShakeIntensity;
+        float strengthRoll = ShakeHandler.shakeStrength * ClientConfig.screenShakeIntensity;
         setPitch.accept(pitch + RANDOM.nextFloat(-1, 1) * strengthPitch);
         setRoll.accept(roll + RANDOM.nextFloat(-1, 1) * strengthRoll);
     }

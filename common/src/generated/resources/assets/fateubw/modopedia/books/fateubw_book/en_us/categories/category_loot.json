@@ -1,0 +1,16 @@
+{
+  "entries": [
+    "entry_item",
+    "entry_attribute",
+    "entry_loot_servant",
+    "entry_commands",
+    "entry_xp"
+  ],
+  "icon": {
+    "count": 1,
+    "id": "minecraft:chest"
+  },
+  "landing_text": "This section is more addressed for pack devs and contains an overview of possible loot to be granted. The actual loot depends on the selected loottable. The server can define custom loottables via datapacks.",
+  "sort_num": 1,
+  "title": "Loot"
+}

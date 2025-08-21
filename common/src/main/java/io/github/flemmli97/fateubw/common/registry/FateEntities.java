@@ -1,11 +1,10 @@
 package io.github.flemmli97.fateubw.common.registry;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.api.datapack.AttributeHolderProperties;
 import io.github.flemmli97.fateubw.api.datapack.ServantExtraData;
 import io.github.flemmli97.fateubw.api.datapack.ServantProperties;
+import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.MultiPartEntity;
 import io.github.flemmli97.fateubw.common.entity.misc.ArcherArrow;
 import io.github.flemmli97.fateubw.common.entity.misc.BabylonWeapon;
@@ -19,20 +18,19 @@ import io.github.flemmli97.fateubw.common.entity.misc.MagicBufCircle;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicShot;
 import io.github.flemmli97.fateubw.common.entity.misc.ThrownGem;
 import io.github.flemmli97.fateubw.common.entity.misc.ThrownItemEntity;
-import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
-import io.github.flemmli97.fateubw.common.entity.servant.EntityArthur;
-import io.github.flemmli97.fateubw.common.entity.servant.EntityCuchulainn;
-import io.github.flemmli97.fateubw.common.entity.servant.EntityDiarmuid;
-import io.github.flemmli97.fateubw.common.entity.servant.EntityEmiya;
-import io.github.flemmli97.fateubw.common.entity.servant.EntityGilgamesh;
-import io.github.flemmli97.fateubw.common.entity.servant.EntityGilles;
-import io.github.flemmli97.fateubw.common.entity.servant.EntityHassan;
-import io.github.flemmli97.fateubw.common.entity.servant.EntityHeracles;
-import io.github.flemmli97.fateubw.common.entity.servant.EntityIskander;
-import io.github.flemmli97.fateubw.common.entity.servant.EntityLancelot;
-import io.github.flemmli97.fateubw.common.entity.servant.EntityMedea;
-import io.github.flemmli97.fateubw.common.entity.servant.EntityMedusa;
-import io.github.flemmli97.fateubw.common.entity.servant.EntitySasaki;
+import io.github.flemmli97.fateubw.common.entity.servant.Arthur;
+import io.github.flemmli97.fateubw.common.entity.servant.Cuchulainn;
+import io.github.flemmli97.fateubw.common.entity.servant.Diarmuid;
+import io.github.flemmli97.fateubw.common.entity.servant.Emiya;
+import io.github.flemmli97.fateubw.common.entity.servant.Gilgamesh;
+import io.github.flemmli97.fateubw.common.entity.servant.Gilles;
+import io.github.flemmli97.fateubw.common.entity.servant.Hassan;
+import io.github.flemmli97.fateubw.common.entity.servant.Heracles;
+import io.github.flemmli97.fateubw.common.entity.servant.Iskander;
+import io.github.flemmli97.fateubw.common.entity.servant.Medea;
+import io.github.flemmli97.fateubw.common.entity.servant.Medusa;
+import io.github.flemmli97.fateubw.common.entity.servant.Sasaki;
+import io.github.flemmli97.fateubw.common.entity.servant.lancelot.Lancelot;
 import io.github.flemmli97.fateubw.common.entity.summons.GordiusChariot;
 import io.github.flemmli97.fateubw.common.entity.summons.GordiusWheel;
 import io.github.flemmli97.fateubw.common.entity.summons.HassanClone;
@@ -55,6 +53,7 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,12 +64,14 @@ public class FateEntities {
 
     public static final LoaderRegister<EntityType<?>> ENTITIES = LoaderRegistryAccess.INSTANCE.of(Registries.ENTITY_TYPE, Fate.MODID);
 
-    private static final Map<ResourceLocation, ServantProperties.Builder> DEFAULT_SERVANT_PROPERTIES = new HashMap<>();
-    private static final Map<ResourceLocation, AttributeHolderProperties.Builder> DEFAULT_ENTITY_PROPERTIES = new HashMap<>();
+    // Datagen stuff only
+    public static final Map<ResourceLocation, ServantProperties.Builder> DEFAULT_SERVANT_PROPERTIES = new HashMap<>();
+    public static final Map<ResourceLocation, String> SERVANT_NOBEL_PHANTASM = new HashMap<>();
+    public static final Map<ResourceLocation, AttributeHolderProperties.Builder> DEFAULT_ENTITY_PROPERTIES = new HashMap<>();
+    public static final List<RegistryEntrySupplier<EntityType<?>, EntityType<?>>> SERVANTS = new ArrayList<>();
 
-    private static final List<RegistryEntrySupplier<EntityType<?>, EntityType<?>>> SERVANTS = new ArrayList<>();
-
-    public static final RegistryEntrySupplier<EntityType<?>, EntityType<EntityArthur>> ARTHUR = regServant("arthur", EntityType.Builder.of(EntityArthur::new, MobCategory.MISC),
+    public static final RegistryEntrySupplier<EntityType<?>, EntityType<Arthur>> ARTHUR = regServant("artoria_pendragon_saber", "Excalibur", EntityType.Builder.of(Arthur::new, MobCategory.MISC)
+                    .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
             0x048dd0, 0xecee37,
             new ServantProperties.Builder(BuiltinServantClasses.SABER)
                     .putAttributes(Attributes.MAX_HEALTH, 400).putAttributes(Attributes.ATTACK_DAMAGE, 15)
@@ -80,7 +81,8 @@ public class FateEntities {
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 2).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(80));
 
-    public static final RegistryEntrySupplier<EntityType<?>, EntityType<EntityCuchulainn>> CUCHULAINN = regServant("cuchulainn", EntityType.Builder.of(EntityCuchulainn::new, MobCategory.MISC),
+    public static final RegistryEntrySupplier<EntityType<?>, EntityType<Cuchulainn>> CUCHULAINN = regServant("cu_chulainn_lancer", "Gae Bolg", EntityType.Builder.of(Cuchulainn::new, MobCategory.MISC)
+                    .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
             0x0038ff, 0xb6c0c1,
             new ServantProperties.Builder(BuiltinServantClasses.LANCER)
                     .putAttributes(Attributes.MAX_HEALTH, 370).putAttributes(Attributes.ATTACK_DAMAGE, 12)
@@ -88,7 +90,8 @@ public class FateEntities {
                     .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 6).putAttributes(Attributes.MOVEMENT_SPEED, 0.37)
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(50));
-    public static final RegistryEntrySupplier<EntityType<?>, EntityType<EntityDiarmuid>> DIARMUID = regServant("diarmuid", EntityType.Builder.of(EntityDiarmuid::new, MobCategory.MISC),
+    public static final RegistryEntrySupplier<EntityType<?>, EntityType<Diarmuid>> DIARMUID = regServant("diarmuid_ua_duibhne_lancer", "Gae Dearg/Buidhe", EntityType.Builder.of(Diarmuid::new, MobCategory.MISC)
+                    .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
             0x2d5554, 0x302f34,
             new ServantProperties.Builder(BuiltinServantClasses.LANCER)
                     .putAttributes(Attributes.MAX_HEALTH, 380).putAttributes(Attributes.ATTACK_DAMAGE, 10)
@@ -97,7 +100,8 @@ public class FateEntities {
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(60));
 
-    public static final RegistryEntrySupplier<EntityType<?>, EntityType<EntityEmiya>> EMIYA = regServant("emiya", EntityType.Builder.of(EntityEmiya::new, MobCategory.MISC),
+    public static final RegistryEntrySupplier<EntityType<?>, EntityType<Emiya>> EMIYA = regServant("emiya_archer", "Caladbolg", EntityType.Builder.of(Emiya::new, MobCategory.MISC)
+                    .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
             0x9f0707, 0x000000,
             new ServantProperties.Builder(BuiltinServantClasses.ARCHER)
                     .putAttributes(Attributes.MAX_HEALTH, 350).putAttributes(Attributes.ATTACK_DAMAGE, 13)
@@ -105,7 +109,8 @@ public class FateEntities {
                     .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 4).putAttributes(Attributes.MOVEMENT_SPEED, 0.35)
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(50));
-    public static final RegistryEntrySupplier<EntityType<?>, EntityType<EntityGilgamesh>> GILGAMESH = regServant("gilgamesh", EntityType.Builder.of(EntityGilgamesh::new, MobCategory.MISC),
+    public static final RegistryEntrySupplier<EntityType<?>, EntityType<Gilgamesh>> GILGAMESH = regServant("gilgamesh_archer", "Gate of Babylon/EA", EntityType.Builder.of(Gilgamesh::new, MobCategory.MISC)
+                    .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
             0xfff400, 0xffdb00,
             new ServantProperties.Builder(BuiltinServantClasses.ARCHER)
                     .putAttributes(Attributes.MAX_HEALTH, 450).putAttributes(Attributes.ATTACK_DAMAGE, 10)
@@ -114,7 +119,8 @@ public class FateEntities {
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(80));
 
-    public static final RegistryEntrySupplier<EntityType<?>, EntityType<EntityMedea>> MEDEA = regServant("medea", EntityType.Builder.of(EntityMedea::new, MobCategory.MISC),
+    public static final RegistryEntrySupplier<EntityType<?>, EntityType<Medea>> MEDEA = regServant("medea_caster", "Rule Breaker", EntityType.Builder.of(Medea::new, MobCategory.MISC)
+                    .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
             0x6f086b, 0x4a8be5,
             new ServantProperties.Builder(BuiltinServantClasses.CASTER)
                     .putAttributes(Attributes.MAX_HEALTH, 350).putAttributes(Attributes.ATTACK_DAMAGE, 9)
@@ -125,7 +131,8 @@ public class FateEntities {
                     .npCost(70)
                     .withConfigData(ServantExtraData.MEDEA_CIRCLE_DURATION)
                     .withConfigData(ServantExtraData.MEDEA_CIRCLE_RANGE));
-    public static final RegistryEntrySupplier<EntityType<?>, EntityType<EntityGilles>> GILLES = regServant("gilles", EntityType.Builder.of(EntityGilles::new, MobCategory.MISC),
+    public static final RegistryEntrySupplier<EntityType<?>, EntityType<Gilles>> GILLES = regServant("gilles_de_rais_caster", "Prelati's Spellbook", EntityType.Builder.of(Gilles::new, MobCategory.MISC)
+                    .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
             0x100460, 0x600453,
             new ServantProperties.Builder(BuiltinServantClasses.CASTER)
                     .putAttributes(Attributes.MAX_HEALTH, 370).putAttributes(Attributes.ATTACK_DAMAGE, 5)
@@ -137,7 +144,8 @@ public class FateEntities {
                     .withConfigData(ServantExtraData.GILLES_MONSTER_DURATION)
                     .withConfigData(ServantExtraData.GILLES_MONSTER_MAX));
 
-    public static final RegistryEntrySupplier<EntityType<?>, EntityType<EntityHeracles>> HERACLES = regServant("heracles", EntityType.Builder.of(EntityHeracles::new, MobCategory.MISC).sized(1.4f, 2.6f),
+    public static final RegistryEntrySupplier<EntityType<?>, EntityType<Heracles>> HERACLES = regServant("heracles_berserker", "God Hand", EntityType.Builder.of(Heracles::new, MobCategory.MISC)
+                    .sized(1.4f, 2.6f),
             0x3c1d06, 0x5e3c22,
             new ServantProperties.Builder(BuiltinServantClasses.BERSERKER)
                     .putAttributes(Attributes.MAX_HEALTH, 250).putAttributes(Attributes.ATTACK_DAMAGE, 10)
@@ -146,7 +154,8 @@ public class FateEntities {
                     .putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(0)
                     .withConfigData(ServantExtraData.HERACLES_DEATH_MAX));
-    public static final RegistryEntrySupplier<EntityType<?>, EntityType<EntityLancelot>> LANCELOT = regServant("lancelot", EntityType.Builder.of(EntityLancelot::new, MobCategory.MISC),
+    public static final RegistryEntrySupplier<EntityType<?>, EntityType<Lancelot>> LANCELOT = regServant("lancelot_berserker", "Knight of Owner", EntityType.Builder.of(Lancelot::new, MobCategory.MISC)
+                    .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
             0x071a33, 0x1d4f94,
             new ServantProperties.Builder(BuiltinServantClasses.BERSERKER)
                     .putAttributes(Attributes.MAX_HEALTH, 450).putAttributes(Attributes.ATTACK_DAMAGE, 15)
@@ -157,7 +166,8 @@ public class FateEntities {
                     .npCost(0)
                     .withConfigData(ServantExtraData.LANCELOT_REFLECT_CHANCE));
 
-    public static final RegistryEntrySupplier<EntityType<?>, EntityType<EntityIskander>> ISKANDER = regServant("iskander", EntityType.Builder.of(EntityIskander::new, MobCategory.MISC),
+    public static final RegistryEntrySupplier<EntityType<?>, EntityType<Iskander>> ISKANDER = regServant("iskander_rider", "Gordius Bulls", EntityType.Builder.of(Iskander::new, MobCategory.MISC)
+                    .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
             0xd40000, 0x8d0101,
             new ServantProperties.Builder(BuiltinServantClasses.RIDER)
                     .putAttributes(Attributes.MAX_HEALTH, 450).putAttributes(Attributes.ATTACK_DAMAGE, 12)
@@ -165,7 +175,8 @@ public class FateEntities {
                     .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 4).putAttributes(Attributes.MOVEMENT_SPEED, 0.35)
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1.5).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(70));
-    public static final RegistryEntrySupplier<EntityType<?>, EntityType<EntityMedusa>> MEDUSA = regServant("medusa", EntityType.Builder.of(EntityMedusa::new, MobCategory.MISC),
+    public static final RegistryEntrySupplier<EntityType<?>, EntityType<Medusa>> MEDUSA = regServant("medusa_rider", "Bellerophon", EntityType.Builder.of(Medusa::new, MobCategory.MISC)
+                    .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
             0x000000, 0xf234ea,
             new ServantProperties.Builder(BuiltinServantClasses.RIDER)
                     .putAttributes(Attributes.MAX_HEALTH, 350).putAttributes(Attributes.ATTACK_DAMAGE, 11)
@@ -174,7 +185,8 @@ public class FateEntities {
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1.5).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(70));
 
-    public static final RegistryEntrySupplier<EntityType<?>, EntityType<EntityHassan>> HASSAN = regServant("hassan", EntityType.Builder.of(EntityHassan::new, MobCategory.MISC),
+    public static final RegistryEntrySupplier<EntityType<?>, EntityType<Hassan>> HASSAN = regServant("hassan-i-sabbah_assassin", "Delusional Illusion", EntityType.Builder.of(Hassan::new, MobCategory.MISC)
+                    .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
             0x000000, 0x3a393a,
             new ServantProperties.Builder(BuiltinServantClasses.ASSASSIN)
                     .putAttributes(Attributes.MAX_HEALTH, 320).putAttributes(Attributes.ATTACK_DAMAGE, 10)
@@ -183,7 +195,8 @@ public class FateEntities {
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(40)
                     .withConfigData(ServantExtraData.HASSAN_COPIES));
-    public static final RegistryEntrySupplier<EntityType<?>, EntityType<EntitySasaki>> SASAKI = regServant("sasaki", EntityType.Builder.of(EntitySasaki::new, MobCategory.MISC),
+    public static final RegistryEntrySupplier<EntityType<?>, EntityType<Sasaki>> SASAKI = regServant("sasaki_kojiro_assassin", "Tsubame Gaeshi", EntityType.Builder.of(Sasaki::new, MobCategory.MISC)
+                    .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
             0x4e04c3, 0xa77cec,
             new ServantProperties.Builder(BuiltinServantClasses.ASSASSIN)
                     .putAttributes(Attributes.MAX_HEALTH, 300).putAttributes(Attributes.ATTACK_DAMAGE, 13)
@@ -235,12 +248,13 @@ public class FateEntities {
             .noSave().noSummon().sized(0.25F, 0.25F));
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private static <V extends BaseServant> RegistryEntrySupplier<EntityType<?>, EntityType<V>> regServant(String name, EntityType.Builder<V> entity, int primary, int secondary, ServantProperties.Builder props) {
+    private static <V extends BaseServant> RegistryEntrySupplier<EntityType<?>, EntityType<V>> regServant(String name, String hogou, EntityType.Builder<V> entity, int primary, int secondary, ServantProperties.Builder props) {
         RegistryEntrySupplier<EntityType<?>, EntityType<V>> reg = reg(name, entity.clientTrackingRange(10));
         FateCreativeTab.addToTab(FateItems.ITEMS.register(name + "_spawn_egg", () -> new FateEgg(reg, primary, secondary, new Item.Properties())));
         if (TenshiLibCrossPlat.INSTANCE.isDatagen()) {
             DEFAULT_SERVANT_PROPERTIES.put(reg.getID(), props);
             SERVANTS.add((RegistryEntrySupplier) reg);
+            SERVANT_NOBEL_PHANTASM.put(reg.getID(), hogou);
         }
         return reg;
     }
@@ -264,18 +278,6 @@ public class FateEntities {
 
     private static <V extends Entity> RegistryEntrySupplier<EntityType<?>, EntityType<V>> reg(String name, EntityType.Builder<V> v) {
         return ENTITIES.register(name, () -> v.build(name));
-    }
-
-    public static Map<ResourceLocation, ServantProperties.Builder> getServantProperties() {
-        return ImmutableMap.copyOf(DEFAULT_SERVANT_PROPERTIES);
-    }
-
-    public static Map<ResourceLocation, AttributeHolderProperties.Builder> getEntityProps() {
-        return ImmutableMap.copyOf(DEFAULT_ENTITY_PROPERTIES);
-    }
-
-    public static List<RegistryEntrySupplier<EntityType<?>, EntityType<?>>> getServants() {
-        return ImmutableList.copyOf(SERVANTS);
     }
 
     public static Map<EntityType<? extends LivingEntity>, AttributeSupplier.Builder> registeredAttributes() {

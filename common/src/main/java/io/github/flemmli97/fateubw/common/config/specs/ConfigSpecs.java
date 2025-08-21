@@ -22,11 +22,13 @@ public class ConfigSpecs {
         public final ModConfigSpec.IntValue manaBarX;
         public final ModConfigSpec.IntValue manaBarY;
         public final ModConfigSpec.EnumValue<ClientConfig.DisplayPosition> manaBarPosition;
+        public final ModConfigSpec.DoubleValue screenShakeIntensity;
 
         public Client(ModConfigSpec.Builder builder) {
             this.manaBarX = builder.comment("X Position of the mana bar").defineInRange("Mana X", ClientConfig.manaX, 0, Integer.MAX_VALUE);
             this.manaBarY = builder.comment("Y Position of the mana bar").defineInRange("Mana Y", ClientConfig.manaY, 0, Integer.MAX_VALUE);
             this.manaBarPosition = builder.comment("Relative Position of the mana bar in regards to the screen").defineEnum("Mana Bar Anchor", ClientConfig.manaBarPosition);
+            this.screenShakeIntensity = builder.comment("Intensity for screen shaking").defineInRange("Screen Shake Intensity", ClientConfig.screenShakeIntensity, 0, 1);
         }
     }
 
@@ -87,11 +89,11 @@ public class ConfigSpecs {
             this.servantMaxSpawnDelay = builder.comment("Maximum time between each attempt to spawn masterless servants. (Fill Empty Slots needs to be true)").defineInRange("Servant Spawn Delay (Max)", CommonConfig.servantMaxSpawnDelay, 0, Integer.MAX_VALUE);
 
             this.punishTeleport = builder.comment("Should teleporting servants to the owner during a fight be punished").define("Punish Teleport", CommonConfig.punishTeleport);
-            this.notifyBlackList = builder.comment("Servants that dont notify players when spawned (from filling missing slots)").define("Servant notification", CommonConfig.notifyBlacklist);
+            this.notifyBlackList = builder.comment("Servants that dont notify players when spawned (from filling missing slots)").define("Servant notification", CommonConfig.notifyBlacklist, stringList());
             this.whiteList = builder.comment("Turn servant notification list into a whitelist").define("Notify Whitelist", CommonConfig.notificationWhitelist);
             this.notifyAll = builder.comment("Notify everyone if a servant spawns. Else only the player the servant spawned on will be notified").define("Notify Everyone", CommonConfig.notifyAll);
             this.npBoostEffect = builder.comment("Potions applied when boostin servants using a command seal. Usage: " + PotionEffectsConfig.usage()).define("NP Effects",
-                    CommonConfig.npBoostEffect.write());
+                    CommonConfig.npBoostEffect.write(), stringList());
             builder.pop();
 
             builder.push("misc");
@@ -105,7 +107,7 @@ public class ConfigSpecs {
             this.magicBeam = builder.comment("Damage of medeas magic beams").defineInRange("Magic Beam Dmg", CommonConfig.magicBeam, 0, Double.MAX_VALUE);
             this.gaeBolgDmg = builder.comment("Damage of Gae Bolg").defineInRange("Gae Bolg Dmg", CommonConfig.gaeBolgDmg, 0, Double.MAX_VALUE);
             this.gaeBolgEffect = builder.comment("Potions applied by Gae Bolg. Usage: " + PotionEffectsConfig.usage()).define("Gae Bolg Potions",
-                    CommonConfig.gaeBolgEffect.write());
+                    CommonConfig.gaeBolgEffect.write(), stringList());
             builder.pop();
 
             builder.push("weapons");

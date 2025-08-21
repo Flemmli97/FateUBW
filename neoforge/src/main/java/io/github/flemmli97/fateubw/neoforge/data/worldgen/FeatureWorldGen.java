@@ -36,15 +36,9 @@ public class FeatureWorldGen {
                 placed.put(id, register);
             }
         }, features::add);
-        builder.add(Registries.CONFIGURED_FEATURE, ctx -> {
-            configured.forEach((key, func) -> {
-                ctx.register(key, func.apply(ctx::lookup));
-            });
-        }).add(Registries.PLACED_FEATURE, ctx -> {
-            placed.forEach((key, func) -> {
-                ctx.register(key, func.apply(ctx::lookup));
-            });
-        }).add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, ctx -> features.forEach(feat ->
+        builder.add(Registries.CONFIGURED_FEATURE, ctx -> configured.forEach((key, func) ->
+                ctx.register(key, func.apply(ctx::lookup)))).add(Registries.PLACED_FEATURE, ctx -> placed.forEach((key, func) ->
+                ctx.register(key, func.apply(ctx::lookup)))).add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, ctx -> features.forEach(feat ->
                 ctx.register(ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, feat.placedFeature().location()),
                         new BiomeModifiers.AddFeaturesBiomeModifier(
                                 ctx.lookup(Registries.BIOME).getOrThrow(feat.tag()),

@@ -2,8 +2,8 @@ package io.github.flemmli97.fateubw.client;
 
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.entity.misc.ChainDagger;
-import io.github.flemmli97.fateubw.common.entity.servant.EntityEmiya;
-import io.github.flemmli97.fateubw.common.entity.servant.EntityMedusa;
+import io.github.flemmli97.fateubw.common.entity.servant.Emiya;
+import io.github.flemmli97.fateubw.common.entity.servant.Medusa;
 import io.github.flemmli97.fateubw.common.items.weapons.ArcherBowItem;
 import io.github.flemmli97.fateubw.platform.Platform;
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
@@ -31,7 +31,7 @@ public class ItemModelProps {
             if (dagger != null) {
                 thrown = dagger.fromMainHand() ? player.getMainHandItem() == stack : player.getOffhandItem() == stack;
             }
-        } else if (entity instanceof EntityMedusa medusa) {
+        } else if (entity instanceof Medusa medusa) {
             thrown = medusa.daggerThrown();
             if (thrown) {
                 if (medusa.getMainHandItem() == stack)
@@ -57,7 +57,7 @@ public class ItemModelProps {
         } else {
             if (stack.getItem() instanceof ArcherBowItem bow && bow.charged(stack))
                 return 1;
-            if (entity instanceof EntityEmiya emiya && emiya.getAnimationHandler().isCurrent(EntityEmiya.CALADBOLG))
+            if (entity instanceof Emiya emiya && emiya.getAnimationHandler().isCurrent(Emiya.CALADBOLG))
                 return 1;
             return 0;
         }

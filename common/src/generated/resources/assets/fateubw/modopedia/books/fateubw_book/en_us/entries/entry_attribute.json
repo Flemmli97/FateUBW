@@ -1,0 +1,19 @@
+{
+  "assigned_items": [],
+  "icon": {
+    "count": 1,
+    "id": "minecraft:iron_sword"
+  },
+  "pages": [
+    {
+      "components": [
+        {
+          "header": "Attributes",
+          "template": "modopedia:page/headered_text",
+          "text": "Can grant permant attributes increases like extra health, attack damage etc."
+        }
+      ]
+    }
+  ],
+  "title": "Attributes"
+}

@@ -1,8 +1,14 @@
 package io.github.flemmli97.fateubw.common.entity.summons;
 
+import com.mojang.datafixers.util.Pair;
+import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.api.datapack.AttributeHolderProperties;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
-import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
+import io.github.flemmli97.fateubw.common.entity.BaseServant;
+import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
+import io.github.flemmli97.fateubw.common.entity.ai.behaviour.SetTargetFromRider;
+import io.github.flemmli97.fateubw.common.entity.utils.MoveStateTracker;
+import io.github.flemmli97.fateubw.common.entity.utils.MoveType;
 import io.github.flemmli97.fateubw.common.entity.utils.StandingVehicle;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
@@ -14,15 +20,25 @@ import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.entity.AOEAttackEntity;
+import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
+import io.github.flemmli97.tenshilib.common.entity.ai.brain.SelectableBehaviourBuilder;
+import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetMoveToRestriction;
+import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetWalkTargetAwayFromTarget;
+import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetWalkTargetWithinDist;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimatedEntity;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionContainer;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationsBuilder;
+import io.github.flemmli97.tenshilib.common.entity.data.SyncableDatas;
+import io.github.flemmli97.tenshilib.common.entity.data.SyncedDataContainer;
+import io.github.flemmli97.tenshilib.common.entity.data.SyncedMobDataHandler;
 import io.github.flemmli97.tenshilib.common.particle.ColoredParticleData;
+import io.github.flemmli97.tenshilib.common.utils.TypedResource;
 import io.github.flemmli97.tenshilib.common.utils.math.OrientedBoundingBox;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.DebugPackets;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -37,16 +53,40 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.ai.util.GoalUtils;
+import net.minecraft.world.entity.ai.util.RandomPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.tslat.smartbrainlib.api.SmartBrainOwner;
+import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
+import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
+import net.tslat.smartbrainlib.api.core.behaviour.AllApplicableBehaviours;
+import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.SequentialBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomFlyingTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliate;
+import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
+import net.tslat.smartbrainlib.object.MemoryTest;
+import net.tslat.smartbrainlib.util.BrainUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -54,45 +94,21 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVehicle, AOEAttackEntity {
+public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVehicle, AOEAttackEntity, SyncedMobDataHandler, SmartBrainOwner<Pegasus> {
 
     public static float PORTAL_SIZE = 2;
     public static float PORTAL_OFFSET = 1.3f;
 
-    private static final EntityDataAccessor<Float> LOCKED_YAW = SynchedEntityData.defineId(Pegasus.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Boolean> FLYING = SynchedEntityData.defineId(Pegasus.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Byte> MOVE_FLAGS = SynchedEntityData.defineId(Pegasus.class, EntityDataSerializers.BYTE);
+    public static final TypedResource<Vec3> CHARGE_MOTION = new TypedResource<>(Fate.modRes("charge_motion"));
 
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
     public static final String CHARGING = BUILDER.add("charge", AnimationsBuilder.definition(1.4).marker("attack", 0.36));
     public static final String STOMP = BUILDER.add("stomp", AnimationsBuilder.definition(0.56).marker("attack", 0.4));
-    public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2.04));
+    public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2.04)
+            .marker("seated", 1.04));
     public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
-
-//    private static final List<WeightedEntry.Wrapper<GoalAttackAction<Pegasus>>> ATTACKS = List.of(
-//            WeightedEntry.wrap(new GoalAttackAction<Pegasus>(Pegasus.STOMP)
-//                    .cooldown(e -> e.getRandom().nextInt(20) + 25)
-//                    .withCondition(((goal, target, previous) -> !goal.attacker.canFly()))
-//                    .prepare(() -> new WrappedRunner<>(new MoveToTargetAttackRunner<>(1))), 6),
-//            WeightedEntry.wrap(new GoalAttackAction<Pegasus>(Pegasus.CHARGING)
-//                    .cooldown(e -> e.getRandom().nextInt(45) + 30)
-//                    .withCondition(((goal, target, previous) -> !goal.attacker.canFly() && (goal.distanceToTargetSq > 25 || goal.attacker.getRandom().nextFloat() < 0.5)))
-//                    .prepare(ChargeTo::new), 5),
-//            WeightedEntry.wrap(new GoalAttackAction<Pegasus>(Pegasus.CHARGING)
-//                    .cooldown(e -> e.getRandom().nextInt(100) + 100)
-//                    .withCondition(((goal, target, previous) -> goal.attacker.canFly()))
-//                    .prepare(ChargeTo::new), 5)
-//    );
-//    private static final List<WeightedEntry.Wrapper<IdleAction<Pegasus>>> IDLE_ACTIONS = List.of(
-//            WeightedEntry.wrap(new IdleAction<>(() -> new MoveToTargetRunner<Pegasus>(1, 0.5))
-//                    .withCondition(((goal, target) -> !goal.attacker.canFly())), 3),
-//            WeightedEntry.wrap(new IdleAction<>(() -> new RandomMoveAroundRunner<Pegasus>(12, 5))
-//                    .withCondition(((goal, target) -> !goal.attacker.canFly())), 5),
-//            WeightedEntry.wrap(new IdleAction<>(() -> new MoveAwayRunner<Pegasus>(1, 1, 5))
-//                    .withCondition(((goal, target) -> !goal.attacker.canFly())), 4),
-//            WeightedEntry.wrap(new IdleAction<>(() -> new PegasusFlyRunner(1))
-//                    .withCondition(((goal, target) -> goal.attacker.canFly())), 5)
-//    );
 
     public final Predicate<LivingEntity> targetPred = target -> {
         if (target == this)
@@ -107,8 +123,6 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
         return this.canAttack(target) && !this.hasPassenger(target);
     };
 
-//    public final AnimatedAttackGoal<Pegasus> attack = new AnimatedAttackGoal<>(this, ATTACKS, IDLE_ACTIONS);
-
     private final AnimationHandler<Pegasus> animationHandler = new AnimationHandler<>(this, ANIMS)
             .withChangeListener(anim -> {
                 if (!this.level().isClientSide && anim != null && anim.is(CHARGING)) {
@@ -121,14 +135,12 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
     private final PathNavigation flyingNavigator;
     private int flyTimer;
 
+    private final SyncedDataContainer<Pegasus> syncedDataContainer = SyncedDataContainer.builder(this)
+            .define(CHARGE_MOTION, SyncableDatas.VEC_3, null).build();
+
     private List<Entity> hitEntities = new ArrayList<>();
-    private Vec3 chargeMotion;
 
-    private int moveTick;
-
-    public static final int MOVE_TICK_MAX = 3;
-
-    private int standInterpolation;
+    private final MoveStateTracker moveStateTracker = new MoveStateTracker(2, this::getMoveType);
 
     public Pegasus(EntityType<? extends Pegasus> type, Level level) {
         super(type, level);
@@ -168,37 +180,124 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
-        builder.define(LOCKED_YAW, 0f);
         builder.define(FLYING, false);
         builder.define(MOVE_FLAGS, (byte) 0);
     }
 
     @Override
-    public float getYRot() {
-        return this.isCharging() ? this.entityData.get(LOCKED_YAW) : super.getYRot();
+    public SyncedDataContainer<?> getDataContainer() {
+        return this.syncedDataContainer;
     }
 
     @Override
-    public AnimationHandler<Pegasus> getAnimationHandler() {
-        return this.animationHandler;
-    }
-
-    public boolean isCharging() {
-        if (this.getAnimationHandler() == null)
-            return false;
-        AnimationState anim = this.getAnimationHandler().getAnimation();
-        return anim != null && anim.is(CHARGING) && anim.isPast("attack");
+    public List<? extends ExtendedSensor<? extends Pegasus>> getSensors() {
+        return List.of();
     }
 
     @Override
-    public boolean causeFallDamage(float distance, float damageMultiplier, DamageSource source) {
-        return false;
+    public BrainActivityGroup<? extends Pegasus> getCoreTasks() {
+        return BrainActivityGroup.coreTasks(
+                new FloatToSurfaceOfFluid<GordiusWheel>(),
+                new SetTargetFromRider<>());
+    }
+
+    @Override
+    public BrainActivityGroup<? extends Pegasus> getIdleTasks() {
+        return BrainActivityGroup.idleTasks(
+                new MoveToWalkTarget<>(),
+                new FirstApplicableBehaviour<>(
+                        new TargetOrRetaliate<GordiusWheel>(),
+                        new SetMoveToRestriction<GordiusWheel>(),
+                        new SetRandomWalkTarget<>().startCondition(m -> m.getRandom().nextInt(120) == 0)
+                )
+        );
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public BrainActivityGroup<? extends Pegasus> getFightTasks() {
+        return BrainActivityGroup.fightTasks(
+                new InvalidateAttackTarget<Pegasus>(),
+                new FirstApplicableBehaviour<>(
+                        (ExtendedBehaviour<Pegasus>) this.getCooldownAI()
+                                .startCondition(Pegasus::runCooldownBehaviour)
+                                .stopIf(e -> !e.runCooldownBehaviour()),
+                        (ExtendedBehaviour<Pegasus>) this.getCombatAI()
+                ).startCondition(m -> m.getTarget() != null)
+        );
+    }
+
+    public ExtendedBehaviour<? extends Pegasus> getCombatAI() {
+        return AttackBehaviourBuilder.<Pegasus>create()
+                .start(STOMP).play(BehaviourUtils.cooldownedPlay(true, 20, 45))
+                .condition(entity -> !entity.canFly())
+                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .end(6)
+                .start(CHARGING).play(BehaviourUtils.cooldownedPlay(false, 30, 70))
+                .condition(entity -> !entity.canFly())
+                .prepare(new SetWalkTargetWithinDist<Pegasus>().min(3)
+                        .max(10).speedMod(1.2f))
+                .prepareOptional(BehaviourUtils.timedMoveAttack(40, 70))
+                .prepare(new ChargeBehaviour())
+                .end(6)
+                .start(CHARGING).play(BehaviourUtils.cooldownedPlay(false, 30, 70))
+                .condition(entity -> !entity.canFly() && BehaviourUtils.ifFurtherThan(7).test(entity))
+                .prepare(new SetWalkTargetWithinDist<Pegasus>().min(3)
+                        .max(10).speedMod(1.2f))
+                .prepareOptional(BehaviourUtils.timedMoveAttack(40, 70))
+                .prepare(new ChargeBehaviour())
+                .end(7)
+                .start(CHARGING).play(BehaviourUtils.cooldownedPlay(false, 100, 200))
+                .condition(Pegasus::canFly)
+                .prepare(new SetWalkTargetWithinDist<Pegasus>().min(3)
+                        .max(10).speedMod(1.2f))
+                .prepareOptional(BehaviourUtils.timedMoveAttack(40, 70))
+                .prepare(new ChargeBehaviour())
+                .end(5)
+                .build();
+    }
+
+    public ExtendedBehaviour<? extends Pegasus> getCooldownAI() {
+        return SelectableBehaviourBuilder.<Pegasus>builder()
+                .add(7, entity -> !entity.canFly(), new SetWalkTargetToAttackTarget<>(), BehaviourUtils.moveTo())
+                .add(5, entity -> !entity.canFly() && BehaviourUtils.ifCloserThan(7).test(entity),
+                        new SetRandomWalkTarget<Pegasus>().setRadius(12, 5), BehaviourUtils.moveTo())
+                .add(4, entity -> !entity.canFly() && BehaviourUtils.ifCloserThan(4).test(entity),
+                        new SetWalkTargetAwayFromTarget<Pegasus>()
+                                .radius(6), BehaviourUtils.moveTo())
+                .add(5, Pegasus::canFly, new AllApplicableBehaviours<>(
+                        new SequentialBehaviour<>(
+                                new FirstApplicableBehaviour<>(
+                                        new SetWalkTargetToAttackTarget<>()
+                                                .closeEnoughDist(BehaviourUtils.closeEnough(8))
+                                                .startCondition(BehaviourUtils.ifFurtherThan(8)),
+                                        new RandomPositionAroundTarget<>()
+                                ), BehaviourUtils.moveTo()
+                        ),
+                        new LookAtTarget<>(),
+                        new LookAtAttackTarget<>())
+                )
+                .build();
+    }
+
+    protected boolean runCooldownBehaviour() {
+        return !this.getAnimationHandler().hasAnimation() && BrainUtils.hasMemory(this, MemoryModuleType.ATTACK_COOLING_DOWN);
+    }
+
+    @Override
+    protected Brain.Provider<?> brainProvider() {
+        return new SmartBrainProvider<>(this);
+    }
+
+    @Override
+    protected void sendDebugPackets() {
+        super.sendDebugPackets();
+        DebugPackets.sendEntityBrain(this);
     }
 
     @Override
     public void tick() {
         super.tick();
-        this.goalSelector.tick();
         this.getAnimationHandler().tick();
         if (this.level().isClientSide) {
             if (this.getAnimationHandler().isCurrent(SUMMON)) {
@@ -223,9 +322,9 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
                     float b = 245 / 255F;
                     float scale = (float) (0.05 + this.getRandom().nextDouble() * 0.1);
                     this.level().addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
-                                    TrailInfo.builder(new MotionTrailProvider.MotionTrailData(dir, 6, 10))
-                                            .setColor(r, g, b, 0.6f)
-                                            .setColor2(r, g, b, 0.6f)
+                                    TrailInfo.builder(new MotionTrailProvider.MotionTrailData(dir, 3, 6))
+                                            .setColor(r, g, b, 0.4f)
+                                            .setColor2(r, g, b, 0.4f)
                                             .setWidth(scale)
                                             .setWidth2(scale)
                                             .build()),
@@ -233,24 +332,7 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
                 }
             }
         }
-        this.standInterpolation++;
-        if (this.shouldStand())
-            this.standInterpolation = -1;
-        if (this.getMovement() != MoveType.NONE) {
-            this.moveTick = Math.min(MOVE_TICK_MAX, ++this.moveTick);
-        } else {
-            this.moveTick = Math.max(0, --this.moveTick);
-        }
         if (!this.level().isClientSide) {
-            double speed = this.getDeltaMovement().lengthSqr();
-            if (speed > 0.01) {
-                this.setMovingFlag(this.moveControl.getSpeedModifier() > 1 ? MoveType.RUN : MoveType.WALK);
-            } else {
-                this.setMovingFlag(MoveType.NONE);
-            }
-            if (this.tickCount % 10 == 0 && this.getControllingPassenger() instanceof Mob mob) {
-                this.setTarget(mob.getTarget());
-            }
             this.getAnimationHandler().runIfNotNull(this::handleAttack);
             if (this.getTarget() == null || !this.getTarget().isAlive()) {
                 if (this.canFly())
@@ -266,25 +348,93 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
                     }
                 }
             }
-            if (this.getTarget() == null) {
-                if (this.getFirstPassenger() instanceof Mob mob) {
-                    if (mob.getTarget() != this.getTarget())
-                        this.setTarget(mob.getTarget());
-                }
-            }
         }
+        this.moveStateTracker.tick();
+        Vec3 lookDir = this.directionToLookAt();
+        if (lookDir != null) {
+            float[] yxRot = MathsHelper.YXRotFrom(lookDir);
+            this.setYRot(MathsHelper.rotlerp(this.getYRot(), yxRot[0], 30));
+            this.setXRot(MathsHelper.rotlerp(this.getXRot(), yxRot[1], 30));
+            this.setYBodyRot(this.getYRot());
+            this.setYHeadRot(this.getYRot());
+        }
+    }
+
+    private Vec3 directionToLookAt() {
+        if (this.isCharging())
+            return this.getChargeMotion();
+        return null;
+    }
+
+    @Override
+    protected void customServerAiStep() {
+        super.customServerAiStep();
+        this.tickBrain(this);
+        if (!this.onGround())
+            this.setMovingFlag(MoveType.FLY);
+        else if (!(this.getControllingPassenger() instanceof Player) && this.getDeltaMovement().horizontalDistanceSqr() > 0.003 && this.isAlive()) {
+            double speedMod = this.getMoveControl().getSpeedModifier();
+            MoveType move;
+            if (speedMod > 1 || (speedMod >= 1 && this.getTarget() != null)) {
+                move = MoveType.RUN;
+            } else if (speedMod <= 0.8) {
+                move = MoveType.SNEAK;
+            } else {
+                move = MoveType.WALK;
+            }
+            if (this.isImmobile())
+                move = MoveType.NONE;
+            this.setMovingFlag(move);
+        } else {
+            this.setMovingFlag(MoveType.NONE);
+            this.setShiftKeyDown(false);
+            this.setSprinting(false);
+        }
+    }
+
+    public void setMovingFlag(MoveType type) {
+        this.entityData.set(MOVE_FLAGS, (byte) type.ordinal());
+    }
+
+    public MoveType getMoveType() {
+        return MoveType.values()[this.entityData.get(MOVE_FLAGS)];
+    }
+
+    public float interpolatedMoveTick(float partialTicks) {
+        return this.moveStateTracker.interpolatedMoveTick(partialTicks);
+    }
+
+    public float interpolatedMoveTickOf(MoveType type, float partialTicks) {
+        return this.moveStateTracker.interpolatedMoveTickOf(type, partialTicks);
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag compound) {
+        super.addAdditionalSaveData(compound);
+        compound.putBoolean("Flying", this.canFly());
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag compound) {
+        super.readAdditionalSaveData(compound);
+        this.setCanFly(compound.getBoolean("Flying"));
     }
 
     public void handleAttack(AnimationState anim) {
         if (anim.is(CHARGING)) {
             if (anim.isPast("attack")) {
-                this.setDeltaMovement(this.chargeMotion);
+                Vec3 dir = this.getChargeMotion();
+                if (dir == null) {
+                    this.setChargeTo(this.position().add(this.getLookAngle().scale(10)));
+                    dir = this.getChargeMotion();
+                }
+                this.setDeltaMovement(dir);
                 OrientedBoundingBox obb = this.prepareAttackBox(anim.getAnimation(), null, 0.2, false);
                 List<LivingEntity> list = this.level().getEntitiesOfClass(LivingEntity.class, obb.getEncompassingBox(),
                         entity -> this.targetPred.test(entity) && obb.intersects(entity.getBoundingBox()));
                 boolean hit = this.canFly() && this.verticalCollision;
                 if (hit) {
-                    this.chargeMotion = new Vec3(this.chargeMotion.x() * 0.4, Math.abs(this.chargeMotion.y()) * 0.7, this.chargeMotion.z() * 0.4);
+                    this.setChargeMotion(new Vec3(dir.x() * 0.4, Math.abs(dir.y()) * 0.7, dir.z() * 0.4));
                 }
                 for (LivingEntity e : list) {
                     if (this.hitEntities.contains(e))
@@ -342,93 +492,45 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
         return Utils.runWithInvulTimer(this, entity, super::doHurtTarget, 0);
     }
 
-    public void setMovingFlag(MoveType type) {
-        this.entityData.set(MOVE_FLAGS, (byte) type.ordinal());
-    }
-
-    public MoveType getMovement() {
-        return MoveType.values()[this.entityData.get(MOVE_FLAGS)];
-    }
-
-    public float interpolatedMoveTick(float partialTicks) {
-        return Mth.clamp((this.moveTick + (this.getMovement() != MoveType.NONE ? partialTicks : -partialTicks)) / (float) MOVE_TICK_MAX, 0, 1);
-    }
-
-    public float interpolatedStandingick(float partialTicks) {
-        return Mth.clamp((this.standInterpolation + partialTicks) / (float) 3, 0, 1);
-    }
-
     @Override
-    protected boolean isImmobile() {
-        return super.isImmobile() | this.getAnimationHandler().isCurrent(SUMMON);
+    public AnimationHandler<Pegasus> getAnimationHandler() {
+        return this.animationHandler;
     }
 
-    @Override
-    public void travel(Vec3 vec) {
-        if (this.isVehicle() && this.getControllingPassenger() instanceof LivingEntity entitylivingbase) {
-            this.setYRot(entitylivingbase.getYRot());
-            this.setXRot(entitylivingbase.getXRot() * 0.5f);
-            this.yRotO = this.getYRot();
-            this.setRot(this.getYRot(), this.getXRot());
-            this.yBodyRot = this.getYRot();
-            this.yHeadRot = this.yBodyRot;
-            float strafing = entitylivingbase.xxa * 0.5f;
-            float forward = entitylivingbase.zza;
-            if (forward <= 0.0f) {
-                forward *= 0.25f;
+    public boolean isCharging() {
+        if (this.getAnimationHandler() == null)
+            return false;
+        AnimationState anim = this.getAnimationHandler().getAnimation();
+        return anim != null && anim.is(CHARGING) && anim.isPast("attack");
+    }
+
+    public Vec3 getChargeMotion() {
+        return this.getDataContainer().get(CHARGE_MOTION);
+    }
+
+    public void setChargeTo(Vec3 pos) {
+        Vec3 dir = pos.subtract(this.position());
+        if (!this.canFly()) {
+            dir = new Vec3(dir.x(), 0, dir.z());
+            if (dir.lengthSqr() > 1.3 * 1.3) {
+                dir = dir.normalize().scale(1.3);
             }
-            if (this.isControlledByLocalInstance()) {
-                this.setSpeed((float) this.getAttributeValue(Attributes.MOVEMENT_SPEED));
-                forward *= 0.85;
-                strafing *= 0.85;
-                super.travel(new Vec3(strafing, vec.y, forward));
-            } else if (entitylivingbase instanceof Player) {
-                this.setDeltaMovement(Vec3.ZERO);
+        } else {
+            dir = dir.scale(0.21);
+            if (dir.lengthSqr() > 2.1 * 2.1) {
+                dir = dir.normalize().scale(2.1);
             }
-            this.calculateEntityAnimation(false);
-        } else {
-            super.travel(vec);
         }
+        this.setChargeMotion(dir);
     }
 
-    @Nullable
-    @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData) {
-        SpawnGroupData data = super.finalizeSpawn(level, difficulty, reason, spawnData);
-        if (reason == MobSpawnType.SPAWN_EGG || reason == MobSpawnType.MOB_SUMMONED) {
-            this.getAnimationHandler().setAnimation(SUMMON);
-        }
-        return data;
+    public void setChargeMotion(Vec3 chargeMotion) {
+        this.getDataContainer().set(CHARGE_MOTION, chargeMotion);
     }
 
     @Override
-    @Nullable
-    public LivingEntity getControllingPassenger() {
-        return this.getPassengers().isEmpty() || !(this.getPassengers().getFirst() instanceof Player player) ? null : player;
-    }
-
-    @Override
-    public PathNavigation getNavigation() {
-        if (this.canFly())
-            return this.flyingNavigator;
-        return super.getNavigation();
-    }
-
-    public void setCanFly(boolean flag) {
-        this.entityData.set(FLYING, flag);
-        this.setNoGravity(flag);
-        if (flag) {
-            this.navigation = this.flyingNavigator;
-        } else {
-            this.navigation = this.main;
-        }
-        this.main.stop();
-        this.flyingNavigator.stop();
-        this.setDeltaMovement(this.getDeltaMovement().scale(0.3));
-    }
-
-    public boolean canFly() {
-        return this.entityData.get(FLYING);
+    public boolean causeFallDamage(float distance, float damageMultiplier, DamageSource source) {
+        return false;
     }
 
     @Override
@@ -443,44 +545,40 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
-        compound.putBoolean("Flying", this.canFly());
+    protected boolean isImmobile() {
+        return super.isImmobile() | this.getAnimationHandler().isCurrent(SUMMON);
     }
 
+    @Nullable
     @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
-        this.setCanFly(compound.getBoolean("Flying"));
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData) {
+        SpawnGroupData data = super.finalizeSpawn(level, difficulty, reason, spawnData);
+        if (reason == MobSpawnType.SPAWN_EGG || reason == MobSpawnType.MOB_SUMMONED) {
+            this.getAnimationHandler().setAnimation(SUMMON);
+        }
+        return data;
+    }
+
+    public void setCanFly(boolean flag) {
+        this.entityData.set(FLYING, flag);
+        this.setNoGravity(flag);
+        this.navigation.stop();
+        if (flag) {
+            this.navigation = this.flyingNavigator;
+        } else {
+            this.navigation = this.main;
+        }
+        this.setDeltaMovement(this.getDeltaMovement().scale(0.3));
+    }
+
+    public boolean canFly() {
+        return this.entityData.get(FLYING);
     }
 
     @Override
     public boolean shouldStand() {
         AnimationState anim = this.getAnimationHandler().getAnimation();
         return anim != null && anim.is(SUMMON) && !anim.isPast(1.);
-    }
-
-    public void setChargeTo(Vec3 pos) {
-        Vec3 dir = pos.subtract(this.position());
-        if (!this.canFly()) {
-            dir = new Vec3(dir.x(), 0, dir.z());
-            if (dir.lengthSqr() > 1.3 * 1.3) {
-                dir = dir.normalize().scale(1.3);
-            }
-        } else {
-            dir = dir.scale(0.3);
-            if (dir.lengthSqr() > 2.5 * 2.5) {
-                dir = dir.normalize().scale(2.5);
-            }
-        }
-        this.chargeMotion = dir;
-        float[] xYRot = MathsHelper.YXRotFrom(dir);
-        float targetYRot = xYRot[0];
-        float targetXRot = xYRot[1];
-        this.setYRot(targetYRot);
-        this.setXRot(targetXRot);
-        this.yHeadRot = this.getYRot();
-        this.yBodyRot = this.getYRot();
     }
 
     class PegasusMoveController extends MoveControl {
@@ -491,7 +589,9 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
 
         @Override
         public void tick() {
+            Operation op = this.operation;
             if (this.operation == Operation.MOVE_TO && Pegasus.this.canFly()) {
+                this.operation = MoveControl.Operation.WAIT;
                 BlockPos targetPos = this.mob.getNavigation().getTargetPos();
                 if (targetPos == null)
                     return;
@@ -521,114 +621,98 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
                 super.tick();
             if (Pegasus.this.canFly()) {
                 LivingEntity target = this.mob.getTarget();
-                if (target != null && target.distanceToSqr(this.mob) < 24 * 24) {
-                    this.mob.lookAt(target, 60.0F, 30.0F);
+                if (target != null) {
+                    if (target.distanceToSqr(this.mob) < 24 * 24) {
+                        this.mob.lookAt(target, 60.0F, 30.0F);
+                    }
+                    if (op == Operation.WAIT) {
+                        if (!Pegasus.this.getAnimationHandler().hasAnimation() && this.mob.getY() < target.getY() + target.getBbHeight() + 2.5) {
+                            Vec3 delta = this.mob.getDeltaMovement().add(0, 0.02, 0);
+                            if (delta.y() > 0.14) {
+                                delta = new Vec3(delta.x(), 0.14, delta.z());
+                            }
+                            this.mob.setDeltaMovement(delta);
+                        } else {
+                            this.mob.setDeltaMovement(this.mob.getDeltaMovement().scale(0.98));
+                        }
+                    }
                 }
             }
         }
     }
 
-    public enum MoveType {
-        NONE,
-        WALK,
-        RUN
+    public static class ChargeBehaviour extends ExtendedBehaviour<Pegasus> {
+
+        private static final MemoryTest MEMORIES = MemoryTest.builder(1)
+                .hasMemories(MemoryModuleType.ATTACK_TARGET);
+
+        private Vec3 targetPos;
+
+        @Override
+        protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+            return MEMORIES;
+        }
+
+        @Override
+        protected boolean shouldKeepRunning(Pegasus entity) {
+            double dX = this.targetPos.x() - entity.getX();
+            double dZ = this.targetPos.z() - entity.getZ();
+            float yRot = MathsHelper.YRotFrom(dX, dZ);
+            float diffY = Mth.degreesDifference(entity.getYRot(), yRot);
+            if (Math.abs(diffY) < 32) {
+                entity.setChargeTo(this.targetPos);
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        protected void start(Pegasus entity) {
+            this.targetPos = BrainUtils.getTargetOfEntity(entity).getEyePosition();
+        }
+
+        @Override
+        protected void tick(Pegasus entity) {
+            super.tick(entity);
+            double dY = this.targetPos.y() - entity.getEyeY();
+            double dX = this.targetPos.x() - entity.getX();
+            double dZ = this.targetPos.z() - entity.getZ();
+            float[] yXRot = MathsHelper.YXRotFrom(dX, dY, dZ);
+            entity.setYRot(MathsHelper.rotlerp(entity.getYRot(), yXRot[0], 20));
+            entity.setXRot(MathsHelper.rotlerp(entity.getXRot(), yXRot[1], 30));
+            entity.setYBodyRot(entity.getYRot());
+            entity.setYHeadRot(entity.getYRot());
+        }
     }
-//
-//    public static class ChargeTo implements ActionStart<Pegasus> {
-//
-//        private boolean moving;
-//        private Vec3 targetPos;
-//
-//        @Override
-//        public GoalAttackAction.IntProvider<Pegasus> timeout() {
-//            return e -> 20;
-//        }
-//
-//        @Override
-//        public boolean start(AnimatedAttackGoal<Pegasus> goal, LivingEntity target) {
-//            if (goal.current == null)
-//                return false;
-//            if (goal.distanceToTargetSq < 4 * 4) {
-//                // Move away if too close
-//                for (int i = 0; i < 10; i++) {
-//                    Vec3 posAway = DefaultRandomPos.getPosAway(goal.attacker, 6, 5, target.position());
-//                    if (posAway != null) {
-//                        goal.moveToTargetPosition(posAway.x(), posAway.y(), posAway.z(), 1.1);
-//                        break;
-//                    }
-//                }
-//                this.moving = true;
-//            }
-//            if (this.moving && !goal.attacker.getNavigation().isDone()) {
-//                return false;
-//            }
-//            if (this.targetPos == null) {
-//                this.targetPos = target.getEyePosition();
-//            }
-//            double dY = this.targetPos.y() - goal.attacker.getEyeY();
-//            double dX = this.targetPos.x() - goal.attacker.getX();
-//            double dZ = this.targetPos.z() - goal.attacker.getZ();
-//            float[] xYRot = MathsHelper.YXRotFrom(dX, dY, dZ);
-//            float yRot = xYRot[0];
-//            float xRot = xYRot[1];
-//
-//            float diffY = Mth.degreesDifference(goal.attacker.getYRot(), yRot);
-//            goal.attacker.setXRot(xRot);
-//            if (Math.abs(diffY) < 8) {
-//                goal.attacker.setChargeTo(this.targetPos);
-//                return true;
-//            }
-//            goal.attacker.setYRot(goal.attacker.getYRot() + Mth.clamp(diffY, -10, 10));
-//            goal.attacker.yBodyRot = goal.attacker.getYRot();
-//            goal.attacker.yHeadRot = goal.attacker.getYRot();
-//            goal.attacker.hasImpulse = true;
-//            return false;
-//        }
-//    }
-//
-//    public static class PegasusFlyRunner implements ActionRun<Pegasus> {
-//
-//        private final double speed;
-//
-//        private boolean start, towards;
-//        private int cooldown;
-//
-//        public PegasusFlyRunner(double speed) {
-//            this.speed = speed;
-//        }
-//
-//        @Override
-//        public boolean run(AnimatedAttackGoal<Pegasus> goal, LivingEntity target, AnimatedAction anim) {
-//            if (!this.start) {
-//                this.start = true;
-//                if (goal.distanceToTargetSq > 24 * 24) {
-//                    goal.moveToTarget(this.speed);
-//                    this.towards = true;
-//                } else {
-//                    for (int i = 0; i < 10; i++) {
-//                        double x = target.getX() + (goal.attacker.getRandom().nextDouble() * 10) - 5;
-//                        double y = target.getEyeY() + 3 + (goal.attacker.getRandom().nextDouble() * 4);
-//                        double z = target.getZ() + (goal.attacker.getRandom().nextDouble() * 10) - 5;
-//                        BlockPos blockPos = new BlockPos(x, y, z);
-//                        if (GoalUtils.isOutsideLimits(blockPos, goal.attacker) || GoalUtils.isRestricted(true, goal.attacker, blockPos) || GoalUtils.isNotStable(goal.attacker.getNavigation(), blockPos) || GoalUtils.hasMalus(goal.attacker, blockPos)) {
-//                            continue;
-//                        }
-//                        goal.moveToTargetPosition(x, y, z, this.speed);
-//                        this.cooldown = goal.attacker.getRandom().nextInt(7) + 5;
-//                        break;
-//                    }
-//                }
-//            }
-//            if (this.towards && goal.distanceToTargetSq < 20 * 20) {
-//                goal.attacker.getNavigation().stop();
-//            }
-//            goal.attacker.lookControl.setLookAt(target, 100, 10);
-//            boolean done = goal.attacker.getNavigation().isDone();
-//            if (done) {
-//                if (--this.cooldown <= 0)
-//                    this.start = false;
-//            }
-//            return false;
-//        }
-//    }
+
+    public static class RandomPositionAroundTarget<E extends PathfinderMob> extends SetRandomFlyingTarget<E> {
+
+        private static final MemoryTest MEMORIES = MemoryTest.builder(2)
+                .noMemory(MemoryModuleType.WALK_TARGET)
+                .hasMemories(MemoryModuleType.ATTACK_TARGET);
+
+        @Override
+        protected List<Pair<MemoryModuleType<?>, MemoryStatus>> getMemoryRequirements() {
+            return MEMORIES;
+        }
+
+        @Override
+        protected Vec3 getTargetPos(E entity) {
+            LivingEntity target = BrainUtils.getTargetOfEntity(entity);
+            if (target == null)
+                return null;
+            for (int i = 0; i < 10; i++) {
+                double x = target.getX() + (entity.getRandom().nextDouble() * 10) - 5;
+                double y = target.getEyeY() + 3 + (entity.getRandom().nextDouble() * 4);
+                double z = target.getZ() + (entity.getRandom().nextDouble() * 10) - 5;
+                BlockPos blockPos = BlockPos.containing(x, y, z);
+                blockPos = RandomPos.moveUpOutOfSolid(blockPos, entity.level().getMaxBuildHeight(), (pos) -> GoalUtils.isSolid(entity, pos));
+                if (GoalUtils.isOutsideLimits(blockPos, entity) || GoalUtils.isRestricted(true, entity, blockPos) || GoalUtils.hasMalus(entity, blockPos)) {
+                    continue;
+                }
+                return new Vec3(x, y, z);
+            }
+            return null;
+        }
+    }
 }

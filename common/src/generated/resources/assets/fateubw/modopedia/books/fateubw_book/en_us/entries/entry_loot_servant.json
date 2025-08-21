@@ -1,0 +1,19 @@
+{
+  "assigned_items": [],
+  "icon": {
+    "count": 1,
+    "id": "fateubw:artoria_pendragon_saber_spawn_egg"
+  },
+  "pages": [
+    {
+      "components": [
+        {
+          "header": "Servant",
+          "template": "modopedia:page/headered_text",
+          "text": "Resummons the servant used in the last grailwar. Or drops the servants loot (i.e. their weapon)"
+        }
+      ]
+    }
+  ],
+  "title": "Servant"
+}

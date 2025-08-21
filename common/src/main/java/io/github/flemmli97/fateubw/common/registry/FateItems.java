@@ -45,7 +45,7 @@ public class FateItems {
 
     public static final RegistryEntrySupplier<Item, SwordItem> INVISEXCALIBUR = register("invis_excalibur", () -> new SwordItem(ItemTiers.INVIS_EXCALIBUR, new Item.Properties()
             .attributes(createAttributes(ItemTiers.INVIS_EXCALIBUR, -2.4f))
-            .component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)));
+            .component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)), false);
     public static final RegistryEntrySupplier<Item, ExcaliburItem> EXCALIBUR = register("excalibur", () -> new ExcaliburItem(new Item.Properties().attributes(createAttributes(ItemTiers.EXCALIBUR, -2.4f))));
     public static final RegistryEntrySupplier<Item, GaeBolgItem> GAEBOLG = register("gae_bolg", () -> new GaeBolgItem(new Item.Properties().attributes(createAttributes(ItemTiers.GAE_BOLG, -2, 5))));
     public static final RegistryEntrySupplier<Item, TieredItem> GAEDEARG = register("gae_dearg", () -> new TieredItem(ItemTiers.GAE_DEARG, new Item.Properties().attributes(createAttributes(ItemTiers.GAE_DEARG, -1.5f, 5))));

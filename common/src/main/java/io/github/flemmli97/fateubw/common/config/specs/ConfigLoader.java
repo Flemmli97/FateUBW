@@ -9,6 +9,7 @@ public class ConfigLoader {
         ClientConfig.manaX = ConfigSpecs.CLIENT_CONFIG.manaBarX.get();
         ClientConfig.manaY = ConfigSpecs.CLIENT_CONFIG.manaBarY.get();
         ClientConfig.manaBarPosition = ConfigSpecs.CLIENT_CONFIG.manaBarPosition.get();
+        ClientConfig.screenShakeIntensity = ConfigSpecs.CLIENT_CONFIG.screenShakeIntensity.get().floatValue();
     }
 
     public static void loadCommon() {

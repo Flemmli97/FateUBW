@@ -1,9 +1,11 @@
 package io.github.flemmli97.fateubw.common.network;
 
 import io.github.flemmli97.fateubw.Fate;
+import io.github.flemmli97.fateubw.api.entity.CommandType;
+import io.github.flemmli97.fateubw.api.entity.ServantLike;
 import io.github.flemmli97.fateubw.common.attachment.PlayerData;
 import io.github.flemmli97.fateubw.common.config.CommonConfig;
-import io.github.flemmli97.fateubw.common.entity.servant.BaseServant;
+import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import io.github.flemmli97.fateubw.platform.Platform;
@@ -20,13 +22,13 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.EntityHitResult;
 
-public record C2SServantCommand(Type command, int entityId) implements CustomPacketPayload {
+public record C2SServantCommand(ActionType command, int entityId) implements CustomPacketPayload {
 
     public static final CustomPacketPayload.Type<C2SServantCommand> TYPE = new CustomPacketPayload.Type<>(Fate.modRes("c2s_servant_command"));
     public static final StreamCodec<RegistryFriendlyByteBuf, C2SServantCommand> STREAM_CODEC = new StreamCodec<>() {
         @Override
         public C2SServantCommand decode(RegistryFriendlyByteBuf buf) {
-            return new C2SServantCommand(buf.readEnum(Type.class), buf.readInt());
+            return new C2SServantCommand(buf.readEnum(ActionType.class), buf.readInt());
         }
 
         @Override
@@ -40,55 +42,42 @@ public record C2SServantCommand(Type command, int entityId) implements CustomPac
         if (sender == null)
             return;
         PlayerData data = Platform.INSTANCE.getPlayerData(sender);
-        BaseServant servant = getServant(sender, pkt.entityId);
+        ServantLike<?> servant = getServant(sender, pkt.entityId);
         if (servant == null)
             return;
         switch (pkt.command) {
             case NORMAL -> {
-                servant.updateAI(pkt.command);
+                servant.onPlayerCommand(sender, pkt.command.as());
                 sender.sendSystemMessage(Component.translatable("fateubw.chat.command.attackservant").withStyle(ChatFormatting.RED));
             }
             case AGGRESSIVE -> {
-                servant.updateAI(pkt.command);
+                servant.onPlayerCommand(sender, pkt.command.as());
                 sender.sendSystemMessage(Component.translatable("fateubw.chat.command.attackall").withStyle(ChatFormatting.RED));
             }
             case DEFENSIVE -> {
-                servant.updateAI(pkt.command);
+                servant.onPlayerCommand(sender, pkt.command.as());
                 sender.sendSystemMessage(Component.translatable("fateubw.chat.command.defensive").withStyle(ChatFormatting.RED));
             }
             case FOLLOW -> {
-                servant.updateAI(pkt.command);
+                servant.onPlayerCommand(sender, pkt.command.as());
                 sender.sendSystemMessage(Component.translatable("fateubw.chat.command.follow").withStyle(ChatFormatting.RED));
             }
             case STAY -> {
-                servant.updateAI(pkt.command);
+                servant.onPlayerCommand(sender, pkt.command.as());
                 sender.sendSystemMessage(Component.translatable("fateubw.chat.command.stay").withStyle(ChatFormatting.RED));
             }
             case GUARD -> {
-                servant.updateAI(pkt.command);
+                servant.onPlayerCommand(sender, pkt.command.as());
                 sender.sendSystemMessage(Component.translatable("fateubw.chat.command.patrol").withStyle(ChatFormatting.RED));
             }
-            case NP -> {
-                if (!servant.forcedNP) {
-                    if (!sender.isCreative()) {
-                        if (data.useMana(sender, servant.props().hogouMana()) && data.useCommandSeal(sender)) {
-                            sender.sendSystemMessage(Component.translatable("fateubw.chat.command.npsuccess").withStyle(ChatFormatting.RED));
-                            servant.forcedNP = true;
-                        } else {
-                            sender.sendSystemMessage(Component.translatable("fateubw.chat.command.npfail").withStyle(ChatFormatting.RED));
-                        }
-                    } else {
-                        sender.sendSystemMessage(Component.translatable("fateubw.chat.command.npsuccess").withStyle(ChatFormatting.RED));
-                        servant.forcedNP = true;
-                    }
-                } else {
-                    sender.sendSystemMessage(Component.translatable("fateubw.chat.command.npprep").withStyle(ChatFormatting.RED));
-                }
+            case NP -> servant.onPlayerCommand(sender, pkt.command.as());
+            case KILL -> {
+                servant.onPlayerCommand(sender, pkt.command.as());
+                sender.sendSystemMessage(Component.translatable("fateubw.chat.command.kill").withStyle(ChatFormatting.RED));
             }
-            case KILL -> servant.onKillOrder(sender, data.useCommandSeal(sender));
             case TELEPORT -> {
-                servant.randomTeleport(sender.getX(), sender.getY(), sender.getZ(), false);
-                servant.setTarget(null);
+                servant.get().randomTeleport(sender.getX(), sender.getY(), sender.getZ(), false);
+                servant.get().setTarget(null);
                 if (CommonConfig.punishTeleport) {
                     for (BaseServant others : sender.level().getEntitiesOfClass(BaseServant.class, sender.getBoundingBox().inflate(32)))
                         if (others != servant && !Utils.alliedTo(sender, others)) {
@@ -103,7 +92,7 @@ public record C2SServantCommand(Type command, int entityId) implements CustomPac
             case BOOST -> {
                 if (data.useCommandSeal(sender)) {
                     for (MobEffectInstance effect : CommonConfig.npBoostEffect.potions())
-                        servant.addEffect(effect);
+                        servant.get().addEffect(effect);
                     sender.sendSystemMessage(Component.translatable("fateubw.chat.command.spell.success").withStyle(ChatFormatting.RED));
                 } else
                     sender.sendSystemMessage(Component.translatable("fateubw.chat.command.spell.fail").withStyle(ChatFormatting.RED));
@@ -112,20 +101,27 @@ public record C2SServantCommand(Type command, int entityId) implements CustomPac
                 EntityHitResult res = HitResultUtils.calculateEntityFromLook(sender, 16);
                 if (res != null && res.getEntity() instanceof LivingEntity target) {
                     if (!Utils.alliedTo(sender, target)) {
-                        servant.setTarget(target);
+                        servant.get().setTarget(target);
                         for (BaseServant others : sender.level().getEntitiesOfClass(BaseServant.class, sender.getBoundingBox().inflate(32), s -> sender.getUUID().equals(s.getOwnerUUID()))) {
                             others.setTarget(target);
                         }
                     }
                 }
             }
-            case CLOSE -> servant.setSentOwnerData(false);
+            case CLOSE -> servant.shouldScheduleEntityDataSync(false);
         }
     }
 
-    public static BaseServant getServant(ServerPlayer sender, int entityId) {
-        Entity entity = entityId == -1 ? GrailWarHandler.get(sender.getServer()).getServant(sender) : sender.level().getEntity(entityId);
-        if (!(entity instanceof BaseServant servant) || !sender.getUUID().equals(servant.getOwnerUUID()))
+    public static ServantLike<?> getServant(ServerPlayer sender, int entityId) {
+        if (entityId == -1) {
+            ServantLike<?> servantLike = GrailWarHandler.get(sender.getServer())
+                    .getServant(sender).orElse(null);
+            if (servantLike != null && sender.getUUID().equals(servantLike.getOwnerUUID()))
+                return servantLike;
+            return null;
+        }
+        Entity entity = sender.level().getEntity(entityId);
+        if (!(entity instanceof ServantLike<?> servant) || !sender.getUUID().equals(servant.getOwnerUUID()))
             return null;
         return servant;
     }
@@ -135,7 +131,7 @@ public record C2SServantCommand(Type command, int entityId) implements CustomPac
         return TYPE;
     }
 
-    public enum Type {
+    public enum ActionType {
 
         NORMAL,
         AGGRESSIVE,
@@ -148,6 +144,21 @@ public record C2SServantCommand(Type command, int entityId) implements CustomPac
         BOOST,
         TELEPORT,
         TARGET,
-        CLOSE
+        CLOSE;
+
+        public CommandType as() {
+            return switch (this) {
+                case NORMAL -> CommandType.NORMAL;
+                case AGGRESSIVE -> CommandType.AGGRESSIVE;
+                case DEFENSIVE -> CommandType.DEFENSIVE;
+                case FOLLOW -> CommandType.FOLLOW;
+                case STAY -> CommandType.STAY;
+                case GUARD -> CommandType.GUARD;
+                case NP -> CommandType.NP;
+                case KILL -> CommandType.KILL;
+                default -> null;
+            };
+        }
     }
+
 }

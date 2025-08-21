@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.client.ClientHandler;
 import io.github.flemmli97.fateubw.common.entity.summons.Pegasus;
-import io.github.flemmli97.fateubw.common.utils.MathsHelper;
+import io.github.flemmli97.fateubw.common.entity.utils.MoveType;
 import io.github.flemmli97.tenshilib.client.data.GeoAnimationManager;
 import io.github.flemmli97.tenshilib.client.data.GeoModelManager;
 import io.github.flemmli97.tenshilib.client.data.ReloadableCache;
@@ -13,6 +13,7 @@ import io.github.flemmli97.tenshilib.client.model.BedrockAnimations;
 import io.github.flemmli97.tenshilib.client.model.ExtendedModel;
 import io.github.flemmli97.tenshilib.client.model.ModelPartsContainer;
 import io.github.flemmli97.tenshilib.client.model.RideableModel;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -34,6 +35,7 @@ public class PegasusModel extends EntityModel<Pegasus> implements ExtendedModel,
     public PegasusModel() {
         super();
         this.model = GeoModelManager.getInstance().getModel(LOCATION, model -> {
+            this.head = model.getPart("head");
             this.ridingPosition = model.getPart("mountPos");
         });
         this.anim = GeoAnimationManager.getInstance().getAnimation(LOCATION);
@@ -50,16 +52,12 @@ public class PegasusModel extends EntityModel<Pegasus> implements ExtendedModel,
         this.head.yRot += netHeadYaw * Mth.DEG_TO_RAD * 0.3f;
         this.head.xRot += headPitch * Mth.DEG_TO_RAD * 0.1f;
         float partialTicks = ClientHandler.getPartialTicks();
-        this.anim.get().setVariable("x_rotation", () -> {
-            if (!entity.canFly())
-                return 0;
-            return MathsHelper.XRotFrom(entity.getDeltaMovement());
-        });
+        this.anim.get().setVariable("x_rotation", entity::getXRot);
         if (entity.deathTime <= 0) {
             this.anim.get().doAnimation(this, "idle", entity.tickCount, partialTicks);
-            this.anim.get().doAnimation(this, "walk", entity.tickCount, partialTicks, entity.interpolatedMoveTick(partialTicks), false, true);
-            this.anim.get().doAnimation(this, "run", entity.tickCount, partialTicks, entity.interpolatedMoveTick(partialTicks), false, true);
-            this.anim.get().doAnimation(this, "fly", entity.tickCount, partialTicks, entity.interpolatedMoveTick(partialTicks), false, true);
+            this.anim.get().doAnimation(this, "walk", entity.tickCount, partialTicks, entity.interpolatedMoveTick(partialTicks));
+            this.anim.get().doAnimation(this, "run", entity.tickCount, partialTicks, entity.interpolatedMoveTickOf(MoveType.RUN, partialTicks));
+            this.anim.get().doAnimation(this, "fly", entity.tickCount, partialTicks, entity.interpolatedMoveTickOf(MoveType.FLY, partialTicks));
         }
         this.anim.get().doAnimation(this, entity.getAnimationHandler(), partialTicks);
     }
@@ -72,7 +70,9 @@ public class PegasusModel extends EntityModel<Pegasus> implements ExtendedModel,
     @Override
     public boolean transform(Pegasus entity, EntityRenderer<Pegasus> entityRenderer, Entity rider, EntityRenderer<?> ridingEntityRenderer, PoseStack stack, int riderNum) {
         this.ridingPosition.translateAndRotateWithParents(stack);
-        translateRider(stack, entity, rider);
+        AnimationState animation = entity.getAnimationHandler().getAnimation();
+        if (animation == null || !animation.is(Pegasus.SUMMON) || animation.isPast("seated"))
+            translateRider(stack, entity, rider);
         return true;
     }
 
