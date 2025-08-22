@@ -10,7 +10,7 @@
         {
           "header": "Servant",
           "template": "modopedia:page/headered_text",
-          "text": "Resummons the servant used in the last grailwar. Or drops the servants loot (i.e. their weapon)"
+          "text": "If you desire the bonds you forged with your servants during battle you might wish for them to remain in this world for longer. The grail can resummon your servant you had in the grailwar.\nOr only their weapons if thats all you want..."
         }
       ]
     }

@@ -8,13 +8,22 @@
     {
       "components": [
         {
+          "type": "modopedia:header",
+          "text": "Summoning Altar"
+        },
+        {
+          "type": "modopedia:separator",
+          "y": 10
+        },
+        {
           "type": "modopedia:text",
-          "text": "At the heart of all Grail rituals lies the Summoning Altar—a carefully constructed array designed to bridge the gap between the mortal world and the Throne of Heroes. "
+          "text": "At the heart of all Grail rituals lies the Summoning Altar, a carefully constructed array designed to bridge the gap between the mortal world and the Throne of Heroes.",
+          "y": 17
         },
         {
           "recipe": "fateubw:summoning_altar",
           "template": "modopedia:recipe/crafting",
-          "y": 80
+          "y": 90
         }
       ]
     },
@@ -51,7 +60,7 @@
         },
         {
           "type": "modopedia:text",
-          "text": "To begin inscribe a 5x5 area using chalk centered around the altar. Right clicking the altar should then complete it.",
+          "text": "A proper setup requires you to inscribe a 5x5 area using chalk centered around the altar. Right clicking the altar should then complete it.",
           "y": 90
         }
       ]
@@ -60,7 +69,53 @@
       "components": [
         {
           "type": "modopedia:text",
-          "text": "By offering 8 mana crystals and right clicking once again will start the summoning process calling forth your servant. If you possess an artifact you may place it on the altar before activation. These can boost you chance of increasing the odds that a servant of that class will heed your call."
+          "text": "By offering 8 mana gems and right clicking once again will start the summoning process calling forth your servant.\nIf you possess an artifact you may place it on the altar before activation. These can boost you chance of increasing the odds that a servant of that class will heed your call."
+        },
+        {
+          "display": {
+            "type": "modopedia:cycling",
+            "items": [
+              {
+                "count": 1,
+                "id": "fateubw:artifact_saber"
+              },
+              {
+                "count": 1,
+                "id": "fateubw:artifact_archer"
+              },
+              {
+                "count": 1,
+                "id": "fateubw:artifact_lancer"
+              },
+              {
+                "count": 1,
+                "id": "fateubw:artifact_caster"
+              },
+              {
+                "count": 1,
+                "id": "fateubw:artifact_berserker"
+              },
+              {
+                "count": 1,
+                "id": "fateubw:artifact_rider"
+              },
+              {
+                "count": 1,
+                "id": "fateubw:artifact_assassin"
+              }
+            ]
+          },
+          "template": "modopedia:framed_item_gallery",
+          "x": 42,
+          "y": 115
+        }
+      ]
+    },
+    {
+      "components": [
+        {
+          "type": "modopedia:text",
+          "text": "This procedure only works with a current grailwar ongoing which happens every few days."
         }
       ]
     }

@@ -10,7 +10,7 @@
         {
           "header": "Servant",
           "template": "modopedia:page/headered_text",
-          "text": "Servants are the physical embodiments of Heroic Spirits, summoned via the $(l:entry.altar)summoning altar$(/l) to serve a Master in battle.$(br)$(br) To manage and issue orders to your Servant, press $(4)($(k:fateubw.key.gui))$() to open a GUI allowing you to command basic behaviors—such as follow, hold position etc. Additionally several keybindings grant you more advanced control during battle:"
+          "text": "Servants are the physical embodiments of Heroic Spirits, summoned via the $(el:entry_altar)summoning altar$() to serve a Master in battle.\n\nTo manage and issue orders to your Servant, press the $(c:darkpurple)$(t:Default: h)GUI key$() to open a GUI allowing you to command basic behaviors—such as follow, hold position etc.\n"
         }
       ]
     },
@@ -18,7 +18,25 @@
       "components": [
         {
           "type": "modopedia:text",
-          "text": "$(li)$(4)($(k:fateubw.key.np))$() commands them to use their nobel phantasm at the cost of using up a command spell and your own mana. $(li)$(4)($(k:fateubw.key.boost))$() to expend a Command Spell, releasing a surge of magical energy that greatly enhances your Servant’s combat abilities for a short time.$(li)$(4)($(k:fateubw.key.target))$() while looking at an entity makes your servant prioritize and attack said entity."
+          "text": "There are also some additional actions you can use for more advanced controls during battle:\n ▶ You can command your servant to use their nobel phantasm at the cost of using up a command spell and your own mana ($(c:darkpurple)Default: j$()).\n",
+          "y": 32
+        },
+        {
+          "type": "modopedia:image",
+          "height": 32,
+          "images": [
+            "fateubw:textures/book/command_seal.png"
+          ],
+          "width": 32,
+          "x": 68
+        }
+      ]
+    },
+    {
+      "components": [
+        {
+          "type": "modopedia:text",
+          "text": " ▶ Pressing the $(c:darkpurple)$(t:Default: m)boost key$() will release a surge of magical energy that greatly enhances your Servant’s combat abilities for a short time at the cost of a command spell.\n ▶ Pressing the $(c:darkpurple)$(t:Default: b)target key$() while looking at an entity makes your servant prioritize and attack said entity.\n"
         }
       ]
     }

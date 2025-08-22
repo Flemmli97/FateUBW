@@ -10,7 +10,7 @@
         {
           "header": "Commands",
           "template": "modopedia:page/headered_text",
-          "text": "Allows executing of commands"
+          "text": "The grail is powerful enough to run commands."
         }
       ]
     }

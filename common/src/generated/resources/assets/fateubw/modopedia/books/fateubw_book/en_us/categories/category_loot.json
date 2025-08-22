@@ -10,7 +10,7 @@
     "count": 1,
     "id": "minecraft:chest"
   },
-  "landing_text": "This section is more addressed for pack devs and contains an overview of possible loot to be granted. The actual loot depends on the selected loottable. The server can define custom loottables via datapacks.",
+  "landing_text": "The grail is able to provide you with multiple possible loot.\nThrough various wars fought these loot types seem to be the only ones the grail is able to grant.",
   "sort_num": 1,
   "title": "Loot"
 }

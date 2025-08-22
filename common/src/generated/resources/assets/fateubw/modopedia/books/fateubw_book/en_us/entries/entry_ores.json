@@ -23,12 +23,13 @@
               "id": "fateubw:gem_ore"
             }
           ],
-          "scale": 0.6
+          "scale": 0.5,
+          "y": -5
         },
         {
           "type": "modopedia:text",
-          "text": "These ores pulse faintly with residual mana. When mined, it yields small pieces of mana shards. Combining the different types of shards and a bit of mana one can create a larger and stronger mana crystal. The created gem itself explodes violently when hurled as a projectile but its true purpose lies in the summoning ritual.",
-          "y": 76
+          "text": "Combining different types of shards with a bit of mana fuses them into a larger and stronger mana crystal. While it explodes violently when hurled as a projectile its true purpose lies in the summoning ritual.",
+          "y": 70
         }
       ]
     },
@@ -50,12 +51,13 @@
               "id": "fateubw:artifact_ore"
             }
           ],
-          "scale": 0.6
+          "scale": 0.5,
+          "y": -5
         },
         {
           "type": "modopedia:text",
-          "text": "Deeper still lies the much rarer Artifact Ore. These stones will yield forgotten relics of specific servant classes. These artifacts can be used during a summoning ritual to increasing the chance that a Servant of matching class will heed your call.",
-          "y": 76
+          "text": "Rarely found underground these ores yield forgotten artifacts of servant classes. When used during a summoning ritual they increase the chance that a servant of matching class will heed your call.",
+          "y": 70
         }
       ]
     }

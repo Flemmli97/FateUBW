@@ -9,6 +9,6 @@
     "count": 1,
     "id": "fateubw:mana_gem"
   },
-  "landing_text": "Grail wars happen regulary in the world. The grail will announce when players are able to join one. During a grailwar enemy servants without players might also spawn. Defeating every servant and being the last one standing will grant the player the holy grail rewarding the player with various loot.",
+  "landing_text": "Grail wars happen $(c:gold)regulary$() in the world. The grail will announce when players are able to join one. During a grailwar enemy servants without players might also spawn. Defeating every servant and being the last one standing will grant the player the holy grail rewarding the player with various loot.",
   "title": "Getting started"
 }

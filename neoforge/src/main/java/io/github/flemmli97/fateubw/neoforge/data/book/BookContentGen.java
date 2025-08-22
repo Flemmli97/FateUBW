@@ -10,15 +10,18 @@ import net.favouriteless.modopedia.api.datagen.builders.CategoryBuilder;
 import net.favouriteless.modopedia.api.datagen.builders.EntryBuilder;
 import net.favouriteless.modopedia.api.datagen.builders.PageBuilder;
 import net.favouriteless.modopedia.api.datagen.builders.page_components.components.HeaderBuilder;
+import net.favouriteless.modopedia.api.datagen.builders.page_components.components.ImageBuilder;
 import net.favouriteless.modopedia.api.datagen.builders.page_components.components.MultiblockBuilder;
 import net.favouriteless.modopedia.api.datagen.builders.page_components.components.SeparatorBuilder;
 import net.favouriteless.modopedia.api.datagen.builders.page_components.components.ShowcaseBuilder;
 import net.favouriteless.modopedia.api.datagen.builders.page_components.components.TextBuilder;
+import net.favouriteless.modopedia.api.datagen.builders.templates.FramedItemGalleryBuilder;
 import net.favouriteless.modopedia.api.datagen.builders.templates.page.HeaderedTextBuilder;
 import net.favouriteless.modopedia.api.datagen.builders.templates.recipes.CraftingRecipeBuilder;
 import net.favouriteless.modopedia.api.datagen.providers.ContentSetProvider;
 import net.favouriteless.modopedia.client.multiblock.DenseMultiblock;
 import net.favouriteless.modopedia.client.multiblock.state_matchers.SimpleStateMatcher;
+import net.favouriteless.modopedia.client.page_components.item_displays.CyclingItemDisplay;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.PackOutput;
@@ -56,8 +59,10 @@ public class BookContentGen extends ContentSetProvider {
                 .build("entry_ores", output, "category_start");
         EntryBuilder.of(this.get("fateubw.book.entry.altar"))
                 .icon(new ItemStack(FateBlocks.ALTAR.get()))
-                .page(TextBuilder.of(this.get("fateubw.book.entry.altar.1")),
-                        CraftingRecipeBuilder.of(Fate.modRes("summoning_altar")).y(80))
+                .page(HeaderBuilder.of(this.get("fateubw.book.entry.altar")),
+                        SeparatorBuilder.of().y(10),
+                        TextBuilder.of(this.get("fateubw.book.entry.altar.1")).y(17),
+                        CraftingRecipeBuilder.of(Fate.modRes("summoning_altar")).y(90))
                 .page(MultiblockBuilder.of().multiblock(new DenseMultiblock(List.of(List.of(
                                 "ccccc",
                                 "ccccc",
@@ -67,13 +72,25 @@ public class BookContentGen extends ContentSetProvider {
                                 Map.of('a', new SimpleStateMatcher(List.of(FateBlocks.ALTAR.get().defaultBlockState())),
                                         'c', new SimpleStateMatcher(List.of(FateBlocks.CHALK.get().defaultBlockState()))))),
                         TextBuilder.of(this.get("fateubw.book.entry.altar.2")).y(90))
-                .page(TextBuilder.of(this.get("fateubw.book.entry.altar.3")))
+                .page(TextBuilder.of(this.get("fateubw.book.entry.altar.3")),
+                        FramedItemGalleryBuilder.of(new CyclingItemDisplay(List.of(FateItems.ARTIFACT_SABER.get().getDefaultInstance(),
+                                        FateItems.ARTIFACT_ARCHER.get().getDefaultInstance(),
+                                        FateItems.ARTIFACT_LANCER.get().getDefaultInstance(),
+                                        FateItems.ARTIFACT_CASTER.get().getDefaultInstance(),
+                                        FateItems.ARTIFACT_BERSERKER.get().getDefaultInstance(),
+                                        FateItems.ARTIFACT_RIDER.get().getDefaultInstance(),
+                                        FateItems.ARTIFACT_ASSASSIN.get().getDefaultInstance())))
+                                .y(115).x(50 - 8))
+                .page(TextBuilder.of(this.get("fateubw.book.entry.altar.4")))
                 .build("entry_altar", output, "category_start");
 
         EntryBuilder.of(this.get("fateubw.book.entry.servant"))
                 .icon(new ItemStack(FateItems.ARTIFACT_SABER.get()))
                 .page(HeaderedTextBuilder.of(this.get("fateubw.book.entry.servant"), this.get("fateubw.book.entry.servant.1")))
-                .page(TextBuilder.of(this.get("fateubw.book.entry.servant.2")))
+                .page(TextBuilder.of(this.get("fateubw.book.entry.servant.2")).y(32),
+                        ImageBuilder.of(Fate.modRes("textures/book/command_seal.png"))
+                                .width(32).height(32).x(100 - 32))
+                .page(TextBuilder.of(this.get("fateubw.book.entry.servant.3")))
                 .build("entry_servant", output, "category_start");
 
         EntryBuilder.of(this.get("fateubw.book.entry.grail"))
@@ -111,9 +128,9 @@ public class BookContentGen extends ContentSetProvider {
         return PageBuilder.of()
                 .components(HeaderBuilder.of(this.get(header)),
                         SeparatorBuilder.of().y(y += 10),
-                        ShowcaseBuilder.of(stack).scale(0.6f),
+                        ShowcaseBuilder.of(stack).y(-5).scale(0.5f),
                         TextBuilder.of(this.get(text))
-                                .y(y + 60 + 6));
+                                .y(y + 60));
     }
 
     @Override
@@ -134,45 +151,62 @@ public class BookContentGen extends ContentSetProvider {
     }
     protected void createTranslations() {
         this.add("fateubw.book.category.start", "Getting started");
-        this.add("fateubw.book.category.start.desc", "Grail wars happen regulary in the world. The grail will announce when players are able to join one. " +
+        this.add("fateubw.book.category.start.desc", "Grail wars happen $(c:gold)regulary$() in the world. The grail will announce when players are able to join one. " +
                 "During a grailwar enemy servants without players might also spawn. Defeating every servant and being the last one standing will grant the player the holy grail rewarding the player with various loot.");
 
         this.add("fateubw.book.entry.ores", "Ores");
         this.add("fateubw.book.entry.ores.1.title", "Gem Ores");
-        this.add("fateubw.book.entry.ores.1", "These ores pulse faintly with residual mana. When mined, it yields small pieces of mana shards. " +
-                "Combining the different types of shards and a bit of mana one can create a larger and stronger mana crystal. " +
-                "The created gem itself explodes violently when hurled as a projectile but its true purpose lies in the summoning ritual.");
+        this.add("fateubw.book.entry.ores.1", "Combining different types of shards with a bit of mana fuses them into a larger and stronger mana crystal. " +
+                "While it explodes violently when hurled as a projectile its true purpose lies in the summoning ritual.");
         this.add("fateubw.book.entry.ores.2.title", "Artifact Ores");
-        this.add("fateubw.book.entry.ores.2", "Deeper still lies the much rarer Artifact Ore. These stones will yield forgotten relics of specific servant classes. " +
-                "These artifacts can be used during a summoning ritual to increasing the chance that a Servant of matching class will heed your call.");
+        this.add("fateubw.book.entry.ores.2", "Rarely found underground these ores yield forgotten artifacts of servant classes. " +
+                "When used during a summoning ritual they increase the chance that a servant of matching class will heed your call.");
 
         this.add("fateubw.book.entry.altar", "Summoning Altar");
-        this.add("fateubw.book.entry.altar.1", "At the heart of all Grail rituals lies the Summoning Altar—a carefully constructed array designed to bridge the gap between the mortal world and the Throne of Heroes. ");
-        this.add("fateubw.book.entry.altar.2", "To begin inscribe a 5x5 area using chalk centered around the altar. Right clicking the altar should then complete it.");
-        this.add("fateubw.book.entry.altar.3", "By offering 8 mana crystals and right clicking once again will start the summoning process calling forth your servant. If you possess an artifact you may place it on the altar before activation. " +
-                "These can boost you chance of increasing the odds that a servant of that class will heed your call.");
+        this.add("fateubw.book.entry.altar.1", "At the heart of all Grail rituals lies the Summoning Altar, a carefully constructed array designed to bridge the gap between the mortal world and the Throne of Heroes.");
+        this.add("fateubw.book.entry.altar.2", "A proper setup requires you to inscribe a 5x5 area using chalk centered around the altar. Right clicking the altar should then complete it.");
+        this.add("fateubw.book.entry.altar.3", """
+                By offering 8 mana gems and right clicking once again will start the summoning process calling forth your servant.
+                If you possess an artifact you may place it on the altar before activation. \
+                These can boost you chance of increasing the odds that a servant of that class will heed your call.""");
+        this.add("fateubw.book.entry.altar.4", "This procedure only works with a current grailwar ongoing which happens every few days.");
         this.add("fateubw.book.entry.servant", "Servant");
-        this.add("fateubw.book.entry.servant.1", "Servants are the physical embodiments of Heroic Spirits, summoned via the $(l:entry.altar)summoning altar$(/l) to serve a Master in battle.$(br)$(br) " +
-                "To manage and issue orders to your Servant, press $(4)($(k:fateubw.key.gui))$() to open a GUI allowing you to command basic behaviors—such as follow, hold position etc. " +
-                "Additionally several keybindings grant you more advanced control during battle:");
-        this.add("fateubw.book.entry.servant.2", "$(li)$(4)($(k:fateubw.key.np))$() commands them to use their nobel phantasm at the cost of using up a command spell and your own mana. " +
-                "$(li)$(4)($(k:fateubw.key.boost))$() to expend a Command Spell, releasing a surge of magical energy that greatly enhances your Servant’s combat abilities for a short time." +
-                "$(li)$(4)($(k:fateubw.key.target))$() while looking at an entity makes your servant prioritize and attack said entity.");
+        this.add("fateubw.book.entry.servant.1", """
+                Servants are the physical embodiments of Heroic Spirits, summoned via the $(el:entry_altar)summoning altar$() to serve a Master in battle.
+                
+                To manage and issue orders to your Servant, press the $(c:darkpurple)$(t:Default: h)GUI key$() to open a GUI allowing you to command basic behaviors—such as follow, hold position etc.
+                """);
+        this.add("fateubw.book.entry.servant.2", """
+                There are also some additional actions you can use for more advanced controls during battle:
+                 ▶ You can command your servant to use their nobel phantasm at the cost of using up a command spell and your own mana ($(c:darkpurple)Default: j$()).
+                """);
+        this.add("fateubw.book.entry.servant.3", """
+                 ▶ Pressing the $(c:darkpurple)$(t:Default: m)boost key$() will release a surge of magical energy that greatly enhances your Servant’s combat abilities for a short time at the cost of a command spell.
+                 ▶ Pressing the $(c:darkpurple)$(t:Default: b)target key$() while looking at an entity makes your servant prioritize and attack said entity.
+                """);
         this.add("fateubw.book.entry.grail", "The Holy Grail");
-        this.add("fateubw.book.entry.grail.1", "By being victorious in the grail war you will be awarded with the holy grail. An object said to be able to grant any wish you want. " +
-                "Upon use you may choose between multiple possible powerful rewards.");
+        this.add("fateubw.book.entry.grail.1", """
+                This is it! The holy relic everyone sought after.
+                By being victorious in the grail war you will be awarded with the all powerful grail.
+                
+                Or at least something close to it as this one isn't able to grant any wish you desire.
+                Upon use you may choose between multiple possible powerful rewards instead.""");
         this.add("fateubw.book.category.loot", "Loot");
-        this.add("fateubw.book.category.loot.desc", "This section is more addressed for pack devs and contains an overview of possible loot to be granted. The actual loot depends on the selected loottable. The server can define custom loottables via datapacks.");
+        this.add("fateubw.book.category.loot.desc", """
+                The grail is able to provide you with multiple possible loot.
+                Through various wars fought these loot types seem to be the only ones the grail is able to grant.""");
         this.add("fateubw.book.entry.loot.item", "Item Loot");
-        this.add("fateubw.book.entry.loot.item.1", "Various items as per defined in the loot table");
+        this.add("fateubw.book.entry.loot.item.1", "Materialistic desire is often a target of wishes. The grail can provide you with various items to fullfil that desire.");
         this.add("fateubw.book.entry.loot.attribute", "Attributes");
-        this.add("fateubw.book.entry.loot.attribute.1", "Can grant permant attributes increases like extra health, attack damage etc.");
+        this.add("fateubw.book.entry.loot.attribute.1", "If you want to get permanently stronger the grail can grant this wish to you through increases in various attributes.");
         this.add("fateubw.book.entry.loot.servant", "Servant");
-        this.add("fateubw.book.entry.loot.servant.1", "Resummons the servant used in the last grailwar. Or drops the servants loot (i.e. their weapon)");
+        this.add("fateubw.book.entry.loot.servant.1", """
+                If you desire the bonds you forged with your servants during battle you might wish for them to remain in this world for longer. The grail can resummon your servant you had in the grailwar.
+                Or only their weapons if thats all you want...""");
         this.add("fateubw.book.entry.loot.commands", "Commands");
-        this.add("fateubw.book.entry.loot.commands.1", "Allows executing of commands");
+        this.add("fateubw.book.entry.loot.commands.1", "The grail is powerful enough to run commands.");
         this.add("fateubw.book.entry.loot.xp", "XP");
-        this.add("fateubw.book.entry.loot.xp.1", "Grants random amount of xp points");
+        this.add("fateubw.book.entry.loot.xp.1", "If you want more knowledge the grail can give this to your via experience levels.");
     }
 
     public void add(String key, String value) {
