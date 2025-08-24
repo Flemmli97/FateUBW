@@ -134,7 +134,7 @@ public class GrailWarHandler extends SavedData {
         Participant<?> participant = new Participant<>(servant, player);
         if (!this.participants.containsKey(participant.getId()) && this.canSpawnServant(servant)) {
             this.participants.put(participant.getId(), participant);
-            this.servantClasses.add(servant.props().getServantClass());
+            this.servantClasses.add(servant.props().servantClass());
             this.servantsTypes.add(BuiltInRegistries.ENTITY_TYPE.getKey(servant.get().getType()));
             this.joinedParticipants.add(participant.getId());
             return true;
@@ -334,7 +334,7 @@ public class GrailWarHandler extends SavedData {
         for (EntityPropsManager.EntityTypeAndID entry : DatapackHandler.SERVANT_PROPS.getServants()) {
             boolean canSpawn = CommonConfig.allowDuplicateServant || !this.servantsTypes.contains(entry.id());
             if (canSpawn && (CommonConfig.allowDuplicateClass
-                    || !this.servantClasses.contains(DatapackHandler.SERVANT_PROPS.get(entry.type().value()).getServantClass())))
+                    || !this.servantClasses.contains(DatapackHandler.SERVANT_PROPS.get(entry.type().value()).servantClass())))
                 return true;
         }
         return false;
@@ -345,7 +345,7 @@ public class GrailWarHandler extends SavedData {
             return false;
         if (!this.canSpawnServantType(BuiltInRegistries.ENTITY_TYPE.getKey(servant.get().getType())))
             return false;
-        return this.canSpawnServantClass(servant.props().getServantClass());
+        return this.canSpawnServantClass(servant.props().servantClass());
     }
 
     public boolean canSpawnServantType(ResourceLocation entityType) {

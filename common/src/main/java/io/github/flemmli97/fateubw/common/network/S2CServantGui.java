@@ -119,7 +119,7 @@ public class S2CServantGui implements CustomPacketPayload {
                 equip = Optional.empty();
             }
             return new ServantMetaData(servant.getId(), servant.getType(), equip,
-                    full ? ((SynchedEntityDataExtension) servant.getEntityData()).fate$getAll() : servant.getEntityData().packDirty(), servantLike.props().hogouMana());
+                    full ? ((SynchedEntityDataExtension) servant.getEntityData()).fate$getAll() : servant.getEntityData().packDirty(), servantLike.props().manaCost());
         }
     }
 }

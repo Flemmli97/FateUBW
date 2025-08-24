@@ -189,7 +189,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
     }
 
     private void updateAttributes() {
-        this.prop.getAttributes().forEach((att, val) -> {
+        this.prop.attributes().forEach((att, val) -> {
             AttributeInstance inst = this.getAttribute(att);
             if (inst != null) {
                 inst.setBaseValue(val);
@@ -665,7 +665,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
         if (behaviour == CommandType.NP) {
             if (!this.commandNPUse) {
                 PlayerData data = Platform.INSTANCE.getPlayerData(player);
-                if (player.hasInfiniteMaterials() || (data.useMana(player, this.props().hogouMana()) && data.useCommandSeal(player))) {
+                if (player.hasInfiniteMaterials() || (data.useMana(player, this.props().manaCost()) && data.useCommandSeal(player))) {
                     player.sendSystemMessage(Component.translatable("fateubw.chat.command.npsuccess").withStyle(ChatFormatting.RED));
                     this.commandNPUse = true;
                 } else {
@@ -750,11 +750,11 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
     }
 
     public boolean canUseNP() {
-        return (this.canUseNP && this.getMana() >= this.props().hogouMana()) || this.commandNPUse;
+        return (this.canUseNP && this.getMana() >= this.props().manaCost()) || this.commandNPUse;
     }
 
     public boolean attemptUseNobelPhantasm() {
-        if (!this.commandNPUse && !this.useMana(this.props().hogouMana()))
+        if (!this.commandNPUse && !this.useMana(this.props().manaCost()))
             return false;
         if (!this.commandNPUse) {
             this.nobelPhantasmCooldown = this.nobelPhantasmCooldown();

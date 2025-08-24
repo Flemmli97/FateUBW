@@ -84,8 +84,8 @@ public class EntityPropsManager extends SimpleJsonResourceReloadListener impleme
         this.genericProps = attBuilder.build();
         Set<EntityTypeAndID> servants = new HashSet<>();
         this.props.forEach((type, prop) -> {
-            if (!prop.getServantClass().equals(BuiltinServantClasses.NONE)) {
-                servants.add(new EntityTypeAndID(BuiltInRegistries.ENTITY_TYPE.wrapAsHolder(type), prop.getServantClass(), prop.weight()));
+            if (!prop.servantClass().equals(BuiltinServantClasses.NONE)) {
+                servants.add(new EntityTypeAndID(BuiltInRegistries.ENTITY_TYPE.wrapAsHolder(type), prop.servantClass(), prop.weight()));
             }
         });
         this.servants = ImmutableSet.copyOf(servants);

@@ -43,7 +43,7 @@ public class Lang implements DataProvider {
     private final String modid, locale;
 
     private final List<String> servantClasses = FateEntities.DEFAULT_SERVANT_PROPERTIES
-            .values().stream().map(b -> b.build().getServantClass().getPath()).toList();
+            .values().stream().map(b -> b.build().servantClass().getPath()).toList();
 
     public Lang(PackOutput packOutput) {
         this.packOutput = packOutput;

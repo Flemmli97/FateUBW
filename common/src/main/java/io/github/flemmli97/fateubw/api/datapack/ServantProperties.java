@@ -15,55 +15,31 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class ServantProperties {
+public record ServantProperties(Map<Holder<Attribute>, Double> attributes, int manaCost, int weight,
+                                ResourceLocation servantClass, Optional<ServantExtraData> extraData) {
 
     public static final Codec<ServantProperties> CODEC = RecordCodecBuilder.create((instance) ->
             instance.group(Codec.unboundedMap(BuiltInRegistries.ATTRIBUTE.holderByNameCodec(), Codec.DOUBLE).fieldOf("attributes").forGetter(d -> d.attributes),
-                    Codec.INT.fieldOf("nobel_phantasm_cost").forGetter(ServantProperties::hogouMana),
+                    Codec.INT.fieldOf("nobel_phantasm_cost").forGetter(ServantProperties::manaCost),
                     Codec.INT.fieldOf("weight").forGetter(ServantProperties::weight),
-                    ResourceLocation.CODEC.fieldOf("class").forGetter(ServantProperties::getServantClass),
-                    ServantExtraData.CODEC.optionalFieldOf("configs").forGetter(d -> d.extraData.empty() ? Optional.empty() : Optional.of(d.extraData))
+                    ResourceLocation.CODEC.fieldOf("class").forGetter(ServantProperties::servantClass),
+                    ServantExtraData.CODEC.optionalFieldOf("configs").forGetter(d -> d.extraData.flatMap(ex -> ex.empty() ? Optional.empty() : Optional.of(ex)))
             ).apply(instance, ServantProperties::new));
 
     public static final ServantProperties DEFAULT = new ServantProperties.Builder(BuiltinServantClasses.NONE)
             .putAttributes(Attributes.MAX_HEALTH, 20).putAttributes(Attributes.ATTACK_DAMAGE, 1)
             .putAttributes(Attributes.MOVEMENT_SPEED, 0.2).putAttributes(FateAttributes.MAGIC_ATTACK.asHolder(), 1).build();
 
-    private final Map<Holder<Attribute>, Double> attributes;
-    private final int manaCost, weight;
-    private final ResourceLocation servantClass;
-    private final ServantExtraData extraData;
-
-    private ServantProperties(Map<Holder<Attribute>, Double> attributes, int manaCost, int weight, ResourceLocation servantClass, Optional<ServantExtraData> extraData) {
-        this(attributes, manaCost, weight, servantClass, extraData.orElse(new ServantExtraData(Map.of())));
-    }
-
-    public ServantProperties(Map<Holder<Attribute>, Double> attributes, int manaCost, int weight, ResourceLocation servantClass, ServantExtraData extraData) {
-        this.attributes = attributes;
+    public ServantProperties(Map<Holder<Attribute>, Double> attributes, int manaCost, int weight, ResourceLocation servantClass, Optional<ServantExtraData> extraData) {
+        this.attributes = ImmutableMap.copyOf(attributes);
         this.manaCost = manaCost;
         this.weight = weight;
         this.servantClass = servantClass;
         this.extraData = extraData;
     }
 
-    public Map<Holder<Attribute>, Double> getAttributes() {
-        return ImmutableMap.copyOf(this.attributes);
-    }
-
-    public int hogouMana() {
-        return this.manaCost;
-    }
-
-    public int weight() {
-        return this.weight;
-    }
-
-    public ResourceLocation getServantClass() {
-        return this.servantClass;
-    }
-
     public <T> T getConfig(ServantExtraData.DataType<T> type) {
-        return this.extraData.get(type);
+        return this.extraData.map(d -> d.get(type)).orElse(type.defaultValue());
     }
 
     public static class Builder {
@@ -103,7 +79,7 @@ public class ServantProperties {
         }
 
         public ServantProperties build() {
-            return new ServantProperties(this.attributes, this.manaCost, this.weight, this.servantClass, new ServantExtraData(this.values));
+            return new ServantProperties(this.attributes, this.manaCost, this.weight, this.servantClass, this.values.isEmpty() ? Optional.empty() : Optional.of(new ServantExtraData(this.values)));
         }
     }
 }

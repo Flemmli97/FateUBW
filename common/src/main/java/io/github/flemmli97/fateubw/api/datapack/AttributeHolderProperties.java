@@ -22,9 +22,8 @@ public record AttributeHolderProperties(Map<Holder<Attribute>, Double> attribute
             .putAttributes(Attributes.MAX_HEALTH, 20).putAttributes(Attributes.ATTACK_DAMAGE, 1)
             .putAttributes(Attributes.MOVEMENT_SPEED, 0.2).putAttributes(FateAttributes.MAGIC_ATTACK.asHolder(), 1).build();
 
-    @Override
-    public Map<Holder<Attribute>, Double> attributes() {
-        return ImmutableMap.copyOf(this.attributes);
+    public AttributeHolderProperties(Map<Holder<Attribute>, Double> attributes) {
+        this.attributes = ImmutableMap.copyOf(attributes);
     }
 
     public static class Builder {

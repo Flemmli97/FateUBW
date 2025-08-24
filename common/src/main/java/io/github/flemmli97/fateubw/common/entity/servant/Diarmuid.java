@@ -198,7 +198,7 @@ public class Diarmuid extends BaseServant {
     @Override
     public void handleAttack(AnimationState anim) {
         if (anim.is(UNSEAL)) {
-            if (this.getMana() >= this.props().hogouMana()) {
+            if (this.getMana() >= this.props().manaCost()) {
                 if (anim.isAt("unseal_1")) {
                     this.unsealWeapon(this.getMainHandItem(), true);
                 }
@@ -206,7 +206,7 @@ public class Diarmuid extends BaseServant {
                     this.unsealWeapon(this.getOffhandItem(), true);
                 }
                 if (anim.isAt("unsealed")) {
-                    this.useMana(this.props().hogouMana());
+                    this.useMana(this.props().manaCost());
                     this.unsealedDuration = this.getRandom().nextInt(300) + 300;
                 }
             }
