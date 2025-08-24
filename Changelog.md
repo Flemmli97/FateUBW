@@ -1,17 +1,16 @@
 FateUBW 2.0.0-beta
 ================
-
 - Update to 1.21.1
 - All mobs now use brains instead of goals
 - Pathouli book now removed and replaced by modopedia
 - For mod devs: Added api to more easily add servant entities without using internal implementations
 - Renamed ids/names of all servants
+- Changed servant weight calc for summoning
 - Updated AI behaviour of various servants
 - Entity models are now also changeable via resource pack
 - Some servants wielding dual weapons now hit twice when attacking at the same tick
 - Nobel phantasm now have a cooldown too in addition to mana cost so low cost ones can't be spammed too much
 - Gilles monsters now have life drain
-- Servants move around much more now
 
 FateUBW 1.2.1
 ================
