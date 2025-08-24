@@ -28,7 +28,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.datafix.DataFixTypes;
-import net.minecraft.util.random.WeightedRandom;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -45,7 +44,6 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -405,13 +403,9 @@ public class GrailWarHandler extends SavedData {
     }
 
     public ServantLike<?> summonRandomServant(ServerLevel level, Vec3 pos, @Nullable ServerPlayer player, @Nullable ItemStack stack, boolean event, boolean addToLevel) {
-        Collection<EntityPropsManager.EntityTypeAndID> servants = DatapackHandler.SERVANT_PROPS.getServants();
-        List<EntityPropsManager.EntityTypeAndID> entities = servants.stream()
-                .filter(entry -> this.canSpawnServantClass(entry.servantClass()) && this.canSpawnServantType(entry.id()))
-                .map(entry -> entry.updatedWeight(stack)).toList();
-        if (entities.isEmpty())
-            return null;
-        Entity entity = WeightedRandom.getRandomItem(level.random, entities)
+        Entity entity = DatapackHandler.SERVANT_PROPS.getRandom(level.getRandom(),
+                        entry -> this.canSpawnServantClass(entry.servantClass()) && this.canSpawnServantType(entry.id()),
+                        stack)
                 .map(t -> t.type().value()
                         .create(level, null, BlockPos.containing(pos),
                                 MobSpawnType.MOB_SUMMONED, false, false))

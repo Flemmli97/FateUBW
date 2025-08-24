@@ -23,6 +23,8 @@ public class ConfigLoader {
         CommonConfig.maxServantCircle = ConfigSpecs.COMMON_CONFIG.maxServantCircle.get();
         CommonConfig.servantMinSpawnDelay = ConfigSpecs.COMMON_CONFIG.servantMinSpawnDelay.get();
         CommonConfig.servantMaxSpawnDelay = ConfigSpecs.COMMON_CONFIG.servantMaxSpawnDelay.get();
+        CommonConfig.classArtifactMultiplier = ConfigSpecs.COMMON_CONFIG.classArtifactMultiplier.get();
+        CommonConfig.servantArtifactMultiplier = ConfigSpecs.COMMON_CONFIG.servantArtifactMultiplier.get();
 
         CommonConfig.punishTeleport = ConfigSpecs.COMMON_CONFIG.punishTeleport.get();
         CommonConfig.notifyBlacklist = ConfigSpecs.COMMON_CONFIG.notifyBlackList.get();

@@ -19,6 +19,8 @@ public class CommonConfig {
     public static int maxServantCircle = 1;
     public static int servantMinSpawnDelay = 3000;
     public static int servantMaxSpawnDelay = 6000;
+    public static double classArtifactMultiplier = 2;
+    public static double servantArtifactMultiplier = 2;
 
     public static boolean punishTeleport = true;
     public static List<String> notifyBlacklist = Lists.newArrayList(FateEntities.HASSAN.getID().toString());

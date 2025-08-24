@@ -10,6 +10,7 @@ import com.mojang.serialization.JsonOps;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.api.datapack.AttributeHolderProperties;
 import io.github.flemmli97.fateubw.api.datapack.ServantProperties;
+import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.lib.BuiltinServantClasses;
 import io.github.flemmli97.fateubw.common.registry.FateDataComponents;
 import net.minecraft.core.Holder;
@@ -18,17 +19,19 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraft.util.random.Weight;
-import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 
 public class EntityPropsManager extends SimpleJsonResourceReloadListener implements ListenerExtension {
 
@@ -57,6 +60,27 @@ public class EntityPropsManager extends SimpleJsonResourceReloadListener impleme
 
     public Set<EntityTypeAndID> getServants() {
         return this.servants;
+    }
+
+    public Optional<EntityTypeAndID> getRandom(RandomSource random, Predicate<EntityTypeAndID> check, ItemStack stack) {
+        Collection<EntityTypeAndID> servants = this.getServants();
+        List<EntityTypeAndID> entities = servants.stream()
+                .filter(check)
+                .map(entry -> entry.updatedWeight(stack))
+                .filter(entry -> entry.weight > 0).toList();
+        if (entities.isEmpty())
+            return Optional.empty();
+        double weight = entities.stream().mapToDouble(t -> t.weight).sum();
+        if (weight > 0) {
+            double idx = random.nextDouble() * weight;
+            for (EntityTypeAndID weightedEntry : entities) {
+                idx -= weightedEntry.weight();
+                if (idx < 0) {
+                    return Optional.of(weightedEntry);
+                }
+            }
+        }
+        return Optional.empty();
     }
 
     @Override
@@ -101,37 +125,27 @@ public class EntityPropsManager extends SimpleJsonResourceReloadListener impleme
         this.provider = provider;
     }
 
-    public record EntityTypeAndID(Holder<EntityType<?>> type, ResourceLocation servantClass,
-                                  Weight weight) implements WeightedEntry {
-
-        public EntityTypeAndID(Holder<EntityType<?>> type, ResourceLocation servantClass, int weight) {
-            this(type, servantClass, Weight.of(weight));
-        }
+    public record EntityTypeAndID(Holder<EntityType<?>> type, ResourceLocation servantClass, double weight) {
 
         public EntityTypeAndID updatedWeight(@Nullable ItemStack stack) {
             if (stack == null)
                 return this;
             ResourceLocation clss = stack.get(FateDataComponents.CLASS_RELIC.get());
             ResourceLocation servant = stack.get(FateDataComponents.SERVANT_RELIC.get());
-            int weight = this.weight.asInt();
+            double weight = this.weight;
             if (this.servantClass().equals(clss)) {
-                weight *= 2;
+                weight *= CommonConfig.classArtifactMultiplier;
             }
             if (this.type().is(servant)) {
-                weight *= 2;
+                weight *= CommonConfig.servantArtifactMultiplier;
             }
-            if (this.weight.asInt() == weight)
+            if (this.weight == weight)
                 return this;
-            return new EntityTypeAndID(this.type(), this.servantClass(), Weight.of(weight));
+            return new EntityTypeAndID(this.type(), this.servantClass(), weight);
         }
 
         public ResourceLocation id() {
             return this.type().unwrapKey().orElseThrow().location();
-        }
-
-        @Override
-        public Weight getWeight() {
-            return this.weight();
         }
     }
 }

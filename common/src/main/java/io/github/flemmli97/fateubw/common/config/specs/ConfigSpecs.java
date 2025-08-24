@@ -45,6 +45,8 @@ public class ConfigSpecs {
         public final ModConfigSpec.IntValue maxServantCircle;
         public final ModConfigSpec.IntValue servantMinSpawnDelay;
         public final ModConfigSpec.IntValue servantMaxSpawnDelay;
+        public final ModConfigSpec.DoubleValue classArtifactMultiplier;
+        public final ModConfigSpec.DoubleValue servantArtifactMultiplier;
 
         public final ModConfigSpec.BooleanValue punishTeleport;
         public final ModConfigSpec.ConfigValue<List<String>> notifyBlackList;
@@ -87,6 +89,8 @@ public class ConfigSpecs {
             this.maxServantCircle = builder.comment("Amount of masterless servant that can spawn each time. (Fill Empty Slots needs to be true)").defineInRange("Servant Amount", CommonConfig.maxServantCircle, 1, Integer.MAX_VALUE);
             this.servantMinSpawnDelay = builder.comment("Minimum time between each attempt to spawn masterless servants. (Fill Empty Slots needs to be true)").defineInRange("Servant Spawn Delay (Min)", CommonConfig.servantMinSpawnDelay, 0, Integer.MAX_VALUE);
             this.servantMaxSpawnDelay = builder.comment("Maximum time between each attempt to spawn masterless servants. (Fill Empty Slots needs to be true)").defineInRange("Servant Spawn Delay (Max)", CommonConfig.servantMaxSpawnDelay, 0, Integer.MAX_VALUE);
+            this.classArtifactMultiplier = builder.comment("When using a class artifact increases the chance of summoning a servant of that class by x").defineInRange("Class Artifact Multiplier", CommonConfig.classArtifactMultiplier, 0, Double.MAX_VALUE);
+            this.servantArtifactMultiplier = builder.comment("When using a servant artifact increases the chance of summoning that servant by x", "Note: Currently no servant artifacts are added").defineInRange("Servant Artifact Multiplier", CommonConfig.servantArtifactMultiplier, 0, Double.MAX_VALUE);
 
             this.punishTeleport = builder.comment("Should teleporting servants to the owner during a fight be punished").define("Punish Teleport", CommonConfig.punishTeleport);
             this.notifyBlackList = builder.comment("Servants that dont notify players when spawned (from filling missing slots)").define("Servant notification", CommonConfig.notifyBlacklist, stringList());
