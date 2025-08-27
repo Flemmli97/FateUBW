@@ -1,5 +1,12 @@
 {
-  "parent": "fateubw:item/32x32_weapon",
+  "base": {
+    "parent": "fateubw:item/handheld_32x32",
+    "textures": {
+      "layer0": "fateubw:item/excalibur"
+    }
+  },
+  "gui_light": "front",
+  "loader": "neoforge:separate_transforms",
   "overrides": [
     {
       "model": "fateubw:item/excalibur_active",
@@ -8,7 +15,18 @@
       }
     }
   ],
-  "textures": {
-    "layer0": "fateubw:item/excalibur"
+  "perspectives": {
+    "fixed": {
+      "parent": "minecraft:item/handheld",
+      "textures": {
+        "layer0": "fateubw:item/excalibur_inventory"
+      }
+    },
+    "gui": {
+      "parent": "minecraft:item/handheld",
+      "textures": {
+        "layer0": "fateubw:item/excalibur_inventory"
+      }
+    }
   }
 }

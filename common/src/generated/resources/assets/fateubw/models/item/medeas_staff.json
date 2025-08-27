@@ -1,6 +1,24 @@
 {
-  "parent": "fateubw:item/32x32_weapon",
-  "textures": {
-    "layer0": "fateubw:item/medeas_staff"
+  "base": {
+    "parent": "fateubw:item/handheld_32x32",
+    "textures": {
+      "layer0": "fateubw:item/medeas_staff"
+    }
+  },
+  "gui_light": "front",
+  "loader": "neoforge:separate_transforms",
+  "perspectives": {
+    "fixed": {
+      "parent": "minecraft:item/handheld",
+      "textures": {
+        "layer0": "fateubw:item/medeas_staff_inventory"
+      }
+    },
+    "gui": {
+      "parent": "minecraft:item/handheld",
+      "textures": {
+        "layer0": "fateubw:item/medeas_staff_inventory"
+      }
+    }
   }
 }

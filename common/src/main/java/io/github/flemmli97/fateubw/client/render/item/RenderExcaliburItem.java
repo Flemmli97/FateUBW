@@ -1,16 +1,12 @@
 package io.github.flemmli97.fateubw.client.render.item;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.flemmli97.fateubw.client.ClientHandler;
-import io.github.flemmli97.fateubw.platform.ClientPlatform;
 import io.github.flemmli97.tenshilib.client.render.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
@@ -40,9 +36,13 @@ public class RenderExcaliburItem extends BlockEntityWithoutLevelRenderer {
     public static void render(ItemStack stack, ItemDisplayContext transformType, PoseStack poseStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay, RenderUtils.BeamBuilder beam) {
         ItemRenderer renderer = Minecraft.getInstance().getItemRenderer();
         BakedModel model = renderer.getItemModelShaper().getItemModel(stack);
-        RenderType rendertype = ItemBlockRenderTypes.getRenderType(stack, true);
-        VertexConsumer ivertexbuilder = ItemRenderer.getFoilBufferDirect(buffer, rendertype, true, stack.hasFoil());
-        ClientPlatform.INSTANCE.renderModelList(renderer, model, stack, combinedLight, combinedOverlay, poseStack, ivertexbuilder);
+        PoseStack.Pose last = poseStack.last();
+        poseStack.popPose();
+        renderer.render(stack, transformType, false, poseStack, buffer, combinedLight, combinedOverlay, model);
+        poseStack.pushPose();
+        PoseStack.Pose update = poseStack.last();
+        update.pose().set(last.pose());
+        update.normal().set(last.normal());
 
         if (transformType != ItemDisplayContext.GUI) {
             poseStack.pushPose();

@@ -53,7 +53,7 @@ public class Lang implements DataProvider {
 
     protected void addTranslations() {
         for (RegistryEntrySupplier<Item, ?> reg : FateItems.ITEMS.getEntries()) {
-            if (reg.get() instanceof SpawnEgg || reg.getID().getPath().startsWith("gem") || reg.getID().getPath().startsWith("artifact"))
+            if (reg.get() instanceof SpawnEgg || reg.getID().getPath().startsWith("gem"))
                 continue;
             if (reg == FateItems.ENUMAELISH)
                 this.add(reg.get(), "EA");
@@ -66,14 +66,6 @@ public class Lang implements DataProvider {
         this.add(FateItems.CRYSTAL_YELLOW.get(), "Green Gem Shard");
         this.add(FateItems.CRYSTAL_GREEN.get(), "Yellow Gem Shard");
         this.add(FateItems.CRYSTAL_BLACK.get(), "Black Gem Shard");
-
-        this.add(FateItems.ARTIFACT_SABER.get(), "Artifact (Saber)");
-        this.add(FateItems.ARTIFACT_ARCHER.get(), "Artifact (Archer)");
-        this.add(FateItems.ARTIFACT_LANCER.get(), "Artifact (Lancer)");
-        this.add(FateItems.ARTIFACT_BERSERKER.get(), "Artifact (Berserker)");
-        this.add(FateItems.ARTIFACT_ASSASSIN.get(), "Artifact (Assassin)");
-        this.add(FateItems.ARTIFACT_CASTER.get(), "Artifact (Caster)");
-        this.add(FateItems.ARTIFACT_RIDER.get(), "Artifact (Rider)");
 
         for (RegistryEntrySupplier<EntityType<?>, ?> type : FateEntities.ENTITIES.getEntries()) {
             SpawnEgg.fromType(type.get()).ifPresent(egg -> this.add(egg, "%s" + " Spawn Egg"));
@@ -105,7 +97,7 @@ public class Lang implements DataProvider {
             this.add(reg.asHolder());
         }
 
-        this.add("itemGroup." + FateCreativeTab.TAB.getID().getNamespace() + "." + FateCreativeTab.TAB.getID().getPath(), "The Fate Universe");
+        this.add("itemGroup." + FateCreativeTab.TAB.getID().getNamespace() + "." + FateCreativeTab.TAB.getID().getPath(), "Fate Unlimited Block Works");
 
         this.add("fateubw.chat.item.spawn", "You already have a servant, spawned a masterless one");
         this.add("fateubw.chat.mana.missing", "You don't have enough mana");
