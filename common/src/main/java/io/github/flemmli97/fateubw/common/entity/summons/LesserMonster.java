@@ -148,7 +148,11 @@ public class LesserMonster extends PathfinderMob implements AnimatedEntity, Owna
         return List.of(new NearbyLivingEntitySensor<LesserMonster>()
                         .setPredicate((target, entity) -> !Utils.alliedTo(target, entity))
                         .setScanRate(e -> 10),
-                new HurtBySensor<>());
+                new HurtBySensor<LesserMonster>().setPredicate((source, entity) -> {
+                    if (source.getEntity() instanceof LivingEntity attacker)
+                        return !Utils.alliedTo(entity, attacker);
+                    return true;
+                }));
     }
 
     @Override
