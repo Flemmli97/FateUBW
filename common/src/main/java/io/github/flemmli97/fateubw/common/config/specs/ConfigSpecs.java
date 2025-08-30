@@ -2,7 +2,7 @@ package io.github.flemmli97.fateubw.common.config.specs;
 
 import io.github.flemmli97.fateubw.common.config.ClientConfig;
 import io.github.flemmli97.fateubw.common.config.CommonConfig;
-import io.github.flemmli97.fateubw.common.config.PotionEffectsConfig;
+import io.github.flemmli97.fateubw.common.config.value.PotionEffectsConfig;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -47,6 +47,11 @@ public class ConfigSpecs {
         public final ModConfigSpec.IntValue servantMaxSpawnDelay;
         public final ModConfigSpec.DoubleValue classArtifactMultiplier;
         public final ModConfigSpec.DoubleValue servantArtifactMultiplier;
+
+        public final ModConfigSpec.ConfigValue<String> effectiveArmor;
+        public final ModConfigSpec.ConfigValue<String> armorReduction;
+        public final ModConfigSpec.ConfigValue<String> projectileReduction;
+        public final ModConfigSpec.ConfigValue<String> magicReduction;
 
         public final ModConfigSpec.BooleanValue punishTeleport;
         public final ModConfigSpec.ConfigValue<List<String>> notifyBlackList;
@@ -98,6 +103,17 @@ public class ConfigSpecs {
             this.notifyAll = builder.comment("Notify everyone if a servant spawns. Else only the player the servant spawned on will be notified").define("Notify Everyone", CommonConfig.notifyAll);
             this.npBoostEffect = builder.comment("Potions applied when boostin servants using a command seal. Usage: " + PotionEffectsConfig.usage()).define("NP Effects",
                     CommonConfig.npBoostEffect.write(), stringList());
+
+            this.effectiveArmor = builder.comment("The effective armor that will be used to calculate the armor reduction",
+                    "Vanilla limits it to max 20 armor points",
+                    "The vanilla formula is: clamp(armor - damage / (2 + armor_toughness / 4), armor * 0.2, 20)").define("Effective Armor", CommonConfig.effectiveArmor.write());
+            this.armorReduction = builder.comment("How much armor reduces incoming damage",
+                    "In vanilla the maximum protection armor can give is 80%",
+                    "The vanilla formula is: effective_armor / 25",
+                    "The mod changes it so higher armor points reduce damage further but at a reduced rate. If below 20 will use vanilla formula",
+                    "Note that this ONLY affects servants!").define("Armor Reduction", CommonConfig.armorReduction.write());
+            this.projectileReduction = builder.comment("How much projectile damage is reduced").define("Projectile Reduction", CommonConfig.projectileReduction.write());
+            this.magicReduction = builder.comment("How much magic damage is reduced").define("Magic Reduction", CommonConfig.magicReduction.write());
             builder.pop();
 
             builder.push("misc");

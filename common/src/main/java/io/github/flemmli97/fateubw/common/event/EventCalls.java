@@ -5,7 +5,7 @@ import io.github.flemmli97.fateubw.common.lib.FateTags;
 import io.github.flemmli97.fateubw.common.network.S2CPlayerCap;
 import io.github.flemmli97.fateubw.common.registry.FateAttributes;
 import io.github.flemmli97.fateubw.common.registry.FateMobEffects;
-import io.github.flemmli97.fateubw.common.utils.Utils;
+import io.github.flemmli97.fateubw.common.utils.ExtendedCombatRules;
 import io.github.flemmli97.fateubw.common.world.GrailTeam;
 import io.github.flemmli97.fateubw.common.world.TeamHandler;
 import io.github.flemmli97.fateubw.mixin.CombatTrackerAccessor;
@@ -86,9 +86,9 @@ public class EventCalls {
 
     public static float damageCalculation(LivingEntity livingEntity, DamageSource damageSrc, float damageAmount) {
         if (damageSrc.is(DamageTypeTags.IS_PROJECTILE))
-            damageAmount = Utils.projectileReduce(livingEntity, damageAmount);
+            damageAmount = ExtendedCombatRules.projectileReduce(livingEntity, damageAmount);
         if (damageSrc.is(FateTags.DamageTypes.IS_MAGIC))
-            damageAmount = Utils.getDamageAfterMagicAbsorb(livingEntity, damageAmount);
+            damageAmount = ExtendedCombatRules.getDamageAfterMagicProtection(livingEntity, damageAmount);
         return damageAmount;
     }
 }

@@ -21,6 +21,7 @@ import io.github.flemmli97.fateubw.common.registry.FateAttributes;
 import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateMemoryTypes;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
+import io.github.flemmli97.fateubw.common.utils.ExtendedCombatRules;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
@@ -636,6 +637,15 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
                 damage *= 0.75;
             return super.hurt(damageSource, Math.min(50, damage));
         }
+    }
+
+    @Override
+    protected float getDamageAfterArmorAbsorb(DamageSource damageSource, float damageAmount) {
+        if (!damageSource.is(DamageTypeTags.BYPASSES_ARMOR)) {
+            this.hurtArmor(damageSource, damageAmount);
+            damageAmount = ExtendedCombatRules.getDamageAfterArmor(this, damageAmount, damageSource, this.getAttributeValue(Attributes.ARMOR), this.getAttributeValue(Attributes.ARMOR_TOUGHNESS));
+        }
+        return damageAmount;
     }
 
     @Override

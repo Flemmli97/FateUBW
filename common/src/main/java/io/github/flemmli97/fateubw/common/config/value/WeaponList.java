@@ -1,4 +1,4 @@
-package io.github.flemmli97.fateubw.common.config;
+package io.github.flemmli97.fateubw.common.config.value;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.RandomSource;

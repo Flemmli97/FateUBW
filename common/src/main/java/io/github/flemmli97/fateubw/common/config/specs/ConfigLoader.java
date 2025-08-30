@@ -26,6 +26,11 @@ public class ConfigLoader {
         CommonConfig.classArtifactMultiplier = ConfigSpecs.COMMON_CONFIG.classArtifactMultiplier.get();
         CommonConfig.servantArtifactMultiplier = ConfigSpecs.COMMON_CONFIG.servantArtifactMultiplier.get();
 
+        CommonConfig.effectiveArmor.read(ConfigSpecs.COMMON_CONFIG.effectiveArmor.get());
+        CommonConfig.armorReduction.read(ConfigSpecs.COMMON_CONFIG.armorReduction.get());
+        CommonConfig.projectileReduction.read(ConfigSpecs.COMMON_CONFIG.projectileReduction.get());
+        CommonConfig.magicReduction.read(ConfigSpecs.COMMON_CONFIG.magicReduction.get());
+
         CommonConfig.punishTeleport = ConfigSpecs.COMMON_CONFIG.punishTeleport.get();
         CommonConfig.notifyBlacklist = ConfigSpecs.COMMON_CONFIG.notifyBlackList.get();
         CommonConfig.notificationWhitelist = ConfigSpecs.COMMON_CONFIG.whiteList.get();

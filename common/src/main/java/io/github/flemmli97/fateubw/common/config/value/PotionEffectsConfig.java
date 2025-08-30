@@ -1,4 +1,4 @@
-package io.github.flemmli97.fateubw.common.config;
+package io.github.flemmli97.fateubw.common.config.value;
 
 import com.google.common.collect.Lists;
 import net.minecraft.core.Holder;

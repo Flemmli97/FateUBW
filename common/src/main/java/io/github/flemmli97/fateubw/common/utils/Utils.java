@@ -33,20 +33,6 @@ public class Utils {
         return new Vec3(vec3.x * g - vec3.z * f, vec3.y, vec3.z * g + vec3.x * f);
     }
 
-    public static float getDamageAfterMagicAbsorb(LivingEntity entity, float damage) {
-        if (entity.getAttribute(FateAttributes.MAGIC_RESISTANCE.asHolder()) == null)
-            return damage;
-        float reduceAmount = (float) Mth.clamp(1 - entity.getAttribute(FateAttributes.MAGIC_RESISTANCE.asHolder()).getValue(), 0.15, 1);
-        return damage * reduceAmount;
-    }
-
-    public static float projectileReduce(LivingEntity entity, float damage) {
-        if (entity.getAttribute(FateAttributes.PROJECTILE_RESISTANCE.asHolder()) == null)
-            return damage;
-        float reduceAmount = (float) Mth.clamp(1 - entity.getAttribute(FateAttributes.PROJECTILE_RESISTANCE.asHolder()).getValue() * 0.04, 0.1, 1);
-        return damage * reduceAmount;
-    }
-
     public static float magicDamage(@Nullable Entity entity) {
         if (!(entity instanceof LivingEntity living) || living.getAttribute(FateAttributes.MAGIC_ATTACK.asHolder()) == null)
             return 0;
