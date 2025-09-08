@@ -21,11 +21,11 @@ public class ChalkItem extends Item {
     }
 
     @Override
-    public InteractionResult useOn(UseOnContext ictx) {
-        Level level = ictx.getLevel();
+    public InteractionResult useOn(UseOnContext context) {
+        Level level = context.getLevel();
         if (level.isClientSide)
             return InteractionResult.SUCCESS;
-        BlockPlaceContext ctx = new BlockPlaceContext(ictx);
+        BlockPlaceContext ctx = new BlockPlaceContext(context);
         ItemStack stack = ctx.getItemInHand();
         if (ctx.canPlace()) {
             BlockState state = FateBlocks.CHALK.get().defaultBlockState();

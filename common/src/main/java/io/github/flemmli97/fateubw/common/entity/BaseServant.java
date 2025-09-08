@@ -474,6 +474,14 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
         return this.getDataContainer().get(TARGET_POSITION);
     }
 
+    public void setTargetPositionFromAttackTarget() {
+        LivingEntity target = this.getTarget();
+        if (target != null)
+            this.setTargetPosition(target);
+        else
+            this.setTargetPosition(TargetPosition.of(this.position().add(this.getLookAngle().scale(10))));
+    }
+
     public void setTargetPosition(LivingEntity target) {
         this.setTargetPosition(target == null ? null : TargetPosition.of(target));
     }
@@ -596,13 +604,17 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
                 EnchantmentHelper.doPostAttackEffects(serverLevel, target, damageSource);
             }
             this.setLastHurtMob(target);
-            this.playAttackSound();
+            this.onEntityHit(target, damage);
         }
         return result;
     }
 
     public float damageModifier(Entity target) {
         return 1;
+    }
+
+    public void onEntityHit(Entity target, float damage) {
+        this.playAttackSound();
     }
 
     protected DamageSource damageSourceAttack(Entity target) {
@@ -634,7 +646,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
             return super.hurt(damageSource, damage);
         } else {
             if (damageSource.getEntity() == null || !damageSource.getEntity().getType().is(FateTags.EntityTypes.STRONG_MOB))
-                damage *= 0.75;
+                damage *= 0.75f;
             return super.hurt(damageSource, Math.min(50, damage));
         }
     }

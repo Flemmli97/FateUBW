@@ -64,18 +64,23 @@ public class Heracles extends BaseServant {
     private static final ResourceLocation DEATH_MOD = Fate.modRes("heracles_death_modifier");
 
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
-    private static final String ONE_HAND_HEAVY_1 = BUILDER.add("one_hand_heavy_1", AnimationsBuilder.definition(0.7).marker("attack", 0.6));
-    private static final String ONE_HAND_HEAVY_2 = BUILDER.add("one_hand_heavy_2", AnimationsBuilder.definition(0.7).marker("attack", 0.52));
-    private static final String ONE_HAND_HEAVY_3 = BUILDER.add("one_hand_heavy_3", AnimationsBuilder.definition(0.7).marker("attack", 0.52));
-    private static final String TWO_HAND_HEAVY_1 = BUILDER.add("two_hand_heavy_1", AnimationsBuilder.definition(0.82).marker("attack", 0.72));
-    private static final String TWO_HAND_HEAVY_2 = BUILDER.add("two_hand_heavy_2", AnimationsBuilder.definition(0.78).marker("attack", 0.6));
-    private static final String UPPER_CUT = BUILDER.add("upper_cut", AnimationsBuilder.definition(1.04).marker("attack", 0.64));
+    private static final String ONE_HAND_HEAVY_1 = BUILDER.add("one_hand_heavy_1", AnimationsBuilder.definition(0.72)
+            .marker("attack", 0.6));
+    private static final String ONE_HAND_HEAVY_2 = BUILDER.add("one_hand_heavy_2", AnimationsBuilder.definition(0.72)
+            .marker("attack", 0.6));
+    private static final String ONE_HAND_HEAVY_3 = BUILDER.add("one_hand_heavy_3", AnimationsBuilder.definition(0.72)
+            .marker("attack", 0.6));
+    private static final String TWO_HAND_HEAVY_1 = BUILDER.add("two_hand_heavy_1", AnimationsBuilder.definition(0.84)
+            .marker("attack", 0.72));
+    private static final String TWO_HAND_HEAVY_2 = BUILDER.add("two_hand_heavy_2", AnimationsBuilder.definition(0.8)
+            .marker("attack", 0.68));
+    private static final String UPPER_CUT = BUILDER.add("upper_cut", AnimationsBuilder.definition(1.04)
+            .marker("attack", 0.64));
     private static final String JUMP = BUILDER.add("jump", AnimationsBuilder.definition(0.8)
             .marker("jump", 0.12).marker("attempt", 0.24).infinite());
-    private static final String JUMP_HIT = BUILDER.add("jump_hit", AnimationsBuilder.definition(0.32)
-            .marker("attack", 0.12).infinite());
+    private static final String JUMP_HIT = BUILDER.add("jump_hit", AnimationsBuilder.definition(0.6)
+            .marker("attack", 0.2).infinite());
     private static final String LAND = BUILDER.add("land", AnimationsBuilder.definition(0.44));
-
     private static final String DEATH = BUILDER.add("death", AnimationsBuilder.definition(0.68).infinite());
     private static final String FAKE_DEATH = BUILDER.add("fake_death", AnimationsBuilder.definition(5.92)
             .marker("roar", 5.));
@@ -129,23 +134,23 @@ public class Heracles extends BaseServant {
     public ExtendedBehaviour<? extends BaseServant> getCombatAI() {
         return AttackBehaviourBuilder.<BaseServant>create()
                 .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(ONE_HAND_HEAVY_1)
-                        .start(ONE_HAND_HEAVY_2, 2, 0.24f, 1)
-                        .start(ONE_HAND_HEAVY_3, 2, 0.24f, 1)
+                        .start(ONE_HAND_HEAVY_2, 2, 0.32f, 1)
+                        .start(ONE_HAND_HEAVY_3, 2, 0.32f, 1)
                         .chainChance(0.5f).build())).play(BehaviourUtils.cooldownedPlay(true, 20, 35))
                 .prepare(new SetWalkTargetToAttackTarget<BaseServant>().speedMod((e, t) -> 1.1f)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(12)
                 .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(ONE_HAND_HEAVY_2)
-                        .start(ONE_HAND_HEAVY_1, 2, 0.24f, 1)
-                        .start(TWO_HAND_HEAVY_1, 2, 0.28f, 1)
-                        .start(TWO_HAND_HEAVY_2, 2, 0.28f, 1)
-                        .chain(ONE_HAND_HEAVY_3, 2, 0.24f)
+                        .start(ONE_HAND_HEAVY_1, 2, 0.32f, 1)
+                        .start(TWO_HAND_HEAVY_1, 2, 0.44f, 1)
+                        .start(TWO_HAND_HEAVY_2, 2, 0.44f, 1)
+                        .chain(ONE_HAND_HEAVY_3, 2, 0.32f)
                         .chainChance(0.5f).build())).play(BehaviourUtils.cooldownedPlay(true, 20, 35))
                 .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(12)
                 .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(TWO_HAND_HEAVY_1)
-                        .start(TWO_HAND_HEAVY_2, 2, 0.28f, 1)
-                        .start(TWO_HAND_HEAVY_2, 2, 0.28f, 1)
-                        .chain(ONE_HAND_HEAVY_2, 2, 0.24f)
+                        .start(TWO_HAND_HEAVY_2, 2, 0.44f, 1)
+                        .start(TWO_HAND_HEAVY_2, 2, 0.44f, 1)
+                        .chain(ONE_HAND_HEAVY_2, 2, 0.32f)
                         .chainChance(0.5f).build())).play(BehaviourUtils.cooldownedPlay(true, 20, 35))
                 .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(12)
@@ -336,11 +341,13 @@ public class Heracles extends BaseServant {
                 this.handleAirFall(anim);
             } else {
                 this.setDeltaMovement(Vec3.ZERO);
-                this.hits.forEach(e -> {
-                    e.setDeltaMovement(Vec3.ZERO);
-                    if (e instanceof ServerPlayer player)
-                        player.connection.send(new ClientboundSetEntityMotionPacket(player));
-                });
+                if (this.hits != null) {
+                    this.hits.forEach(e -> {
+                        e.setDeltaMovement(Vec3.ZERO);
+                        if (e instanceof ServerPlayer player)
+                            player.connection.send(new ClientboundSetEntityMotionPacket(player));
+                    });
+                }
             }
         } else {
             super.handleAttack(anim);
@@ -380,29 +387,22 @@ public class Heracles extends BaseServant {
             double length = this.getBbWidth() + 2.5;
             return new AABB(-widthH, -1, -1 * 0.5, widthH, this.getBbHeight() + 1.5, length);
         }
-        double width = this.getBbWidth() + 0.3;
-        double length = this.getBbWidth() + 0.3;
-        if (anim.is(ONE_HAND_HEAVY_1)) {
-            width += 0.3;
-            length += 1.4;
+        double height = this.getBbHeight();
+        double width = this.getBbWidth();
+        double length = 1 * this.getScale();
+        if (anim.is(ONE_HAND_HEAVY_1, TWO_HAND_HEAVY_1)) {
+            width += 0.6 * this.getScale();
+            length += 1.7 * this.getScale();
         }
-        if (anim.is(ONE_HAND_HEAVY_2, ONE_HAND_HEAVY_3)) {
-            width += 2.2;
-            length += 0.9;
-        }
-        if (anim.is(TWO_HAND_HEAVY_1)) {
-            width += 0.4;
-            length += 1.6;
-        }
-        if (anim.is(TWO_HAND_HEAVY_2)) {
-            width += 2.6;
-            length += 1.2;
+        if (anim.is(ONE_HAND_HEAVY_2, ONE_HAND_HEAVY_3, TWO_HAND_HEAVY_2)) {
+            width += 2.2 * this.getScale();
+            length += 1.3 * this.getScale();
         }
         if (anim.is(UPPER_CUT)) {
-            width += 0.4;
-            length += 1.3;
+            width += 0.6 * this.getScale();
+            length += 1.7 * this.getScale();
         }
-        return new AABB(-width * 0.5, -0.02, 0, width * 0.5, this.getBbHeight() + 0.02, length);
+        return new AABB(-width * 0.5, -0.03, 0, width * 0.5, height + 0.03, length);
     }
 
     @Override

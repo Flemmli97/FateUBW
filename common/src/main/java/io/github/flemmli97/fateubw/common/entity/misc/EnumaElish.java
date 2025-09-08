@@ -17,8 +17,8 @@ import net.minecraft.world.phys.Vec3;
 
 public class EnumaElish extends BaseBeam {
 
-    public static final float RADIUS = 1.2f;
-    public static final float RANGE = 24;
+    public static final float RADIUS = 1.5f;
+    public static final float RANGE = 28;
 
     private Vec3 dir, up, side;
 
@@ -45,6 +45,16 @@ public class EnumaElish extends BaseBeam {
     @Override
     public boolean piercing() {
         return true;
+    }
+
+    @Override
+    public int livingTickMax() {
+        return 28;
+    }
+
+    @Override
+    public boolean canStartDamage() {
+        return this.livingTicks > 2 && this.livingTicks + 2 < this.livingTickMax();
     }
 
     @Override
@@ -81,6 +91,8 @@ public class EnumaElish extends BaseBeam {
 
     @Override
     public void onImpact(EntityHitResult result) {
-        result.getEntity().hurt(FateDamageTypes.indirect(FateDamageTypes.ENUMA_ELISH, this, this.getOwner()), Utils.magicDamage(this.getOwner()) + CommonConfig.eaDamage);
+        Utils.runWithInvulTimer(null, result.getEntity(),
+                e -> e.hurt(FateDamageTypes.indirect(FateDamageTypes.ENUMA_ELISH, this, this.getOwner()), Utils.magicDamage(this.getOwner()) + CommonConfig.eaDamage),
+                4);
     }
 }

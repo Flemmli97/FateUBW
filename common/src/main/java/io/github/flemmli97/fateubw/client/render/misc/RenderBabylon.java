@@ -102,6 +102,7 @@ public class RenderBabylon extends EntityRenderer<BabylonWeapon> {
             stack.translate(0, 0, Math.max(0, 2 * (0.8 - projectile.preparationState(partialTicks))));
             stack.mulPose(Axis.XP.rotationDegrees(-xRot));
             stack.mulPose(Axis.YP.rotationDegrees(-yRot));
+            stack.mulPose(Axis.YP.rotationDegrees(180));
         }
         // Item rendering sometimes use double vertexconsumer but clipped rendertype will always return default and thus crash
         // Use separate buffersource for that instead

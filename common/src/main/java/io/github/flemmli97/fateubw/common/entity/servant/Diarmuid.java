@@ -4,9 +4,14 @@ import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.OneshotAnimationPlay;
+import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
+import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailProvider;
 import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
+import io.github.flemmli97.fateubw.common.registry.FateDataComponents;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateMobEffects;
+import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.utils.TeleportUtils;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
@@ -20,11 +25,11 @@ import io.github.flemmli97.tenshilib.common.entity.animated.AnimationsBuilder;
 import io.github.flemmli97.tenshilib.common.entity.data.SyncableDatas;
 import io.github.flemmli97.tenshilib.common.entity.data.SyncedDataContainer;
 import io.github.flemmli97.tenshilib.common.utils.TypedResource;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.Unit;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -51,15 +56,24 @@ import org.joml.Vector4f;
 
 public class Diarmuid extends BaseServant {
 
+    public static final String LEFT_TRAIL_END = "left_trail_end";
+    public static final String RIGHT_TRAIL_START = "right_trail_start";
+
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
-    public static final String DUAL_SPEAR_1 = BUILDER.add("dual_spear_1", AnimationsBuilder.definition(0.86)
-            .marker("attack_right", 0.4).marker("attack_left", 0.72).marker("step", 0.44, 0.72));
-    public static final String DUAL_SPEAR_2 = BUILDER.add("dual_spear_2", AnimationsBuilder.definition(0.9)
-            .marker("attack_right", 0.4).marker("attack_left", 0.8).marker("step", 0.48));
-    public static final String DUAL_SPEAR_3 = BUILDER.add("dual_spear_3", AnimationsBuilder.definition(0.78)
-            .marker("attack_right", 0.32).marker("attack_left", 0.56));
-    public static final String DUAL_SPEAR_4 = BUILDER.add("dual_spear_4", AnimationsBuilder.definition(0.58)
-            .marker("attack_right", 0.48).marker("attack_left", 0.48));
+    public static final String DUAL_SPEAR_1 = BUILDER.add("dual_spear_1", AnimationsBuilder.definition(1.04)
+            .marker("attack_left", 0.56).marker("attack_right", 0.92).marker("step", 0.56, 0.88)
+            .marker(EntityTrailProvider.TRAIL_START, 0.4).marker(LEFT_TRAIL_END, 0.64)
+            .marker(RIGHT_TRAIL_START, 0.76).marker(EntityTrailProvider.TRAIL_END, 0.92));
+    public static final String DUAL_SPEAR_2 = BUILDER.add("dual_spear_2", AnimationsBuilder.definition(1)
+            .marker("attack_left", 0.48).marker("attack_right", 0.88).marker("step", 0.48)
+            .marker(EntityTrailProvider.TRAIL_START, 0.4).marker(LEFT_TRAIL_END, 0.56)
+            .marker(RIGHT_TRAIL_START, 0.68).marker(EntityTrailProvider.TRAIL_END, 0.88));
+    public static final String DUAL_SPEAR_3 = BUILDER.add("dual_spear_3", AnimationsBuilder.definition(0.8)
+            .marker("attack_left", 0.44).marker("attack_right", 0.68));
+    public static final String DUAL_SPEAR_4 = BUILDER.add("dual_spear_4", AnimationsBuilder.definition(0.68)
+            .marker("attack_left", 0.56).marker("attack_right", 0.56)
+            .marker(EntityTrailProvider.TRAIL_START, 0.4).marker(LEFT_TRAIL_END, 0.56)
+            .marker(RIGHT_TRAIL_START, 0.4).marker(EntityTrailProvider.TRAIL_END, 0.56));
     public static final String BLINK = BUILDER.add("blink", AnimationsBuilder.definition(1.12)
             .marker("teleport_start", 0.28).marker("teleport", 0.5).marker("teleport_end", 0.84));
     public static final String BLINK_AWAY = BUILDER.add("blink_away", BLINK);
@@ -118,7 +132,7 @@ public class Diarmuid extends BaseServant {
                 .start(UNSEAL).play(BehaviourUtils.cooldownedPlay(false, 16, 28))
                 .condition(entity -> entity.unsealedDuration < 0 && entity.canUseNP())
                 .prepare(new SetWalkTargetWithinDist<Diarmuid>()
-                        .min(8).max(18).speedMod((m, e) -> 1.3f)).prepareOptional(BehaviourUtils.moveAttack())
+                        .min(8).max(14).speedMod((m, e) -> 1.25f)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(30)
                 .build();
     }
@@ -152,12 +166,32 @@ public class Diarmuid extends BaseServant {
             this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 1, 1, false, false));
         } else {
             AnimationState anim = this.getAnimationHandler().getAnimation();
-            if (anim != null && anim.is(UNSEAL)) {
-                if (anim.isAt("unseal_1")) {
-                    this.sphereParticles();
+            if (anim != null) {
+                if (anim.is(UNSEAL)) {
+                    if (anim.isAt("unseal_1")) {
+                        this.sphereParticles();
+                    }
+                    if (anim.isAt("unseal_2")) {
+                        this.sphereParticles();
+                    }
                 }
-                if (anim.isAt("unseal_2")) {
-                    this.sphereParticles();
+                if (anim.isAt(EntityTrailProvider.TRAIL_START)) {
+                    this.level().addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
+                                    TrailInfo.builder(new EntityTrailProvider.EntityTrailData(this.getId(), anim.getID(), true, 3, LEFT_TRAIL_END))
+                                            .setColor(186 / 255f, 138 / 255f, 16 / 255f, 0.6f)
+                                            .setColor2(186 / 255f, 138 / 255f, 16 / 255f, 0.2f)
+                                            .setType(TrailInfo.Visual.TEXTURE, 0)
+                                            .build()),
+                            this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+                }
+                if (anim.isAt(RIGHT_TRAIL_START)) {
+                    this.level().addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
+                                    TrailInfo.builder(EntityTrailProvider.EntityTrailData.create(this, anim.getID(), false))
+                                            .setColor(154 / 255f, 15 / 255f, 30 / 255f, 0.6f)
+                                            .setColor2(154 / 255f, 15 / 255f, 30 / 255f, 0.2f)
+                                            .setType(TrailInfo.Visual.TEXTURE, 0)
+                                            .build()),
+                            this.getX(), this.getY(), this.getZ(), 0, 0, 0);
                 }
             }
         }
@@ -265,31 +299,30 @@ public class Diarmuid extends BaseServant {
 
     @Override
     public AABB attackBB(AnimationState anim) {
-        double width = this.getBbWidth() + 0.3;
-        double length = 1;
+        double height = this.getBbHeight();
+        double width = this.getBbWidth();
+        double length = 1 * this.getScale();
         if (anim.is(DUAL_SPEAR_1, DUAL_SPEAR_2)) {
             if (this.leftHandAttackFlag) {
-                width += 0.8;
-                length += 1.2;
+                width += 1.8 * this.getScale();
+                length += 1.1 * this.getScale();
+                return new AABB(-width * 0.4, -0.03, 0, width * 0.6, height + 0.03, length);
             } else {
-                width += 1.8;
-                length += 1.5;
+                width += 1.8 * this.getScale();
+                length += 1.7 * this.getScale();
+                return new AABB(-width * 0.8, -0.03, 0, width * 0.2, height + 0.03, length);
             }
         }
-        if (anim.is(DUAL_SPEAR_3)) {
+        if (anim.is(DUAL_SPEAR_3, DUAL_SPEAR_4)) {
             if (this.leftHandAttackFlag) {
-                width += 0.6;
-                length += 1.3;
+                width += 0.8 * this.getScale();
+                length += 1.4 * this.getScale();
             } else {
-                width += 0.6;
-                length += 1.8;
+                width += 0.8 * this.getScale();
+                length += 1.9 * this.getScale();
             }
         }
-        if (anim.is(DUAL_SPEAR_4)) {
-            width += 0.6;
-            length += 1.8;
-        }
-        return new AABB(-width * 0.5, -0.02, 0, width * 0.5, this.getBbHeight() + 0.02, length);
+        return new AABB(-width * 0.5, -0.03, 0, width * 0.5, height + 0.03, length);
     }
 
     @Override
@@ -330,6 +363,23 @@ public class Diarmuid extends BaseServant {
     }
 
     @Override
+    public float damageModifier(Entity target) {
+        if (this.unsealedDuration <= 0 && !this.leftHandAttackFlag) {
+            return 0.85f;
+        }
+        return super.damageModifier(target);
+    }
+
+    @Override
+    public void onEntityHit(Entity target, float damage) {
+        if (this.unsealedDuration <= 0 && !this.leftHandAttackFlag) {
+            float partial = damage * 0.15f / 0.85f;
+            Utils.runWithInvulTimer(this, target, e -> e.hurt(FateDamageTypes.direct(FateDamageTypes.GAE_DEARG, this), partial), 0);
+        }
+        super.onEntityHit(target, damage);
+    }
+
+    @Override
     protected DamageSource damageSourceAttack(Entity target) {
         return this.deargAttackFlag ? FateDamageTypes.direct(FateDamageTypes.GAE_DEARG, this) : super.damageSourceAttack(target);
     }
@@ -349,6 +399,11 @@ public class Diarmuid extends BaseServant {
     @Override
     public boolean causeFallDamage(float distance, float damageMultiplier, DamageSource source) {
         return false;
+    }
+
+    @Override
+    public boolean hurt(DamageSource damageSource, float damage) {
+        return !this.getAnimationHandler().isCurrent(UNSEAL) && super.hurt(damageSource, damage);
     }
 
     @Override
@@ -383,10 +438,10 @@ public class Diarmuid extends BaseServant {
     private void unsealWeapon(ItemStack stack, boolean unseal) {
         if (stack.getItem() == FateItems.GAEBUIDHE.get() || stack.getItem() == FateItems.GAEDEARG.get()) {
             if (unseal) {
-                stack.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
+                stack.set(FateDataComponents.UNSEALED.get(), Unit.INSTANCE);
                 this.playSound(SoundEvents.ENCHANTMENT_TABLE_USE, 1, 1);
             } else {
-                stack.remove(DataComponents.ENCHANTMENT_GLINT_OVERRIDE);
+                stack.remove(FateDataComponents.UNSEALED.get());
             }
         }
     }
@@ -399,5 +454,12 @@ public class Diarmuid extends BaseServant {
     @Override
     public Vector4f summonColor() {
         return this.summonColor;
+    }
+
+    @Override
+    public WeaponTrail weaponTrailEdge(boolean left) {
+        if (left)
+            return new WeaponTrail(new Vector4f(0, 0, -0.6f, 1), new Vector4f(0, 0, -1.1f, 1));
+        return new WeaponTrail(new Vector4f(0, 0, -1.2f, 1), new Vector4f(0, 0, -1.7f, 1));
     }
 }

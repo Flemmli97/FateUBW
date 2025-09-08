@@ -6,6 +6,7 @@ import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.lib.FateTags;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailProvider;
 import io.github.flemmli97.fateubw.common.registry.FateDataComponents;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
@@ -63,24 +64,36 @@ import java.util.function.Predicate;
 public class Lancelot extends BaseServant {
 
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
-    public static final String TWO_HAND_1 = BUILDER.add("two_hand_1", AnimationsBuilder.definition(0.78)
-            .marker("attack", 0.64).marker("step", 0.64));
-    public static final String TWO_HAND_2 = BUILDER.add("two_hand_2", AnimationsBuilder.definition(0.7)
-            .marker("attack", 0.52).marker("step", 0.52));
-    public static final String TWO_HAND_3 = BUILDER.add("two_hand_3", AnimationsBuilder.definition(0.7)
-            .marker("attack", 0.48).marker("step", 0.48));
-    public static final String TWO_HAND_4 = BUILDER.add("two_hand_4", AnimationsBuilder.definition(0.7)
-            .marker("attack", 0.56).marker("step", 0.56));
-    public static final String ONE_HAND_1 = BUILDER.add("one_hand_1", AnimationsBuilder.definition(0.56)
-            .marker("attack", 0.4).marker("step", 0.48));
-    public static final String STAB_1 = BUILDER.add("stab_1", AnimationsBuilder.definition(0.76).marker("attack", 0.44));
-    public static final String JUMP = BUILDER.add("jump", AnimationsBuilder.definition(0.36).marker("jump", 0.2).infinite());
-    public static final String JUMP_LAND = BUILDER.add("jump_land", AnimationsBuilder.definition(0.8).marker("attack", 0.24));
-    public static final String TRIDENT = BUILDER.add("trident", AnimationsBuilder.definition(1.08).marker("attack", 0.76));
-    public static final String BOW = BUILDER.add("bow", AnimationsBuilder.definition(1.24).marker("attack", 1));
-    public static final String CROSSBOW = BUILDER.add("crossbow", AnimationsBuilder.definition(1.88).marker("attack", 1.4));
-    public static final String GUN_SMALL = BUILDER.add("gun_small", AnimationsBuilder.definition(0.8).marker("attack", 0.48));
-    public static final String GUN_BIG = BUILDER.add("gun_big", AnimationsBuilder.definition(1.28).marker("attack", 0.4));
+    public static final String TWO_HAND_1 = BUILDER.add("two_hand_1", AnimationsBuilder.definition(1)
+            .marker("attack", 0.88).marker("step", 0.72)
+            .marker(EntityTrailProvider.TRAIL_START, 0.6)
+            .marker(EntityTrailProvider.TRAIL_END, 0.92));
+    public static final String TWO_HAND_2 = BUILDER.add("two_hand_2", AnimationsBuilder.definition(0.96)
+            .marker("attack", 0.84).marker("step", 0.72)
+            .marker(EntityTrailProvider.TRAIL_START, 0.6)
+            .marker(EntityTrailProvider.TRAIL_END, 0.88));
+    public static final String TWO_HAND_3 = BUILDER.add("two_hand_3", AnimationsBuilder.definition(0.92)
+            .marker("attack", 0.8).marker("step", 0.68)
+            .marker(EntityTrailProvider.TRAIL_START, 0.6)
+            .marker(EntityTrailProvider.TRAIL_END, 0.84));
+    public static final String TWO_HAND_4 = BUILDER.add("two_hand_4", AnimationsBuilder.definition(0.96)
+            .marker("attack", 0.84).marker("step", 0.72)
+            .marker(EntityTrailProvider.TRAIL_START, 0.6)
+            .marker(EntityTrailProvider.TRAIL_END, 0.88));
+    public static final String ONE_HAND_1 = BUILDER.add("one_hand_1", AnimationsBuilder.definition(0.68)
+            .marker("attack", 0.56).marker("step", 0.44)
+            .marker(EntityTrailProvider.TRAIL_START, 0.4)
+            .marker(EntityTrailProvider.TRAIL_END, 0.56));
+    public static final String STAB_1 = BUILDER.add("stab_1", AnimationsBuilder.definition(0.8).marker("attack", 0.68));
+    public static final String JUMP = BUILDER.add("jump", AnimationsBuilder.definition(0.48).marker("jump", 0.28).infinite());
+    public static final String JUMP_LAND = BUILDER.add("jump_land", AnimationsBuilder.definition(1.08).marker("attack", 0.2));
+    public static final String TRIDENT = BUILDER.add("trident", AnimationsBuilder.definition(1.52).marker("attack", 1));
+    public static final String BOW = BUILDER.add("bow", AnimationsBuilder.definition(1.28)
+            .marker("use_start", 0.24).marker("attack", 1.08));
+    public static final String CROSSBOW = BUILDER.add("crossbow", AnimationsBuilder.definition(2.2)
+            .marker("use_start", 0.32).marker("attack", 1.88));
+    public static final String GUN = BUILDER.add("gun", AnimationsBuilder.definition(3.28)
+            .marker("attack_start", 1).marker("attack_end", 2.16));
     public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2.));
     public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
 
@@ -258,22 +271,25 @@ public class Lancelot extends BaseServant {
             }
         } else if (anim.is(CROSSBOW, BOW, TRIDENT)) {
             LivingEntity target = this.getTarget();
-            if (anim.isAt(0.2)) {
+            if (anim.isAt("use_start")) {
                 InteractionHand hand = this.toUseHand();
                 Pair<ResourceLocation, LancelotUseHandler> handler = LancelotAttackAI.getFor(this.getItemInHand(hand));
                 if (handler != null) {
                     handler.getSecond().startUse(this, target, hand);
                 }
             }
+            if (!anim.isPast("attack")) {
+                this.setTargetPositionFromAttackTarget();
+            }
             if (anim.isAt("attack")) {
                 if (target != null && this.getSensing().hasLineOfSight(target)) {
-                    Pair<ResourceLocation, LancelotUseHandler> handler = LancelotAttackAI.getFor(this.getUseItem());
+                    InteractionHand hand = this.toUseHand();
+                    Pair<ResourceLocation, LancelotUseHandler> handler = LancelotAttackAI.getFor(this.getItemInHand(hand));
                     if (handler != null) {
                         this.useItemRemaining = 1;
                         handler.getSecond().use(this, target, this.getUsedItemHand());
                     }
                 }
-                this.stopUsingItem();
             }
         } else {
             boolean step = anim.is(TWO_HAND_1) && anim.isAt(0.28) ||
@@ -302,28 +318,35 @@ public class Lancelot extends BaseServant {
     @Override
     public AABB attackBB(AnimationState anim) {
         if (anim.is(JUMP_LAND)) {
-            double width = this.getBbWidth() + 4;
+            double width = this.getBbWidth() + 4 * this.getScale();
             return new AABB(-width * 0.5, -0.02, -width * 0.3, width * 0.5, this.getBbHeight() * 0.5, width * 0.7);
         }
-        double width = this.getBbWidth() + 0.3;
-        double length = 1;
-        if (anim.is(TWO_HAND_1, TWO_HAND_2)) {
-            width += 1.1;
-            length += 0.8;
+        double height = this.getBbHeight();
+        double width = this.getBbWidth();
+        double length = 1 * this.getScale();
+        if (anim.is(TWO_HAND_1)) {
+            width += 2.4 * this.getScale();
+            length += 1 * this.getScale();
+            return new AABB(-width * 0.6, -0.03, 0, width * 0.4, height + 0.03, length);
+        }
+        if (anim.is(TWO_HAND_2)) {
+            width += 2.4 * this.getScale();
+            length += 1 * this.getScale();
+            return new AABB(-width * 0.4, -0.03, 0, width * 0.6, height + 0.03, length);
         }
         if (anim.is(TWO_HAND_3, TWO_HAND_4)) {
-            width += 1.3;
-            length += 0.7;
+            width += 1.9 * this.getScale();
+            length += 1 * this.getScale();
         }
         if (anim.is(ONE_HAND_1)) {
-            width += 1.5;
-            length += 0.75;
+            width += 1.5 * this.getScale();
+            length += 0.75 * this.getScale();
         }
         if (anim.is(STAB_1)) {
-            width += 0.1;
-            length += 1.6;
+            width += 0.3 * this.getScale();
+            length += 2 * this.getScale();
         }
-        return new AABB(-width * 0.5, -0.02, 0, width * 0.5, this.getBbHeight() + 0.02, length);
+        return new AABB(-width * 0.5, -0.03, 0, width * 0.5, height + 0.03, length);
     }
 
     @Override
@@ -511,18 +534,19 @@ public class Lancelot extends BaseServant {
         old.remove("UUID");
         if (old.contains("Owner"))
             old.putUUID("Owner", this.getUUID());
-        Entity e = oldProjectile.getType().create(this.level());
-        if (e instanceof Projectile) {
-            e.load(old);
-            float velocity = (float) (e.getDeltaMovement().length() * 0.7);
+        Entity entity = oldProjectile.getType().create(this.level());
+        if (entity instanceof Projectile projectile) {
+            entity.load(old);
+            projectile.setOwner(this);
+            float velocity = (float) (entity.getDeltaMovement().length() * 0.7);
             if (this.getTarget() != null) {
                 LivingEntity target = this.getTarget();
-                Vec3 dir = new Vec3(target.getX() - e.getX(), (target.getY() + target.getEyeHeight()) - e.getY(), target.getZ() - e.getZ());
-                this.shootProj(e, dir.x, dir.y, dir.z, velocity, 1);
+                Vec3 dir = new Vec3(target.getX() - entity.getX(), (target.getY() + target.getEyeHeight()) - entity.getY(), target.getZ() - entity.getZ());
+                this.shootProj(entity, dir.x, dir.y, dir.z, velocity, 1);
             } else {
-                this.shootProj(e, -e.getDeltaMovement().x, -e.getDeltaMovement().y, -e.getDeltaMovement().z, velocity, 1);
+                this.shootProj(entity, -entity.getDeltaMovement().x, -entity.getDeltaMovement().y, -entity.getDeltaMovement().z, velocity, 1);
             }
-            this.level().addFreshEntity(e);
+            this.level().addFreshEntity(entity);
         }
     }
 

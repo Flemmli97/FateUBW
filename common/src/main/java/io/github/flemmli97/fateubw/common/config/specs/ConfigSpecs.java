@@ -112,7 +112,7 @@ public class ConfigSpecs {
                     "The vanilla formula is: effective_armor / 25",
                     "The mod changes it so higher armor points reduce damage further but at a reduced rate. If below 20 will use vanilla formula",
                     "Note that this ONLY affects servants!").define("Armor Reduction", CommonConfig.armorReduction.write());
-            this.projectileReduction = builder.comment("How much projectile damage is reduced").define("Projectile Reduction", CommonConfig.projectileReduction.write());
+            this.projectileReduction = builder.comment("How much projectile damage is reduced. Do note that armor already reduces the damage.").define("Projectile Reduction", CommonConfig.projectileReduction.write());
             this.magicReduction = builder.comment("How much magic damage is reduced").define("Magic Reduction", CommonConfig.magicReduction.write());
             builder.pop();
 

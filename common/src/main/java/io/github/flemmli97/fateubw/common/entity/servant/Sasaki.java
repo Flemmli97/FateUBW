@@ -49,36 +49,44 @@ import org.joml.Vector4f;
 public class Sasaki extends BaseServant {
 
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
-    public static final String TWO_HAND_1 = BUILDER.add("two_hand_1", AnimationsBuilder.definition(0.78)
-            .marker("attack", 0.64).marker("step", 0.68)
-            .marker(EntityTrailProvider.TRAIL_START, 0.4));
-    public static final String TWO_HAND_2 = BUILDER.add("two_hand_2", AnimationsBuilder.definition(0.7)
-            .marker("attack", 0.56).marker("step", 0.6)
-            .marker(EntityTrailProvider.TRAIL_START, 0.36));
-    public static final String TWO_HAND_3 = BUILDER.add("two_hand_3", AnimationsBuilder.definition(0.7)
-            .marker("attack", 0.48).marker("step", 0.56)
-            .marker(EntityTrailProvider.TRAIL_START, 0.36));
-    public static final String TWO_HAND_4 = BUILDER.add("two_hand_4", AnimationsBuilder.definition(0.7)
-            .marker("attack", 0.48).marker("step", 0.56)
-            .marker(EntityTrailProvider.TRAIL_START, 0.36));
-    public static final String TWO_HAND_5 = BUILDER.add("two_hand_5", AnimationsBuilder.definition(0.7)
-            .marker("attack", 0.52).marker("step", 0.56)
-            .marker(EntityTrailProvider.TRAIL_START, 0.4));
-    public static final String TWO_HAND_6 = BUILDER.add("two_hand_6", AnimationsBuilder.definition(0.7)
-            .marker("attack", 0.56).marker("step", 0.6)
-            .marker(EntityTrailProvider.TRAIL_START, 0.4));
-    public static final String TWO_HAND_7 = BUILDER.add("two_hand_7", AnimationsBuilder.definition(0.7)
-            .marker("attack", 0.6).marker("step", 0.52)
-            .marker(EntityTrailProvider.TRAIL_START, 0.4));
-    public static final String ONE_HAND_1 = BUILDER.add("one_hand_1", AnimationsBuilder.definition(0.62)
-            .marker("attack", 0.44).marker("step", 0.48)
-            .marker(EntityTrailProvider.TRAIL_START, 0.32));
-    public static final String KATANA_1 = BUILDER.add("katana_1", AnimationsBuilder.definition(0.78)
-            .marker("attack", 0.6).marker("step", 0.64));
-
-    private static final String TSUBAME_GAESHI = BUILDER.add("tsubame_gaeshi", AnimationsBuilder.definition(2)
-            .marker("attack_prepare", 1.2).marker("attack", 1.28)
-            .marker("particle", 1.24));
+    public static final String TWO_HAND_1 = BUILDER.add("two_hand_1", AnimationsBuilder.definition(1)
+            .marker("attack", 0.88).marker("step", 0.8)
+            .marker(EntityTrailProvider.TRAIL_START, 0.68)
+            .marker(EntityTrailProvider.TRAIL_END, 0.88));
+    public static final String TWO_HAND_2 = BUILDER.add("two_hand_2", AnimationsBuilder.definition(0.96)
+            .marker("attack", 0.84).marker("step", 0.72)
+            .marker(EntityTrailProvider.TRAIL_START, 0.6)
+            .marker(EntityTrailProvider.TRAIL_END, 0.84));
+    public static final String TWO_HAND_3 = BUILDER.add("two_hand_3", AnimationsBuilder.definition(0.92)
+            .marker("attack", 0.8).marker("step", 0.68)
+            .marker(EntityTrailProvider.TRAIL_START, 0.6)
+            .marker(EntityTrailProvider.TRAIL_END, 0.8));
+    public static final String TWO_HAND_4 = BUILDER.add("two_hand_4", AnimationsBuilder.definition(0.96)
+            .marker("attack", 0.84).marker("step", 0.72)
+            .marker(EntityTrailProvider.TRAIL_START, 0.6)
+            .marker(EntityTrailProvider.TRAIL_END, 0.84));
+    public static final String TWO_HAND_5 = BUILDER.add("two_hand_5", AnimationsBuilder.definition(0.92)
+            .marker("attack", 0.8).marker("step", 0.72)
+            .marker(EntityTrailProvider.TRAIL_START, 0.6)
+            .marker(EntityTrailProvider.TRAIL_END, 0.8));
+    public static final String TWO_HAND_6 = BUILDER.add("two_hand_6", AnimationsBuilder.definition(0.92)
+            .marker("attack", 0.8).marker("step", 0.68)
+            .marker(EntityTrailProvider.TRAIL_START, 0.6)
+            .marker(EntityTrailProvider.TRAIL_END, 0.8));
+    public static final String TWO_HAND_7 = BUILDER.add("two_hand_7", AnimationsBuilder.definition(0.92)
+            .marker("attack", 0.8).marker("step", 0.68)
+            .marker(EntityTrailProvider.TRAIL_START, 0.6)
+            .marker(EntityTrailProvider.TRAIL_END, 0.8));
+    public static final String ONE_HAND_1 = BUILDER.add("one_hand_1", AnimationsBuilder.definition(0.88)
+            .marker("attack", 0.76)
+            .marker(EntityTrailProvider.TRAIL_START, 0.6)
+            .marker(EntityTrailProvider.TRAIL_END, 0.76));
+    public static final String KATANA_1 = BUILDER.add("katana_1", AnimationsBuilder.definition(0.84)
+            .marker("attack", 0.72).marker("step", 0.64));
+    private static final String TSUBAME_GAESHI = BUILDER.add("tsubame_gaeshi", AnimationsBuilder.definition(2.16)
+            .marker("attack_prepare", 1.24).marker("attack", 1.36)
+            .marker("particle", 1.36)
+            .marker("invulnerable_start", 0.8).marker("invulnerable_end", 1.72));
     public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(4.));
     public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
 
@@ -105,46 +113,40 @@ public class Sasaki extends BaseServant {
     public ExtendedBehaviour<? extends BaseServant> getCombatAI() {
         return AttackBehaviourBuilder.<BaseServant>create()
                 .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(TWO_HAND_1)
-                        .start(TWO_HAND_2, 2, 0.24f, 2)
-                        .start(TWO_HAND_2, 2, 0.24f, 1).chain(Sasaki.TWO_HAND_1, 2, 0.24f)
-                        .start(TWO_HAND_2, 2, 0.24f, 1).chain(Sasaki.TWO_HAND_3, 2, 0.24f)
-                        .start(TWO_HAND_2, 2, 0.24f, 1).chain(Sasaki.TWO_HAND_5, 2, 0.24f)
-                        .start(TWO_HAND_2, 2, 0.24f, 1).chain(Sasaki.ONE_HAND_1, 2, 0.24f)
-                        .start(TWO_HAND_4, 2, 0.24f, 3)
-                        .start(TWO_HAND_4, 2, 0.24f, 1).chain(Sasaki.TWO_HAND_5, 2, 0.24f)
-                        .start(TWO_HAND_6, 2, 0.24f, 3)
-                        .chainChance(0.75f).build())).play(BehaviourUtils.cooldownedPlay(true, 18, 35))
+                        .start(TWO_HAND_2, 2, 0.52f, 3)
+                        .start(TWO_HAND_2, 2, 0.52f, 1).chain(Sasaki.TWO_HAND_6, 2, 0.52f)
+                        .start(TWO_HAND_3, 2, 0.52f, 1).chain(Sasaki.TWO_HAND_4, 2, 0.52f)
+                        .start(TWO_HAND_3, 2, 0.52f, 1).chain(Sasaki.ONE_HAND_1, 2, 0.52f)
+                        .start(TWO_HAND_5, 2, 0.52f, 3)
+                        .start(TWO_HAND_5, 2, 0.52f, 1).chain(Sasaki.TWO_HAND_7, 2, 0.52f)
+                        .build())).play(BehaviourUtils.cooldownedPlay(true, 18, 35))
                 .prepare(new SetWalkTargetToAttackTarget<BaseServant>().speedMod((e, t) -> 1.1f)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(10)
                 .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(TWO_HAND_2)
-                        .start(TWO_HAND_1, 2, 0.24f, 2)
-                        .start(TWO_HAND_1, 2, 0.24f, 1).chain(Sasaki.TWO_HAND_2, 2, 0.24f)
-                        .start(TWO_HAND_1, 2, 0.24f, 1).chain(Sasaki.TWO_HAND_4, 2, 0.24f)
-                        .start(TWO_HAND_1, 2, 0.24f, 1).chain(Sasaki.TWO_HAND_6, 2, 0.24f)
-                        .start(TWO_HAND_3, 2, 0.24f, 3)
-                        .start(TWO_HAND_3, 2, 0.24f, 1).chain(Sasaki.TWO_HAND_6, 2, 0.24f)
-                        .start(TWO_HAND_5, 2, 0.24f, 3)
-                        .chainChance(0.75f).build())).play(BehaviourUtils.cooldownedPlay(true, 18, 35))
+                        .start(TWO_HAND_1, 2, 0.52f, 3)
+                        .start(TWO_HAND_1, 2, 0.52f, 1).chain(Sasaki.TWO_HAND_3, 2, 0.52f)
+                        .start(TWO_HAND_1, 2, 0.52f, 1).chain(Sasaki.TWO_HAND_5, 2, 0.52f)
+                        .start(TWO_HAND_4, 2, 0.52f, 3)
+                        .start(TWO_HAND_4, 2, 0.52f, 1).chain(Sasaki.TWO_HAND_5, 2, 0.52f)
+                        .start(TWO_HAND_7, 2, 0.52f, 3)
+                        .build())).play(BehaviourUtils.cooldownedPlay(true, 18, 35))
                 .prepare(new SetWalkTargetToAttackTarget<BaseServant>().speedMod((e, t) -> 1.1f)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(10)
                 .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(TWO_HAND_3)
-                        .start(TWO_HAND_6, 2, 0.24f, 5)
-                        .start(TWO_HAND_6, 2, 0.24f, 3).chain(Sasaki.TWO_HAND_2, 2, 0.24f)
-                        .chainChance(0.75f).build())).play(BehaviourUtils.cooldownedPlay(true, 18, 35))
+                        .start(TWO_HAND_6, 2, 0.52f, 5)
+                        .start(TWO_HAND_6, 2, 0.52f, 3).chain(Sasaki.TWO_HAND_2, 2, 0.52f)
+                        .build())).play(BehaviourUtils.cooldownedPlay(true, 18, 35))
                 .prepare(new SetWalkTargetToAttackTarget<BaseServant>().speedMod((e, t) -> 1.1f)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(10)
                 .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(TWO_HAND_4)
-                        .start(TWO_HAND_5, 2, 0.24f, 5)
-                        .start(TWO_HAND_5, 2, 0.24f, 3).chain(Sasaki.TWO_HAND_1, 2, 0.24f)
-                        .chainChance(0.75f).build())).play(BehaviourUtils.cooldownedPlay(true, 18, 35))
-                .prepare(new SetWalkTargetToAttackTarget<BaseServant>().speedMod((e, t) -> 1.1f)).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(10)
-                .start(TWO_HAND_7).play(BehaviourUtils.cooldownedPlay(true, 18, 35))
+                        .start(TWO_HAND_5, 2, 0.52f, 5)
+                        .start(TWO_HAND_5, 2, 0.52f, 3).chain(Sasaki.TWO_HAND_1, 2, 0.52f)
+                        .build())).play(BehaviourUtils.cooldownedPlay(true, 18, 35))
                 .prepare(new SetWalkTargetToAttackTarget<BaseServant>().speedMod((e, t) -> 1.1f)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(10)
                 .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(KATANA_1)
-                        .start(TWO_HAND_5, 2, 0.24f, 2)
-                        .start(ONE_HAND_1, 2, 0.24f, 1)
+                        .start(TWO_HAND_5, 2, 0.52f, 2)
+                        .start(ONE_HAND_1, 2, 0.52f, 1)
                         .build())).play(BehaviourUtils.cooldownedPlay(true, 18, 35))
                 .prepare(new SetWalkTargetToAttackTarget<BaseServant>().speedMod((e, t) -> 1.1f)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(10)
@@ -295,31 +297,53 @@ public class Sasaki extends BaseServant {
 
     @Override
     public AABB attackBB(AnimationState anim) {
-        double width = this.getBbWidth() + 0.3;
-        double length = 1;
-        if (anim.is(TWO_HAND_1, TWO_HAND_2, TWO_HAND_3, TWO_HAND_4)) {
-            width += 1.7;
-            length += 1.2;
+        double height = this.getBbHeight();
+        double width = this.getBbWidth();
+        double length = 1 * this.getScale();
+        if (anim.is(TWO_HAND_1)) {
+            width += 2.8 * this.getScale();
+            length += 1.4 * this.getScale();
+            return new AABB(-width * 0.8, -0.03, 0, width * 0.2, height + 0.03, length);
         }
-        if (anim.is(TWO_HAND_5, TWO_HAND_6)) {
-            width += 2.1;
-            length += 1.1;
+        if (anim.is(TWO_HAND_2)) {
+            width += 2.8 * this.getScale();
+            length += 1.4 * this.getScale();
+            return new AABB(-width * 0.2, -0.03, 0, width * 0.8, height + 0.03, length);
+        }
+        if (anim.is(TWO_HAND_3)) {
+            width += 2.8 * this.getScale();
+            length += 1.4 * this.getScale();
+            return new AABB(-width * 0.4, -0.03, 0, width * 0.6, height + 0.03, length);
+        }
+        if (anim.is(TWO_HAND_4)) {
+            width += 2.4 * this.getScale();
+            length += 1.4 * this.getScale();
+            return new AABB(-width * 0.4, -0.03, 0, width * 0.6, height + 0.03, length);
+        }
+        if (anim.is(TWO_HAND_5)) {
+            width += 2.4 * this.getScale();
+            length += 1.4 * this.getScale();
+            return new AABB(-width * 0.3, -0.03, 0, width * 0.7, height + 0.03, length);
+        }
+        if (anim.is(TWO_HAND_6)) {
+            width += 2.8 * this.getScale();
+            length += 1.4 * this.getScale();
+            return new AABB(-width * 0.8, -0.03, 0, width * 0.2, height + 0.03, length);
         }
         if (anim.is(TWO_HAND_7)) {
-            width += 0.3;
-            length += 1.3;
+            width += 0.5 * this.getScale();
+            height += 2.1 * this.getScale();
+            length += 1.6 * this.getScale();
         }
         if (anim.is(ONE_HAND_1)) {
-            width += 2.1;
-            length += 1;
-            return new AABB(-width * 0.7, -0.02, 0, width * 0.3, this.getBbHeight() + 0.02, length);
+            width += 3.4 * this.getScale();
+            length += 1.7 * this.getScale();
         }
         if (anim.is(KATANA_1)) {
-            width += 0.1;
-            length += 1;
-            return new AABB(-width * 0.3, -0.02, 0, width * 0.7, this.getBbHeight() + 0.02, length);
+            width += 0.5 * this.getScale();
+            length += 1.7 * this.getScale();
         }
-        return new AABB(-width * 0.5, -0.02, 0, width * 0.5, this.getBbHeight() + 0.02, length);
+        return new AABB(-width * 0.5, -0.03, 0, width * 0.5, height + 0.03, length);
     }
 
     @Override
@@ -337,7 +361,8 @@ public class Sasaki extends BaseServant {
         if (damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY))
             return super.hurt(damageSource, damage);
         AnimationState anim = this.getAnimationHandler().getAnimation();
-        return (anim == null || !anim.is(TSUBAME_GAESHI) || !anim.isBetween(0.8, 1.64)) && super.hurt(damageSource, damage);
+        return (anim == null || !anim.is(TSUBAME_GAESHI)
+                || (anim.isPast("invulnerable_start") && !anim.isPast("invulnerable_end"))) && super.hurt(damageSource, damage);
     }
 
     @Override

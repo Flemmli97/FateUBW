@@ -4,6 +4,7 @@ import io.github.flemmli97.fateubw.api.datapack.AttributeHolderProperties;
 import io.github.flemmli97.fateubw.api.datapack.ServantExtraData;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
+import io.github.flemmli97.fateubw.common.entity.misc.StarfishShot;
 import io.github.flemmli97.fateubw.common.entity.utils.MoveStateTracker;
 import io.github.flemmli97.fateubw.common.entity.utils.MoveType;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
@@ -13,6 +14,7 @@ import io.github.flemmli97.tenshilib.common.entity.EntityUtils;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.SelectableBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetMoveToRestriction;
+import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetWalkTargetWithinDist;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimatedEntity;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionContainer;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
@@ -25,6 +27,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.world.damagesource.CombatEntry;
 import net.minecraft.world.entity.Entity;
@@ -37,6 +40,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
@@ -80,6 +84,8 @@ public class LesserMonster extends PathfinderMob implements AnimatedEntity, Owna
 
     private final int maxLivingTicks;
 
+    private boolean ranged;
+
     public LesserMonster(EntityType<? extends LesserMonster> type, Level level) {
         super(type, level);
         if (!level.isClientSide) {
@@ -113,34 +119,8 @@ public class LesserMonster extends PathfinderMob implements AnimatedEntity, Owna
         builder.define(MOVE_FLAGS, (byte) 0);
     }
 
-    @Override
-    public void baseTick() {
-        super.baseTick();
-        if (!this.level().isClientSide) {
-            this.livingTicks++;
-            if (this.livingTicks > this.maxLivingTicks)
-                this.remove(RemovalReason.KILLED);
-            AnimationState anim = this.getAnimationHandler().getAnimation();
-            if (anim != null && anim.is(ATTACK) && anim.isAt("attack")) {
-                LivingEntity target = this.getTarget();
-                if (target != null && this.getAttackBoundingBox().intersects(target.getBoundingBox())) {
-                    this.doHurtTarget(target);
-                }
-            }
-        }
-        this.moveStateTracker.tick();
-        this.getAnimationHandler().tick();
-    }
-
-    @Override
-    protected void customServerAiStep() {
-        super.customServerAiStep();
-        this.tickBrain(this);
-        if (this.getDeltaMovement().horizontalDistanceSqr() > 0.003 && this.isAlive() && !this.isImmobile()) {
-            this.setMovingFlag(MoveType.RUN);
-        } else {
-            this.setMovingFlag(MoveType.NONE);
-        }
+    public void setRanged(boolean ranged) {
+        this.ranged = ranged;
     }
 
     @Override
@@ -192,12 +172,19 @@ public class LesserMonster extends PathfinderMob implements AnimatedEntity, Owna
                 new InvalidateAttackTarget<LesserMonster>(),
                 new FirstApplicableBehaviour<>(
                         SelectableBehaviourBuilder.<LesserMonster>builder()
-                                .add(1, new SetWalkTargetToAttackTarget<>(), BehaviourUtils.moveTo())
+                                .add(1, entity -> !entity.ranged, new SetWalkTargetToAttackTarget<>(), BehaviourUtils.moveTo())
+                                .add(1, entity -> entity.ranged, new SetWalkTargetWithinDist<LesserMonster>().min(4).max(8), BehaviourUtils.moveTo())
                                 .build().startCondition(LesserMonster::runCooldownBehaviour)
                                 .stopIf(e -> !e.runCooldownBehaviour()),
                         AttackBehaviourBuilder.<LesserMonster>create()
                                 .start(ATTACK).play(BehaviourUtils.cooldownedPlay(false, 10, 25))
+                                .condition(entity -> !entity.ranged)
                                 .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.moveTo())
+                                .end(1)
+                                .start(ATTACK).play(BehaviourUtils.cooldownedPlay(false, 10, 25))
+                                .condition(entity -> entity.ranged)
+                                .prepare(new SetWalkTargetWithinDist<LesserMonster>()
+                                        .min(4).max(8)).prepareOptional(BehaviourUtils.moveTo())
                                 .end(1)
                                 .build()
                 ).startCondition(m -> m.getTarget() != null)
@@ -219,6 +206,40 @@ public class LesserMonster extends PathfinderMob implements AnimatedEntity, Owna
         DebugPackets.sendEntityBrain(this);
     }
 
+    @Override
+    public void baseTick() {
+        super.baseTick();
+        if (!this.level().isClientSide) {
+            this.livingTicks++;
+            if (this.livingTicks > this.maxLivingTicks)
+                this.remove(RemovalReason.KILLED);
+            AnimationState anim = this.getAnimationHandler().getAnimation();
+            if (anim != null && anim.is(ATTACK) && anim.isAt("attack")) {
+                LivingEntity target = this.getTarget();
+                if (target != null) {
+                    if (this.ranged) {
+                        this.shoot();
+                    } else if (this.getAttackBoundingBox().intersects(target.getBoundingBox())) {
+                        this.doHurtTarget(target);
+                    }
+                }
+            }
+        }
+        this.moveStateTracker.tick();
+        this.getAnimationHandler().tick();
+    }
+
+    @Override
+    protected void customServerAiStep() {
+        super.customServerAiStep();
+        this.tickBrain(this);
+        if (this.getDeltaMovement().horizontalDistanceSqr() > 0.003 && this.isAlive() && !this.isImmobile()) {
+            this.setMovingFlag(MoveType.RUN);
+        } else {
+            this.setMovingFlag(MoveType.NONE);
+        }
+    }
+
     public float interpolatedMoveTick(float partialTicks) {
         return this.moveStateTracker.interpolatedMoveTick(partialTicks);
     }
@@ -236,6 +257,7 @@ public class LesserMonster extends PathfinderMob implements AnimatedEntity, Owna
         super.readAdditionalSaveData(tag);
         if (tag.contains("Owner"))
             this.ownerUUID = tag.getUUID("Owner");
+        this.ranged = tag.getBoolean("Ranged");
     }
 
     @Override
@@ -243,6 +265,7 @@ public class LesserMonster extends PathfinderMob implements AnimatedEntity, Owna
         super.addAdditionalSaveData(tag);
         if (this.ownerUUID != null)
             tag.putUUID("Owner", this.ownerUUID);
+        tag.putBoolean("Ranged", this.ranged);
     }
 
     @Override
@@ -268,6 +291,18 @@ public class LesserMonster extends PathfinderMob implements AnimatedEntity, Owna
             }
         }
         return res;
+    }
+
+    public void shoot() {
+        StarfishShot proj = new StarfishShot(this.level(), this);
+        if (this.getTarget() != null) {
+            Vec3 pos = this.getTarget().position();
+            proj.shootAtPosition(pos.x(), this.getTarget().getY(0.5), pos.z(), 0.6f, 0);
+        } else {
+            proj.shoot(this, this.getXRot() - 15, this.getYRot(), 0, 0.6f, 0);
+        }
+        this.level().addFreshEntity(proj);
+        this.playSound(SoundEvents.HONEY_BLOCK_BREAK, 1, 1);
     }
 
     @Override

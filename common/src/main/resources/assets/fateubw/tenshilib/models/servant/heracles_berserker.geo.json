@@ -242,7 +242,7 @@
         {
           "name": "RightItem",
           "parent": "RightArmDown",
-          "pivot": [-8.5, 14.5, 0]
+          "pivot": [-8.5, 14.5, -2]
         },
         {
           "name": "LeftLeg",

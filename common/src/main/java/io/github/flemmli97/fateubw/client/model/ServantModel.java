@@ -139,7 +139,6 @@ public class ServantModel<T extends LivingEntity & AnimatedEntity & ServantModel
                 this.rightItem.translateAndRotateWithParents(stack);
             }
         }
-        stack.translate(0, 3 / 16d, -2 / 16d);
     }
 
     @Override

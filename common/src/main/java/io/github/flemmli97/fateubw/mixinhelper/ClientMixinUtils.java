@@ -1,21 +1,21 @@
 package io.github.flemmli97.fateubw.mixinhelper;
 
-import io.github.flemmli97.fateubw.client.ItemModelProps;
-import net.minecraft.world.item.ItemDisplayContext;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexMultiConsumer;
+import io.github.flemmli97.fateubw.client.render.FateRenders;
+import io.github.flemmli97.fateubw.common.registry.FateDataComponents;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.item.ItemStack;
 
 public class ClientMixinUtils {
 
-    public static boolean renderCorruptedItem;
+    public static ItemStack currentItemRenderContext;
 
-    public static void adjustForHeldModel(ItemStack itemStack, ItemDisplayContext transformType) {
-        ItemModelProps.HELD_TYPE = switch (transformType) {
-            case FIRST_PERSON_LEFT_HAND, THIRD_PERSON_LEFT_HAND, FIRST_PERSON_RIGHT_HAND, THIRD_PERSON_RIGHT_HAND -> 1;
-            default -> 0;
-        };
-    }
-
-    public static void resetHeldModel() {
-        ItemModelProps.HELD_TYPE = 0;
+    public static VertexConsumer getConsumerOnContext(MultiBufferSource buffer, RenderType renderType) {
+        if (currentItemRenderContext != null && currentItemRenderContext.has(FateDataComponents.CORRUPTED_ITEM.get())) {
+            return VertexMultiConsumer.create(buffer.getBuffer(FateRenders.CORRUPTED_OVERLAY), buffer.getBuffer(renderType));
+        }
+        return null;
     }
 }

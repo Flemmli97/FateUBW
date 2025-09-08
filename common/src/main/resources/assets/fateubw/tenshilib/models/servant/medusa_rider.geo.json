@@ -85,7 +85,7 @@
         {
           "name": "LeftItem",
           "parent": "LeftArmDown",
-          "pivot": [5.5, 15, 0]
+          "pivot": [5.5, 12, -2]
         },
         {
           "name": "RightArm",
@@ -126,7 +126,7 @@
         {
           "name": "RightItem",
           "parent": "RightArmDown",
-          "pivot": [-5.5, 15, 0]
+          "pivot": [-5.5, 12, -2]
         },
         {
           "name": "LeftLeg",
@@ -282,7 +282,7 @@
         },
         {
           "name": "RightItemStandalone",
-          "pivot": [-5.5, 15, 0]
+          "pivot": [-5.5, 13, -2]
         }
       ]
     }

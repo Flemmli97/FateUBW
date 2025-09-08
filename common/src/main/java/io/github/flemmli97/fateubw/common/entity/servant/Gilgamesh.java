@@ -7,7 +7,6 @@ import io.github.flemmli97.fateubw.common.entity.misc.BabylonWeapon;
 import io.github.flemmli97.fateubw.common.entity.misc.EnumaElish;
 import io.github.flemmli97.fateubw.common.registry.FateDataComponents;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
-import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.entity.ai.TargetPosition;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.SelectableBehaviourBuilder;
@@ -15,17 +14,19 @@ import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.LeapInDire
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.PlayAnimation;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetWalkTargetAwayFromTarget;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetWalkTargetWithinDist;
-import io.github.flemmli97.tenshilib.common.entity.ai.brain.data.AnimationPlayHolder;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinition;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionContainer;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationsBuilder;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -44,23 +45,18 @@ import org.joml.Vector4f;
 public class Gilgamesh extends BaseServant {
 
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
-    public static final String ONE_HAND_1 = BUILDER.add("one_hand_1", AnimationsBuilder.definition(0.62)
-            .marker("attack", 0.52).marker("step", 0.52));
-    public static final String ONE_HAND_2 = BUILDER.add("one_hand_2", AnimationsBuilder.definition(0.62)
-            .marker("attack", 0.48).marker("step", 0.52));
-    public static final String ONE_HAND_3 = BUILDER.add("one_hand_3", AnimationsBuilder.definition(0.58)
-            .marker("attack", 0.44).marker("step", 0.48));
-    public static final String ONE_HAND_4 = BUILDER.add("one_hand_4", AnimationsBuilder.definition(0.58)
-            .marker("attack", 0.48).marker("step", 0.48));
-    public static final String STAB_1 = BUILDER.add("stab_1", AnimationsBuilder.definition(0.86)
-            .marker("attack", 0.6));
-
-    public static final String BABYLON_1 = BUILDER.add("babylon_1", AnimationsBuilder.definition(0.96).marker("attack", 0.24));
-    public static final String BABYLON_2 = BUILDER.add("babylon_2", AnimationsBuilder.definition(0.96).marker("attack", 0.24));
-    public static final String BABYLON_3 = BUILDER.add("babylon_3", AnimationsBuilder.definition(0.96).marker("attack", 0.28));
-    public static final String EA = BUILDER.add("ea", AnimationsBuilder.definition(1.68).marker("attack", 0.76));
+    public static final String ONE_HAND_1 = BUILDER.add("one_hand_1", AnimationsBuilder.definition(0.68)
+            .marker("attack", 0.56));
+    public static final String ONE_HAND_2 = BUILDER.add("one_hand_2", AnimationsBuilder.definition(0.68)
+            .marker("attack", 0.56));
+    public static final String STAB_1 = BUILDER.add("stab_1", AnimationsBuilder.definition(0.84)
+            .marker("attack", 0.6, 0.72));
+    public static final String GUARD = BUILDER.add("guard", AnimationsBuilder.definition(0.4));
+    public static final String BABYLON_1 = BUILDER.add("babylon_1", AnimationsBuilder.definition(1).marker("attack", 0.32));
+    public static final String BABYLON_2 = BUILDER.add("babylon_2", AnimationsBuilder.definition(1).marker("attack", 0.32));
+    public static final String BABYLON_3 = BUILDER.add("babylon_3", AnimationsBuilder.definition(1).marker("attack", 0.32));
+    public static final String EA = BUILDER.add("ea", AnimationsBuilder.definition(3.12).marker("attack", 1.56));
     public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2.));
-
     public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
 
     private final Vector4f summonColor = new Vector4f(1.0f, 0.85f, 0.3f, 0.7f);
@@ -96,39 +92,25 @@ public class Gilgamesh extends BaseServant {
     @Override
     public ExtendedBehaviour<? extends BaseServant> getCombatAI() {
         return AttackBehaviourBuilder.<Gilgamesh>create()
-                .start(BehaviourUtils.of(AnimationPlayHolder.<Gilgamesh>builder(ONE_HAND_1)
-                        .start(ONE_HAND_2, 2, 0.2f, 1)
-                        .start(ONE_HAND_3, 2, 0.2f, 1)
-                        .chainChance(0.5f).build())).play(BehaviourUtils.cooldownedPlay(true, 18, 30))
-                .condition(gil -> !gil.useRanged())
-                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(8)
-                .start(BehaviourUtils.of(AnimationPlayHolder.<Gilgamesh>builder(ONE_HAND_2)
-                        .start(ONE_HAND_1, 2, 0.2f, 1)
-                        .chainChance(0.5f).build())).play(BehaviourUtils.cooldownedPlay(true, 18, 30))
-                .condition(gil -> !gil.useRanged())
-                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(8)
-                .start(BehaviourUtils.of(AnimationPlayHolder.<Gilgamesh>builder(ONE_HAND_3)
-                        .start(ONE_HAND_4, 2, 0.2f, 1)
-                        .chainChance(0.5f).build())).play(BehaviourUtils.cooldownedPlay(true, 18, 30))
-                .condition(gil -> !gil.useRanged())
-                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(8)
-                .start(ONE_HAND_4).play(BehaviourUtils.cooldownedPlay(true, 18, 30))
-                .condition(gil -> !gil.useRanged())
-                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(8)
+                .start(ONE_HAND_1).play(BehaviourUtils.cooldownedPlay(true, 18, 30))
+                .condition(gil -> !gil.useRanged() && BehaviourUtils.ifCloserThan(4).test(gil))
+                .end(7)
+                .start(ONE_HAND_2).play(BehaviourUtils.cooldownedPlay(true, 18, 30))
+                .condition(gil -> !gil.useRanged() && BehaviourUtils.ifCloserThan(4).test(gil))
+                .end(7)
+                .start(STAB_1).play(BehaviourUtils.cooldownedPlay(true, 18, 30))
+                .condition(gil -> !gil.useRanged() && BehaviourUtils.ifCloserThan(4).test(gil))
+                .end(7)
                 .start(BABYLON_1, BABYLON_2, BABYLON_3).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(18), 30, 50))
                 .prepare(new SetWalkTargetWithinDist<Gilgamesh>()
                         .min(6).max(16).speedMod(1.2f)).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(35)
+                .end(11 * 3)
                 .start(BABYLON_1, BABYLON_2, BABYLON_3).play((PlayAnimation<Gilgamesh>) BehaviourUtils.<Gilgamesh>cooldownedPlay(BehaviourUtils.ifCloserThan(18), 30, 50)
                         .startCondition(BehaviourUtils.ifCloserThan(16)))
                 .condition(gil -> !gil.useRanged())
                 .prepare(new SetWalkTargetToAttackTarget<Gilgamesh>().closeEnoughDist(BehaviourUtils.closeEnough(16)))
                 .prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(35)
+                .end(9 * 3)
                 .start(EA).play(BehaviourUtils.cooldownedPlay(false, 20, 35))
                 .condition(BaseServant::canUseNP)
                 .prepare(new SetWalkTargetWithinDist<Gilgamesh>()
@@ -141,16 +123,9 @@ public class Gilgamesh extends BaseServant {
     public ExtendedBehaviour<? extends BaseServant> getCooldownAI() {
         return SelectableBehaviourBuilder.<Gilgamesh>builder()
                 .add(3, Gilgamesh::useRanged, new Idle<>())
-                .add(10, Gilgamesh::useRanged, new StrafeTarget<Gilgamesh>()
-                        .strafeDistance(14))
-                .add(7, Gilgamesh::useRanged,
-                        new SetWalkTargetAwayFromTarget<Gilgamesh>()
-                                .radius(7).speedMod(1.1f), BehaviourUtils.moveTo())
-                .add(8, gil -> !gil.useRanged(), new SetWalkTargetToAttackTarget<>(), BehaviourUtils.moveTo())
-                .add(4, gil -> !gil.useRanged(),
-                        new SetWalkTargetAwayFromTarget<Gilgamesh>()
-                                .radius(7).speedMod(1.1f), BehaviourUtils.moveTo())
-                .add(3, gil -> BehaviourUtils.ifCloserThan(7).test(gil), new LeapInDirection<Gilgamesh>()
+                .add(10, new StrafeTarget<Gilgamesh>().strafeDistance(14))
+                .add(7, new SetWalkTargetAwayFromTarget<Gilgamesh>().radius(7).speedMod(1.1f), BehaviourUtils.moveTo())
+                .add(2, gil -> BehaviourUtils.ifCloserThan(7).test(gil), new LeapInDirection<Gilgamesh>()
                         .horizontalDirection((owner, target) -> LeapInDirection.createBackwardsVec(owner.position(), target.position()))
                         .whenStarting(e -> BrainUtils.clearMemory(e, MemoryModuleType.ATTACK_COOLING_DOWN))).build();
     }
@@ -180,15 +155,11 @@ public class Gilgamesh extends BaseServant {
     @Override
     public void handleAttack(AnimationState anim) {
         if (anim.is(EA)) {
-            if (anim.isAt(0.4)) {
-                LivingEntity target = this.getTarget();
-                if (target != null)
-                    this.setTargetPosition(target);
-                else
-                    this.setTargetPosition(TargetPosition.of(this.position().add(this.getLookAngle().scale(8))));
+            if (!anim.isAt("attack")) {
+                this.setTargetPositionFromAttackTarget();
             }
             if (anim.isAt("attack")) {
-                this.ea(this.getTargetPosition().asVec(this.getEyePosition()));
+                this.ea(this.getTargetPosition());
             }
         } else if (anim.is(BABYLON_1, BABYLON_2, BABYLON_3)) {
             LivingEntity target = this.getTarget();
@@ -201,12 +172,15 @@ public class Gilgamesh extends BaseServant {
                 }
             }
         } else {
-            if (anim.isAt("step")) {
-                Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(0.3);
-                this.setDeltaMovement(this.getDeltaMovement().add(dir));
-            }
             super.handleAttack(anim);
         }
+    }
+
+    @Override
+    protected float getKnockback(Entity attacker, DamageSource damageSource) {
+        if (this.getAnimationHandler().isCurrent(STAB_1))
+            return 0;
+        return super.getKnockback(attacker, damageSource) + 3;
     }
 
     @Override
@@ -216,29 +190,40 @@ public class Gilgamesh extends BaseServant {
 
     @Override
     public AABB attackBB(AnimationState anim) {
-        double width = this.getBbWidth() + 0.3;
-        double length = 1;
+        double height = this.getBbHeight();
+        double width = this.getBbWidth();
+        double length = 1 * this.getScale();
         if (anim.is(ONE_HAND_1)) {
-            width += 0.4;
-            length += 0.6;
+            width += 0.5 * this.getScale();
+            length += 0.7 * this.getScale();
         }
         if (anim.is(ONE_HAND_2)) {
-            width += 1;
-            length += 0.6;
-        }
-        if (anim.is(ONE_HAND_3)) {
-            width += 1.1;
-            length += 0.6;
-        }
-        if (anim.is(ONE_HAND_4)) {
-            width += 0.2;
-            length += 0.6;
+            width += 1.2 * this.getScale();
+            length += 0.8 * this.getScale();
         }
         if (anim.is(STAB_1)) {
-            width += 0.1;
-            length += 0.7;
+            width += 0.3 * this.getScale();
+            length += 0.9 * this.getScale();
         }
-        return new AABB(-width * 0.5, -0.02, 0, width * 0.5, this.getBbHeight() + 0.02, length);
+        return new AABB(-width * 0.5, -0.03, 0, width * 0.5, height + 0.03, length);
+    }
+
+    @Override
+    public boolean hurt(DamageSource damageSource, float damage) {
+        if (!this.getAnimationHandler().isCurrent(EA)
+                && !damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && !damageSource.is(DamageTypeTags.BYPASSES_ARMOR)
+                && !damageSource.is(DamageTypeTags.IS_PROJECTILE)
+                && this.getMainHandItem().is(FateItems.ENUMAELISH.get()) && this.getRandom().nextFloat() < 0.15) {
+            this.playSound(SoundEvents.GENERIC_EXPLODE.value(), 1, 1);
+            this.getAnimationHandler().setAnimation(GUARD);
+            if (damageSource.getEntity() instanceof LivingEntity entity) {
+                Vec3 dir = entity.position().subtract(this.position());
+                dir = new Vec3(dir.x(), 0, dir.z()).normalize().scale(5);
+                entity.setDeltaMovement(entity.getDeltaMovement().add(dir).add(0, 0.3, 0));
+            }
+            return false;
+        }
+        return super.hurt(damageSource, damage);
     }
 
     @Override
@@ -250,12 +235,14 @@ public class Gilgamesh extends BaseServant {
         }
     }
 
-    public void ea(Vec3 pos) {
+    public void ea(TargetPosition target) {
         if (!this.attemptUseNobelPhantasm())
             return;
         EnumaElish ea = new EnumaElish(this.level(), this);
-        if (pos != null)
+        if (target != null) {
+            Vec3 pos = target.asVec(ea.position());
             ea.setRotationTo(pos.x(), pos.y(), pos.z(), 0);
+        }
         this.level().addFreshEntity(ea);
         this.revealServant();
         this.stopUsingItem();
@@ -264,9 +251,9 @@ public class Gilgamesh extends BaseServant {
     }
 
     public void attackWithRangedAttack(LivingEntity target) {
-        double perc = Mth.clamp(1 - this.getHealth() / this.getMaxHealth(), 0.1, 1);
-        int randAmount = (int) (20 * perc);
-        int base = 6 + (int) (5 * perc);
+        double perc = Mth.clamp(1 - this.getHealth() / this.getMaxHealth(), 0.2, 0.8);
+        int randAmount = (int) (18 * perc);
+        int base = 6 + (int) (6 * perc);
         int weaponAmount = this.getRandom().nextInt(Math.max(1, randAmount)) + base;
         if (this.getAnimationHandler().getAnimation() == null)
             this.spawnBehind(target, weaponAmount);
@@ -283,7 +270,7 @@ public class Gilgamesh extends BaseServant {
     }
 
     private void spawnAroundTarget(LivingEntity target, int amount) {
-        BabylonWeapon.spawnWeaponsAround(this, target, amount, 6);
+        BabylonWeapon.spawnWeaponsAround(this, target, amount, 6 + amount / 5);
     }
 
     protected boolean useRanged() {

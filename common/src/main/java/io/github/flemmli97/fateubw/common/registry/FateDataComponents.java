@@ -27,6 +27,7 @@ public class FateDataComponents {
     public static final RegistryEntrySupplier<DataComponentType<?>, DataComponentType<Unit>> GLOWING_ITEM = register("glowing_item", Codec.unit(Unit.INSTANCE), StreamCodec.unit(Unit.INSTANCE));
     public static final RegistryEntrySupplier<DataComponentType<?>, DataComponentType<Unit>> CORRUPTED_ITEM = register("corrupted_item", Codec.unit(Unit.INSTANCE), StreamCodec.unit(Unit.INSTANCE));
     public static final RegistryEntrySupplier<DataComponentType<?>, DataComponentType<Unit>> ARCHOER_BOW_CHARGED = register("archoer_bow_charged", Codec.unit(Unit.INSTANCE), StreamCodec.unit(Unit.INSTANCE));
+    public static final RegistryEntrySupplier<DataComponentType<?>, DataComponentType<Unit>> UNSEALED = register("unsealed", Codec.unit(Unit.INSTANCE), StreamCodec.unit(Unit.INSTANCE));
 
     public static final RegistryEntrySupplier<DataComponentType<?>, DataComponentType<ServantSpawneggData>> SERVANT_EGG_DATA = register("servant_egg_data", ServantSpawneggData.CODEC, ServantSpawneggData.STREAM_CODEC);
     public static final RegistryEntrySupplier<DataComponentType<?>, DataComponentType<UUID>> SELECTED_UUID = register("selected_uuid", UUIDUtil.CODEC, UUIDUtil.STREAM_CODEC);

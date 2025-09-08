@@ -36,12 +36,10 @@
       "loop": true,
       "bones": {
         "LeftLeg": {
-          "rotation": [-72, -18, 0],
-          "scale": 0
+          "rotation": [-72, -18, 0]
         },
         "RightLeg": {
-          "rotation": [-72, 18, 0],
-          "scale": 0
+          "rotation": [-72, 18, 0]
         },
         "VehicleAttachment": {
           "scale": 1
@@ -57,12 +55,6 @@
     "riding_standing": {
       "loop": true,
       "bones": {
-        "LeftLeg": {
-          "scale": 0
-        },
-        "RightLeg": {
-          "scale": 0
-        },
         "VehicleAttachment": {
           "scale": 1
         }

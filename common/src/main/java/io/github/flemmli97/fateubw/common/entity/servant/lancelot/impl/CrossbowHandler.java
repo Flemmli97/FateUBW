@@ -21,7 +21,7 @@ import net.minecraft.world.item.enchantment.ItemEnchantments;
 public class CrossbowHandler implements LancelotUseHandler {
 
     private int getPowerLevel(LivingEntity entity) {
-        return Mth.floor(entity.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.5);
+        return Mth.floor(entity.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.4);
     }
 
     @Override

@@ -313,14 +313,14 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
             if (this.getAnimationHandler().isCurrent(CHARGING) && this.getAnimationHandler().getAnimation().isPast(0.48)) {
                 Vec3 base = Vec3.directionFromRotation(0, this.yBodyRot).yRot(90 * Mth.DEG_TO_RAD).normalize();
                 Vec3 dir = this.getDeltaMovement().scale(-0.2);
-                for (int i = 0; i < 8; i++) {
+                for (int i = 0; i < 9; i++) {
                     double sideScale = ((this.random.nextDouble() * 2) - 1) * 3;
                     double upScale = (this.random.nextDouble() * 2) - 1;
                     Vec3 pos = this.position().add(base.scale(sideScale)).add(new Vec3(0, 1, 0).scale(upScale));
                     float r = (235 + this.getRandom().nextInt(10)) / 255F;
                     float g = (235 + this.getRandom().nextInt(10)) / 255F;
                     float b = 245 / 255F;
-                    float scale = (float) (0.05 + this.getRandom().nextDouble() * 0.1);
+                    float scale = (float) (0.04 + this.getRandom().nextDouble() * 0.1);
                     this.level().addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
                                     TrailInfo.builder(new MotionTrailProvider.MotionTrailData(dir, 3, 6))
                                             .setColor(r, g, b, 0.4f)
@@ -517,8 +517,8 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
             }
         } else {
             dir = dir.scale(0.21);
-            if (dir.lengthSqr() > 2.1 * 2.1) {
-                dir = dir.normalize().scale(2.1);
+            if (dir.lengthSqr() > 1.7 * 1.7) {
+                dir = dir.normalize().scale(1.7);
             }
         }
         this.setChargeMotion(dir);

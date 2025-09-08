@@ -7,6 +7,14 @@
   },
   "gui_light": "front",
   "loader": "neoforge:separate_transforms",
+  "overrides": [
+    {
+      "model": "fateubw:item/gae_dearg_unsealed",
+      "predicate": {
+        "fateubw:unsealed": 1.0
+      }
+    }
+  ],
   "perspectives": {
     "fixed": {
       "parent": "minecraft:item/handheld",

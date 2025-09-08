@@ -27,7 +27,7 @@ public class CommonConfig {
 
     public static ExpressionConfig effectiveArmor = new ExpressionConfig("max(armor - damage / (2 + armor_toughness / 4), armor * 0.2)");
     public static ExpressionConfig armorReduction = new ExpressionConfig("effective_armor > 20 ? exp(-(ln(5)/20) * effective_armor) : effective_armor / 25");
-    public static ExpressionConfig projectileReduction = new ExpressionConfig("1 - exp(-0.05 * projectile_protection)");
+    public static ExpressionConfig projectileReduction = new ExpressionConfig("1 - exp(-0.05 * projectile_protection * 0.33)");
     public static ExpressionConfig magicReduction = new ExpressionConfig("1 - exp(-0.05 * magic_protection)");
 
     public static boolean punishTeleport = true;
@@ -44,8 +44,8 @@ public class CommonConfig {
     // Misc
     public static float babylonScale = 1.5f;
     public static WeaponList babylonWeapons = new WeaponList(FateItems.ENUMAELISH.getID().toString(), "runecraftory");
-    public static float eaDamage = 50;
-    public static float excaliburDamage = 35;
+    public static float eaDamage = 15;
+    public static float excaliburDamage = 15;
     public static float caladBolgDmg = 30;
     public static float magicBeam = 6;
     public static float gaeBolgDmg = 25;

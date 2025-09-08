@@ -31,12 +31,12 @@ public class MagicBeam extends BaseBeam {
 
     public MagicBeam(EntityType<? extends MagicBeam> type, Level level) {
         super(type, level);
-        this.entityData.set(SHOOT_TIME, this.random.nextInt(15) + 10);
+        this.entityData.set(SHOOT_TIME, this.random.nextInt(10) + 10);
     }
 
     public MagicBeam(Level level, LivingEntity shooter) {
         super(FateEntities.MAGIC_BEAM.get(), level, shooter);
-        this.entityData.set(SHOOT_TIME, this.random.nextInt(15) + 10);
+        this.entityData.set(SHOOT_TIME, this.random.nextInt(10) + 10);
     }
 
     public MagicBeam(Level level, LivingEntity shootingEntity, @Nullable LivingEntity target) {
@@ -50,12 +50,12 @@ public class MagicBeam extends BaseBeam {
 
     @Override
     public float radius() {
-        return 0.3f;
+        return 0.4f;
     }
 
     @Override
     public float getRange() {
-        return 16;
+        return 20;
     }
 
     @Override

@@ -149,6 +149,7 @@ public class BookContentGen extends ContentSetProvider {
                 .build("category_loot", output);
 
     }
+
     protected void createTranslations() {
         this.add("fateubw.book.category.start", "Getting started");
         this.add("fateubw.book.category.start.desc", "Grail wars happen $(c:gold)regulary$() in the world. The grail will announce when players are able to join one. " +

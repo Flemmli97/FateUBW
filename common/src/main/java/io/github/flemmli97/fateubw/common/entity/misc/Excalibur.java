@@ -17,8 +17,8 @@ import net.minecraft.world.phys.Vec3;
 
 public class Excalibur extends BaseBeam {
 
-    public static final float RADIUS = 1.35f;
-    public static final float RANGE = 16;
+    public static final float RADIUS = 1.8f;
+    public static final float RANGE = 24;
 
     private Vec3 dir, up, side;
 
@@ -48,12 +48,24 @@ public class Excalibur extends BaseBeam {
     }
 
     @Override
+    public int livingTickMax() {
+        return 24;
+    }
+
+    @Override
+    public boolean canStartDamage() {
+        return this.livingTicks > 2 && this.livingTicks + 2 < this.livingTickMax();
+    }
+
+    @Override
     public void tick() {
         super.tick();
         if (this.level().isClientSide) {
-            if (this.livingTicks <= this.livingTickMax() - 15)
-                for (int i = 0; i < 2; i++)
+            if (this.livingTicks <= this.livingTickMax() - 15) {
+                for (int i = 0; i < 2; i++) {
                     this.level().addParticle(new ColoredParticleData(FateParticles.LIGHT.get(), 245 / 255F, 245 / 255F, 5 / 255F, 1, 2), this.hitVec.x(), this.hitVec.y() - 0.15, this.hitVec.z(), this.random.nextGaussian() * 0.007, this.random.nextGaussian() * 0.007 + 0.003, this.random.nextGaussian() * 0.007);
+                }
+            }
             Vec3 pos = this.position();
             for (int i = 0; i < 4; i++) {
                 double upScale = this.random.nextDouble() * 2 - 1 + 0.3;
@@ -81,6 +93,8 @@ public class Excalibur extends BaseBeam {
 
     @Override
     public void onImpact(EntityHitResult result) {
-        result.getEntity().hurt(FateDamageTypes.indirect(FateDamageTypes.EXCALIBUR, this, this.getOwner()), Utils.magicDamage(this.getOwner()) + CommonConfig.excaliburDamage);
+        Utils.runWithInvulTimer(null, result.getEntity(),
+                e -> e.hurt(FateDamageTypes.indirect(FateDamageTypes.EXCALIBUR, this, this.getOwner()), Utils.magicDamage(this.getOwner()) + CommonConfig.excaliburDamage),
+                4);
     }
 }

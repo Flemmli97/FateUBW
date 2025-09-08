@@ -13,12 +13,10 @@ public class TridentHandler implements LancelotUseHandler {
 
     @Override
     public void startUse(LivingEntity entity, LivingEntity target, InteractionHand hand) {
-        entity.startUsingItem(hand);
     }
 
     @Override
     public void use(LivingEntity entity, LivingEntity target, InteractionHand hand) {
-        entity.releaseUsingItem();
         ThrownTrident tridententity = new ThrownTrident(entity.level(), entity, entity.getItemInHand(hand).copy());
         double d0 = target.getX() - entity.getX();
         double d1 = target.getY(0.33) - tridententity.getY();

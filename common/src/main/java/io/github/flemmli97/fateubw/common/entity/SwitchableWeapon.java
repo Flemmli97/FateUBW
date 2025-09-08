@@ -22,10 +22,9 @@ public class SwitchableWeapon<T extends LivingEntity> {
     }
 
     public void switchItems(boolean alreadySwitched) {
-        this.switchItems(alreadySwitched, false);
-    }
-
-    public void switchItems(boolean alreadySwitched, boolean clientUpdateFast) {
+        if (!this.needsSwap()) {
+            return;
+        }
         if (this.switched == alreadySwitched) {
             this.switched = !this.switched;
             ItemStack main = this.entity.getMainHandItem();
@@ -35,6 +34,16 @@ public class SwitchableWeapon<T extends LivingEntity> {
             this.main = main;
             this.off = off;
         }
+    }
+
+    private boolean needsSwap() {
+        if (this.switched)
+            return true;
+        ItemStack main = this.entity.getMainHandItem();
+        if (!this.main.isEmpty() && !main.is(this.main.getItem()))
+            return true;
+        ItemStack off = this.entity.getOffhandItem();
+        return !this.off.isEmpty() && !off.is(this.off.getItem());
     }
 
     public void save(CompoundTag nbt, HolderLookup.Provider provider) {

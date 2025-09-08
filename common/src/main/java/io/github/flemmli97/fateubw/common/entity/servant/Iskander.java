@@ -3,14 +3,19 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.summons.GordiusWheel;
+import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
+import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailProvider;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
+import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.fateubw.mixinhelper.HorseExtension;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.SelectableBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetWalkTargetAwayFromTarget;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetWalkTargetWithinDist;
+import io.github.flemmli97.tenshilib.common.entity.ai.brain.data.AnimationPlayHolder;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionContainer;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
@@ -40,21 +45,38 @@ import org.joml.Vector4f;
 public class Iskander extends BaseServant {
 
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
-    public static final String ONE_HAND_1 = BUILDER.add("one_hand_1", AnimationsBuilder.definition(0.62)
-            .marker("attack", 0.48).marker("step", 0.44));
-    public static final String ONE_HAND_2 = BUILDER.add("one_hand_2", AnimationsBuilder.definition(0.62)
-            .marker("attack", 0.4).marker("step", 0.44));
-    public static final String ONE_HAND_3 = BUILDER.add("one_hand_3", AnimationsBuilder.definition(0.58)
-            .marker("attack", 0.44).marker("step", 0.44));
-    public static final String ONE_HAND_4 = BUILDER.add("one_hand_4", AnimationsBuilder.definition(0.54)
-            .marker("attack", 0.44).marker("step", 0.4));
-    public static final String ONE_HAND_5 = BUILDER.add("one_hand_5", AnimationsBuilder.definition(0.58)
-            .marker("attack", 0.4).marker("step", 0.4));
-    public static final String ONE_HAND_6 = BUILDER.add("one_hand_6", AnimationsBuilder.definition(0.58)
-            .marker("attack", 0.48).marker("step", 0.44));
-    public static final String ONE_HAND_7 = BUILDER.add("one_hand_7", AnimationsBuilder.definition(0.58)
-            .marker("attack", 0.48).marker("step", 0.4));
-    private static final String CHARIOT = BUILDER.add("chariot_summon", AnimationsBuilder.definition(1.64).marker("attack", 0.68));
+    public static final String ONE_HAND_1 = BUILDER.add("one_hand_1", AnimationsBuilder.definition(0.68)
+            .marker("attack", 0.56).marker("step", 0.44)
+            .marker(EntityTrailProvider.TRAIL_START, 0.36)
+            .marker(EntityTrailProvider.TRAIL_END, 0.56));
+    public static final String ONE_HAND_2 = BUILDER.add("one_hand_2", AnimationsBuilder.definition(0.68)
+            .marker("attack", 0.56).marker("step", 0.44)
+            .marker(EntityTrailProvider.TRAIL_START, 0.36)
+            .marker(EntityTrailProvider.TRAIL_END, 0.56));
+    public static final String ONE_HAND_3 = BUILDER.add("one_hand_3", AnimationsBuilder.definition(0.68)
+            .marker("attack", 0.56).marker("step", 0.44)
+            .marker(EntityTrailProvider.TRAIL_START, 0.36)
+            .marker(EntityTrailProvider.TRAIL_END, 0.56));
+    public static final String ONE_HAND_4 = BUILDER.add("one_hand_4", AnimationsBuilder.definition(0.68)
+            .marker("attack", 0.56).marker("step", 0.4)
+            .marker(EntityTrailProvider.TRAIL_START, 0.36)
+            .marker(EntityTrailProvider.TRAIL_END, 0.56));
+    public static final String ONE_HAND_5 = BUILDER.add("one_hand_5", AnimationsBuilder.definition(0.68)
+            .marker("attack", 0.56).marker("step", 0.4)
+            .marker(EntityTrailProvider.TRAIL_START, 0.36)
+            .marker(EntityTrailProvider.TRAIL_END, 0.56));
+    public static final String ONE_HAND_6 = BUILDER.add("one_hand_6", AnimationsBuilder.definition(0.68)
+            .marker("attack", 0.56).marker("step", 0.44)
+            .marker(EntityTrailProvider.TRAIL_START, 0.36)
+            .marker(EntityTrailProvider.TRAIL_END, 0.56));
+    public static final String ONE_HAND_7 = BUILDER.add("one_hand_7", AnimationsBuilder.definition(0.68)
+            .marker("attack", 0.56).marker("step", 0.44)
+            .marker(EntityTrailProvider.TRAIL_START, 0.36)
+            .marker(EntityTrailProvider.TRAIL_END, 0.56));
+    private static final String CHARIOT = BUILDER.add("chariot_summon", AnimationsBuilder.definition(1.68)
+            .marker("attack", 0.76)
+            .marker(EntityTrailProvider.TRAIL_START, 0.52)
+            .marker(EntityTrailProvider.TRAIL_END, 0.76));
     private static final String SUMMON_HORSE = BUILDER.add("horse", CHARIOT);
     public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2.));
     public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
@@ -82,25 +104,29 @@ public class Iskander extends BaseServant {
     @Override
     public ExtendedBehaviour<? extends BaseServant> getCombatAI() {
         return AttackBehaviourBuilder.<Iskander>create()
-                .start(ONE_HAND_1).play(BehaviourUtils.cooldownedPlay(true, 20, 27))
+                .start(BehaviourUtils.of(AnimationPlayHolder.<Iskander>builder(ONE_HAND_1)
+                        .start(ONE_HAND_3, 2, 0.28f, 1)
+                        .start(ONE_HAND_5, 2, 0.28f, 1)
+                        .build())).play(BehaviourUtils.cooldownedPlay(true, 20, 27))
                 .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(8)
-                .start(ONE_HAND_2).play(BehaviourUtils.cooldownedPlay(true, 20, 27))
+                .start(BehaviourUtils.of(AnimationPlayHolder.<Iskander>builder(ONE_HAND_2)
+                        .start(ONE_HAND_1, 2, 0.28f, 1)
+                        .start(ONE_HAND_6, 2, 0.28f, 1)
+                        .start(ONE_HAND_7, 2, 0.28f, 1)
+                        .build())).play(BehaviourUtils.cooldownedPlay(true, 20, 27))
                 .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(8)
-                .start(ONE_HAND_3).play(BehaviourUtils.cooldownedPlay(true, 20, 27))
+                .start(BehaviourUtils.of(AnimationPlayHolder.<Iskander>builder(ONE_HAND_3)
+                        .start(ONE_HAND_6, 2, 0.28f, 1)
+                        .start(ONE_HAND_7, 2, 0.28f, 1)
+                        .build())).play(BehaviourUtils.cooldownedPlay(true, 20, 27))
                 .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(8)
-                .start(ONE_HAND_4).play(BehaviourUtils.cooldownedPlay(true, 20, 27))
-                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(8)
-                .start(ONE_HAND_5).play(BehaviourUtils.cooldownedPlay(true, 20, 27))
-                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(8)
-                .start(ONE_HAND_6).play(BehaviourUtils.cooldownedPlay(true, 20, 27))
-                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(8)
-                .start(ONE_HAND_7).play(BehaviourUtils.cooldownedPlay(true, 20, 27))
+                .start(BehaviourUtils.of(AnimationPlayHolder.<Iskander>builder(ONE_HAND_4)
+                        .start(ONE_HAND_3, 2, 0.28f, 1)
+                        .start(ONE_HAND_5, 2, 0.28f, 1)
+                        .build())).play(BehaviourUtils.cooldownedPlay(true, 20, 27))
                 .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(8)
                 .start(SUMMON_HORSE).play(BehaviourUtils.cooldownedPlay(false, 25, 40))
@@ -134,8 +160,23 @@ public class Iskander extends BaseServant {
     @Override
     public void baseTick() {
         super.baseTick();
-        if (!this.level().isClientSide && !this.isPassenger())
+        if (!this.level().isClientSide && !this.isPassenger()) {
             --this.summonCooldown;
+        }
+        if (this.level().isClientSide) {
+            AnimationState anim = this.getAnimationHandler().getAnimation();
+            if (anim != null) {
+                if (anim.isAt(EntityTrailProvider.TRAIL_START)) {
+                    this.level().addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
+                                    TrailInfo.builder(EntityTrailProvider.EntityTrailData.create(this, anim.getID(), false))
+                                            .setColor(215 / 255f, 183 / 255f, 147 / 255f, 0.6f)
+                                            .setColor2(215 / 255f, 183 / 255f, 147 / 255f, 0.2f)
+                                            .setType(TrailInfo.Visual.TEXTURE, 0)
+                                            .build()),
+                            this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+                }
+            }
+        }
     }
 
     @Override
@@ -188,25 +229,27 @@ public class Iskander extends BaseServant {
 
     @Override
     public AABB attackBB(AnimationState anim) {
-        double width = this.getBbWidth() + 0.3;
-        double length = 1;
+        double height = this.getBbHeight();
+        double width = this.getBbWidth();
+        double length = 1 * this.getScale();
         if (anim.is(ONE_HAND_1)) {
-            width += 0.7;
-            length += 0.7;
+            width += 1.1 * this.getScale();
+            length += 0.7 * this.getScale();
+            return new AABB(-width * 0.7, -0.03, 0, width * 0.3, height + 0.03, length);
         }
         if (anim.is(ONE_HAND_2, ONE_HAND_3, ONE_HAND_4)) {
-            width += 1.3;
-            length += 0.6;
+            width += 1.3 * this.getScale();
+            length += 0.6 * this.getScale();
         }
         if (anim.is(ONE_HAND_5, ONE_HAND_6)) {
-            width += 1.5;
-            length += 0.7;
+            width += 1.8 * this.getScale();
+            length += 0.7 * this.getScale();
         }
         if (anim.is(ONE_HAND_7)) {
-            width += 0.6;
-            length += 0.9;
+            width += 0.6 * this.getScale();
+            length += 0.9 * this.getScale();
         }
-        return new AABB(-width * 0.5, -0.02, 0, width * 0.5, this.getBbHeight() + 0.02, length);
+        return new AABB(-width * 0.5, -0.03, 0, width * 0.5, height + 0.03, length);
     }
 
     @Override
@@ -219,7 +262,7 @@ public class Iskander extends BaseServant {
         if (damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             return super.hurt(damageSource, damage);
         } else if (this.getVehicle() != null) {
-            damage *= 0.5;
+            damage *= 0.5f;
             this.getVehicle().hurt(damageSource, damage);
         }
         return super.hurt(damageSource, damage);
@@ -229,11 +272,11 @@ public class Iskander extends BaseServant {
         return !this.isPassenger() && this.summonCooldown <= 0;
     }
 
-    public boolean summonChariot() {
-        if (!this.attemptUseNobelPhantasm())
-            return false;
+    public void summonChariot() {
         if (this.isPassenger() || this.level().isClientSide)
-            return false;
+            return;
+        if (!this.attemptUseNobelPhantasm())
+            return;
         GordiusWheel wheel = FateEntities.GORDIUS_WHEEL.get().create(this.level());
         wheel.setPos(this.getX(), this.getY(), this.getZ());
         this.level().addFreshEntity(wheel);
@@ -247,12 +290,11 @@ public class Iskander extends BaseServant {
         }
         this.summonCooldown = 150 + this.getRandom().nextInt(100);
         this.revealServant();
-        return true;
     }
 
-    public boolean summonHorse() {
+    public void summonHorse() {
         if (this.isPassenger() || this.level().isClientSide)
-            return false;
+            return;
         Horse horse = EntityType.HORSE.create(this.level());
         horse.setPos(this.getX(), this.getY(), this.getZ());
         horse.setTamed(true);
@@ -271,7 +313,6 @@ public class Iskander extends BaseServant {
         }
         this.summonCooldown = 150 + this.getRandom().nextInt(100);
         this.revealServant();
-        return true;
     }
 
     @Override

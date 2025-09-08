@@ -6,7 +6,11 @@ import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.MoveBehindBehaviour;
 import io.github.flemmli97.fateubw.common.entity.misc.ThrownItemEntity;
 import io.github.flemmli97.fateubw.common.entity.summons.HassanClone;
+import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
+import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailProvider;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
+import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.SelectableBehaviourBuilder;
@@ -28,7 +32,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -57,40 +60,30 @@ import java.util.UUID;
 public class Hassan extends BaseServant {
 
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
-    public static final String DAGGER_1 = BUILDER.add("dagger_1", AnimationsBuilder.definition(0.58)
-            .marker("attack", 0.44).marker("step", 0.4));
-    public static final String DAGGER_2 = BUILDER.add("dagger_2", AnimationsBuilder.definition(0.54)
-            .marker("attack", 0.4).marker("step", 0.4));
-    public static final String DAGGER_3 = BUILDER.add("dagger_3", AnimationsBuilder.definition(0.58)
-            .marker("attack", 0.48).marker("step", 0.44));
-    public static final String DAGGER_4 = BUILDER.add("dagger_4", AnimationsBuilder.definition(0.58)
-            .marker("attack", 0.32).marker("step", 0.32));
-    public static final String TOP_STAB = BUILDER.add("top_stab", AnimationsBuilder.definition(0.7).marker("attack", 0.36));
-    public static final String THROW = BUILDER.add("dagger_throw", AnimationsBuilder.definition(1.16)
-            .marker("attack_1", 0.28).marker("attack_2", 0.84));
-
-    public static final String DUPE = BUILDER.add("dupe", AnimationsBuilder.definition(1.4).marker("attack", 0.84));
+    public static final String DAGGER_1 = BUILDER.add("dagger_1", AnimationsBuilder.definition(0.6)
+            .marker("attack", 0.48).marker("step", 0.4)
+            .marker(EntityTrailProvider.TRAIL_START, 0.32)
+            .marker(EntityTrailProvider.TRAIL_END, 0.48));
+    public static final String DAGGER_2 = BUILDER.add("dagger_2", AnimationsBuilder.definition(0.56)
+            .marker("attack", 0.44).marker("step", 0.4)
+            .marker(EntityTrailProvider.TRAIL_START, 0.32)
+            .marker(EntityTrailProvider.TRAIL_END, 0.44));
+    public static final String DAGGER_3 = BUILDER.add("dagger_3", AnimationsBuilder.definition(0.6)
+            .marker("attack", 0.48).marker("step", 0.44)
+            .marker(EntityTrailProvider.TRAIL_START, 0.32)
+            .marker(EntityTrailProvider.TRAIL_END, 0.48));
+    public static final String DAGGER_4 = BUILDER.add("dagger_4", AnimationsBuilder.definition(0.52)
+            .marker("attack", 0.4).marker("step", 0.32));
+    public static final String TOP_STAB = BUILDER.add("top_stab", AnimationsBuilder.definition(0.6).marker("attack", 0.48));
+    public static final String THROW = BUILDER.add("dagger_throw", AnimationsBuilder.definition(1.32)
+            .marker("attack_1", 0.36).marker("attack_2", 0.88));
+    public static final String DUPE = BUILDER.add("dupe", AnimationsBuilder.definition(1.56).marker("attack", 0.84));
     public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2.));
     public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
 
     private static final byte SMOKE = 64;
 
-    private final AnimationHandler<Hassan> animationHandler = new AnimationHandler<>(this, ANIMS).withChangeListener(anim -> {
-        if (anim == null || !anim.is(SUMMON)) {
-            if (!this.offHandCache.isEmpty()) {
-                this.setItemInHand(InteractionHand.OFF_HAND, this.offHandCache);
-                this.offHandCache = ItemStack.EMPTY;
-            }
-            if (!this.mainHandCache.isEmpty()) {
-                this.setItemInHand(InteractionHand.MAIN_HAND, this.mainHandCache);
-                this.mainHandCache = ItemStack.EMPTY;
-            }
-        }
-        return false;
-    });
-
-    private ItemStack mainHandCache = ItemStack.EMPTY;
-    private ItemStack offHandCache = ItemStack.EMPTY;
+    private final AnimationHandler<Hassan> animationHandler = new AnimationHandler<>(this, ANIMS);
 
     private final Vector4f summonColor = new Vector4f(28 / 255f, 29 / 255f, 31 / 255f, 0.8f);
 
@@ -122,29 +115,28 @@ public class Hassan extends BaseServant {
     public ExtendedBehaviour<? extends BaseServant> getCombatAI() {
         return AttackBehaviourBuilder.<BaseServant>create()
                 .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(DAGGER_1)
-                        .start(DAGGER_3, 2, 0.2f, 1)
-                        .start(DAGGER_4, 2, 0.16f, 1)
-                        .chainChance(0.6f).build())).play(BehaviourUtils.cooldownedPlay(true, 15, 26))
+                        .start(DAGGER_3, 2, 0.24f, 1)
+                        .start(DAGGER_4, 2, 0.24f, 1)
+                        .start(TOP_STAB, 2, 0.24f, 1).build())).play(BehaviourUtils.cooldownedPlay(true, 15, 26))
                 .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(11)
                 .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(DAGGER_1)
-                        .start(DAGGER_3, 2, 0.2f, 1)
-                        .start(DAGGER_4, 2, 0.16f, 1)
-                        .chainChance(0.6f).build())).play(BehaviourUtils.cooldownedPlay(true, 15, 26))
+                        .start(DAGGER_3, 2, 0.24f, 1)
+                        .start(DAGGER_4, 2, 0.24f, 1).build())).play(BehaviourUtils.cooldownedPlay(true, 15, 26))
                 .prepare(new MoveBehindBehaviour<>())
                 .end(9)
                 .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(DAGGER_3)
-                        .start(DAGGER_1, 2, 0.2f, 1)
-                        .chain(DAGGER_2, 2, 0.2f)
-                        .start(DAGGER_1, 2, 0.2f, 1)
-                        .chain(DAGGER_4, 2, 0.16f)
-                        .chainChance(0.6f).build())).play(BehaviourUtils.cooldownedPlay(true, 15, 26))
+                        .start(DAGGER_1, 2, 0.24f, 1)
+                        .chain(DAGGER_2, 2, 0.24f)
+                        .start(DAGGER_1, 2, 0.24f, 1)
+                        .chain(DAGGER_4, 2, 0.24f).build())).play(BehaviourUtils.cooldownedPlay(true, 15, 26))
                 .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(11)
                 .start(TOP_STAB).play(BehaviourUtils.cooldownedPlay(true, 15, 26))
                 .prepare(new SetWalkTargetToAttackTarget<BaseServant>().speedMod((e, t) -> 1.2f)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(8)
-                .start(TOP_STAB).play(BehaviourUtils.cooldownedPlay(true, 15, 26))
+                .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(DAGGER_4)
+                        .start(TOP_STAB, 2, 0.24f, 1).build())).play(BehaviourUtils.cooldownedPlay(true, 15, 26))
                 .prepare(new MoveBehindBehaviour<BaseServant>().speedMod(1.2f)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(10)
                 .start(THROW).play(BehaviourUtils.cooldownedPlay(false, 15, 26))
@@ -178,6 +170,25 @@ public class Hassan extends BaseServant {
     }
 
     @Override
+    public void baseTick() {
+        super.baseTick();
+        if (this.level().isClientSide) {
+            AnimationState anim = this.getAnimationHandler().getAnimation();
+            if (anim != null) {
+                if (anim.isAt(EntityTrailProvider.TRAIL_START)) {
+                    this.level().addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
+                                    TrailInfo.builder(EntityTrailProvider.EntityTrailData.create(this, anim.getID(), false))
+                                            .setColor(68 / 255f, 68 / 255f, 68 / 255f, 0.6f)
+                                            .setColor2(68 / 255f, 68 / 255f, 68 / 255f, 0.2f)
+                                            .setType(TrailInfo.Visual.TEXTURE, 0)
+                                            .build()),
+                            this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+                }
+            }
+        }
+    }
+
+    @Override
     public boolean canUseNP() {
         return super.canUseNP() && this.gatherCopies().isEmpty();
     }
@@ -201,16 +212,12 @@ public class Hassan extends BaseServant {
         ListTag copies = new ListTag();
         this.copies.forEach(hassan -> copies.add(NbtUtils.createUUID(hassan)));
         tag.put("Copies", copies);
-        tag.put("MainHandCache", this.mainHandCache.save(this.registryAccess(), new CompoundTag()));
-        tag.put("OffHandCache", this.offHandCache.save(this.registryAccess(), new CompoundTag()));
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
         tag.getList("Copies", Tag.TAG_INT_ARRAY).forEach(nbt -> this.copies.add(NbtUtils.loadUUID(nbt)));
-        this.mainHandCache = ItemStack.parseOptional(this.registryAccess(), tag.getCompound("MainHandCache"));
-        this.offHandCache = ItemStack.parseOptional(this.registryAccess(), tag.getCompound("OffHandCache"));
     }
 
     @Override
@@ -239,25 +246,30 @@ public class Hassan extends BaseServant {
 
     @Override
     public AABB attackBB(AnimationState anim) {
-        double width = this.getBbWidth() + 0.3;
-        double length = 1;
+        double height = this.getBbHeight();
+        double width = this.getBbWidth();
+        double length = 1 * this.getScale();
         if (anim.is(DAGGER_1)) {
-            width += 0.5;
-            length += 0.4;
+            width += 0.6 * this.getScale();
+            length += 0.4 * this.getScale();
         }
-        if (anim.is(DAGGER_2, DAGGER_3)) {
-            width += 0.7;
-            length += 0.4;
+        if (anim.is(DAGGER_2)) {
+            width += 0.8 * this.getScale();
+            length += 0.4 * this.getScale();
+        }
+        if (anim.is(DAGGER_3)) {
+            width += 0.5 * this.getScale();
+            length += 0.7 * this.getScale();
         }
         if (anim.is(DAGGER_4)) {
-            width += 0.3;
-            length += 0.8;
+            width += 0.3 * this.getScale();
+            length += 0.8 * this.getScale();
         }
         if (anim.is(TOP_STAB)) {
-            width += 0.2;
-            length += 0.8;
+            width += 0.2 * this.getScale();
+            length += 0.8 * this.getScale();
         }
-        return new AABB(-width * 0.5, -0.02, 0, width * 0.5, this.getBbHeight() + 0.02, length);
+        return new AABB(-width * 0.5, -0.03, 0, width * 0.5, height + 0.03, length);
     }
 
     @Override
@@ -349,16 +361,9 @@ public class Hassan extends BaseServant {
     private ItemStack getWeaponToThrowAndReplace(boolean main) {
         ItemStack weapon;
         if (!main) {
-            if (!this.getOffhandItem().isEmpty()) {
-                this.offHandCache = this.getOffhandItem();
-                this.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
-                weapon = this.offHandCache;
-            } else
-                weapon = this.getMainHandItem().isEmpty() ? this.mainHandCache.copy() : this.getMainHandItem();
+            weapon = this.getOffhandItem().isEmpty() ? this.getOffhandItem() : this.getMainHandItem();
         } else {
-            this.mainHandCache = this.getMainHandItem();
-            this.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
-            weapon = this.mainHandCache;
+            weapon = this.getMainHandItem();
         }
         return weapon.isEmpty() ? new ItemStack(FateItems.ASSASSIN_DAGGER.get()) : weapon.copy();
     }
@@ -371,5 +376,10 @@ public class Hassan extends BaseServant {
     @Override
     public Vector4f summonColor() {
         return this.summonColor;
+    }
+
+    @Override
+    public WeaponTrail weaponTrailEdge(boolean left) {
+        return new WeaponTrail(new Vector4f(0, 0, -0.2f, 1), new Vector4f(0, 0, -0.6f, 1));
     }
 }

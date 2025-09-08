@@ -7,6 +7,7 @@ import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.Utils;
+import io.github.flemmli97.tenshilib.common.entity.EntityUtils;
 import io.github.flemmli97.tenshilib.common.particle.ColoredParticleData;
 import io.github.flemmli97.tenshilib.common.utils.HitResultUtils;
 import io.github.flemmli97.tenshilib.common.utils.ItemUtils;
@@ -64,7 +65,7 @@ public class BabylonWeapon extends BaseProjectile {
 
     public BabylonWeapon(Level level, LivingEntity shootingEntity) {
         super(FateEntities.BABYLON.get(), level, shootingEntity);
-        this.entityData.set(SHOOT_TIME, this.random.nextInt(25) + 20);
+        this.entityData.set(SHOOT_TIME, this.random.nextInt(30) + 20);
     }
 
     public BabylonWeapon(Level level, LivingEntity shootingEntity, LivingEntity target) {
@@ -167,8 +168,8 @@ public class BabylonWeapon extends BaseProjectile {
         this.preparationTick++;
         Vec3 motion = this.getDeltaMovement();
         double f = Math.sqrt(horizontalMag(motion));
-        this.setYRot(this.updateRotation(this.yRotO, (float) (Mth.atan2(motion.x, motion.z) * (180D / Math.PI))));
-        this.setXRot(this.updateRotation(this.xRotO, (float) (Mth.atan2(motion.y, f) * (double) (180F / (float) Math.PI))));
+        this.setYRot(this.updateRotation(this.yRotO, (float) (Mth.atan2(motion.x, motion.z) * Mth.RAD_TO_DEG)));
+        this.setXRot(this.updateRotation(this.xRotO, (float) (Mth.atan2(motion.y, f) * Mth.RAD_TO_DEG)));
 
         if (this.level().isClientSide) {
             this.level().addParticle(new ColoredParticleData(FateParticles.LIGHT.get(), 235 / 255F, 235 / 255F, 0 / 255F, 1, 0.15f), this.getX(), this.getY(), this.getZ(), this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01);
@@ -180,13 +181,19 @@ public class BabylonWeapon extends BaseProjectile {
                 Entity thrower = this.getOwner();
                 if (thrower instanceof Player) {
                     HitResult hit = HitResultUtils.entityRayTrace(thrower, 64, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, false, false, null);
-                    this.shootAtPosition(hit.getLocation().x, hit.getLocation().y, hit.getLocation().z, 1.f, 8);
+                    this.shootAtPosition(hit.getLocation().x, hit.getLocation().y, hit.getLocation().z, 1.f, 6);
                 } else if (this.target != null) {
-                    this.shootAtEntity(this.target, 1.f, 8);
+                    this.shootAtEntity(this.target, 1.f, 6);
                 }
                 this.playSound(FateSounds.ENTITY_BABYLON_SHOOT.get(), 0.8f, (this.random.nextFloat() - this.random.nextFloat()) * 0.2f + 0.5f);
             }
         }
+    }
+
+    @Override
+    public void shootAtEntity(Entity target, float velocity, float inaccuracy, boolean ignoreGravity) {
+        Vec3 targetPos = EntityUtils.getStraightProjectileTarget(this.position(), target).add(target.getDeltaMovement().scale(2));
+        this.shootAtPosition(targetPos.x(), targetPos.y(), targetPos.z(), velocity, inaccuracy, ignoreGravity);
     }
 
     private float updateRotation(float prev, float current) {
@@ -215,7 +222,7 @@ public class BabylonWeapon extends BaseProjectile {
                 e -> e.hurt(source, damage * CommonConfig.babylonScale), 2);
         if (res) {
             if (result.getEntity() instanceof LivingEntity entity) {
-                entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 30));
+                entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40));
             }
             if (this.level() instanceof ServerLevel serverLevel) {
                 EnchantmentHelper.doPostAttackEffects(serverLevel, result.getEntity(), source);
@@ -321,7 +328,7 @@ public class BabylonWeapon extends BaseProjectile {
                         }
                     }
                 }
-                if (greatDist * range > 3) {
+                if (greatDist * range > 2) {
                     angles.add(Pair.of(yRot, xRot));
                     break;
                 }

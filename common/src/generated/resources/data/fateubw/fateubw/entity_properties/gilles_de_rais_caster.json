@@ -1,11 +1,12 @@
 {
   "attributes": {
-    "fateubw:combat_regen": 1.5,
+    "fateubw:combat_regen": 1.25,
     "fateubw:magic_attack": 15.0,
-    "fateubw:magic_resistance": 0.6,
+    "fateubw:magic_resistance": 12.0,
     "fateubw:passive_regen": 10.0,
-    "fateubw:projectile_resistance": 2.0,
+    "fateubw:projectile_resistance": 12.0,
     "minecraft:generic.armor": 16.0,
+    "minecraft:generic.armor_toughness": 6.0,
     "minecraft:generic.attack_damage": 5.0,
     "minecraft:generic.max_health": 370.0,
     "minecraft:generic.movement_speed": 0.32
@@ -13,7 +14,8 @@
   "class": "fateubw:caster",
   "configs": {
     "fateubw:gilles_monster_duration": 6000,
-    "fateubw:gilles_monster_max": 7
+    "fateubw:gilles_monster_max": 7,
+    "fateubw:gilles_tentacle_damage": 15.0
   },
   "nobel_phantasm_cost": 80,
   "weight": 1

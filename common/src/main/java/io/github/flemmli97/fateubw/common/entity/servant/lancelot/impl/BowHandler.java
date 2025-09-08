@@ -36,7 +36,7 @@ public class BowHandler implements LancelotUseHandler {
         double horLen = Math.sqrt(dX * dX + dZ * dZ);
         arrow.shoot(dX, dY + horLen * 0.13, dZ, 2.2F, 8 - entity.level().getDifficulty().getId() * 2);
         arrow.setCritArrow(true);
-        arrow.setBaseDamage(arrow.getBaseDamage() + entity.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.5);
+        arrow.setBaseDamage(arrow.getBaseDamage() + entity.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.4);
         entity.playSound(SoundEvents.SKELETON_SHOOT, 1, 1 / (entity.getRandom().nextFloat() * 0.4f + 0.8f));
         entity.level().addFreshEntity(arrow);
     }

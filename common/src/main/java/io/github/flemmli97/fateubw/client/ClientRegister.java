@@ -21,6 +21,7 @@ import io.github.flemmli97.fateubw.client.render.misc.RenderHassanCopy;
 import io.github.flemmli97.fateubw.client.render.misc.RenderMagicBeam;
 import io.github.flemmli97.fateubw.client.render.misc.RenderPegasus;
 import io.github.flemmli97.fateubw.client.render.misc.RenderStarfish;
+import io.github.flemmli97.fateubw.client.render.misc.RenderTentacle;
 import io.github.flemmli97.fateubw.client.render.misc.RenderThrownItem;
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.registry.FateBlocks;
@@ -59,10 +60,11 @@ public class ClientRegister {
 
     public static void registerItemProps(ItemModelPropsRegister register) {
         register.register(FateItems.EXCALIBUR.get(), ItemModelProps.ACTIVE_ID, ItemModelProps.ACTIVE_ITEM_PROP);
-        register.register(FateItems.MEDUSA_DAGGER.get(), ItemModelProps.HELD_ID, ItemModelProps.HELD_MAIN_PROP);
         register.register(FateItems.MEDUSA_DAGGER.get(), ItemModelProps.THROWN_DAGGER_ID, ItemModelProps.THROWN_DAGGER_PROP);
         register.register(FateItems.ARCHBOW.get(), ItemModelProps.BOW_PULL_ID, ItemModelProps.BOW_PULL_PROP);
         register.register(FateItems.ARCHBOW.get(), ItemModelProps.CALADBOLG_ID, ItemModelProps.CALADBOLG_CHARGE);
+        register.register(FateItems.GAEDEARG.get(), ItemModelProps.UNSEALED_ID, ItemModelProps.UNSEALED_PROP);
+        register.register(FateItems.GAEBUIDHE.get(), ItemModelProps.UNSEALED_ID, ItemModelProps.UNSEALED_PROP);
     }
 
     public static void setupRenderLayers(BiConsumer<Block, RenderType> consumer) {
@@ -74,7 +76,7 @@ public class ClientRegister {
         consumer.accept(FateBlocks.CHALK.get(), RenderType.cutout());
     }
 
-    public static <T extends Entity> void registerRenderers(EntityRendererRegister consumer) {
+    public static void registerRenderers(EntityRendererRegister consumer) {
         registerServant(consumer, FateEntities.ARTHUR);
         registerServant(consumer, FateEntities.CUCHULAINN);
         registerServant(consumer, FateEntities.DIARMUID);
@@ -84,9 +86,9 @@ public class ClientRegister {
         consumer.register(FateEntities.MEDEA.get(), manager -> new ServantRenderer<>(manager, new MedeaModel<>(), servantTexture(FateEntities.MEDEA), 0.5f));
         registerServant(consumer, FateEntities.GILLES);
         registerServant(consumer, FateEntities.HERACLES, 1);
-        registerServant(consumer, FateEntities.LANCELOT);
-        registerServant(consumer, FateEntities.ISKANDER);
-        registerServant(consumer, FateEntities.MEDUSA);
+        registerServant(consumer, FateEntities.LANCELOT, 0.5f);
+        registerServant(consumer, FateEntities.ISKANDER, 0.5f);
+        registerServant(consumer, FateEntities.MEDUSA, 0.5f);
         registerServant(consumer, FateEntities.HASSAN);
         registerServant(consumer, FateEntities.SASAKI);
 
@@ -102,6 +104,8 @@ public class ClientRegister {
         consumer.register(FateEntities.THROWN_ITEM.get(), RenderThrownItem::new);
         consumer.register(FateEntities.GEM.get(), RenderGem::new);
         consumer.register(FateEntities.MAGIC_SHOT.get(), EmptyRender::new);
+        consumer.register(FateEntities.TENTACLE.get(), RenderTentacle::new);
+        consumer.register(FateEntities.STARFISH_SHOT.get(), EmptyRender::new);
 
         consumer.register(FateEntities.LESSER_MONSTER.get(), RenderStarfish::new);
         consumer.register(FateEntities.HASSAN_COPY.get(), RenderHassanCopy::new);

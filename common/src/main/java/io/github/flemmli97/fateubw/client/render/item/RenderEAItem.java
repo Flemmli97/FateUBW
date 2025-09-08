@@ -42,25 +42,29 @@ public class RenderEAItem extends BlockEntityWithoutLevelRenderer {
         return beam;
     }
 
-    public static void render(ItemStack stack, ItemDisplayContext transformType, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay, RenderUtils.BeamBuilder beam, EAModel model) {
-        matrixStack.pushPose();
-        matrixStack.scale(1.0F, -1.0F, -1.0F);
+    public static void render(ItemStack stack, ItemDisplayContext transformType, PoseStack poseStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay, RenderUtils.BeamBuilder beam, EAModel model) {
+        poseStack.pushPose();
+        // offset of a json based item model and an entity model
+        poseStack.translate(8 / 16., 24 / 16., 8 / 16.);
+        poseStack.pushPose();
+        poseStack.scale(-1.0F, -1.0F, 1.0F);
         VertexConsumer builder = ItemRenderer.getFoilBufferDirect(buffer, model.renderType(TEXTURE), true, stack.hasFoil());
         model.spinBlade(ClientHandler.clientTick, ClientHandler.getPartialTicks());
-        model.renderToBuffer(matrixStack, builder, combinedLight, combinedOverlay, CommonColors.WHITE);
-        matrixStack.popPose();
+        model.renderToBuffer(poseStack, builder, combinedLight, combinedOverlay, CommonColors.WHITE);
+        poseStack.popPose();
 
         if (stack.has(FateDataComponents.GLOWING_ITEM.get()) && transformType != ItemDisplayContext.GUI) {
-            matrixStack.pushPose();
-            matrixStack.translate(0, -0.6, 0);
+            poseStack.pushPose();
+            poseStack.translate(0, -0.7, 0);
             beam.setEndColor(255, 0, 0, 0);
-            RenderUtils.renderGradientBeams3d(matrixStack, buffer, 1.5f, 0.5f, ClientHandler.clientTick, ClientHandler.getPartialTicks(), 90 / 200f, 5, beam);
-            matrixStack.mulPose(Axis.XP.rotationDegrees(45));
-            matrixStack.mulPose(Axis.YP.rotationDegrees(45));
-            matrixStack.mulPose(Axis.ZP.rotationDegrees(45));
+            RenderUtils.renderGradientBeams3d(poseStack, buffer, 1.5f, 0.5f, ClientHandler.clientTick, ClientHandler.getPartialTicks(), 90 / 200f, 5, beam);
+            poseStack.mulPose(Axis.XP.rotationDegrees(45));
+            poseStack.mulPose(Axis.YP.rotationDegrees(45));
+            poseStack.mulPose(Axis.ZP.rotationDegrees(45));
             beam.setEndColor(0, 0, 0, 50);
-            RenderUtils.renderGradientBeams3d(matrixStack, buffer, 1.5f, 0.5f, ClientHandler.clientTick, ClientHandler.getPartialTicks(), 90 / 200f, 9, beam);
-            matrixStack.popPose();
+            RenderUtils.renderGradientBeams3d(poseStack, buffer, 1.5f, 0.5f, ClientHandler.clientTick, ClientHandler.getPartialTicks(), 90 / 200f, 9, beam);
+            poseStack.popPose();
         }
+        poseStack.popPose();
     }
 }

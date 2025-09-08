@@ -5,7 +5,10 @@ import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicShot;
 import io.github.flemmli97.fateubw.common.entity.summons.LesserMonster;
+import io.github.flemmli97.fateubw.common.entity.summons.Tentacle;
+import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
+import io.github.flemmli97.tenshilib.common.entity.ai.TargetPosition;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.SelectableBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetWalkTargetAwayFromTarget;
@@ -15,6 +18,8 @@ import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionC
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationsBuilder;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
@@ -22,6 +27,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -32,8 +38,9 @@ import net.tslat.smartbrainlib.util.BrainUtils;
 public class Gilles extends BaseServant {
 
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
-    public static final String CAST_1 = BUILDER.add("cast", AnimationsBuilder.definition(1.6).marker("attack", 0.95));
-    public static final String CAST_2 = BUILDER.add("cast_2", AnimationsBuilder.definition(1.2).marker("attack", 0.8));
+    public static final String SUMMON_MONSTER = BUILDER.add("summon_monster", AnimationsBuilder.definition(1.2).marker("attack", 0.92));
+    public static final String SHOOT = BUILDER.add("shoot", AnimationsBuilder.definition(0.88).marker("attack", 0.76));
+    public static final String SUMMON_TENTACLE = BUILDER.add("summon_tentacle", AnimationsBuilder.definition(0.8).marker("attack", 0.68));
 
     public static final String NP_ATTACK = BUILDER.add("np", AnimationsBuilder.definition(1));
     public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2.));
@@ -58,20 +65,22 @@ public class Gilles extends BaseServant {
     @Override
     public ExtendedBehaviour<? extends BaseServant> getCombatAI() {
         return AttackBehaviourBuilder.<Gilles>create()
-                .start(CAST_1).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(16), 50, 80))
+                .start(SUMMON_MONSTER).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(16), 50, 80))
                 .condition(Gilles::canSummonMore)
                 .prepare(new SetWalkTargetWithinDist<Gilles>()
                         .min(7).max(12).speedMod((m, e) -> 1.1f)).prepareOptional(BehaviourUtils.moveAttack())
-                .end(13)
-                .start(CAST_1).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(16), 50, 80))
+                .end(14)
+                .start(SUMMON_MONSTER).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(16), 50, 80))
                 .condition(Gilles::canSummonMore)
-                .end(10)
-                .start(CAST_2).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(16), 40, 90))
-                .prepare(new SetWalkTargetWithinDist<Gilles>()
-                        .min(7).max(12).speedMod((m, e) -> 1.1f)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(11)
-                .start(CAST_2).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(16), 40, 90))
-                .end(8)
+                .start(SHOOT).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(16), 40, 90))
+                .prepare(new SetWalkTargetWithinDist<Gilles>()
+                        .min(7).max(12).speedMod((m, e) -> 1.1f)).prepareOptional(BehaviourUtils.moveAttack())
+                .end(10)
+                .start(SHOOT).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(16), 40, 90))
+                .end(7)
+                .start(SUMMON_TENTACLE).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(16), 50, 80))
+                .end(10)
                 .build();
     }
 
@@ -79,7 +88,7 @@ public class Gilles extends BaseServant {
     public ExtendedBehaviour<? extends BaseServant> getCooldownAI() {
         return SelectableBehaviourBuilder.<BaseServant>builder()
                 .add(7, new StrafeTarget<BaseServant>()
-                        .strafeDistance(11))
+                        .strafeDistance(12))
                 .add(2, BehaviourUtils.ifCloserThan(7),
                         new SetWalkTargetAwayFromTarget<BaseServant>()
                                 .radius(7), BehaviourUtils.moveTo()).build();
@@ -93,16 +102,23 @@ public class Gilles extends BaseServant {
 
     @Override
     public void handleAttack(AnimationState anim) {
-        if (anim.is(CAST_1)) {
-            LivingEntity target = this.getTarget();
-            if (target != null) {
-                this.getLookControl().setLookAt(target, 30.0F, 30.0F);
+        if (anim.is(SUMMON_MONSTER)) {
+            if (!anim.isAt("attack")) {
+                this.setTargetPositionFromAttackTarget();
             }
             if (anim.isAt("attack")) {
-                this.attackWithRangedAttack();
+                this.summonMonster();
             }
         }
-        if (anim.is(CAST_2)) {
+        if (anim.is(SUMMON_TENTACLE)) {
+            if (!anim.isAt("attack")) {
+                this.setTargetPositionFromAttackTarget();
+            }
+            if (anim.isAt("attack")) {
+                this.summonTentacleAt(this.getTargetPosition());
+            }
+        }
+        if (anim.is(SHOOT)) {
             LivingEntity target = this.getTarget();
             if (target != null) {
                 this.getLookControl().setLookAt(target, 30.0F, 30.0F);
@@ -139,18 +155,22 @@ public class Gilles extends BaseServant {
                 monster -> this.getUUID().equals(monster.getOwnerUUID())).size() < this.props().getConfig(ServantExtraData.GILLES_MONSTER_MAX);
     }
 
-    public void attackWithRangedAttack() {
+    public void summonMonster() {
         if (!this.level().isClientSide) {
             if (this.canSummonMore()) {
                 int amount = 1;
-                if (this.getHealth() < 0.5 * this.getMaxHealth())
+                if (this.getHealth() < 0.5 * this.getMaxHealth()) {
                     amount = 1 + this.getRandom().nextInt(3);
+                } else if (this.getRandom().nextFloat() < 0.3) {
+                    amount += 1;
+                }
                 for (int i = 0; i < amount; i++) {
                     LesserMonster minion = new LesserMonster(this.level(), this);
                     for (int j = 0; j < 10; j++) {
                         double x = this.getX() + this.random.nextInt(18) - 9;
                         double y = this.getY() + this.random.nextInt(4) - 2.0;
                         double z = this.getZ() + this.random.nextInt(18) - 9;
+                        minion.setRanged(this.getRandom().nextFloat() < 0.4);
                         minion.absMoveTo(x, y, z, Mth.wrapDegrees(this.level().random.nextFloat() * 360.0F), 0.0F);
                         if (this.level().noCollision(minion)) {
                             this.level().addFreshEntity(minion);
@@ -161,6 +181,16 @@ public class Gilles extends BaseServant {
                     }
                 }
             }
+        }
+    }
+
+    public void summonTentacleAt(TargetPosition targetPosition) {
+        if (!this.level().isClientSide) {
+            Tentacle tentacle = FateEntities.TENTACLE.get().create((ServerLevel) this.level(), e -> e.setOwner(this),
+                    BlockPos.containing(targetPosition.position()),
+                    MobSpawnType.MOB_SUMMONED, false, false);
+            tentacle.setup(targetPosition.position());
+            this.level().addFreshEntity(tentacle);
         }
     }
 

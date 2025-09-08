@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:item/handheld",
-  "textures": {
-    "layer0": "fateubw:item/medusas_dagger_held"
-  }
-}

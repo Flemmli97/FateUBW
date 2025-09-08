@@ -23,11 +23,12 @@ public class ServantExtraData {
     private static final Map<ResourceLocation, DataType<?>> REGISTRY = new HashMap<>();
 
     public static final DataType<Float> LANCELOT_REFLECT_CHANCE = register(Fate.MODID, "lancelot_reflect_chance", Codec.FLOAT, 0.4f);
-    public static final DataType<Integer> HASSAN_COPIES = register(Fate.MODID, "hassan_copies", Codec.INT, 5);
+    public static final DataType<Integer> HASSAN_COPIES = register(Fate.MODID, "hassan_copies", Codec.INT, 4);
     public static final DataType<Integer> MEDEA_CIRCLE_DURATION = register(Fate.MODID, "medea_circle_duration", ExtraCodecs.POSITIVE_INT, 2000);
     public static final DataType<Float> MEDEA_CIRCLE_RANGE = register(Fate.MODID, "medea_circle_range", Codec.FLOAT, 24f);
     public static final DataType<Integer> GILLES_MONSTER_DURATION = register(Fate.MODID, "gilles_monster_duration", ExtraCodecs.POSITIVE_INT, 6000);
     public static final DataType<Integer> GILLES_MONSTER_MAX = register(Fate.MODID, "gilles_monster_max", ExtraCodecs.NON_NEGATIVE_INT, 7);
+    public static final DataType<Float> GILLES_TENTACLE_DAMAGE = register(Fate.MODID, "gilles_tentacle_damage", Codec.FLOAT, 15f);
     public static final DataType<Integer> HERACLES_DEATH_MAX = register(Fate.MODID, "heracles_death_max", ExtraCodecs.POSITIVE_INT, 2);
 
     public static final Codec<ServantExtraData> CODEC = new Codec<>() {

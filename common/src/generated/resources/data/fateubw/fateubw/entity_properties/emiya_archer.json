@@ -1,9 +1,12 @@
 {
   "attributes": {
     "fateubw:combat_regen": 1.0,
+    "fateubw:magic_attack": 14.0,
+    "fateubw:magic_resistance": 12.0,
     "fateubw:passive_regen": 10.0,
-    "fateubw:projectile_resistance": 4.0,
-    "minecraft:generic.armor": 10.0,
+    "fateubw:projectile_resistance": 17.0,
+    "minecraft:generic.armor": 16.0,
+    "minecraft:generic.armor_toughness": 6.0,
     "minecraft:generic.attack_damage": 13.0,
     "minecraft:generic.max_health": 350.0,
     "minecraft:generic.movement_speed": 0.35

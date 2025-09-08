@@ -31,14 +31,8 @@ public class ItemModels extends ItemModelProvider {
             if (reg == FateItems.ENUMAELISH || reg == FateItems.HERACLES_AXE)
                 continue;
             if (reg == FateItems.MEDUSA_DAGGER) {
-                this.withExistingParent(reg.getID().getPath(), ModelLocationUtils.decorateItemModelLocation("handheld"))
-                        .texture("layer0", this.itemTexture(reg.getID()))
-                        .override().predicate(ItemModelProps.THROWN_DAGGER_ID, 0)
-                        .predicate(ItemModelProps.HELD_ID, 1)
-                        .model(this.withExistingParent(reg.getID().getPath() + "_held", ModelLocationUtils.decorateItemModelLocation("handheld"))
-                                .texture("layer0", this.itemTexture(reg.getID().getPath() + "_held"))).end()
-                        .override().predicate(ItemModelProps.THROWN_DAGGER_ID, 1)
-                        .model(this.withExistingParent(reg.getID().getPath() + "_thrown", ModelLocationUtils.decorateItemModelLocation("handheld"))
+                this.withInventoryVariant(reg, ModelLocationUtils.decorateItemModelLocation("handheld"))
+                        .override().predicate(ItemModelProps.THROWN_DAGGER_ID, 1).model(this.withExistingParent(reg.getID().getPath() + "_thrown", ModelLocationUtils.decorateItemModelLocation("handheld"))
                                 .texture("layer0", this.itemTexture(reg.getID().getPath() + "_thrown"))
                                 .transforms().transform(ItemDisplayContext.FIRST_PERSON_LEFT_HAND)
                                 .rotation(0, 90, -25)
@@ -50,7 +44,28 @@ public class ItemModels extends ItemModelProvider {
                                 .translation(1.13f, 6.3f, 1.13f)
                                 .scale(0.68f, 0.68f, 0.68f)
                                 .end()
-                                .end());
+                                .end())
+                        .end();
+//                this.withExistingParent(reg.getID().getPath(), ModelLocationUtils.decorateItemModelLocation("handheld"))
+//                        .texture("layer0", this.itemTexture(reg.getID()))
+//                        .override().predicate(ItemModelProps.THROWN_DAGGER_ID, 0)
+//                        .predicate(ItemModelProps.HELD_ID, 1)
+//                        .model(this.withExistingParent(reg.getID().getPath() + "_held", ModelLocationUtils.decorateItemModelLocation("handheld"))
+//                                .texture("layer0", this.itemTexture(reg.getID().getPath() + "_held"))).end()
+//                        .override().predicate(ItemModelProps.THROWN_DAGGER_ID, 1)
+//                        .model(this.withExistingParent(reg.getID().getPath() + "_thrown", ModelLocationUtils.decorateItemModelLocation("handheld"))
+//                                .texture("layer0", this.itemTexture(reg.getID().getPath() + "_thrown"))
+//                                .transforms().transform(ItemDisplayContext.FIRST_PERSON_LEFT_HAND)
+//                                .rotation(0, 90, -25)
+//                                .translation(1.13f, 6.3f, 1.13f)
+//                                .scale(0.68f, 0.68f, 0.68f)
+//                                .end()
+//                                .transform(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND)
+//                                .rotation(0, -90, 25)
+//                                .translation(1.13f, 6.3f, 1.13f)
+//                                .scale(0.68f, 0.68f, 0.68f)
+//                                .end()
+//                                .end());
             } else if (reg == FateItems.ARCHBOW) {
                 this.withExistingParent(reg.getID().getPath(), ModelLocationUtils.decorateItemModelLocation("generated"))
                         .texture("layer0", Fate.modRes(this.folder + "/emiyas_bow"))
@@ -98,9 +113,20 @@ public class ItemModels extends ItemModelProvider {
                         .translation(1.13f, 3.2f, 1.13f)
                         .scale(0.68f, 0.68f, 0.68f)
                         .end();
-            } else if (reg == FateItems.GAEBOLG || reg == FateItems.GAEBUIDHE
-                    || reg == FateItems.GAEDEARG) {
+            } else if (reg == FateItems.GAEBOLG) {
                 this.withInventoryVariant(reg, "spear_item");
+            } else if (reg == FateItems.GAEBUIDHE || reg == FateItems.GAEDEARG) {
+                this.withInventoryVariant(reg, "spear_item")
+                        .override().predicate(ItemModelProps.UNSEALED_ID, 1).model(this.getBuilder(reg.getID().getPath() + "_unsealed").guiLight(BlockModel.GuiLight.FRONT)
+                                .customLoader(SeparateTransformsModelBuilder::begin)
+                                .base(this.nested().parent(this.getExistingFile(Fate.modRes(this.folder + "/spear_item")))
+                                        .texture("layer0", this.itemTexture(reg.getID().withPath(p -> p + "_unsealed"))))
+                                .perspective(ItemDisplayContext.GUI, this.nested().parent(this.getExistingFile(this.mcLoc(this.folder + "/handheld")))
+                                        .texture("layer0", this.itemTexture(reg.getID().withPath(s -> s + "_inventory"))))
+                                .perspective(ItemDisplayContext.FIXED, this.nested().parent(this.getExistingFile(this.mcLoc(this.folder + "/handheld")))
+                                        .texture("layer0", this.itemTexture(reg.getID().withPath(s -> s + "_inventory"))))
+                                .end())
+                        .end();
             } else if (reg == FateItems.ARONDIGHT || reg == FateItems.MONOHOSHI_ZAO || reg == FateItems.STAFF) {
                 this.withInventoryVariant(reg, "handheld_32x32");
             } else if (reg.get() instanceof SpawnEgg)
@@ -134,9 +160,13 @@ public class ItemModels extends ItemModelProvider {
     }
 
     private ItemModelBuilder withInventoryVariant(RegistryEntrySupplier<Item, ?> reg, String parent) {
+        return this.withInventoryVariant(reg, Fate.modRes(this.folder + "/" + parent));
+    }
+
+    private ItemModelBuilder withInventoryVariant(RegistryEntrySupplier<Item, ?> reg, ResourceLocation parent) {
         return this.getBuilder(reg.getID().getPath()).guiLight(BlockModel.GuiLight.FRONT)
                 .customLoader(SeparateTransformsModelBuilder::begin)
-                .base(this.nested().parent(this.getExistingFile(Fate.modRes(this.folder + "/" + parent)))
+                .base(this.nested().parent(this.getExistingFile(parent))
                         .texture("layer0", this.itemTexture(reg.getID())))
                 .perspective(ItemDisplayContext.GUI, this.nested().parent(this.getExistingFile(this.mcLoc(this.folder + "/handheld")))
                         .texture("layer0", this.itemTexture(reg.getID().withPath(s -> s + "_inventory"))))

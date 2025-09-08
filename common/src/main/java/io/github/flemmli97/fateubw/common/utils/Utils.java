@@ -92,7 +92,7 @@ public class Utils {
         return target -> {
             if (target == entity || !entity.canAttack(target) || !target.canBeSeenAsEnemy() || Utils.alliedTo(entity, target))
                 return false;
-            if (target == entity.getTarget())
+            if (target == entity.getTarget() || (target instanceof Mob mob && mob.getTarget() == entity))
                 return true;
             if (entity.hasPassenger(target) || entity.getVehicle() == target)
                 return false;

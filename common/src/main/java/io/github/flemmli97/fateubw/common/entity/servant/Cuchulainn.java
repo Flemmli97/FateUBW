@@ -3,12 +3,16 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.misc.GaeBolg;
+import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
+import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailProvider;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
+import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.utils.Utils;
-import io.github.flemmli97.tenshilib.common.entity.ai.TargetPosition;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.SelectableBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.LeapInDirection;
+import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetWalkTargetAwayFromTarget;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetWalkTargetWithinDist;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.data.AnimationPlayHolder;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionContainer;
@@ -18,15 +22,18 @@ import io.github.flemmli97.tenshilib.common.entity.animated.AnimationsBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundAnimatePacket;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -35,22 +42,32 @@ import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
 import net.tslat.smartbrainlib.util.BrainUtils;
+import org.joml.Vector4f;
 
 public class Cuchulainn extends BaseServant {
 
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
-    public static final String SPEAR_1 = BUILDER.add("spear_1", AnimationsBuilder.definition(0.62)
-            .marker("attack", 0.48).marker("step", 0.52));
-    public static final String SPEAR_2 = BUILDER.add("spear_2", AnimationsBuilder.definition(0.62)
-            .marker("attack", 0.44).marker("step", 0.52));
-    public static final String SPEAR_3 = BUILDER.add("spear_3", AnimationsBuilder.definition(0.62)
-            .marker("attack", 0.52));
-    public static final String SPEAR_4 = BUILDER.add("spear_4", AnimationsBuilder.definition(0.86)
-            .marker("attack", 0.44));
-    public static final String SPEAR_5 = BUILDER.add("spear_5", AnimationsBuilder.definition(0.86)
-            .marker("attack", 0.44));
-    private static final String GAE_BOLG = BUILDER.add("gae_bolg", AnimationsBuilder.definition(1)
-            .marker("attack", 0.72));
+    public static final String SPEAR_1 = BUILDER.add("spear_1", AnimationsBuilder.definition(0.68)
+            .marker("attack", 0.56).marker("step", 0.48)
+            .marker(EntityTrailProvider.TRAIL_START, 0.4)
+            .marker(EntityTrailProvider.TRAIL_END, 0.6));
+    public static final String SPEAR_2 = BUILDER.add("spear_2", AnimationsBuilder.definition(0.64)
+            .marker("attack", 0.52).marker("step", 0.44)
+            .marker(EntityTrailProvider.TRAIL_START, 0.36)
+            .marker(EntityTrailProvider.TRAIL_END, 0.56));
+    public static final String SPEAR_3 = BUILDER.add("spear_3", AnimationsBuilder.definition(0.68)
+            .marker("attack", 0.56)
+            .marker(EntityTrailProvider.TRAIL_START, 0.4)
+            .marker(EntityTrailProvider.TRAIL_END, 0.6));
+    public static final String SPEAR_4 = BUILDER.add("spear_4", AnimationsBuilder.definition(0.72)
+            .marker("attack", 0.6));
+    public static final String SPEAR_5 = BUILDER.add("spear_5", AnimationsBuilder.definition(0.72)
+            .marker("attack", 0.6));
+    public static final String SPEAR_COMBO = BUILDER.add("spear_stab_combo", AnimationsBuilder.definition(2.76)
+            .marker("attack", 0.6, 1.16).marker("attack_final", 2.12).marker("step", 2.04));
+    private static final String GAE_BOLG = BUILDER.add("gae_bolg", AnimationsBuilder.definition(1.48)
+            .marker("throw", 1.2).marker("jump", 0.24)
+            .marker("float_start", 0.4).marker("float_end", 1.28));
     public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2.));
     public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
 
@@ -76,28 +93,37 @@ public class Cuchulainn extends BaseServant {
     public ExtendedBehaviour<? extends BaseServant> getCombatAI() {
         return AttackBehaviourBuilder.<BaseServant>create()
                 .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(SPEAR_1)
-                        .start(SPEAR_2, 2, 0.24f, 1)
-                        .start(SPEAR_3, 2, 0.24f, 1)
-                        .chainChance(0.6f).build())).play(BehaviourUtils.cooldownedPlay(true, 16, 27))
-                .prepare(new SetWalkTargetToAttackTarget<BaseServant>().speedMod((m, e) -> 1.1f)).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(5)
+                        .start(SPEAR_2, 2, 0.28f, 1)
+                        .start(SPEAR_3, 2, 0.28f, 1)
+                        .build())).play(BehaviourUtils.cooldownedPlay(true, 16, 27))
+                .prepare(new SetWalkTargetToAttackTarget<BaseServant>().speedMod((m, e) -> 1.05f)).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .end(7)
                 .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(SPEAR_2)
-                        .start(SPEAR_1, 2, 0.24f, 2)
-                        .chain(Cuchulainn.SPEAR_3, 2, 0.24f)
-                        .start(SPEAR_1, 2, 0.24f, 1)
-                        .chainChance(0.6f).build())).play(BehaviourUtils.cooldownedPlay(true, 16, 27))
-                .prepare(new SetWalkTargetToAttackTarget<BaseServant>().speedMod((m, e) -> 1.1f)).prepareOptional(BehaviourUtils.timedMoveAttack())
+                        .start(SPEAR_1, 2, 0.28f, 2)
+                        .chain(Cuchulainn.SPEAR_3, 2, 0.28f)
+                        .start(SPEAR_1, 2, 0.28f, 1)
+                        .build())).play(BehaviourUtils.cooldownedPlay(true, 16, 27))
+                .prepare(new SetWalkTargetToAttackTarget<BaseServant>().speedMod((m, e) -> 1.05f)).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .end(7)
+                .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(SPEAR_4)
+                        .start(SPEAR_3, 2, 0.28f, 1)
+                        .start(SPEAR_5, 2, 0.28f, 1)
+                        .build())).play(BehaviourUtils.cooldownedPlay(true, 16, 27))
+                .prepare(new SetWalkTargetToAttackTarget<BaseServant>().speedMod((m, e) -> 1.05f)).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .end(7)
+                .start(SPEAR_3).play(BehaviourUtils.cooldownedPlay(true, 16, 27))
+                .prepare(new SetWalkTargetToAttackTarget<BaseServant>().speedMod((m, e) -> 1.05f)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(5)
-                .start(SPEAR_4).play(BehaviourUtils.cooldownedPlay(true, 16, 27))
-                .prepare(new SetWalkTargetToAttackTarget<BaseServant>().speedMod((m, e) -> 1.1f)).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(6)
                 .start(SPEAR_5).play(BehaviourUtils.cooldownedPlay(true, 16, 27))
-                .prepare(new SetWalkTargetToAttackTarget<BaseServant>().speedMod((m, e) -> 1.1f)).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(6)
+                .prepare(new SetWalkTargetToAttackTarget<BaseServant>().speedMod((m, e) -> 1.05f)).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .end(5)
+                .start(SPEAR_COMBO).play(BehaviourUtils.cooldownedPlay(true, 16, 27))
+                .prepare(new SetWalkTargetToAttackTarget<BaseServant>().speedMod((m, e) -> 1.05f)).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .end(4)
                 .start(GAE_BOLG).play(BehaviourUtils.cooldownedPlay(false, 20, 27))
                 .condition(BaseServant::canUseNP)
                 .prepare(new SetWalkTargetWithinDist<BaseServant>()
-                        .min(4).max(8).speedMod(1.3f)).prepareOptional(BehaviourUtils.moveAttack())
+                        .min(4).max(8).speedMod(1.25f)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(30)
                 .build();
     }
@@ -106,6 +132,7 @@ public class Cuchulainn extends BaseServant {
     public ExtendedBehaviour<? extends BaseServant> getCooldownAI() {
         return SelectableBehaviourBuilder.<BaseServant>builder()
                 .add(7, new SetWalkTargetToAttackTarget<>(), BehaviourUtils.moveTo())
+                .add(4, new SetWalkTargetAwayFromTarget<BaseServant>().radius(7), BehaviourUtils.moveTo())
                 .add(2, BehaviourUtils.ifCloserThan(7), new LeapInDirection<BaseServant>()
                         .horizontalDirection((owner, target) -> LeapInDirection.createBackwardsVec(owner.position(), target.position()).scale(1.5f))
                         .whenStarting(e -> BrainUtils.clearMemory(e, MemoryModuleType.ATTACK_COOLING_DOWN))).build();
@@ -125,6 +152,19 @@ public class Cuchulainn extends BaseServant {
                 }
                 this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 1, 2, false, false));
             }
+        } else {
+            AnimationState anim = this.getAnimationHandler().getAnimation();
+            if (anim != null) {
+                if (anim.isAt(EntityTrailProvider.TRAIL_START)) {
+                    this.level().addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
+                                    TrailInfo.builder(EntityTrailProvider.EntityTrailData.create(this, anim.getID(), false))
+                                            .setColor(102 / 255f, 3 / 255f, 3 / 255f, 0.6f)
+                                            .setColor2(102 / 255f, 3 / 255f, 3 / 255f, 0.2f)
+                                            .setType(TrailInfo.Visual.TEXTURE, 0)
+                                            .build()),
+                            this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+                }
+            }
         }
     }
 
@@ -143,17 +183,17 @@ public class Cuchulainn extends BaseServant {
     @Override
     public void handleAttack(AnimationState anim) {
         if (anim.is(GAE_BOLG)) {
-            if (anim.isAt(0.16)) {
-                LivingEntity target = this.getTarget();
-                if (target != null)
-                    this.setTargetPosition(target);
-                else
-                    this.setTargetPosition(TargetPosition.of(this.position().add(this.getLookAngle().scale(10))));
+            if (anim.isAt("jump")) {
+                this.setTargetPositionFromAttackTarget();
                 Vec3 dir = this.getTarget() != null ? this.getTarget().position().subtract(this.position()) : this.position().add(this.getLookAngle());
-                dir = new Vec3(dir.x(), 0, dir.z()).normalize().scale(-1).add(0, 1, 0);
+                dir = new Vec3(dir.x(), 0, dir.z()).normalize().scale(-1.6).add(0, 2.3, 0);
                 this.setDeltaMovement(dir);
             }
-            if (anim.isAt("attack")) {
+            if (anim.isPast("float_start") && !anim.isPast("float_end")) {
+                Vec3 delta = this.getDeltaMovement().scale(0.6);
+                this.setDeltaMovement(new Vec3(delta.x(), Math.max(0, delta.y()), delta.z()));
+            }
+            if (anim.isAt("throw")) {
                 this.gaeBolg(this.getTargetPosition().asVec(this.position()));
             }
         } else {
@@ -161,27 +201,60 @@ public class Cuchulainn extends BaseServant {
                 Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(0.35);
                 this.setDeltaMovement(this.getDeltaMovement().add(dir));
             }
+            if (anim.isAt("attack_final")) {
+                this.mobAttack(anim, this.getTarget(), this::doHurtTarget);
+            }
             super.handleAttack(anim);
         }
     }
 
     @Override
+    public float damageModifier(Entity target) {
+        AnimationState anim = this.getAnimationHandler().getAnimation();
+        if (anim != null && anim.isAt("attack_final")) {
+            return 1.5f;
+        }
+        return super.damageModifier(target);
+    }
+
+    @Override
+    public void onEntityHit(Entity target, float damage) {
+        AnimationState anim = this.getAnimationHandler().getAnimation();
+        if (anim != null && anim.isAt("attack_final")) {
+            this.playSound(SoundEvents.PLAYER_ATTACK_CRIT, 1, 1);
+            if (this.level() instanceof ServerLevel serverLevel)
+                serverLevel.getChunkSource().broadcastAndSend(this, new ClientboundAnimatePacket(target, ClientboundAnimatePacket.CRITICAL_HIT));
+        }
+        super.onEntityHit(target, damage);
+    }
+
+    @Override
     public AABB attackBB(AnimationState anim) {
-        double width = this.getBbWidth() + 0.3;
-        double length = 1;
-        if (anim.is(SPEAR_1, SPEAR_2)) {
-            width += 1.4;
-            length += 1.3;
+        double height = this.getBbHeight();
+        double width = this.getBbWidth();
+        double length = 1 * this.getScale();
+        if (anim.is(SPEAR_1)) {
+            width += 3 * this.getScale();
+            length += 1.8 * this.getScale();
+            return new AABB(-width * 0.6, -0.03, 0, width * 0.4, height + 0.03, length);
+        }
+        if (anim.is(SPEAR_2)) {
+            width += 3.1 * this.getScale();
+            length += 1.8 * this.getScale();
         }
         if (anim.is(SPEAR_3)) {
-            width += 0.1;
-            length += 1.7;
+            width += 1.2 * this.getScale();
+            length += 1.9 * this.getScale();
+            return new AABB(-width * 0.3, -0.03, 0, width * 0.7, height + 0.03, length);
         }
-        if (anim.is(SPEAR_4, SPEAR_5)) {
-            width += 0.1;
-            length += 1.8;
+        if (anim.is(SPEAR_4, SPEAR_5, SPEAR_COMBO)) {
+            width += 0.3 * this.getScale();
+            length += 2.2 * this.getScale();
+            if (anim.isAt("attack_final")) {
+                length += 0.5 * this.getScale();
+            }
         }
-        return new AABB(-width * 0.5, -0.02, 0, width * 0.5, this.getBbHeight() + 0.02, length);
+        return new AABB(-width * 0.5, -0.03, 0, width * 0.5, height + 0.03, length);
     }
 
     @Override
@@ -206,7 +279,9 @@ public class Cuchulainn extends BaseServant {
         if (!this.attemptUseNobelPhantasm())
             return;
         GaeBolg gaeBolg = new GaeBolg(this.level(), this);
-        gaeBolg.shootAtPosition(pos.x(), pos.y(), pos.z(), 1.5F, 0);
+        if (this.getTarget() != null)
+            gaeBolg.setTarget(this.getTarget());
+        gaeBolg.shootAtPosition(pos.x(), pos.y(), pos.z(), 3F, 0);
         this.level().addFreshEntity(gaeBolg);
         this.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
         this.gaeBolgThrowTick = 100;
@@ -221,5 +296,10 @@ public class Cuchulainn extends BaseServant {
     @Override
     protected String getSummonAnimation() {
         return SUMMON;
+    }
+
+    @Override
+    public WeaponTrail weaponTrailEdge(boolean left) {
+        return new WeaponTrail(new Vector4f(0, 0, -1.4f, 1), new Vector4f(0, 0, -1.8f, 1));
     }
 }

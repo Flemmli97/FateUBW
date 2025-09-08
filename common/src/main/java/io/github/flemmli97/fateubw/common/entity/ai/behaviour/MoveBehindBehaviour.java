@@ -118,7 +118,7 @@ public class MoveBehindBehaviour<E extends PathfinderMob & AnimatedEntity & AOEA
             // Calculate the arcs position
             Vec3 dir = this.targetPos.subtract(entity.position()).scale(0.5);
             dir = new Vec3(dir.x(), 0, dir.z());
-            Vec3 side = dir.yRot(this.clockwise ? 90 : -90);
+            Vec3 side = dir.yRot((this.clockwise ? 90 : -90) * Mth.DEG_TO_RAD);
             List<BlockPos> pos = new ArrayList<>();
             for (int i = 0; i < 5; i++) {
                 double t = i * Mth.PI / 4;

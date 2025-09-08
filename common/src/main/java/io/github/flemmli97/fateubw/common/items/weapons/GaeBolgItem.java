@@ -1,8 +1,10 @@
 package io.github.flemmli97.fateubw.common.items.weapons;
 
 import io.github.flemmli97.fateubw.common.config.CommonConfig;
+import io.github.flemmli97.fateubw.common.entity.misc.GaeBolg;
 import io.github.flemmli97.fateubw.common.lib.ItemTiers;
 import io.github.flemmli97.fateubw.platform.Platform;
+import io.github.flemmli97.tenshilib.common.utils.HitResultUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -13,6 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
 
 import java.util.List;
 
@@ -34,8 +37,12 @@ public class GaeBolgItem extends TieredItem {
         ItemStack stack = player.getItemInHand(hand);
         if (!level.isClientSide) {
             if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).useMana(player, CommonConfig.gaeBolgMana)) {
-                io.github.flemmli97.fateubw.common.entity.misc.GaeBolg gaeBolg = new io.github.flemmli97.fateubw.common.entity.misc.GaeBolg(level, player);
-                gaeBolg.shoot(player, player.getXRot(), player.getYRot(), 0, 1.5F, 0);
+                GaeBolg gaeBolg = new io.github.flemmli97.fateubw.common.entity.misc.GaeBolg(level, player);
+                gaeBolg.shoot(player, player.getXRot(), player.getYRot(), 0, 3, 0);
+                EntityHitResult res = HitResultUtils.calculateEntityFromLook(player, 24);
+                if (res != null) {
+                    gaeBolg.setTarget(res.getEntity());
+                }
                 level.addFreshEntity(gaeBolg);
                 stack.shrink(1);
                 return InteractionResultHolder.consume(stack);

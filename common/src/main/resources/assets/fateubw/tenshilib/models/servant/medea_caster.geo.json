@@ -112,7 +112,7 @@
         {
           "name": "LeftItem",
           "parent": "LeftArmDown",
-          "pivot": [6, 15, 0]
+          "pivot": [6, 12, -2]
         },
         {
           "name": "RightArm",
@@ -153,7 +153,7 @@
         {
           "name": "RightItem",
           "parent": "RightArmDown",
-          "pivot": [-6, 15, 0]
+          "pivot": [-6, 13, -2]
         },
         {
           "name": "LeftLeg",
@@ -362,11 +362,11 @@
         },
         {
           "name": "LeftItemStandalone",
-          "pivot": [6, 15, 0]
+          "pivot": [6, 12, -2]
         },
         {
           "name": "RightItemStandalone",
-          "pivot": [-6, 15, -2]
+          "pivot": [-6, 12, -3]
         }
       ]
     }

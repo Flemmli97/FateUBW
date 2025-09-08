@@ -55,7 +55,7 @@ public class EntityTrailProvider<T extends Entity & AnimatedEntity & EntityTrail
         this.addBatchedData();
         if (this.valid) {
             AnimationState anim = this.entity.getAnimationHandler().getAnimation();
-            if (!this.entity.isAlive() || anim == null || anim.isPast(this.data.animationEnd)) {
+            if (!this.entity.isAlive() || anim == null || !anim.is(this.data.context()) || anim.isPast(this.data.animationEnd)) {
                 this.valid = false;
                 this.last = this.position.getLast();
             }

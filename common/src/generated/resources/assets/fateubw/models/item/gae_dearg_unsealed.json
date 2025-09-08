@@ -1,0 +1,24 @@
+{
+  "base": {
+    "parent": "fateubw:item/spear_item",
+    "textures": {
+      "layer0": "fateubw:item/gae_dearg_unsealed"
+    }
+  },
+  "gui_light": "front",
+  "loader": "neoforge:separate_transforms",
+  "perspectives": {
+    "fixed": {
+      "parent": "minecraft:item/handheld",
+      "textures": {
+        "layer0": "fateubw:item/gae_dearg_inventory"
+      }
+    },
+    "gui": {
+      "parent": "minecraft:item/handheld",
+      "textures": {
+        "layer0": "fateubw:item/gae_dearg_inventory"
+      }
+    }
+  }
+}

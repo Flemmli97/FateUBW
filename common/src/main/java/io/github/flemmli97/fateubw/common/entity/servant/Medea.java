@@ -49,16 +49,16 @@ import org.joml.Vector4f;
 public class Medea extends BaseServant {
 
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
-    public static final String CAST_1 = BUILDER.add("cast_1", AnimationsBuilder.definition(0.86).marker("attack", 0.28));
-    public static final String CAST_2 = BUILDER.add("cast_2", AnimationsBuilder.definition(1.06).marker("attack", 0.6));
-    public static final String CAST_3 = BUILDER.add("cast_3", AnimationsBuilder.definition(1.58).marker("attack", 1.24));
-    public static final String CAST_4 = BUILDER.add("cast_4", AnimationsBuilder.definition(2.88)
-            .marker("attack_start", 0.6).marker("attack_end", 2.12)
-            .marker("teleport_start", 0.2).marker("teleport_end", 2.4));
+    public static final String CAST_1 = BUILDER.add("cast_1", AnimationsBuilder.definition(0.8).marker("attack", 0.6));
+    public static final String CAST_2 = BUILDER.add("cast_2", AnimationsBuilder.definition(0.92).marker("attack", 0.72));
+    public static final String CAST_3 = BUILDER.add("cast_3", AnimationsBuilder.definition(1.36).marker("attack", 1.2));
+    public static final String CAST_4 = BUILDER.add("cast_4", AnimationsBuilder.definition(3.04)
+            .marker("attack_start", 0.72).marker("attack_end", 2.6)
+            .marker("teleport_start", 0.28).marker("teleport_end", 2.8));
     public static final String MAGIC_CIRCLE = BUILDER.add("magic_circle", AnimationsBuilder.definition(2.2)
             .marker("attack", 1.04).marker("push", 0.52));
-    public static final String RULE_BREAKER = BUILDER.add("rule_breaker", AnimationsBuilder.definition(2.76)
-            .marker("attack", 1.88).marker("teleport_start", 0.8).marker("teleport_end", 2.44));
+    public static final String RULE_BREAKER = BUILDER.add("rule_breaker", AnimationsBuilder.definition(2.72)
+            .marker("attack", 1.84).marker("teleport_start", 0.8).marker("teleport_end", 2.44));
     public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2.));
     public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
 
@@ -314,13 +314,14 @@ public class Medea extends BaseServant {
 
     @Override
     public AABB attackBB(AnimationState anim) {
-        double width = this.getBbWidth() + 0.3;
-        double length = 1;
+        double height = this.getBbHeight();
+        double width = this.getBbWidth();
+        double length = 1 * this.getScale();
         if (anim.is(RULE_BREAKER)) {
-            width += 0.1;
-            length += 0.6;
+            width += 0.2 * this.getScale();
+            length += 0.7 * this.getScale();
         }
-        return new AABB(-width * 0.5, -0.02, 0, width * 0.5, this.getBbHeight() + 0.02, length);
+        return new AABB(-width * 0.5, -0.03, 0, width * 0.5, height + 0.03, length);
     }
 
     @Override
@@ -395,9 +396,9 @@ public class Medea extends BaseServant {
         if (eff != null)
             strength = eff.getAmplifier();
         int amount = this.getRandom().nextInt(2) + 1;
-        for (Vec3 offset : Utils.randomSidedPositions(this, amount, 6)) {
+        for (Vec3 offset : Utils.randomSidedPositions(this, amount, 7)) {
             MagicBeam beam = new MagicBeam(this.level(), this, target);
-            beam.setDamageMultiplier(1 + strength * 0.1f);
+            beam.setDamageMultiplier(0.9f + strength * 0.15f);
             beam.setPos(offset.x, offset.y, offset.z);
             if (target != null)
                 beam.setRotationTo(target, 0);

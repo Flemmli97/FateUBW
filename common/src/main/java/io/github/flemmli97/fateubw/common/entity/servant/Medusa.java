@@ -6,6 +6,7 @@ import io.github.flemmli97.fateubw.common.entity.misc.ChainDagger;
 import io.github.flemmli97.fateubw.common.entity.summons.GordiusWheel;
 import io.github.flemmli97.fateubw.common.entity.summons.Pegasus;
 import io.github.flemmli97.fateubw.common.entity.utils.DaggerHitNotifiable;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailProvider;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.utils.Utils;
@@ -31,6 +32,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -52,19 +54,29 @@ public class Medusa extends BaseServant implements DaggerHitNotifiable {
     protected static final EntityDataAccessor<Boolean> THROWN_DAGGER = SynchedEntityData.defineId(Medusa.class, EntityDataSerializers.BOOLEAN);
 
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
-    public static final String DUAL_REVERSE_1 = BUILDER.add("dual_reverse_1", AnimationsBuilder.definition(0.58)
-            .marker("attack", 0.4));
-    public static final String DUAL_REVERSE_2 = BUILDER.add("dual_reverse_2", DUAL_REVERSE_1);
-    public static final String DUAL_REVERSE_3 = BUILDER.add("dual_reverse_3", AnimationsBuilder.definition(0.54)
-            .marker("attack", 0.4));
-    public static final String DUAL_REVERSE_4 = BUILDER.add("dual_reverse_4", DUAL_REVERSE_3);
-    public static final String THROW = BUILDER.add("chain_throw", AnimationsBuilder.definition(0.72).marker("attack", 0.48));
-    public static final String RETRIEVE = BUILDER.add("chain_retrieve", AnimationsBuilder.definition(0.8).marker("attack", 0.48));
-    public static final String EYE = BUILDER.add("eye", AnimationsBuilder.definition(1.96).marker("attack", 0.96));
-    public static final String JUMP = BUILDER.add("jump", AnimationsBuilder.definition(0.32).marker("jump", 0.2).infinite());
-    public static final String LAND = BUILDER.add("land", AnimationsBuilder.definition(0.68).marker("attack", 0.12));
-    public static final String BELLEROPHON = BUILDER.add("bellerophon", AnimationsBuilder.definition(2.2).marker("attack", 0.36));
-    public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2.04));
+    public static final String DUAL_REVERSE_1 = BUILDER.add("dual_reverse_1", AnimationsBuilder.definition(0.64)
+            .marker("attack", 0.48)
+            .marker(EntityTrailProvider.TRAIL_START, 0.32)
+            .marker(EntityTrailProvider.TRAIL_END, 0.48));
+    public static final String DUAL_REVERSE_2 = BUILDER.add("dual_reverse_2", AnimationsBuilder.definition(0.64)
+            .marker("attack", 0.48)
+            .marker(EntityTrailProvider.TRAIL_START, 0.32)
+            .marker(EntityTrailProvider.TRAIL_END, 0.48));
+    public static final String DUAL_REVERSE_3 = BUILDER.add("dual_reverse_3", AnimationsBuilder.definition(0.64)
+            .marker("attack", 0.48)
+            .marker(EntityTrailProvider.TRAIL_START, 0.32)
+            .marker(EntityTrailProvider.TRAIL_END, 0.48));
+    public static final String DUAL_REVERSE_4 = BUILDER.add("dual_reverse_4", AnimationsBuilder.definition(0.64)
+            .marker("attack", 0.48)
+            .marker(EntityTrailProvider.TRAIL_START, 0.32)
+            .marker(EntityTrailProvider.TRAIL_END, 0.48));
+    public static final String CHAIN_THROW = BUILDER.add("chain_throw", AnimationsBuilder.definition(0.84).marker("attack", 0.6));
+    public static final String RETRIEVE = BUILDER.add("chain_retrieve", AnimationsBuilder.definition(0.88).marker("attack", 0.56));
+    public static final String EYE = BUILDER.add("eye", AnimationsBuilder.definition(1.96).marker("attack", 1));
+    public static final String JUMP = BUILDER.add("jump", AnimationsBuilder.definition(0.48).marker("jump", 0.24).infinite());
+    public static final String LAND = BUILDER.add("land", AnimationsBuilder.definition(0.64).marker("attack", 0.16));
+    public static final String BELLEROPHON = BUILDER.add("bellerophon", AnimationsBuilder.definition(2.28).marker("attack", 0.2));
+    public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2));
     public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
 
     private static Predicate<Medusa> meleeCondition(String anim) {
@@ -138,12 +150,12 @@ public class Medusa extends BaseServant implements DaggerHitNotifiable {
                 .prepare(new SetWalkTargetToAttackTarget<Medusa>().speedMod((m, e) -> 1.1f)
                         .closeEnoughDist(BehaviourUtils.closeEnough(9))).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(13)
-                .start(THROW).play(BehaviourUtils.cooldownedPlay(false, 20, 25))
+                .start(CHAIN_THROW).play(BehaviourUtils.cooldownedPlay(false, 20, 25))
                 .condition(Medusa::canThrow)
                 .prepare(new SetWalkTargetWithinDist<Medusa>()
                         .min(5).max(16).speedMod((m, e) -> 1.1f)).prepareOptional(BehaviourUtils.moveTo())
                 .end(6)
-                .start(THROW).play(BehaviourUtils.cooldownedPlay(false, 20, 25))
+                .start(CHAIN_THROW).play(BehaviourUtils.cooldownedPlay(false, 20, 25))
                 .condition(entity -> entity.canThrow() && BehaviourUtils.ifFurtherThan(6).test(entity))
                 .prepare(new SetWalkTargetWithinDist<Medusa>()
                         .min(5).max(16).speedMod((m, e) -> 1.1f)).prepareOptional(BehaviourUtils.moveTo())
@@ -170,7 +182,6 @@ public class Medusa extends BaseServant implements DaggerHitNotifiable {
                 .add(3, Entity::isPassenger, new Idle<>()).build();
     }
 
-
     @Override
     public void baseTick() {
         super.baseTick();
@@ -188,7 +199,7 @@ public class Medusa extends BaseServant implements DaggerHitNotifiable {
 
     @Override
     public void handleAttack(AnimationState anim) {
-        if (anim.is(THROW)) {
+        if (anim.is(CHAIN_THROW)) {
             LivingEntity target = this.getTarget();
             if (target != null) {
                 this.lookAt(target, 60, 30);
@@ -201,6 +212,7 @@ public class Medusa extends BaseServant implements DaggerHitNotifiable {
                 this.dagger.retractHook();
                 this.dagger = null;
                 this.getEntityData().set(THROWN_DAGGER, false);
+                BrainUtils.clearMemory(this, MemoryModuleType.ATTACK_COOLING_DOWN);
             }
         } else if (anim.is(EYE)) {
             LivingEntity target = this.getTarget();
@@ -288,20 +300,27 @@ public class Medusa extends BaseServant implements DaggerHitNotifiable {
     @Override
     public AABB attackBB(AnimationState anim) {
         if (anim.is(LAND)) {
-            double width = this.getBbWidth() + 4;
+            double width = this.getBbWidth() + 3 * this.getScale();
             return new AABB(-width * 0.5, -0.02, -width * 0.3, width * 0.5, this.getBbHeight() * 0.5, width * 0.7);
         }
-        double width = this.getBbWidth() + 0.3;
-        double length = 1;
-        if (anim.is(DUAL_REVERSE_1, DUAL_REVERSE_2)) {
-            width += 1;
-            length += 0.6;
+        double height = this.getBbHeight();
+        double width = this.getBbWidth();
+        double length = 1 * this.getScale();
+        if (anim.is(DUAL_REVERSE_1)) {
+            width += 0.9 * this.getScale();
+            length += 0.6 * this.getScale();
+            return new AABB(-width * 0.7, -0.03, 0, width * 0.3, height + 0.03, length);
+        }
+        if (anim.is(DUAL_REVERSE_2)) {
+            width += 0.9 * this.getScale();
+            length += 0.6 * this.getScale();
+            return new AABB(-width * 0.3, -0.03, 0, width * 0.7, height + 0.03, length);
         }
         if (anim.is(DUAL_REVERSE_3, DUAL_REVERSE_4)) {
-            width += 0.8;
-            length += 0.7;
+            width += 0.8 * this.getScale();
+            length += 0.7 * this.getScale();
         }
-        return new AABB(-width * 0.5, -0.02, 0, width * 0.5, this.getBbHeight() + 0.02, length);
+        return new AABB(-width * 0.5, -0.03, 0, width * 0.5, height + 0.03, length);
     }
 
     @Override
@@ -320,7 +339,7 @@ public class Medusa extends BaseServant implements DaggerHitNotifiable {
             return super.hurt(damageSource, damage);
         }
         if (this.getVehicle() != null) {
-            damage *= 0.5;
+            damage *= 0.5f;
             this.getVehicle().hurt(damageSource, damage);
         }
         return super.hurt(damageSource, damage);
