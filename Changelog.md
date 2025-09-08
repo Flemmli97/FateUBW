@@ -1,3 +1,45 @@
+FateUBW 2.1.0-beta
+================
+- Larger weapon now have an inventory texture variant to not look too small in guis
+- Fix gilles monster able to retaliate on owner
+- Add config to change damage reduction for:
+  - Armor (servants only)
+  - Projectile Protection
+  - Magic Protection
+- Adjusted servant stats
+- Updated animations/attacks. Most have a bit longer of a windup now
+- Artoria:
+  - Stab attack now hits multiple times
+  - Most attacks always have a follow-up attack
+  - Excalibur now hits multiple times (you should prob update its damage in the config. default now 15)
+- Cu chulainn:
+  - Added slash trail
+  - Added a stab attack combo
+  - Gáe Bolg has very strong homing now.
+  - Gáe Bolg does additional 10% percentage damage based on targets current health
+- Diarmuid:
+  - Left spear now attacks first (won't really change much combat wise)
+  - Now immune when unsealing his weapons
+  - When in unsealed form gae dearg has partial armor piercing
+- Emiya:
+  - Add triple shot attack
+  - Arrows ignore i-frames
+  - Arrow barrage damage reduced and spread increased to balance above
+  - Now immune when using caladbolg
+- Gilgamesh:
+  - Reduces his melee attacks, focuses more on ranged now
+  - Melee attacks deal increased knockback
+  - Stab now hits twice
+  - Has a chance to guard with EA dealing damage and knockback now
+  - EA now hits multiple times (you should prob update its damage in the config. default now 15)
+- Gilles:
+  - Some monster can use ranged attacks now
+  - Can summon a tentacle slamming into target now
+- Hassan:
+  - Added slash trail
+  - Increase clone stats
+  - Clone count: 5 -> 4
+
 FateUBW 2.0.0-beta
 ================
 - Update to 1.21.1
