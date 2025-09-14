@@ -4,7 +4,11 @@ import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.utils.Utils;
-import io.github.flemmli97.tenshilib.common.particle.ColoredParticleData;
+import io.github.flemmli97.tenshilib.common.particle.AdvancedParticleContainer;
+import io.github.flemmli97.tenshilib.common.particle.data.ColorData;
+import io.github.flemmli97.tenshilib.common.particle.data.MotionData;
+import io.github.flemmli97.tenshilib.common.particle.data.ParticleMetaData;
+import io.github.flemmli97.tenshilib.common.particle.data.ScaleData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -69,9 +73,12 @@ public class MagicShot extends BaseProjectile {
             Vector3f color = this.colorType.particleColor;
             Vec3 delta = this.getDeltaMovement().scale(0.5);
             for (int i = 0; i < 8; i++) {
-                this.level().addParticle(new ColoredParticleData(FateParticles.LIGHT.get(), color.x(), color.y(), color.z(), 0.5f, 0.5f),
-                        this.getX() + this.random.nextGaussian() * delta.x(), this.getY() + 0.35 + this.random.nextGaussian() * delta.y(), this.getZ() + this.random.nextGaussian() * delta.z(),
-                        this.random.nextGaussian() * 0.01, Math.abs(this.random.nextGaussian() * 0.03), this.random.nextGaussian() * 0.01);
+                AdvancedParticleContainer.make(FateParticles.LIGHT.get())
+                        .addData(new ColorData(color.x(), color.y(), color.z(), 0.5f))
+                        .addData(new ScaleData(0.5f))
+                        .addData(new MotionData(this.random.nextGaussian() * 0.01, Math.abs(this.random.nextGaussian() * 0.03), this.random.nextGaussian() * 0.01))
+                        .addData(new ParticleMetaData(20, false, 0))
+                        .build().add(this.level(), this.getX() + this.random.nextGaussian() * delta.x(), this.getY() + 0.35 + this.random.nextGaussian() * delta.y(), this.getZ() + this.random.nextGaussian() * delta.z());
             }
         }
     }

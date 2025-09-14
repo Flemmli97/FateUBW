@@ -28,7 +28,7 @@ import io.github.flemmli97.fateubw.common.registry.FateBlocks;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
-import io.github.flemmli97.tenshilib.client.particles.ColoredParticle;
+import io.github.flemmli97.tenshilib.client.particles.TranslucentAddParticle;
 import io.github.flemmli97.tenshilib.loader.registry.RegistryEntrySupplier;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.particle.ParticleProvider;
@@ -133,7 +133,7 @@ public class ClientRegister {
     }
 
     public static void registerParticles(PartileRegister consumer) {
-        consumer.register(FateParticles.LIGHT.get(), ColoredParticle.NoGravityParticleFactory::new);
+        consumer.register(FateParticles.LIGHT.get(), TranslucentAddParticle.Factory::new);
         consumer.register(FateParticles.TRAIL.get(), TrailParticle.Factory::new);
         consumer.register(FateParticles.RING.get(), RingParticle.Factory::new);
     }

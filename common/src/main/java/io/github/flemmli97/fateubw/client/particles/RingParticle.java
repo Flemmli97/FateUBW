@@ -3,34 +3,28 @@ package io.github.flemmli97.fateubw.client.particles;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.github.flemmli97.fateubw.common.particles.RingParticleData;
-import io.github.flemmli97.tenshilib.client.particles.ColoredParticle;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-public class RingParticle extends ColoredParticle {
+public class RingParticle extends TextureSheetParticle {
 
-    private final float yRot, xRot, growth;
+    private final float yRot, xRot;
 
-    public RingParticle(ClientLevel level, double x, double y, double z, double motionX, double motionY, double motionZ, RingParticleData data, SpriteSet sprite, int maxAge, float minAgeRand, float maxAgeRand, boolean collide, boolean randomMovements, boolean gravity) {
-        super(level, x, y, z, motionX, motionY, motionZ, data, sprite, maxAge, minAgeRand, maxAgeRand, collide, randomMovements, gravity);
-        this.yRot = data.getRotY();
-        this.xRot = data.getRotX();
-        this.growth = data.getGrowth();
+    public RingParticle(ClientLevel level, double x, double y, double z, RingParticleData data, SpriteSet sprite) {
+        super(level, x, y, z);
+        this.yRot = data.rotY();
+        this.xRot = data.rotX();
         this.lifetime = 6;
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-        this.quadSize += this.growth;
+        this.setSpriteFromAge(sprite);
     }
 
     @Override
@@ -47,10 +41,7 @@ public class RingParticle extends ColoredParticle {
         Vector3f[] vertices = new Vector3f[]{new Vector3f(-1.0f, -1.0f, 0.0f), new Vector3f(-1.0f, 1.0f, 0.0f), new Vector3f(1.0f, 1.0f, 0.0f), new Vector3f(1.0f, -1.0f, 0.0f)};
         float scale = this.getQuadSize(partialTicks);
         for (int k = 0; k < 4; ++k) {
-            Vector3f vertice = vertices[k];
-            vertice.rotate(quaternion);
-            vertice.mul(scale);
-            vertice.add(x, y, z);
+            vertices[k].rotate(quaternion).mul(scale).add(x, y, z);
         }
         float u0 = this.getU0();
         float u1 = this.getU1();
@@ -88,7 +79,7 @@ public class RingParticle extends ColoredParticle {
 
         @Override
         public Particle createParticle(RingParticleData data, ClientLevel level, double x, double y, double z, double motionX, double motionY, double motionZ) {
-            return new RingParticle(level, x, y, z, motionX, motionY, motionZ, data, this.sprite, 40, 0.7F, 1.3F, false, true, false);
+            return new RingParticle(level, x, y, z, data, this.sprite);
         }
     }
 }

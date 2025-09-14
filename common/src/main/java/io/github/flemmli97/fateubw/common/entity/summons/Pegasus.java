@@ -30,10 +30,14 @@ import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionC
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationsBuilder;
-import io.github.flemmli97.tenshilib.common.entity.data.SyncableDatas;
 import io.github.flemmli97.tenshilib.common.entity.data.SyncedDataContainer;
 import io.github.flemmli97.tenshilib.common.entity.data.SyncedMobDataHandler;
-import io.github.flemmli97.tenshilib.common.particle.ColoredParticleData;
+import io.github.flemmli97.tenshilib.common.particle.AdvancedParticleContainer;
+import io.github.flemmli97.tenshilib.common.particle.data.ColorData;
+import io.github.flemmli97.tenshilib.common.particle.data.MotionData;
+import io.github.flemmli97.tenshilib.common.particle.data.ParticleMetaData;
+import io.github.flemmli97.tenshilib.common.particle.data.ScaleData;
+import io.github.flemmli97.tenshilib.common.registry.TenshilibSyncableEntityDatas;
 import io.github.flemmli97.tenshilib.common.utils.TypedResource;
 import io.github.flemmli97.tenshilib.common.utils.math.OrientedBoundingBox;
 import net.minecraft.core.BlockPos;
@@ -136,7 +140,7 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
     private int flyTimer;
 
     private final SyncedDataContainer<Pegasus> syncedDataContainer = SyncedDataContainer.builder(this)
-            .define(CHARGE_MOTION, SyncableDatas.VEC_3, null).build();
+            .define(CHARGE_MOTION, TenshilibSyncableEntityDatas.VEC_3.get(), null).build();
 
     private List<Entity> hitEntities = new ArrayList<>();
 
@@ -307,7 +311,12 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
                     double sideScale = (this.random.nextDouble() - this.random.nextDouble()) * PORTAL_SIZE;
                     double upScale = (this.random.nextDouble() - this.random.nextDouble()) * PORTAL_SIZE + PORTAL_SIZE;
                     Vec3 pos = this.position().add(base).add(base2.scale(sideScale)).add(new Vec3(0, 1, 0).scale(upScale));
-                    this.level().addParticle(new ColoredParticleData(FateParticles.LIGHT.get(), 245 / 255F, 10 / 255F, 10 / 255F, 1, 0.5f), pos.x(), pos.y(), pos.z(), this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01);
+                    AdvancedParticleContainer.make(FateParticles.LIGHT.get())
+                            .addData(new ColorData(245 / 255F, 10 / 255F, 10 / 255F, 0.5f))
+                            .addData(new ScaleData(0.5f))
+                            .addData(new MotionData(this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01))
+                            .addData(new ParticleMetaData(20, false, 0))
+                            .build().add(this.level(), pos.x(), pos.y(), pos.z());
                 }
             }
             if (this.getAnimationHandler().isCurrent(CHARGING) && this.getAnimationHandler().getAnimation().isPast(0.48)) {

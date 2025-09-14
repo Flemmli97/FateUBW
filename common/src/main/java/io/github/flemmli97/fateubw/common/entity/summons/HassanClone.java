@@ -32,10 +32,14 @@ import io.github.flemmli97.tenshilib.common.entity.animated.AnimatedEntity;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionContainer;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
-import io.github.flemmli97.tenshilib.common.entity.data.SyncableDatas;
 import io.github.flemmli97.tenshilib.common.entity.data.SyncedDataContainer;
 import io.github.flemmli97.tenshilib.common.entity.data.SyncedMobDataHandler;
-import io.github.flemmli97.tenshilib.common.particle.ColoredParticleData;
+import io.github.flemmli97.tenshilib.common.particle.AdvancedParticleContainer;
+import io.github.flemmli97.tenshilib.common.particle.data.ColorData;
+import io.github.flemmli97.tenshilib.common.particle.data.MotionData;
+import io.github.flemmli97.tenshilib.common.particle.data.ParticleMetaData;
+import io.github.flemmli97.tenshilib.common.particle.data.ScaleData;
+import io.github.flemmli97.tenshilib.common.registry.TenshilibSyncableEntityDatas;
 import io.github.flemmli97.tenshilib.common.utils.math.OrientedBoundingBox;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -166,7 +170,7 @@ public class HassanClone extends PathfinderMob implements AnimatedEntity, Ownabl
     }
 
     protected void definedAdditinoalSyncedData(SyncedDataContainer.Builder<HassanClone> builder) {
-        builder.define(BaseServant.TARGET_POSITION, SyncableDatas.TARGET_POS, null);
+        builder.define(BaseServant.TARGET_POSITION, TenshilibSyncableEntityDatas.TARGET_POS.get(), null);
     }
 
     @Override
@@ -580,12 +584,16 @@ public class HassanClone extends PathfinderMob implements AnimatedEntity, Ownabl
     protected void tickDeath() {
         if (this.level().isClientSide) {
             for (int i = 0; i < ((int) ((9 / (float) this.maxDeathTick()) * this.deathTime - 1)); i++) {
-                this.level().addParticle(new ColoredParticleData(FateParticles.LIGHT.get(), 76 / 255f, 128 / 255f, 207 / 255f, 0.3f, 0.15f), this.getX(this.random.nextDouble() * 3 - 1.5),
-                        this.getY(this.random.nextDouble() * 3 - 1.5),
-                        this.getZ(this.random.nextDouble() * 3 - 1.5),
-                        this.random.nextGaussian() * 0.02D,
-                        this.random.nextGaussian() * 0.02D,
-                        this.random.nextGaussian() * 0.02D);
+                AdvancedParticleContainer.make(FateParticles.LIGHT.get())
+                        .addData(new ColorData(76 / 255f, 128 / 255f, 207 / 255f, 0.3f))
+                        .addData(new ScaleData(0.15f))
+                        .addData(new MotionData(this.random.nextGaussian() * 0.02D,
+                                this.random.nextGaussian() * 0.02D,
+                                this.random.nextGaussian() * 0.02D))
+                        .addData(new ParticleMetaData(20, false, 0))
+                        .build().add(this.level(), this.getX(this.random.nextDouble() * 3 - 1.5),
+                                this.getY(this.random.nextDouble() * 3 - 1.5),
+                                this.getZ(this.random.nextDouble() * 3 - 1.5));
             }
         }
         if (this.level() instanceof ServerLevel serverLevel) {

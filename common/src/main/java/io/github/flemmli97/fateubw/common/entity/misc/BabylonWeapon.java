@@ -8,7 +8,11 @@ import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.entity.EntityUtils;
-import io.github.flemmli97.tenshilib.common.particle.ColoredParticleData;
+import io.github.flemmli97.tenshilib.common.particle.AdvancedParticleContainer;
+import io.github.flemmli97.tenshilib.common.particle.data.ColorData;
+import io.github.flemmli97.tenshilib.common.particle.data.MotionData;
+import io.github.flemmli97.tenshilib.common.particle.data.ParticleMetaData;
+import io.github.flemmli97.tenshilib.common.particle.data.ScaleData;
 import io.github.flemmli97.tenshilib.common.utils.HitResultUtils;
 import io.github.flemmli97.tenshilib.common.utils.ItemUtils;
 import net.minecraft.core.BlockPos;
@@ -123,8 +127,12 @@ public class BabylonWeapon extends BaseProjectile {
                 if (this.despawnTimer >= 40)
                     this.discard();
             } else if (this.random.nextBoolean()) {
-                this.level().addParticle(new ColoredParticleData(FateParticles.LIGHT.get(), 1.0f, 0.85f, 0.3f, 0.5f, 0.15f), this.getX(this.random.nextGaussian()), this.getY(this.random.nextGaussian()), this.getZ(this.random.nextGaussian()),
-                        this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01);
+                AdvancedParticleContainer.make(FateParticles.LIGHT.get())
+                        .addData(new ColorData(1.0f, 0.85f, 0.3f, 0.5f))
+                        .addData(new ScaleData(0.15f))
+                        .addData(new MotionData(this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01))
+                        .addData(new ParticleMetaData(20, false, 0))
+                        .build().add(this.level(), this.getX(this.random.nextGaussian()), this.getY(this.random.nextGaussian()), this.getZ(this.random.nextGaussian()));
             }
         }
     }
@@ -172,7 +180,12 @@ public class BabylonWeapon extends BaseProjectile {
         this.setXRot(this.updateRotation(this.xRotO, (float) (Mth.atan2(motion.y, f) * Mth.RAD_TO_DEG)));
 
         if (this.level().isClientSide) {
-            this.level().addParticle(new ColoredParticleData(FateParticles.LIGHT.get(), 235 / 255F, 235 / 255F, 0 / 255F, 1, 0.15f), this.getX(), this.getY(), this.getZ(), this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01);
+            AdvancedParticleContainer.make(FateParticles.LIGHT.get())
+                    .addData(new ColorData(235 / 255F, 235 / 255F, 0 / 255F, 1))
+                    .addData(new ScaleData(0.15f))
+                    .addData(new MotionData(this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01))
+                    .addData(new ParticleMetaData(20, false, 0))
+                    .build().add(this.level(), this.getX(), this.getY(), this.getZ());
         } else {
             if (this.tickCount == 1)
                 this.playSound(FateSounds.ENTITY_BABYLON_SPAWN.get(), 0.7f, (this.random.nextFloat() - this.random.nextFloat()) * 0.2f + 0.9f);

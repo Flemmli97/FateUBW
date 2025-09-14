@@ -9,21 +9,9 @@ import io.github.flemmli97.fateubw.common.config.specs.ConfigSpecs;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.entity.servant.lancelot.LancelotAttackAI;
 import io.github.flemmli97.fateubw.common.event.EventCalls;
-import io.github.flemmli97.fateubw.common.registry.FateActivities;
-import io.github.flemmli97.fateubw.common.registry.FateAttributes;
-import io.github.flemmli97.fateubw.common.registry.FateBlocks;
-import io.github.flemmli97.fateubw.common.registry.FateCreativeTab;
-import io.github.flemmli97.fateubw.common.registry.FateCriterionTriggers;
-import io.github.flemmli97.fateubw.common.registry.FateDataComponents;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateFeatures;
-import io.github.flemmli97.fateubw.common.registry.FateGrailLootSerializer;
-import io.github.flemmli97.fateubw.common.registry.FateItemSubPredicates;
-import io.github.flemmli97.fateubw.common.registry.FateItems;
-import io.github.flemmli97.fateubw.common.registry.FateMemoryTypes;
-import io.github.flemmli97.fateubw.common.registry.FateMobEffects;
-import io.github.flemmli97.fateubw.common.registry.FateParticles;
-import io.github.flemmli97.fateubw.common.registry.FateSounds;
+import io.github.flemmli97.fateubw.common.registry.FateRegistration;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import io.github.flemmli97.fateubw.fabric.network.PacketHandler;
 import io.github.flemmli97.tenshilib.fabric.loader.events.CommonSetupEvent;
@@ -50,7 +38,7 @@ public class FateUBWFabric implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        this.registerContent();
+        FateRegistration.registerContent();
         NeoForgeModConfigEvents.loading(Fate.MODID).register(config -> {
             if (config.getSpec() == ConfigSpecs.CLIENT_SPEC)
                 ConfigLoader.loadClient();
@@ -97,24 +85,5 @@ public class FateUBWFabric implements ModInitializer {
         LancelotAttackAI.init();
 
         CommonSetupEvent.EVENT.register(listener -> listener.enqueue(Fate.MODID, () -> FateEntities.registeredAttributes().forEach(FabricDefaultAttributeRegistry::register)));
-    }
-
-    public void registerContent() {
-        FateActivities.ACTIVITIES.registerContent();
-        FateAttributes.ATTRIBUTES.registerContent();
-        FateBlocks.BLOCK_ENTITIES.registerContent();
-        FateBlocks.BLOCKS.registerContent();
-        FateCreativeTab.TABS.registerContent();
-        FateCriterionTriggers.TRIGGERS.registerContent();
-        FateDataComponents.DATA_COMPONENTS.registerContent();
-        FateEntities.ENTITIES.registerContent();
-        FateGrailLootSerializer.LOOT_FUNCTION.registerContent();
-        FateGrailLootSerializer.SERIALIZER.register().registerContent();
-        FateItems.ITEMS.registerContent();
-        FateItemSubPredicates.SUB_PREDICATES.registerContent();
-        FateMemoryTypes.MEMORIES.registerContent();
-        FateMobEffects.EFFECTS.registerContent();
-        FateParticles.PARTICLES.registerContent();
-        FateSounds.SOUND_EVENTS.registerContent();
     }
 }

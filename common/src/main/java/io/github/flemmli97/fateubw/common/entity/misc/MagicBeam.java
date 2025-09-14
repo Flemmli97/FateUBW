@@ -5,7 +5,11 @@ import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.utils.Utils;
-import io.github.flemmli97.tenshilib.common.particle.ColoredParticleData;
+import io.github.flemmli97.tenshilib.common.particle.AdvancedParticleContainer;
+import io.github.flemmli97.tenshilib.common.particle.data.ColorData;
+import io.github.flemmli97.tenshilib.common.particle.data.MotionData;
+import io.github.flemmli97.tenshilib.common.particle.data.ParticleMetaData;
+import io.github.flemmli97.tenshilib.common.particle.data.ScaleData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -92,7 +96,12 @@ public class MagicBeam extends BaseBeam {
     @Override
     public void tick() {
         if (this.level().isClientSide) {
-            this.level().addParticle(new ColoredParticleData(FateParticles.LIGHT.get(), 205 / 255F, 13 / 255F, 205 / 255F, 1, 0.15f), this.getX(), this.getY(), this.getZ(), this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01);
+            AdvancedParticleContainer.make(FateParticles.LIGHT.get())
+                    .addData(new ColorData(205 / 255F, 13 / 255F, 205 / 255F, 1))
+                    .addData(new ScaleData(0.15f))
+                    .addData(new MotionData(this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01))
+                    .addData(new ParticleMetaData(20, false, 0))
+                    .build().add(this.level(), this.getRandomX(2), this.getRandomY(), this.getRandomZ(2));
         } else if (!this.setSpawnRot) {
             this.setSpawnRot = true;
             this.entityData.set(SPAWN_ROT_Y, this.getYRot());

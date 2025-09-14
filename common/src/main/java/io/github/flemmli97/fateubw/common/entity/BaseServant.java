@@ -33,11 +33,15 @@ import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetMoveToR
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimatedEntity;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinition;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
-import io.github.flemmli97.tenshilib.common.entity.data.SyncableDatas;
 import io.github.flemmli97.tenshilib.common.entity.data.SyncedDataContainer;
 import io.github.flemmli97.tenshilib.common.entity.data.SyncedMobDataHandler;
 import io.github.flemmli97.tenshilib.common.item.SpawnEgg;
-import io.github.flemmli97.tenshilib.common.particle.ColoredParticleData;
+import io.github.flemmli97.tenshilib.common.particle.AdvancedParticleContainer;
+import io.github.flemmli97.tenshilib.common.particle.data.ColorData;
+import io.github.flemmli97.tenshilib.common.particle.data.MotionData;
+import io.github.flemmli97.tenshilib.common.particle.data.ParticleMetaData;
+import io.github.flemmli97.tenshilib.common.particle.data.ScaleData;
+import io.github.flemmli97.tenshilib.common.registry.TenshilibSyncableEntityDatas;
 import io.github.flemmli97.tenshilib.common.utils.TypedResource;
 import io.github.flemmli97.tenshilib.common.utils.math.OrientedBoundingBox;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -210,7 +214,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
     }
 
     protected void definedAdditinoalSyncedData(SyncedDataContainer.Builder<BaseServant> builder) {
-        builder.define(TARGET_POSITION, SyncableDatas.TARGET_POS, null);
+        builder.define(TARGET_POSITION, TenshilibSyncableEntityDatas.TARGET_POS.get(), null);
     }
 
     @Override
@@ -878,12 +882,16 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
         this.died = true;
         if (this.level().isClientSide) {
             for (int i = 0; i < ((int) ((9 / (float) this.maxDeathTick()) * this.deathTime - 1)); i++) {
-                this.level().addParticle(new ColoredParticleData(FateParticles.LIGHT.get(), 76 / 255f, 128 / 255f, 207 / 255f, 0.3f, 0.15f), this.getX(this.random.nextDouble() * 3 - 1.5),
-                        this.getY(this.random.nextDouble() * 3 - 1.5),
-                        this.getZ(this.random.nextDouble() * 3 - 1.5),
-                        this.random.nextGaussian() * 0.02D,
-                        this.random.nextGaussian() * 0.02D,
-                        this.random.nextGaussian() * 0.02D);
+                AdvancedParticleContainer.make(FateParticles.LIGHT.get())
+                        .addData(new ColorData(76 / 255f, 128 / 255f, 207 / 255f, 0.3f))
+                        .addData(new ScaleData(0.15f))
+                        .addData(new MotionData(this.random.nextGaussian() * 0.02D,
+                                this.random.nextGaussian() * 0.02D,
+                                this.random.nextGaussian() * 0.02D))
+                        .addData(new ParticleMetaData(20, false, 0))
+                        .build().add(this.level(), this.getX(this.random.nextDouble() * 3 - 1.5),
+                                this.getY(this.random.nextDouble() * 3 - 1.5),
+                                this.getZ(this.random.nextDouble() * 3 - 1.5));
             }
         }
         ++this.deathTime;

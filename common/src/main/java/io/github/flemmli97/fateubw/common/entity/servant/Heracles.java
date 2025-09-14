@@ -19,6 +19,10 @@ import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionC
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationsBuilder;
+import io.github.flemmli97.tenshilib.common.particle.AdvancedParticleContainer;
+import io.github.flemmli97.tenshilib.common.particle.data.ColorData;
+import io.github.flemmli97.tenshilib.common.particle.data.ParticleMetaData;
+import io.github.flemmli97.tenshilib.common.particle.data.ScaleData;
 import io.github.flemmli97.tenshilib.common.utils.math.OrientedBoundingBox;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
@@ -26,7 +30,6 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
@@ -330,9 +333,11 @@ public class Heracles extends BaseServant {
                     }
                 });
                 if (!this.hits.isEmpty()) {
-                    ((ServerLevel) this.level())
-                            .sendParticles(new RingParticleData(0.9f, 0.9f, 0.9f, 1, 1, this.getYRot(), 40, 3f), this.getX(), this.getY(), this.getZ(),
-                                    0, 0, 0, 0, 1);
+                    AdvancedParticleContainer.make(new RingParticleData(this.getYRot(), 40))
+                            .addData(new ColorData(0.9f, 0.9f, 0.9f))
+                            .addData(new ScaleData(1, 4, 3))
+                            .addData(new ParticleMetaData(8, false, 0))
+                            .build().add(this.level(), this.getX(), this.getEyeY(), this.getZ());
                 }
                 this.hits = null;
                 this.setDeltaMovement(this.getDeltaMovement().add(0, -0.1, 0));

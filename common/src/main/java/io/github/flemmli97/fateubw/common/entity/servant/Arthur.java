@@ -23,8 +23,8 @@ import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionC
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationsBuilder;
-import io.github.flemmli97.tenshilib.common.entity.data.SyncableDatas;
 import io.github.flemmli97.tenshilib.common.entity.data.SyncedDataContainer;
+import io.github.flemmli97.tenshilib.common.registry.TenshilibSyncableEntityDatas;
 import io.github.flemmli97.tenshilib.common.utils.TypedResource;
 import io.github.flemmli97.tenshilib.common.utils.math.OrientedBoundingBox;
 import net.minecraft.ChatFormatting;
@@ -120,7 +120,7 @@ public class Arthur extends BaseServant {
     @Override
     protected void definedAdditinoalSyncedData(SyncedDataContainer.Builder<BaseServant> builder) {
         super.definedAdditinoalSyncedData(builder);
-        builder.define(BURST_DIRECTION, SyncableDatas.VEC_3, null);
+        builder.define(BURST_DIRECTION, TenshilibSyncableEntityDatas.VEC_3.get(), null);
     }
 
     @Override

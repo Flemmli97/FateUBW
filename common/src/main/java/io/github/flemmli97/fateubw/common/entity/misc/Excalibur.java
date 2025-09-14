@@ -7,7 +7,11 @@ import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.Utils;
-import io.github.flemmli97.tenshilib.common.particle.ColoredParticleData;
+import io.github.flemmli97.tenshilib.common.particle.AdvancedParticleContainer;
+import io.github.flemmli97.tenshilib.common.particle.data.ColorData;
+import io.github.flemmli97.tenshilib.common.particle.data.MotionData;
+import io.github.flemmli97.tenshilib.common.particle.data.ParticleMetaData;
+import io.github.flemmli97.tenshilib.common.particle.data.ScaleData;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -63,7 +67,12 @@ public class Excalibur extends BaseBeam {
         if (this.level().isClientSide) {
             if (this.livingTicks <= this.livingTickMax() - 15) {
                 for (int i = 0; i < 2; i++) {
-                    this.level().addParticle(new ColoredParticleData(FateParticles.LIGHT.get(), 245 / 255F, 245 / 255F, 5 / 255F, 1, 2), this.hitVec.x(), this.hitVec.y() - 0.15, this.hitVec.z(), this.random.nextGaussian() * 0.007, this.random.nextGaussian() * 0.007 + 0.003, this.random.nextGaussian() * 0.007);
+                    AdvancedParticleContainer.make(FateParticles.LIGHT.get())
+                            .addData(new ColorData(245 / 255F, 245 / 255F, 5 / 255F, 0.6f))
+                            .addData(new ScaleData(2))
+                            .addData(new MotionData(this.random.nextGaussian() * 0.007, this.random.nextGaussian() * 0.007 + 0.003, this.random.nextGaussian() * 0.007))
+                            .addData(new ParticleMetaData(20, false, 0))
+                            .build().add(this.level(), this.hitVec.x(), this.hitVec.y() - 0.15, this.hitVec.z());
                 }
             }
             Vec3 pos = this.position();
@@ -72,7 +81,12 @@ public class Excalibur extends BaseBeam {
                 double sideScale = this.random.nextDouble() * 2.2 - 1.1;
                 double lenScale = this.random.nextDouble();
                 Vec3 ppos = pos.add(this.up.scale(upScale)).add(this.side.scale(sideScale)).add(this.dir.scale(lenScale));
-                this.level().addParticle(new ColoredParticleData(FateParticles.LIGHT.get(), 245 / 255F, 245 / 255F, 5 / 255F, 1, 0.15f), ppos.x(), ppos.y(), ppos.z(), this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01);
+                AdvancedParticleContainer.make(FateParticles.LIGHT.get())
+                        .addData(new ColorData(245 / 255F, 245 / 255F, 5 / 255F, 1))
+                        .addData(new ScaleData(0.15f))
+                        .addData(new MotionData(this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01))
+                        .addData(new ParticleMetaData(20, false, 0))
+                        .build().add(this.level(), ppos.x(), ppos.y(), ppos.z());
             }
             if (this.tickCount % 3 == 1) {
                 ShakeHandler.shakeScreen(this.position(), this.getRange() + 4, 3, 1.5f);

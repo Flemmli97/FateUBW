@@ -1,8 +1,8 @@
 package io.github.flemmli97.fateubw.common.entity.summons;
 
-import io.github.flemmli97.fateubw.common.entity.MultiPartEntity;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
+import io.github.flemmli97.tenshilib.common.entity.MultiPartEntity;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;

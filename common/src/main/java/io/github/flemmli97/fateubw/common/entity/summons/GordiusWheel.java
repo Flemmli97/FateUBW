@@ -5,7 +5,6 @@ import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.api.datapack.AttributeHolderProperties;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
-import io.github.flemmli97.fateubw.common.entity.MultiPartEntity;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.SetTargetFromRider;
 import io.github.flemmli97.fateubw.common.entity.utils.MoveStateTracker;
@@ -17,6 +16,7 @@ import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.entity.AOEAttackEntity;
+import io.github.flemmli97.tenshilib.common.entity.MultiPartEntity;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetMoveToRestriction;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimatedEntity;
@@ -24,9 +24,9 @@ import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionC
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationsBuilder;
-import io.github.flemmli97.tenshilib.common.entity.data.SyncableDatas;
 import io.github.flemmli97.tenshilib.common.entity.data.SyncedDataContainer;
 import io.github.flemmli97.tenshilib.common.entity.data.SyncedMobDataHandler;
+import io.github.flemmli97.tenshilib.common.registry.TenshilibSyncableEntityDatas;
 import io.github.flemmli97.tenshilib.common.utils.TypedResource;
 import io.github.flemmli97.tenshilib.common.utils.math.OrientedBoundingBox;
 import net.minecraft.core.BlockPos;
@@ -110,7 +110,7 @@ public class GordiusWheel extends PathfinderMob implements AnimatedEntity, Stand
     private final AnimationHandler<GordiusWheel> animationHandler = new AnimationHandler<>(this, ANIMS);
 
     private final SyncedDataContainer<GordiusWheel> syncedDataContainer = SyncedDataContainer.builder(this)
-            .define(CHARGE_MOTION, SyncableDatas.VEC_3, null).build();
+            .define(CHARGE_MOTION, TenshilibSyncableEntityDatas.VEC_3.get(), null).build();
 
     private MultiPartEntity wheels;
 

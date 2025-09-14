@@ -22,8 +22,8 @@ import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionC
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationsBuilder;
-import io.github.flemmli97.tenshilib.common.entity.data.SyncableDatas;
 import io.github.flemmli97.tenshilib.common.entity.data.SyncedDataContainer;
+import io.github.flemmli97.tenshilib.common.registry.TenshilibSyncableEntityDatas;
 import io.github.flemmli97.tenshilib.common.utils.TypedResource;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -99,7 +99,7 @@ public class Diarmuid extends BaseServant {
     @Override
     protected void definedAdditinoalSyncedData(SyncedDataContainer.Builder<BaseServant> builder) {
         super.definedAdditinoalSyncedData(builder);
-        builder.define(BLINK_TARGET, SyncableDatas.VEC_3, null);
+        builder.define(BLINK_TARGET, TenshilibSyncableEntityDatas.VEC_3.get(), null);
     }
 
     @Override

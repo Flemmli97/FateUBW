@@ -5,20 +5,8 @@ import io.github.flemmli97.fateubw.common.config.specs.ConfigLoader;
 import io.github.flemmli97.fateubw.common.config.specs.ConfigSpecs;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.entity.servant.lancelot.LancelotAttackAI;
-import io.github.flemmli97.fateubw.common.registry.FateActivities;
-import io.github.flemmli97.fateubw.common.registry.FateAttributes;
-import io.github.flemmli97.fateubw.common.registry.FateBlocks;
-import io.github.flemmli97.fateubw.common.registry.FateCreativeTab;
-import io.github.flemmli97.fateubw.common.registry.FateCriterionTriggers;
-import io.github.flemmli97.fateubw.common.registry.FateDataComponents;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
-import io.github.flemmli97.fateubw.common.registry.FateGrailLootSerializer;
-import io.github.flemmli97.fateubw.common.registry.FateItemSubPredicates;
-import io.github.flemmli97.fateubw.common.registry.FateItems;
-import io.github.flemmli97.fateubw.common.registry.FateMemoryTypes;
-import io.github.flemmli97.fateubw.common.registry.FateMobEffects;
-import io.github.flemmli97.fateubw.common.registry.FateParticles;
-import io.github.flemmli97.fateubw.common.registry.FateSounds;
+import io.github.flemmli97.fateubw.common.registry.FateRegistration;
 import io.github.flemmli97.fateubw.neoforge.client.ClientEvents;
 import io.github.flemmli97.fateubw.neoforge.event.EventHandler;
 import io.github.flemmli97.fateubw.neoforge.network.PacketHandler;
@@ -40,7 +28,8 @@ public class FateUBWNeoForge {
     public FateUBWNeoForge(IEventBus modBus, ModContainer container) {
         container.registerConfig(ModConfig.Type.CLIENT, ConfigSpecs.CLIENT_SPEC, Fate.MODID + "/client.toml");
         container.registerConfig(ModConfig.Type.COMMON, ConfigSpecs.COMMON_SPEC, Fate.MODID + "/common.toml");
-        registerContent(modBus);
+        FateRegistration.registerContent();
+        FateAttachments.ATTACHMENT_TYPES.register(modBus);
         modBus.addListener(this::configLoading);
         modBus.addListener(this::configReloading);
         modBus.addListener(this::attributes);
@@ -52,26 +41,6 @@ public class FateUBWNeoForge {
         eventBus.register(EventHandler.class);
         eventBus.addListener(this::reloadListener);
         LancelotAttackAI.init();
-    }
-
-    public static void registerContent(IEventBus modbus) {
-        FateActivities.ACTIVITIES.registerContent(modbus);
-        FateAttachments.ATTACHMENT_TYPES.register(modbus);
-        FateAttributes.ATTRIBUTES.registerContent(modbus);
-        FateBlocks.BLOCK_ENTITIES.registerContent(modbus);
-        FateBlocks.BLOCKS.registerContent(modbus);
-        FateCreativeTab.TABS.registerContent(modbus);
-        FateCriterionTriggers.TRIGGERS.registerContent(modbus);
-        FateDataComponents.DATA_COMPONENTS.registerContent(modbus);
-        FateEntities.ENTITIES.registerContent(modbus);
-        FateGrailLootSerializer.LOOT_FUNCTION.registerContent(modbus);
-        FateGrailLootSerializer.SERIALIZER.register().registerContent(modbus);
-        FateItems.ITEMS.registerContent(modbus);
-        FateItemSubPredicates.SUB_PREDICATES.registerContent(modbus);
-        FateMemoryTypes.MEMORIES.registerContent(modbus);
-        FateMobEffects.EFFECTS.registerContent(modbus);
-        FateParticles.PARTICLES.registerContent(modbus);
-        FateSounds.SOUND_EVENTS.registerContent(modbus);
     }
 
     public void configLoading(ModConfigEvent.Loading event) {

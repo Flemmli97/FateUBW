@@ -5,8 +5,8 @@ import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.mixinhelper.PathNavigationEx;
 import io.github.flemmli97.tenshilib.common.entity.AOEAttackEntity;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.data.AnimationPlayHolder;
-import io.github.flemmli97.tenshilib.common.entity.ai.brain.memory.MoreMemoryModules;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimatedEntity;
+import io.github.flemmli97.tenshilib.common.registry.TenshilibMemoryModules;
 import io.github.flemmli97.tenshilib.common.utils.math.OrientedBoundingBox;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -29,7 +29,7 @@ import java.util.function.BiFunction;
 public class MoveBehindBehaviour<E extends PathfinderMob & AnimatedEntity & AOEAttackEntity> extends ExtendedBehaviour<E> {
 
     private static final List<Pair<MemoryModuleType<?>, MemoryStatus>> MEMORIES = MemoryTest.builder(2)
-            .hasMemory(MoreMemoryModules.ANIMATION_TO_PLAY.get())
+            .hasMemory(TenshilibMemoryModules.ANIMATION_TO_PLAY.get())
             .hasMemory(MemoryModuleType.ATTACK_TARGET);
 
     private Vec3 targetPos;
@@ -83,7 +83,7 @@ public class MoveBehindBehaviour<E extends PathfinderMob & AnimatedEntity & AOEA
         LivingEntity target = BrainUtils.getTargetOfEntity(entity);
         if (target == null)
             return false;
-        AnimationPlayHolder<?> animation = BrainUtils.getMemory(entity, MoreMemoryModules.ANIMATION_TO_PLAY.get());
+        AnimationPlayHolder<?> animation = BrainUtils.getMemory(entity, TenshilibMemoryModules.ANIMATION_TO_PLAY.get());
         if (animation == null)
             return false;
         OrientedBoundingBox aabb = entity.prepareAttackBox(animation.animation(), target, -0.15, true);
@@ -99,7 +99,7 @@ public class MoveBehindBehaviour<E extends PathfinderMob & AnimatedEntity & AOEA
         if (this.targetPos != null && entity.tickCount % 3 == 0) {
             Vec3 dir = target.position().subtract(this.targetPos).normalize();
             float yRot = MathsHelper.YRotFrom(dir);
-            AnimationPlayHolder<?> animation = BrainUtils.getMemory(entity, MoreMemoryModules.ANIMATION_TO_PLAY.get());
+            AnimationPlayHolder<?> animation = BrainUtils.getMemory(entity, TenshilibMemoryModules.ANIMATION_TO_PLAY.get());
             aabb = entity.prepareAttackBox(animation.animation(), target, -0.15, false);
             double off = aabb.getOffset().y() - entity.getY();
             aabb = aabb.setPos(this.targetPos.add(0, off, 0)).rotate(yRot, aabb.getXRot());
