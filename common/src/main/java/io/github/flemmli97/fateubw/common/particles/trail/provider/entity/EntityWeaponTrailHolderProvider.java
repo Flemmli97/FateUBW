@@ -2,9 +2,9 @@ package io.github.flemmli97.fateubw.common.particles.trail.provider.entity;
 
 import org.joml.Vector4f;
 
-public interface EntityTrailHolderProvider {
+public interface EntityWeaponTrailHolderProvider {
 
-    EntityTrailHolder<?> getTrailHolder();
+    EntityWeaponTrailHolder<?> getTrailHolder();
 
     default WeaponTrail weaponTrailEdge(boolean left) {
         return new WeaponTrail(new Vector4f(0, 0, 0, 1), new Vector4f(0, 0, -0.5f, 1));

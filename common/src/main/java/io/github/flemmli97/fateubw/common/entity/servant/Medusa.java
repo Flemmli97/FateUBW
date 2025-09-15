@@ -6,7 +6,7 @@ import io.github.flemmli97.fateubw.common.entity.misc.ChainDagger;
 import io.github.flemmli97.fateubw.common.entity.summons.GordiusWheel;
 import io.github.flemmli97.fateubw.common.entity.summons.Pegasus;
 import io.github.flemmli97.fateubw.common.entity.utils.DaggerHitNotifiable;
-import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailProvider;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailProvider;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.utils.Utils;
@@ -56,20 +56,20 @@ public class Medusa extends BaseServant implements DaggerHitNotifiable {
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
     public static final String DUAL_REVERSE_1 = BUILDER.add("dual_reverse_1", AnimationsBuilder.definition(0.64)
             .marker("attack", 0.48)
-            .marker(EntityTrailProvider.TRAIL_START, 0.32)
-            .marker(EntityTrailProvider.TRAIL_END, 0.48));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.32)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.48));
     public static final String DUAL_REVERSE_2 = BUILDER.add("dual_reverse_2", AnimationsBuilder.definition(0.64)
             .marker("attack", 0.48)
-            .marker(EntityTrailProvider.TRAIL_START, 0.32)
-            .marker(EntityTrailProvider.TRAIL_END, 0.48));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.32)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.48));
     public static final String DUAL_REVERSE_3 = BUILDER.add("dual_reverse_3", AnimationsBuilder.definition(0.64)
             .marker("attack", 0.48)
-            .marker(EntityTrailProvider.TRAIL_START, 0.32)
-            .marker(EntityTrailProvider.TRAIL_END, 0.48));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.32)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.48));
     public static final String DUAL_REVERSE_4 = BUILDER.add("dual_reverse_4", AnimationsBuilder.definition(0.64)
             .marker("attack", 0.48)
-            .marker(EntityTrailProvider.TRAIL_START, 0.32)
-            .marker(EntityTrailProvider.TRAIL_END, 0.48));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.32)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.48));
     public static final String CHAIN_THROW = BUILDER.add("chain_throw", AnimationsBuilder.definition(0.84).marker("attack", 0.6));
     public static final String RETRIEVE = BUILDER.add("chain_retrieve", AnimationsBuilder.definition(0.88).marker("attack", 0.56));
     public static final String EYE = BUILDER.add("eye", AnimationsBuilder.definition(1.96).marker("attack", 1));

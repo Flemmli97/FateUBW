@@ -8,7 +8,7 @@ import io.github.flemmli97.fateubw.common.entity.misc.ThrownItemEntity;
 import io.github.flemmli97.fateubw.common.entity.summons.HassanClone;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
-import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailProvider;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailProvider;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.utils.Utils;
@@ -62,16 +62,16 @@ public class Hassan extends BaseServant {
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
     public static final String DAGGER_1 = BUILDER.add("dagger_1", AnimationsBuilder.definition(0.6)
             .marker("attack", 0.48).marker("step", 0.4)
-            .marker(EntityTrailProvider.TRAIL_START, 0.32)
-            .marker(EntityTrailProvider.TRAIL_END, 0.48));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.32)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.48));
     public static final String DAGGER_2 = BUILDER.add("dagger_2", AnimationsBuilder.definition(0.56)
             .marker("attack", 0.44).marker("step", 0.4)
-            .marker(EntityTrailProvider.TRAIL_START, 0.32)
-            .marker(EntityTrailProvider.TRAIL_END, 0.44));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.32)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.44));
     public static final String DAGGER_3 = BUILDER.add("dagger_3", AnimationsBuilder.definition(0.6)
             .marker("attack", 0.48).marker("step", 0.44)
-            .marker(EntityTrailProvider.TRAIL_START, 0.32)
-            .marker(EntityTrailProvider.TRAIL_END, 0.48));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.32)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.48));
     public static final String DAGGER_4 = BUILDER.add("dagger_4", AnimationsBuilder.definition(0.52)
             .marker("attack", 0.4).marker("step", 0.32));
     public static final String TOP_STAB = BUILDER.add("top_stab", AnimationsBuilder.definition(0.6).marker("attack", 0.48));
@@ -175,9 +175,9 @@ public class Hassan extends BaseServant {
         if (this.level().isClientSide) {
             AnimationState anim = this.getAnimationHandler().getAnimation();
             if (anim != null) {
-                if (anim.isAt(EntityTrailProvider.TRAIL_START)) {
+                if (anim.isAt(EntityWeaponTrailProvider.TRAIL_START)) {
                     this.level().addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
-                                    TrailInfo.builder(EntityTrailProvider.EntityTrailData.create(this, anim.getID(), false))
+                                    TrailInfo.builder(EntityWeaponTrailProvider.EntityTrailData.create(this, anim.getID(), false))
                                             .setColor(68 / 255f, 68 / 255f, 68 / 255f, 0.6f)
                                             .setColor2(68 / 255f, 68 / 255f, 68 / 255f, 0.2f)
                                             .setType(TrailInfo.Visual.TEXTURE, 0)

@@ -8,7 +8,7 @@ import io.github.flemmli97.fateubw.common.entity.misc.Excalibur;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
-import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailProvider;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailProvider;
 import io.github.flemmli97.fateubw.common.registry.FateDataComponents;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
@@ -60,31 +60,31 @@ public class Arthur extends BaseServant {
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
     public static final String TWO_HAND_1 = BUILDER.add("two_hand_1", AnimationsBuilder.definition(1)
             .marker("attack", 0.88).marker("step", 0.72)
-            .marker(EntityTrailProvider.TRAIL_START, 0.6)
-            .marker(EntityTrailProvider.TRAIL_END, 0.92));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.92));
     public static final String TWO_HAND_2 = BUILDER.add("two_hand_2", AnimationsBuilder.definition(0.96)
             .marker("attack", 0.84).marker("step", 0.72)
-            .marker(EntityTrailProvider.TRAIL_START, 0.6)
-            .marker(EntityTrailProvider.TRAIL_END, 0.88));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.88));
     public static final String TWO_HAND_3 = BUILDER.add("two_hand_3", AnimationsBuilder.definition(0.92)
             .marker("attack", 0.8).marker("step", 0.68)
-            .marker(EntityTrailProvider.TRAIL_START, 0.6)
-            .marker(EntityTrailProvider.TRAIL_END, 0.84));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.84));
     public static final String TWO_HAND_4 = BUILDER.add("two_hand_4", AnimationsBuilder.definition(0.96)
             .marker("attack", 0.84).marker("step", 0.72)
-            .marker(EntityTrailProvider.TRAIL_START, 0.6)
-            .marker(EntityTrailProvider.TRAIL_END, 0.88));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.88));
     public static final String ONE_HAND_1 = BUILDER.add("one_hand_1", AnimationsBuilder.definition(0.88)
             .marker("attack", 0.76)
-            .marker(EntityTrailProvider.TRAIL_START, 0.6)
-            .marker(EntityTrailProvider.TRAIL_END, 0.8));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.8));
     public static final String STAB_1 = BUILDER.add("stab_1", AnimationsBuilder.definition(1.4)
             .marker("attack", 0.72, 0.96).marker("attack_final", 1.16));
     public static final String INVISIBLE_BURST = BUILDER.add("invisible_burst", AnimationsBuilder.definition(1).marker("start", 0.44));
     public static final String INVISIBLE_BURST_HIT = BUILDER.add("invisible_burst_hit", AnimationsBuilder.definition(0.6)
             .marker("attack", 0.48)
-            .marker(EntityTrailProvider.TRAIL_START, 0.28)
-            .marker(EntityTrailProvider.TRAIL_END, 0.52));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.28)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.52));
     public static final String EXCALIBAA = BUILDER.add("excalibur", AnimationsBuilder.definition(2.84).marker("attack", 1.4));
     public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2.));
     public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
@@ -211,9 +211,9 @@ public class Arthur extends BaseServant {
             }
             AnimationState anim = this.getAnimationHandler().getAnimation();
             if (anim != null) {
-                if (anim.isAt(EntityTrailProvider.TRAIL_START)) {
+                if (anim.isAt(EntityWeaponTrailProvider.TRAIL_START)) {
                     this.level().addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
-                                    TrailInfo.builder(EntityTrailProvider.EntityTrailData.create(this, anim.getID(), false))
+                                    TrailInfo.builder(EntityWeaponTrailProvider.EntityTrailData.create(this, anim.getID(), false))
                                             .setColor(221 / 255f, 199 / 255f, 34 / 255f, 0.6f)
                                             .setColor2(255 / 255f, 230 / 255f, 131 / 255f, 0.2f)
                                             .setType(TrailInfo.Visual.TEXTURE, 0)
@@ -380,6 +380,6 @@ public class Arthur extends BaseServant {
 
     @Override
     public WeaponTrail weaponTrailEdge(boolean left) {
-        return new WeaponTrail(new Vector4f(0, 0, -0.6f, 1), new Vector4f(0, 0, -1.4f, 1));
+        return new WeaponTrail(new Vector4f(0, 0, -0.7f, 1), new Vector4f(0, 0, -1.4f, 1));
     }
 }

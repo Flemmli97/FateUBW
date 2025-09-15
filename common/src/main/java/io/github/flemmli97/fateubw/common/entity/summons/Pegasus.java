@@ -14,7 +14,7 @@ import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
-import io.github.flemmli97.fateubw.common.particles.trail.provider.MotionTrailProvider;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.ParticlePositionProvider;
 import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
@@ -131,6 +131,7 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
             .withChangeListener(anim -> {
                 if (!this.level().isClientSide && anim != null && anim.is(CHARGING)) {
                     this.hitEntities = new ArrayList<>();
+                    this.setChargeMotion(null);
                 }
                 return false;
             });
@@ -319,9 +320,9 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
                             .build().add(this.level(), pos.x(), pos.y(), pos.z());
                 }
             }
-            if (this.getAnimationHandler().isCurrent(CHARGING) && this.getAnimationHandler().getAnimation().isPast(0.48)) {
+            if (this.getAnimationHandler().isCurrent(CHARGING) && this.getAnimationHandler().getAnimation().isPast("attack")) {
                 Vec3 base = Vec3.directionFromRotation(0, this.yBodyRot).yRot(90 * Mth.DEG_TO_RAD).normalize();
-                Vec3 dir = this.getDeltaMovement().scale(-0.2);
+                Vec3 dir = this.getDeltaMovement().scale(-0.23);
                 for (int i = 0; i < 9; i++) {
                     double sideScale = ((this.random.nextDouble() * 2) - 1) * 3;
                     double upScale = (this.random.nextDouble() * 2) - 1;
@@ -329,15 +330,18 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
                     float r = (235 + this.getRandom().nextInt(10)) / 255F;
                     float g = (235 + this.getRandom().nextInt(10)) / 255F;
                     float b = 245 / 255F;
-                    float scale = (float) (0.04 + this.getRandom().nextDouble() * 0.1);
-                    this.level().addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
-                                    TrailInfo.builder(new MotionTrailProvider.MotionTrailData(dir, 3, 6))
+                    float scale = (float) (0.01 + this.getRandom().nextDouble() * 0.01);
+                    AdvancedParticleContainer.make(new TrailParticleData(FateParticles.TRAIL.get(),
+                                    TrailInfo.builder(new ParticlePositionProvider.ParticlePositionData(8))
                                             .setColor(r, g, b, 0.4f)
                                             .setColor2(r, g, b, 0.4f)
                                             .setWidth(scale)
                                             .setWidth2(scale)
-                                            .build()),
-                            pos.x(), pos.y(), pos.z(), 0, 0, 0);
+                                            .build()))
+                            .addData(new MotionData(dir))
+                            .addData(new ParticleMetaData(8 + this.getRandom().nextInt(8), false, 0))
+                            .build()
+                            .add(this.level(), pos.x(), pos.y(), pos.z());
                 }
             }
         }

@@ -14,8 +14,8 @@ import io.github.flemmli97.fateubw.common.entity.utils.TargetableOpponent;
 import io.github.flemmli97.fateubw.common.lib.FateTags;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.network.S2CServantGui;
-import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailHolder;
-import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailHolderProvider;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailHolder;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailHolderProvider;
 import io.github.flemmli97.fateubw.common.registry.FateActivities;
 import io.github.flemmli97.fateubw.common.registry.FateAttributes;
 import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
@@ -128,7 +128,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public abstract class BaseServant extends PathfinderMob implements AnimatedEntity, AOEAttackEntity,
-        TargetableOpponent, EntityTrailHolderProvider, ServantModelLike, ServantLike<BaseServant>, SmartBrainOwner<BaseServant>,
+        TargetableOpponent, EntityWeaponTrailHolderProvider, ServantModelLike, ServantLike<BaseServant>, SmartBrainOwner<BaseServant>,
         SyncedMobDataHandler {
 
     public static final int MOVE_TICK_MAX = 3;
@@ -167,7 +167,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
     private boolean sendToOwnerData;
     private boolean initAnim;
 
-    private final EntityTrailHolder<BaseServant> trailHolder = new EntityTrailHolder<>(this);
+    private final EntityWeaponTrailHolder<BaseServant> trailHolder = new EntityWeaponTrailHolder<>(this);
 
     public BaseServant(EntityType<? extends BaseServant> entityType, Level level) {
         super(entityType, level);
@@ -964,7 +964,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
     }
 
     @Override
-    public EntityTrailHolder<BaseServant> getTrailHolder() {
+    public EntityWeaponTrailHolder<BaseServant> getTrailHolder() {
         return this.trailHolder;
     }
 

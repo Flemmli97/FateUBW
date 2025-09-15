@@ -12,9 +12,13 @@ public class TrailPositions {
     private final int length;
 
     /**
-     * The index of the current element
+     * The index of the first element
      */
-    private int index = -1;
+    private int head;
+    /**
+     * The index of the last added element
+     */
+    private int tail;
     private int size;
 
     private AABB bounds;
@@ -26,10 +30,9 @@ public class TrailPositions {
 
     public TrailPositions(int length, TrailPosition init) {
         this.length = length;
-        this.positions = new TrailPosition[length + 2];
+        this.positions = new TrailPosition[length];
         if (init != null) {
-            this.index = 0;
-            this.positions[this.index] = init;
+            this.add(init);
         }
     }
 
@@ -42,15 +45,35 @@ public class TrailPositions {
     }
 
     public void add(@Nullable TrailPosition pos) {
-        this.index = this.adjustedIndex(1);
-        this.positions[this.index] = pos;
+        this.tail = this.size == 0 ? 0 : this.nextTail();
+        this.positions[this.tail] = pos;
+        if (this.size == this.length) {
+            this.head = this.nextTail();
+        }
         this.size = Math.min(this.size + 1, this.length);
         this.calculateBounds(this.lastScale);
     }
 
+    public void replaceLast(@Nullable TrailPosition pos) {
+        this.positions[this.tail] = pos;
+        this.calculateBounds(this.lastScale);
+    }
+
+    public void removeHead() {
+        this.positions[this.head] = null;
+        this.head = (this.head + 1) % this.positions.length;
+        this.size = Math.max(this.size - 1, 0);
+        this.calculateBounds(this.lastScale);
+    }
+
+    @Nullable
+    public TrailPosition getFirst() {
+        return this.positions[this.head];
+    }
+
     @Nullable
     public TrailPosition getLast() {
-        return this.positions[this.adjustedIndex(0)];
+        return this.positions[this.tail];
     }
 
     public int getLength() {
@@ -111,14 +134,13 @@ public class TrailPositions {
 
     @Nullable
     public TrailPosition getAt(int i) {
-        // Prevent loop around
-        if (Math.abs(i) >= this.positions.length)
+        if (i >= this.size() || i < 0)
             return null;
-        return this.positions[this.adjustedIndex(i)];
+        return this.positions[(this.head + i) % this.positions.length];
     }
 
-    private int adjustedIndex(int i) {
-        return Math.floorMod(Math.max(0, this.index) + i, this.positions.length);
+    private int nextTail() {
+        return (this.tail + 1) % this.positions.length;
     }
 
     @Override

@@ -7,7 +7,7 @@ import io.github.flemmli97.fateubw.common.entity.misc.ArcherArrow;
 import io.github.flemmli97.fateubw.common.entity.misc.CaladBolg;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
-import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailProvider;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailProvider;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.utils.Utils;
@@ -49,27 +49,27 @@ public class Emiya extends BaseServant {
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
     public static final String DUAL_SLASH_1 = BUILDER.add("dual_slash_1", AnimationsBuilder.definition(1.12)
             .marker("attack_left", 0.6).marker("attack_right", 1).marker("step", 0.52, 0.92)
-            .marker(EntityTrailProvider.TRAIL_START, 0.4).marker(LEFT_TRAIL_END, 0.68)
-            .marker(RIGHT_TRAIL_START, 0.8).marker(EntityTrailProvider.TRAIL_END, 1));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.4).marker(LEFT_TRAIL_END, 0.68)
+            .marker(RIGHT_TRAIL_START, 0.8).marker(EntityWeaponTrailProvider.TRAIL_END, 1));
     public static final String DUAL_SLASH_2 = BUILDER.add("dual_slash_2", AnimationsBuilder.definition(0.68)
             .marker("attack_left", 0.56).marker("attack_right", 0.56));
     public static final String DUAL_SLASH_3 = BUILDER.add("dual_slash_3", AnimationsBuilder.definition(0.72)
             .marker("attack_left", 0.52).marker("attack_right", 0.52)
-            .marker(EntityTrailProvider.TRAIL_START, 0.4).marker(LEFT_TRAIL_END, 0.6)
-            .marker(RIGHT_TRAIL_START, 0.4).marker(EntityTrailProvider.TRAIL_END, 0.6));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.4).marker(LEFT_TRAIL_END, 0.6)
+            .marker(RIGHT_TRAIL_START, 0.4).marker(EntityWeaponTrailProvider.TRAIL_END, 0.6));
     public static final String DUAL_SLASH_4 = BUILDER.add("dual_slash_4", AnimationsBuilder.definition(0.68)
             .marker("attack_left", 0.52).marker("attack_right", 0.52).marker("step", 0.48)
-            .marker(EntityTrailProvider.TRAIL_START, 0.4).marker(LEFT_TRAIL_END, 0.56)
-            .marker(RIGHT_TRAIL_START, 0.4).marker(EntityTrailProvider.TRAIL_END, 0.56));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.4).marker(LEFT_TRAIL_END, 0.56)
+            .marker(RIGHT_TRAIL_START, 0.4).marker(EntityWeaponTrailProvider.TRAIL_END, 0.56));
     public static final String DUAL_SLASH_5 = BUILDER.add("dual_slash_5", AnimationsBuilder.definition(0.96)
             .marker("attack_left", 0.52).marker("attack_right", 0.52).marker("leap", 0.32)
-            .marker(EntityTrailProvider.TRAIL_START, 0.4).marker(LEFT_TRAIL_END, 0.6)
-            .marker(RIGHT_TRAIL_START, 0.4).marker(EntityTrailProvider.TRAIL_END, 0.6));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.4).marker(LEFT_TRAIL_END, 0.6)
+            .marker(RIGHT_TRAIL_START, 0.4).marker(EntityWeaponTrailProvider.TRAIL_END, 0.6));
     public static final String DUAL_SLASH_6 = BUILDER.add("dual_slash_6", AnimationsBuilder.definition(1.32)
             .marker("attack_left", 0.68, 1.2).marker("attack_right", 0.56, 1.2)
             .marker("attack_end", 1.2)
-            .marker(EntityTrailProvider.TRAIL_START, 0.4, 1.04).marker(LEFT_TRAIL_END, 0.72, 1.2)
-            .marker(RIGHT_TRAIL_START, 0.48, 1.04).marker(EntityTrailProvider.TRAIL_END, 0.72, 1.2));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.4, 1.04).marker(LEFT_TRAIL_END, 0.72, 1.2)
+            .marker(RIGHT_TRAIL_START, 0.48, 1.04).marker(EntityWeaponTrailProvider.TRAIL_END, 0.72, 1.2));
     public static final String BOW_1 = BUILDER.add("bow_1", AnimationsBuilder.definition(1.2)
             .marker("use_start", 0.24).marker("use_end", 1).marker("shoot", 1));
     public static final String BOW_2 = BUILDER.add("bow_2", AnimationsBuilder.definition(1.6)
@@ -202,9 +202,9 @@ public class Emiya extends BaseServant {
         if (this.level().isClientSide) {
             AnimationState anim = this.getAnimationHandler().getAnimation();
             if (anim != null) {
-                if (anim.isAt(EntityTrailProvider.TRAIL_START)) {
+                if (anim.isAt(EntityWeaponTrailProvider.TRAIL_START)) {
                     this.level().addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
-                                    TrailInfo.builder(new EntityTrailProvider.EntityTrailData(this.getId(), anim.getID(), true, 3, LEFT_TRAIL_END))
+                                    TrailInfo.builder(new EntityWeaponTrailProvider.EntityTrailData(this.getId(), anim.getID(), true, 3, LEFT_TRAIL_END))
                                             .setColor(25 / 255f, 25 / 255f, 75 / 255f, 0.6f)
                                             .setColor2(25 / 255f, 25 / 255f, 75 / 255f, 0.2f)
                                             .setType(TrailInfo.Visual.TEXTURE, 0)
@@ -213,7 +213,7 @@ public class Emiya extends BaseServant {
                 }
                 if (anim.isAt(RIGHT_TRAIL_START)) {
                     this.level().addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
-                                    TrailInfo.builder(EntityTrailProvider.EntityTrailData.create(this, anim.getID(), false))
+                                    TrailInfo.builder(EntityWeaponTrailProvider.EntityTrailData.create(this, anim.getID(), false))
                                             .setColor(25 / 255f, 25 / 255f, 75 / 255f, 0.6f)
                                             .setColor2(25 / 255f, 25 / 255f, 75 / 255f, 0.2f)
                                             .setType(TrailInfo.Visual.TEXTURE, 0)

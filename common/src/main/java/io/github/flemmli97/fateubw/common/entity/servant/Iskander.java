@@ -5,7 +5,7 @@ import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.summons.GordiusWheel;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
-import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailProvider;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailProvider;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
@@ -47,36 +47,36 @@ public class Iskander extends BaseServant {
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
     public static final String ONE_HAND_1 = BUILDER.add("one_hand_1", AnimationsBuilder.definition(0.68)
             .marker("attack", 0.56).marker("step", 0.44)
-            .marker(EntityTrailProvider.TRAIL_START, 0.36)
-            .marker(EntityTrailProvider.TRAIL_END, 0.56));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.36)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.56));
     public static final String ONE_HAND_2 = BUILDER.add("one_hand_2", AnimationsBuilder.definition(0.68)
             .marker("attack", 0.56).marker("step", 0.44)
-            .marker(EntityTrailProvider.TRAIL_START, 0.36)
-            .marker(EntityTrailProvider.TRAIL_END, 0.56));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.36)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.56));
     public static final String ONE_HAND_3 = BUILDER.add("one_hand_3", AnimationsBuilder.definition(0.68)
             .marker("attack", 0.56).marker("step", 0.44)
-            .marker(EntityTrailProvider.TRAIL_START, 0.36)
-            .marker(EntityTrailProvider.TRAIL_END, 0.56));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.36)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.56));
     public static final String ONE_HAND_4 = BUILDER.add("one_hand_4", AnimationsBuilder.definition(0.68)
             .marker("attack", 0.56).marker("step", 0.4)
-            .marker(EntityTrailProvider.TRAIL_START, 0.36)
-            .marker(EntityTrailProvider.TRAIL_END, 0.56));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.36)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.56));
     public static final String ONE_HAND_5 = BUILDER.add("one_hand_5", AnimationsBuilder.definition(0.68)
             .marker("attack", 0.56).marker("step", 0.4)
-            .marker(EntityTrailProvider.TRAIL_START, 0.36)
-            .marker(EntityTrailProvider.TRAIL_END, 0.56));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.36)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.56));
     public static final String ONE_HAND_6 = BUILDER.add("one_hand_6", AnimationsBuilder.definition(0.68)
             .marker("attack", 0.56).marker("step", 0.44)
-            .marker(EntityTrailProvider.TRAIL_START, 0.36)
-            .marker(EntityTrailProvider.TRAIL_END, 0.56));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.36)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.56));
     public static final String ONE_HAND_7 = BUILDER.add("one_hand_7", AnimationsBuilder.definition(0.68)
             .marker("attack", 0.56).marker("step", 0.44)
-            .marker(EntityTrailProvider.TRAIL_START, 0.36)
-            .marker(EntityTrailProvider.TRAIL_END, 0.56));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.36)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.56));
     private static final String CHARIOT = BUILDER.add("chariot_summon", AnimationsBuilder.definition(1.68)
             .marker("attack", 0.76)
-            .marker(EntityTrailProvider.TRAIL_START, 0.52)
-            .marker(EntityTrailProvider.TRAIL_END, 0.76));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.52)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.76));
     private static final String SUMMON_HORSE = BUILDER.add("horse", CHARIOT);
     public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2.));
     public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
@@ -166,9 +166,9 @@ public class Iskander extends BaseServant {
         if (this.level().isClientSide) {
             AnimationState anim = this.getAnimationHandler().getAnimation();
             if (anim != null) {
-                if (anim.isAt(EntityTrailProvider.TRAIL_START)) {
+                if (anim.isAt(EntityWeaponTrailProvider.TRAIL_START)) {
                     this.level().addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
-                                    TrailInfo.builder(EntityTrailProvider.EntityTrailData.create(this, anim.getID(), false))
+                                    TrailInfo.builder(EntityWeaponTrailProvider.EntityTrailData.create(this, anim.getID(), false))
                                             .setColor(215 / 255f, 183 / 255f, 147 / 255f, 0.6f)
                                             .setColor2(215 / 255f, 183 / 255f, 147 / 255f, 0.2f)
                                             .setType(TrailInfo.Visual.TEXTURE, 0)

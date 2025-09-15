@@ -3,46 +3,50 @@ package io.github.flemmli97.fateubw.common.particles.trail;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import io.github.flemmli97.fateubw.Fate;
-import io.github.flemmli97.fateubw.common.particles.trail.provider.MotionTrailProvider;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.ParticlePositionProvider;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.TrailData;
-import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailProvider;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailProvider;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 
 public class TrailProviderRegistry {
 
-    private static final Map<ResourceLocation, TrailEntry<?>> DECODERS = new HashMap<>();
+    private static final Map<ResourceLocation, TrailType<?>> DECODERS = new HashMap<>();
 
-    public static final Codec<TrailData> CODEC = ResourceLocation.CODEC.dispatch(TrailData::id, r -> DECODERS.get(r).codec);
+    public static final Codec<TrailData> CODEC = ResourceLocation.CODEC.dispatch(t -> t.type().id(), r -> DECODERS.get(r).codec);
 
-    public static final ResourceLocation ENTITY_TRAIL = register(Fate.modRes("entity_trail"), EntityTrailProvider.EntityTrailData::new, EntityTrailProvider.EntityTrailData.CODEC);
-    public static final ResourceLocation MOTION_TRAIL = register(Fate.modRes("motion_trail"), MotionTrailProvider.MotionTrailData::new, MotionTrailProvider.MotionTrailData.CODEC);
+    public static final TrailType<EntityWeaponTrailProvider.EntityTrailData> ENTITY_TRAIL = register(Fate.modRes("entity_trail"), EntityWeaponTrailProvider.EntityTrailData.CODEC, EntityWeaponTrailProvider.EntityTrailData.STREAM_CODEC);
+    public static final TrailType<ParticlePositionProvider.ParticlePositionData> MOTION_TRAIL = register(Fate.modRes("motion_trail"), ParticlePositionProvider.ParticlePositionData.CODEC, ParticlePositionProvider.ParticlePositionData.STREAM_CODEC);
 
-    public static synchronized <T extends TrailData> ResourceLocation register(ResourceLocation res, Function<FriendlyByteBuf, T> decoder, MapCodec<T> codec) {
+    public static synchronized <T extends TrailData> TrailType<T> register(ResourceLocation res, MapCodec<T> codec, StreamCodec<? super FriendlyByteBuf, T> streamCodec) {
         if (DECODERS.containsKey(res))
             throw new IllegalStateException("Entry with key " + res + " is already registered");
-        DECODERS.put(res, new TrailEntry<>(decoder, codec));
-        return res;
+        TrailType<T> entry = new TrailType<>(res, codec, streamCodec);
+        DECODERS.put(res, entry);
+        return entry;
     }
 
     public static TrailData fromBuffer(FriendlyByteBuf buf) {
         ResourceLocation id = buf.readResourceLocation();
-        TrailEntry<?> entry = DECODERS.get(id);
+        TrailType<?> entry = DECODERS.get(id);
         if (entry == null)
             throw new IllegalStateException("No such provider " + id);
-        return entry.decoder.apply(buf);
+        return entry.streamCodec.decode(buf);
     }
 
-    public static void toBuffer(TrailData data, FriendlyByteBuf buf) {
-        buf.writeResourceLocation(data.id());
-        data.write(buf);
+    @SuppressWarnings("unchecked")
+    public static <T extends TrailData> void toBuffer(T data, FriendlyByteBuf buf) {
+        buf.writeResourceLocation(data.type().id());
+        TrailType<T> type = (TrailType<T>) data.type();
+        type.streamCodec().encode(buf, data);
     }
 
-    public record TrailEntry<T extends TrailData>(Function<FriendlyByteBuf, T> decoder, MapCodec<T> codec) {
+    public record TrailType<T extends TrailData>(ResourceLocation id, MapCodec<T> codec,
+                                                 StreamCodec<? super FriendlyByteBuf, T> streamCodec) {
 
     }
 }

@@ -1,8 +1,8 @@
 package io.github.flemmli97.fateubw.client.render.layer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailHolderProvider;
-import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailProvider;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailHolderProvider;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailProvider;
 import io.github.flemmli97.tenshilib.client.model.ItemHolderModel;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimatedEntity;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
@@ -16,7 +16,7 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
 
-public class ItemTrailLayer<T extends LivingEntity & AnimatedEntity & EntityTrailHolderProvider, M extends EntityModel<T> & ItemHolderModel> extends RenderLayer<T, M> {
+public class ItemTrailLayer<T extends LivingEntity & AnimatedEntity & EntityWeaponTrailHolderProvider, M extends EntityModel<T> & ItemHolderModel> extends RenderLayer<T, M> {
 
     private final RenderLayerParent<T, M> renderer;
 
@@ -28,12 +28,12 @@ public class ItemTrailLayer<T extends LivingEntity & AnimatedEntity & EntityTrai
     @Override
     public void render(PoseStack stack, MultiBufferSource buffer, int light, T entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         AnimationState anim = entity.getAnimationHandler().getAnimation();
-        if (anim != null && anim.isPast(EntityTrailProvider.TRAIL_START) && !anim.isPast(EntityTrailProvider.TRAIL_END)) {
+        if (anim != null && anim.isPast(EntityWeaponTrailProvider.TRAIL_START) && !anim.isPast(EntityWeaponTrailProvider.TRAIL_END)) {
             stack = this.renderer instanceof TrailPoseGetter getter ? getter.getPlainStack() : stack;
             Vec3[] data = this.calculatePosition(stack, entity, true);
-            entity.getTrailHolder().recordData(anim.getID(), true, data[0], data[1], partialTicks);
+            entity.getTrailHolder().recordData(anim.getID(), true, data[0], data[1]);
             data = this.calculatePosition(stack, entity, false);
-            entity.getTrailHolder().recordData(anim.getID(), false, data[0], data[1], partialTicks);
+            entity.getTrailHolder().recordData(anim.getID(), false, data[0], data[1]);
         }
     }
 
@@ -41,7 +41,7 @@ public class ItemTrailLayer<T extends LivingEntity & AnimatedEntity & EntityTrai
         stack.pushPose();
         this.getParentModel().transform(left ? HumanoidArm.LEFT : HumanoidArm.RIGHT, stack);
 
-        EntityTrailHolderProvider.WeaponTrail edge = entity.weaponTrailEdge(left);
+        EntityWeaponTrailHolderProvider.WeaponTrail edge = entity.weaponTrailEdge(left);
         Vector4f start = edge.start();
         Vector4f end = edge.end();
         Matrix4f last = stack.last().pose();

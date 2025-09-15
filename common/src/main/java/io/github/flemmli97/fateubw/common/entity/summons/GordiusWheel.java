@@ -107,7 +107,13 @@ public class GordiusWheel extends PathfinderMob implements AnimatedEntity, Stand
         return this.canAttack(target) && !this.hasPassenger(target);
     };
 
-    private final AnimationHandler<GordiusWheel> animationHandler = new AnimationHandler<>(this, ANIMS);
+    private final AnimationHandler<GordiusWheel> animationHandler = new AnimationHandler<>(this, ANIMS)
+            .withChangeListener(anim -> {
+                if (!this.level().isClientSide && anim != null && anim.is(CHARGING)) {
+                    this.setChargeMotion(null);
+                }
+                return false;
+            });
 
     private final SyncedDataContainer<GordiusWheel> syncedDataContainer = SyncedDataContainer.builder(this)
             .define(CHARGE_MOTION, TenshilibSyncableEntityDatas.VEC_3.get(), null).build();

@@ -41,7 +41,7 @@ public class ClientHandler {
     }
 
     public static float getPartialTicks() {
-        return Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true);
+        return Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
     }
 
     public static void displayCommandGui(S2CServantGui.ServantMetaData data, boolean open) {

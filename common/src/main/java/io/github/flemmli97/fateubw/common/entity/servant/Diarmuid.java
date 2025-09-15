@@ -6,7 +6,7 @@ import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.OneshotAnimationPlay;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
-import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailProvider;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailProvider;
 import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateDataComponents;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
@@ -62,18 +62,18 @@ public class Diarmuid extends BaseServant {
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
     public static final String DUAL_SPEAR_1 = BUILDER.add("dual_spear_1", AnimationsBuilder.definition(1.04)
             .marker("attack_left", 0.56).marker("attack_right", 0.92).marker("step", 0.56, 0.88)
-            .marker(EntityTrailProvider.TRAIL_START, 0.4).marker(LEFT_TRAIL_END, 0.64)
-            .marker(RIGHT_TRAIL_START, 0.76).marker(EntityTrailProvider.TRAIL_END, 0.92));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.4).marker(LEFT_TRAIL_END, 0.64)
+            .marker(RIGHT_TRAIL_START, 0.76).marker(EntityWeaponTrailProvider.TRAIL_END, 0.92));
     public static final String DUAL_SPEAR_2 = BUILDER.add("dual_spear_2", AnimationsBuilder.definition(1)
             .marker("attack_left", 0.48).marker("attack_right", 0.88).marker("step", 0.48)
-            .marker(EntityTrailProvider.TRAIL_START, 0.4).marker(LEFT_TRAIL_END, 0.56)
-            .marker(RIGHT_TRAIL_START, 0.68).marker(EntityTrailProvider.TRAIL_END, 0.88));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.4).marker(LEFT_TRAIL_END, 0.56)
+            .marker(RIGHT_TRAIL_START, 0.68).marker(EntityWeaponTrailProvider.TRAIL_END, 0.88));
     public static final String DUAL_SPEAR_3 = BUILDER.add("dual_spear_3", AnimationsBuilder.definition(0.8)
             .marker("attack_left", 0.44).marker("attack_right", 0.68));
     public static final String DUAL_SPEAR_4 = BUILDER.add("dual_spear_4", AnimationsBuilder.definition(0.68)
             .marker("attack_left", 0.56).marker("attack_right", 0.56)
-            .marker(EntityTrailProvider.TRAIL_START, 0.4).marker(LEFT_TRAIL_END, 0.56)
-            .marker(RIGHT_TRAIL_START, 0.4).marker(EntityTrailProvider.TRAIL_END, 0.56));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.4).marker(LEFT_TRAIL_END, 0.56)
+            .marker(RIGHT_TRAIL_START, 0.4).marker(EntityWeaponTrailProvider.TRAIL_END, 0.56));
     public static final String BLINK = BUILDER.add("blink", AnimationsBuilder.definition(1.12)
             .marker("teleport_start", 0.28).marker("teleport", 0.5).marker("teleport_end", 0.84));
     public static final String BLINK_AWAY = BUILDER.add("blink_away", BLINK);
@@ -175,9 +175,9 @@ public class Diarmuid extends BaseServant {
                         this.sphereParticles();
                     }
                 }
-                if (anim.isAt(EntityTrailProvider.TRAIL_START)) {
+                if (anim.isAt(EntityWeaponTrailProvider.TRAIL_START)) {
                     this.level().addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
-                                    TrailInfo.builder(new EntityTrailProvider.EntityTrailData(this.getId(), anim.getID(), true, 3, LEFT_TRAIL_END))
+                                    TrailInfo.builder(new EntityWeaponTrailProvider.EntityTrailData(this.getId(), anim.getID(), true, 3, LEFT_TRAIL_END))
                                             .setColor(186 / 255f, 138 / 255f, 16 / 255f, 0.6f)
                                             .setColor2(186 / 255f, 138 / 255f, 16 / 255f, 0.2f)
                                             .setType(TrailInfo.Visual.TEXTURE, 0)
@@ -186,7 +186,7 @@ public class Diarmuid extends BaseServant {
                 }
                 if (anim.isAt(RIGHT_TRAIL_START)) {
                     this.level().addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
-                                    TrailInfo.builder(EntityTrailProvider.EntityTrailData.create(this, anim.getID(), false))
+                                    TrailInfo.builder(EntityWeaponTrailProvider.EntityTrailData.create(this, anim.getID(), false))
                                             .setColor(154 / 255f, 15 / 255f, 30 / 255f, 0.6f)
                                             .setColor2(154 / 255f, 15 / 255f, 30 / 255f, 0.2f)
                                             .setType(TrailInfo.Visual.TEXTURE, 0)

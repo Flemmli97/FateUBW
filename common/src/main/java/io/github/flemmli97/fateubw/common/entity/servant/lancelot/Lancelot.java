@@ -6,7 +6,7 @@ import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.lib.FateTags;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
-import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailProvider;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailProvider;
 import io.github.flemmli97.fateubw.common.registry.FateDataComponents;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
@@ -66,24 +66,24 @@ public class Lancelot extends BaseServant {
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
     public static final String TWO_HAND_1 = BUILDER.add("two_hand_1", AnimationsBuilder.definition(1)
             .marker("attack", 0.88).marker("step", 0.72)
-            .marker(EntityTrailProvider.TRAIL_START, 0.6)
-            .marker(EntityTrailProvider.TRAIL_END, 0.92));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.92));
     public static final String TWO_HAND_2 = BUILDER.add("two_hand_2", AnimationsBuilder.definition(0.96)
             .marker("attack", 0.84).marker("step", 0.72)
-            .marker(EntityTrailProvider.TRAIL_START, 0.6)
-            .marker(EntityTrailProvider.TRAIL_END, 0.88));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.88));
     public static final String TWO_HAND_3 = BUILDER.add("two_hand_3", AnimationsBuilder.definition(0.92)
             .marker("attack", 0.8).marker("step", 0.68)
-            .marker(EntityTrailProvider.TRAIL_START, 0.6)
-            .marker(EntityTrailProvider.TRAIL_END, 0.84));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.84));
     public static final String TWO_HAND_4 = BUILDER.add("two_hand_4", AnimationsBuilder.definition(0.96)
             .marker("attack", 0.84).marker("step", 0.72)
-            .marker(EntityTrailProvider.TRAIL_START, 0.6)
-            .marker(EntityTrailProvider.TRAIL_END, 0.88));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.88));
     public static final String ONE_HAND_1 = BUILDER.add("one_hand_1", AnimationsBuilder.definition(0.68)
             .marker("attack", 0.56).marker("step", 0.44)
-            .marker(EntityTrailProvider.TRAIL_START, 0.4)
-            .marker(EntityTrailProvider.TRAIL_END, 0.56));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.4)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.56));
     public static final String STAB_1 = BUILDER.add("stab_1", AnimationsBuilder.definition(0.8).marker("attack", 0.68));
     public static final String JUMP = BUILDER.add("jump", AnimationsBuilder.definition(0.48).marker("jump", 0.28).infinite());
     public static final String JUMP_LAND = BUILDER.add("jump_land", AnimationsBuilder.definition(1.08).marker("attack", 0.2));

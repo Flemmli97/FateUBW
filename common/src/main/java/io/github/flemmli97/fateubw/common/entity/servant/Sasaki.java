@@ -5,8 +5,8 @@ import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
-import io.github.flemmli97.fateubw.common.particles.trail.provider.MotionTrailProvider;
-import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailProvider;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.ParticlePositionProvider;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailProvider;
 import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
@@ -22,8 +22,11 @@ import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionC
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationsBuilder;
+import io.github.flemmli97.tenshilib.common.particle.AdvancedParticleContainer;
+import io.github.flemmli97.tenshilib.common.particle.data.MotionData;
+import io.github.flemmli97.tenshilib.common.particle.data.ParticleMetaData;
+import io.github.flemmli97.tenshilib.common.particle.data.SinMotionData;
 import io.github.flemmli97.tenshilib.common.utils.math.OrientedBoundingBox;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
@@ -51,36 +54,36 @@ public class Sasaki extends BaseServant {
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
     public static final String TWO_HAND_1 = BUILDER.add("two_hand_1", AnimationsBuilder.definition(1)
             .marker("attack", 0.88).marker("step", 0.8)
-            .marker(EntityTrailProvider.TRAIL_START, 0.68)
-            .marker(EntityTrailProvider.TRAIL_END, 0.88));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.68)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.88));
     public static final String TWO_HAND_2 = BUILDER.add("two_hand_2", AnimationsBuilder.definition(0.96)
             .marker("attack", 0.84).marker("step", 0.72)
-            .marker(EntityTrailProvider.TRAIL_START, 0.6)
-            .marker(EntityTrailProvider.TRAIL_END, 0.84));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.84));
     public static final String TWO_HAND_3 = BUILDER.add("two_hand_3", AnimationsBuilder.definition(0.92)
             .marker("attack", 0.8).marker("step", 0.68)
-            .marker(EntityTrailProvider.TRAIL_START, 0.6)
-            .marker(EntityTrailProvider.TRAIL_END, 0.8));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.8));
     public static final String TWO_HAND_4 = BUILDER.add("two_hand_4", AnimationsBuilder.definition(0.96)
             .marker("attack", 0.84).marker("step", 0.72)
-            .marker(EntityTrailProvider.TRAIL_START, 0.6)
-            .marker(EntityTrailProvider.TRAIL_END, 0.84));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.84));
     public static final String TWO_HAND_5 = BUILDER.add("two_hand_5", AnimationsBuilder.definition(0.92)
             .marker("attack", 0.8).marker("step", 0.72)
-            .marker(EntityTrailProvider.TRAIL_START, 0.6)
-            .marker(EntityTrailProvider.TRAIL_END, 0.8));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.8));
     public static final String TWO_HAND_6 = BUILDER.add("two_hand_6", AnimationsBuilder.definition(0.92)
             .marker("attack", 0.8).marker("step", 0.68)
-            .marker(EntityTrailProvider.TRAIL_START, 0.6)
-            .marker(EntityTrailProvider.TRAIL_END, 0.8));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.8));
     public static final String TWO_HAND_7 = BUILDER.add("two_hand_7", AnimationsBuilder.definition(0.92)
             .marker("attack", 0.8).marker("step", 0.68)
-            .marker(EntityTrailProvider.TRAIL_START, 0.6)
-            .marker(EntityTrailProvider.TRAIL_END, 0.8));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.8));
     public static final String ONE_HAND_1 = BUILDER.add("one_hand_1", AnimationsBuilder.definition(0.88)
             .marker("attack", 0.76)
-            .marker(EntityTrailProvider.TRAIL_START, 0.6)
-            .marker(EntityTrailProvider.TRAIL_END, 0.76));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.76));
     public static final String KATANA_1 = BUILDER.add("katana_1", AnimationsBuilder.definition(0.84)
             .marker("attack", 0.72).marker("step", 0.64));
     private static final String TSUBAME_GAESHI = BUILDER.add("tsubame_gaeshi", AnimationsBuilder.definition(2.16)
@@ -175,9 +178,9 @@ public class Sasaki extends BaseServant {
         if (this.level().isClientSide) {
             AnimationState anim = this.getAnimationHandler().getAnimation();
             if (anim != null) {
-                if (anim.isAt(EntityTrailProvider.TRAIL_START)) {
+                if (anim.isAt(EntityWeaponTrailProvider.TRAIL_START)) {
                     this.level().addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
-                                    TrailInfo.builder(EntityTrailProvider.EntityTrailData.create(this, anim.getID(), false))
+                                    TrailInfo.builder(EntityWeaponTrailProvider.EntityTrailData.create(this, anim.getID(), false))
                                             .setColor(37 / 255f, 37 / 255f, 88 / 255f, 0.4f)
                                             .setColor2(181 / 255f, 189 / 255f, 206 / 255f, 0.1f)
                                             .setWidth(1)
@@ -225,7 +228,7 @@ public class Sasaki extends BaseServant {
     }
 
     public void tsubameSlash() {
-        if (this.hikenPos == null || !this.attemptUseNobelPhantasm())
+        if (this.hikenPos == null)
             return;
         Vec3 dir = this.hikenPos.subtract(this.position());
         float yRot = MathsHelper.YRotFrom(dir);
@@ -256,9 +259,9 @@ public class Sasaki extends BaseServant {
     }
 
     private void tsubameParticles(Vec3 at) {
-        int duration = 4;
+        int duration = 6;
         Vec3 basePos = new Vec3(3, 0, -1);
-        Vec3 baseDir = new Vec3(-2.8, 0, 2).scale(1f / duration);
+        Vec3 baseDir = new Vec3(-3.5, 0, 2).scale(1f / duration);
         Vec3 baseSweer = new Vec3(0, 0, 0.4);
         Vec3 baseNormal = baseDir.add(0, 1, 0).normalize().scale(0.4).yRot(90);
         float yRot = -this.getYRot() * Mth.DEG_TO_RAD;
@@ -269,29 +272,19 @@ public class Sasaki extends BaseServant {
             Vec3 dir = baseDir.zRot(angle).yRot(yRot);
             Vec3 sweer = baseSweer.zRot(angle).yRot(yRot);
             Vec3 normal = baseNormal.zRot(angle).yRot(yRot);
-            if (this.level() instanceof ServerLevel serverLevel) {
-                serverLevel.sendParticles(new TrailParticleData(FateParticles.TRAIL.get(),
-                                TrailInfo.builder(new MotionTrailProvider.MotionTrailData(dir, sweer, normal,
-                                                1, 4, duration))
-                                        .setColor(72 / 255f, 13 / 255f, 161 / 255f, 0.7f)
-                                        .setColor2(146 / 255f, 105 / 255f, 207 / 255f, 0.4f)
-                                        .setWidth(1)
-                                        .setWidth2(1)
-                                        .setType(TrailInfo.Visual.TEXTURE, 0)
-                                        .build()),
-                        at.x() + pos.x(), at.y() + pos.y(), at.z() + pos.z(), 0, 0, 0, 0, 1);
-            } else {
-                this.level().addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
-                                TrailInfo.builder(new MotionTrailProvider.MotionTrailData(dir, sweer, normal,
-                                                1, 4, duration))
-                                        .setColor(72 / 255f, 13 / 255f, 161 / 255f, 0.7f)
-                                        .setColor2(146 / 255f, 105 / 255f, 207 / 255f, 0.4f)
-                                        .setWidth(1)
-                                        .setWidth2(1)
-                                        .setType(TrailInfo.Visual.TEXTURE, 0)
-                                        .build()),
-                        at.x() + pos.x(), at.y() + pos.y(), at.z() + pos.z(), 0, 0, 0);
-            }
+            AdvancedParticleContainer.make(new TrailParticleData(FateParticles.TRAIL.get(),
+                            TrailInfo.builder(new ParticlePositionProvider.ParticlePositionData(normal, duration))
+                                    .setColor(72 / 255f, 13 / 255f, 161 / 255f, 0.7f)
+                                    .setColor2(146 / 255f, 105 / 255f, 207 / 255f, 0.4f)
+                                    .setWidth(0.4f)
+                                    .setWidth2(0.2f)
+                                    .setType(TrailInfo.Visual.TEXTURE, 0)
+                                    .build()))
+                    .addData(new MotionData(dir, true, false))
+                    .addData(new SinMotionData(sweer, duration * 0.85f, duration, true))
+                    .addData(new ParticleMetaData(duration, false, 0))
+                    .build()
+                    .add(this.level(), at.x() + pos.x(), at.y() + pos.y(), at.z() + pos.z());
         }
     }
 

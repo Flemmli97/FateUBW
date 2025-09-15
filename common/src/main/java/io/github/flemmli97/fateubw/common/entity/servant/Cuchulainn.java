@@ -5,7 +5,7 @@ import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.misc.GaeBolg;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
-import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityTrailProvider;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailProvider;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.utils.Utils;
@@ -49,16 +49,16 @@ public class Cuchulainn extends BaseServant {
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
     public static final String SPEAR_1 = BUILDER.add("spear_1", AnimationsBuilder.definition(0.68)
             .marker("attack", 0.56).marker("step", 0.48)
-            .marker(EntityTrailProvider.TRAIL_START, 0.4)
-            .marker(EntityTrailProvider.TRAIL_END, 0.6));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.4)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.6));
     public static final String SPEAR_2 = BUILDER.add("spear_2", AnimationsBuilder.definition(0.64)
             .marker("attack", 0.52).marker("step", 0.44)
-            .marker(EntityTrailProvider.TRAIL_START, 0.36)
-            .marker(EntityTrailProvider.TRAIL_END, 0.56));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.36)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.56));
     public static final String SPEAR_3 = BUILDER.add("spear_3", AnimationsBuilder.definition(0.68)
             .marker("attack", 0.56)
-            .marker(EntityTrailProvider.TRAIL_START, 0.4)
-            .marker(EntityTrailProvider.TRAIL_END, 0.6));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.4)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.6));
     public static final String SPEAR_4 = BUILDER.add("spear_4", AnimationsBuilder.definition(0.72)
             .marker("attack", 0.6));
     public static final String SPEAR_5 = BUILDER.add("spear_5", AnimationsBuilder.definition(0.72)
@@ -155,9 +155,9 @@ public class Cuchulainn extends BaseServant {
         } else {
             AnimationState anim = this.getAnimationHandler().getAnimation();
             if (anim != null) {
-                if (anim.isAt(EntityTrailProvider.TRAIL_START)) {
+                if (anim.isAt(EntityWeaponTrailProvider.TRAIL_START)) {
                     this.level().addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
-                                    TrailInfo.builder(EntityTrailProvider.EntityTrailData.create(this, anim.getID(), false))
+                                    TrailInfo.builder(EntityWeaponTrailProvider.EntityTrailData.create(this, anim.getID(), false))
                                             .setColor(102 / 255f, 3 / 255f, 3 / 255f, 0.6f)
                                             .setColor2(102 / 255f, 3 / 255f, 3 / 255f, 0.2f)
                                             .setType(TrailInfo.Visual.TEXTURE, 0)
