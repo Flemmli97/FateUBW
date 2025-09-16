@@ -18,10 +18,10 @@ import java.util.List;
 
 public class TrailRenderer {
 
-    public static void render(VertexConsumer buffer, TrailInfo info, TrailPositions position, Camera camera, int light,
-                              PoseStack stack, float x, float y, float z,
-                              float u0, float v0, float u1, float v1) {
-        if (position == null)
+    public static void render(TrailInfo info, TrailPositions position, PoseStack stack, VertexConsumer buffer, Camera camera,
+                              float x, float y, float z,
+                              float u0, float u1, float v0, float v1) {
+        if (position == null || position.size() < 2)
             return;
         Matrix4f mat = stack.last().pose();
         List<Pair<Vector3f, Vector3f>> positions = new ArrayList<>();
@@ -42,9 +42,9 @@ public class TrailRenderer {
                 Vector3f start = pos.pos().toVector3f().sub(x, y, z);
                 positions.add(Pair.of(start, pos.normal() == null ? new Vector3f(0, 1, 0) : pos.normal().toVector3f()));
             }
-            float step = 1 / 4f;
+            float step = 1f / info.interpolation();
             int prev = 0;
-            for (float j = step; j < 1; j += step) {
+            for (float j = step; j <= 1; j += step) {
                 Vector3f stepPos = catmullRom(j, previous.pos(), pos.pos(), next.pos(), next2.pos())
                         .sub(x, y, z);
                 if (stepPos == null)
@@ -83,13 +83,15 @@ public class TrailRenderer {
             float b2 = Mth.lerp(progNext, info.b2(), info.b());
             float a2 = Mth.lerp(progNext, info.a2(), info.a());
 
-            draw(buffer, vertices, u0p, u1p, v0, v1, r, g, b, a, r2, g2, b2, a2, light);
+            draw(buffer, vertices, u0p, u1p, v0, v1, r, g, b, a, r2, g2, b2, a2);
         }
     }
 
     protected static Vector3f catmullRom(float delta, @Nullable Vec3 p1, @Nullable Vec3 p2, @Nullable Vec3 p3, @Nullable Vec3 p4) {
         if (p1 == null || p2 == null || p3 == null || p4 == null)
             return null;
+        if (p2.equals(p3))
+            return p2.toVector3f();
         return new Vector3f(Mth.catmullrom(delta, (float) p1.x(), (float) p2.x(), (float) p3.x(), (float) p4.x()),
                 Mth.catmullrom(delta, (float) p1.y(), (float) p2.y(), (float) p3.y(), (float) p4.y()),
                 Mth.catmullrom(delta, (float) p1.z(), (float) p2.z(), (float) p3.z(), (float) p4.z()));
@@ -113,7 +115,7 @@ public class TrailRenderer {
         return new Vector4f[]{vert_1, vert_2, vert_3, vert_4};
     }
 
-    protected static void draw(VertexConsumer buffer, Vector4f[] vertices, float u0, float u1, float v0, float v1, float r, float g, float b, float a, float r2, float g2, float b2, float a2, int light) {
+    protected static void draw(VertexConsumer buffer, Vector4f[] vertices, float u0, float u1, float v0, float v1, float r, float g, float b, float a, float r2, float g2, float b2, float a2) {
         for (int i = 0; i < vertices.length; i += 4) {
             buffer.addVertex(vertices[i].x(), vertices[i].y(), vertices[i].z()).setUv(u0, v1).setColor(r, g, b, a).setLight(0xff00ff);
             buffer.addVertex(vertices[i + 1].x(), vertices[i + 1].y(), vertices[i + 1].z()).setUv(u0, v0).setColor(r, g, b, a).setLight(0xff00ff);

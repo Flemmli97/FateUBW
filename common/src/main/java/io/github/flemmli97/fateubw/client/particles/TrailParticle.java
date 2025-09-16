@@ -70,8 +70,9 @@ public class TrailParticle extends TextureSheetParticle {
         partialTicks = this.trailProvider.adjustedPartialTicks(partialTicks);
         PoseStack stack = new PoseStack();
         this.translate(stack, camera, partialTicks);
-        TrailRenderer.render(buffer, this.trail, this.trailProvider.positions(), camera, this.getLightColor(partialTicks),
-                stack, (float) this.x, (float) this.y, (float) this.z, this.getU0(), this.getV0(), this.getU1(), this.getV1());
+        TrailRenderer.render(this.trail, this.trailProvider.positions(), stack, buffer, camera,
+                (float) this.x, (float) this.y, (float) this.z,
+                this.getU0(), this.getU1(), this.getV0(), this.getV1());
     }
 
     protected void translate(PoseStack stack, Camera camera, float partialTicks) {
