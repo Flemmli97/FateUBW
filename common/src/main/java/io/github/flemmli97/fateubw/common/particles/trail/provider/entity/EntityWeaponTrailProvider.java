@@ -54,7 +54,7 @@ public class EntityWeaponTrailProvider<T extends Entity & AnimatedEntity & Entit
             }
         } else {
             ++this.invalidTicks;
-            this.position.removeHead();
+            this.position.add(this.position.getLast());
         }
         return this.position.getLast() != null ? this.position.getLast().pos() : null;
     }

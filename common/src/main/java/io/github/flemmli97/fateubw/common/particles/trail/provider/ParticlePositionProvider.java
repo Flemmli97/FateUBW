@@ -48,7 +48,7 @@ public class ParticlePositionProvider implements TrailProvider {
     public Vec3 particleTick() {
         this.ticks++;
         if (this.isFading()) {
-            this.position.removeHead();
+            this.position.add(this.position.getLast());
             return this.position.getLast() != null ? this.position.getLast().pos() : null;
         }
         Vec3 pos = this.positionSup.get();

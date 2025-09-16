@@ -72,6 +72,7 @@ public class TrailParticle extends TextureSheetParticle {
         this.translate(stack, camera, partialTicks);
         TrailRenderer.render(this.trail, this.trailProvider.positions(), stack, buffer, camera,
                 (float) this.x, (float) this.y, (float) this.z,
+                (float) this.x, (float) this.y, (float) this.z,
                 this.getU0(), this.getU1(), this.getV0(), this.getV1());
     }
 

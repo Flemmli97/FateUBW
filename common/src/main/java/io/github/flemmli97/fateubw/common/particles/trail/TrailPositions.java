@@ -59,13 +59,6 @@ public class TrailPositions {
         this.calculateBounds(this.lastScale);
     }
 
-    public void removeHead() {
-        this.positions[this.head] = null;
-        this.head = (this.head + 1) % this.positions.length;
-        this.size = Math.max(this.size - 1, 0);
-        this.calculateBounds(this.lastScale);
-    }
-
     @Nullable
     public TrailPosition getFirst() {
         return this.positions[this.head];
