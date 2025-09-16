@@ -2,6 +2,8 @@ package io.github.flemmli97.fateubw.common.entity.misc;
 
 import com.mojang.datafixers.util.Pair;
 import io.github.flemmli97.fateubw.common.config.CommonConfig;
+import io.github.flemmli97.fateubw.common.entity.utils.EntityTrailHandler;
+import io.github.flemmli97.fateubw.common.particles.trail.TrailPositions;
 import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
@@ -63,6 +65,8 @@ public class BabylonWeapon extends BaseProjectile {
     private final BlockState particleState = Blocks.GOLD_BLOCK.defaultBlockState();
     private int preparationTick, despawnTimer;
 
+    private final EntityTrailHandler trailHandler = new EntityTrailHandler(this, 12);
+
     public BabylonWeapon(EntityType<? extends BabylonWeapon> type, Level level) {
         super(type, level);
     }
@@ -117,9 +121,13 @@ public class BabylonWeapon extends BaseProjectile {
                     return;
                 }
             }
+            if (this.firstTick) {
+                this.trailHandler.tick();
+            }
             if (this.level().isClientSide && !this.inGround)
                 this.level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, this.particleState), this.getX(), this.getY(), this.getZ(), 0, 0, 0);
             super.tick();
+            this.trailHandler.tick();
         }
         if (this.despawning()) {
             ++this.despawnTimer;
@@ -285,6 +293,10 @@ public class BabylonWeapon extends BaseProjectile {
         super.readAdditionalSaveData(compound);
         this.setWeapon(ItemStack.CODEC.parse(this.registryAccess().createSerializationContext(NbtOps.INSTANCE), compound.get("Weapon")).getOrThrow());
         this.entityData.set(PREPARING, compound.getBoolean("Preparing"));
+    }
+
+    public TrailPositions trailPositions() {
+        return this.trailHandler.getPositions();
     }
 
     public static void spawnWeapons(LivingEntity thrower, LivingEntity target, int amount, int range) {

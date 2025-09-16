@@ -4,8 +4,11 @@ import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import io.github.flemmli97.fateubw.client.particles.TrailRenderer;
 import io.github.flemmli97.fateubw.client.render.FateRenders;
 import io.github.flemmli97.fateubw.common.entity.misc.BabylonWeapon;
+import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.ParticlePositionProvider;
 import io.github.flemmli97.tenshilib.client.VertexUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -29,7 +32,15 @@ public class RenderBabylon extends EntityRenderer<BabylonWeapon> {
 
     private static final MultiBufferSource.BufferSource SEP = MultiBufferSource.immediate(new ByteBufferBuilder(1536));
 
-    private final Vector4f color = new Vector4f(1.0f, 0.85f, 0.3f, 0.7f);
+    private final Vector4f color = new Vector4f(255 / 255f, 216 / 255f, 76 / 255f, 0.7f);
+
+    private final TrailInfo info = TrailInfo.builder(new ParticlePositionProvider.ParticlePositionData(0))
+            .setColor(255 / 255f, 190 / 255f, 25 / 255f, 0.8f)
+            .setColor2(255 / 255f, 205 / 255f, 100 / 255f, 0.6f)
+            .setWidth(0.07f)
+            .setWidth2(0.005f)
+            .setInterpolation(1)
+            .build();
 
     public RenderBabylon(EntityRendererProvider.Context ctx) {
         super(ctx);
@@ -91,6 +102,8 @@ public class RenderBabylon extends EntityRenderer<BabylonWeapon> {
                     tick
             );
             stack.popPose();
+        } else {
+            TrailRenderer.render(projectile, this.info, projectile.trailPositions(), buffer.getBuffer(FateRenders.TRAIL_TRANSLUCENT), partialTicks);
         }
         stack.pushPose();
         stack.scale(2, 2, 2);

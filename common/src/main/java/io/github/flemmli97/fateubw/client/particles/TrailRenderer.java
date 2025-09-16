@@ -6,7 +6,9 @@ import com.mojang.datafixers.util.Pair;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailPositions;
 import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
@@ -17,6 +19,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TrailRenderer {
+
+    public static void render(Entity entity, TrailInfo info, TrailPositions positions, VertexConsumer consumer, float partialTicks) {
+        PoseStack stack = new PoseStack();
+        Vec3 vec3 = Minecraft.getInstance().getEntityRenderDispatcher().camera.getPosition();
+        double lerpX = Mth.lerp(partialTicks, entity.xo, entity.getX());
+        double lerpY = Mth.lerp(partialTicks, entity.yo, entity.getY());
+        double lerpZ = Mth.lerp(partialTicks, entity.zo, entity.getZ());
+        double dx = lerpX - vec3.x();
+        double dy = lerpY - vec3.y();
+        double dz = lerpZ - vec3.z();
+        stack.translate(dx, dy, dz);
+        TrailRenderer.render(info, positions, stack, consumer, Minecraft.getInstance().getEntityRenderDispatcher().camera,
+                (float) lerpX, (float) lerpY, (float) lerpZ, (float) entity.getX(), (float) entity.getY(), (float) entity.getZ(),
+                0, 1, 0, 1);
+    }
 
     public static void render(TrailInfo info, TrailPositions position, PoseStack stack, VertexConsumer buffer, Camera camera,
                               float partialX, float partialY, float partialZ, float x, float y, float z,

@@ -281,7 +281,7 @@ public class Cuchulainn extends BaseServant {
         GaeBolg gaeBolg = new GaeBolg(this.level(), this);
         if (this.getTarget() != null)
             gaeBolg.setTarget(this.getTarget());
-        gaeBolg.shootAtPosition(pos.x(), pos.y(), pos.z(), 3F, 0);
+        gaeBolg.shootAtPosition(pos.x(), pos.y(), pos.z(), 2, 0);
         this.level().addFreshEntity(gaeBolg);
         this.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
         this.gaeBolgThrowTick = 100;

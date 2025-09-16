@@ -59,10 +59,26 @@ public class FateRenders extends RenderType {
 
     public static final RenderType BABYLON_RENDER = RenderType.create("fateubw:babylon", POSITION_COLOR_TEX_TIME, VertexFormat.Mode.QUADS, 256, false, false, CompositeState.builder()
             .setShaderState(BABYLON_SHADER)
-            .setTransparencyState(RenderType.TRANSLUCENT_TRANSPARENCY)
+            .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
             .createCompositeState(false));
-    public static final RenderType TRANSLUCENTCOLOR = RenderType.create("fateubw:translucent_color", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder().setWriteMaskState(COLOR_DEPTH_WRITE).setTransparencyState(TRANSLUCENT_TRANSPARENCY).setOutputState(WEATHER_TARGET).setShaderState(RENDERTYPE_LIGHTNING_SHADER).createCompositeState(false));
-    public static final RenderType CORRUPTED_OVERLAY = RenderType.create("fateubw:corrupted_overlay", DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS, 256, false, false, RenderType.CompositeState.builder().setShaderState(CORRUPTED_SHADER).setTextureState(new RenderStateShard.TextureStateShard(CORRUPTED_TEXTURE, true, false)).setWriteMaskState(COLOR_WRITE).setCullState(NO_CULL).setDepthTestState(EQUAL_DEPTH_TEST).setTransparencyState(CORRUPTED_OVERLAY_TRANSPARENCY).setTexturingState(GLINT_TEXTURING).createCompositeState(false));
+    public static final RenderType TRANSLUCENTCOLOR = RenderType.create("fateubw:translucent_color", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
+            .setShaderState(RENDERTYPE_LIGHTNING_SHADER)
+            .setWriteMaskState(COLOR_DEPTH_WRITE)
+            .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+            .setOutputState(WEATHER_TARGET).createCompositeState(false));
+    public static final RenderType CORRUPTED_OVERLAY = RenderType.create("fateubw:corrupted_overlay", DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS, 256, false, false, RenderType.CompositeState.builder()
+            .setShaderState(CORRUPTED_SHADER)
+            .setTextureState(new RenderStateShard.TextureStateShard(CORRUPTED_TEXTURE, true, false))
+            .setWriteMaskState(COLOR_WRITE)
+            .setCullState(NO_CULL)
+            .setTransparencyState(CORRUPTED_OVERLAY_TRANSPARENCY)
+            .setDepthTestState(EQUAL_DEPTH_TEST)
+            .setTexturingState(GLINT_TEXTURING).createCompositeState(false));
+    public static final RenderType TRAIL_TRANSLUCENT = RenderType.create("fateubw:trail_translucent", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
+            .setShaderState(POSITION_COLOR_SHADER)
+            .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+            .setDepthTestState(LEQUAL_DEPTH_TEST)
+            .setCullState(NO_CULL).createCompositeState(false));
 
     private static final ClipRenderFactory CLIPPED = (wrapped, plane, color, width) ->
             new RenderType("rendertype_clipped_" + wrapped.toString(), wrapped.format(), wrapped.mode(), wrapped.bufferSize(),

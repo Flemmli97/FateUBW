@@ -224,7 +224,7 @@ public class FateEntities {
                     .npCost(30));
 
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<Excalibur>> EXCALIBUR = reg("excalibur", EntityType.Builder.<Excalibur>of(Excalibur::new, MobCategory.MISC).sized(0.05F, 0.05F));
-    public static final RegistryEntrySupplier<EntityType<?>, EntityType<GaeBolg>> GAEBOLG = reg("gae_bolg", EntityType.Builder.<GaeBolg>of(GaeBolg::new, MobCategory.MISC).sized(0.25F, 0.25F));
+    public static final RegistryEntrySupplier<EntityType<?>, EntityType<GaeBolg>> GAEBOLG = reg("gae_bolg", EntityType.Builder.<GaeBolg>of(GaeBolg::new, MobCategory.MISC).sized(0.25F, 0.25F).updateInterval(1));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<ArcherArrow>> ARCHER_ARROW = reg("archer_arrow", EntityType.Builder.<ArcherArrow>of(ArcherArrow::new, MobCategory.MISC).sized(0.25F, 0.25F));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<CaladBolg>> CALADBOLG = reg("caladbolg", EntityType.Builder.<CaladBolg>of(CaladBolg::new, MobCategory.MISC).sized(0.25F, 0.25F));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<BabylonWeapon>> BABYLON = reg("babylon", EntityType.Builder.<BabylonWeapon>of(BabylonWeapon::new, MobCategory.MISC).sized(0.25F, 0.25F));
