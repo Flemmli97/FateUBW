@@ -16,8 +16,8 @@ public class RenderGaeBolg extends ItemProjectileRenderer<GaeBolg> {
 
     private final ItemStack stack = new ItemStack(FateItems.GAEBOLG.get());
     private final TrailInfo info = TrailInfo.builder(new ParticlePositionProvider.ParticlePositionData(0))
-            .setColor(255 / 255f, 190 / 255f, 25 / 255f, 0.5f)
-            .setColor2(255 / 255f, 205 / 255f, 100 / 255f, 0.3f)
+            .setColor(121 / 255f, 15 / 255f, 15 / 255f, 0.5f)
+            .setColor2(121 / 255f, 15 / 255f, 15 / 255f, 0.3f)
             .setWidth(0.07f)
             .setWidth2(0.005f)
             .setInterpolation(1)

@@ -77,9 +77,11 @@ public class TrailRenderer {
             }
         }
         TrailPositions.TrailPosition current = position.getLast();
-        Vector3f currentPos = current.pos().toVector3f().sub(x, y, z);
-        Pair<Vector3f, Vector3f> last = positions.getLast();
-        positions.add(Pair.of(currentPos, calculateNormal(last.getFirst(), currentPos, current.normal() != null ? current.normal().toVector3f() : null, last.getSecond(), camera)));
+        if (current != null) {
+            Vector3f currentPos = current.pos().toVector3f().sub(x, y, z);
+            Pair<Vector3f, Vector3f> last = positions.getLast();
+            positions.add(Pair.of(currentPos, calculateNormal(last.getFirst(), currentPos, current.normal() != null ? current.normal().toVector3f() : null, last.getSecond(), camera)));
+        }
         int size = position.getLength() * info.interpolation();
         int diff = Math.abs(size - (positions.size() - 1));
         for (int i = 0; i < positions.size() - 1; i++) {
@@ -132,7 +134,7 @@ public class TrailRenderer {
             return previousNormal != null ? previousNormal : new Vector3f(0, 1, 0);
         }
         Vector3f target = to.add(from, new Vector3f());
-        return target.cross(camera.getLookVector()).mul(-1).normalize();
+        return target.cross(camera.getLookVector(), new Vector3f()).mul(-1).normalize();
     }
 
     protected static Vector4f[] vertices(TrailInfo info, Vector3f current, Vector3f next, Vector3f currentNorm, Vector3f nextNorm, float progPrev, float prog) {

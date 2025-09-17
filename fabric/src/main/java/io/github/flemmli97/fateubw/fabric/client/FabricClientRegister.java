@@ -35,7 +35,7 @@ public class FabricClientRegister {
         ClientRegister.registerParticles(new ClientRegister.PartileRegister() {
             @Override
             public <T extends ParticleOptions> void register(ParticleType<T> type, Function<SpriteSet, ParticleProvider<T>> provider) {
-                ParticleFactoryRegistry.getInstance().register(type, provider::apply);
+                ParticleFactoryRegistry.getInstance().register(type, sprite -> provider.apply(new ParticleSpriteWrap(sprite)));
             }
         });
         registerBEWLR();
