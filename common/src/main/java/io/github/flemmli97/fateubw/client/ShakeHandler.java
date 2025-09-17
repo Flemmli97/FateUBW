@@ -29,13 +29,13 @@ public class ShakeHandler {
     }
 
     public static void renderShaking(Camera camera, float yaw, float pitch, float roll, float partialTicks,
-                                     Consumer<Float> setYaw, Consumer<Float> setPitch, Consumer<Float> setRoll) {
+                                     Consumer<Float> setYaw, Consumer<Float> setPitch, Consumer<Float> setRoll, boolean abs) {
         int t = ShakeHandler.shakeTick;
         if (t <= 0)
             return;
         float strengthPitch = ShakeHandler.shakeStrength * ClientConfig.screenShakeIntensity;
         float strengthRoll = ShakeHandler.shakeStrength * ClientConfig.screenShakeIntensity;
-        setPitch.accept(pitch + RANDOM.nextFloat(-1, 1) * strengthPitch);
-        setRoll.accept(roll + RANDOM.nextFloat(-1, 1) * strengthRoll);
+        setPitch.accept((abs ? pitch : 0) + RANDOM.nextFloat(-1, 1) * strengthPitch);
+        setRoll.accept((abs ? roll : 0) + RANDOM.nextFloat(-1, 1) * strengthRoll);
     }
 }
