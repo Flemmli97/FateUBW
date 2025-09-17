@@ -46,9 +46,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class BabylonWeapon extends BaseProjectile {
 
@@ -300,36 +298,11 @@ public class BabylonWeapon extends BaseProjectile {
     }
 
     public static void spawnWeapons(LivingEntity thrower, LivingEntity target, int amount, int range) {
-        Vec3 look = thrower.getLookAngle();
-        Vec3 vert = new Vec3(0, 1, 0);
-        if (-20 < thrower.getXRot() && thrower.getXRot() > 20)
-            vert.xRot(thrower.getXRot());
-        if (-20 > thrower.getXRot())
-            vert.xRot(-20);
-        if (20 < thrower.getXRot())
-            vert.xRot(20);
-        Vec3 hor = look.cross(vert);
-        vert.normalize();
-        hor.normalize();
-        float rangeSq = (range - 1f) / 2 * (range - 1f) / 2;
-        Set<Pair<Integer, Integer>> offsets = new HashSet<>();
-        for (int i = 0; i < amount; i++) {
-            Pair<Integer, Integer> offset = Pair.of(thrower.getRandom().nextInt(range) - (range - 1) / 2, thrower.getRandom().nextInt((range + 1) / 2));
-            double distance = (offset.getFirst() * offset.getFirst() + offset.getSecond() * offset.getSecond());
-            int retry = 0;
-            while (distance > rangeSq || offsets.contains(offset) || (offset.getFirst() == 0 && offset.getSecond() == 0)) {
-                offset = Pair.of(thrower.getRandom().nextInt(range) - (range - 1) / 2, thrower.getRandom().nextInt((range + 1) / 2));
-                distance = (offset.getFirst() * offset.getFirst() + offset.getSecond() * offset.getSecond());
-                if (++retry > 10)
-                    break;
-            }
-            offsets.add(offset);
-        }
         for (Vec3 offset : Utils.randomSidedPositions(thrower, amount, range)) {
             BabylonWeapon weapon = new BabylonWeapon(thrower.level(), thrower, target);
             // Initial rotation is based of the delta. don't want to dig into where its exactly handled so this will do
+            weapon.setPos(offset.x, offset.y + thrower.getBbHeight() * 0.5, offset.z);
             weapon.shoot(thrower, 0, 180 + thrower.getYRot(), 0, 0.02F, 0);
-            weapon.setPos(offset.x, offset.y, offset.z);
             weapon.setWeapon(CommonConfig.babylonWeapons.getRandomWeapon(weapon.random));
             weapon.level().addFreshEntity(weapon);
         }

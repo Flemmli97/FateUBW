@@ -3,7 +3,6 @@ package io.github.flemmli97.fateubw.neoforge.client;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.client.ClientHandler;
 import io.github.flemmli97.fateubw.client.ClientRegister;
-import io.github.flemmli97.fateubw.client.render.FateRenders;
 import io.github.flemmli97.fateubw.client.render.RenderAltar;
 import io.github.flemmli97.fateubw.client.render.item.RenderEAItem;
 import io.github.flemmli97.fateubw.client.render.item.RenderExcaliburItem;
@@ -14,7 +13,6 @@ import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.particles.ParticleOptions;
@@ -25,7 +23,6 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
-import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
@@ -89,11 +86,5 @@ public class NeoForgeClientRegister {
                 event.registerSpriteSet(type, provider::apply);
             }
         });
-    }
-
-    @SubscribeEvent
-    public static void registerShader(RegisterShadersEvent event) {
-        FateRenders.registerShader(((id, vertexFormat, onLoad) ->
-                event.registerShader(new ShaderInstance(event.getResourceProvider(), id, vertexFormat), onLoad)));
     }
 }

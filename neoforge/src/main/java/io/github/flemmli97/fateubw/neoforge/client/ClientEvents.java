@@ -3,6 +3,7 @@ package io.github.flemmli97.fateubw.neoforge.client;
 import io.github.flemmli97.fateubw.client.ClientCalls;
 import io.github.flemmli97.fateubw.client.ClientHandler;
 import io.github.flemmli97.fateubw.client.ShakeHandler;
+import io.github.flemmli97.fateubw.client.render.FateRenders;
 import net.minecraft.client.Minecraft;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -16,6 +17,7 @@ public class ClientEvents {
     public static void register(IEventBus modBus) {
         NeoForge.EVENT_BUS.register(ClientEvents.class);
         modBus.register(NeoForgeClientRegister.class);
+        FateRenders.registerShader();
     }
 
     @SubscribeEvent

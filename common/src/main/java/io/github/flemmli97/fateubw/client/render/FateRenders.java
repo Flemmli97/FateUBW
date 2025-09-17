@@ -10,6 +10,7 @@ import com.mojang.blaze3d.vertex.VertexFormatElement;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.mixin.RenderTypeAccessor;
 import io.github.flemmli97.tenshilib.client.VertexUtils;
+import io.github.flemmli97.tenshilib.client.shader.ShaderRegister;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.minecraft.Util;
 import net.minecraft.client.Camera;
@@ -24,7 +25,6 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import java.io.IOException;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class FateRenders extends RenderType {
@@ -110,21 +110,23 @@ public class FateRenders extends RenderType {
 
     private static boolean init;
 
-    public static void registerShader(ShaderRegister register) {
-        try {
-            register.register(Fate.modRes("rendertype_corrupted"), DefaultVertexFormat.POSITION_TEX,
-                    shaderInstance -> FateRenders.CORRUPTED_SHADER_INSTANCE = shaderInstance);
-            register.register(Fate.modRes("rendertype_clipped"), DefaultVertexFormat.NEW_ENTITY,
-                    shaderInstance -> FateRenders.CLIPPED_SHADER_INSTANCE = shaderInstance);
-            register.register(Fate.modRes("pulsing_entity_text"), DefaultVertexFormat.NEW_ENTITY,
-                    shaderInstance -> FateRenders.PULSING_TEXT_SHADER = shaderInstance);
-            register.register(Fate.modRes("babylon"), POSITION_COLOR_TEX_TIME,
-                    shaderInstance -> FateRenders.BABYLON_SHADER_INSTANCE = shaderInstance);
-            register.register(Fate.modRes("particle_color_add"), DefaultVertexFormat.PARTICLE,
-                    shaderInstance -> FateRenders.PARTICLE_COLOR_ADD_SHADER_INSTANCE = shaderInstance);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public static void registerShader() {
+        ShaderRegister.INSTANCE.register(Fate.MODID, register -> {
+            try {
+                register.register(Fate.modRes("rendertype_corrupted"), DefaultVertexFormat.POSITION_TEX,
+                        shaderInstance -> FateRenders.CORRUPTED_SHADER_INSTANCE = shaderInstance);
+                register.register(Fate.modRes("rendertype_clipped"), DefaultVertexFormat.NEW_ENTITY,
+                        shaderInstance -> FateRenders.CLIPPED_SHADER_INSTANCE = shaderInstance);
+                register.register(Fate.modRes("pulsing_entity_text"), DefaultVertexFormat.NEW_ENTITY,
+                        shaderInstance -> FateRenders.PULSING_TEXT_SHADER = shaderInstance);
+                register.register(Fate.modRes("babylon"), POSITION_COLOR_TEX_TIME,
+                        shaderInstance -> FateRenders.BABYLON_SHADER_INSTANCE = shaderInstance);
+                register.register(Fate.modRes("particle_color_add"), DefaultVertexFormat.PARTICLE,
+                        shaderInstance -> FateRenders.PARTICLE_COLOR_ADD_SHADER_INSTANCE = shaderInstance);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     public static void addRendertype(Object2ObjectLinkedOpenHashMap<RenderType, ByteBufferBuilder> map) {
@@ -160,11 +162,6 @@ public class FateRenders extends RenderType {
 
     private FateRenders(String string, VertexFormat vertexFormat, VertexFormat.Mode mode, int i, boolean bl, boolean bl2, Runnable runnable, Runnable runnable2) {
         super(string, vertexFormat, mode, i, bl, bl2, runnable, runnable2);
-    }
-
-    public interface ShaderRegister {
-
-        void register(ResourceLocation id, VertexFormat vertexFormat, Consumer<ShaderInstance> onLoad) throws IOException;
     }
 
     public interface ClipRenderFactory {
