@@ -3,14 +3,8 @@
   "minVersion": "0.8",
   "package": "io.github.flemmli97.fateubw.fabric.mixin",
   "compatibilityLevel": "JAVA_16",
-  "mixins": [
-    "ItemRendererAccessor",
-    "PlayerMixin",
-    "LivingEntityMixin",
-    "ServerPlayerMixin"
-  ],
+  "mixins": ["ItemRendererAccessor", "LivingEntityMixin", "PlayerMixin", "ServerPlayerMixin"],
   "client": [
-    "CameraMixin",
     "ParticleEngineMixin"
   ],
   "injectors": {

@@ -33,7 +33,7 @@ public class ClientEvents {
 
     @SubscribeEvent
     public static void shaking(ViewportEvent.ComputeCameraAngles event) {
-        ShakeHandler.renderShaking(event.getCamera(), event.getYaw(), event.getPitch(), event.getRoll(), (float) event.getPartialTick(), event::setYaw, event::setPitch, event::setRoll, true);
+        ShakeHandler.renderShaking(event.getYaw(), event.getPitch(), event.getRoll(), (float) event.getPartialTick(), event::setYaw, event::setPitch, event::setRoll);
     }
 
     @SubscribeEvent
