@@ -55,7 +55,7 @@ public class TrailRenderer {
             TrailPositions.TrailPosition next2 = position.getAt(i + 2);
             if (next2 == null)
                 next2 = next;
-            float step = 1f / info.interpolation();
+            float step = 1f / Math.max(1, info.interpolation());
             for (float j = 0; j < 1; j += step) {
                 Vector3f stepPos = catmullRom(j, previous.pos(), pos.pos(), next.pos(), next2.pos())
                         .sub(partialX, partialY, partialZ);

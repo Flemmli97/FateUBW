@@ -8,8 +8,13 @@ import io.github.flemmli97.fateubw.common.entity.utils.MoveType;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.particles.RingParticleData;
+import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
+import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailProvider;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
+import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.registry.FateSounds;
+import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.entity.ai.TargetPosition;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.SelectableBehaviourBuilder;
@@ -58,6 +63,7 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAtt
 import net.tslat.smartbrainlib.util.BrainUtils;
 import org.joml.Vector4f;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Heracles extends BaseServant {
@@ -67,23 +73,41 @@ public class Heracles extends BaseServant {
     private static final ResourceLocation DEATH_MOD = Fate.modRes("heracles_death_modifier");
 
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
-    private static final String ONE_HAND_HEAVY_1 = BUILDER.add("one_hand_heavy_1", AnimationsBuilder.definition(0.72)
-            .marker("attack", 0.6));
-    private static final String ONE_HAND_HEAVY_2 = BUILDER.add("one_hand_heavy_2", AnimationsBuilder.definition(0.72)
-            .marker("attack", 0.6));
-    private static final String ONE_HAND_HEAVY_3 = BUILDER.add("one_hand_heavy_3", AnimationsBuilder.definition(0.72)
-            .marker("attack", 0.6));
+    private static final String ONE_HAND_HEAVY_1 = BUILDER.add("one_hand_heavy_1", AnimationsBuilder.definition(0.84)
+            .marker("attack", 0.72).marker("step", 0.48)
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.56)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.76));
+    private static final String ONE_HAND_HEAVY_2 = BUILDER.add("one_hand_heavy_2", AnimationsBuilder.definition(0.84)
+            .marker("attack", 0.68).marker("step", 0.48)
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.56)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.76));
+    private static final String ONE_HAND_HEAVY_3 = BUILDER.add("one_hand_heavy_3", AnimationsBuilder.definition(0.84)
+            .marker("attack", 0.68).marker("step", 0.48)
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.56)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.76));
     private static final String TWO_HAND_HEAVY_1 = BUILDER.add("two_hand_heavy_1", AnimationsBuilder.definition(0.84)
-            .marker("attack", 0.72));
-    private static final String TWO_HAND_HEAVY_2 = BUILDER.add("two_hand_heavy_2", AnimationsBuilder.definition(0.8)
-            .marker("attack", 0.68));
+            .marker("attack", 0.72)
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.56)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.76));
+    private static final String TWO_HAND_HEAVY_2 = BUILDER.add("two_hand_heavy_2", AnimationsBuilder.definition(0.84)
+            .marker("attack", 0.68)
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.56)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.76));
     private static final String UPPER_CUT = BUILDER.add("upper_cut", AnimationsBuilder.definition(1.04)
-            .marker("attack", 0.64));
+            .marker("attack", 0.64)
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.48)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.72));
     private static final String JUMP = BUILDER.add("jump", AnimationsBuilder.definition(0.8)
             .marker("jump", 0.12).marker("attempt", 0.24).infinite());
     private static final String JUMP_HIT = BUILDER.add("jump_hit", AnimationsBuilder.definition(0.6)
             .marker("attack", 0.2).infinite());
     private static final String LAND = BUILDER.add("land", AnimationsBuilder.definition(0.44));
+    private static final String LEAP = BUILDER.add("leap", AnimationsBuilder.definition(1.6)
+            .marker("leap", 0.64));
+    private static final String LEAP_SLASH = BUILDER.add("leap_slash", AnimationsBuilder.definition(0.64)
+            .marker("attack", 0.16)
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.05)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.28));
     private static final String DEATH = BUILDER.add("death", AnimationsBuilder.definition(0.68).infinite());
     private static final String FAKE_DEATH = BUILDER.add("fake_death", AnimationsBuilder.definition(5.92)
             .marker("roar", 5.));
@@ -98,8 +122,13 @@ public class Heracles extends BaseServant {
                 this.getAnimationHandler().setAnimation(JUMP);
                 return true;
             }
-        } else if (anim != null && anim.is(UPPER_CUT)) {
-            this.upperCutTarget = null;
+        } else if (anim != null) {
+            if (anim.is(UPPER_CUT)) {
+                this.upperCutTarget = null;
+            }
+            if (anim.is(LEAP)) {
+                this.hitEntity = null;
+            }
         }
         return false;
     });
@@ -112,6 +141,7 @@ public class Heracles extends BaseServant {
 
     private final Vector4f summonColor = new Vector4f(50 / 255f, 44 / 255f, 38 / 255f, 0.8f);
     private int jumpCooldown;
+    protected List<LivingEntity> hitEntity;
 
     public Heracles(EntityType<? extends BaseServant> entityType, Level level) {
         super(entityType, level);
@@ -137,23 +167,23 @@ public class Heracles extends BaseServant {
     public ExtendedBehaviour<? extends BaseServant> getCombatAI() {
         return AttackBehaviourBuilder.<BaseServant>create()
                 .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(ONE_HAND_HEAVY_1)
-                        .start(ONE_HAND_HEAVY_2, 2, 0.32f, 1)
-                        .start(ONE_HAND_HEAVY_3, 2, 0.32f, 1)
+                        .start(ONE_HAND_HEAVY_2, 2, 0.48f, 1)
+                        .start(ONE_HAND_HEAVY_3, 2, 0.48f, 1)
                         .chainChance(0.5f).build())).play(BehaviourUtils.cooldownedPlay(true, 20, 35))
                 .prepare(new SetWalkTargetToAttackTarget<BaseServant>().speedMod((e, t) -> 1.1f)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(12)
                 .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(ONE_HAND_HEAVY_2)
-                        .start(ONE_HAND_HEAVY_1, 2, 0.32f, 1)
-                        .start(TWO_HAND_HEAVY_1, 2, 0.44f, 1)
-                        .start(TWO_HAND_HEAVY_2, 2, 0.44f, 1)
-                        .chain(ONE_HAND_HEAVY_3, 2, 0.32f)
+                        .start(ONE_HAND_HEAVY_1, 2, 0.48f, 1)
+                        .start(TWO_HAND_HEAVY_1, 2, 0.48f, 1)
+                        .start(TWO_HAND_HEAVY_2, 2, 0.48f, 1)
+                        .chain(ONE_HAND_HEAVY_3, 2, 0.48f)
                         .chainChance(0.5f).build())).play(BehaviourUtils.cooldownedPlay(true, 20, 35))
                 .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(12)
                 .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(TWO_HAND_HEAVY_1)
-                        .start(TWO_HAND_HEAVY_2, 2, 0.44f, 1)
-                        .start(TWO_HAND_HEAVY_2, 2, 0.44f, 1)
-                        .chain(ONE_HAND_HEAVY_2, 2, 0.32f)
+                        .start(TWO_HAND_HEAVY_2, 2, 0.48f, 1)
+                        .start(TWO_HAND_HEAVY_2, 2, 0.48f, 1)
+                        .chain(ONE_HAND_HEAVY_2, 2, 0.48f)
                         .chainChance(0.5f).build())).play(BehaviourUtils.cooldownedPlay(true, 20, 35))
                 .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(12)
@@ -177,6 +207,11 @@ public class Heracles extends BaseServant {
                 .start(UPPER_CUT).play(BehaviourUtils.cooldownedPlay(true, 20, 35))
                 .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(6)
+                .start(LEAP).play(BehaviourUtils.cooldownedPlay(false, 20, 35))
+                .condition(BehaviourUtils.ifFurtherThan(6, 2))
+                .prepare(new SetWalkTargetToAttackTarget<BaseServant>().closeEnoughDist(BehaviourUtils.closeEnough(16)))
+                .prepareOptional(BehaviourUtils.moveAttack())
+                .end(13)
                 .build();
     }
 
@@ -190,11 +225,23 @@ public class Heracles extends BaseServant {
     @Override
     public void baseTick() {
         super.baseTick();
+        AnimationState anim = this.getAnimationHandler().getAnimation();
         if (!this.level().isClientSide) {
-            AnimationState anim = this.getAnimationHandler().getAnimation();
             if (anim != null && anim.isAt("roar")) {
                 this.playSound(FateSounds.HERACLES_ROAR.get(), 1, 1);
                 S2CScreenShake.sendAround(this, 24, 16, 2);
+            }
+        } else {
+            if (anim != null) {
+                if (anim.isAt(EntityWeaponTrailProvider.TRAIL_START)) {
+                    this.level().addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
+                                    TrailInfo.builder(EntityWeaponTrailProvider.EntityTrailData.create(this, anim.getID(), false))
+                                            .setColor(60 / 255f, 62 / 255f, 49 / 255f, 0.6f)
+                                            .setColor2(60 / 255f, 62 / 255f, 49 / 255f, 0.2f)
+                                            .setType(TrailInfo.Visual.TEXTURE, 0)
+                                            .build()),
+                            this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+                }
             }
         }
     }
@@ -354,7 +401,32 @@ public class Heracles extends BaseServant {
                     });
                 }
             }
+        } else if (anim.is(LEAP)) {
+            if (anim.isAt("leap")) {
+                Vec3 dir = this.getTarget() != null ? this.getTarget().position().subtract(this.position()) : this.getLookAngle();
+                dir = new Vec3(dir.x(), 0, dir.z());
+                this.setDeltaMovement(dir.normalize().scale(4.5).add(0, 0.25, 0));
+            }
+            if (anim.isPast("leap")) {
+                if (this.hitEntity == null)
+                    this.hitEntity = new ArrayList<>();
+                this.mobAttack(anim, this.getTarget(), e -> {
+                    if (!this.hitEntity.contains(e)) {
+                        this.hitEntity.add(e);
+                        this.doHurtTarget(e);
+                    }
+                });
+                if (!this.hitEntity.isEmpty()) {
+                    S2CScreenShake.sendAround(this, 12, 8, 2);
+                    this.setDeltaMovement(this.getDeltaMovement().scale(0.05));
+                    this.getAnimationHandler().setAnimation(LEAP_SLASH);
+                }
+            }
         } else {
+            if (anim.isAt("step")) {
+                Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(0.3);
+                this.setDeltaMovement(this.getDeltaMovement().add(dir));
+            }
             super.handleAttack(anim);
         }
     }
@@ -434,5 +506,10 @@ public class Heracles extends BaseServant {
     @Override
     public Vector4f summonColor() {
         return this.summonColor;
+    }
+
+    @Override
+    public WeaponTrail weaponTrailEdge(boolean left) {
+        return new WeaponTrail(new Vector4f(0, 0, -0.8f, 1), new Vector4f(0, 0, -1.9f, 1));
     }
 }

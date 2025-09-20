@@ -6,10 +6,13 @@ import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.lib.FateTags;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
+import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
+import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailProvider;
 import io.github.flemmli97.fateubw.common.registry.FateDataComponents;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
+import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
@@ -65,25 +68,25 @@ public class Lancelot extends BaseServant {
 
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
     public static final String TWO_HAND_1 = BUILDER.add("two_hand_1", AnimationsBuilder.definition(1)
-            .marker("attack", 0.88).marker("step", 0.72)
+            .marker("attack", 0.88).marker("step", 0.6)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
             .marker(EntityWeaponTrailProvider.TRAIL_END, 0.92));
     public static final String TWO_HAND_2 = BUILDER.add("two_hand_2", AnimationsBuilder.definition(0.96)
-            .marker("attack", 0.84).marker("step", 0.72)
+            .marker("attack", 0.84).marker("step", 0.52)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
             .marker(EntityWeaponTrailProvider.TRAIL_END, 0.88));
     public static final String TWO_HAND_3 = BUILDER.add("two_hand_3", AnimationsBuilder.definition(0.92)
-            .marker("attack", 0.8).marker("step", 0.68)
+            .marker("attack", 0.8).marker("step", 0.52)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
             .marker(EntityWeaponTrailProvider.TRAIL_END, 0.84));
     public static final String TWO_HAND_4 = BUILDER.add("two_hand_4", AnimationsBuilder.definition(0.96)
-            .marker("attack", 0.84).marker("step", 0.72)
+            .marker("attack", 0.84).marker("step", 0.52)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
             .marker(EntityWeaponTrailProvider.TRAIL_END, 0.88));
     public static final String ONE_HAND_1 = BUILDER.add("one_hand_1", AnimationsBuilder.definition(0.68)
-            .marker("attack", 0.56).marker("step", 0.44)
+            .marker("attack", 0.56).marker("step", 0.32)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.4)
-            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.56));
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.6));
     public static final String STAB_1 = BUILDER.add("stab_1", AnimationsBuilder.definition(0.8).marker("attack", 0.68));
     public static final String JUMP = BUILDER.add("jump", AnimationsBuilder.definition(0.48).marker("jump", 0.28).infinite());
     public static final String JUMP_LAND = BUILDER.add("jump_land", AnimationsBuilder.definition(1.08).marker("attack", 0.2));
@@ -220,6 +223,18 @@ public class Lancelot extends BaseServant {
                         this.random.nextGaussian() * 0.02D,
                         this.random.nextGaussian() * 0.02D);
             }
+            AnimationState anim = this.getAnimationHandler().getAnimation();
+            if (anim != null) {
+                if (anim.isAt(EntityWeaponTrailProvider.TRAIL_START)) {
+                    this.level().addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
+                                    TrailInfo.builder(EntityWeaponTrailProvider.EntityTrailData.create(this, anim.getID(), false))
+                                            .setColor(0, 0, 0, 0.5f)
+                                            .setColor2(0.2f, 0, 0, 0.5f)
+                                            .setType(TrailInfo.Visual.SOLID, 0)
+                                            .build()),
+                            this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+                }
+            }
         }
     }
 
@@ -292,11 +307,8 @@ public class Lancelot extends BaseServant {
                 }
             }
         } else {
-            boolean step = anim.is(TWO_HAND_1) && anim.isAt(0.28) ||
-                    anim.is(TWO_HAND_2) && anim.isAt(0.2) ||
-                    anim.is(TWO_HAND_3) && anim.isAt(0.08);
-            if (step) {
-                Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(anim.is(TWO_HAND_3) ? 0.25 : 0.3);
+            if (anim.isAt("step")) {
+                Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(0.3);
                 this.setDeltaMovement(this.getDeltaMovement().add(dir));
             }
             if (anim.isAt("attack") && anim.is(JUMP_LAND)) {
@@ -592,5 +604,10 @@ public class Lancelot extends BaseServant {
     @Override
     public Vector4f summonColor() {
         return this.summonColor;
+    }
+
+    @Override
+    public WeaponTrail weaponTrailEdge(boolean left) {
+        return new WeaponTrail(new Vector4f(0, 0, -0.6f, 1), new Vector4f(0, 0, -1.3f, 1));
     }
 }

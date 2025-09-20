@@ -46,37 +46,37 @@ public class Iskander extends BaseServant {
 
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
     public static final String ONE_HAND_1 = BUILDER.add("one_hand_1", AnimationsBuilder.definition(0.68)
-            .marker("attack", 0.56).marker("step", 0.44)
+            .marker("attack", 0.56).marker("step", 0.28)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.36)
-            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.56));
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.6));
     public static final String ONE_HAND_2 = BUILDER.add("one_hand_2", AnimationsBuilder.definition(0.68)
-            .marker("attack", 0.56).marker("step", 0.44)
+            .marker("attack", 0.56).marker("step", 0.28)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.36)
-            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.56));
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.6));
     public static final String ONE_HAND_3 = BUILDER.add("one_hand_3", AnimationsBuilder.definition(0.68)
-            .marker("attack", 0.56).marker("step", 0.44)
+            .marker("attack", 0.56).marker("step", 0.28)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.36)
-            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.56));
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.6));
     public static final String ONE_HAND_4 = BUILDER.add("one_hand_4", AnimationsBuilder.definition(0.68)
-            .marker("attack", 0.56).marker("step", 0.4)
+            .marker("attack", 0.56).marker("step", 0.28)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.36)
-            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.56));
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.6));
     public static final String ONE_HAND_5 = BUILDER.add("one_hand_5", AnimationsBuilder.definition(0.68)
-            .marker("attack", 0.56).marker("step", 0.4)
+            .marker("attack", 0.56).marker("step", 0.28)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.36)
-            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.56));
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.6));
     public static final String ONE_HAND_6 = BUILDER.add("one_hand_6", AnimationsBuilder.definition(0.68)
-            .marker("attack", 0.56).marker("step", 0.44)
+            .marker("attack", 0.56).marker("step", 0.28)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.36)
-            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.56));
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.6));
     public static final String ONE_HAND_7 = BUILDER.add("one_hand_7", AnimationsBuilder.definition(0.68)
-            .marker("attack", 0.56).marker("step", 0.44)
+            .marker("attack", 0.56).marker("step", 0.28)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.36)
-            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.56));
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.6));
     private static final String CHARIOT = BUILDER.add("chariot_summon", AnimationsBuilder.definition(1.68)
             .marker("attack", 0.76)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.52)
-            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.76));
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.8));
     private static final String SUMMON_HORSE = BUILDER.add("horse", CHARIOT);
     public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2.));
     public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
@@ -205,7 +205,7 @@ public class Iskander extends BaseServant {
             }
         } else {
             if (anim.isAt("step")) {
-                Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(anim.is(ONE_HAND_4) ? 0.25 : 0.3);
+                Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(0.4);
                 this.setDeltaMovement(this.getDeltaMovement().add(dir));
             }
             super.handleAttack(anim);

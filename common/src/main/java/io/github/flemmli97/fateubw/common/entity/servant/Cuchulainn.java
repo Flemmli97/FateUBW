@@ -48,23 +48,23 @@ public class Cuchulainn extends BaseServant {
 
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
     public static final String SPEAR_1 = BUILDER.add("spear_1", AnimationsBuilder.definition(0.68)
-            .marker("attack", 0.56).marker("step", 0.48)
+            .marker("attack", 0.56).marker("step", 0.32)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.4)
             .marker(EntityWeaponTrailProvider.TRAIL_END, 0.6));
     public static final String SPEAR_2 = BUILDER.add("spear_2", AnimationsBuilder.definition(0.64)
-            .marker("attack", 0.52).marker("step", 0.44)
+            .marker("attack", 0.52).marker("step", 0.28)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.36)
             .marker(EntityWeaponTrailProvider.TRAIL_END, 0.56));
     public static final String SPEAR_3 = BUILDER.add("spear_3", AnimationsBuilder.definition(0.68)
-            .marker("attack", 0.56)
+            .marker("attack", 0.56).marker("step", 0.32)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.4)
             .marker(EntityWeaponTrailProvider.TRAIL_END, 0.6));
     public static final String SPEAR_4 = BUILDER.add("spear_4", AnimationsBuilder.definition(0.72)
             .marker("attack", 0.6));
     public static final String SPEAR_5 = BUILDER.add("spear_5", AnimationsBuilder.definition(0.72)
             .marker("attack", 0.6));
-    public static final String SPEAR_COMBO = BUILDER.add("spear_stab_combo", AnimationsBuilder.definition(2.76)
-            .marker("attack", 0.6, 1.16).marker("attack_final", 2.12).marker("step", 2.04));
+    public static final String SPEAR_COMBO = BUILDER.add("spear_stab_combo", AnimationsBuilder.definition(2.52)
+            .marker("attack", 0.6, 1.08).marker("attack_final", 1.88).marker("step_large", 1.64));
     private static final String GAE_BOLG = BUILDER.add("gae_bolg", AnimationsBuilder.definition(1.48)
             .marker("throw", 1.2).marker("jump", 0.24)
             .marker("float_start", 0.4).marker("float_end", 1.28));
@@ -199,6 +199,10 @@ public class Cuchulainn extends BaseServant {
         } else {
             if (anim.isAt("step")) {
                 Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(0.35);
+                this.setDeltaMovement(this.getDeltaMovement().add(dir));
+            }
+            if (anim.isAt("step_large")) {
+                Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(0.45);
                 this.setDeltaMovement(this.getDeltaMovement().add(dir));
             }
             if (anim.isAt("attack_final")) {

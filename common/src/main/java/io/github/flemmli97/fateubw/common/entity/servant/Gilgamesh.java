@@ -5,8 +5,12 @@ import io.github.flemmli97.fateubw.common.entity.SwitchableWeapon;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.misc.BabylonWeapon;
 import io.github.flemmli97.fateubw.common.entity.misc.EnumaElish;
+import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
+import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.ParticlePositionProvider;
 import io.github.flemmli97.fateubw.common.registry.FateDataComponents;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
+import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.tenshilib.common.entity.ai.TargetPosition;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.SelectableBehaviourBuilder;
@@ -19,6 +23,10 @@ import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionC
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationsBuilder;
+import io.github.flemmli97.tenshilib.common.particle.AdvancedParticleContainer;
+import io.github.flemmli97.tenshilib.common.particle.data.CirclingData;
+import io.github.flemmli97.tenshilib.common.particle.data.ParticleMetaData;
+import io.github.flemmli97.tenshilib.common.utils.math.MathUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
@@ -220,6 +228,25 @@ public class Gilgamesh extends BaseServant {
                 Vec3 dir = entity.position().subtract(this.position());
                 dir = new Vec3(dir.x(), 0, dir.z()).normalize().scale(5);
                 entity.setDeltaMovement(entity.getDeltaMovement().add(dir).add(0, 0.3, 0));
+            }
+            for (int i = 0; i < 16; i++) {
+                float red = (150 + this.getRandom().nextInt(100)) / 255f;
+                float col = (10 + this.getRandom().nextInt(200)) / 255f;
+                if (col >= red * 0.8) {
+                    col = 0.1f;
+                    red = 0.1f;
+                }
+                AdvancedParticleContainer.make(new TrailParticleData(FateParticles.TRAIL.get(),
+                                TrailInfo.builder(new ParticlePositionProvider.ParticlePositionData(MathUtils.NORMAL_Y, 6))
+                                        .setColor(red, col, col, 0.7f)
+                                        .setColor2(red, col, col, 0.7f)
+                                        .setWidth(0.03f)
+                                        .setWidth2(0.03f)
+                                        .build()))
+                        .addData(new CirclingData((float) ((this.getRandom().nextDouble() * 0.15 + 1) * this.getBbWidth()), 0, this.getRandom().nextInt() * 360, 80, MathUtils.NORMAL_Y))
+                        .addData(new ParticleMetaData(10, false, 0))
+                        .build()
+                        .add(this.level(), this.getX(), this.getY(this.getRandom().nextDouble() * 1.2), this.getZ());
             }
             return false;
         }

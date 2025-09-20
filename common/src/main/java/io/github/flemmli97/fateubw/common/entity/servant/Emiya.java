@@ -48,28 +48,28 @@ public class Emiya extends BaseServant {
 
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
     public static final String DUAL_SLASH_1 = BUILDER.add("dual_slash_1", AnimationsBuilder.definition(1.12)
-            .marker("attack_left", 0.6).marker("attack_right", 1).marker("step", 0.52, 0.92)
-            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.4).marker(LEFT_TRAIL_END, 0.68)
-            .marker(RIGHT_TRAIL_START, 0.8).marker(EntityWeaponTrailProvider.TRAIL_END, 1));
+            .marker("attack_left", 0.6).marker("attack_right", 1).marker("step", 0.32, 0.72)
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.4).marker(LEFT_TRAIL_END, 0.64)
+            .marker(RIGHT_TRAIL_START, 0.8).marker(EntityWeaponTrailProvider.TRAIL_END, 1.04));
     public static final String DUAL_SLASH_2 = BUILDER.add("dual_slash_2", AnimationsBuilder.definition(0.68)
             .marker("attack_left", 0.56).marker("attack_right", 0.56));
     public static final String DUAL_SLASH_3 = BUILDER.add("dual_slash_3", AnimationsBuilder.definition(0.72)
-            .marker("attack_left", 0.52).marker("attack_right", 0.52)
+            .marker("attack_left", 0.52).marker("attack_right", 0.52).marker("step", 0.4)
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.4).marker(LEFT_TRAIL_END, 0.64)
+            .marker(RIGHT_TRAIL_START, 0.4).marker(EntityWeaponTrailProvider.TRAIL_END, 0.64));
+    public static final String DUAL_SLASH_4 = BUILDER.add("dual_slash_4", AnimationsBuilder.definition(0.68)
+            .marker("attack_left", 0.52).marker("attack_right", 0.52).marker("step", 0.32)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.4).marker(LEFT_TRAIL_END, 0.6)
             .marker(RIGHT_TRAIL_START, 0.4).marker(EntityWeaponTrailProvider.TRAIL_END, 0.6));
-    public static final String DUAL_SLASH_4 = BUILDER.add("dual_slash_4", AnimationsBuilder.definition(0.68)
-            .marker("attack_left", 0.52).marker("attack_right", 0.52).marker("step", 0.48)
-            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.4).marker(LEFT_TRAIL_END, 0.56)
-            .marker(RIGHT_TRAIL_START, 0.4).marker(EntityWeaponTrailProvider.TRAIL_END, 0.56));
     public static final String DUAL_SLASH_5 = BUILDER.add("dual_slash_5", AnimationsBuilder.definition(0.96)
             .marker("attack_left", 0.52).marker("attack_right", 0.52).marker("leap", 0.32)
-            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.4).marker(LEFT_TRAIL_END, 0.6)
-            .marker(RIGHT_TRAIL_START, 0.4).marker(EntityWeaponTrailProvider.TRAIL_END, 0.6));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.4).marker(LEFT_TRAIL_END, 0.64)
+            .marker(RIGHT_TRAIL_START, 0.4).marker(EntityWeaponTrailProvider.TRAIL_END, 0.64));
     public static final String DUAL_SLASH_6 = BUILDER.add("dual_slash_6", AnimationsBuilder.definition(1.32)
             .marker("attack_left", 0.68, 1.2).marker("attack_right", 0.56, 1.2)
             .marker("attack_end", 1.2)
-            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.4, 1.04).marker(LEFT_TRAIL_END, 0.72, 1.2)
-            .marker(RIGHT_TRAIL_START, 0.48, 1.04).marker(EntityWeaponTrailProvider.TRAIL_END, 0.72, 1.2));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.4, 1.04).marker(LEFT_TRAIL_END, 0.76, 1.24)
+            .marker(RIGHT_TRAIL_START, 0.48, 1.04).marker(EntityWeaponTrailProvider.TRAIL_END, 0.76, 1.24));
     public static final String BOW_1 = BUILDER.add("bow_1", AnimationsBuilder.definition(1.2)
             .marker("use_start", 0.24).marker("use_end", 1).marker("shoot", 1));
     public static final String BOW_2 = BUILDER.add("bow_2", AnimationsBuilder.definition(1.6)
@@ -305,7 +305,7 @@ public class Emiya extends BaseServant {
                 this.setDeltaMovement(dir);
             }
             if (anim.isAt("step")) {
-                Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(anim.is(DUAL_SLASH_1, DUAL_SLASH_2) ? 0.38 : 0.33);
+                Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(0.35);
                 this.setDeltaMovement(this.getDeltaMovement().add(dir));
             }
             if (anim.isAt("attack_left")) {

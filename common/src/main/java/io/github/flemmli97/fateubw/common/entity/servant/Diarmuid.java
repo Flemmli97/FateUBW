@@ -61,19 +61,19 @@ public class Diarmuid extends BaseServant {
 
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
     public static final String DUAL_SPEAR_1 = BUILDER.add("dual_spear_1", AnimationsBuilder.definition(1.04)
-            .marker("attack_left", 0.56).marker("attack_right", 0.92).marker("step", 0.56, 0.88)
-            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.4).marker(LEFT_TRAIL_END, 0.64)
-            .marker(RIGHT_TRAIL_START, 0.76).marker(EntityWeaponTrailProvider.TRAIL_END, 0.92));
+            .marker("attack_left", 0.56).marker("attack_right", 0.92).marker("step", 0.32, 0.68)
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.4).marker(LEFT_TRAIL_END, 0.68)
+            .marker(RIGHT_TRAIL_START, 0.76).marker(EntityWeaponTrailProvider.TRAIL_END, 0.96));
     public static final String DUAL_SPEAR_2 = BUILDER.add("dual_spear_2", AnimationsBuilder.definition(1)
-            .marker("attack_left", 0.48).marker("attack_right", 0.88).marker("step", 0.48)
-            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.4).marker(LEFT_TRAIL_END, 0.56)
-            .marker(RIGHT_TRAIL_START, 0.68).marker(EntityWeaponTrailProvider.TRAIL_END, 0.88));
+            .marker("attack_left", 0.48).marker("attack_right", 0.88).marker("step", 0.32)
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.4).marker(LEFT_TRAIL_END, 0.6)
+            .marker(RIGHT_TRAIL_START, 0.68).marker(EntityWeaponTrailProvider.TRAIL_END, 0.92));
     public static final String DUAL_SPEAR_3 = BUILDER.add("dual_spear_3", AnimationsBuilder.definition(0.8)
             .marker("attack_left", 0.44).marker("attack_right", 0.68));
     public static final String DUAL_SPEAR_4 = BUILDER.add("dual_spear_4", AnimationsBuilder.definition(0.68)
             .marker("attack_left", 0.56).marker("attack_right", 0.56)
-            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.4).marker(LEFT_TRAIL_END, 0.56)
-            .marker(RIGHT_TRAIL_START, 0.4).marker(EntityWeaponTrailProvider.TRAIL_END, 0.56));
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.4).marker(LEFT_TRAIL_END, 0.6)
+            .marker(RIGHT_TRAIL_START, 0.4).marker(EntityWeaponTrailProvider.TRAIL_END, 0.6));
     public static final String BLINK = BUILDER.add("blink", AnimationsBuilder.definition(1.12)
             .marker("teleport_start", 0.28).marker("teleport", 0.5).marker("teleport_end", 0.84));
     public static final String BLINK_AWAY = BUILDER.add("blink_away", BLINK);
@@ -282,7 +282,7 @@ public class Diarmuid extends BaseServant {
             }
         } else {
             if (anim.isAt("step")) {
-                Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(0.3);
+                Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(0.35);
                 this.setDeltaMovement(this.getDeltaMovement().add(dir));
             }
             super.handleAttack(anim);

@@ -113,6 +113,21 @@ public class BehaviourUtils {
         };
     }
 
+    public static <E extends LivingEntity> Predicate<E> ifFurtherThan(double dist, double verticalDist) {
+        return entity -> {
+            double distance = dist + entity.getBbWidth() * 0.5;
+            LivingEntity target = BrainUtils.hasMemory(entity, MemoryModuleType.ATTACK_TARGET) ? BrainUtils.getTargetOfEntity(entity) : null;
+            if (target == null && entity instanceof Mob mob) {
+                target = mob.getTarget();
+            }
+            if (target == null)
+                return false;
+            distance += target.getBbWidth() * 0.5;
+            return entity.distanceToSqr(target.getX(), entity.getY(), target.getZ()) >= distance * distance
+                    && Math.abs(entity.getY() - target.getY()) <= verticalDist;
+        };
+    }
+
     public static <E extends PathfinderMob & AOEAttackEntity & AnimatedEntity> MoveToAttackTarget<E> timedMoveAttack() {
         return timedMoveAttack(30, 40);
     }

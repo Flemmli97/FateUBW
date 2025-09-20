@@ -61,19 +61,19 @@ public class Hassan extends BaseServant {
 
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
     public static final String DAGGER_1 = BUILDER.add("dagger_1", AnimationsBuilder.definition(0.6)
-            .marker("attack", 0.48).marker("step", 0.4)
+            .marker("attack", 0.48).marker("step", 0.24)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.32)
-            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.48));
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.52));
     public static final String DAGGER_2 = BUILDER.add("dagger_2", AnimationsBuilder.definition(0.56)
-            .marker("attack", 0.44).marker("step", 0.4)
-            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.32)
-            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.44));
-    public static final String DAGGER_3 = BUILDER.add("dagger_3", AnimationsBuilder.definition(0.6)
-            .marker("attack", 0.48).marker("step", 0.44)
+            .marker("attack", 0.44).marker("step", 0.24)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.32)
             .marker(EntityWeaponTrailProvider.TRAIL_END, 0.48));
+    public static final String DAGGER_3 = BUILDER.add("dagger_3", AnimationsBuilder.definition(0.6)
+            .marker("attack", 0.48).marker("step", 0.24)
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.32)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.52));
     public static final String DAGGER_4 = BUILDER.add("dagger_4", AnimationsBuilder.definition(0.52)
-            .marker("attack", 0.4).marker("step", 0.32));
+            .marker("attack", 0.4).marker("step", 0.24));
     public static final String TOP_STAB = BUILDER.add("top_stab", AnimationsBuilder.definition(0.6).marker("attack", 0.48));
     public static final String THROW = BUILDER.add("dagger_throw", AnimationsBuilder.definition(1.32)
             .marker("attack_1", 0.36).marker("attack_2", 0.88));
@@ -237,7 +237,7 @@ public class Hassan extends BaseServant {
             }
         } else {
             if (anim.isAt("step")) {
-                Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(0.25);
+                Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(0.35);
                 this.setDeltaMovement(this.getDeltaMovement().add(dir));
             }
             super.handleAttack(anim);

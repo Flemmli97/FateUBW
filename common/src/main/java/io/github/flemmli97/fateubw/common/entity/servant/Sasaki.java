@@ -53,37 +53,37 @@ public class Sasaki extends BaseServant {
 
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
     public static final String TWO_HAND_1 = BUILDER.add("two_hand_1", AnimationsBuilder.definition(1)
-            .marker("attack", 0.88).marker("step", 0.8)
+            .marker("attack", 0.88).marker("step", 0.6)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.68)
-            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.88));
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.92));
     public static final String TWO_HAND_2 = BUILDER.add("two_hand_2", AnimationsBuilder.definition(0.96)
-            .marker("attack", 0.84).marker("step", 0.72)
+            .marker("attack", 0.84).marker("step", 0.56)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
-            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.84));
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.88));
     public static final String TWO_HAND_3 = BUILDER.add("two_hand_3", AnimationsBuilder.definition(0.92)
-            .marker("attack", 0.8).marker("step", 0.68)
-            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
-            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.8));
-    public static final String TWO_HAND_4 = BUILDER.add("two_hand_4", AnimationsBuilder.definition(0.96)
-            .marker("attack", 0.84).marker("step", 0.72)
+            .marker("attack", 0.8).marker("step", 0.52)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
             .marker(EntityWeaponTrailProvider.TRAIL_END, 0.84));
+    public static final String TWO_HAND_4 = BUILDER.add("two_hand_4", AnimationsBuilder.definition(0.96)
+            .marker("attack", 0.84).marker("step", 0.56)
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.88));
     public static final String TWO_HAND_5 = BUILDER.add("two_hand_5", AnimationsBuilder.definition(0.92)
-            .marker("attack", 0.8).marker("step", 0.72)
+            .marker("attack", 0.8).marker("step", 0.52)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
-            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.8));
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.84));
     public static final String TWO_HAND_6 = BUILDER.add("two_hand_6", AnimationsBuilder.definition(0.92)
-            .marker("attack", 0.8).marker("step", 0.68)
+            .marker("attack", 0.8).marker("step", 0.52)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
-            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.8));
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.84));
     public static final String TWO_HAND_7 = BUILDER.add("two_hand_7", AnimationsBuilder.definition(0.92)
-            .marker("attack", 0.8).marker("step", 0.68)
+            .marker("attack", 0.8).marker("step", 0.52)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
-            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.8));
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.84));
     public static final String ONE_HAND_1 = BUILDER.add("one_hand_1", AnimationsBuilder.definition(0.88)
             .marker("attack", 0.76)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
-            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.76));
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.8));
     public static final String KATANA_1 = BUILDER.add("katana_1", AnimationsBuilder.definition(0.84)
             .marker("attack", 0.72).marker("step", 0.64));
     private static final String TSUBAME_GAESHI = BUILDER.add("tsubame_gaeshi", AnimationsBuilder.definition(2.16)
@@ -220,7 +220,7 @@ public class Sasaki extends BaseServant {
             }
         } else {
             if (anim.isAt("step")) {
-                Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(0.3);
+                Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(0.4);
                 this.setDeltaMovement(this.getDeltaMovement().add(dir));
             }
             super.handleAttack(anim);

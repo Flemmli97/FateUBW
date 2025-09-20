@@ -11,8 +11,9 @@ import org.joml.Vector4f;
 import java.util.Optional;
 import java.util.function.Function;
 
-public record TrailInfo(float r, float g, float b, float a, float width, float r2, float g2, float b2, float a2,
-                        float width2, int interpolation, TrailInfo.Visual visual,
+public record TrailInfo(float r, float g, float b, float a, float width,
+                        float r2, float g2, float b2, float a2, float width2,
+                        int interpolation, TrailInfo.Visual visual,
                         int textureIndex, TrailData data) {
 
     private static final Function<String, Codec<Vector4f>> COLOR = suffix -> RecordCodecBuilder.create((builder) -> builder.group(
@@ -41,7 +42,8 @@ public record TrailInfo(float r, float g, float b, float a, float width, float r
         @Override
         public TrailInfo decode(RegistryFriendlyByteBuf buf) {
             return new TrailInfo(buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(),
-                    buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readInt(), buf.readEnum(Visual.class), buf.readInt(), TrailProviderRegistry.fromBuffer(buf));
+                    buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat(),
+                    buf.readInt(), buf.readEnum(Visual.class), buf.readInt(), TrailProviderRegistry.fromBuffer(buf));
         }
 
         @Override
@@ -56,7 +58,7 @@ public record TrailInfo(float r, float g, float b, float a, float width, float r
             buf.writeFloat(data.b2);
             buf.writeFloat(data.a2);
             buf.writeFloat(data.width2);
-            buf.writeFloat(data.interpolation);
+            buf.writeInt(data.interpolation);
             buf.writeEnum(data.visual);
             buf.writeInt(data.textureIndex);
             TrailProviderRegistry.toBuffer(data.data, buf);

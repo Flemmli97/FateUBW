@@ -6,9 +6,12 @@ import io.github.flemmli97.fateubw.common.entity.misc.ChainDagger;
 import io.github.flemmli97.fateubw.common.entity.summons.GordiusWheel;
 import io.github.flemmli97.fateubw.common.entity.summons.Pegasus;
 import io.github.flemmli97.fateubw.common.entity.utils.DaggerHitNotifiable;
+import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
+import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailProvider;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
+import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.SelectableBehaviourBuilder;
@@ -55,21 +58,21 @@ public class Medusa extends BaseServant implements DaggerHitNotifiable {
 
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
     public static final String DUAL_REVERSE_1 = BUILDER.add("dual_reverse_1", AnimationsBuilder.definition(0.64)
-            .marker("attack", 0.48)
+            .marker("attack", 0.48).marker("step", 0.24)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.32)
-            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.48));
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.52));
     public static final String DUAL_REVERSE_2 = BUILDER.add("dual_reverse_2", AnimationsBuilder.definition(0.64)
-            .marker("attack", 0.48)
+            .marker("attack", 0.48).marker("step", 0.24)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.32)
-            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.48));
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.52));
     public static final String DUAL_REVERSE_3 = BUILDER.add("dual_reverse_3", AnimationsBuilder.definition(0.64)
-            .marker("attack", 0.48)
+            .marker("attack", 0.48).marker("step", 0.24)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.32)
-            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.48));
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.52));
     public static final String DUAL_REVERSE_4 = BUILDER.add("dual_reverse_4", AnimationsBuilder.definition(0.64)
-            .marker("attack", 0.48)
+            .marker("attack", 0.48).marker("step", 0.24)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.32)
-            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.48));
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.52));
     public static final String CHAIN_THROW = BUILDER.add("chain_throw", AnimationsBuilder.definition(0.84).marker("attack", 0.6));
     public static final String RETRIEVE = BUILDER.add("chain_retrieve", AnimationsBuilder.definition(0.88).marker("attack", 0.56));
     public static final String EYE = BUILDER.add("eye", AnimationsBuilder.definition(1.96).marker("attack", 1));
@@ -185,16 +188,31 @@ public class Medusa extends BaseServant implements DaggerHitNotifiable {
     @Override
     public void baseTick() {
         super.baseTick();
-        if (!this.level().isClientSide && this.dagger != null) {
-            if (!this.dagger.isAlive()) {
-                this.dagger = null;
-                this.getEntityData().set(THROWN_DAGGER, false);
+        if (!this.level().isClientSide) {
+            if (this.dagger != null) {
+                if (!this.dagger.isAlive()) {
+                    this.dagger = null;
+                    this.getEntityData().set(THROWN_DAGGER, false);
+                }
+            } else
+                --this.throwCooldown;
+            if (!this.isPassenger())
+                --this.summonCooldown;
+            --this.eyeCooldown;
+        } else {
+            AnimationState anim = this.getAnimationHandler().getAnimation();
+            if (anim != null) {
+                if (anim.isAt(EntityWeaponTrailProvider.TRAIL_START)) {
+                    this.level().addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
+                                    TrailInfo.builder(EntityWeaponTrailProvider.EntityTrailData.create(this, anim.getID(), false))
+                                            .setColor(80 / 255f, 80 / 255f, 80 / 255f, 0.6f)
+                                            .setColor2(80 / 255f, 80 / 255f, 80 / 255f, 0.2f)
+                                            .setType(TrailInfo.Visual.TEXTURE, 0)
+                                            .build()),
+                            this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+                }
             }
-        } else
-            --this.throwCooldown;
-        if (!this.level().isClientSide && !this.isPassenger())
-            --this.summonCooldown;
-        --this.eyeCooldown;
+        }
     }
 
     @Override
@@ -408,5 +426,10 @@ public class Medusa extends BaseServant implements DaggerHitNotifiable {
     @Override
     public void onDaggerHit(ChainDagger dagger) {
         this.getAnimationHandler().setAnimation(RETRIEVE);
+    }
+
+    @Override
+    public WeaponTrail weaponTrailEdge(boolean left) {
+        return new WeaponTrail(new Vector4f(0, 0, -0.5f, 1), new Vector4f(0, 0, -0.8f, 1));
     }
 }
