@@ -136,6 +136,7 @@ public class ClientRegister {
         consumer.register(FateParticles.LIGHT.get(), TranslucentAddParticle.Factory::new);
         consumer.register(FateParticles.TRAIL.get(), TrailParticle.Factory::new);
         consumer.register(FateParticles.RING.get(), RingParticle.Factory::new);
+        consumer.register(FateParticles.FLASH.get(), TranslucentAddParticle.Factory::new);
     }
 
     public interface EntityRendererRegister {

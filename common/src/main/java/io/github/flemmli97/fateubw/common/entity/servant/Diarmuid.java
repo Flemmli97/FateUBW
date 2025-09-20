@@ -23,11 +23,14 @@ import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationsBuilder;
 import io.github.flemmli97.tenshilib.common.entity.data.SyncedDataContainer;
+import io.github.flemmli97.tenshilib.common.particle.AdvancedParticleContainer;
+import io.github.flemmli97.tenshilib.common.particle.data.ParticleMetaData;
 import io.github.flemmli97.tenshilib.common.registry.TenshilibSyncableEntityDatas;
 import io.github.flemmli97.tenshilib.common.utils.TypedResource;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Unit;
 import net.minecraft.world.DifficultyInstance;
@@ -192,6 +195,18 @@ public class Diarmuid extends BaseServant {
                                             .setType(TrailInfo.Visual.TEXTURE, 0)
                                             .build()),
                             this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+                }
+                if (anim.is(DUAL_SPEAR_3) && (anim.isAt("attack_left") || anim.isAt("attack_right"))) {
+                    Vec3 offset = new Vec3(anim.isAt("attack_left") ? 0.2 : -0.2, this.getBbHeight() * 0.5, this.getBbWidth() + 1.7 * this.getScale())
+                            .yRot(-this.getYRot() * Mth.DEG_TO_RAD);
+                    for (int i = 0; i < 6; i++) {
+                        AdvancedParticleContainer.make(ParticleTypes.CRIT)
+                                .addData(new ParticleMetaData(10, false, 0))
+                                .build().add(this.level(),
+                                        this.getX() + offset.x() + this.getRandom().nextGaussian() * 0.1,
+                                        this.getY() + offset.y() + this.getRandom().nextGaussian() * 0.1,
+                                        this.getZ() + offset.z() + this.getRandom().nextGaussian() * 0.1);
+                    }
                 }
             }
         }

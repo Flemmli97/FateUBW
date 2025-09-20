@@ -24,6 +24,10 @@ import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationsBuilder;
 import io.github.flemmli97.tenshilib.common.entity.data.SyncedDataContainer;
+import io.github.flemmli97.tenshilib.common.particle.AdvancedParticleContainer;
+import io.github.flemmli97.tenshilib.common.particle.data.ColorData;
+import io.github.flemmli97.tenshilib.common.particle.data.ParticleMetaData;
+import io.github.flemmli97.tenshilib.common.particle.data.ScaleData;
 import io.github.flemmli97.tenshilib.common.registry.TenshilibSyncableEntityDatas;
 import io.github.flemmli97.tenshilib.common.utils.TypedResource;
 import io.github.flemmli97.tenshilib.common.utils.math.OrientedBoundingBox;
@@ -34,6 +38,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundAnimatePacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Unit;
 import net.minecraft.world.DifficultyInstance;
@@ -219,6 +224,20 @@ public class Arthur extends BaseServant {
                                             .setType(TrailInfo.Visual.TEXTURE, 0)
                                             .build()),
                             this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+                }
+                if (anim.is(STAB_1) && (anim.isAt("attack") || anim.isAt("attack_final"))) {
+                    Vec3 offset = new Vec3(0, this.getBbHeight() * 0.5, this.getBbWidth() + 1.4 * this.getScale())
+                            .yRot(-this.getYRot() * Mth.DEG_TO_RAD);
+                    for (int i = 0; i < 6; i++) {
+                        AdvancedParticleContainer.make(FateParticles.FLASH.get())
+                                .addData(new ColorData(248 / 255f, 248 / 255f, 100 / 255f, 0.5f))
+                                .addData(new ScaleData(0.4f))
+                                .addData(new ParticleMetaData(10, false, 0))
+                                .build().add(this.level(),
+                                        this.getX() + offset.x() + this.getRandom().nextGaussian() * 0.3,
+                                        this.getY() + offset.y() + this.getRandom().nextGaussian() * 0.15,
+                                        this.getZ() + offset.z() + this.getRandom().nextGaussian() * 0.3);
+                    }
                 }
             }
         }

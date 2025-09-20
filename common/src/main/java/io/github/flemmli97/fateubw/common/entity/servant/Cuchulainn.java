@@ -19,12 +19,16 @@ import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionC
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationsBuilder;
+import io.github.flemmli97.tenshilib.common.particle.AdvancedParticleContainer;
+import io.github.flemmli97.tenshilib.common.particle.data.ParticleMetaData;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundAnimatePacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
@@ -163,6 +167,18 @@ public class Cuchulainn extends BaseServant {
                                             .setType(TrailInfo.Visual.TEXTURE, 0)
                                             .build()),
                             this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+                }
+                if ((anim.is(SPEAR_4) || anim.is(SPEAR_5) || anim.is(SPEAR_COMBO)) && (anim.isAt("attack") || anim.isAt("attack_final"))) {
+                    Vec3 offset = new Vec3(0, this.getBbHeight() * 0.5, this.getBbWidth() + (anim.isAt("attack_final") ? 2.5 : 1.9) * this.getScale())
+                            .yRot(-this.getYRot() * Mth.DEG_TO_RAD);
+                    for (int i = 0; i < 6; i++) {
+                        AdvancedParticleContainer.make(ParticleTypes.CRIT)
+                                .addData(new ParticleMetaData(10, false, 0))
+                                .build().add(this.level(),
+                                        this.getX() + offset.x() + this.getRandom().nextGaussian() * 0.1,
+                                        this.getY() + offset.y() + this.getRandom().nextGaussian() * 0.1,
+                                        this.getZ() + offset.z() + this.getRandom().nextGaussian() * 0.1);
+                    }
                 }
             }
         }
