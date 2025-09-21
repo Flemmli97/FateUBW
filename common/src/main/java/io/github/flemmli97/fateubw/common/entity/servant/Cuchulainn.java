@@ -288,6 +288,11 @@ public class Cuchulainn extends BaseServant {
     }
 
     @Override
+    public boolean hurt(DamageSource damageSource, float damage) {
+        return !this.getAnimationHandler().isCurrent(GAE_BOLG) && super.hurt(damageSource, damage);
+    }
+
+    @Override
     protected void actuallyHurt(DamageSource damageSrc, float damageAmount) {
         super.actuallyHurt(damageSrc, damageAmount);
         if (!this.canUseNP && !this.isDeadOrDying() && this.getHealth() < 0.5 * this.getMaxHealth()) {

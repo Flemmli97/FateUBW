@@ -277,7 +277,7 @@ public class Heracles extends BaseServant {
 
     @Override
     public boolean hurt(DamageSource damageSource, float damage) {
-        if (!damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && (damage -= 3) < 0)
+        if (!damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && (damage -= 4) < 0)
             return false;
         return super.hurt(damageSource, damage);
     }

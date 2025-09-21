@@ -164,7 +164,7 @@ public class FateEntities {
             0x3c1d06, 0x5e3c22,
             new ServantProperties.Builder(BuiltinServantClasses.BERSERKER)
                     .putAttributes(Attributes.MAX_HEALTH, 250).putAttributes(Attributes.ATTACK_DAMAGE, 10)
-                    .putAttributes(Attributes.ARMOR, 18)
+                    .putAttributes(Attributes.ARMOR, 22)
                     .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 8)
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.3)
                     .putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)

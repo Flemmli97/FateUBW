@@ -236,8 +236,7 @@ public class Gilgamesh extends BaseServant implements OnProjectileHit {
 
     @Override
     public boolean hurt(DamageSource damageSource, float damage) {
-        if (!this.getAnimationHandler().isCurrent(EA)
-                && !damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && !damageSource.is(DamageTypeTags.BYPASSES_ARMOR)
+        if (!this.getAnimationHandler().isCurrent(EA) && !damageSource.is(DamageTypeTags.BYPASSES_ARMOR)
                 && !damageSource.is(DamageTypeTags.IS_PROJECTILE)
                 && this.getMainHandItem().is(FateItems.ENUMAELISH.get()) && this.getRandom().nextFloat() < 0.15) {
             this.playSound(SoundEvents.GENERIC_EXPLODE.value(), 1, 1);
@@ -268,7 +267,7 @@ public class Gilgamesh extends BaseServant implements OnProjectileHit {
             }
             return false;
         }
-        return super.hurt(damageSource, damage);
+        return !this.getAnimationHandler().isCurrent(EA) && super.hurt(damageSource, damage);
     }
 
     @Override

@@ -297,6 +297,11 @@ public class Hassan extends BaseServant {
         return this.animationHandler;
     }
 
+    @Override
+    public boolean hurt(DamageSource damageSource, float damage) {
+        return !this.getAnimationHandler().isCurrent(DUPE) && super.hurt(damageSource, damage);
+    }
+
     public boolean addCopy(HassanClone copy) {
         if (this.copies.size() < this.props().getConfig(ServantExtraData.HASSAN_COPIES)) {
             this.copies.add(copy.getUUID());

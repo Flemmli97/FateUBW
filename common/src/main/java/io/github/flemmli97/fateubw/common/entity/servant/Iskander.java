@@ -259,6 +259,9 @@ public class Iskander extends BaseServant {
 
     @Override
     public boolean hurt(DamageSource damageSource, float damage) {
+        if (this.getAnimationHandler().isCurrent(CHARIOT)) {
+            return false;
+        }
         if (damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             return super.hurt(damageSource, damage);
         } else if (this.getVehicle() != null) {

@@ -28,7 +28,6 @@ import io.github.flemmli97.tenshilib.common.particle.data.ParticleMetaData;
 import io.github.flemmli97.tenshilib.common.particle.data.SinMotionData;
 import io.github.flemmli97.tenshilib.common.utils.math.OrientedBoundingBox;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
@@ -88,8 +87,7 @@ public class Sasaki extends BaseServant {
             .marker("attack", 0.72).marker("step", 0.64));
     private static final String TSUBAME_GAESHI = BUILDER.add("tsubame_gaeshi", AnimationsBuilder.definition(2.16)
             .marker("attack_prepare", 1.24).marker("attack", 1.36)
-            .marker("particle", 1.36)
-            .marker("invulnerable_start", 0.8).marker("invulnerable_end", 1.72));
+            .marker("particle", 1.36));
     public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(4.));
     public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
 
@@ -351,11 +349,7 @@ public class Sasaki extends BaseServant {
 
     @Override
     public boolean hurt(DamageSource damageSource, float damage) {
-        if (damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY))
-            return super.hurt(damageSource, damage);
-        AnimationState anim = this.getAnimationHandler().getAnimation();
-        return (anim == null || !anim.is(TSUBAME_GAESHI)
-                || (anim.isPast("invulnerable_start") && !anim.isPast("invulnerable_end"))) && super.hurt(damageSource, damage);
+        return !this.getAnimationHandler().isCurrent(TSUBAME_GAESHI) && super.hurt(damageSource, damage);
     }
 
     @Override

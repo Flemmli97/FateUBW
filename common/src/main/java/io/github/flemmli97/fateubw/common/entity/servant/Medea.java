@@ -26,7 +26,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
@@ -331,9 +330,7 @@ public class Medea extends BaseServant {
 
     @Override
     public boolean hurt(DamageSource damageSource, float damage) {
-        if (damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY))
-            return super.hurt(damageSource, damage);
-        return !this.transit(false) && super.hurt(damageSource, damage);
+        return !this.getAnimationHandler().isCurrent(RULE_BREAKER) && !this.transit(false) && super.hurt(damageSource, damage);
     }
 
     private boolean transit(boolean teleportOnly) {
