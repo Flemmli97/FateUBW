@@ -1,7 +1,7 @@
 package io.github.flemmli97.fateubw.common.entity.misc;
 
 import io.github.flemmli97.fateubw.common.attachment.PlayerData;
-import io.github.flemmli97.fateubw.common.entity.utils.DaggerHitNotifiable;
+import io.github.flemmli97.fateubw.common.entity.utils.OnProjectileHit;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.platform.Platform;
 import io.github.flemmli97.tenshilib.common.utils.HitResultUtils;
@@ -17,6 +17,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -122,8 +123,8 @@ public class ChainDagger extends BaseProjectile {
             this.hookedEntity = result.getEntity();
             this.entityData.set(HOOKED_ENTITY, result.getEntity().getId());
             this.setDeltaMovement(Vec3.ZERO);
-            if (this.getOwner() instanceof DaggerHitNotifiable notif)
-                notif.onDaggerHit(this);
+            if (this.getOwner() instanceof OnProjectileHit notif)
+                notif.onProjectileHit(this);
             return true;
         } else if (result.getEntity() == this.getOwner()) {
             this.discard();
@@ -149,6 +150,14 @@ public class ChainDagger extends BaseProjectile {
     protected void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
         compound.remove("Shooter"); //Don't save owner
+    }
+
+    @Override
+    public AABB getBoundingBoxForCulling() {
+        Entity owner = this.getOwner();
+        if (owner == null)
+            return super.getBoundingBoxForCulling();
+        return super.getBoundingBoxForCulling().expandTowards(owner.position().subtract(this.position()));
     }
 
     public void retractHook() {

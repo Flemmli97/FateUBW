@@ -65,13 +65,12 @@ public class BehaviourUtils {
     public static <E extends Mob & AnimatedEntity> PlayAnimation.OnContinue<E> cooldownHandlerCont() {
         return (animation, chains, entity) -> {
             // Extend cooldown by chained attacks
-            double calc = BrainUtils.getTimeUntilMemoryExpires(entity, MemoryModuleType.ATTACK_COOLING_DOWN);
             if (chains != null) {
+                double add = 0;
                 for (AnimationPlayHolder.AnimationHolder chain : chains) {
-                    calc += entity.getAnimationHandler().get(chain.animation()).length();
+                    add += entity.getAnimationHandler().get(chain.animation()).length();
                 }
-                int cooldown = Mth.ceil(calc);
-                BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true, cooldown);
+                modifyExpiringMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, Mth.ceil(add));
             }
         };
     }
@@ -173,5 +172,18 @@ public class BehaviourUtils {
         behaviour.startCondition(entity -> !reached.test(entity));
         behaviour.stopIf(reached);
         return behaviour;
+    }
+
+    public static <T> void modifyExpiringMemory(Mob mob, MemoryModuleType<T> memory, int modifier) {
+        long current = BrainUtils.getTimeUntilMemoryExpires(mob, memory);
+        if (current > 0) {
+            current += modifier;
+            if (current <= 0) {
+                BrainUtils.clearMemory(mob, memory);
+            } else {
+                T value = BrainUtils.getMemory(mob, memory);
+                BrainUtils.setForgettableMemory(mob, memory, value, Math.toIntExact(current));
+            }
+        }
     }
 }

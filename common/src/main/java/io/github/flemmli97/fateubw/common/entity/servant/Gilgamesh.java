@@ -4,7 +4,9 @@ import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.SwitchableWeapon;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.misc.BabylonWeapon;
+import io.github.flemmli97.fateubw.common.entity.misc.EnkiduChains;
 import io.github.flemmli97.fateubw.common.entity.misc.EnumaElish;
+import io.github.flemmli97.fateubw.common.entity.utils.OnProjectileHit;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.ParticlePositionProvider;
@@ -50,7 +52,7 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAtt
 import net.tslat.smartbrainlib.util.BrainUtils;
 import org.joml.Vector4f;
 
-public class Gilgamesh extends BaseServant {
+public class Gilgamesh extends BaseServant implements OnProjectileHit {
 
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
     public static final String ONE_HAND_1 = BUILDER.add("one_hand_1", AnimationsBuilder.definition(0.68)
@@ -87,6 +89,8 @@ public class Gilgamesh extends BaseServant {
 
     public final SwitchableWeapon<Gilgamesh> switchableWeapon = new SwitchableWeapon<>(this, new ItemStack(FateItems.ENUMAELISH.get()), ItemStack.EMPTY);
 
+    private int chainCooldown = 200, leapCooldown;
+
     public Gilgamesh(EntityType<? extends Gilgamesh> entityType, Level level) {
         super(entityType, level);
         this.revealServant();
@@ -109,11 +113,13 @@ public class Gilgamesh extends BaseServant {
                 .start(STAB_1).play(BehaviourUtils.cooldownedPlay(true, 18, 30))
                 .condition(gil -> !gil.useRanged() && BehaviourUtils.ifCloserThan(4).test(gil))
                 .end(7)
-                .start(BABYLON_1, BABYLON_2, BABYLON_3).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(18), 30, 50))
+                .start(BABYLON_1, BABYLON_2, BABYLON_3).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(20),
+                        (s, entity) -> 30 + entity.getRandom().nextInt(20) - (entity.chainCooldown > 0 ? 15 : 0)))
                 .prepare(new SetWalkTargetWithinDist<Gilgamesh>()
-                        .min(6).max(16).speedMod(1.2f)).prepareOptional(BehaviourUtils.timedMoveAttack())
+                        .min(8).max(18).speedMod(1.2f)).prepareOptional(BehaviourUtils.timedMoveAttack(15, 30))
                 .end(11 * 3)
-                .start(BABYLON_1, BABYLON_2, BABYLON_3).play((PlayAnimation<Gilgamesh>) BehaviourUtils.<Gilgamesh>cooldownedPlay(BehaviourUtils.ifCloserThan(18), 30, 50)
+                .start(BABYLON_1, BABYLON_2, BABYLON_3).play((PlayAnimation<Gilgamesh>) BehaviourUtils.<Gilgamesh>cooldownedPlay(BehaviourUtils.ifCloserThan(20),
+                                (s, entity) -> 30 + entity.getRandom().nextInt(20) - (entity.chainCooldown > 0 ? 15 : 0))
                         .startCondition(BehaviourUtils.ifCloserThan(16)))
                 .condition(gil -> !gil.useRanged())
                 .prepare(new SetWalkTargetToAttackTarget<Gilgamesh>().closeEnoughDist(BehaviourUtils.closeEnough(16)))
@@ -133,9 +139,12 @@ public class Gilgamesh extends BaseServant {
                 .add(3, Gilgamesh::useRanged, new Idle<>())
                 .add(10, new StrafeTarget<Gilgamesh>().strafeDistance(14))
                 .add(7, new SetWalkTargetAwayFromTarget<Gilgamesh>().radius(7).speedMod(1.1f), BehaviourUtils.moveTo())
-                .add(2, gil -> BehaviourUtils.ifCloserThan(7).test(gil), new LeapInDirection<Gilgamesh>()
+                .add(2, gil -> gil.leapCooldown < 0 && BehaviourUtils.ifCloserThan(7).test(gil), new LeapInDirection<Gilgamesh>()
                         .horizontalDirection((owner, target) -> LeapInDirection.createBackwardsVec(owner.position(), target.position()))
-                        .whenStarting(e -> BrainUtils.clearMemory(e, MemoryModuleType.ATTACK_COOLING_DOWN))).build();
+                        .whenStarting(e -> {
+                            e.leapCooldown = 80 + e.getRandom().nextInt(40);
+                            BrainUtils.clearMemory(e, MemoryModuleType.ATTACK_COOLING_DOWN);
+                        })).build();
     }
 
     @Override
@@ -148,6 +157,15 @@ public class Gilgamesh extends BaseServant {
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
         this.switchableWeapon.read(tag, this.registryAccess());
+    }
+
+    @Override
+    public void baseTick() {
+        super.baseTick();
+        if (!this.level().isClientSide) {
+            --this.chainCooldown;
+            --this.leapCooldown;
+        }
     }
 
     @Override
@@ -285,7 +303,19 @@ public class Gilgamesh extends BaseServant {
         if (this.getAnimationHandler().getAnimation() == null)
             this.spawnBehind(target, weaponAmount);
         else if (this.getAnimationHandler().isCurrent(BABYLON_1, BABYLON_2, BABYLON_3)) {
-            if (this.getRandom().nextInt(3) == 0)
+            int chainChance = 0;
+            if (this.chainCooldown < 0) {
+                if (this.getHealth() < this.getMaxHealth() * 0.3) {
+                    chainChance = 3;
+                } else if (this.getHealth() < this.getMaxHealth() * 0.5) {
+                    chainChance = 5;
+                } else if (this.getHealth() < this.getMaxHealth() * 0.8) {
+                    chainChance = 7;
+                }
+            }
+            if (chainChance > 0 && this.getRandom().nextInt(chainChance) == 0) {
+                this.spawnChains(target, weaponAmount);
+            } else if (this.getRandom().nextInt(3) == 0)
                 this.spawnAroundTarget(target, weaponAmount);
             else
                 this.spawnBehind(target, weaponAmount);
@@ -294,10 +324,17 @@ public class Gilgamesh extends BaseServant {
 
     private void spawnBehind(LivingEntity target, int amount) {
         BabylonWeapon.spawnWeapons(this, target, amount, 7);
+        this.chainCooldown -= 50;
     }
 
     private void spawnAroundTarget(LivingEntity target, int amount) {
         BabylonWeapon.spawnWeaponsAround(this, target, amount, 6 + amount / 5);
+        this.chainCooldown -= 50;
+    }
+
+    private void spawnChains(LivingEntity target, int amount) {
+        amount = Math.max(7, Mth.ceil(amount * 0.7));
+        EnkiduChains.spawnWeaponsAround(this, target, amount, 7 + amount / 7);
     }
 
     protected boolean useRanged() {
@@ -312,5 +349,21 @@ public class Gilgamesh extends BaseServant {
     @Override
     public Vector4f summonColor() {
         return this.summonColor;
+    }
+
+    @Override
+    public void onProjectileHit(Entity entity) {
+        if (entity instanceof EnkiduChains) {
+            if (this.chainCooldown < 0) {
+                BehaviourUtils.modifyExpiringMemory(this, MemoryModuleType.ATTACK_COOLING_DOWN, -20);
+                this.chainCooldown = 250 + this.getRandom().nextInt(100);
+                LivingEntity target = BrainUtils.getTargetOfEntity(this);
+                if (target != null && this.distanceToSqr(target) < 16) {
+                    Vec3 dir = target.position().subtract(this.position());
+                    dir = new Vec3(-dir.x(), 0, -dir.z()).normalize().scale(4.5);
+                    entity.setDeltaMovement(dir.x(), 0.2, dir.z());
+                }
+            }
+        }
     }
 }

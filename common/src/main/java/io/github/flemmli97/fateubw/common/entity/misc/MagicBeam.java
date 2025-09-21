@@ -148,7 +148,7 @@ public class MagicBeam extends BaseBeam {
 
     @Override
     public void onImpact(EntityHitResult result) {
-        Utils.runWithInvulTimer(null, result.getEntity(),
+        Utils.runWithInvulTimer(this.getOwner(), result.getEntity(),
                 target -> target.hurt(FateDamageTypes.indirect(FateDamageTypes.MAGIC_BEAM, this, this.getOwner()), (Utils.magicDamage(this.getOwner()) + CommonConfig.magicBeam) * this.damageMultiplier), 2);
     }
 

@@ -5,7 +5,7 @@ import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.misc.ChainDagger;
 import io.github.flemmli97.fateubw.common.entity.summons.GordiusWheel;
 import io.github.flemmli97.fateubw.common.entity.summons.Pegasus;
-import io.github.flemmli97.fateubw.common.entity.utils.DaggerHitNotifiable;
+import io.github.flemmli97.fateubw.common.entity.utils.OnProjectileHit;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailProvider;
@@ -52,7 +52,7 @@ import org.joml.Vector4f;
 
 import java.util.function.Predicate;
 
-public class Medusa extends BaseServant implements DaggerHitNotifiable {
+public class Medusa extends BaseServant implements OnProjectileHit {
 
     protected static final EntityDataAccessor<Boolean> THROWN_DAGGER = SynchedEntityData.defineId(Medusa.class, EntityDataSerializers.BOOLEAN);
 
@@ -424,8 +424,9 @@ public class Medusa extends BaseServant implements DaggerHitNotifiable {
     }
 
     @Override
-    public void onDaggerHit(ChainDagger dagger) {
-        this.getAnimationHandler().setAnimation(RETRIEVE);
+    public void onProjectileHit(Entity entity) {
+        if (entity instanceof ChainDagger)
+            this.getAnimationHandler().setAnimation(RETRIEVE);
     }
 
     @Override

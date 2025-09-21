@@ -71,7 +71,7 @@ public class BabylonWeapon extends BaseProjectile {
 
     public BabylonWeapon(Level level, LivingEntity shootingEntity) {
         super(FateEntities.BABYLON.get(), level, shootingEntity);
-        this.entityData.set(SHOOT_TIME, this.random.nextInt(30) + 20);
+        this.entityData.set(SHOOT_TIME, this.random.nextInt(15) + 15);
     }
 
     public BabylonWeapon(Level level, LivingEntity shootingEntity, LivingEntity target) {
@@ -109,7 +109,6 @@ public class BabylonWeapon extends BaseProjectile {
     @Override
     public void tick() {
         if (this.preparing()) {
-            this.preparationTick++;
             this.updatePreparation();
         } else {
             if (!this.level().isClientSide) {
@@ -237,7 +236,7 @@ public class BabylonWeapon extends BaseProjectile {
     protected boolean entityRayTraceHit(EntityHitResult result) {
         DamageSource source = FateDamageTypes.indirect(FateDamageTypes.BABYLON, this, this.getOwner());
         float damage = (float) ItemUtils.damage(this.level(), null, result.getEntity(), source, this.getWeapon());
-        boolean res = Utils.runWithInvulTimer(null, result.getEntity(),
+        boolean res = Utils.runWithInvulTimer(this.getOwner(), result.getEntity(),
                 e -> e.hurt(source, damage * CommonConfig.babylonScale), 2);
         if (res) {
             if (result.getEntity() instanceof LivingEntity entity) {

@@ -9,6 +9,7 @@ import io.github.flemmli97.fateubw.common.entity.misc.ArcherArrow;
 import io.github.flemmli97.fateubw.common.entity.misc.BabylonWeapon;
 import io.github.flemmli97.fateubw.common.entity.misc.CaladBolg;
 import io.github.flemmli97.fateubw.common.entity.misc.ChainDagger;
+import io.github.flemmli97.fateubw.common.entity.misc.EnkiduChains;
 import io.github.flemmli97.fateubw.common.entity.misc.EnumaElish;
 import io.github.flemmli97.fateubw.common.entity.misc.Excalibur;
 import io.github.flemmli97.fateubw.common.entity.misc.GaeBolg;
@@ -237,6 +238,7 @@ public class FateEntities {
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<MagicShot>> MAGIC_SHOT = reg("magic_shot", EntityType.Builder.<MagicShot>of(MagicShot::new, MobCategory.MISC).sized(0.25F, 0.25F));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<Tentacle>> TENTACLE = reg("tentacle", EntityType.Builder.of(Tentacle::new, MobCategory.MISC).sized(0.05F, 0.05F));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<StarfishShot>> STARFISH_SHOT = reg("starfish_shot", EntityType.Builder.<StarfishShot>of(StarfishShot::new, MobCategory.MISC).sized(0.25F, 0.25F));
+    public static final RegistryEntrySupplier<EntityType<?>, EntityType<EnkiduChains>> ENKIDU_CHAINS = reg("enkidu_chains", EntityType.Builder.<EnkiduChains>of(EnkiduChains::new, MobCategory.MISC).sized(0.25F, 0.25F));
 
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<LesserMonster>> LESSER_MONSTER = regWithEgg("starfish_monster", EntityType.Builder.<LesserMonster>of(LesserMonster::new, MobCategory.MONSTER).clientTrackingRange(8),
             0x171c3f, 0x00ff00,

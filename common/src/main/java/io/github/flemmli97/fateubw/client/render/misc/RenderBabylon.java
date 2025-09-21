@@ -47,18 +47,18 @@ public class RenderBabylon extends EntityRenderer<BabylonWeapon> {
     }
 
     @Override
-    public void render(BabylonWeapon projectile, float rotation, float partialTicks, PoseStack stack, MultiBufferSource buffer, int packedLight) {
-        if (projectile.preparing()) {
+    public void render(BabylonWeapon entity, float rotation, float partialTicks, PoseStack stack, MultiBufferSource buffer, int packedLight) {
+        if (entity.preparing()) {
             stack.pushPose();
-            float scale = Math.min(1, (projectile.tickCount + partialTicks) / 6f);
+            float scale = Math.min(1, (entity.tickCount + partialTicks) / 6f);
             stack.scale(scale, scale, scale);
-            stack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, projectile.yRotO, projectile.getYRot())));
-            stack.mulPose(Axis.XP.rotationDegrees(Mth.lerp(partialTicks, projectile.xRotO, projectile.getXRot())));
-            stack.translate(0, 0, 0.25f);
+            stack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, entity.yRotO, entity.getYRot())));
+            stack.mulPose(Axis.XP.rotationDegrees(Mth.lerp(partialTicks, entity.xRotO, entity.getXRot())));
+            stack.translate(0, entity.getBbHeight() * 0.5, entity.getBbWidth() * 0.5);
             float size = 1.5f;
             Matrix4f matrix4f = stack.last().pose();
             VertexConsumer consumer = buffer.getBuffer(FateRenders.BABYLON_RENDER);
-            float tick = projectile.tickCount + projectile.renderRand;
+            float tick = entity.tickCount + entity.renderRand;
             tick = ((tick % 24000) + partialTicks) / 24000.0f;
             VertexUtils.addVertexData(
                     consumer.addVertex(matrix4f, -size, -size, 0).setColor(this.color.x(), this.color.y(), this.color.z(), 1).setUv(0, 0),
@@ -103,16 +103,22 @@ public class RenderBabylon extends EntityRenderer<BabylonWeapon> {
             );
             stack.popPose();
         } else {
-            TrailRenderer.render(projectile, this.info, projectile.trailPositions(), buffer.getBuffer(FateRenders.TRAIL_TRANSLUCENT), partialTicks);
+            TrailRenderer.render(entity, TrailInfo.builder(new ParticlePositionProvider.ParticlePositionData(0))
+                    .setColor(255 / 255f, 217 / 255f, 100 / 255f, 0.7f)
+                    .setColor2(255 / 255f, 217 / 255f, 67 / 255f, 0.3f)
+                    .setWidth(0.07f)
+                    .setWidth2(0.005f)
+                    .setInterpolation(1)
+                    .build(), entity.trailPositions(), buffer.getBuffer(FateRenders.TRAIL_TRANSLUCENT), partialTicks);
         }
         stack.pushPose();
         stack.scale(2, 2, 2);
-        if (projectile.preparing()) {
-            float yRot = Mth.lerp(partialTicks, projectile.yRotO, projectile.getYRot());
-            float xRot = Mth.lerp(partialTicks, projectile.xRotO, projectile.getXRot());
+        if (entity.preparing()) {
+            float yRot = Mth.lerp(partialTicks, entity.yRotO, entity.getYRot());
+            float xRot = Mth.lerp(partialTicks, entity.xRotO, entity.getXRot());
             stack.mulPose(Axis.YP.rotationDegrees(yRot));
             stack.mulPose(Axis.XP.rotationDegrees(xRot));
-            stack.translate(0, 0, Math.max(0, 2 * (0.8 - projectile.preparationState(partialTicks))));
+            stack.translate(0, 0, Math.max(0, 2 * (0.8 - entity.preparationState(partialTicks))));
             stack.mulPose(Axis.XP.rotationDegrees(-xRot));
             stack.mulPose(Axis.YP.rotationDegrees(-yRot));
             stack.mulPose(Axis.YP.rotationDegrees(180));
@@ -121,22 +127,22 @@ public class RenderBabylon extends EntityRenderer<BabylonWeapon> {
         // Use separate buffersource for that instead
         AtomicInteger state = new AtomicInteger();
         Vector4f clip;
-        if (projectile.preparing()) {
+        if (entity.preparing()) {
             Vector3f normal = new Vector3f(0, 0, 1);
             Matrix3f matrix3f = new Matrix3f();
             matrix3f.identity();
-            matrix3f.rotate(Axis.YP.rotationDegrees(180 + Mth.lerp(partialTicks, projectile.yRotO, projectile.getYRot())));
-            matrix3f.rotate(Axis.XP.rotationDegrees(-Mth.lerp(partialTicks, projectile.xRotO, projectile.getXRot())));
+            matrix3f.rotate(Axis.YP.rotationDegrees(180 + Mth.lerp(partialTicks, entity.yRotO, entity.getYRot())));
+            matrix3f.rotate(Axis.XP.rotationDegrees(-Mth.lerp(partialTicks, entity.xRotO, entity.getXRot())));
             normal.mul(matrix3f);
-            clip = FateRenders.createClippingPlane(normal, projectile, 0.25f);
-        } else if (projectile.despawning()) {
+            clip = FateRenders.createClippingPlane(normal, entity, entity.getBbWidth() * 0.5f);
+        } else if (entity.despawning()) {
             Vector3f normal = new Vector3f(0, 0, 1);
             Matrix3f matrix3f = new Matrix3f();
             matrix3f.identity();
-            matrix3f.rotate(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, projectile.yRotO, projectile.getYRot())));
-            matrix3f.rotate(Axis.XP.rotationDegrees(-Mth.lerp(partialTicks, projectile.xRotO, projectile.getXRot())));
+            matrix3f.rotate(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, entity.yRotO, entity.getYRot())));
+            matrix3f.rotate(Axis.XP.rotationDegrees(-Mth.lerp(partialTicks, entity.xRotO, entity.getXRot())));
             normal.mul(matrix3f);
-            clip = FateRenders.createClippingPlane(normal, projectile, -projectile.despawnProgress() * 2f + 1f);
+            clip = FateRenders.createClippingPlane(normal, entity, -entity.despawnProgress() * 2f + 1f);
         } else {
             clip = null;
         }
@@ -151,10 +157,10 @@ public class RenderBabylon extends EntityRenderer<BabylonWeapon> {
             return cons;
         } : buffer;
         stack.translate(0, 0.15f, 0);
-        stack.mulPose(Axis.YP.rotationDegrees(90 + Mth.lerp(partialTicks, projectile.yRotO, projectile.getYRot())));
-        stack.mulPose(Axis.ZP.rotationDegrees(135 - Mth.lerp(partialTicks, projectile.xRotO, projectile.getXRot())));
-        Minecraft.getInstance().getItemRenderer().renderStatic(this.getRenderItemStack(projectile), ItemDisplayContext.GROUND, 0xff00ff, OverlayTexture.NO_OVERLAY, stack, buf, projectile.level(), projectile.getId());
-        super.render(projectile, rotation, partialTicks, stack, buf, 0xff00ff);
+        stack.mulPose(Axis.YP.rotationDegrees(90 + Mth.lerp(partialTicks, entity.yRotO, entity.getYRot())));
+        stack.mulPose(Axis.ZP.rotationDegrees(135 - Mth.lerp(partialTicks, entity.xRotO, entity.getXRot())));
+        Minecraft.getInstance().getItemRenderer().renderStatic(this.getRenderItemStack(entity), ItemDisplayContext.GROUND, 0xff00ff, OverlayTexture.NO_OVERLAY, stack, buf, entity.level(), entity.getId());
+        super.render(entity, rotation, partialTicks, stack, buf, 0xff00ff);
         if (state.get() != 0) // other buffersource was used
             SEP.endBatch();
         stack.popPose();

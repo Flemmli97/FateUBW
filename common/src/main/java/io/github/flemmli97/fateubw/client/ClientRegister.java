@@ -13,6 +13,7 @@ import io.github.flemmli97.fateubw.client.render.misc.RenderBabylon;
 import io.github.flemmli97.fateubw.client.render.misc.RenderCaladbolg;
 import io.github.flemmli97.fateubw.client.render.misc.RenderChainDagger;
 import io.github.flemmli97.fateubw.client.render.misc.RenderEA;
+import io.github.flemmli97.fateubw.client.render.misc.RenderEnkiduChains;
 import io.github.flemmli97.fateubw.client.render.misc.RenderExcalibur;
 import io.github.flemmli97.fateubw.client.render.misc.RenderGaeBolg;
 import io.github.flemmli97.fateubw.client.render.misc.RenderGem;
@@ -106,6 +107,7 @@ public class ClientRegister {
         consumer.register(FateEntities.MAGIC_SHOT.get(), EmptyRender::new);
         consumer.register(FateEntities.TENTACLE.get(), RenderTentacle::new);
         consumer.register(FateEntities.STARFISH_SHOT.get(), EmptyRender::new);
+        consumer.register(FateEntities.ENKIDU_CHAINS.get(), RenderEnkiduChains::new);
 
         consumer.register(FateEntities.LESSER_MONSTER.get(), RenderStarfish::new);
         consumer.register(FateEntities.HASSAN_COPY.get(), RenderHassanCopy::new);

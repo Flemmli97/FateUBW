@@ -107,7 +107,7 @@ public class Excalibur extends BaseBeam {
 
     @Override
     public void onImpact(EntityHitResult result) {
-        Utils.runWithInvulTimer(null, result.getEntity(),
+        Utils.runWithInvulTimer(this.getOwner(), result.getEntity(),
                 e -> e.hurt(FateDamageTypes.indirect(FateDamageTypes.EXCALIBUR, this, this.getOwner()), Utils.magicDamage(this.getOwner()) + CommonConfig.excaliburDamage),
                 4);
     }
