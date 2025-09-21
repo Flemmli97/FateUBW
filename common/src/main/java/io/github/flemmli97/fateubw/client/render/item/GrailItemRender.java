@@ -1,4 +1,4 @@
-package io.github.flemmli97.fateubw.client.render;
+package io.github.flemmli97.fateubw.client.render.item;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.flemmli97.fateubw.common.registry.FateItems;

@@ -22,7 +22,7 @@ public class RenderEnkiduChains extends EntityRenderer<EnkiduChains> {
 
     public static final ResourceLocation TEXTURE = Fate.modRes("textures/entity/enkidu_chain.png");
 
-    private final Vector4f color = new Vector4f(255 / 255f, 216 / 255f, 76 / 255f, 0.7f);
+    private final Vector4f color = new Vector4f(234 / 255f, 165 / 255f, 37 / 255f, 0.7f);
 
     public RenderEnkiduChains(EntityRendererProvider.Context ctx) {
         super(ctx);

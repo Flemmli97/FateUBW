@@ -134,7 +134,7 @@ public class TrailRenderer {
             return previousNormal != null ? previousNormal : new Vector3f(0, 1, 0);
         }
         Vector3f target = to.add(from, new Vector3f());
-        return target.cross(camera.getLookVector(), new Vector3f()).mul(-1).normalize();
+        return target.cross(camera.getLookVector(), new Vector3f()).normalize();
     }
 
     protected static Vector4f[] vertices(TrailInfo info, Vector3f current, Vector3f next, Vector3f currentNorm, Vector3f nextNorm, float progPrev, float prog) {

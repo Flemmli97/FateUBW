@@ -32,11 +32,11 @@ public class RenderBabylon extends EntityRenderer<BabylonWeapon> {
 
     private static final MultiBufferSource.BufferSource SEP = MultiBufferSource.immediate(new ByteBufferBuilder(1536));
 
-    private final Vector4f color = new Vector4f(255 / 255f, 216 / 255f, 76 / 255f, 0.7f);
+    private final Vector4f color = new Vector4f(234 / 255f, 165 / 255f, 37 / 255f, 0.7f);
 
     private final TrailInfo info = TrailInfo.builder(new ParticlePositionProvider.ParticlePositionData(0))
-            .setColor(255 / 255f, 190 / 255f, 25 / 255f, 0.8f)
-            .setColor2(255 / 255f, 205 / 255f, 100 / 255f, 0.6f)
+            .setColor(234 / 255f, 165 / 255f, 37 / 255f, 0.7f)
+            .setColor2(255 / 255f, 217 / 255f, 67 / 255f, 0.3f)
             .setWidth(0.07f)
             .setWidth2(0.005f)
             .setInterpolation(1)
@@ -103,13 +103,7 @@ public class RenderBabylon extends EntityRenderer<BabylonWeapon> {
             );
             stack.popPose();
         } else {
-            TrailRenderer.render(entity, TrailInfo.builder(new ParticlePositionProvider.ParticlePositionData(0))
-                    .setColor(255 / 255f, 217 / 255f, 100 / 255f, 0.7f)
-                    .setColor2(255 / 255f, 217 / 255f, 67 / 255f, 0.3f)
-                    .setWidth(0.07f)
-                    .setWidth2(0.005f)
-                    .setInterpolation(1)
-                    .build(), entity.trailPositions(), buffer.getBuffer(FateRenders.TRAIL_TRANSLUCENT), partialTicks);
+            TrailRenderer.render(entity, this.info, entity.trailPositions(), buffer.getBuffer(FateRenders.TRAIL_TRANSLUCENT), partialTicks);
         }
         stack.pushPose();
         stack.scale(2, 2, 2);

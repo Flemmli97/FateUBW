@@ -74,9 +74,9 @@ public class FateRenders extends RenderType {
             .setTransparencyState(CORRUPTED_OVERLAY_TRANSPARENCY)
             .setDepthTestState(EQUAL_DEPTH_TEST)
             .setTexturingState(GLINT_TEXTURING).createCompositeState(false));
-    public static final RenderType TRAIL_TRANSLUCENT = RenderType.create("fateubw:trail_translucent", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder()
-            .setShaderState(POSITION_COLOR_SHADER)
-            .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+    public static final RenderType TRAIL_TRANSLUCENT = RenderType.create("fateubw:trail_translucent", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 1536, false, true, RenderType.CompositeState.builder()
+            .setShaderState(RENDERTYPE_LIGHTNING_SHADER)
+            .setTransparencyState(LIGHTNING_TRANSPARENCY)
             .setDepthTestState(LEQUAL_DEPTH_TEST)
             .setCullState(NO_CULL).createCompositeState(false));
 
