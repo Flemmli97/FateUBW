@@ -110,7 +110,7 @@ public class Heracles extends BaseServant {
             .marker(EntityWeaponTrailProvider.TRAIL_END, 0.28));
     private static final String DEATH = BUILDER.add("death", AnimationsBuilder.definition(0.68).infinite());
     private static final String FAKE_DEATH = BUILDER.add("fake_death", AnimationsBuilder.definition(5.92)
-            .marker("roar", 5.));
+            .marker("roar", 5.).marker("revive", 5.5));
     private static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2)
             .marker("roar", 0.84));
     public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
@@ -178,14 +178,14 @@ public class Heracles extends BaseServant {
                         .start(TWO_HAND_HEAVY_2, 2, 0.48f, 1)
                         .chain(ONE_HAND_HEAVY_3, 2, 0.48f)
                         .chainChance(0.5f).build())).play(BehaviourUtils.cooldownedPlay(true, 20, 35))
-                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .prepare(new SetWalkTargetToAttackTarget<BaseServant>().speedMod((e, t) -> 1.1f)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(12)
                 .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(TWO_HAND_HEAVY_1)
                         .start(TWO_HAND_HEAVY_2, 2, 0.48f, 1)
                         .start(TWO_HAND_HEAVY_2, 2, 0.48f, 1)
                         .chain(ONE_HAND_HEAVY_2, 2, 0.48f)
                         .chainChance(0.5f).build())).play(BehaviourUtils.cooldownedPlay(true, 20, 35))
-                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .prepare(new SetWalkTargetToAttackTarget<BaseServant>().speedMod((e, t) -> 1.1f)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(12)
                 .start(JUMP).play(BehaviourUtils.cooldownedPlay(false, 40, 60))
                 .condition(entity -> {
@@ -227,9 +227,19 @@ public class Heracles extends BaseServant {
         super.baseTick();
         AnimationState anim = this.getAnimationHandler().getAnimation();
         if (!this.level().isClientSide) {
-            if (anim != null && anim.isAt("roar")) {
-                this.playSound(FateSounds.HERACLES_ROAR.get(), 1, 1);
-                S2CScreenShake.sendAround(this, 24, 16, 2);
+            if (anim != null) {
+                if (anim.isAt("roar")) {
+                    this.playSound(FateSounds.HERACLES_ROAR.get(), 1, 1);
+                    S2CScreenShake.sendAround(this, 24, 16, 2);
+                }
+                if (anim.is(FAKE_DEATH) && anim.isAt("revive")) {
+                    int maxDeaths = this.props().getConfig(ServantExtraData.HERACLES_DEATH_MAX);
+                    double mod = ((double) this.getDeaths() / maxDeaths) * 0.7;
+                    this.applyDeathMod(mod);
+                    this.setHealth(this.getMaxHealth());
+                    this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 300, 2, false, false));
+                    this.revealServant();
+                }
             }
         } else {
             if (anim != null) {
@@ -276,36 +286,26 @@ public class Heracles extends BaseServant {
     }
 
     @Override
-    public boolean hurt(DamageSource damageSource, float damage) {
-        if (!damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && (damage -= 4) < 0)
-            return false;
-        return super.hurt(damageSource, damage);
+    public boolean isAlive() {
+        return super.isAlive() && (this.getAnimationHandler() == null || !this.getAnimationHandler().isCurrent(FAKE_DEATH));
     }
 
     @Override
-    protected void tickDeath() {
-        if (this.getLastDamageSource() != null && this.getLastDamageSource().is(DamageTypeTags.BYPASSES_INVULNERABILITY) || this.voidDeath) {
-            this.voidDeath = true;
-            super.tickDeath();
-        } else if (!this.level().isClientSide) {
+    public boolean hurt(DamageSource damageSource, float damage) {
+        if (!damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && (damage -= 4) < 0)
+            return false;
+        return !this.getAnimationHandler().isCurrent(FAKE_DEATH) && super.hurt(damageSource, damage);
+    }
+
+    @Override
+    protected void actuallyHurt(DamageSource damageSource, float damageAmount) {
+        super.actuallyHurt(damageSource, damageAmount);
+        if (this.getHealth() <= 0 && !damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             int maxDeaths = this.props().getConfig(ServantExtraData.HERACLES_DEATH_MAX);
             if (this.getDeaths() < maxDeaths) {
-                this.deathTime++;
-                if (this.deathTime == 1) {
-                    this.getAnimationHandler().setAnimation(FAKE_DEATH);
-                }
-                AnimationState anim = this.getAnimationHandler().getAnimation();
-                if (anim == null || !anim.is(FAKE_DEATH)) {
-                    this.setDeathNumber(this.getDeaths() + 1);
-                    double mod = ((double) this.getDeaths() / maxDeaths) * 0.7;
-                    this.applyDeathMod(mod);
-                    this.setHealth(this.getMaxHealth());
-                    this.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 300, 2, false, false));
-                    this.deathTime = 0;
-                    this.revealServant();
-                }
-            } else {
-                super.tickDeath();
+                this.getAnimationHandler().setAnimation(FAKE_DEATH);
+                this.setHealth(0.0001f);
+                this.setDeathNumber(this.getDeaths() + 1);
             }
         }
     }

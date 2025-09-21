@@ -48,7 +48,7 @@ public class EventCalls {
         if (entity instanceof ServerPlayer player)
             Platform.INSTANCE.getPlayerData(player).tick(player);
         if (!entity.level().isClientSide) {
-            if (entity.tickCount % 20 == 0) {
+            if (entity.isAlive() && entity.tickCount % 20 == 0) {
                 boolean target = entity instanceof Mob mob && mob.getTarget() != null;
                 AttributeInstance att = entity.getAttribute(target || ((CombatTrackerAccessor) entity.getCombatTracker()).getInCombat() ?
                         FateAttributes.COMBAT_REGEN.asHolder() : FateAttributes.PASSIVE_REGEN.asHolder());
