@@ -80,6 +80,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
@@ -112,6 +113,7 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttack
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetPlayerLookTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliate;
+import net.tslat.smartbrainlib.api.core.navigation.SmoothGroundNavigation;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
@@ -191,7 +193,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
 
     public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMonsterAttributes()
-                .add(Attributes.FOLLOW_RANGE, 24.0)
+                .add(Attributes.FOLLOW_RANGE, 32.0)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1)
                 .add(FateAttributes.MAGIC_ATTACK.asHolder()).add(FateAttributes.MAGIC_RESISTANCE.asHolder())
                 .add(FateAttributes.PROJECTILE_BLOCK_CHANCE.asHolder()).add(FateAttributes.PROJECTILE_RESISTANCE.asHolder())
@@ -228,6 +230,14 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
     @Override
     public SyncedDataContainer<?> getDataContainer() {
         return this.syncedDataContainer;
+    }
+
+    @Override
+    protected PathNavigation createNavigation(Level level) {
+        SmoothGroundNavigation nav = new SmoothGroundNavigation(this, level);
+        nav.setCanOpenDoors(true);
+        nav.setCanPassDoors(true);
+        return nav;
     }
 
     @Override

@@ -63,7 +63,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.util.GoalUtils;
 import net.minecraft.world.entity.ai.util.RandomPos;
@@ -88,6 +87,8 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarge
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliate;
+import net.tslat.smartbrainlib.api.core.navigation.SmoothFlyingPathNavigation;
+import net.tslat.smartbrainlib.api.core.navigation.SmoothGroundNavigation;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.object.MemoryTest;
 import net.tslat.smartbrainlib.util.BrainUtils;
@@ -157,19 +158,6 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
         this.moveControl = new PegasusMoveController(this);
     }
 
-    protected PathNavigation createFlyNavigator(Level level) {
-        FlyingPathNavigation flyingpathnavigator = new FlyingPathNavigation(this, level) {
-            @Override
-            public boolean isStableDestination(BlockPos pos) {
-                return true;
-            }
-        };
-        flyingpathnavigator.setCanOpenDoors(false);
-        flyingpathnavigator.setCanFloat(false);
-        flyingpathnavigator.setCanPassDoors(false);
-        return flyingpathnavigator;
-    }
-
     private void updateAttributes() {
         AttributeHolderProperties props = DatapackHandler.SERVANT_PROPS.getGeneric(this.getType());
         props.attributes().forEach((att, val) -> {
@@ -192,6 +180,20 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
     @Override
     public SyncedDataContainer<?> getDataContainer() {
         return this.syncedDataContainer;
+    }
+
+    protected PathNavigation createFlyNavigator(Level level) {
+        return new SmoothFlyingPathNavigation(Pegasus.this, level) {
+            @Override
+            public boolean isStableDestination(BlockPos pos) {
+                return true;
+            }
+        };
+    }
+
+    @Override
+    protected PathNavigation createNavigation(Level level) {
+        return new SmoothGroundNavigation(this, level);
     }
 
     @Override
@@ -238,21 +240,21 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
                 .condition(entity -> !entity.canFly())
                 .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(6)
-                .start(CHARGING).play(BehaviourUtils.cooldownedPlay(false, 30, 70))
+                .start(CHARGING).play(BehaviourUtils.cooldownedPlay(false, 20, 50))
                 .condition(entity -> !entity.canFly())
                 .prepare(new SetWalkTargetWithinDist<Pegasus>().min(3)
                         .max(10).speedMod(1.2f))
                 .prepareOptional(BehaviourUtils.timedMoveAttack(40, 70))
                 .prepare(new ChargeBehaviour())
                 .end(6)
-                .start(CHARGING).play(BehaviourUtils.cooldownedPlay(false, 30, 70))
+                .start(CHARGING).play(BehaviourUtils.cooldownedPlay(false, 20, 50))
                 .condition(entity -> !entity.canFly() && BehaviourUtils.ifFurtherThan(7).test(entity))
                 .prepare(new SetWalkTargetWithinDist<Pegasus>().min(3)
                         .max(10).speedMod(1.2f))
                 .prepareOptional(BehaviourUtils.timedMoveAttack(40, 70))
                 .prepare(new ChargeBehaviour())
                 .end(7)
-                .start(CHARGING).play(BehaviourUtils.cooldownedPlay(false, 100, 200))
+                .start(CHARGING).play(BehaviourUtils.cooldownedPlay(false, 80, 160))
                 .condition(Pegasus::canFly)
                 .prepare(new SetWalkTargetWithinDist<Pegasus>().min(3)
                         .max(10).speedMod(1.2f))

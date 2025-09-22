@@ -376,7 +376,7 @@ public class Heracles extends BaseServant {
                     if (this.doHurtTarget(e)) {
                         e.setDeltaMovement(dir.x(), -4, dir.z());
                         e.hurtMarked = true;
-                        e.addEffect(new MobEffectInstance(FateMobEffects.GRAVITY.asHolder(), 140, 3));
+                        e.addEffect(new MobEffectInstance(FateMobEffects.GRAVITY.asHolder(), 200, 3));
                         if (e instanceof ServerPlayer player)
                             player.connection.send(new ClientboundSetEntityMotionPacket(player));
                     }
