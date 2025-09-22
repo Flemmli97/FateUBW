@@ -120,9 +120,6 @@ public class Lang implements DataProvider {
         this.add(GrailWarHandler.JoinResult.SUCCESS.translationKey, "Success");
 
         this.add("fateubw.chat.servant.death", "A servant has been killed");
-        this.add("fateubw.chat.servant.avalon", "Avalons healing ability has activated");
-        this.add("fateubw.chat.servant.cuchulainn", "Cuchulainn's speed increased");
-        this.add("fateubw.chat.servant.diarmuid", "Diarmuid's speed increased");
         this.add("fateubw.chat.altar.incomplete", "Incomplete Structure");
         this.add("fateubw.chat.altar.missing.catalyst", "Missing gems!");
         this.add("fateubw.chat.altar.servant.existing", "How dare you to summon another servant!");

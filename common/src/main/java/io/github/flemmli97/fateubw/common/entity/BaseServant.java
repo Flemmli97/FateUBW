@@ -151,7 +151,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
     //Mana
     private double servantMana = 100, manaRegenCounter, nobelPhantasmCooldown;
     private int manaLeechDebuffDuration;
-    protected boolean commandNPUse, critHealth;
+    protected boolean commandNPUse;
 
     protected CommandType commandBehaviour = CommandType.NORMAL;
     protected AttackBehaviour attackBehaviour = AttackBehaviour.NORMAL;
@@ -464,7 +464,6 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
         tag.putInt("Death", this.deathTime);
         tag.putString("Command", this.attackBehaviour.toString());
         tag.putDouble("Mana", this.servantMana);
-        tag.putBoolean("HealthMessage", this.critHealth);
         tag.putBoolean("Revealed", this.showServant());
         if (this.getEquipmentHandler() != null) {
             tag.put("EquipmentHandler", this.getEquipmentHandler().save(this.registryAccess()));
@@ -482,7 +481,6 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
         } catch (IllegalArgumentException ignored) {
         }
         this.servantMana = tag.getInt("Mana");
-        this.critHealth = tag.getBoolean("HealthMessage");
         this.entityData.set(SHOW_SERVANT, tag.getBoolean("Revealed"));
         if (this.getEquipmentHandler() != null) {
             this.getEquipmentHandler().read(tag.getCompound("EquipmentHandler"), this.registryAccess());
@@ -816,7 +814,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
     }
 
     public boolean nobelPhantasmCheck() {
-        return (this.getMana() >= this.props().manaCost() && this.nobelPhantasmCooldown > 0);
+        return (this.getMana() >= this.props().manaCost() && this.nobelPhantasmCooldown <= 0);
     }
 
     public boolean attemptUseNobelPhantasm() {

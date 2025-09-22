@@ -161,12 +161,9 @@ public class Diarmuid extends BaseServant {
                 this.unsealWeapon(this.getOffhandItem(), false);
                 this.playSound(SoundEvents.BEACON_DEACTIVATE, 1.0F, 1.0F);
             }
-            if (this.getHealth() < 0.25 * this.getMaxHealth() && this.getHealth() > 0) {
-                if (!this.critHealth) {
-                    this.critHealth = true;
-                }
+            if (this.healthBelow(0.3f)) {
+                this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 1, 1, false, false));
             }
-            this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 1, 1, false, false));
         } else {
             AnimationState anim = this.getAnimationHandler().getAnimation();
             if (anim != null) {

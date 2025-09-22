@@ -31,10 +31,8 @@ import io.github.flemmli97.tenshilib.common.particle.data.ScaleData;
 import io.github.flemmli97.tenshilib.common.registry.TenshilibSyncableEntityDatas;
 import io.github.flemmli97.tenshilib.common.utils.TypedResource;
 import io.github.flemmli97.tenshilib.common.utils.math.OrientedBoundingBox;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundAnimatePacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -200,12 +198,7 @@ public class Arthur extends BaseServant {
     @Override
     public void baseTick() {
         super.baseTick();
-        if (this.getHealth() < 0.25 * this.getMaxHealth() && this.getHealth() > 0) {
-            if (!this.critHealth) {
-                if (!this.level().isClientSide)
-                    this.level().getServer().getPlayerList().broadcastSystemMessage(Component.translatable("fateubw.chat.servant.avalon").withStyle(ChatFormatting.GOLD), true);
-                this.critHealth = true;
-            }
+        if (this.healthBelow(0.25f)) {
             if (!this.hasEffect(MobEffects.REGENERATION))
                 this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 50, 1, false, false));
         }

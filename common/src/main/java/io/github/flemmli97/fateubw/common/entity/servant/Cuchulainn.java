@@ -21,10 +21,8 @@ import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationsBuilder;
 import io.github.flemmli97.tenshilib.common.particle.AdvancedParticleContainer;
 import io.github.flemmli97.tenshilib.common.particle.data.ParticleMetaData;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundAnimatePacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -149,11 +147,7 @@ public class Cuchulainn extends BaseServant {
             this.gaeBolgThrowTick = Math.max(0, --this.gaeBolgThrowTick);
             if (this.gaeBolgThrowTick == 1 && this.getMainHandItem().getItem() != FateItems.GAEBOLG.get())
                 this.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(FateItems.GAEBOLG.get()));
-            if (this.getHealth() < 0.25 * this.getMaxHealth() && this.getHealth() > 0) {
-                if (!this.critHealth) {
-                    this.level().getServer().getPlayerList().broadcastSystemMessage(Component.translatable("fateubw.chat.servant.cuchulainn").withStyle(ChatFormatting.GOLD), true);
-                    this.critHealth = true;
-                }
+            if (this.healthBelow(0.25f)) {
                 this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 1, 2, false, false));
             }
         } else {

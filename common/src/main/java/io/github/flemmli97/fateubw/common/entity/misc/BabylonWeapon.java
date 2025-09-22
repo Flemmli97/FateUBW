@@ -339,9 +339,9 @@ public class BabylonWeapon extends BaseProjectile {
                 continue;
             BabylonWeapon weapon = new BabylonWeapon(thrower.level(), thrower, target);
             // Initial rotation is based of the delta. don't want to dig into where its exactly handled so this will do
-            weapon.shoot(thrower, offset.getSecond(), offset.getFirst(), 0, 0.02F, 0);
             Vec3 area = pos.add(Vec3.directionFromRotation(-offset.getSecond(), offset.getFirst()).scale(range));
             weapon.setPos(area.x, area.y, area.z);
+            weapon.shoot(thrower, offset.getSecond(), offset.getFirst(), 0, 0.02F, 0);
             weapon.setWeapon(CommonConfig.babylonWeapons.getRandomWeapon(weapon.random));
             weapon.level().addFreshEntity(weapon);
         }
