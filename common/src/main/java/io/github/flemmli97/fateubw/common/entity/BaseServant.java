@@ -53,6 +53,7 @@ import net.minecraft.network.protocol.game.DebugPackets;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -74,6 +75,7 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -133,6 +135,8 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
 
     public static final int MOVE_TICK_MAX = 3;
 
+    protected static final ResourceLocation MANA_LEECH_DEBUFF_ID = Fate.modRes("mana_leech_debuff");
+
     protected static final EntityDataAccessor<Boolean> SHOW_SERVANT = SynchedEntityData.defineId(BaseServant.class, EntityDataSerializers.BOOLEAN);
     protected static final EntityDataAccessor<Boolean> STATIONARY = SynchedEntityData.defineId(BaseServant.class, EntityDataSerializers.BOOLEAN);
     protected static final EntityDataAccessor<Optional<UUID>> OWNER_UUID = SynchedEntityData.defineId(BaseServant.class, EntityDataSerializers.OPTIONAL_UUID);
@@ -145,9 +149,9 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
     private final SyncedDataContainer<BaseServant> syncedDataContainer;
 
     //Mana
-    private int servantMana = 100, manaRegenCounter, nobelPhantasmCooldown;
-    private boolean died = false;
-    protected boolean canUseNP, commandNPUse, critHealth;
+    private double servantMana = 100, manaRegenCounter, nobelPhantasmCooldown;
+    private int manaLeechDebuffDuration;
+    protected boolean commandNPUse, critHealth;
 
     protected CommandType commandBehaviour = CommandType.NORMAL;
     protected AttackBehaviour attackBehaviour = AttackBehaviour.NORMAL;
@@ -168,6 +172,8 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
     private boolean initAnim;
 
     private final EntityWeaponTrailHolder<BaseServant> trailHolder = new EntityWeaponTrailHolder<>(this);
+
+    private boolean fetchDirectItem;
 
     public BaseServant(EntityType<? extends BaseServant> entityType, Level level) {
         super(entityType, level);
@@ -190,7 +196,9 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
                 .add(FateAttributes.MAGIC_ATTACK.asHolder()).add(FateAttributes.MAGIC_RESISTANCE.asHolder())
                 .add(FateAttributes.PROJECTILE_BLOCK_CHANCE.asHolder()).add(FateAttributes.PROJECTILE_RESISTANCE.asHolder())
                 .add(FateAttributes.COMBAT_REGEN.asHolder())
-                .add(FateAttributes.PASSIVE_REGEN.asHolder());
+                .add(FateAttributes.PASSIVE_REGEN.asHolder())
+                .add(FateAttributes.MANA_REGEN.asHolder(), 1)
+                .add(FateAttributes.MANA_LEECH.asHolder(), 1);
     }
 
     private void updateAttributes() {
@@ -370,6 +378,11 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
         if (this.level() instanceof ServerLevel) {
             --this.nobelPhantasmCooldown;
             this.regenMana();
+            --this.manaLeechDebuffDuration;
+            if (this.manaLeechDebuffDuration == 0) {
+                AttributeInstance inst = this.getAttribute(FateAttributes.MANA_LEECH.asHolder());
+                inst.removeModifier(MANA_LEECH_DEBUFF_ID);
+            }
             this.getAnimationHandler().runIfNotNull(this::handleAttack);
             if (this.getOwner() instanceof ServerPlayer serverPlayer) {
                 if (!this.tracked.contains(serverPlayer) && !this.isRemoved()) {
@@ -448,13 +461,14 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
         this.entityData.get(OWNER_UUID).ifPresent(uuid -> tag.putUUID("Owner", uuid));
-        tag.putBoolean("CanUseNP", this.canUseNP);
         tag.putInt("Death", this.deathTime);
-        tag.putBoolean("IsDead", this.died);
         tag.putString("Command", this.attackBehaviour.toString());
-        tag.putInt("Mana", this.servantMana);
+        tag.putDouble("Mana", this.servantMana);
         tag.putBoolean("HealthMessage", this.critHealth);
         tag.putBoolean("Revealed", this.showServant());
+        if (this.getEquipmentHandler() != null) {
+            tag.put("EquipmentHandler", this.getEquipmentHandler().save(this.registryAccess()));
+        }
     }
 
     @Override
@@ -462,9 +476,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
         super.readAdditionalSaveData(tag);
         if (tag.contains("Owner"))
             this.entityData.set(OWNER_UUID, Optional.of(tag.getUUID("Owner")));
-        this.canUseNP = tag.getBoolean("CanUseNP");
         this.deathTime = tag.getInt("Death");
-        this.died = tag.getBoolean("IsDead");
         try {
             this.onBehaviourCommand(CommandType.valueOf(tag.getString("Command")));
         } catch (IllegalArgumentException ignored) {
@@ -472,6 +484,9 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
         this.servantMana = tag.getInt("Mana");
         this.critHealth = tag.getBoolean("HealthMessage");
         this.entityData.set(SHOW_SERVANT, tag.getBoolean("Revealed"));
+        if (this.getEquipmentHandler() != null) {
+            this.getEquipmentHandler().read(tag.getCompound("EquipmentHandler"), this.registryAccess());
+        }
     }
 
     public TargetPosition getTargetPosition() {
@@ -619,6 +634,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
 
     public void onEntityHit(Entity target, float damage) {
         this.playAttackSound();
+        this.servantMana += this.getAttributeValue(FateAttributes.MANA_LEECH.asHolder());
     }
 
     protected DamageSource damageSourceAttack(Entity target) {
@@ -765,18 +781,42 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
     }
 
     protected void regenMana() {
-        if (this.canUseNP && this.servantMana < 100 && --this.manaRegenCounter <= 0) {
-            this.servantMana += 1;
-            this.manaRegenCounter = 15;
+        if (--this.manaRegenCounter <= 0) {
+            this.regenMana(this.getAttributeValue(FateAttributes.MANA_REGEN.asHolder()));
+            this.manaRegenCounter = 20;
         }
     }
 
-    public int getMana() {
-        return this.servantMana;
+    public void regenMana(Entity source) {
+        double amount = this.getAttributeValue(FateAttributes.MANA_LEECH.asHolder());
+        this.regenMana(amount);
     }
 
-    public boolean canUseNP() {
-        return (this.canUseNP && this.getMana() >= this.props().manaCost()) || this.commandNPUse;
+    public void regenMana(double amount) {
+        this.servantMana = Mth.clamp(this.servantMana + amount, 0, 100);
+    }
+
+    public int getMana() {
+        return (int) this.servantMana;
+    }
+
+    public void applyManaLeechDebuff(int duration, double amount) {
+        this.manaLeechDebuffDuration = duration;
+        AttributeInstance inst = this.getAttribute(FateAttributes.MANA_LEECH.asHolder());
+        inst.removeModifier(MANA_LEECH_DEBUFF_ID);
+        inst.addTransientModifier(new AttributeModifier(MANA_LEECH_DEBUFF_ID, 1 - amount, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+    }
+
+    public boolean healthBelow(float percentage) {
+        return this.getHealth() < this.getMaxHealth() * percentage;
+    }
+
+    public boolean canUseNobelPhantasm() {
+        return this.nobelPhantasmCheck() || this.commandNPUse;
+    }
+
+    public boolean nobelPhantasmCheck() {
+        return (this.getMana() >= this.props().manaCost() && this.nobelPhantasmCooldown > 0);
     }
 
     public boolean attemptUseNobelPhantasm() {
@@ -791,6 +831,23 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
 
     protected int nobelPhantasmCooldown() {
         return 200 + this.getRandom().nextInt(100);
+    }
+
+    public HeldEquipmentHandler getEquipmentHandler() {
+        return null;
+    }
+
+    @Override
+    public ItemStack getItemBySlot(EquipmentSlot slot) {
+        if (!this.level().isClientSide && !this.fetchDirectItem
+                && (slot == EquipmentSlot.MAINHAND || slot == EquipmentSlot.OFFHAND) && this.getEquipmentHandler() != null) {
+            this.fetchDirectItem = true;
+            ItemStack stack = slot == EquipmentSlot.MAINHAND ? this.getEquipmentHandler().getMainHandStack() : this.getEquipmentHandler().getOffHandStack();
+            this.fetchDirectItem = false;
+            if (stack != null)
+                return stack;
+        }
+        return super.getItemBySlot(slot);
     }
 
     @Override
@@ -873,13 +930,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
     }
 
     @Override
-    public boolean isAlive() {
-        return !this.died && super.isAlive();
-    }
-
-    @Override
     protected void tickDeath() {
-        this.died = true;
         if (this.level().isClientSide) {
             for (int i = 0; i < ((int) ((9 / (float) this.maxDeathTick()) * this.deathTime - 1)); i++) {
                 AdvancedParticleContainer.make(FateParticles.LIGHT.get())

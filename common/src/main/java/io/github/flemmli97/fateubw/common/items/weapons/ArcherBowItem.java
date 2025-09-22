@@ -118,14 +118,14 @@ public class ArcherBowItem extends BowItem implements SwingItem {
     }
 
     public boolean charged(ItemStack stack) {
-        return stack.has(FateDataComponents.ARCHOER_BOW_CHARGED.get());
+        return stack.has(FateDataComponents.ARCHER_BOW_CHARGED.get());
     }
 
     private void setCharged(ItemStack stack, boolean flag) {
         if (flag)
-            stack.set(FateDataComponents.ARCHOER_BOW_CHARGED.get(), Unit.INSTANCE);
+            stack.set(FateDataComponents.ARCHER_BOW_CHARGED.get(), Unit.INSTANCE);
         else
-            stack.remove(FateDataComponents.ARCHOER_BOW_CHARGED.get());
+            stack.remove(FateDataComponents.ARCHER_BOW_CHARGED.get());
     }
 
     // NeoForge delegate

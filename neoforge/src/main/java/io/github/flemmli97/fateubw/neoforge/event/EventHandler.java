@@ -67,4 +67,9 @@ public class EventHandler {
     public static void damageCalculation(LivingDamageEvent.Pre event) {
         event.setNewDamage(EventCalls.damageCalculation(event.getEntity(), event.getSource(), event.getNewDamage()));
     }
+
+    @SubscribeEvent
+    public static void damagePost(LivingDamageEvent.Post event) {
+        EventCalls.damagePost(event.getEntity(), event.getSource(), event.getNewDamage());
+    }
 }

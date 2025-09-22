@@ -29,6 +29,8 @@ public class FateTags {
 
         public static final TagKey<EntityType<?>> SERVANT = TagKey.create(Registries.ENTITY_TYPE, Fate.modRes("servant"));
         public static final TagKey<EntityType<?>> STRONG_MOB = TagKey.create(Registries.ENTITY_TYPE, Fate.modRes("strong_mob"));
+        public static final TagKey<EntityType<?>> MANA_LEECHING_PROJECTILE = TagKey.create(Registries.ENTITY_TYPE, Fate.modRes("mana_leeching_projectile"));
+        public static final TagKey<EntityType<?>> MANA_LEECHING_SUMMONS = TagKey.create(Registries.ENTITY_TYPE, Fate.modRes("mana_leeching_summons"));
     }
 
     public static class DamageTypes {

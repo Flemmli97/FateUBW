@@ -2,7 +2,7 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
-import io.github.flemmli97.fateubw.common.entity.SwitchableWeapon;
+import io.github.flemmli97.fateubw.common.entity.HeldEquipmentHandler;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.misc.Excalibur;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
@@ -40,8 +40,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.Unit;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -90,7 +90,8 @@ public class Arthur extends BaseServant {
             .marker("attack", 0.48)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.28)
             .marker(EntityWeaponTrailProvider.TRAIL_END, 0.52));
-    public static final String EXCALIBAA = BUILDER.add("excalibur", AnimationsBuilder.definition(2.84).marker("attack", 1.4));
+    public static final String EXCALIBAA = BUILDER.add("excalibur", AnimationsBuilder.definition(2.84)
+            .marker("start_attack", 0.2).marker("attack", 1.4));
     public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2.));
     public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
 
@@ -100,12 +101,6 @@ public class Arthur extends BaseServant {
         if (!this.level().isClientSide()) {
             if (anim == null) {
                 this.getDataContainer().set(BURST_DIRECTION, null);
-                if (this.getAnimationHandler().isCurrent(EXCALIBAA)) {
-                    this.switchableWeapon.switchItems(true);
-                }
-            } else if (anim.is(EXCALIBAA)) {
-                this.switchableWeapon.switchItems(false);
-                this.getMainHandItem().set(FateDataComponents.GLOWING_ITEM.get(), Unit.INSTANCE);
             } else if (anim.is(INVISIBLE_BURST)) {
                 this.hitEntity = null;
                 this.getDataContainer().set(BURST_DIRECTION, null);
@@ -114,7 +109,7 @@ public class Arthur extends BaseServant {
         return false;
     });
 
-    public final SwitchableWeapon<Arthur> switchableWeapon = new SwitchableWeapon<>(this, new ItemStack(FateItems.EXCALIBUR.get()), ItemStack.EMPTY);
+    public final HeldEquipmentHandler heldEquipmentHandler = new HeldEquipmentHandler(this, new ItemStack(FateItems.EXCALIBUR.get()), null);
 
     protected List<LivingEntity> hitEntity;
 
@@ -137,6 +132,11 @@ public class Arthur extends BaseServant {
     public boolean hasOwnWeapon() {
         return this.getMainHandItem().is(FateItems.INVISEXCALIBUR.get()) ||
                 this.getMainHandItem().is(FateItems.EXCALIBUR.get());
+    }
+
+    @Override
+    public HeldEquipmentHandler getEquipmentHandler() {
+        return this.heldEquipmentHandler;
     }
 
     @Override
@@ -182,7 +182,7 @@ public class Arthur extends BaseServant {
                 .prepareOptional(BehaviourUtils.moveAttack())
                 .end(15)
                 .start(EXCALIBAA).play(BehaviourUtils.cooldownedPlay(false, 20, 35))
-                .condition(BaseServant::canUseNP)
+                .condition(BaseServant::canUseNobelPhantasm)
                 .prepare(new SetWalkTargetWithinDist<BaseServant>()
                         .min(3).max(8).speedMod(1.2f)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(30)
@@ -240,6 +240,8 @@ public class Arthur extends BaseServant {
                     }
                 }
             }
+        } else {
+            this.heldEquipmentHandler.setInUse(this.getAnimationHandler().isCurrent(EXCALIBAA) || this.healthBelow(0.5f));
         }
     }
 
@@ -254,6 +256,9 @@ public class Arthur extends BaseServant {
     @Override
     public void handleAttack(AnimationState anim) {
         if (anim.is(EXCALIBAA)) {
+            if (anim.isAt("start_attack")) {
+                this.startUsingItem(InteractionHand.MAIN_HAND);
+            }
             if (!anim.isAt("attack")) {
                 this.setTargetPositionFromAttackTarget();
             }
@@ -376,15 +381,12 @@ public class Arthur extends BaseServant {
     }
 
     @Override
-    protected void actuallyHurt(DamageSource damageSrc, float damageAmount) {
-        super.actuallyHurt(damageSrc, damageAmount);
-        if (!this.canUseNP && !this.isDeadOrDying() && this.getHealth() < 0.5 * this.getMaxHealth()) {
-            this.canUseNP = true;
-            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(FateItems.EXCALIBUR.get()));
-        }
+    public boolean nobelPhantasmCheck() {
+        return this.healthBelow(0.5f) && super.nobelPhantasmCheck();
     }
 
     public void excalibur(TargetPosition target) {
+        this.getMainHandItem().remove(FateDataComponents.GLOWING_ITEM.get());
         if (!this.attemptUseNobelPhantasm())
             return;
         Excalibur excalibur = new Excalibur(this.level(), this);
@@ -394,7 +396,6 @@ public class Arthur extends BaseServant {
         }
         this.level().addFreshEntity(excalibur);
         this.revealServant();
-        this.getMainHandItem().remove(FateDataComponents.GLOWING_ITEM.get());
     }
 
     @Override

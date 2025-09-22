@@ -1,6 +1,7 @@
 package io.github.flemmli97.fateubw.common.event;
 
 import io.github.flemmli97.fateubw.common.attachment.PlayerData;
+import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.lib.FateTags;
 import io.github.flemmli97.fateubw.common.network.S2CPlayerCap;
 import io.github.flemmli97.fateubw.common.registry.FateAttributes;
@@ -22,6 +23,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.player.Player;
 
@@ -90,5 +92,21 @@ public class EventCalls {
         if (damageSrc.is(FateTags.DamageTypes.IS_MAGIC))
             damageAmount = ExtendedCombatRules.getDamageAfterMagicProtection(livingEntity, damageAmount);
         return damageAmount;
+    }
+
+    public static void damagePost(LivingEntity livingEntity, DamageSource damageSrc, float damageAmount) {
+        if (damageAmount > 0) {
+            if (damageSrc.getEntity() instanceof BaseServant servant && damageSrc.getDirectEntity() != null) {
+                if (damageSrc.getEntity() == damageSrc.getDirectEntity() || damageSrc.getDirectEntity().getType().is(FateTags.EntityTypes.MANA_LEECHING_PROJECTILE)) {
+                    servant.regenMana(damageSrc.getDirectEntity());
+                }
+            }
+            if (damageSrc.getEntity() != null && damageSrc.getEntity() instanceof OwnableEntity ownable
+                    && damageSrc.getEntity().getType().is(FateTags.EntityTypes.MANA_LEECHING_SUMMONS)) {
+                if (ownable.getOwner() instanceof BaseServant servant) {
+                    servant.regenMana(damageSrc.getDirectEntity());
+                }
+            }
+        }
     }
 }

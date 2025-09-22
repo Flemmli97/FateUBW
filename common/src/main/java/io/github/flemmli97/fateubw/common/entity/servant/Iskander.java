@@ -88,7 +88,6 @@ public class Iskander extends BaseServant {
 
     public Iskander(EntityType<? extends Iskander> entityType, Level level) {
         super(entityType, level);
-        this.canUseNP = true;
     }
 
     @Override
@@ -135,12 +134,12 @@ public class Iskander extends BaseServant {
                         .min(5).max(10).speedMod(1.2f)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(5)
                 .start(SUMMON_HORSE).play(BehaviourUtils.cooldownedPlay(false, 25, 40))
-                .condition(entity -> entity.canSummonMounts() && !entity.canUseNP())
+                .condition(entity -> entity.canSummonMounts() && !entity.canUseNobelPhantasm())
                 .prepare(new SetWalkTargetWithinDist<Iskander>()
                         .min(5).max(10).speedMod(1.2f)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(7)
                 .start(CHARIOT).play(BehaviourUtils.cooldownedPlay(false, 25, 40))
-                .condition(entity -> entity.canSummonMounts() && entity.canUseNP())
+                .condition(entity -> entity.canSummonMounts() && entity.canUseNobelPhantasm())
                 .prepare(new SetWalkTargetWithinDist<Iskander>()
                         .min(6).max(12).speedMod(1.2f)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(14)
@@ -269,6 +268,11 @@ public class Iskander extends BaseServant {
             this.getVehicle().hurt(damageSource, damage);
         }
         return super.hurt(damageSource, damage);
+    }
+
+    @Override
+    public boolean nobelPhantasmCheck() {
+        return this.healthBelow(0.8f) && super.nobelPhantasmCheck();
     }
 
     protected boolean canSummonMounts() {

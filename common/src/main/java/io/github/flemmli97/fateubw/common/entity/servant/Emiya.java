@@ -1,13 +1,14 @@
 package io.github.flemmli97.fateubw.common.entity.servant;
 
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
-import io.github.flemmli97.fateubw.common.entity.SwitchableWeapon;
+import io.github.flemmli97.fateubw.common.entity.HeldEquipmentHandler;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.misc.ArcherArrow;
 import io.github.flemmli97.fateubw.common.entity.misc.CaladBolg;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailProvider;
+import io.github.flemmli97.fateubw.common.registry.FateAttributes;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.utils.Utils;
@@ -22,12 +23,12 @@ import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionC
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationsBuilder;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -83,21 +84,9 @@ public class Emiya extends BaseServant {
     public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2.));
     public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
 
-    private final AnimationHandler<Emiya> animationHandler = new AnimationHandler<>(this, ANIMS)
-            .withChangeListener(anim -> {
-                if (anim != null) {
-                    if (anim.is(BOW_1, BOW_2, BOW_AIR, CALADBOLG) && !this.hasBow()) {
-                        this.switchableWeapon.switchItems(false);
-                    }
-                } else {
-                    if (this.getAnimationHandler().isCurrent(BOW_1, BOW_2, BOW_AIR, CALADBOLG)) {
-                        this.switchableWeapon.switchItems(true);
-                    }
-                }
-                return false;
-            });
+    private final AnimationHandler<Emiya> animationHandler = new AnimationHandler<>(this, ANIMS);
 
-    public final SwitchableWeapon<Emiya> switchableWeapon = new SwitchableWeapon<>(this, ItemStack.EMPTY, new ItemStack(FateItems.ARCHBOW.get()));
+    public final HeldEquipmentHandler heldEquipmentHandler = new HeldEquipmentHandler(this, ItemStack.EMPTY, new ItemStack(FateItems.EMIYAS_BOW.get()));
 
     private final Vector4f summonColor = new Vector4f(213 / 255f, 0, 6 / 255f, 0.7f);
 
@@ -115,6 +104,11 @@ public class Emiya extends BaseServant {
     @Override
     public boolean hasOwnWeapon() {
         return this.getMainHandItem().is(FateItems.KANSHOU.get());
+    }
+
+    @Override
+    public HeldEquipmentHandler getEquipmentHandler() {
+        return this.heldEquipmentHandler;
     }
 
     @Override
@@ -182,7 +176,7 @@ public class Emiya extends BaseServant {
                         .min(4).max(10).speedMod(1.2f)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(9)
                 .start(CALADBOLG).play(BehaviourUtils.cooldownedPlay(false, 20, 30))
-                .condition(BaseServant::canUseNP)
+                .condition(BaseServant::canUseNobelPhantasm)
                 .prepare(new SetWalkTargetWithinDist<BaseServant>()
                         .min(8).max(16).speedMod(1.3f)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(45)
@@ -221,6 +215,8 @@ public class Emiya extends BaseServant {
                             this.getX(), this.getY(), this.getZ(), 0, 0, 0);
                 }
             }
+        } else {
+            this.heldEquipmentHandler.setInUse(this.getAnimationHandler().isCurrent(BOW_1, BOW_2, BOW_AIR, CALADBOLG));
         }
     }
 
@@ -238,18 +234,6 @@ public class Emiya extends BaseServant {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag tag) {
-        super.addAdditionalSaveData(tag);
-        this.switchableWeapon.save(tag, this.registryAccess());
-    }
-
-    @Override
-    public void readAdditionalSaveData(CompoundTag tag) {
-        super.readAdditionalSaveData(tag);
-        this.switchableWeapon.read(tag, this.registryAccess());
-    }
-
-    @Override
     public void handleAttack(AnimationState anim) {
         if (anim.is(CALADBOLG)) {
             LivingEntity target = this.getTarget();
@@ -257,7 +241,7 @@ public class Emiya extends BaseServant {
                 this.startUsingItem(this.bowHand());
             }
             if (anim.isAt("shoot")) {
-                if (target != null && this.getSensing().hasLineOfSight(target))
+                if (target == null || this.getSensing().hasLineOfSight(target))
                     this.caladBolg(target);
             }
             if (anim.isAt("use_end")) {
@@ -269,7 +253,7 @@ public class Emiya extends BaseServant {
                 this.startUsingItem(this.bowHand());
             }
             if (anim.isAt("shoot")) {
-                if (target != null && this.getSensing().hasLineOfSight(target))
+                if (target == null || this.getSensing().hasLineOfSight(target))
                     this.attackWithRangedAttack(target);
             }
             if (anim.isAt("use_end")) {
@@ -293,7 +277,7 @@ public class Emiya extends BaseServant {
                 this.setDeltaMovement(new Vec3(delta.x(), Math.max(0, delta.y()), delta.z()));
             }
             if (anim.isAt("shoot")) {
-                if (target != null && this.getSensing().hasLineOfSight(target))
+                if (target == null || this.getSensing().hasLineOfSight(target))
                     this.attackWithRangedAttackBarrage(target);
             }
             this.fallDistance = 0;
@@ -370,23 +354,35 @@ public class Emiya extends BaseServant {
     }
 
     @Override
-    protected void actuallyHurt(DamageSource damageSrc, float damageAmount) {
-        super.actuallyHurt(damageSrc, damageAmount);
-        if (!this.canUseNP && !this.isDeadOrDying() && this.getHealth() < 0.5 * this.getMaxHealth()) {
-            this.canUseNP = true;
+    public void regenMana(Entity source) {
+        if (source != this) {
+            double amount = this.getAttributeValue(FateAttributes.MANA_LEECH.asHolder());
+            this.regenMana(amount * 0.5);
+            return;
         }
+        super.regenMana(source);
+    }
+
+    @Override
+    public boolean nobelPhantasmCheck() {
+        return this.healthBelow(0.75f) && super.nobelPhantasmCheck();
     }
 
     public void attackWithRangedAttack(LivingEntity target) {
         ItemStack stack = this.getItemInHand(this.bowHand());
         if (!this.level().isClientSide) {
             ArcherArrow arrow = new ArcherArrow(this.level(), this, stack.isEmpty() ? null : stack);
-            double dX = target.getX() - this.getX();
-            double dY = target.getY(0.3333333333333333) - arrow.getY();
-            double dZ = target.getZ() - this.getZ();
-            double l = Math.sqrt(dX * dX + dZ * dZ);
+            if (target != null) {
+                double dX = target.getX() - this.getX();
+                double dY = target.getY(0.3333333333333333) - arrow.getY();
+                double dZ = target.getZ() - this.getZ();
+                double l = Math.sqrt(dX * dX + dZ * dZ);
+                arrow.shoot(dX, dY + l * 0.13, dZ, 2.2F, 2);
+            } else {
+                Vec3 look = this.getLookAngle();
+                arrow.shoot(look.x(), look.y(), look.z(), 2.2F, 2);
+            }
             arrow.setCritArrow(true);
-            arrow.shoot(dX, dY + l * 0.13, dZ, 2.2F, 2);
             double mod = this.getAnimationHandler().isCurrent(BOW_2) ? 0.5 : 0.6;
             arrow.setBaseDamage(arrow.getBaseDamage() + this.getAttributeValue(Attributes.ATTACK_DAMAGE) * mod);
             this.playSound(SoundEvents.SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
@@ -395,21 +391,27 @@ public class Emiya extends BaseServant {
     }
 
     public void attackWithRangedAttackBarrage(LivingEntity target) {
+        if (this.level().isClientSide)
+            return;
         ItemStack stack = this.getItemInHand(this.bowHand());
         for (int i = 0; i < 8; i++) {
             ArcherArrow arrow = new ArcherArrow(this.level(), this, stack);
-            if (!this.level().isClientSide) {
+            if (target != null) {
                 double dX = target.getX() - this.getX();
                 double dY = target.getY(0.33) - arrow.getY();
                 double dZ = target.getZ() - this.getZ();
                 double l = Math.sqrt(dX * dX + dZ * dZ);
-                arrow.setCritArrow(true);
                 arrow.shoot(dX, dY + l * 0.13, dZ, 2.2F, 11);
-                arrow.setBaseDamage(arrow.getBaseDamage() + this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.33);
-                this.playSound(SoundEvents.SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
-                this.level().addFreshEntity(arrow);
+            } else {
+                Vec3 look = this.getLookAngle();
+                arrow.shoot(look.x(), look.y(), look.z(), 2.2F, 11);
             }
+            arrow.setCritArrow(true);
+            arrow.setBaseDamage(arrow.getBaseDamage() + this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.33);
+            this.playSound(SoundEvents.SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
+            this.level().addFreshEntity(arrow);
         }
+        this.applyManaLeechDebuff(40, 0.3);
     }
 
     public void caladBolg(LivingEntity target) {
@@ -422,7 +424,6 @@ public class Emiya extends BaseServant {
             bolg.shoot(this, this.getXRot(), this.getYRot(), 0, 2, 0);
         this.level().addFreshEntity(bolg);
         this.revealServant();
-        this.switchableWeapon.switchItems(true);
     }
 
     protected boolean hasBow() {

@@ -65,7 +65,7 @@ public class Loottables extends LootTableProvider {
             this.registerLootTable(FateEntities.ARTHUR.get(), this.getDefault(FateItems.EXCALIBUR.get()));
             this.registerLootTable(FateEntities.CUCHULAINN.get(), this.getDefault(FateItems.GAEBOLG.get()));
             this.registerLootTable(FateEntities.DIARMUID.get(), this.getDefault(FateItems.GAEBUIDHE.get(), FateItems.GAEDEARG.get()));
-            this.registerLootTable(FateEntities.EMIYA.get(), this.getDefault(FateItems.ARCHBOW.get(), FateItems.KANSHOU.get(), FateItems.BAKUYA.get()));
+            this.registerLootTable(FateEntities.EMIYA.get(), this.getDefault(FateItems.EMIYAS_BOW.get(), FateItems.KANSHOU.get(), FateItems.BAKUYA.get()));
             this.registerLootTable(FateEntities.GILGAMESH.get(), this.getDefault(FateItems.ENUMAELISH.get()));
             this.registerLootTable(FateEntities.MEDEA.get(), this.getDefault(FateItems.STAFF.get(), FateItems.RULE_BREAKER.get()));
             this.registerLootTable(FateEntities.GILLES.get(), this.getDefault(FateItems.GRIMOIRE.get()));

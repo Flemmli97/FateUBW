@@ -133,7 +133,7 @@ public class Diarmuid extends BaseServant {
                 .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(5)
                 .start(UNSEAL).play(BehaviourUtils.cooldownedPlay(false, 16, 28))
-                .condition(entity -> entity.unsealedDuration < 0 && entity.canUseNP())
+                .condition(entity -> entity.unsealedDuration < 0 && entity.canUseNobelPhantasm())
                 .prepare(new SetWalkTargetWithinDist<Diarmuid>()
                         .min(8).max(14).speedMod((m, e) -> 1.25f)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(30)
@@ -422,20 +422,17 @@ public class Diarmuid extends BaseServant {
     }
 
     @Override
-    protected void actuallyHurt(DamageSource damageSrc, float damageAmount) {
-        super.actuallyHurt(damageSrc, damageAmount);
-        if (!this.canUseNP && !this.isDeadOrDying() && this.getHealth() < 0.5 * this.getMaxHealth()) {
-            this.canUseNP = true;
-        }
-    }
-
-    @Override
     public boolean isInvisible() {
         if (this.getAnimationHandler().isCurrent(BLINK, BLINK_AWAY)) {
             AnimationState anim = this.getAnimationHandler().getAnimation();
             return anim.isPast("teleport_start") && !anim.isPast("teleport_end");
         }
         return super.isInvisible();
+    }
+
+    @Override
+    public boolean nobelPhantasmCheck() {
+        return this.healthBelow(0.6f) && super.nobelPhantasmCheck();
     }
 
     private void sphereParticles() {

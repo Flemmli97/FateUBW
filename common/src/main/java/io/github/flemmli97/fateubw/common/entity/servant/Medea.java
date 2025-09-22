@@ -2,11 +2,12 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 
 import io.github.flemmli97.fateubw.api.datapack.ServantExtraData;
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
-import io.github.flemmli97.fateubw.common.entity.SwitchableWeapon;
+import io.github.flemmli97.fateubw.common.entity.HeldEquipmentHandler;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.TeleportBehaviour;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicBeam;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicBufCircle;
+import io.github.flemmli97.fateubw.common.registry.FateAttributes;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.utils.TeleportUtils;
@@ -31,6 +32,7 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -63,11 +65,6 @@ public class Medea extends BaseServant {
 
     private final AnimationHandler<Medea> animationHandler = new AnimationHandler<>(this, ANIMS).withChangeListener(anim -> {
         if (!this.level().isClientSide()) {
-            if (this.getAnimationHandler().isCurrent(RULE_BREAKER)) {
-                this.switchableWeapon.switchItems(true);
-            } else if (anim != null && anim.is(RULE_BREAKER)) {
-                this.switchableWeapon.switchItems(false);
-            }
             if (this.teleportPre != null) {
                 this.teleportPre = null;
                 this.teleportPos = null;
@@ -77,7 +74,7 @@ public class Medea extends BaseServant {
         return false;
     });
 
-    public final SwitchableWeapon<Medea> switchableWeapon = new SwitchableWeapon<>(this, new ItemStack(FateItems.RULE_BREAKER.get()), ItemStack.EMPTY);
+    public final HeldEquipmentHandler heldEquipmentHandler = new HeldEquipmentHandler(this, new ItemStack(FateItems.RULE_BREAKER.get()), null);
 
     private boolean gravityPre;
     private Vec3 teleportPre, teleportPos;
@@ -99,6 +96,11 @@ public class Medea extends BaseServant {
     @Override
     public boolean hasOwnWeapon() {
         return this.getMainHandItem().is(FateItems.STAFF.get());
+    }
+
+    @Override
+    public HeldEquipmentHandler getEquipmentHandler() {
+        return this.heldEquipmentHandler;
     }
 
     @Override
@@ -133,7 +135,7 @@ public class Medea extends BaseServant {
                 .condition(medea -> medea.aiCircledelay < 0)
                 .end(8)
                 .start(RULE_BREAKER).play(BehaviourUtils.cooldownedPlay(false, 20, 40))
-                .condition(BaseServant::canUseNP)
+                .condition(BaseServant::canUseNobelPhantasm)
                 .prepare(new SetWalkTargetWithinDist<Medea>()
                         .min(7).max(12).speedMod(1.2f)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(50)
@@ -171,6 +173,7 @@ public class Medea extends BaseServant {
                     this.circlePos = null;
                 }
             }
+            this.heldEquipmentHandler.setInUse(this.getAnimationHandler().isCurrent(RULE_BREAKER));
         }
     }
 
@@ -258,6 +261,9 @@ public class Medea extends BaseServant {
                 this.teleportPos = null;
                 this.setNoGravity(this.gravityPre);
             }
+            if (anim.isAt("attack_start")) {
+                this.applyManaLeechDebuff(60, 0.3);
+            }
             if (anim.isPast("attack_start") && !anim.isPast("attack_end") && this.tickCount % 3 == 0) {
                 this.attackWithRangedAttack(target);
             }
@@ -333,6 +339,16 @@ public class Medea extends BaseServant {
         return !this.getAnimationHandler().isCurrent(RULE_BREAKER) && !this.transit(false) && super.hurt(damageSource, damage);
     }
 
+    @Override
+    public void regenMana(Entity source) {
+        if (source != this) {
+            double amount = this.getAttributeValue(FateAttributes.MANA_LEECH.asHolder());
+            this.regenMana(amount * 0.5);
+            return;
+        }
+        super.regenMana(source);
+    }
+
     private boolean transit(boolean teleportOnly) {
         AnimationState anim = this.getAnimationHandler().getAnimation();
         if (anim == null)
@@ -346,19 +362,16 @@ public class Medea extends BaseServant {
     }
 
     @Override
-    protected void actuallyHurt(DamageSource damageSrc, float damageAmount) {
-        super.actuallyHurt(damageSrc, damageAmount);
-        if (!this.canUseNP && !this.isDeadOrDying() && this.getHealth() < 0.5 * this.getMaxHealth()) {
-            this.canUseNP = true;
-        }
-    }
-
-    @Override
     public boolean isInvisible() {
         if (this.transit(true)) {
             return true;
         }
         return super.isInvisible();
+    }
+
+    @Override
+    public boolean nobelPhantasmCheck() {
+        return this.healthBelow(0.6f) && super.nobelPhantasmCheck();
     }
 
     public void ruleBreaker() {

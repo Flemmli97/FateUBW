@@ -3,6 +3,7 @@ package io.github.flemmli97.fateubw.common.entity.servant.lancelot;
 import com.mojang.datafixers.util.Pair;
 import io.github.flemmli97.fateubw.api.datapack.ServantExtraData;
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
+import io.github.flemmli97.fateubw.common.entity.HeldEquipmentHandler;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.lib.FateTags;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
@@ -112,6 +113,8 @@ public class Lancelot extends BaseServant {
 
     private final Vector4f summonColor = new Vector4f(28 / 255f, 28 / 255f, 33 / 255f, 0.7f);
 
+    public final HeldEquipmentHandler heldEquipmentHandler = new HeldEquipmentHandler(this, new ItemStack(FateItems.ARONDIGHT.get()), null);
+
     private final LancelotInventory inventory = new LancelotInventory(this);
     private final SimpleContainer swapped = new SimpleContainer(1);
     private int pickupDelay;
@@ -128,6 +131,11 @@ public class Lancelot extends BaseServant {
     @Override
     public boolean hasOwnWeapon() {
         return this.getMainHandItem().is(FateItems.ARONDIGHT.get());
+    }
+
+    @Override
+    public HeldEquipmentHandler getEquipmentHandler() {
+        return this.heldEquipmentHandler;
     }
 
     @Override
@@ -235,6 +243,8 @@ public class Lancelot extends BaseServant {
                             this.getX(), this.getY(), this.getZ(), 0, 0, 0);
                 }
             }
+        } else {
+            this.heldEquipmentHandler.setInUse(this.healthBelow(0.5f) && !this.inventory.swapped());
         }
     }
 
@@ -297,7 +307,7 @@ public class Lancelot extends BaseServant {
                 this.setTargetPositionFromAttackTarget();
             }
             if (anim.isAt("attack")) {
-                if (target != null && this.getSensing().hasLineOfSight(target)) {
+                if (target == null || this.getSensing().hasLineOfSight(target)) {
                     InteractionHand hand = this.toUseHand();
                     Pair<ResourceLocation, LancelotUseHandler> handler = LancelotAttackAI.getFor(this.getItemInHand(hand));
                     if (handler != null) {
@@ -386,15 +396,6 @@ public class Lancelot extends BaseServant {
     }
 
     @Override
-    protected void actuallyHurt(DamageSource damageSrc, float damageAmount) {
-        super.actuallyHurt(damageSrc, damageAmount);
-        if (!this.canUseNP && !this.isDeadOrDying() && this.getHealth() < 0.5 * this.getMaxHealth()) {
-            this.canUseNP = true;
-            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(FateItems.ARONDIGHT.get()));
-        }
-    }
-
-    @Override
     public boolean canPickUpLoot() {
         return true;
     }
@@ -458,6 +459,11 @@ public class Lancelot extends BaseServant {
     public ItemEntity spawnAtLocation(ItemStack stack) {
         stack.remove(FateDataComponents.CORRUPTED_ITEM.get());
         return super.spawnAtLocation(stack);
+    }
+
+    @Override
+    public boolean nobelPhantasmCheck() {
+        return this.healthBelow(0.5f) && super.nobelPhantasmCheck();
     }
 
     public boolean canUseAttack(String animation) {

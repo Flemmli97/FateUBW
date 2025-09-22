@@ -8,6 +8,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TridentItem;
+import net.minecraft.world.phys.Vec3;
 
 public class TridentHandler implements LancelotUseHandler {
 
@@ -17,14 +18,19 @@ public class TridentHandler implements LancelotUseHandler {
 
     @Override
     public void use(LivingEntity entity, LivingEntity target, InteractionHand hand) {
-        ThrownTrident tridententity = new ThrownTrident(entity.level(), entity, entity.getItemInHand(hand).copy());
-        double d0 = target.getX() - entity.getX();
-        double d1 = target.getY(0.33) - tridententity.getY();
-        double d2 = target.getZ() - entity.getZ();
-        double d3 = Math.sqrt(d0 * d0 + d2 * d2);
-        tridententity.shoot(d0, d1 + d3 * 0.2, d2, 1.6f, 14 - entity.level().getDifficulty().getId() * 4);
+        ThrownTrident trident = new ThrownTrident(entity.level(), entity, entity.getItemInHand(hand).copy());
+        if (target != null) {
+            double d0 = target.getX() - entity.getX();
+            double d1 = target.getY(0.33) - trident.getY();
+            double d2 = target.getZ() - entity.getZ();
+            double d3 = Math.sqrt(d0 * d0 + d2 * d2);
+            trident.shoot(d0, d1 + d3 * 0.2, d2, 1.6f, 14 - entity.level().getDifficulty().getId() * 4);
+        } else {
+            Vec3 look = entity.getLookAngle();
+            trident.shoot(look.x(), look.y(), look.z(), 2.2F, 11);
+        }
         entity.playSound(SoundEvents.DROWNED_SHOOT, 1, 1 / (entity.getRandom().nextFloat() * 0.4f + 0.8f));
-        entity.level().addFreshEntity(tridententity);
+        entity.level().addFreshEntity(trident);
     }
 
     @Override

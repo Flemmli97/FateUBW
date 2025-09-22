@@ -367,11 +367,8 @@ public class Medusa extends BaseServant implements OnProjectileHit {
     }
 
     @Override
-    protected void actuallyHurt(DamageSource damageSrc, float damageAmount) {
-        super.actuallyHurt(damageSrc, damageAmount);
-        if (!this.canUseNP && !this.isDeadOrDying() && this.getHealth() < 0.5 * this.getMaxHealth()) {
-            this.canUseNP = true;
-        }
+    public boolean nobelPhantasmCheck() {
+        return this.healthBelow(0.5f) && super.nobelPhantasmCheck();
     }
 
     public void throwDaggerAt(@Nullable LivingEntity target) {
@@ -390,7 +387,7 @@ public class Medusa extends BaseServant implements OnProjectileHit {
     }
 
     protected boolean canSummonPegasus() {
-        return !this.isPassenger() && this.canUseNP() && this.summonCooldown <= 0;
+        return !this.isPassenger() && this.canUseNobelPhantasm() && this.summonCooldown <= 0;
     }
 
     public void summonPegasus() {

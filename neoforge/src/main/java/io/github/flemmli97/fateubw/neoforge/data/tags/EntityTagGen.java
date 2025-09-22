@@ -32,6 +32,17 @@ public class EntityTagGen extends IntrinsicHolderTagsProvider<EntityType<?>> {
                 .add(FateEntities.GORDIUS_WHEEL.get())
                 .add(FateEntities.PEGASUS.get())
                 .add(FateEntities.HASSAN_COPY.get());
+        this.tag(FateTags.EntityTypes.MANA_LEECHING_PROJECTILE)
+                .add(FateEntities.ARCHER_ARROW.get())
+                .add(FateEntities.BABYLON.get())
+                .add(FateEntities.DAGGER_HOOK.get())
+                .add(FateEntities.ENKIDU_CHAINS.get())
+                .add(FateEntities.MAGIC_BEAM.get())
+                .add(FateEntities.MAGIC_SHOT.get());
+        this.tag(FateTags.EntityTypes.MANA_LEECHING_SUMMONS)
+                .add(FateEntities.GORDIUS_CHARIOT.get())
+                .add(FateEntities.PEGASUS.get())
+                .add(FateEntities.LESSER_MONSTER.get());
 
         this.tag(TenshiLib.MULTIPART_ENTITY)
                 .add(FateEntities.MULTIPART.get())

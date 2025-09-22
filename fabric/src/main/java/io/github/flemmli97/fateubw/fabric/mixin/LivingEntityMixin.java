@@ -39,6 +39,11 @@ public abstract class LivingEntityMixin {
         return EventCalls.damageCalculation((LivingEntity) (Object) this, source, origin);
     }
 
+    @Inject(method = "actuallyHurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;gameEvent(Lnet/minecraft/core/Holder;)V"))
+    private void hurtPost(DamageSource source, float amount, CallbackInfo info) {
+        EventCalls.damagePost((LivingEntity) (Object) this, source, amount);
+    }
+
     @Inject(method = "heal", at = @At("HEAD"), cancellable = true)
     private void onHeal(float heal, CallbackInfo info) {
         if (!EventCalls.canHeal((LivingEntity) (Object) this))

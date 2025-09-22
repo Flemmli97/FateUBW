@@ -125,7 +125,7 @@ public class Cuchulainn extends BaseServant {
                 .prepare(new SetWalkTargetToAttackTarget<BaseServant>().speedMod((m, e) -> 1.05f)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(4)
                 .start(GAE_BOLG).play(BehaviourUtils.cooldownedPlay(false, 20, 27))
-                .condition(BaseServant::canUseNP)
+                .condition(BaseServant::canUseNobelPhantasm)
                 .prepare(new SetWalkTargetWithinDist<BaseServant>()
                         .min(4).max(8).speedMod(1.25f)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(30)
@@ -293,11 +293,8 @@ public class Cuchulainn extends BaseServant {
     }
 
     @Override
-    protected void actuallyHurt(DamageSource damageSrc, float damageAmount) {
-        super.actuallyHurt(damageSrc, damageAmount);
-        if (!this.canUseNP && !this.isDeadOrDying() && this.getHealth() < 0.5 * this.getMaxHealth()) {
-            this.canUseNP = true;
-        }
+    public boolean nobelPhantasmCheck() {
+        return this.healthBelow(0.6f) && super.nobelPhantasmCheck();
     }
 
     public void gaeBolg(Vec3 pos) {

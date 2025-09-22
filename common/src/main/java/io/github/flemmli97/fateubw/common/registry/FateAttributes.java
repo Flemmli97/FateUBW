@@ -18,4 +18,6 @@ public class FateAttributes {
     public static final RegistryEntrySupplier<Attribute, Attribute> PROJECTILE_BLOCK_CHANCE = ATTRIBUTES.register("projectile_block_chance", () -> new RangedAttribute("attribute.fateubw.projectile_block_chance", 0, 0, 1));
     public static final RegistryEntrySupplier<Attribute, Attribute> COMBAT_REGEN = ATTRIBUTES.register("combat_regen", () -> new RangedAttribute("attribute.fateubw.combat_regen", 0, 0, Double.MAX_VALUE));
     public static final RegistryEntrySupplier<Attribute, Attribute> PASSIVE_REGEN = ATTRIBUTES.register("passive_regen", () -> new RangedAttribute("attribute.fateubw.passive_regen", 0, 0, Double.MAX_VALUE));
+    public static final RegistryEntrySupplier<Attribute, Attribute> MANA_REGEN = ATTRIBUTES.register("mana_regen", () -> new RangedAttribute("attribute.fateubw.mana_regen", 0, 0, Double.MAX_VALUE));
+    public static final RegistryEntrySupplier<Attribute, Attribute> MANA_LEECH = ATTRIBUTES.register("mana_leech", () -> new RangedAttribute("attribute.fateubw.mana_leech", 0, 0, Double.MAX_VALUE));
 }

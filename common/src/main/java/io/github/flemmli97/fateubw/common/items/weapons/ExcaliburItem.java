@@ -10,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -64,6 +65,13 @@ public class ExcaliburItem extends SwordItem {
             }
         }
         super.releaseUsing(stack, level, entity, timeLeft);
+    }
+
+    @Override
+    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
+        if (entity instanceof LivingEntity living && living.getUseItem() != stack && stack.has(FateDataComponents.GLOWING_ITEM.get())) {
+            stack.remove(FateDataComponents.GLOWING_ITEM.get());
+        }
     }
 
     @Override

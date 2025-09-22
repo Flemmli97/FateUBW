@@ -15,6 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.phys.Vec3;
 
 public class BowHandler implements LancelotUseHandler {
 
@@ -30,11 +31,16 @@ public class BowHandler implements LancelotUseHandler {
         ItemStack ammo = entity.getProjectile(stack);
         AbstractArrow arrow = Platform.INSTANCE.customBowArrow(stack, ammo,
                 ProjectileUtil.getMobArrow(entity, ammo, BowItem.getPowerForTime(entity.getTicksUsingItem()), stack));
-        double dX = target.getX() - entity.getX();
-        double dY = target.getY(0.3) - arrow.getY();
-        double dZ = target.getZ() - entity.getZ();
-        double horLen = Math.sqrt(dX * dX + dZ * dZ);
-        arrow.shoot(dX, dY + horLen * 0.13, dZ, 2.2F, 8 - entity.level().getDifficulty().getId() * 2);
+        if (target != null) {
+            double dX = target.getX() - entity.getX();
+            double dY = target.getY(0.3) - arrow.getY();
+            double dZ = target.getZ() - entity.getZ();
+            double horLen = Math.sqrt(dX * dX + dZ * dZ);
+            arrow.shoot(dX, dY + horLen * 0.13, dZ, 2.2F, 8 - entity.level().getDifficulty().getId() * 2);
+        } else {
+            Vec3 look = entity.getLookAngle();
+            arrow.shoot(look.x(), look.y(), look.z(), 2.2F, 11);
+        }
         arrow.setCritArrow(true);
         arrow.setBaseDamage(arrow.getBaseDamage() + entity.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.4);
         entity.playSound(SoundEvents.SKELETON_SHOOT, 1, 1 / (entity.getRandom().nextFloat() * 0.4f + 0.8f));

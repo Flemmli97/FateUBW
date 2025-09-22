@@ -154,7 +154,7 @@ public class Hassan extends BaseServant {
                         .min(7).max(14).speedMod(1.2f)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(11)
                 .start(DUPE).play(BehaviourUtils.cooldownedPlay(false, 30, 50))
-                .condition(BaseServant::canUseNP)
+                .condition(BaseServant::canUseNobelPhantasm)
                 .prepare(new SetWalkTargetWithinDist<BaseServant>()
                         .min(4).max(11).speedMod(1.3f)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(60)
@@ -186,11 +186,6 @@ public class Hassan extends BaseServant {
                 }
             }
         }
-    }
-
-    @Override
-    public boolean canUseNP() {
-        return super.canUseNP() && this.gatherCopies().isEmpty();
     }
 
     @Override
@@ -322,11 +317,8 @@ public class Hassan extends BaseServant {
     }
 
     @Override
-    protected void actuallyHurt(DamageSource damageSrc, float damageAmount) {
-        super.actuallyHurt(damageSrc, damageAmount);
-        if (!this.dead && this.getHealth() < 0.5 * this.getMaxHealth()) {
-            this.canUseNP = true;
-        }
+    public boolean nobelPhantasmCheck() {
+        return this.healthBelow(0.5f) && super.nobelPhantasmCheck();
     }
 
     public void summonClones() {

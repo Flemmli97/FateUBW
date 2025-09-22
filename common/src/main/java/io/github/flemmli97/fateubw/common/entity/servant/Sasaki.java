@@ -152,7 +152,7 @@ public class Sasaki extends BaseServant {
                 .prepare(new SetWalkTargetToAttackTarget<BaseServant>().speedMod((e, t) -> 1.1f)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(10)
                 .start(TSUBAME_GAESHI).play(BehaviourUtils.cooldownedPlay(false, 18, 35))
-                .condition(BaseServant::canUseNP)
+                .condition(BaseServant::canUseNobelPhantasm)
                 .prepare(new SetWalkTargetWithinDist<BaseServant>()
                         .min(5).max(10).speedMod((e, t) -> 1.2f)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(50)
@@ -353,11 +353,8 @@ public class Sasaki extends BaseServant {
     }
 
     @Override
-    protected void actuallyHurt(DamageSource damageSrc, float damageAmount) {
-        super.actuallyHurt(damageSrc, damageAmount);
-        if (!this.canUseNP && !this.isDeadOrDying() && this.getHealth() < 0.5 * this.getMaxHealth()) {
-            this.canUseNP = true;
-        }
+    public boolean nobelPhantasmCheck() {
+        return this.healthBelow(0.7f) && super.nobelPhantasmCheck();
     }
 
     @Override

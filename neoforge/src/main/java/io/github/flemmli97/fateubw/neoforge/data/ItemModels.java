@@ -66,7 +66,7 @@ public class ItemModels extends ItemModelProvider {
 //                                .scale(0.68f, 0.68f, 0.68f)
 //                                .end()
 //                                .end());
-            } else if (reg == FateItems.ARCHBOW) {
+            } else if (reg == FateItems.EMIYAS_BOW) {
                 this.withExistingParent(reg.getID().getPath(), ModelLocationUtils.decorateItemModelLocation("generated"))
                         .texture("layer0", Fate.modRes(this.folder + "/emiyas_bow"))
                         .override().predicate(ItemModelProps.BOW_PULL_ID, 0.05f)

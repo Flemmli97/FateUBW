@@ -1,7 +1,7 @@
 package io.github.flemmli97.fateubw.common.entity.servant;
 
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
-import io.github.flemmli97.fateubw.common.entity.SwitchableWeapon;
+import io.github.flemmli97.fateubw.common.entity.HeldEquipmentHandler;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.misc.BabylonWeapon;
 import io.github.flemmli97.fateubw.common.entity.misc.EnkiduChains;
@@ -10,6 +10,7 @@ import io.github.flemmli97.fateubw.common.entity.utils.OnProjectileHit;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.ParticlePositionProvider;
+import io.github.flemmli97.fateubw.common.registry.FateAttributes;
 import io.github.flemmli97.fateubw.common.registry.FateDataComponents;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
@@ -29,16 +30,13 @@ import io.github.flemmli97.tenshilib.common.particle.AdvancedParticleContainer;
 import io.github.flemmli97.tenshilib.common.particle.data.CirclingData;
 import io.github.flemmli97.tenshilib.common.particle.data.ParticleMetaData;
 import io.github.flemmli97.tenshilib.common.utils.math.MathUtils;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
-import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.item.ItemStack;
@@ -65,29 +63,16 @@ public class Gilgamesh extends BaseServant implements OnProjectileHit {
     public static final String BABYLON_1 = BUILDER.add("babylon_1", AnimationsBuilder.definition(1).marker("attack", 0.32));
     public static final String BABYLON_2 = BUILDER.add("babylon_2", AnimationsBuilder.definition(1).marker("attack", 0.32));
     public static final String BABYLON_3 = BUILDER.add("babylon_3", AnimationsBuilder.definition(1).marker("attack", 0.32));
-    public static final String EA = BUILDER.add("ea", AnimationsBuilder.definition(3.12).marker("attack", 1.56));
+    public static final String EA = BUILDER.add("ea", AnimationsBuilder.definition(3.12)
+            .marker("start_attack", 0.2).marker("attack", 1.56));
     public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2.));
     public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
 
     private final Vector4f summonColor = new Vector4f(1.0f, 0.85f, 0.3f, 0.7f);
 
-    private final AnimationHandler<Gilgamesh> animationHandler = new AnimationHandler<>(this, ANIMS)
-            .withChangeListener(anim -> {
-                if (!this.level().isClientSide()) {
-                    if (anim == null) {
-                        if (this.getAnimationHandler().isCurrent(EA)) {
-                            this.switchableWeapon.switchItems(true);
-                        }
-                    } else if (anim.is(EA)) {
-                        this.switchableWeapon.switchItems(false);
-                        this.startUsingItem(InteractionHand.MAIN_HAND);
-                        this.getMainHandItem().set(FateDataComponents.GLOWING_ITEM.get(), Unit.INSTANCE);
-                    }
-                }
-                return false;
-            });
+    private final AnimationHandler<Gilgamesh> animationHandler = new AnimationHandler<>(this, ANIMS);
 
-    public final SwitchableWeapon<Gilgamesh> switchableWeapon = new SwitchableWeapon<>(this, new ItemStack(FateItems.ENUMAELISH.get()), ItemStack.EMPTY);
+    public final HeldEquipmentHandler heldEquipmentHandler = new HeldEquipmentHandler(this, new ItemStack(FateItems.ENUMAELISH.get()), null);
 
     private int chainCooldown = 200, leapCooldown;
 
@@ -99,6 +84,11 @@ public class Gilgamesh extends BaseServant implements OnProjectileHit {
     @Override
     public boolean hasOwnWeapon() {
         return true;
+    }
+
+    @Override
+    public HeldEquipmentHandler getEquipmentHandler() {
+        return this.heldEquipmentHandler;
     }
 
     @Override
@@ -126,7 +116,7 @@ public class Gilgamesh extends BaseServant implements OnProjectileHit {
                 .prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(9 * 3)
                 .start(EA).play(BehaviourUtils.cooldownedPlay(false, 20, 35))
-                .condition(BaseServant::canUseNP)
+                .condition(BaseServant::canUseNobelPhantasm)
                 .prepare(new SetWalkTargetWithinDist<Gilgamesh>()
                         .min(4).max(8).speedMod(1.1f)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(40)
@@ -148,23 +138,12 @@ public class Gilgamesh extends BaseServant implements OnProjectileHit {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag tag) {
-        super.addAdditionalSaveData(tag);
-        this.switchableWeapon.save(tag, this.registryAccess());
-    }
-
-    @Override
-    public void readAdditionalSaveData(CompoundTag tag) {
-        super.readAdditionalSaveData(tag);
-        this.switchableWeapon.read(tag, this.registryAccess());
-    }
-
-    @Override
     public void baseTick() {
         super.baseTick();
         if (!this.level().isClientSide) {
             --this.chainCooldown;
             --this.leapCooldown;
+            this.heldEquipmentHandler.setInUse(this.getAnimationHandler().isCurrent(EA) || this.healthBelow(0.5f));
         }
     }
 
@@ -181,6 +160,9 @@ public class Gilgamesh extends BaseServant implements OnProjectileHit {
     @Override
     public void handleAttack(AnimationState anim) {
         if (anim.is(EA)) {
+            if (anim.isAt("start_attack")) {
+                this.startUsingItem(InteractionHand.MAIN_HAND);
+            }
             if (!anim.isAt("attack")) {
                 this.setTargetPositionFromAttackTarget();
             }
@@ -271,15 +253,22 @@ public class Gilgamesh extends BaseServant implements OnProjectileHit {
     }
 
     @Override
-    protected void actuallyHurt(DamageSource damageSrc, float damageAmount) {
-        super.actuallyHurt(damageSrc, damageAmount);
-        if (!this.canUseNP && !this.isDeadOrDying() && this.getHealth() < 0.5 * this.getMaxHealth()) {
-            this.canUseNP = true;
-            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(FateItems.ENUMAELISH.get()));
+    public void regenMana(Entity source) {
+        if (source != this) {
+            double amount = this.getAttributeValue(FateAttributes.MANA_LEECH.asHolder());
+            this.regenMana(amount * 0.4);
+            return;
         }
+        super.regenMana(source);
+    }
+
+    @Override
+    public boolean nobelPhantasmCheck() {
+        return this.healthBelow(0.5f) && super.nobelPhantasmCheck();
     }
 
     public void ea(TargetPosition target) {
+        this.getMainHandItem().remove(FateDataComponents.GLOWING_ITEM.get());
         if (!this.attemptUseNobelPhantasm())
             return;
         EnumaElish ea = new EnumaElish(this.level(), this);
@@ -290,8 +279,6 @@ public class Gilgamesh extends BaseServant implements OnProjectileHit {
         this.level().addFreshEntity(ea);
         this.revealServant();
         this.stopUsingItem();
-        this.getMainHandItem().remove(FateDataComponents.GLOWING_ITEM.get());
-        this.switchableWeapon.switchItems(true);
     }
 
     public void attackWithRangedAttack(LivingEntity target) {

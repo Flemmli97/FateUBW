@@ -52,7 +52,7 @@ public class FateItems {
     public static final RegistryEntrySupplier<Item, TieredItem> GAEBUIDHE = register("gae_buidhe", () -> new TieredItem(ItemTiers.GAE_BUIDHE, new Item.Properties().attributes(createAttributes(ItemTiers.GAE_BUIDHE, -1.5f, 4))));
     public static final RegistryEntrySupplier<Item, KanshouBakuyaItem> KANSHOU = register("kanshou", FateItems::kanshou);
     public static final RegistryEntrySupplier<Item, KanshouBakuyaItem> BAKUYA = register("bakuya", () -> new KanshouBakuyaItem(ItemTiers.KANSHOU_BAKUYA, new Item.Properties().attributes(createAttributes(ItemTiers.KANSHOU_BAKUYA, -2f)), () -> KANSHOU));
-    public static final RegistryEntrySupplier<Item, ArcherBowItem> ARCHBOW = register("emiyas_bow", () -> new ArcherBowItem(new Item.Properties().stacksTo(1)));
+    public static final RegistryEntrySupplier<Item, ArcherBowItem> EMIYAS_BOW = register("emiyas_bow", () -> new ArcherBowItem(new Item.Properties().stacksTo(1)));
     public static final RegistryEntrySupplier<Item, EnumaElishItem> ENUMAELISH = register("enuma_elish", () -> new EnumaElishItem(new Item.Properties().attributes(createAttributes(ItemTiers.ENUMA_ELISH, -2.4f))));
     public static final RegistryEntrySupplier<Item, MedeasStaffItem> STAFF = register("medeas_staff", () -> new MedeasStaffItem(new Item.Properties().stacksTo(1)));
     public static final RegistryEntrySupplier<Item, SwordItem> RULE_BREAKER = register("rule_breaker", () -> new SwordItem(ItemTiers.RULE_BREAKER, new Item.Properties().attributes(createAttributes(ItemTiers.RULE_BREAKER, -2.4f))));

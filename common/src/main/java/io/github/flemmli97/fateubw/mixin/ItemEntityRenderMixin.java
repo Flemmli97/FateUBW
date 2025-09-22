@@ -1,7 +1,7 @@
 package io.github.flemmli97.fateubw.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import io.github.flemmli97.fateubw.client.render.GrailItemRender;
+import io.github.flemmli97.fateubw.client.render.item.GrailItemRender;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ItemEntityRenderer;
 import net.minecraft.world.entity.item.ItemEntity;

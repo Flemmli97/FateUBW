@@ -62,8 +62,8 @@ public class ClientRegister {
     public static void registerItemProps(ItemModelPropsRegister register) {
         register.register(FateItems.EXCALIBUR.get(), ItemModelProps.ACTIVE_ID, ItemModelProps.ACTIVE_ITEM_PROP);
         register.register(FateItems.MEDUSA_DAGGER.get(), ItemModelProps.THROWN_DAGGER_ID, ItemModelProps.THROWN_DAGGER_PROP);
-        register.register(FateItems.ARCHBOW.get(), ItemModelProps.BOW_PULL_ID, ItemModelProps.BOW_PULL_PROP);
-        register.register(FateItems.ARCHBOW.get(), ItemModelProps.CALADBOLG_ID, ItemModelProps.CALADBOLG_CHARGE);
+        register.register(FateItems.EMIYAS_BOW.get(), ItemModelProps.BOW_PULL_ID, ItemModelProps.BOW_PULL_PROP);
+        register.register(FateItems.EMIYAS_BOW.get(), ItemModelProps.CALADBOLG_ID, ItemModelProps.CALADBOLG_CHARGE);
         register.register(FateItems.GAEDEARG.get(), ItemModelProps.UNSEALED_ID, ItemModelProps.UNSEALED_PROP);
         register.register(FateItems.GAEBUIDHE.get(), ItemModelProps.UNSEALED_ID, ItemModelProps.UNSEALED_PROP);
     }

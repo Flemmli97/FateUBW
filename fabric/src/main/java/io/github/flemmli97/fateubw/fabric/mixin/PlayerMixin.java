@@ -6,6 +6,7 @@ import io.github.flemmli97.fateubw.common.event.EventCalls;
 import io.github.flemmli97.fateubw.fabric.mixinhelper.PlayerDataGet;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -23,6 +24,11 @@ public abstract class PlayerMixin implements PlayerDataGet {
     @ModifyVariable(method = "actuallyHurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;getDamageAfterArmorAbsorb(Lnet/minecraft/world/damagesource/DamageSource;F)F"), argsOnly = true)
     private float hurt(float origin, DamageSource source) {
         return EventCalls.damageCalculation((Player) (Object) this, source, origin);
+    }
+
+    @Inject(method = "actuallyHurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;gameEvent(Lnet/minecraft/core/Holder;)V"))
+    private void hurtPost(DamageSource source, float amount, CallbackInfo info) {
+        EventCalls.damagePost((LivingEntity) (Object) this, source, amount);
     }
 
     @Inject(method = "readAdditionalSaveData", at = @At("RETURN"))

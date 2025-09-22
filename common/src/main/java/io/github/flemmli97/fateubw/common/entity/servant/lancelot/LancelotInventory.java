@@ -150,6 +150,15 @@ public class LancelotInventory implements Iterable<ItemStack> {
         return true;
     }
 
+    public boolean swapped() {
+        return this.swappedStack != null;
+    }
+
+    public LancelotInventory setSwappedStack(SwappedStack swappedStack) {
+        this.swappedStack = swappedStack;
+        return this;
+    }
+
     public CompoundTag save(HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
         ListTag content = new ListTag();
