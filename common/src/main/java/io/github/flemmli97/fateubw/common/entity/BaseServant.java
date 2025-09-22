@@ -705,7 +705,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
         if (behaviour == CommandType.NP) {
             if (!this.commandNPUse) {
                 PlayerData data = Platform.INSTANCE.getPlayerData(player);
-                if (player.hasInfiniteMaterials() || (data.useMana(player, this.props().manaCost()) && data.useCommandSeal(player))) {
+                if (player.hasInfiniteMaterials() || (data.useMana(this.props().manaCost()) && data.useCommandSeal())) {
                     player.sendSystemMessage(Component.translatable("fateubw.chat.command.npsuccess").withStyle(ChatFormatting.RED));
                     this.commandNPUse = true;
                 } else {

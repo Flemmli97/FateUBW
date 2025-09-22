@@ -10,6 +10,7 @@ import io.github.flemmli97.fateubw.common.entity.misc.MagicBufCircle;
 import io.github.flemmli97.fateubw.common.registry.FateAttributes;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
+import io.github.flemmli97.fateubw.common.registry.FateMobEffects;
 import io.github.flemmli97.fateubw.common.utils.TeleportUtils;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
@@ -30,6 +31,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -377,7 +379,15 @@ public class Medea extends BaseServant {
     public void ruleBreaker() {
         if (!this.attemptUseNobelPhantasm())
             return;
-        this.mobAttack(this.getAnimationHandler().getAnimation(), this.getTarget(), this::doHurtTarget);
+        this.mobAttack(this.getAnimationHandler().getAnimation(), this.getTarget(), entity -> {
+            if (this.doHurtTarget(entity)) {
+                entity.addEffect(new MobEffectInstance(FateMobEffects.RULE_BREAKER.asHolder(), 600));
+                if (entity instanceof BaseServant servant) {
+                    servant.useMana(servant.getMana());
+                }
+                entity.getActiveEffects().removeIf(inst -> inst.getEffect().value().getCategory() != MobEffectCategory.HARMFUL);
+            }
+        });
         this.revealServant();
     }
 

@@ -10,6 +10,7 @@
     "ClientboundSetEntityDataPacketAccessor",
     "CombatTrackerAccessor",
     "CrossbowAccessor",
+    "EnchantmentHelperMixin",
     "PathFinderMixin",
     "PathNavigationMixin",
     "SynchedEntityDataAccessor"

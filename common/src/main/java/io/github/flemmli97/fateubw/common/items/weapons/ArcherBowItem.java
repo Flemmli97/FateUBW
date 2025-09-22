@@ -48,7 +48,7 @@ public class ArcherBowItem extends BowItem implements SwingItem {
             if (player.isCreative())
                 this.setCharged(stack, true);
             else {
-                if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).useMana(player, CommonConfig.caladbolgMana)) {
+                if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).useMana(CommonConfig.caladbolgMana)) {
                     this.setCharged(stack, true);
                 }
             }
@@ -96,7 +96,7 @@ public class ArcherBowItem extends BowItem implements SwingItem {
     public void spawnNormalArrow(ItemStack stack, Level level, LivingEntity entity, int timeLeft) {
         if (entity instanceof ServerPlayer player) {
             int ammoCount = player.hasInfiniteMaterials() ? 0 : EnchantmentHelper.processAmmoUse(player.serverLevel(), stack, new ItemStack(Items.ARROW), 1);
-            boolean flag = ammoCount <= 0 || Platform.INSTANCE.getPlayerData(player).useMana(player, CommonConfig.archerBowMana * ammoCount);
+            boolean flag = ammoCount <= 0 || Platform.INSTANCE.getPlayerData(player).useMana(CommonConfig.archerBowMana * ammoCount);
             int i = this.getUseDuration(stack, entity) - timeLeft;
 
             if (flag) {

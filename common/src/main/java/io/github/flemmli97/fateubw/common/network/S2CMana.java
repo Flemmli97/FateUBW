@@ -34,7 +34,7 @@ public class S2CMana implements CustomPacketPayload {
     }
 
     public static void handle(S2CMana pkt, Player player) {
-        Platform.INSTANCE.getPlayerData(player).setMana(player, pkt.manaValue);
+        Platform.INSTANCE.getPlayerData(player).setMana(pkt.manaValue);
     }
 
     @Override

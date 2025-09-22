@@ -48,7 +48,7 @@ public class EventCalls {
 
     public static void tick(LivingEntity entity) {
         if (entity instanceof ServerPlayer player)
-            Platform.INSTANCE.getPlayerData(player).tick(player);
+            Platform.INSTANCE.getPlayerData(player).tick();
         if (!entity.level().isClientSide) {
             if (entity.isAlive() && entity.tickCount % 20 == 0) {
                 boolean target = entity instanceof Mob mob && mob.getTarget() != null;

@@ -40,7 +40,7 @@ public class GaeBolgItem extends TieredItem {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!level.isClientSide) {
-            if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).useMana(player, CommonConfig.gaeBolgMana)) {
+            if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).useMana(CommonConfig.gaeBolgMana)) {
                 GaeBolg gaeBolg = new GaeBolg(level, player);
                 gaeBolg.shoot(player, player.getXRot(), player.getYRot(), 0, 2, 0);
                 EntityHitResult res = HitResultUtils.calculateEntityFromLook(player, 32);

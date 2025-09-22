@@ -110,7 +110,7 @@ public class Gilgamesh extends BaseServant implements OnProjectileHit {
                 .end(11 * 3)
                 .start(BABYLON_1, BABYLON_2, BABYLON_3).play((PlayAnimation<Gilgamesh>) BehaviourUtils.<Gilgamesh>cooldownedPlay(BehaviourUtils.ifCloserThan(20),
                                 (s, entity) -> 30 + entity.getRandom().nextInt(20) - (entity.chainCooldown > 0 ? 15 : 0))
-                        .startCondition(BehaviourUtils.ifCloserThan(16)))
+                        .startCondition(gil -> gil.chainCooldown <= 0 && BehaviourUtils.ifCloserThan(16).test(gil)))
                 .condition(gil -> !gil.useRanged())
                 .prepare(new SetWalkTargetToAttackTarget<Gilgamesh>().closeEnoughDist(BehaviourUtils.closeEnough(16)))
                 .prepareOptional(BehaviourUtils.timedMoveAttack())

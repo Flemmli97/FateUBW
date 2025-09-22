@@ -34,7 +34,7 @@ public class DaggerItem extends SwordItem {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         if (!level.isClientSide) {
             ItemStack stack = player.getItemInHand(hand);
-            if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).useMana(player, CommonConfig.daggerThrowMana)) {
+            if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).useMana(CommonConfig.daggerThrowMana)) {
                 ThrownItemEntity dagger = new ThrownItemEntity(level, player);
                 dagger.setWeapon(stack.copy());
                 dagger.shoot(player, player.getXRot(), player.getYRot(), 0, 1.5f, 0);

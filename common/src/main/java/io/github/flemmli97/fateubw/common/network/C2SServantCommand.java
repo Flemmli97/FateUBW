@@ -90,7 +90,7 @@ public record C2SServantCommand(ActionType command, int entityId) implements Cus
                 }
             }
             case BOOST -> {
-                if (data.useCommandSeal(sender)) {
+                if (data.useCommandSeal()) {
                     for (MobEffectInstance effect : CommonConfig.npBoostEffect.potions())
                         servant.get().addEffect(effect);
                     sender.sendSystemMessage(Component.translatable("fateubw.chat.command.spell.success").withStyle(ChatFormatting.RED));

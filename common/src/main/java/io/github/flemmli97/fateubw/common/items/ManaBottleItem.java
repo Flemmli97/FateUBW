@@ -20,7 +20,7 @@ public class ManaBottleItem extends Item {
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
         Player player = entity instanceof Player ? (Player) entity : null;
         if (!level.isClientSide && player != null)
-            Platform.INSTANCE.getPlayerData(player).addMana(player, 50);
+            Platform.INSTANCE.getPlayerData(player).addMana(50);
         if (player == null || !player.isCreative())
             stack.shrink(1);
         return stack;

@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class PlayerMixin implements PlayerDataGet {
 
     @Unique
-    private final PlayerData fate$Data = new PlayerData();
+    private final PlayerData fate$Data = new PlayerData((Player) (Object) this);
 
     @ModifyVariable(method = "actuallyHurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;getDamageAfterArmorAbsorb(Lnet/minecraft/world/damagesource/DamageSource;F)F"), argsOnly = true)
     private float hurt(float origin, DamageSource source) {

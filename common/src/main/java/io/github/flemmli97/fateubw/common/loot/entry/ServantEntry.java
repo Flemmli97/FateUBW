@@ -31,6 +31,6 @@ public class ServantEntry extends GrailLootEntry<ServantEntry> {
 
     @Override
     public void accept(ServerPlayer player, LootContext lootContext) {
-        Platform.INSTANCE.getPlayerData(player).restoreServant(player, this.loot);
+        Platform.INSTANCE.getPlayerData(player).restoreServant(this.loot);
     }
 }

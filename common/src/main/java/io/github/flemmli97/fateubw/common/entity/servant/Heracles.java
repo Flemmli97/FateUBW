@@ -12,6 +12,7 @@ import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailProvider;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
+import io.github.flemmli97.fateubw.common.registry.FateMobEffects;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.Utils;
@@ -375,6 +376,7 @@ public class Heracles extends BaseServant {
                     if (this.doHurtTarget(e)) {
                         e.setDeltaMovement(dir.x(), -4, dir.z());
                         e.hurtMarked = true;
+                        e.addEffect(new MobEffectInstance(FateMobEffects.GRAVITY.asHolder(), 140, 3));
                         if (e instanceof ServerPlayer player)
                             player.connection.send(new ClientboundSetEntityMotionPacket(player));
                     }

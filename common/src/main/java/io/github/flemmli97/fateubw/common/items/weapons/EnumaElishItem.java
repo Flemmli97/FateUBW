@@ -57,7 +57,7 @@ public class EnumaElishItem extends SwordItem {
             return;
         }
         if (!level.isClientSide) {
-            if (!(entity instanceof Player player) || player.isCreative() || Platform.INSTANCE.getPlayerData(player).useMana(player, CommonConfig.eaMana)) {
+            if (!(entity instanceof Player player) || player.isCreative() || Platform.INSTANCE.getPlayerData(player).useMana(CommonConfig.eaMana)) {
                 EnumaElish ea = new EnumaElish(level, entity);
                 level.addFreshEntity(ea);
             } else {

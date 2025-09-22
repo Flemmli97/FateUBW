@@ -36,7 +36,7 @@ public class MedusasDaggerItem extends SwordItem {
             PlayerData data = Platform.INSTANCE.getPlayerData(player);
             ChainDagger thrownDagger = data.getThrownDagger();
             if (thrownDagger == null) {
-                if (player.isCreative() || data.useMana(player, CommonConfig.chainMana)) {
+                if (player.isCreative() || data.useMana(CommonConfig.chainMana)) {
                     ChainDagger dagger = new ChainDagger(level, player, hand == InteractionHand.MAIN_HAND);
                     dagger.shoot(player, player.getXRot(), player.getYRot(), 0, 1.5f, 0);
                     level.addFreshEntity(dagger);

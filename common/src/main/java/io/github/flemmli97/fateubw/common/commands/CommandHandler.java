@@ -99,7 +99,7 @@ public class CommandHandler {
                 case TAKE -> data.getCommandSeals() - amount;
                 case ADD -> data.getCommandSeals() + amount;
             };
-            data.setCommandSeals(player, count);
+            data.setCommandSeals(count);
         });
         switch (mode) {
             case SET ->

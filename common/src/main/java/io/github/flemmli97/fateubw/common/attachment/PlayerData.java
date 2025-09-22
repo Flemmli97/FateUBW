@@ -7,6 +7,7 @@ import io.github.flemmli97.fateubw.common.entity.misc.ChainDagger;
 import io.github.flemmli97.fateubw.common.network.S2CCommandSeals;
 import io.github.flemmli97.fateubw.common.network.S2CMana;
 import io.github.flemmli97.fateubw.common.network.S2CPlayerCap;
+import io.github.flemmli97.fateubw.common.registry.FateMobEffects;
 import io.github.flemmli97.tenshilib.loader.LoaderNetwork;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -31,6 +32,8 @@ import java.util.Optional;
 
 public class PlayerData {
 
+    private final Player player;
+
     private int currentMana, commandSeals = 0;
     private int manaRegenCooldown = 100;
     private float manaRegenAccel = 1;
@@ -39,38 +42,41 @@ public class PlayerData {
 
     private ChainDagger currentDagger;
 
-    public PlayerData() {
+    public PlayerData(Player player) {
+        this.player = player;
     }
 
-    public void setMana(Player player, int mana) {
+    public void setMana(int mana) {
         this.currentMana = Math.min(mana, 100);
-        if (player instanceof ServerPlayer serverPlayer)
+        if (this.player instanceof ServerPlayer serverPlayer)
             LoaderNetwork.INSTANCE.sendToPlayer(new S2CMana(this), serverPlayer);
     }
 
-    public void addMana(Player player, int amount) {
-        this.setMana(player, this.currentMana + amount);
+    public void addMana(int amount) {
+        this.setMana(this.currentMana + amount);
     }
 
     public int getMana() {
+        if (this.player.hasEffect(FateMobEffects.RULE_BREAKER.asHolder()))
+            return 0;
         return this.currentMana;
     }
 
-    public boolean useMana(Player player, int amount) {
-        boolean flag = this.currentMana >= amount;
+    public boolean useMana(int amount) {
+        boolean flag = this.getMana() >= amount;
         if (flag) {
             this.currentMana -= amount;
             this.manaRegenAccel = 1;
             this.manaRegenCooldown = 160;
-            if (player instanceof ServerPlayer serverPlayer)
+            if (this.player instanceof ServerPlayer serverPlayer)
                 LoaderNetwork.INSTANCE.sendToPlayer(new S2CMana(this), serverPlayer);
         }
         return flag;
     }
 
-    public void tick(ServerPlayer player) {
-        if (--this.manaRegenCooldown <= 0) {
-            this.addMana(player, 1);
+    public void tick() {
+        if (--this.manaRegenCooldown <= 0 && !this.player.hasEffect(FateMobEffects.RULE_BREAKER.asHolder())) {
+            this.addMana(1);
             this.manaRegenCooldown = (int) (120 / this.manaRegenAccel);
             this.manaRegenAccel = Math.min(this.manaRegenAccel + 0.5f, 10);
         }
@@ -91,22 +97,22 @@ public class PlayerData {
         }
     }
 
-    public void restoreServant(ServerPlayer player, boolean loot) {
-        if (this.savedServant != null && (player.level() instanceof ServerLevel serverLevel)) {
+    public void restoreServant(boolean loot) {
+        if (this.savedServant != null && (this.player.level() instanceof ServerLevel serverLevel)) {
             if (loot) {
                 ResourceKey<LootTable> lootId = this.savedServant.getFirst().getDefaultLootTable();
                 LootTable lootTable = serverLevel.getServer().reloadableRegistries().getLootTable(lootId);
-                LootContext.Builder builder = this.createLootContext(player);
-                lootTable.getRandomItems(builder.create(Optional.empty()), player::spawnAtLocation);
+                LootContext.Builder builder = this.createLootContext((ServerPlayer) this.player);
+                lootTable.getRandomItems(builder.create(Optional.empty()), this.player::spawnAtLocation);
                 this.savedServant = null;
             } else {
                 Entity entity = this.savedServant.getFirst().create(serverLevel);
                 if (entity instanceof BaseServant servant) {
                     servant.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(servant.blockPosition()), MobSpawnType.TRIGGERED, null);
                     entity.load(this.savedServant.getSecond());
-                    Vec3 look = player.getLookAngle();
-                    entity.setPos(player.getX() + look.x, player.getY(), player.getZ() + look.z);
-                    servant.setOwner(player);
+                    Vec3 look = this.player.getLookAngle();
+                    entity.setPos(this.player.getX() + look.x, this.player.getY(), this.player.getZ() + look.z);
+                    servant.setOwner(this.player);
                     serverLevel.addFreshEntity(entity);
                     this.savedServant = null;
                 }
@@ -131,19 +137,19 @@ public class PlayerData {
         return this.commandSeals;
     }
 
-    public boolean useCommandSeal(Player player) {
+    public boolean useCommandSeal() {
         boolean flag = this.commandSeals > 0;
         if (flag) {
             this.commandSeals--;
-            if (player instanceof ServerPlayer serverPlayer)
+            if (this.player instanceof ServerPlayer serverPlayer)
                 LoaderNetwork.INSTANCE.sendToPlayer(new S2CCommandSeals(this), serverPlayer);
         }
         return flag;
     }
 
-    public void setCommandSeals(Player player, int amount) {
+    public void setCommandSeals(int amount) {
         this.commandSeals = Math.min(amount, 3);
-        if (player instanceof ServerPlayer serverPlayer)
+        if (this.player instanceof ServerPlayer serverPlayer)
             LoaderNetwork.INSTANCE.sendToPlayer(new S2CCommandSeals(this), serverPlayer);
     }
 

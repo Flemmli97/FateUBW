@@ -57,7 +57,7 @@ public class ExcaliburItem extends SwordItem {
             return;
         }
         if (!level.isClientSide) {
-            if (!(entity instanceof Player player) || player.isCreative() || Platform.INSTANCE.getPlayerData(player).useMana(player, CommonConfig.excaliburMana)) {
+            if (!(entity instanceof Player player) || player.isCreative() || Platform.INSTANCE.getPlayerData(player).useMana(CommonConfig.excaliburMana)) {
                 Excalibur excalibur = new Excalibur(level, entity);
                 level.addFreshEntity(excalibur);
             } else {

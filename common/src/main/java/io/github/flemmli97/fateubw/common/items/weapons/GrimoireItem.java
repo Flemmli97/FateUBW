@@ -31,7 +31,7 @@ public class GrimoireItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         if (!level.isClientSide) {
-            if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).useMana(player, CommonConfig.grimoireMana)) {
+            if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).useMana(CommonConfig.grimoireMana)) {
                 this.spawn(player, player.getItemInHand(hand));
                 return InteractionResultHolder.consume(player.getItemInHand(hand));
             }

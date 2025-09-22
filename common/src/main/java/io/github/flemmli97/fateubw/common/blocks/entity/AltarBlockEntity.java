@@ -186,7 +186,7 @@ public class AltarBlockEntity extends BlockEntity {
             if (servant != null) {
                 this.isSummoning = true;
                 LoaderNetwork.INSTANCE.sendToTracking(new S2CAltarUpdate(this.getBlockPos(), this.isSummoning), serverPlayer.serverLevel(), new ChunkPos(this.getBlockPos()));
-                Platform.INSTANCE.getPlayerData(serverPlayer).setCommandSeals(serverPlayer, 3);
+                Platform.INSTANCE.getPlayerData(serverPlayer).setCommandSeals(3);
                 this.servant = servant;
                 return true;
             }

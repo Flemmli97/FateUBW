@@ -10,7 +10,7 @@ import net.neoforged.neoforge.common.util.INBTSerializable;
 public class PlayerDataAttachment extends PlayerData implements INBTSerializable<CompoundTag> {
 
     public PlayerDataAttachment(IAttachmentHolder holder) {
-        super();
+        super(tryCastTo(holder));
     }
 
     private static Player tryCastTo(IAttachmentHolder holder) {

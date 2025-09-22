@@ -53,7 +53,7 @@ public class MedeasStaffItem extends Item {
             return;
         }
         if (!level.isClientSide) {
-            if (!(entity instanceof Player player) || player.isCreative() || Platform.INSTANCE.getPlayerData(player).useMana(player, CommonConfig.staffMana)) {
+            if (!(entity instanceof Player player) || player.isCreative() || Platform.INSTANCE.getPlayerData(player).useMana(CommonConfig.staffMana)) {
                 MagicBeam beam = new MagicBeam(level, entity);
                 beam.setPos(entity.getEyePosition().add(0, 2, 0));
                 Vec3 target = entity.position().add(entity.getLookAngle().scale(16));
