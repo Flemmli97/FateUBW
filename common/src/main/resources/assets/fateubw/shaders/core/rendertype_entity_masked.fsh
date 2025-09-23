@@ -1,6 +1,6 @@
 #version 150
 
-#moj_import < fog.glsl >
+#moj_import <fog.glsl>
 
 uniform sampler2D Sampler0;
 uniform sampler2D Sampler1;
@@ -19,13 +19,13 @@ in vec2 texCoord0;
 out vec4 fragColor;
 
 void main() {
-vec4 color = texture(Sampler0, texCoord0 * 2);
-vec4 mask = texture(Sampler1, texCoord0 * 2);
-color.a = mask.a;
-if (color.a < 0.1) {
-discard;
-}
-color *= ColorModulator;
-color *= lightMapColor;
-fragColor = linear_fog(color, vertexDistance, FogStart, FogEnd, FogColor);
+    vec4 color = texture(Sampler0, texCoord0 * 2);
+    vec4 mask = texture(Sampler1, texCoord0 * 2);
+    color.a = mask.a;
+    if (color.a < 0.1) {
+        discard;
+    }
+    color *= ColorModulator;
+    color *= lightMapColor;
+    fragColor = linear_fog(color, vertexDistance, FogStart, FogEnd, FogColor);
 }

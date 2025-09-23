@@ -1,6 +1,6 @@
 #version 150
 
-#moj_import < fog.glsl >
+#moj_import <fog.glsl>
 
 uniform sampler2D Sampler2;
 
@@ -19,9 +19,9 @@ out vec2 texCoord0;
 out vec4 lightMapColor;
 
 void main() {
-gl_Position = ProjMat * ModelViewMat * vec4(Position, 1.0);
+    gl_Position = ProjMat * ModelViewMat * vec4(Position, 1.0);
 
-vertexDistance = fog_distance(Position, FogShape);
-lightMapColor = texelFetch(Sampler2, UV2 / 16, 0);
-texCoord0 = UV0;
+    vertexDistance = fog_distance(Position, FogShape);
+    lightMapColor = texelFetch(Sampler2, UV2 / 16, 0);
+    texCoord0 = UV0;
 }

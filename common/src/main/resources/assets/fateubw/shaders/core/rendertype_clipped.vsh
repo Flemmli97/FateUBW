@@ -33,11 +33,11 @@ out float clip_distance;
 void main() {
     gl_Position = ProjMat * ModelViewMat * vec4(Position, 1.0);
 
-vertexDistance = fog_distance(Position, FogShape);
+    vertexDistance = fog_distance(Position, FogShape);
     vertexColor = minecraft_mix_light(Light0_Direction, Light1_Direction, Normal, Color);
     lightMapColor = texelFetch(Sampler2, UV2 / 16, 0);
     overlayColor = texelFetch(Sampler1, UV1, 0);
     texCoord0 = UV0;
     normal = ProjMat * ModelViewMat * vec4(Normal, 0.0);
-clip_distance = dot(Position, ClippingPlane.xyz) + ClippingPlane.w;
+    clip_distance = dot(Position, ClippingPlane.xyz) + ClippingPlane.w;
 }
