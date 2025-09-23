@@ -78,6 +78,10 @@ public class FateDamageTypes {
             "%1$s thought they could take on pegasus charge",
             null,
             "%1$s thought they could take on pegasus charge");
+    public static final ResourceKey<DamageType> PETRIFICATION = create("petrification",
+            "%1$s succumbed to the petrification",
+            null,
+            null);
 
     private static ResourceKey<DamageType> create(String path, String generic, String player, String item) {
         ResourceKey<DamageType> key = ResourceKey.create(Registries.DAMAGE_TYPE, Fate.modRes(path));
@@ -95,6 +99,10 @@ public class FateDamageTypes {
 
     public static DamageSource indirect(ResourceKey<DamageType> key, Entity direct, Entity causing) {
         return create(key, direct.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE), direct, causing);
+    }
+
+    public static DamageSource create(ResourceKey<DamageType> key, RegistryAccess registry) {
+        return create(key, registry.lookupOrThrow(Registries.DAMAGE_TYPE), null, null);
     }
 
     public static DamageSource create(ResourceKey<DamageType> key, HolderLookup<DamageType> registry, @Nullable Entity direct, @Nullable Entity causing) {

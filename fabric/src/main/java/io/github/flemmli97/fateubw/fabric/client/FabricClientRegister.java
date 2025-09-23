@@ -13,6 +13,7 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
@@ -32,6 +33,8 @@ public class FabricClientRegister {
         BlockEntityRenderers.register(FateBlocks.ALTAR_BLOCK_ENTITY.get(), RenderAltar::new);
         ClientRegister.registerItemProps(ItemProperties::register);
         ClientRegister.registerRenderers(EntityRendererRegistry::register);
+        LivingEntityFeatureRendererRegistrationCallback.EVENT.register(((type, renderer, helper, ctx)
+                -> ClientRegister.addLayersTo(renderer, helper::register)));
         ClientRegister.registerParticles(new ClientRegister.PartileRegister() {
             @Override
             public <T extends ParticleOptions> void register(ParticleType<T> type, Function<SpriteSet, ParticleProvider<T>> provider) {

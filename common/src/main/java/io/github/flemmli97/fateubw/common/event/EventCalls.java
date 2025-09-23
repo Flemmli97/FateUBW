@@ -1,6 +1,7 @@
 package io.github.flemmli97.fateubw.common.event;
 
 import io.github.flemmli97.fateubw.common.attachment.PlayerData;
+import io.github.flemmli97.fateubw.common.effects.PetrificationEffect;
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.lib.FateTags;
 import io.github.flemmli97.fateubw.common.network.S2CPlayerCap;
@@ -20,6 +21,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -74,6 +76,14 @@ public class EventCalls {
     }
 
     public static boolean onHurt(LivingEntity entity, DamageSource damageSource, float damage) {
+        if (damageSource.getEntity() instanceof LivingEntity) {
+            MobEffectInstance eff = entity.getEffect(FateMobEffects.PETRIFICATION.asHolder());
+            if (eff != null && eff.getAmplifier() >= PetrificationEffect.MAX_PROGRESS) {
+                entity.removeEffect(eff.getEffect());
+                entity.hurt(damageSource, damage * 2);
+                return true;
+            }
+        }
         if (damageSource.is(DamageTypeTags.IS_PROJECTILE) && !damageSource.is(DamageTypeTags.BYPASSES_ARMOR)) {
             AttributeInstance att = entity.getAttribute(FateAttributes.PROJECTILE_BLOCK_CHANCE.asHolder());
             if (att != null && entity.getRandom().nextFloat() < att.getValue()) {

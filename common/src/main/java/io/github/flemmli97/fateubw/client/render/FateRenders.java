@@ -25,6 +25,7 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import java.io.IOException;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class FateRenders extends RenderType {
@@ -35,11 +36,13 @@ public class FateRenders extends RenderType {
     private static ShaderInstance PULSING_TEXT_SHADER;
     private static ShaderInstance BABYLON_SHADER_INSTANCE;
     private static ShaderInstance PARTICLE_COLOR_ADD_SHADER_INSTANCE;
+    private static ShaderInstance ENTITY_MASKED;
 
     private static final ShaderStateShard CORRUPTED_SHADER = new ShaderStateShard(() -> CORRUPTED_SHADER_INSTANCE);
     private static final ShaderStateShard CLIPPED_SHADER = new ShaderStateShard(() -> CLIPPED_SHADER_INSTANCE);
     private static final ShaderStateShard BLOOM_SHADER = new ShaderStateShard(() -> PULSING_TEXT_SHADER);
     private static final ShaderStateShard BABYLON_SHADER = new ShaderStateShard(() -> BABYLON_SHADER_INSTANCE);
+    private static final ShaderStateShard ENTITY_MASKED_SHADER = new ShaderStateShard(() -> ENTITY_MASKED);
 
     private static final TransparencyStateShard CORRUPTED_OVERLAY_TRANSPARENCY = new TransparencyStateShard("fateubw:corrupted_overlay_transparency", () -> {
         RenderSystem.enableBlend();
@@ -79,6 +82,13 @@ public class FateRenders extends RenderType {
             .setTransparencyState(LIGHTNING_TRANSPARENCY)
             .setDepthTestState(LEQUAL_DEPTH_TEST)
             .setCullState(NO_CULL).createCompositeState(false));
+
+    private static final BiFunction<ResourceLocation, ResourceLocation, RenderType> MASKED_ENTITY_CUTOUT = Util.memoize((texture, mask) -> RenderType.create("entity_cutout", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 1536, true, false, CompositeState.builder()
+            .setShaderState(ENTITY_MASKED_SHADER)
+            .setTextureState(MultiTextureStateShard.builder().add(texture, false, false).add(mask, false, false).build())
+            .setTransparencyState(NO_TRANSPARENCY)
+            .setLightmapState(LIGHTMAP)
+            .createCompositeState(true)));
 
     private static final ClipRenderFactory CLIPPED = (wrapped, plane, color, width) ->
             new RenderType("rendertype_clipped_" + wrapped.toString(), wrapped.format(), wrapped.mode(), wrapped.bufferSize(),
@@ -123,6 +133,8 @@ public class FateRenders extends RenderType {
                         shaderInstance -> FateRenders.BABYLON_SHADER_INSTANCE = shaderInstance);
                 register.register(Fate.modRes("particle_color_add"), DefaultVertexFormat.PARTICLE,
                         shaderInstance -> FateRenders.PARTICLE_COLOR_ADD_SHADER_INSTANCE = shaderInstance);
+                register.register(Fate.modRes("rendertype_entity_masked"), DefaultVertexFormat.NEW_ENTITY,
+                        shaderInstance -> FateRenders.ENTITY_MASKED = shaderInstance);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -146,6 +158,10 @@ public class FateRenders extends RenderType {
 
     public static RenderType getPulsingEntityText(ResourceLocation texture) {
         return TRANSLUCENT_BLOOM_TEX.apply(texture);
+    }
+
+    public static RenderType entityCutoutMasked(ResourceLocation location, ResourceLocation mask) {
+        return MASKED_ENTITY_CUTOUT.apply(location, mask);
     }
 
     public static Vector4f createClippingPlane(Vector3f normal, Entity from, float offset) {

@@ -1,16 +1,20 @@
 package io.github.flemmli97.fateubw.common.entity.servant;
 
+import io.github.flemmli97.fateubw.common.effects.PetrificationEffect;
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
+import io.github.flemmli97.fateubw.common.entity.ai.behaviour.SetWalkToFront;
 import io.github.flemmli97.fateubw.common.entity.misc.ChainDagger;
 import io.github.flemmli97.fateubw.common.entity.summons.GordiusWheel;
 import io.github.flemmli97.fateubw.common.entity.summons.Pegasus;
 import io.github.flemmli97.fateubw.common.entity.utils.OnProjectileHit;
+import io.github.flemmli97.fateubw.common.particles.RingParticleData;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailProvider;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
+import io.github.flemmli97.fateubw.common.registry.FateMobEffects;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
@@ -21,15 +25,22 @@ import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionC
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationsBuilder;
+import io.github.flemmli97.tenshilib.common.particle.AdvancedParticleContainer;
+import io.github.flemmli97.tenshilib.common.particle.data.ColorData;
+import io.github.flemmli97.tenshilib.common.particle.data.ParticleMetaData;
+import io.github.flemmli97.tenshilib.common.particle.data.ScaleData;
 import io.github.flemmli97.tenshilib.common.utils.math.OrientedBoundingBox;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -50,11 +61,16 @@ import net.tslat.smartbrainlib.util.BrainUtils;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector4f;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 public class Medusa extends BaseServant implements OnProjectileHit {
 
     protected static final EntityDataAccessor<Boolean> THROWN_DAGGER = SynchedEntityData.defineId(Medusa.class, EntityDataSerializers.BOOLEAN);
+
+    public static final double VIEW_ANGLE = 30 * Mth.DEG_TO_RAD;
 
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
     public static final String DUAL_REVERSE_1 = BUILDER.add("dual_reverse_1", AnimationsBuilder.definition(0.64)
@@ -75,7 +91,8 @@ public class Medusa extends BaseServant implements OnProjectileHit {
             .marker(EntityWeaponTrailProvider.TRAIL_END, 0.52));
     public static final String CHAIN_THROW = BUILDER.add("chain_throw", AnimationsBuilder.definition(0.84).marker("attack", 0.6));
     public static final String RETRIEVE = BUILDER.add("chain_retrieve", AnimationsBuilder.definition(0.88).marker("attack", 0.56));
-    public static final String EYE = BUILDER.add("eye", AnimationsBuilder.definition(1.96).marker("attack", 1));
+    public static final String EYE = BUILDER.add("eye", AnimationsBuilder.definition(1.88)
+            .marker("open", 0.64).marker("close", 1.64));
     public static final String JUMP = BUILDER.add("jump", AnimationsBuilder.definition(0.48).marker("jump", 0.24).infinite());
     public static final String LAND = BUILDER.add("land", AnimationsBuilder.definition(0.64).marker("attack", 0.16));
     public static final String BELLEROPHON = BUILDER.add("bellerophon", AnimationsBuilder.definition(2.28).marker("attack", 0.2));
@@ -92,9 +109,14 @@ public class Medusa extends BaseServant implements OnProjectileHit {
         };
     }
 
-    private final AnimationHandler<Medusa> animationHandler = new AnimationHandler<>(this, ANIMS);
+    private final AnimationHandler<Medusa> animationHandler = new AnimationHandler<>(this, ANIMS)
+            .withChangeListener(anim -> {
+                this.eyeAffected = null;
+                return false;
+            });
 
     private final Vector4f summonColor = new Vector4f(175 / 255f, 88 / 255f, 142 / 255f, 0.7f);
+    private List<LivingEntity> eyeAffected;
     private ChainDagger dagger;
     private int throwCooldown, summonCooldown, eyeCooldown;
 
@@ -163,11 +185,18 @@ public class Medusa extends BaseServant implements OnProjectileHit {
                 .prepare(new SetWalkTargetWithinDist<Medusa>()
                         .min(5).max(16).speedMod((m, e) -> 1.1f)).prepareOptional(BehaviourUtils.moveTo())
                 .end(7)
-//                .start(EYE).play(BehaviourUtils.cooldownedPlay(true, 30, 50)) // TODO
-//                .condition(entity->entity.eyeCooldown <= 0)
-//                .prepare(new SetWalkTargetWithinDist<>()
-//                        .min(5).max(12).speedMod((m, e) -> 1.1f)).prepareOptional(BehaviourUtils.moveTo())
-//                .end(3)
+                .start(EYE).play(BehaviourUtils.cooldownedPlay(false, 30, 50))
+                .condition(entity -> entity.eyeCooldown <= 0 && entity.healthBelow(0.75f))
+                .prepare(new SetWalkToFront<Medusa>().distance(7).speedMod((m, e) -> 1.1f)
+                        .startCondition(medusa -> medusa.getTarget() != null && !Utils.isInView(medusa.getTarget(), medusa, VIEW_ANGLE)))
+                .prepareOptional(BehaviourUtils.timedMoveAttack(20, 25))
+                .end(8)
+                .start(EYE).play(BehaviourUtils.cooldownedPlay(false, 30, 50))
+                .condition(entity -> entity.eyeCooldown <= 0 && entity.healthBelow(0.75f) && !entity.isPassenger())
+                .prepare(new SetWalkToFront<Medusa>().distance(7).speedMod((m, e) -> 1.1f)
+                        .startCondition(medusa -> medusa.getTarget() != null && !Utils.isInView(medusa.getTarget(), medusa, VIEW_ANGLE)))
+                .prepareOptional(BehaviourUtils.timedMoveAttack(20, 25))
+                .end(4)
                 .start(BELLEROPHON).play(BehaviourUtils.cooldownedPlay(false, 20, 40))
                 .condition(Medusa::canSummonPegasus)
                 .prepare(new SetWalkTargetWithinDist<Medusa>()
@@ -237,8 +266,12 @@ public class Medusa extends BaseServant implements OnProjectileHit {
             if (target != null) {
                 this.lookAt(target, 60, 30);
             }
-            if (anim.isAt("attack")) {
-                this.eyeCooldown = this.random.nextInt(150) + 250;
+            if (anim.isAt("open")) {
+                this.eyeAffected = new ArrayList<>();
+                this.eyeCooldown = this.random.nextInt(150) + 200;
+            }
+            if (anim.isPast("open") && !anim.isPast("close")) {
+                this.gorgonsEyes();
             }
         } else if (anim.is(JUMP)) {
             LivingEntity target = this.getTarget();
@@ -254,7 +287,7 @@ public class Medusa extends BaseServant implements OnProjectileHit {
                 } else {
                     dir = this.getLookAngle().scale(0.75);
                 }
-                this.setDeltaMovement(dir.x(), 1.3, dir.z());
+                this.setDeltaMovement(dir.x(), 0.8, dir.z());
             }
             if (anim.isPast("jump")) {
                 this.fallDistance = 0;
@@ -383,6 +416,41 @@ public class Medusa extends BaseServant implements OnProjectileHit {
             this.dagger = dagger;
             this.throwCooldown = this.random.nextInt(50) + 45;
             this.getEntityData().set(THROWN_DAGGER, true);
+        }
+    }
+
+    public void gorgonsEyes() {
+        if (this.eyeAffected == null) {
+            this.eyeAffected = new ArrayList<>();
+        }
+        List<LivingEntity> entities = this.level().getEntities(EntityTypeTest.forClass(LivingEntity.class), this.getBoundingBox().inflate(32),
+                e -> e == this.getTarget() || this.targetPred.test(e));
+        boolean success = false;
+        for (LivingEntity entity : entities) {
+            if (this.eyeAffected.contains(entity))
+                continue;
+            if (Utils.isInView(entity, this, VIEW_ANGLE)) {
+                this.eyeAffected.add(entity);
+                MobEffectInstance eff = entity.getEffect(FateMobEffects.PETRIFICATION.asHolder());
+                int amplifier = 0;
+                if (eff != null) {
+                    if (eff.getAmplifier() >= PetrificationEffect.MAX_PROGRESS)
+                        continue;
+                    amplifier = eff.getAmplifier() + 1;
+                }
+                entity.addEffect(new MobEffectInstance(FateMobEffects.PETRIFICATION.asHolder(), 600, amplifier));
+                success = true;
+            }
+        }
+        if (success) {
+            AdvancedParticleContainer.make(new RingParticleData(this.getYHeadRot(), 0))
+                    .addData(new ScaleData(1, 4, 8))
+                    .addData(new ColorData(new Vector4f(125 / 255f, 12 / 255f, 127 / 255f, 1),
+                            Optional.of(new Vector4f(125 / 255f, 12 / 255f, 127 / 255f, 0.2f)), 10))
+                    .addData(new ParticleMetaData(10, false, 0))
+                    .build()
+                    .add(this.level(), this.getX(), this.getEyeY(), this.getZ());
+            this.playSound(SoundEvents.TOTEM_USE, 0.8f, this.getRandom().nextFloat() * 0.2f + 1.1f);
         }
     }
 

@@ -14,6 +14,7 @@ import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
@@ -76,6 +77,16 @@ public class NeoForgeClientRegister {
     @SubscribeEvent
     public static void keyBindings(RegisterKeyMappingsEvent event) {
         ClientRegister.registerKeyBinding(event::register);
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SubscribeEvent
+    public static void layerModels(EntityRenderersEvent.AddLayers event) {
+        event.getEntityTypes().forEach(type -> {
+            if (event.getRenderer(type) instanceof LivingEntityRenderer renderer) {
+                ClientRegister.addLayersTo(renderer, layer -> renderer.addLayer(layer));
+            }
+        });
     }
 
     @SubscribeEvent

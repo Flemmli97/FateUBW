@@ -136,4 +136,13 @@ public class Utils {
         return offsets.stream().map(p -> pos.add(hor.scale(p.getFirst() * 2)).add(vert.scale(p.getSecond() * 2 + 1)))
                 .toList();
     }
+
+    public static boolean isInView(Entity looking, Entity entity, double degrees) {
+        Vec3 view = looking.getViewVector(1).normalize();
+        Vec3 dir = new Vec3(entity.getX() - looking.getX(), entity.getEyeY() - looking.getEyeY(), entity.getZ() - looking.getZ());
+        double len = dir.length();
+        dir = dir.normalize();
+        double dot = view.dot(dir);
+        return dot > 1.0F - degrees / len;
+    }
 }

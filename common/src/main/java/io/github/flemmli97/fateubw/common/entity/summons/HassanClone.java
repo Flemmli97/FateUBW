@@ -14,6 +14,11 @@ import io.github.flemmli97.fateubw.common.entity.utils.ServantModelLike;
 import io.github.flemmli97.fateubw.common.entity.utils.TargetableOpponent;
 import io.github.flemmli97.fateubw.common.lib.FateTags;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
+import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
+import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailHolder;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailHolderProvider;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailProvider;
 import io.github.flemmli97.fateubw.common.registry.FateAttributes;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
@@ -74,7 +79,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -100,20 +104,21 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttack
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetPlayerLookTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliate;
-import net.tslat.smartbrainlib.api.core.navigation.SmoothGroundNavigation;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
 import net.tslat.smartbrainlib.util.BrainUtils;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector4f;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class HassanClone extends PathfinderMob implements AnimatedEntity, OwnableEntity, AOEAttackEntity, TargetableOpponent, ServantModelLike, SmartBrainOwner<HassanClone>, SyncedMobDataHandler {
+public class HassanClone extends PathfinderMob implements AnimatedEntity, OwnableEntity, AOEAttackEntity, TargetableOpponent,
+        ServantModelLike, SmartBrainOwner<HassanClone>, SyncedMobDataHandler, EntityWeaponTrailHolderProvider {
 
     public static final ResourceLocation BACKSTAB_MODIFIER = Fate.modRes("hassan_backstab");
 
@@ -150,6 +155,8 @@ public class HassanClone extends PathfinderMob implements AnimatedEntity, Ownabl
     private ItemStack mainHandCache = ItemStack.EMPTY;
     private ItemStack offHandCache = ItemStack.EMPTY;
 
+    private final EntityWeaponTrailHolder<HassanClone> trailHolder = new EntityWeaponTrailHolder<>(this);
+
     public HassanClone(EntityType<? extends HassanClone> type, Level level) {
         super(type, level);
         SyncedDataContainer.Builder<HassanClone> builder = SyncedDataContainer.builder(this);
@@ -178,14 +185,6 @@ public class HassanClone extends PathfinderMob implements AnimatedEntity, Ownabl
     @Override
     public SyncedDataContainer<?> getDataContainer() {
         return this.syncedDataContainer;
-    }
-
-    @Override
-    protected PathNavigation createNavigation(Level level) {
-        SmoothGroundNavigation nav = new SmoothGroundNavigation(this, level);
-        nav.setCanOpenDoors(true);
-        nav.setCanPassDoors(true);
-        return nav;
     }
 
     private void updateAttributes() {
@@ -355,6 +354,25 @@ public class HassanClone extends PathfinderMob implements AnimatedEntity, Ownabl
         }
         super.tick();
         this.getAnimationHandler().tick();
+    }
+
+    @Override
+    public void baseTick() {
+        super.baseTick();
+        if (this.level().isClientSide) {
+            AnimationState anim = this.getAnimationHandler().getAnimation();
+            if (anim != null) {
+                if (anim.isAt(EntityWeaponTrailProvider.TRAIL_START)) {
+                    this.level().addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
+                                    TrailInfo.builder(EntityWeaponTrailProvider.EntityTrailData.create(this, anim.getID(), false))
+                                            .setColor(68 / 255f, 68 / 255f, 68 / 255f, 0.6f)
+                                            .setColor2(68 / 255f, 68 / 255f, 68 / 255f, 0.2f)
+                                            .setType(TrailInfo.Visual.TEXTURE, 0)
+                                            .build()),
+                            this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+                }
+            }
+        }
     }
 
     @Override
@@ -650,5 +668,15 @@ public class HassanClone extends PathfinderMob implements AnimatedEntity, Ownabl
             weapon = this.mainHandCache;
         }
         return weapon.isEmpty() ? new ItemStack(FateItems.ASSASSIN_DAGGER.get()) : weapon.copy();
+    }
+
+    @Override
+    public EntityWeaponTrailHolder<?> getTrailHolder() {
+        return this.trailHolder;
+    }
+
+    @Override
+    public WeaponTrail weaponTrailEdge(boolean left) {
+        return new WeaponTrail(new Vector4f(0, 0, -0.2f, 1), new Vector4f(0, 0, -0.6f, 1));
     }
 }

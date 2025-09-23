@@ -7,6 +7,7 @@ import io.github.flemmli97.fateubw.client.particles.RingParticle;
 import io.github.flemmli97.fateubw.client.particles.TrailParticle;
 import io.github.flemmli97.fateubw.client.render.RenderEmpty;
 import io.github.flemmli97.fateubw.client.render.ServantRenderer;
+import io.github.flemmli97.fateubw.client.render.layer.PetrificationLayer;
 import io.github.flemmli97.fateubw.client.render.misc.EmptyRender;
 import io.github.flemmli97.fateubw.client.render.misc.RenderArcherArrow;
 import io.github.flemmli97.fateubw.client.render.misc.RenderBabylon;
@@ -24,6 +25,7 @@ import io.github.flemmli97.fateubw.client.render.misc.RenderPegasus;
 import io.github.flemmli97.fateubw.client.render.misc.RenderStarfish;
 import io.github.flemmli97.fateubw.client.render.misc.RenderTentacle;
 import io.github.flemmli97.fateubw.client.render.misc.RenderThrownItem;
+import io.github.flemmli97.fateubw.client.render.servant.MedusaRenderer;
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.registry.FateBlocks;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
@@ -36,12 +38,15 @@ import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import org.lwjgl.glfw.GLFW;
@@ -83,13 +88,12 @@ public class ClientRegister {
         registerServant(consumer, FateEntities.DIARMUID);
         registerServant(consumer, FateEntities.EMIYA);
         registerServant(consumer, FateEntities.GILGAMESH);
-        registerServant(consumer, FateEntities.MEDEA);
         consumer.register(FateEntities.MEDEA.get(), manager -> new ServantRenderer<>(manager, new MedeaModel<>(), servantTexture(FateEntities.MEDEA), 0.5f));
         registerServant(consumer, FateEntities.GILLES);
         registerServant(consumer, FateEntities.HERACLES, 1);
         registerServant(consumer, FateEntities.LANCELOT, 0.5f);
         registerServant(consumer, FateEntities.ISKANDER, 0.5f);
-        registerServant(consumer, FateEntities.MEDUSA, 0.5f);
+        consumer.register(FateEntities.MEDUSA.get(), MedusaRenderer::new);
         registerServant(consumer, FateEntities.HASSAN);
         registerServant(consumer, FateEntities.SASAKI);
 
@@ -139,6 +143,10 @@ public class ClientRegister {
         consumer.register(FateParticles.TRAIL.get(), TrailParticle.Factory::new);
         consumer.register(FateParticles.RING.get(), RingParticle.Factory::new);
         consumer.register(FateParticles.FLASH.get(), TranslucentAddParticle.Factory::new);
+    }
+
+    public static <T extends LivingEntity> void addLayersTo(LivingEntityRenderer<T, ?> renderer, Consumer<RenderLayer<T, ?>> layerConsumer) {
+        layerConsumer.accept(new PetrificationLayer<>(renderer));
     }
 
     public interface EntityRendererRegister {
