@@ -190,7 +190,13 @@ public class Medusa extends BaseServant implements OnProjectileHit {
                 .prepare(new SetWalkToFront<Medusa>().distance(7).speedMod((m, e) -> 1.1f)
                         .startCondition(medusa -> medusa.getTarget() != null && !Utils.isInView(medusa.getTarget(), medusa, VIEW_ANGLE)))
                 .prepareOptional(BehaviourUtils.timedMoveAttack(20, 25))
-                .end(8)
+                .end(7)
+                .start(EYE).play(BehaviourUtils.cooldownedPlay(false, 30, 50))
+                .condition(entity -> entity.eyeCooldown <= 0 && entity.healthBelow(0.5f))
+                .prepare(new SetWalkToFront<Medusa>().distance(7).speedMod((m, e) -> 1.1f)
+                        .startCondition(medusa -> medusa.getTarget() != null && !Utils.isInView(medusa.getTarget(), medusa, VIEW_ANGLE)))
+                .prepareOptional(BehaviourUtils.timedMoveAttack(20, 25))
+                .end(4)
                 .start(EYE).play(BehaviourUtils.cooldownedPlay(false, 30, 50))
                 .condition(entity -> entity.eyeCooldown <= 0 && entity.healthBelow(0.75f) && !entity.isPassenger())
                 .prepare(new SetWalkToFront<Medusa>().distance(7).speedMod((m, e) -> 1.1f)
@@ -450,7 +456,7 @@ public class Medusa extends BaseServant implements OnProjectileHit {
                     .addData(new ParticleMetaData(10, false, 0))
                     .build()
                     .add(this.level(), this.getX(), this.getEyeY(), this.getZ());
-            this.playSound(SoundEvents.TOTEM_USE, 0.8f, this.getRandom().nextFloat() * 0.2f + 1.1f);
+            this.playSound(SoundEvents.TOTEM_USE, 1, this.getRandom().nextFloat() * 0.2f + 1.1f);
         }
     }
 
