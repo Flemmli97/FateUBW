@@ -948,7 +948,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
                                 this.random.nextGaussian() * 0.02D,
                                 this.random.nextGaussian() * 0.02D))
                         .addData(new ParticleMetaData(20, false, 0))
-                        .build().add(this.level(), this.getX(this.random.nextDouble() * 3 - 1.5),
+                        .add(this.level(), this.getX(this.random.nextDouble() * 3 - 1.5),
                                 this.getY(this.random.nextDouble() * 3 - 1.5),
                                 this.getZ(this.random.nextDouble() * 3 - 1.5));
             }

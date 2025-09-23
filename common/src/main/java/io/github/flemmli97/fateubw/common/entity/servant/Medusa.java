@@ -454,7 +454,6 @@ public class Medusa extends BaseServant implements OnProjectileHit {
                     .addData(new ColorData(new Vector4f(125 / 255f, 12 / 255f, 127 / 255f, 1),
                             Optional.of(new Vector4f(125 / 255f, 12 / 255f, 127 / 255f, 0.2f)), 10))
                     .addData(new ParticleMetaData(10, false, 0))
-                    .build()
                     .add(this.level(), this.getX(), this.getEyeY(), this.getZ());
             this.playSound(SoundEvents.TOTEM_USE, 1, this.getRandom().nextFloat() * 0.2f + 1.1f);
         }

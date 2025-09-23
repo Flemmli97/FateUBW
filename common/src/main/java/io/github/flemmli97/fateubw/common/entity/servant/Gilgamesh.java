@@ -244,7 +244,6 @@ public class Gilgamesh extends BaseServant implements OnProjectileHit {
                                         .build()))
                         .addData(new CirclingData((float) ((this.getRandom().nextDouble() * 0.15 + 1) * this.getBbWidth()), 0, this.getRandom().nextInt() * 360, 80, MathUtils.NORMAL_Y))
                         .addData(new ParticleMetaData(10, false, 0))
-                        .build()
                         .add(this.level(), this.getX(), this.getY(this.getRandom().nextDouble() * 1.2), this.getZ());
             }
             return false;

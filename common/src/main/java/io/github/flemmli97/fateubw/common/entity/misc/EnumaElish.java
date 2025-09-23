@@ -72,7 +72,7 @@ public class EnumaElish extends BaseBeam {
                             .addData(new ScaleData(2))
                             .addData(new MotionData(this.random.nextGaussian() * 0.007, this.random.nextGaussian() * 0.007 + 0.003, this.random.nextGaussian() * 0.007))
                             .addData(new ParticleMetaData(20, false, 0))
-                            .build().add(this.level(), this.hitVec.x(), this.hitVec.y() - 0.15, this.hitVec.z());
+                            .add(this.level(), this.hitVec.x(), this.hitVec.y() - 0.15, this.hitVec.z());
                 }
             Vec3 pos = this.position();
             for (int i = 0; i < 4; i++) {
@@ -85,7 +85,7 @@ public class EnumaElish extends BaseBeam {
                         .addData(new ScaleData(0.15f))
                         .addData(new MotionData(this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01))
                         .addData(new ParticleMetaData(20, false, 0))
-                        .build().add(this.level(), ppos.x(), ppos.y(), ppos.z());
+                        .add(this.level(), ppos.x(), ppos.y(), ppos.z());
             }
             if (this.tickCount % 3 == 1) {
                 ShakeHandler.shakeScreen(this.position(), this.getRange() + 4, 3, 1.5f);

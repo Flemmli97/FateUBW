@@ -199,7 +199,7 @@ public class Diarmuid extends BaseServant {
                     for (int i = 0; i < 6; i++) {
                         AdvancedParticleContainer.make(ParticleTypes.CRIT)
                                 .addData(new ParticleMetaData(10, false, 0))
-                                .build().add(this.level(),
+                                .add(this.level(),
                                         this.getX() + offset.x() + this.getRandom().nextGaussian() * 0.1,
                                         this.getY() + offset.y() + this.getRandom().nextGaussian() * 0.1,
                                         this.getZ() + offset.z() + this.getRandom().nextGaussian() * 0.1);

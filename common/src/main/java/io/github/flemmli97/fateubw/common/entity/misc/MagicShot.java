@@ -78,7 +78,7 @@ public class MagicShot extends BaseProjectile {
                         .addData(new ScaleData(0.5f))
                         .addData(new MotionData(this.random.nextGaussian() * 0.01, Math.abs(this.random.nextGaussian() * 0.03), this.random.nextGaussian() * 0.01))
                         .addData(new ParticleMetaData(20, false, 0))
-                        .build().add(this.level(), this.getX() + this.random.nextGaussian() * delta.x(), this.getY() + 0.35 + this.random.nextGaussian() * delta.y(), this.getZ() + this.random.nextGaussian() * delta.z());
+                        .add(this.level(), this.getX() + this.random.nextGaussian() * delta.x(), this.getY() + 0.35 + this.random.nextGaussian() * delta.y(), this.getZ() + this.random.nextGaussian() * delta.z());
             }
         }
     }

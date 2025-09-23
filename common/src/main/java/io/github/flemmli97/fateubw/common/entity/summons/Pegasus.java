@@ -319,7 +319,7 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
                             .addData(new ScaleData(0.5f))
                             .addData(new MotionData(this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01))
                             .addData(new ParticleMetaData(20, false, 0))
-                            .build().add(this.level(), pos.x(), pos.y(), pos.z());
+                            .add(this.level(), pos.x(), pos.y(), pos.z());
                 }
             }
             if (this.getAnimationHandler().isCurrent(CHARGING) && this.getAnimationHandler().getAnimation().isPast("attack")) {
@@ -342,7 +342,6 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
                                             .build()))
                             .addData(new MotionData(dir))
                             .addData(new ParticleMetaData(8 + this.getRandom().nextInt(8), false, 0))
-                            .build()
                             .add(this.level(), pos.x(), pos.y(), pos.z());
                 }
             }

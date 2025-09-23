@@ -281,7 +281,6 @@ public class Sasaki extends BaseServant {
                     .addData(new MotionData(dir, true, false))
                     .addData(new SinMotionData(sweer, duration * 0.85f, duration, true))
                     .addData(new ParticleMetaData(duration, false, 0))
-                    .build()
                     .add(this.level(), at.x() + pos.x(), at.y() + pos.y(), at.z() + pos.z());
         }
     }

@@ -137,7 +137,7 @@ public class BabylonWeapon extends BaseProjectile {
                         .addData(new ScaleData(0.15f))
                         .addData(new MotionData(this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01))
                         .addData(new ParticleMetaData(20, false, 0))
-                        .build().add(this.level(), this.getX(this.random.nextGaussian()), this.getY(this.random.nextGaussian()), this.getZ(this.random.nextGaussian()));
+                        .add(this.level(), this.getX(this.random.nextGaussian()), this.getY(this.random.nextGaussian()), this.getZ(this.random.nextGaussian()));
             }
         }
     }
@@ -190,7 +190,7 @@ public class BabylonWeapon extends BaseProjectile {
                     .addData(new ScaleData(0.15f))
                     .addData(new MotionData(this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01))
                     .addData(new ParticleMetaData(20, false, 0))
-                    .build().add(this.level(), this.getX(), this.getY(), this.getZ());
+                    .add(this.level(), this.getX(), this.getY(), this.getZ());
         } else {
             if (this.tickCount == 1)
                 this.playSound(FateSounds.ENTITY_BABYLON_SPAWN.get(), 0.7f, (this.random.nextFloat() - this.random.nextFloat()) * 0.2f + 0.9f);

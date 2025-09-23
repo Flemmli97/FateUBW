@@ -110,7 +110,7 @@ public class MagicBeam extends BaseBeam {
                     .addData(new ScaleData(0.15f))
                     .addData(new MotionData(this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01))
                     .addData(new ParticleMetaData(20, false, 0))
-                    .build().add(this.level(), this.getRandomX(2), this.getRandomY(), this.getRandomZ(2));
+                    .add(this.level(), this.getRandomX(2), this.getRandomY(), this.getRandomZ(2));
         } else if (!this.setSpawnRot) {
             this.setSpawnRot = true;
             this.entityData.set(SPAWN_ROT_Y, this.getYRot());

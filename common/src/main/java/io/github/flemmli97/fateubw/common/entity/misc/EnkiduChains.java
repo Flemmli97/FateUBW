@@ -115,7 +115,7 @@ public class EnkiduChains extends BaseProjectile implements SyncedMobDataHandler
                     .addData(new ScaleData(0.3f))
                     .addData(new MotionData(this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01))
                     .addData(new ParticleMetaData(20, false, 0))
-                    .build().add(this.level(), this.getStartPosition().x(), this.getStartPosition().y() + this.getBbHeight() * 0.5, this.getStartPosition().z());
+                    .add(this.level(), this.getStartPosition().x(), this.getStartPosition().y() + this.getBbHeight() * 0.5, this.getStartPosition().z());
         }
         if (this.preparing()) {
             this.updatePreparation();

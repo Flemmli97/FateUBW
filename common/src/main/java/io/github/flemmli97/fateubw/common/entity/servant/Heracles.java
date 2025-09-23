@@ -386,7 +386,7 @@ public class Heracles extends BaseServant {
                             .addData(new ColorData(0.9f, 0.9f, 0.9f))
                             .addData(new ScaleData(1, 4, 3))
                             .addData(new ParticleMetaData(8, false, 0))
-                            .build().add(this.level(), this.getX(), this.getEyeY(), this.getZ());
+                            .add(this.level(), this.getX(), this.getEyeY(), this.getZ());
                 }
                 this.hits = null;
                 this.setDeltaMovement(this.getDeltaMovement().add(0, -0.1, 0));

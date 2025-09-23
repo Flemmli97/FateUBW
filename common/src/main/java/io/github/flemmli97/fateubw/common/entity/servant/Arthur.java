@@ -226,7 +226,7 @@ public class Arthur extends BaseServant {
                                 .addData(new ColorData(248 / 255f, 248 / 255f, 100 / 255f, 0.5f))
                                 .addData(new ScaleData(0.4f))
                                 .addData(new ParticleMetaData(10, false, 0))
-                                .build().add(this.level(),
+                                .add(this.level(),
                                         this.getX() + offset.x() + this.getRandom().nextGaussian() * 0.3,
                                         this.getY() + offset.y() + this.getRandom().nextGaussian() * 0.15,
                                         this.getZ() + offset.z() + this.getRandom().nextGaussian() * 0.3);
