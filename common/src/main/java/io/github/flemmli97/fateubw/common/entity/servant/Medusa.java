@@ -90,7 +90,7 @@ public class Medusa extends BaseServant implements OnProjectileHit {
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.32)
             .marker(EntityWeaponTrailProvider.TRAIL_END, 0.52));
     public static final String CHAIN_THROW = BUILDER.add("chain_throw", AnimationsBuilder.definition(0.84).marker("attack", 0.6));
-    public static final String RETRIEVE = BUILDER.add("chain_retrieve", AnimationsBuilder.definition(0.88).marker("attack", 0.56));
+    public static final String RETRIEVE = BUILDER.add("chain_retrieve", AnimationsBuilder.definition(0.88).marker("retrieve", 0.56));
     public static final String EYE = BUILDER.add("eye", AnimationsBuilder.definition(1.88)
             .marker("open", 0.64).marker("close", 1.64));
     public static final String JUMP = BUILDER.add("jump", AnimationsBuilder.definition(0.48).marker("jump", 0.24).infinite());
@@ -196,13 +196,13 @@ public class Medusa extends BaseServant implements OnProjectileHit {
                 .prepare(new SetWalkToFront<Medusa>().distance(7).speedMod((m, e) -> 1.1f)
                         .startCondition(medusa -> medusa.getTarget() != null && !Utils.isInView(medusa.getTarget(), medusa, VIEW_ANGLE)))
                 .prepareOptional(BehaviourUtils.timedMoveAttack(20, 25))
-                .end(4)
+                .end(5)
                 .start(EYE).play(BehaviourUtils.cooldownedPlay(false, 30, 50))
                 .condition(entity -> entity.eyeCooldown <= 0 && entity.healthBelow(0.75f) && !entity.isPassenger())
                 .prepare(new SetWalkToFront<Medusa>().distance(7).speedMod((m, e) -> 1.1f)
                         .startCondition(medusa -> medusa.getTarget() != null && !Utils.isInView(medusa.getTarget(), medusa, VIEW_ANGLE)))
                 .prepareOptional(BehaviourUtils.timedMoveAttack(20, 25))
-                .end(4)
+                .end(5)
                 .start(BELLEROPHON).play(BehaviourUtils.cooldownedPlay(false, 20, 40))
                 .condition(Medusa::canSummonPegasus)
                 .prepare(new SetWalkTargetWithinDist<Medusa>()
@@ -261,7 +261,7 @@ public class Medusa extends BaseServant implements OnProjectileHit {
                 this.throwDaggerAt(target);
             }
         } else if (anim.is(RETRIEVE)) {
-            if (this.dagger != null) {
+            if (anim.isAt("retrieve") && this.dagger != null) {
                 this.dagger.retractHook();
                 this.dagger = null;
                 this.getEntityData().set(THROWN_DAGGER, false);
@@ -274,7 +274,7 @@ public class Medusa extends BaseServant implements OnProjectileHit {
             }
             if (anim.isAt("open")) {
                 this.eyeAffected = new ArrayList<>();
-                this.eyeCooldown = this.random.nextInt(150) + 200;
+                this.eyeCooldown = this.random.nextInt(150) + 150;
             }
             if (anim.isPast("open") && !anim.isPast("close")) {
                 this.gorgonsEyes();

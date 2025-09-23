@@ -42,6 +42,8 @@ import java.util.List;
 
 public class EnkiduChains extends BaseProjectile implements SyncedMobDataHandler {
 
+    protected static final int CHAIN_DURATION = 100;
+
     protected static final EntityDataAccessor<Integer> SHOOT_TIME = SynchedEntityData.defineId(EnkiduChains.class, EntityDataSerializers.INT);
     protected static final EntityDataAccessor<Boolean> PREPARING = SynchedEntityData.defineId(EnkiduChains.class, EntityDataSerializers.BOOLEAN);
     protected static final EntityDataAccessor<Integer> HOOKED_ENTITY = SynchedEntityData.defineId(EnkiduChains.class, EntityDataSerializers.INT);
@@ -104,7 +106,7 @@ public class EnkiduChains extends BaseProjectile implements SyncedMobDataHandler
 
     @Override
     public int livingTickMax() {
-        return 100;
+        return 80 + (this.hookedEntity != null ? CHAIN_DURATION : 0);
     }
 
     @Override
@@ -129,7 +131,7 @@ public class EnkiduChains extends BaseProjectile implements SyncedMobDataHandler
             }
             if (this.hookedEntity != null) {
                 this.hitTimer++;
-                if (!this.hookedEntity.isAlive() || this.hitTimer > 160) {
+                if (!this.hookedEntity.isAlive() || this.hitTimer > CHAIN_DURATION) {
                     this.discard();
                 } else {
                     if (this.hookedEntity instanceof Player player) {
@@ -181,6 +183,8 @@ public class EnkiduChains extends BaseProjectile implements SyncedMobDataHandler
                     this.shootAtPosition(hit.getLocation().x, hit.getLocation().y, hit.getLocation().z, 1, 6);
                 } else if (this.target != null) {
                     this.shootAtEntity(this.target, 1, 6);
+                } else {
+                    this.discard();
                 }
                 this.playSound(SoundEvents.CHAIN_PLACE, 1, (this.random.nextFloat() - this.random.nextFloat()) * 0.2f + 0.8f);
             }

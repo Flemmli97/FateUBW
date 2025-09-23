@@ -32,7 +32,7 @@ public class RenderEnkiduChains extends EntityRenderer<EnkiduChains> {
     public void render(EnkiduChains entity, float rotation, float partialTicks, PoseStack stack, MultiBufferSource buffer, int packedLight) {
         Vec3 start = entity.getStartPosition();
         float yRot = Mth.lerp(partialTicks, entity.yRotO, entity.getYRot());
-        float xRot = Mth.lerp(partialTicks, entity.xRotO, entity.getXRot());
+        float xRot = -Mth.lerp(partialTicks, entity.xRotO, entity.getXRot());
         double x = Mth.lerp(partialTicks, entity.xo, entity.getX());
         double y = Mth.lerp(partialTicks, entity.yo, entity.getY());
         double z = Mth.lerp(partialTicks, entity.zo, entity.getZ());
@@ -45,9 +45,9 @@ public class RenderEnkiduChains extends EntityRenderer<EnkiduChains> {
         stack.scale(scale, scale, scale);
 
         stack.mulPose(Axis.YP.rotationDegrees(yRot));
-        stack.mulPose(Axis.XP.rotationDegrees(-xRot));
-        stack.translate(0, entity.getBbHeight() * 0.5, -len);
         stack.mulPose(Axis.XP.rotationDegrees(xRot));
+        stack.translate(0, entity.getBbHeight() * 0.5, -len);
+        stack.mulPose(Axis.XP.rotationDegrees(-xRot));
         stack.mulPose(Axis.YP.rotationDegrees(-yRot));
 
         stack.mulPose(Axis.YP.rotationDegrees(entity.getStartY()));
@@ -103,7 +103,7 @@ public class RenderEnkiduChains extends EntityRenderer<EnkiduChains> {
             stack.pushPose();
             stack.translate(0, entity.getBbHeight() * 0.5, 0);
             stack.mulPose(Axis.YP.rotationDegrees(yRot + 90));
-            stack.mulPose(Axis.ZP.rotationDegrees(-xRot));
+            stack.mulPose(Axis.ZP.rotationDegrees(xRot));
             if (entity.hasHooked()) {
                 int mod = entity.tickCount % 10;
                 if (mod < 3) {

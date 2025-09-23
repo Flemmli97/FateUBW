@@ -202,6 +202,8 @@ public class BabylonWeapon extends BaseProjectile {
                     this.shootAtPosition(hit.getLocation().x, hit.getLocation().y, hit.getLocation().z, 1.f, 6);
                 } else if (this.target != null) {
                     this.shootAtEntity(this.target, 1.f, 6);
+                } else {
+                    this.discard();
                 }
                 this.playSound(FateSounds.ENTITY_BABYLON_SHOOT.get(), 0.8f, (this.random.nextFloat() - this.random.nextFloat()) * 0.2f + 0.5f);
             }
@@ -301,7 +303,8 @@ public class BabylonWeapon extends BaseProjectile {
             BabylonWeapon weapon = new BabylonWeapon(thrower.level(), thrower, target);
             // Initial rotation is based of the delta. don't want to dig into where its exactly handled so this will do
             weapon.setPos(offset.x, offset.y + thrower.getBbHeight() * 0.5, offset.z);
-            weapon.shoot(thrower, 0, 180 + thrower.getYRot(), 0, 0.02F, 0);
+            Vec3 dir = Vec3.directionFromRotation(0, thrower.getYRot());
+            weapon.shoot(dir.x(), dir.y(), dir.z(), 0.02F, 0);
             weapon.setWeapon(CommonConfig.babylonWeapons.getRandomWeapon(weapon.random));
             weapon.level().addFreshEntity(weapon);
         }
@@ -339,9 +342,10 @@ public class BabylonWeapon extends BaseProjectile {
                 continue;
             BabylonWeapon weapon = new BabylonWeapon(thrower.level(), thrower, target);
             // Initial rotation is based of the delta. don't want to dig into where its exactly handled so this will do
-            Vec3 area = pos.add(Vec3.directionFromRotation(-offset.getSecond(), offset.getFirst()).scale(range));
+            Vec3 dir = Vec3.directionFromRotation(-offset.getSecond(), offset.getFirst());
+            Vec3 area = pos.add(dir.scale(range));
             weapon.setPos(area.x, area.y, area.z);
-            weapon.shoot(thrower, offset.getSecond(), offset.getFirst(), 0, 0.02F, 0);
+            weapon.shoot(-dir.x(), -dir.y(), -dir.z(), 0.02F, 0);
             weapon.setWeapon(CommonConfig.babylonWeapons.getRandomWeapon(weapon.random));
             weapon.level().addFreshEntity(weapon);
         }

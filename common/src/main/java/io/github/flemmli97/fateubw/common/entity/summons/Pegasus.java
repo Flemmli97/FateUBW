@@ -109,7 +109,8 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
     public static final TypedResource<Vec3> CHARGE_MOTION = new TypedResource<>(Fate.modRes("charge_motion"));
 
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
-    public static final String CHARGING = BUILDER.add("charge", AnimationsBuilder.definition(1.4).marker("attack", 0.36));
+    public static final String CHARGING = BUILDER.add("charge", AnimationsBuilder.definition(1.2)
+            .marker("charge_start", 0.36).marker("charge_end", 1));
     public static final String STOMP = BUILDER.add("stomp", AnimationsBuilder.definition(0.56).marker("attack", 0.4));
     public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2.04)
             .marker("seated", 1.04));
@@ -436,7 +437,7 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
 
     public void handleAttack(AnimationState anim) {
         if (anim.is(CHARGING)) {
-            if (anim.isPast("attack")) {
+            if (anim.isPast("charge_start") && !anim.isPast("charge_end")) {
                 Vec3 dir = this.getChargeMotion();
                 if (dir == null) {
                     this.setChargeTo(this.position().add(this.getLookAngle().scale(10)));
