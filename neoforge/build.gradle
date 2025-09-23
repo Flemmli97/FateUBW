@@ -36,6 +36,8 @@ dependencies {
 
     implementation "net.favouriteless.modopedia:modopedia-neoforge-${minecraft_version}:${modopedia}"
 
+    modCompileOnly("software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}")
+
     modRuntimeOnly "maven.modrinth:jade:2P7THd8J"
 
     //Mods useful for testing things

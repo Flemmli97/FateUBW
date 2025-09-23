@@ -19,5 +19,7 @@ dependencies {
     modApi "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${forge_config_api}"
     modImplementation "net.tslat.smartbrainlib:SmartBrainLib-fabric-${minecraft_version}:${sbl_version}"
 
+    modCompileOnly("software.bernie.geckolib:geckolib-fabric-${minecraft_version}:${geckolib_version}")
+
     modRuntimeOnly "net.favouriteless.modopedia:modopedia-fabric-${minecraft_version}:${modopedia}"
 }

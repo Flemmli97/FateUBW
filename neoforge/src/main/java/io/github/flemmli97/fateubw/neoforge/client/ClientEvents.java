@@ -4,9 +4,11 @@ import io.github.flemmli97.fateubw.client.ClientCalls;
 import io.github.flemmli97.fateubw.client.ClientHandler;
 import io.github.flemmli97.fateubw.client.ShakeHandler;
 import io.github.flemmli97.fateubw.client.render.FateRenders;
+import io.github.flemmli97.fateubw.neoforge.compat.GeoEvents;
 import net.minecraft.client.Minecraft;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
@@ -18,6 +20,9 @@ public class ClientEvents {
         NeoForge.EVENT_BUS.register(ClientEvents.class);
         modBus.register(NeoForgeClientRegister.class);
         FateRenders.registerShader();
+        if (ModList.get().isLoaded("geckolib")) {
+            NeoForge.EVENT_BUS.register(GeoEvents.class);
+        }
     }
 
     @SubscribeEvent
