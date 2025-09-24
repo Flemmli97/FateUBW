@@ -38,6 +38,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.Unit;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
@@ -89,7 +90,7 @@ public class Arthur extends BaseServant {
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.28)
             .marker(EntityWeaponTrailProvider.TRAIL_END, 0.52));
     public static final String EXCALIBAA = BUILDER.add("excalibur", AnimationsBuilder.definition(2.84)
-            .marker("start_attack", 0.2).marker("attack", 1.4));
+            .marker("start_attack", 0.1).marker("attack", 1.4));
     public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2.));
     public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
 
@@ -251,6 +252,7 @@ public class Arthur extends BaseServant {
         if (anim.is(EXCALIBAA)) {
             if (anim.isAt("start_attack")) {
                 this.startUsingItem(InteractionHand.MAIN_HAND);
+                this.getMainHandItem().set(FateDataComponents.GLOWING_ITEM.get(), Unit.INSTANCE);
             }
             if (!anim.isAt("attack")) {
                 this.setTargetPositionFromAttackTarget();

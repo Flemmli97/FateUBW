@@ -175,8 +175,6 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
 
     private final EntityWeaponTrailHolder<BaseServant> trailHolder = new EntityWeaponTrailHolder<>(this);
 
-    private boolean fetchDirectItem;
-
     public BaseServant(EntityType<? extends BaseServant> entityType, Level level) {
         super(entityType, level);
         SyncedDataContainer.Builder<BaseServant> builder = SyncedDataContainer.builder(this);
@@ -843,19 +841,6 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
 
     public HeldEquipmentHandler getEquipmentHandler() {
         return null;
-    }
-
-    @Override
-    public ItemStack getItemBySlot(EquipmentSlot slot) {
-        if (!this.level().isClientSide && !this.fetchDirectItem
-                && (slot == EquipmentSlot.MAINHAND || slot == EquipmentSlot.OFFHAND) && this.getEquipmentHandler() != null) {
-            this.fetchDirectItem = true;
-            ItemStack stack = slot == EquipmentSlot.MAINHAND ? this.getEquipmentHandler().getMainHandStack() : this.getEquipmentHandler().getOffHandStack();
-            this.fetchDirectItem = false;
-            if (stack != null)
-                return stack;
-        }
-        return super.getItemBySlot(slot);
     }
 
     @Override

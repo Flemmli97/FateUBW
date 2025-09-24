@@ -33,6 +33,7 @@ import io.github.flemmli97.tenshilib.common.utils.math.MathUtils;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
+import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -64,7 +65,7 @@ public class Gilgamesh extends BaseServant implements OnProjectileHit {
     public static final String BABYLON_2 = BUILDER.add("babylon_2", AnimationsBuilder.definition(1).marker("attack", 0.32));
     public static final String BABYLON_3 = BUILDER.add("babylon_3", AnimationsBuilder.definition(1).marker("attack", 0.32));
     public static final String EA = BUILDER.add("ea", AnimationsBuilder.definition(3.12)
-            .marker("start_attack", 0.2).marker("attack", 1.56));
+            .marker("start_attack", 0.1).marker("attack", 1.56));
     public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2.));
     public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
 
@@ -162,6 +163,7 @@ public class Gilgamesh extends BaseServant implements OnProjectileHit {
         if (anim.is(EA)) {
             if (anim.isAt("start_attack")) {
                 this.startUsingItem(InteractionHand.MAIN_HAND);
+                this.getMainHandItem().set(FateDataComponents.GLOWING_ITEM.get(), Unit.INSTANCE);
             }
             if (!anim.isAt("attack")) {
                 this.setTargetPositionFromAttackTarget();
