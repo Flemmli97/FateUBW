@@ -36,9 +36,11 @@ public class RenderChainDagger extends EntityRenderer<ChainDagger> {
     public void render(ChainDagger entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
         Entity owner = entity.getOwner();
         float yRot = Mth.lerp(partialTicks, entity.yRotO, entity.getYRot()) - 90.0F;
-        if (entity.retracting())
-            yRot -= 180;
         float xRot = Mth.lerp(partialTicks, entity.xRotO, entity.getXRot());
+        if (entity.retracting()) {
+            yRot -= 180;
+            xRot *= -1;
+        }
         poseStack.pushPose();
         poseStack.translate(0, entity.getBbHeight() * 0.5, 0);
         poseStack.mulPose(Axis.YP.rotationDegrees(yRot));

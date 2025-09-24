@@ -3,6 +3,7 @@ package io.github.flemmli97.fateubw.common.entity.misc;
 import io.github.flemmli97.fateubw.common.attachment.PlayerData;
 import io.github.flemmli97.fateubw.common.entity.utils.OnProjectileHit;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
+import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.platform.Platform;
 import io.github.flemmli97.tenshilib.common.utils.HitResultUtils;
 import net.minecraft.nbt.CompoundTag;
@@ -28,6 +29,7 @@ public class ChainDagger extends BaseProjectile {
     private static final EntityDataAccessor<Boolean> MAINHAND = SynchedEntityData.defineId(ChainDagger.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> HOOKED_ENTITY = SynchedEntityData.defineId(ChainDagger.class, EntityDataSerializers.INT);
 
+    private boolean retractPrev;
     private Entity hookedEntity;
 
     public ChainDagger(EntityType<? extends ChainDagger> type, Level level) {
@@ -89,6 +91,13 @@ public class ChainDagger extends BaseProjectile {
                     data.setThrownDagger(this);
             }
         }
+        if (this.retractPrev != this.retracting()) {
+            Vec3 motion = this.getDeltaMovement();
+            float[] yXRot = MathsHelper.YXRotFrom(motion);
+            this.setRot(yXRot[0], yXRot[1]);
+            this.yRotO = this.getYRot();
+            this.xRotO = this.getXRot();
+        }
         super.tick();
         if (!this.level().isClientSide) {
             if (this.retracting()) {
@@ -103,6 +112,7 @@ public class ChainDagger extends BaseProjectile {
             else if (this.distanceToSqr(this.getOwner()) > 900)
                 this.retractHook();
         }
+        this.retractPrev = this.retracting();
     }
 
     @Override
@@ -171,9 +181,10 @@ public class ChainDagger extends BaseProjectile {
                 if (entity instanceof LivingEntity living)
                     this.hookedEntity.hurt(this.damageSources().mobProjectile(this, living), (float) living.getAttributeValue(Attributes.ATTACK_DAMAGE));
                 this.hookedEntity.setDeltaMovement(vector3d);
-                //this.hookedEntity.push(vector3d.x(), vector3d.y(), vector3d.z());
                 this.hookedEntity.hurtMarked = true;
             }
+            Vec3 motion = new Vec3(entity.getX() - this.getX(), entity.getY() - this.getY() + entity.getBbHeight() * 0.5f, entity.getZ() - this.getZ()).normalize().scale(0.8D);
+            this.setDeltaMovement(motion);
             this.hookedEntity = null;
             this.getEntityData().set(HOOKED_ENTITY, -1);
         } else {
