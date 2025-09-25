@@ -53,6 +53,8 @@ public class CommonConfig {
             List.of(new PotionEffectsConfig.EffectInstance(MobEffects.WITHER, 600, 3),
                     new PotionEffectsConfig.EffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 300, 7))
     );
+    public static int petrificationDuration = 600;
+    public static int ruleBreakerDuration = 2400;
 
     public static int excaliburMana = 70;
     public static int eaMana = 70;

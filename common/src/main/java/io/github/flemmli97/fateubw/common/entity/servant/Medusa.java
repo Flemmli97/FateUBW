@@ -1,5 +1,6 @@
 package io.github.flemmli97.fateubw.common.entity.servant;
 
+import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.effects.PetrificationEffect;
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
@@ -444,7 +445,7 @@ public class Medusa extends BaseServant implements OnProjectileHit {
                         continue;
                     amplifier = eff.getAmplifier() + 1;
                 }
-                entity.addEffect(new MobEffectInstance(FateMobEffects.PETRIFICATION.asHolder(), 600, amplifier));
+                entity.addEffect(new MobEffectInstance(FateMobEffects.PETRIFICATION.asHolder(), CommonConfig.petrificationDuration, amplifier));
                 success = true;
             }
         }

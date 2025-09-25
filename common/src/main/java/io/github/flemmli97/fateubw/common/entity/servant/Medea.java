@@ -1,6 +1,7 @@
 package io.github.flemmli97.fateubw.common.entity.servant;
 
 import io.github.flemmli97.fateubw.api.datapack.ServantExtraData;
+import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.HeldEquipmentHandler;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
@@ -383,7 +384,7 @@ public class Medea extends BaseServant {
             return;
         this.mobAttack(this.getAnimationHandler().getAnimation(), this.getTarget(), entity -> {
             if (this.doHurtTarget(entity)) {
-                entity.addEffect(new MobEffectInstance(FateMobEffects.RULE_BREAKER.asHolder(), 600));
+                entity.addEffect(new MobEffectInstance(FateMobEffects.RULE_BREAKER.asHolder(), CommonConfig.ruleBreakerDuration));
                 if (entity instanceof BaseServant servant) {
                     servant.useMana(servant.getMana());
                 }
