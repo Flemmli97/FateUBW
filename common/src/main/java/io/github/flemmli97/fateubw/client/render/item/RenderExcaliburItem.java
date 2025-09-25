@@ -36,19 +36,14 @@ public class RenderExcaliburItem extends BlockEntityWithoutLevelRenderer {
     public static void render(ItemStack stack, ItemDisplayContext transformType, PoseStack poseStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay, RenderUtils.BeamBuilder beam) {
         ItemRenderer renderer = Minecraft.getInstance().getItemRenderer();
         BakedModel model = renderer.getItemModelShaper().getItemModel(stack);
-        PoseStack.Pose last = poseStack.last();
-        poseStack.popPose();
-        renderer.render(stack, transformType, false, poseStack, buffer, combinedLight, combinedOverlay, model);
-        poseStack.pushPose();
-        PoseStack.Pose update = poseStack.last();
-        update.pose().set(last.pose());
-        update.normal().set(last.normal());
-
         if (transformType != ItemDisplayContext.GUI) {
             poseStack.pushPose();
             poseStack.translate(0.5, 0.5, 0.5);
             RenderUtils.renderGradientBeams3d(poseStack, buffer, 1.5f, 0.5f, ClientHandler.clientTick, ClientHandler.getPartialTicks(), 90 / 200f, 20, beam);
             poseStack.popPose();
         }
+        poseStack.popPose();
+        renderer.render(stack, transformType, false, poseStack, buffer, combinedLight, combinedOverlay, model);
+        poseStack.pushPose();
     }
 }
