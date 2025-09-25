@@ -60,8 +60,6 @@ public class AltarBlockEntity extends BlockEntity {
             }
         } else {
             altar.tick++;
-            if (altar.tick > 360)
-                altar.tick = 0;
             if (altar.isSummoning)
                 altar.summoningTick++;
         }
