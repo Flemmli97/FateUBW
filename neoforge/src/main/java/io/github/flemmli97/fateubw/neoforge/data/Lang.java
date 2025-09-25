@@ -2,6 +2,7 @@ package io.github.flemmli97.fateubw.neoforge.data;
 
 import com.google.gson.JsonObject;
 import io.github.flemmli97.fateubw.Fate;
+import io.github.flemmli97.fateubw.common.entity.servant.Medea;
 import io.github.flemmli97.fateubw.common.registry.FateAttributes;
 import io.github.flemmli97.fateubw.common.registry.FateBlocks;
 import io.github.flemmli97.fateubw.common.registry.FateCreativeTab;
@@ -84,6 +85,7 @@ public class Lang implements DataProvider {
                 this.add(reg.getID() + ".hogou", FateEntities.SERVANT_NOBEL_PHANTASM.get(reg.getID()));
             }
         }
+        this.add(Medea.CIRCLE_COMMAND, "Magic Circle");
 
         for (RegistryEntrySupplier<Attribute, ?> reg : FateAttributes.ATTRIBUTES.getEntries()) {
             this.add(reg.get().getDescriptionId(), this.simpleTranslation(reg.getID()));
@@ -157,7 +159,7 @@ public class Lang implements DataProvider {
         this.add("fateubw.chat.team.alliance.sent", "You sent out an ally request to team %s");
         this.add("fateubw.chat.team.alliance.received", "You received an ally request from team %s");
 
-        this.add("fateubw.gui.name", "Name:");
+        this.add("fateubw.gui.no_servant", "No Servant");
         this.add("fateubw.gui.nobel_phantasm", "Nobel Phantasm");
         this.add("fateubw.gui.nobel_phantasm_cost", "Mana Cost");
         this.add("fateubw.gui.save", "Save");

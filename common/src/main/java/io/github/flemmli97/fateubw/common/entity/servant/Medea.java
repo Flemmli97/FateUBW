@@ -65,6 +65,8 @@ public class Medea extends BaseServant {
     public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2.));
     public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
 
+    public static final String CIRCLE_COMMAND = FateEntities.MEDEA.getID() + ".circle";
+
     private final AnimationHandler<Medea> animationHandler = new AnimationHandler<>(this, ANIMS).withChangeListener(anim -> {
         if (!this.level().isClientSide()) {
             if (this.teleportPre != null) {
@@ -223,12 +225,12 @@ public class Medea extends BaseServant {
 
     @Override
     public String[] specialCommands() {
-        return new String[]{FateEntities.MEDEA.getID() + ".circle"};
+        return new String[]{CIRCLE_COMMAND};
     }
 
     @Override
     public void doSpecialCommand(ServerPlayer sender, String id) {
-        if (id.equals(FateEntities.MEDEA.getID() + ".circle") && this.circleDelay <= 0)
+        if (id.equals(CIRCLE_COMMAND) && this.circleDelay <= 0)
             this.getAnimationHandler().setAnimation(MAGIC_CIRCLE);
     }
 

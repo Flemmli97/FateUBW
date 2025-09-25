@@ -194,7 +194,7 @@ public class TeamGui extends Screen {
                 Component txt = Component.translatable("fateubw.gui.team.name", this.info.team().get().name());
                 int width = this.font.width(txt);
                 graphics.drawString(this.font, txt,
-                        this.leftPos + this.sizeX / 2 - width / 2, this.topPos + 15, 0, true);
+                        this.leftPos + this.sizeX / 2 - width / 2, this.topPos + 15, 0, false);
                 if (this.box != null && !this.box.canConsumeInput()) {
                     boolean vis = this.box.visible;
                     this.box.visible = true;
@@ -207,14 +207,14 @@ public class TeamGui extends Screen {
                 int y = 0;
                 for (FormattedCharSequence lines : this.font.split(Component.translatable("fateubw.gui.team.none"), this.sizeX / 2 - 18)) {
                     graphics.drawString(this.font, lines,
-                            this.leftPos + 18, this.topPos + 18 + y * 11, 0, true);
+                            this.leftPos + 18, this.topPos + 18 + y * 11, 0, false);
                     y += 1;
                 }
             }
         } else {
             Component txt = this.page.title;
             int width = this.font.width(txt);
-            graphics.drawString(this.font, txt, this.leftPos + this.sizeX / 2 - width / 2, this.topPos + 12, 0, true);
+            graphics.drawString(this.font, txt, this.leftPos + this.sizeX / 2 - width / 2, this.topPos + 12, 0, false);
         }
     }
 
