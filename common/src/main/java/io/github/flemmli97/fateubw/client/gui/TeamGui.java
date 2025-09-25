@@ -184,7 +184,7 @@ public class TeamGui extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         graphics.blit(this.page.texture, this.leftPos, this.topPos, 0, 0, this.sizeX, this.sizeY);
         if (this.leaveButton != null) {
             this.leaveButton.active = hasShiftDown();
@@ -216,7 +216,6 @@ public class TeamGui extends Screen {
             int width = this.font.width(txt);
             graphics.drawString(this.font, txt, this.leftPos + this.sizeX / 2 - width / 2, this.topPos + 12, 0, true);
         }
-        super.render(graphics, mouseX, mouseY, partialTicks);
     }
 
     private SelectableText.SelectButton getButton(C2STeamUuidMessage.Type type, UUID uuid) {

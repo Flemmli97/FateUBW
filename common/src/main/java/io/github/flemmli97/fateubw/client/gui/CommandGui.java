@@ -64,7 +64,7 @@ public class CommandGui extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         Player player = this.minecraft.player;
         PlayerData data = Platform.INSTANCE.getPlayerData(player);
         if (data == null)
@@ -82,7 +82,6 @@ public class CommandGui extends Screen {
             RenderUtils.renderScaledEntityGui(graphics, this.width / 2 - 50, this.height / 2 - 20, 29 * 3,
                     29 * 3, 29, 0, mouseX, mouseY, this.servant.get());
         }
-        super.render(graphics, mouseX, mouseY, partialTicks);
     }
 
     private void drawCommand(GuiGraphics graphics, int amount) {

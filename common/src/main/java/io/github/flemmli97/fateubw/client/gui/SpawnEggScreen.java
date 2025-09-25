@@ -70,12 +70,7 @@ public class SpawnEggScreen extends Screen {
     }
 
     @Override
-    protected void renderBlurredBackground(float partialTick) {
-    }
-
-    @Override
     public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        super.renderBackground(graphics, mouseX, mouseY, partialTick);
         graphics.fillGradient(this.leftPos, this.topPos, this.leftPos + this.sizeX, this.topPos + this.sizeY, 0xc0101010, 0xc0101010);
         int padding = 16;
         int yOff = padding;
