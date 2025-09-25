@@ -1,3 +1,29 @@
+FateUBW 2.1.1-beta
+================
+- Shaders should work now even with active iris shader
+- Fix camera shake on fabric
+- Add trail to gae bolg and babylon weapons
+- Servants now invulnerable when using nobel phantasm
+- Redo how servant mana and nobel phantasm use is handled
+- Servants now regenerate mana on hit in addition to passive regen
+- Added mana regen and mana leech attribute to make it configurable
+- Added a leap attack to heracles
+- Heracles air strike attack now grounds enemies for a while
+- Gilgamesh can now attack with his chains
+- Rule breaker now does something:
+  - Clears all non-negative effects from target
+  - Blocks all non-negative from affecting the target
+  - Applies a curse that disables mana, magic resistance and enchantments
+- Add medusas gorgon eyes:
+  - When used starts petrifying targets looking at her
+  - Petrification increases up to 3 stages
+  - Each stage decreases movement speed
+  - At max stage does 10% max health damage to target upon ending
+  - When damaged at max stage ends the petrification immediately and target takes double damage
+- Fix babylon rotation not consistent sometimes
+- Added missing tags (mostly enchants) to weapons
+- Fix and update some ui visual things
+
 FateUBW 2.1.0-beta
 ================
 - Larger weapon now have an inventory texture variant to not look too small in guis
