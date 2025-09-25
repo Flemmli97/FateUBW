@@ -14,6 +14,7 @@ import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingHealEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
@@ -71,5 +72,11 @@ public class EventHandler {
     @SubscribeEvent
     public static void damagePost(LivingDamageEvent.Post event) {
         EventCalls.damagePost(event.getEntity(), event.getSource(), event.getNewDamage());
+    }
+
+    @SubscribeEvent
+    public static void damagePost(MobEffectEvent.Applicable event) {
+        if (EventCalls.preventEffectApply(event.getEntity(), event.getEffectInstance()))
+            event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
     }
 }

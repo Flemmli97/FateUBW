@@ -5,6 +5,8 @@ import io.github.flemmli97.fateubw.common.event.EventCalls;
 import io.github.flemmli97.fateubw.common.items.SwingItem;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -55,6 +57,13 @@ public abstract class LivingEntityMixin {
         ItemStack stack = this.getItemInHand(hand);
         if (!stack.isEmpty() && stack.getItem() instanceof SwingItem swing) {
             swing.onEntitySwing(stack, (LivingEntity) (Object) this);
+        }
+    }
+
+    @Inject(method = "addEffect(Lnet/minecraft/world/effect/MobEffectInstance;Lnet/minecraft/world/entity/Entity;)Z", at = @At("HEAD"), cancellable = true)
+    private void onAddEffect(MobEffectInstance effectInstance, Entity entity, CallbackInfoReturnable<Boolean> info) {
+        if (EventCalls.preventEffectApply((LivingEntity) (Object) this, effectInstance)) {
+            info.setReturnValue(false);
         }
     }
 }

@@ -21,6 +21,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -118,5 +119,9 @@ public class EventCalls {
                 }
             }
         }
+    }
+
+    public static boolean preventEffectApply(LivingEntity entity, MobEffectInstance instance) {
+        return instance.getEffect().value().getCategory() != MobEffectCategory.HARMFUL && entity.hasEffect(FateMobEffects.RULE_BREAKER.asHolder());
     }
 }
