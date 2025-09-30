@@ -133,9 +133,9 @@ public class Cuchulainn extends BaseServant {
     @Override
     public ExtendedBehaviour<? extends BaseServant> getCooldownAI() {
         return SelectableBehaviourBuilder.<BaseServant>builder()
-                .add(7, new SetWalkTargetToAttackTarget<>(), BehaviourUtils.moveTo())
+                .add(8, new SetWalkTargetToAttackTarget<>(), BehaviourUtils.moveTo())
                 .add(4, new SetWalkTargetAwayFromTarget<BaseServant>().radius(7), BehaviourUtils.moveTo())
-                .add(2, BehaviourUtils.ifCloserThan(7), new LeapInDirection<BaseServant>()
+                .add(3, BehaviourUtils.ifCloserThan(7), new LeapInDirection<BaseServant>()
                         .horizontalDirection((owner, target) -> LeapInDirection.createBackwardsVec(owner.position(), target.position()).scale(1.5f))
                         .whenStarting(e -> BrainUtils.clearMemory(e, MemoryModuleType.ATTACK_COOLING_DOWN))).build();
     }

@@ -255,46 +255,41 @@ public class HassanClone extends PathfinderMob implements AnimatedEntity, Ownabl
         );
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public BrainActivityGroup<? extends HassanClone> getFightTasks() {
         return BrainActivityGroup.fightTasks(
                 new InvalidateAttackTarget<HassanClone>(),
-                new FirstApplicableBehaviour<>(
-                        (ExtendedBehaviour<HassanClone>) this.getCooldownAI()
-                                .startCondition(HassanClone::runCooldownBehaviour)
-                                .stopIf(e -> !e.runCooldownBehaviour()),
-                        (ExtendedBehaviour<HassanClone>) this.getCombatAI()
-                ).startCondition(m -> m.getTarget() != null && m.isWithinRestriction(m.getTarget().blockPosition()))
+                this.getCooldownAI().startCondition(BehaviourUtils::runCooldownBehaviour)
+                        .stopIf(e -> !BehaviourUtils.runCooldownBehaviour(e)),
+                this.getCombatAI().startCondition(BehaviourUtils::runCombatBehaviour)
         );
     }
 
     public ExtendedBehaviour<? extends HassanClone> getCombatAI() {
         return AttackBehaviourBuilder.<HassanClone>create()
                 .start(BehaviourUtils.of(AnimationPlayHolder.<HassanClone>builder(Hassan.DAGGER_1)
-                        .start(Hassan.DAGGER_3, 2, 0.2f, 1)
-                        .start(Hassan.DAGGER_4, 2, 0.16f, 1)
-                        .chainChance(0.6f).build())).play(BehaviourUtils.cooldownedPlay(true, 15, 26))
+                        .start(Hassan.DAGGER_3, 2, 0.24f, 1)
+                        .start(Hassan.DAGGER_4, 2, 0.24f, 1)
+                        .start(Hassan.TOP_STAB, 2, 0.24f, 1).build())).play(BehaviourUtils.cooldownedPlay(true, 15, 26))
                 .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(8)
                 .start(BehaviourUtils.of(AnimationPlayHolder.<HassanClone>builder(Hassan.DAGGER_1)
-                        .start(Hassan.DAGGER_3, 2, 0.2f, 1)
-                        .start(Hassan.DAGGER_4, 2, 0.16f, 1)
-                        .chainChance(0.6f).build())).play(BehaviourUtils.cooldownedPlay(true, 15, 26))
+                        .start(Hassan.DAGGER_3, 2, 0.24f, 1)
+                        .start(Hassan.DAGGER_4, 2, 0.24f, 1).build())).play(BehaviourUtils.cooldownedPlay(true, 15, 26))
                 .prepare(new MoveBehindBehaviour<>())
                 .end(7)
                 .start(BehaviourUtils.of(AnimationPlayHolder.<HassanClone>builder(Hassan.DAGGER_3)
-                        .start(Hassan.DAGGER_1, 2, 0.2f, 1)
-                        .chain(Hassan.DAGGER_2, 2, 0.2f)
-                        .start(Hassan.DAGGER_1, 2, 0.2f, 1)
-                        .chain(Hassan.DAGGER_4, 2, 0.16f)
-                        .chainChance(0.6f).build())).play(BehaviourUtils.cooldownedPlay(true, 15, 26))
+                        .start(Hassan.DAGGER_1, 2, 0.24f, 1)
+                        .chain(Hassan.DAGGER_2, 2, 0.24f)
+                        .start(Hassan.DAGGER_1, 2, 0.24f, 1)
+                        .chain(Hassan.DAGGER_4, 2, 0.24f).build())).play(BehaviourUtils.cooldownedPlay(true, 15, 26))
                 .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(8)
                 .start(Hassan.TOP_STAB).play(BehaviourUtils.cooldownedPlay(true, 15, 26))
                 .prepare(new SetWalkTargetToAttackTarget<HassanClone>().speedMod((e, t) -> 1.2f)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(9)
-                .start(Hassan.TOP_STAB).play(BehaviourUtils.cooldownedPlay(true, 15, 26))
+                .start(BehaviourUtils.of(AnimationPlayHolder.<HassanClone>builder(Hassan.DAGGER_4)
+                        .start(Hassan.TOP_STAB, 2, 0.24f, 1).build())).play(BehaviourUtils.cooldownedPlay(true, 15, 26))
                 .prepare(new MoveBehindBehaviour<HassanClone>().speedMod(1.2f)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(11)
                 .start(Hassan.THROW).play(BehaviourUtils.cooldownedPlay(false, 15, 26))
@@ -319,11 +314,6 @@ public class HassanClone extends PathfinderMob implements AnimatedEntity, Ownabl
                 .add(6, new SetWalkTargetToAttackTarget<>(), BehaviourUtils.moveTo())
                 .add(3, new SetWalkTargetAwayFromTarget<HassanClone>()
                         .radius(7), BehaviourUtils.moveTo()).build();
-    }
-
-
-    protected boolean runCooldownBehaviour() {
-        return !this.getAnimationHandler().hasAnimation() && BrainUtils.hasMemory(this, MemoryModuleType.ATTACK_COOLING_DOWN);
     }
 
     @Override

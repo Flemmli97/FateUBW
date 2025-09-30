@@ -126,7 +126,7 @@ public class BehaviourUtils {
     }
 
     public static <E extends PathfinderMob & AOEAttackEntity & AnimatedEntity> MoveToAttackTarget<E> timedMoveAttack() {
-        return timedMoveAttack(30, 40);
+        return timedMoveAttack(25, 40);
     }
 
     public static <E extends PathfinderMob & AOEAttackEntity & AnimatedEntity> MoveToAttackTarget<E> timedMoveAttack(int min, int max) {
@@ -154,5 +154,14 @@ public class BehaviourUtils {
                 BrainUtils.setForgettableMemory(mob, memory, value, Math.toIntExact(current));
             }
         }
+    }
+
+    public static <T extends LivingEntity & AnimatedEntity> boolean runCooldownBehaviour(T entity) {
+        return !entity.getAnimationHandler().hasAnimation()
+                && (BrainUtils.hasMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN) || !BrainUtils.hasMemory(entity, TenshilibMemoryModules.ANIMATION_TO_PLAY.get()));
+    }
+
+    public static <T extends Mob & AnimatedEntity> boolean runCombatBehaviour(T entity) {
+        return !entity.getAnimationHandler().hasAnimation() && entity.getTarget() != null && !BrainUtils.hasMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN);
     }
 }

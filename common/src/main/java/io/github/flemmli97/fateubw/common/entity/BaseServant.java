@@ -6,6 +6,7 @@ import io.github.flemmli97.fateubw.api.entity.CommandType;
 import io.github.flemmli97.fateubw.api.entity.ServantLike;
 import io.github.flemmli97.fateubw.common.attachment.PlayerData;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
+import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.SetTargetFromRider;
 import io.github.flemmli97.fateubw.common.entity.utils.MoveStateTracker;
 import io.github.flemmli97.fateubw.common.entity.utils.MoveType;
@@ -298,17 +299,13 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
         );
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public BrainActivityGroup<? extends BaseServant> getFightTasks() {
         return BrainActivityGroup.fightTasks(
                 new InvalidateAttackTarget<BaseServant>(),
-                new FirstApplicableBehaviour<>(
-                        (ExtendedBehaviour<BaseServant>) this.getCooldownAI()
-                                .startCondition(BaseServant::runCooldownBehaviour)
-                                .stopIf(e -> !e.runCooldownBehaviour()),
-                        (ExtendedBehaviour<BaseServant>) this.getCombatAI()
-                ).startCondition(m -> m.getTarget() != null && m.isWithinRestriction(m.getTarget().blockPosition()))
+                this.getCooldownAI().startCondition(BehaviourUtils::runCooldownBehaviour)
+                        .stopIf(e -> !BehaviourUtils.runCooldownBehaviour(e)),
+                this.getCombatAI().startCondition(BehaviourUtils::runCombatBehaviour)
         );
     }
 
@@ -318,10 +315,6 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
 
     public ExtendedBehaviour<? extends BaseServant> getCooldownAI() {
         return new Idle<>();
-    }
-
-    protected boolean runCooldownBehaviour() {
-        return !this.getAnimationHandler().hasAnimation() && BrainUtils.hasMemory(this, MemoryModuleType.ATTACK_COOLING_DOWN);
     }
 
     @SuppressWarnings("unchecked")
@@ -521,6 +514,11 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
             return this.getTargetPosition()
                     .asVec(this.position());
         return target != null ? target.position() : null;
+    }
+
+    @Override
+    public boolean canAttack(LivingEntity target) {
+        return super.canAttack(target) && this.isWithinRestriction(target.blockPosition());
     }
 
     @Override

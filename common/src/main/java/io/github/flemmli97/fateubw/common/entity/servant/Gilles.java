@@ -88,10 +88,8 @@ public class Gilles extends BaseServant {
     @Override
     public ExtendedBehaviour<? extends BaseServant> getCooldownAI() {
         return SelectableBehaviourBuilder.<BaseServant>builder()
-                .add(7, new StrafeTarget<BaseServant>()
-                        .strafeDistance(12))
-                .add(2, BehaviourUtils.ifCloserThan(7),
-                        new SetWalkTargetAwayFromTarget<BaseServant>()
+                .add(7, new StrafeTarget<BaseServant>().strafeDistance(12))
+                .add(2, BehaviourUtils.ifCloserThan(7), new SetWalkTargetAwayFromTarget<BaseServant>()
                                 .radius(7), BehaviourUtils.moveTo()).build();
     }
 

@@ -197,23 +197,18 @@ public class GordiusWheel extends PathfinderMob implements AnimatedEntity, Stand
     public BrainActivityGroup<? extends GordiusWheel> getFightTasks() {
         return BrainActivityGroup.fightTasks(
                 new InvalidateAttackTarget<GordiusWheel>(),
-                new FirstApplicableBehaviour<>(
-                        new Idle<GordiusWheel>().startCondition(GordiusWheel::runCooldownBehaviour)
-                                .stopIf(e -> !e.runCooldownBehaviour()),
-                        AttackBehaviourBuilder.<GordiusWheel>create()
-                                .start(STOMP).play(BehaviourUtils.cooldownedPlay(true, 10, 40))
-                                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.moveAttack())
-                                .end(1)
-                                .start(CHARGING).play(BehaviourUtils.cooldownedPlay(false, 10, 40))
-                                .prepare(new SetChargeTarget())
-                                .end(1)
-                                .build()
-                ).startCondition(m -> m.getTarget() != null)
+                new Idle<GordiusWheel>().startCondition(BehaviourUtils::runCooldownBehaviour)
+                        .stopIf(e -> !BehaviourUtils.runCooldownBehaviour(e)),
+                AttackBehaviourBuilder.<GordiusWheel>create()
+                        .start(STOMP).play(BehaviourUtils.cooldownedPlay(true, 10, 40))
+                        .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.moveAttack())
+                        .end(1)
+                        .start(CHARGING).play(BehaviourUtils.cooldownedPlay(false, 10, 40))
+                        .prepare(new SetChargeTarget())
+                        .end(1)
+                        .build()
+                        .startCondition(BehaviourUtils::runCombatBehaviour)
         );
-    }
-
-    protected boolean runCooldownBehaviour() {
-        return !this.getAnimationHandler().hasAnimation() && BrainUtils.hasMemory(this, MemoryModuleType.ATTACK_COOLING_DOWN);
     }
 
     @Override

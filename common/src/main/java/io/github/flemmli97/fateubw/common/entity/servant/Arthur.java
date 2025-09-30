@@ -193,7 +193,7 @@ public class Arthur extends BaseServant {
         return SelectableBehaviourBuilder.<BaseServant>builder()
                 .add(6, new SetWalkTargetToAttackTarget<>(), BehaviourUtils.moveTo())
                 .add(2, new SetWalkTargetAwayFromTarget<BaseServant>()
-                        .radius(5), BehaviourUtils.moveTo()).build();
+                        .radius(7), BehaviourUtils.moveTo()).build();
     }
 
     @Override

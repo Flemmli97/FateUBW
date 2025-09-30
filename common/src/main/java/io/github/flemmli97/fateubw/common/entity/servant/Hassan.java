@@ -15,6 +15,7 @@ import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.SelectableBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetWalkTargetAwayFromTarget;
+import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetWalkTargetWithinDist;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.data.AnimationPlayHolder;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionContainer;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
@@ -37,6 +38,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
@@ -48,6 +50,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
+import net.tslat.smartbrainlib.util.BrainUtils;
 import org.joml.Vector4f;
 
 import java.util.ArrayList;
@@ -122,50 +125,50 @@ public class Hassan extends BaseServant {
     @Override
     public ExtendedBehaviour<? extends BaseServant> getCombatAI() {
         return AttackBehaviourBuilder.<BaseServant>create()
-//                .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(DAGGER_1)
-//                        .start(DAGGER_3, 2, 0.24f, 1)
-//                        .start(DAGGER_4, 2, 0.24f, 1)
-//                        .start(TOP_STAB, 2, 0.24f, 1).build())).play(BehaviourUtils.cooldownedPlay(true, 15, 26))
-//                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
-//                .end(11)
+                .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(DAGGER_1)
+                        .start(DAGGER_3, 2, 0.24f, 1)
+                        .start(DAGGER_4, 2, 0.24f, 1)
+                        .start(TOP_STAB, 2, 0.24f, 1).build())).play(BehaviourUtils.cooldownedPlay(true, 15, 26))
+                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .end(11)
                 .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(DAGGER_1)
                         .start(DAGGER_3, 2, 0.24f, 1)
                         .start(DAGGER_4, 2, 0.24f, 1).build())).play(BehaviourUtils.cooldownedPlay(true, 15, 26))
                 .prepare(new MoveBehindBehaviour<>())
                 .end(9)
-//                .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(DAGGER_3)
-//                        .start(DAGGER_1, 2, 0.24f, 1)
-//                        .chain(DAGGER_2, 2, 0.24f)
-//                        .start(DAGGER_1, 2, 0.24f, 1)
-//                        .chain(DAGGER_4, 2, 0.24f).build())).play(BehaviourUtils.cooldownedPlay(true, 15, 26))
-//                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
-//                .end(11)
-//                .start(TOP_STAB).play(BehaviourUtils.cooldownedPlay(true, 15, 26))
-//                .prepare(new SetWalkTargetToAttackTarget<BaseServant>().speedMod((e, t) -> 1.2f)).prepareOptional(BehaviourUtils.timedMoveAttack())
-//                .end(8)
-//                .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(DAGGER_4)
-//                        .start(TOP_STAB, 2, 0.24f, 1).build())).play(BehaviourUtils.cooldownedPlay(true, 15, 26))
-//                .prepare(new MoveBehindBehaviour<BaseServant>().speedMod(1.2f)).prepareOptional(BehaviourUtils.timedMoveAttack())
-//                .end(10)
-//                .start(THROW).play(BehaviourUtils.cooldownedPlay(false, 15, 26))
-//                .prepare(new SetWalkTargetWithinDist<BaseServant>()
-//                        .min(7).max(14).speedMod(1.2f)).prepareOptional(BehaviourUtils.moveAttack())
-//                .end(9)
-//                .start(THROW).play(BehaviourUtils.cooldownedPlay(false, 15, 26))
-//                .condition(entity -> {
-//                    if (BehaviourUtils.ifFurtherThan(8).test(entity))
-//                        return true;
-//                    LivingEntity target = BrainUtils.getTargetOfEntity(entity);
-//                    return target != null && target.getY() - entity.getY() > 4;
-//                })
-//                .prepare(new SetWalkTargetWithinDist<BaseServant>()
-//                        .min(7).max(14).speedMod(1.2f)).prepareOptional(BehaviourUtils.moveAttack())
-//                .end(11)
-//                .start(DUPE).play(BehaviourUtils.cooldownedPlay(false, 30, 50))
-//                .condition(BaseServant::canUseNobelPhantasm)
-//                .prepare(new SetWalkTargetWithinDist<BaseServant>()
-//                        .min(4).max(11).speedMod(1.3f)).prepareOptional(BehaviourUtils.moveAttack())
-//                .end(60)
+                .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(DAGGER_3)
+                        .start(DAGGER_1, 2, 0.24f, 1)
+                        .chain(DAGGER_2, 2, 0.24f)
+                        .start(DAGGER_1, 2, 0.24f, 1)
+                        .chain(DAGGER_4, 2, 0.24f).build())).play(BehaviourUtils.cooldownedPlay(true, 15, 26))
+                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .end(11)
+                .start(TOP_STAB).play(BehaviourUtils.cooldownedPlay(true, 15, 26))
+                .prepare(new SetWalkTargetToAttackTarget<BaseServant>().speedMod((e, t) -> 1.2f)).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .end(8)
+                .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(DAGGER_4)
+                        .start(TOP_STAB, 2, 0.24f, 1).build())).play(BehaviourUtils.cooldownedPlay(true, 15, 26))
+                .prepare(new MoveBehindBehaviour<BaseServant>().speedMod(1.2f)).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .end(10)
+                .start(THROW).play(BehaviourUtils.cooldownedPlay(false, 15, 26))
+                .prepare(new SetWalkTargetWithinDist<BaseServant>()
+                        .min(7).max(14).speedMod(1.2f)).prepareOptional(BehaviourUtils.moveAttack())
+                .end(9)
+                .start(THROW).play(BehaviourUtils.cooldownedPlay(false, 15, 26))
+                .condition(entity -> {
+                    if (BehaviourUtils.ifFurtherThan(8).test(entity))
+                        return true;
+                    LivingEntity target = BrainUtils.getTargetOfEntity(entity);
+                    return target != null && target.getY() - entity.getY() > 4;
+                })
+                .prepare(new SetWalkTargetWithinDist<BaseServant>()
+                        .min(7).max(14).speedMod(1.2f)).prepareOptional(BehaviourUtils.moveAttack())
+                .end(11)
+                .start(DUPE).play(BehaviourUtils.cooldownedPlay(false, 30, 50))
+                .condition(BaseServant::canUseNobelPhantasm)
+                .prepare(new SetWalkTargetWithinDist<BaseServant>()
+                        .min(4).max(11).speedMod(1.3f)).prepareOptional(BehaviourUtils.moveAttack())
+                .end(60)
                 .build();
     }
 

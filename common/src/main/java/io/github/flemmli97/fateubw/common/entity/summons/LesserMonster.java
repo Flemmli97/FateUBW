@@ -177,29 +177,24 @@ public class LesserMonster extends PathfinderMob implements AnimatedEntity, Owna
     public BrainActivityGroup<? extends LesserMonster> getFightTasks() {
         return BrainActivityGroup.fightTasks(
                 new InvalidateAttackTarget<LesserMonster>(),
-                new FirstApplicableBehaviour<>(
-                        SelectableBehaviourBuilder.<LesserMonster>builder()
-                                .add(1, entity -> !entity.ranged, new SetWalkTargetToAttackTarget<>(), BehaviourUtils.moveTo())
-                                .add(1, entity -> entity.ranged, new SetWalkTargetWithinDist<LesserMonster>().min(4).max(8), BehaviourUtils.moveTo())
-                                .build().startCondition(LesserMonster::runCooldownBehaviour)
-                                .stopIf(e -> !e.runCooldownBehaviour()),
-                        AttackBehaviourBuilder.<LesserMonster>create()
-                                .start(ATTACK).play(BehaviourUtils.cooldownedPlay(false, 10, 25))
-                                .condition(entity -> !entity.ranged)
-                                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.moveTo())
-                                .end(1)
-                                .start(ATTACK).play(BehaviourUtils.cooldownedPlay(false, 10, 25))
-                                .condition(entity -> entity.ranged)
-                                .prepare(new SetWalkTargetWithinDist<LesserMonster>()
-                                        .min(4).max(8)).prepareOptional(BehaviourUtils.moveTo())
-                                .end(1)
-                                .build()
-                ).startCondition(m -> m.getTarget() != null)
+                SelectableBehaviourBuilder.<LesserMonster>builder()
+                        .add(1, entity -> !entity.ranged, new SetWalkTargetToAttackTarget<>(), BehaviourUtils.moveTo())
+                        .add(1, entity -> entity.ranged, new SetWalkTargetWithinDist<LesserMonster>().min(4).max(8), BehaviourUtils.moveTo())
+                        .build().startCondition(BehaviourUtils::runCooldownBehaviour)
+                        .stopIf(e -> !BehaviourUtils.runCooldownBehaviour(e)),
+                AttackBehaviourBuilder.<LesserMonster>create()
+                        .start(ATTACK).play(BehaviourUtils.cooldownedPlay(false, 10, 25))
+                        .condition(entity -> !entity.ranged)
+                        .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.moveTo())
+                        .end(1)
+                        .start(ATTACK).play(BehaviourUtils.cooldownedPlay(false, 10, 25))
+                        .condition(entity -> entity.ranged)
+                        .prepare(new SetWalkTargetWithinDist<LesserMonster>()
+                                .min(4).max(8)).prepareOptional(BehaviourUtils.moveTo())
+                        .end(1)
+                        .build()
+                        .startCondition(BehaviourUtils::runCombatBehaviour)
         );
-    }
-
-    protected boolean runCooldownBehaviour() {
-        return !this.getAnimationHandler().hasAnimation() && BrainUtils.hasMemory(this, MemoryModuleType.ATTACK_COOLING_DOWN);
     }
 
     @Override

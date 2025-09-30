@@ -221,17 +221,13 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
         );
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public BrainActivityGroup<? extends Pegasus> getFightTasks() {
         return BrainActivityGroup.fightTasks(
                 new InvalidateAttackTarget<Pegasus>(),
-                new FirstApplicableBehaviour<>(
-                        (ExtendedBehaviour<Pegasus>) this.getCooldownAI()
-                                .startCondition(Pegasus::runCooldownBehaviour)
-                                .stopIf(e -> !e.runCooldownBehaviour()),
-                        (ExtendedBehaviour<Pegasus>) this.getCombatAI()
-                ).startCondition(m -> m.getTarget() != null)
+                this.getCooldownAI().startCondition(BehaviourUtils::runCooldownBehaviour)
+                        .stopIf(e -> !BehaviourUtils.runCooldownBehaviour(e)),
+                this.getCombatAI().startCondition(BehaviourUtils::runCombatBehaviour)
         );
     }
 
@@ -286,10 +282,6 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
                         new LookAtAttackTarget<>())
                 )
                 .build();
-    }
-
-    protected boolean runCooldownBehaviour() {
-        return !this.getAnimationHandler().hasAnimation() && BrainUtils.hasMemory(this, MemoryModuleType.ATTACK_COOLING_DOWN);
     }
 
     @Override
