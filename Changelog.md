@@ -1,3 +1,8 @@
+FateUBW 2.1.2
+================
+- Some internal AI rewrite (shouldn't affect actual AI though)
+- Fix Hassan AI being commented out lol
+
 FateUBW 2.1.1-beta
 ================
 - Shaders should work now even with active iris shader
