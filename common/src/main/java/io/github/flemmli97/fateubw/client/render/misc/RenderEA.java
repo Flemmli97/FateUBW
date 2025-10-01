@@ -19,8 +19,8 @@ public class RenderEA extends BeamRenderer<EnumaElish> {
     }
 
     @Override
-    public float widthFunc(EnumaElish entity) {
-        return super.widthFunc(entity) / this.widthMod;
+    public float widthFunc(EnumaElish entity, float partialTicks) {
+        return super.widthFunc(entity, partialTicks) / this.widthMod;
     }
 
     @Override

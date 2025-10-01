@@ -47,8 +47,8 @@ public class RenderExcalibur extends BeamRenderer<Excalibur> {
     }
 
     @Override
-    public float widthFunc(Excalibur entity) {
-        return super.widthFunc(entity) / this.widthMod;
+    public float widthFunc(Excalibur entity, float partialTicks) {
+        return super.widthFunc(entity, partialTicks) / this.widthMod;
     }
 
     @Override

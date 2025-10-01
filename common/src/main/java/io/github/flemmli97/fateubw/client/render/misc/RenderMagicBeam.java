@@ -40,8 +40,8 @@ public class RenderMagicBeam extends BeamRenderer<MagicBeam> {
     }
 
     @Override
-    public float widthFunc(MagicBeam entity) {
-        float width = (float) (entity.radius() * 2.0F * Math.sin(Math.min((double) entity.livingTicks() / entity.livingTickMax(), 1) * Math.PI));
+    public float widthFunc(MagicBeam entity, float partialTicks) {
+        float width = (float) (entity.radius() * 2.0F * Math.sin(Math.clamp((entity.livingTicks() + partialTicks) / entity.livingTickMax(), 0, 1) * Math.PI));
         return width / this.widthMod;
     }
 
