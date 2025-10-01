@@ -150,7 +150,7 @@ public class Iskander extends BaseServant {
     public ExtendedBehaviour<? extends BaseServant> getCooldownAI() {
         return SelectableBehaviourBuilder.<BaseServant>builder()
                 .add(6, new SetWalkTargetToAttackTarget<>(), BehaviourUtils.moveTo())
-                .add(6, Entity::isPassenger, new SetRandomWalkTarget<BaseServant>()
+                .add(6, BehaviourUtils.withCondition(Entity::isPassenger), new SetRandomWalkTarget<BaseServant>()
                         .setRadius(8, 4), BehaviourUtils.moveTo())
                 .add(3, new SetWalkTargetAwayFromTarget<BaseServant>()
                         .radius(6), BehaviourUtils.moveTo()).build();

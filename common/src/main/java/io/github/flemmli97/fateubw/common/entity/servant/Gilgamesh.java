@@ -134,7 +134,7 @@ public class Gilgamesh extends BaseServant implements OnProjectileHit {
                         .horizontalDirection((owner, target) -> LeapInDirection.createBackwardsVec(owner.position(), target.position()))
                         .whenStarting(e -> {
                             e.leapCooldown = 80 + e.getRandom().nextInt(40);
-                            BrainUtils.clearMemory(e, MemoryModuleType.ATTACK_COOLING_DOWN);
+                            BehaviourUtils.modifyExpiringMemory(this, MemoryModuleType.ATTACK_COOLING_DOWN, -15);
                         })).build();
     }
 

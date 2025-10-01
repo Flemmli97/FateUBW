@@ -263,13 +263,13 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
 
     public ExtendedBehaviour<? extends Pegasus> getCooldownAI() {
         return SelectableBehaviourBuilder.<Pegasus>builder()
-                .add(7, entity -> !entity.canFly(), new SetWalkTargetToAttackTarget<>(), BehaviourUtils.moveTo())
-                .add(5, entity -> !entity.canFly() && BehaviourUtils.ifCloserThan(7).test(entity),
+                .add(7, BehaviourUtils.withCondition(entity -> !entity.canFly()), new SetWalkTargetToAttackTarget<>(), BehaviourUtils.moveTo())
+                .add(5, BehaviourUtils.withCondition(entity -> !entity.canFly() && BehaviourUtils.ifCloserThan(7).test(entity)),
                         new SetRandomWalkTarget<Pegasus>().setRadius(12, 5), BehaviourUtils.moveTo())
-                .add(4, entity -> !entity.canFly() && BehaviourUtils.ifCloserThan(4).test(entity),
+                .add(4, BehaviourUtils.withCondition(entity -> !entity.canFly() && BehaviourUtils.ifCloserThan(4).test(entity)),
                         new SetWalkTargetAwayFromTarget<Pegasus>()
                                 .radius(6), BehaviourUtils.moveTo())
-                .add(5, Pegasus::canFly, new AllApplicableBehaviours<>(
+                .add(5, BehaviourUtils.withCondition(Pegasus::canFly), new AllApplicableBehaviours<>(
                         new SequentialBehaviour<>(
                                 new FirstApplicableBehaviour<>(
                                         new SetWalkTargetToAttackTarget<>()

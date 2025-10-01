@@ -45,7 +45,6 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
-import net.tslat.smartbrainlib.util.BrainUtils;
 import org.joml.Vector4f;
 
 public class Sasaki extends BaseServant {
@@ -166,8 +165,9 @@ public class Sasaki extends BaseServant {
                 .add(3, new SetWalkTargetAwayFromTarget<BaseServant>()
                         .radius(5), BehaviourUtils.moveTo())
                 .add(2, BehaviourUtils.ifCloserThan(8), new LeapInDirection<BaseServant>()
-                        .horizontalDirection((owner, target) -> LeapInDirection.createBackwardsVec(owner.position(), target.position()).scale(1.25f))
-                        .whenStarting(e -> BrainUtils.clearMemory(e, MemoryModuleType.ATTACK_COOLING_DOWN))).build();
+                                .horizontalDirection((owner, target) -> LeapInDirection.createBackwardsVec(owner.position(), target.position()).scale(1.3f))
+                                .whenStarting(e -> BehaviourUtils.modifyExpiringMemory(e, MemoryModuleType.ATTACK_COOLING_DOWN, -15)),
+                        new SetWalkTargetToAttackTarget<>(), BehaviourUtils.moveTo()).build();
     }
 
     @Override

@@ -43,7 +43,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
-import net.tslat.smartbrainlib.util.BrainUtils;
 import org.joml.Vector4f;
 
 public class Cuchulainn extends BaseServant {
@@ -136,8 +135,9 @@ public class Cuchulainn extends BaseServant {
                 .add(8, new SetWalkTargetToAttackTarget<>(), BehaviourUtils.moveTo())
                 .add(4, new SetWalkTargetAwayFromTarget<BaseServant>().radius(7), BehaviourUtils.moveTo())
                 .add(3, BehaviourUtils.ifCloserThan(7), new LeapInDirection<BaseServant>()
-                        .horizontalDirection((owner, target) -> LeapInDirection.createBackwardsVec(owner.position(), target.position()).scale(1.5f))
-                        .whenStarting(e -> BrainUtils.clearMemory(e, MemoryModuleType.ATTACK_COOLING_DOWN))).build();
+                                .horizontalDirection((owner, target) -> LeapInDirection.createBackwardsVec(owner.position(), target.position()).scale(1.6f))
+                                .whenStarting(e -> BehaviourUtils.modifyExpiringMemory(e, MemoryModuleType.ATTACK_COOLING_DOWN, -15)),
+                        new SetWalkTargetToAttackTarget<>(), BehaviourUtils.moveTo()).build();
     }
 
     @Override

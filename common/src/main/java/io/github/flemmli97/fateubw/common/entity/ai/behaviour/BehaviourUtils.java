@@ -14,8 +14,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.util.BrainUtils;
 
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.ToIntBiFunction;
 
@@ -122,6 +124,13 @@ public class BehaviourUtils {
             distance += target.getBbWidth() * 0.5;
             return entity.distanceToSqr(target.getX(), entity.getY(), target.getZ()) >= distance * distance
                     && Math.abs(entity.getY() - target.getY()) <= verticalDist;
+        };
+    }
+
+    public static <E extends LivingEntity> Consumer<ExtendedBehaviour<E>> withCondition(Predicate<E> test) {
+        return behaviour -> {
+            behaviour.startCondition(test);
+            behaviour.stopIf(e -> !test.test(e));
         };
     }
 

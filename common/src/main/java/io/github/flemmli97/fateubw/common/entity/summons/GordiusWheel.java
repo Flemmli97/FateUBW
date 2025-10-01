@@ -18,6 +18,7 @@ import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.entity.AOEAttackEntity;
 import io.github.flemmli97.tenshilib.common.entity.MultiPartEntity;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
+import io.github.flemmli97.tenshilib.common.entity.ai.brain.SelectableBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetMoveToRestriction;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimatedEntity;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionContainer;
@@ -67,7 +68,6 @@ import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
@@ -197,7 +197,9 @@ public class GordiusWheel extends PathfinderMob implements AnimatedEntity, Stand
     public BrainActivityGroup<? extends GordiusWheel> getFightTasks() {
         return BrainActivityGroup.fightTasks(
                 new InvalidateAttackTarget<GordiusWheel>(),
-                new Idle<GordiusWheel>().startCondition(BehaviourUtils::runCooldownBehaviour)
+                SelectableBehaviourBuilder.<GordiusWheel>builder()
+                        .add(1, new SetWalkTargetToAttackTarget<>(), BehaviourUtils.moveTo())
+                        .build().startCondition(BehaviourUtils::runCooldownBehaviour)
                         .stopIf(e -> !BehaviourUtils.runCooldownBehaviour(e)),
                 AttackBehaviourBuilder.<GordiusWheel>create()
                         .start(STOMP).play(BehaviourUtils.cooldownedPlay(true, 10, 40))
