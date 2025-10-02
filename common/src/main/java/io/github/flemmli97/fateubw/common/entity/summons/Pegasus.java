@@ -432,7 +432,7 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
             if (anim.isPast("charge_start") && !anim.isPast("charge_end")) {
                 Vec3 dir = this.getChargeMotion();
                 if (dir == null) {
-                    this.setChargeTo(this.position().add(this.getLookAngle().scale(10)));
+                    this.setChargeTo(this.position().add(this.getViewVector(1).scale(10)));
                     dir = this.getChargeMotion();
                 }
                 this.setDeltaMovement(dir);

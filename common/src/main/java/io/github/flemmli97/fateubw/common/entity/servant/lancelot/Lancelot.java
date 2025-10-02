@@ -276,7 +276,7 @@ public class Lancelot extends BaseServant {
                     else
                         dir = dir.scale(0.14);
                 } else {
-                    dir = this.getLookAngle().scale(0.75);
+                    dir = this.getViewVector(1).scale(0.75);
                 }
                 this.setDeltaMovement(dir.x(), 1, dir.z());
             }

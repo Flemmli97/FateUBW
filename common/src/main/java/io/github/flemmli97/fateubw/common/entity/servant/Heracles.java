@@ -405,7 +405,7 @@ public class Heracles extends BaseServant {
             }
         } else if (anim.is(LEAP)) {
             if (anim.isAt("leap")) {
-                Vec3 dir = this.getTarget() != null ? this.getTarget().position().subtract(this.position()) : this.getLookAngle();
+                Vec3 dir = this.getTarget() != null ? this.getTarget().position().subtract(this.position()) : this.getViewVector(1);
                 dir = new Vec3(dir.x(), 0, dir.z());
                 this.setDeltaMovement(dir.normalize().scale(4.5).add(0, 0.25, 0));
             }

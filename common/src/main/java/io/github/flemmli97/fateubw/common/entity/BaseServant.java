@@ -497,7 +497,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
         if (target != null)
             this.setTargetPosition(target);
         else
-            this.setTargetPosition(TargetPosition.of(this.position().add(this.getLookAngle().scale(10))));
+            this.setTargetPosition(TargetPosition.of(this.position().add(this.getViewVector(1).scale(10))));
     }
 
     public void setTargetPosition(LivingEntity target) {

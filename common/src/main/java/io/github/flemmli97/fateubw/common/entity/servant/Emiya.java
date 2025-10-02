@@ -262,7 +262,7 @@ public class Emiya extends BaseServant {
         } else if (anim.is(BOW_AIR)) {
             LivingEntity target = this.getTarget();
             if (anim.isAt("jump")) {
-                Vec3 dir = target != null ? target.position().subtract(this.position()) : this.getLookAngle();
+                Vec3 dir = target != null ? target.position().subtract(this.position()) : this.getViewVector(1);
                 dir = new Vec3(dir.x(), 0, dir.z()).normalize().scale(-1.2).add(0, 1.3, 0);
                 this.setDeltaMovement(dir);
             }
@@ -284,7 +284,7 @@ public class Emiya extends BaseServant {
         } else {
             if (anim.isAt("leap")) {
                 LivingEntity target = this.getTarget();
-                Vec3 dir = target != null ? target.position().subtract(this.position()) : this.position().add(this.getLookAngle());
+                Vec3 dir = target != null ? target.position().subtract(this.position()) : this.position().add(this.getViewVector(1));
                 dir = new Vec3(dir.x(), 0, dir.z()).normalize().add(0, 0.24, 0);
                 this.setDeltaMovement(dir);
             }
@@ -379,7 +379,7 @@ public class Emiya extends BaseServant {
                 double l = Math.sqrt(dX * dX + dZ * dZ);
                 arrow.shoot(dX, dY + l * 0.13, dZ, 2.2F, 2);
             } else {
-                Vec3 look = this.getLookAngle();
+                Vec3 look = this.getViewVector(1);
                 arrow.shoot(look.x(), look.y(), look.z(), 2.2F, 2);
             }
             arrow.setCritArrow(true);
@@ -403,7 +403,7 @@ public class Emiya extends BaseServant {
                 double l = Math.sqrt(dX * dX + dZ * dZ);
                 arrow.shoot(dX, dY + l * 0.13, dZ, 2.2F, 11);
             } else {
-                Vec3 look = this.getLookAngle();
+                Vec3 look = this.getViewVector(1);
                 arrow.shoot(look.x(), look.y(), look.z(), 2.2F, 11);
             }
             arrow.setCritArrow(true);

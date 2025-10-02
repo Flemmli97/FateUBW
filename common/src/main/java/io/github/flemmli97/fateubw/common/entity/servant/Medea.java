@@ -400,14 +400,13 @@ public class Medea extends BaseServant {
         if (eff != null)
             strength = eff.getAmplifier();
         MagicBeam beam = new MagicBeam(this.level(), this, target);
-        Vec3 look = this.getLookAngle();
+        Vec3 look = this.getViewVector(1);
         beam.setPos(this.getEyePosition().add(look.x(), 2, look.z()));
         beam.setDamageMultiplier(1 + strength * 0.15f);
         if (target != null)
             beam.setRotationTo(target, 0);
         else {
-            Vec3 dir = this.getLookAngle();
-            beam.setRotationToDir(dir.x(), dir.y(), dir.z(), 0);
+            beam.setRotationToDir(look.x(), look.y(), look.z(), 0);
         }
         this.level().addFreshEntity(beam);
         this.revealServant();
@@ -426,7 +425,7 @@ public class Medea extends BaseServant {
             if (target != null)
                 beam.setRotationTo(target, 0);
             else {
-                Vec3 dir = this.getLookAngle();
+                Vec3 dir = this.getViewVector(1);
                 beam.setRotationToDir(dir.x(), dir.y(), dir.z(), 0);
             }
             this.level().addFreshEntity(beam);

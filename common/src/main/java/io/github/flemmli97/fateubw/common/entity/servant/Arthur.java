@@ -262,7 +262,7 @@ public class Arthur extends BaseServant {
             }
         } else if (anim.is(INVISIBLE_BURST)) {
             if (anim.isAt("start")) {
-                Vec3 dir = this.getTarget() != null ? this.getTarget().position().subtract(this.position()) : this.getLookAngle();
+                Vec3 dir = this.getTarget() != null ? this.getTarget().position().subtract(this.position()) : this.getViewVector(1);
                 dir = new Vec3(dir.x(), 0, dir.z());
                 this.getDataContainer().set(BURST_DIRECTION, dir.normalize().scale(1.3));
             }

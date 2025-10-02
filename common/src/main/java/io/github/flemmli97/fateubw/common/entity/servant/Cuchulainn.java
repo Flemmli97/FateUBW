@@ -195,7 +195,7 @@ public class Cuchulainn extends BaseServant {
         if (anim.is(GAE_BOLG)) {
             if (anim.isAt("jump")) {
                 this.setTargetPositionFromAttackTarget();
-                Vec3 dir = this.getTarget() != null ? this.getTarget().position().subtract(this.position()) : this.position().add(this.getLookAngle());
+                Vec3 dir = this.getTarget() != null ? this.getTarget().position().subtract(this.position()) : this.position().add(this.getViewVector(1));
                 dir = new Vec3(dir.x(), 0, dir.z()).normalize().scale(-1.6).add(0, 2.3, 0);
                 this.setDeltaMovement(dir);
             }

@@ -26,7 +26,7 @@ public class TridentHandler implements LancelotUseHandler {
             double d3 = Math.sqrt(d0 * d0 + d2 * d2);
             trident.shoot(d0, d1 + d3 * 0.2, d2, 1.6f, 14 - entity.level().getDifficulty().getId() * 4);
         } else {
-            Vec3 look = entity.getLookAngle();
+            Vec3 look = entity.getViewVector(1);
             trident.shoot(look.x(), look.y(), look.z(), 2.2F, 11);
         }
         entity.playSound(SoundEvents.DROWNED_SHOOT, 1, 1 / (entity.getRandom().nextFloat() * 0.4f + 0.8f));
