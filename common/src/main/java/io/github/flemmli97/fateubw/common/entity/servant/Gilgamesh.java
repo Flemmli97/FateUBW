@@ -139,8 +139,8 @@ public class Gilgamesh extends BaseServant implements OnProjectileHit {
     }
 
     @Override
-    public void baseTick() {
-        super.baseTick();
+    public void aiStep() {
+        super.aiStep();
         if (!this.level().isClientSide) {
             --this.chainCooldown;
             --this.leapCooldown;

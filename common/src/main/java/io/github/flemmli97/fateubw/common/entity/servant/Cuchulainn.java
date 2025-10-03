@@ -141,8 +141,8 @@ public class Cuchulainn extends BaseServant {
     }
 
     @Override
-    public void baseTick() {
-        super.baseTick();
+    public void aiStep() {
+        super.aiStep();
         if (!this.level().isClientSide) {
             this.gaeBolgThrowTick = Math.max(0, --this.gaeBolgThrowTick);
             if (this.gaeBolgThrowTick == 1 && this.getMainHandItem().getItem() != FateItems.GAEBOLG.get())

@@ -90,7 +90,7 @@ public class Gilles extends BaseServant {
         return SelectableBehaviourBuilder.<BaseServant>builder()
                 .add(7, new StrafeTarget<BaseServant>().strafeDistance(12))
                 .add(2, BehaviourUtils.ifCloserThan(7), new SetWalkTargetAwayFromTarget<BaseServant>()
-                                .radius(7), BehaviourUtils.moveTo()).build();
+                        .radius(7), BehaviourUtils.moveTo()).build();
     }
 
     @Override

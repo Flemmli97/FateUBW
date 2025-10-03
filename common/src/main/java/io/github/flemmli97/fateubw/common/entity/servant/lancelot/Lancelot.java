@@ -217,8 +217,8 @@ public class Lancelot extends BaseServant {
     }
 
     @Override
-    public void baseTick() {
-        super.baseTick();
+    public void aiStep() {
+        super.aiStep();
         --this.pickupDelay;
         if (this.level().isClientSide) {
             for (int x = 0; x < 2; x++) {

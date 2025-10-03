@@ -168,7 +168,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
 
     public final Predicate<LivingEntity> targetPred = Utils.servantTargetPredicate(this);
 
-    private final MoveStateTracker moveStateTracker = new MoveStateTracker(MOVE_TICK_MAX, this::getMoveFlag);
+    private final MoveStateTracker moveStateTracker = new MoveStateTracker(this, MOVE_TICK_MAX, MOVE_FLAGS, this::calculateMoveType);
 
     private final List<ServerPlayer> tracked = new ArrayList<>();
     private boolean sendToOwnerData;
@@ -368,14 +368,19 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
             this.setYBodyRot(this.getYRot());
             this.setYHeadRot(this.getYRot());
         }
-        this.getAnimationHandler().tick();
         this.getTrailHolder().tick();
+        this.trackingTick();
+    }
+
+    @Override
+    public void aiStep() {
+        super.aiStep();
+        this.getAnimationHandler().tick();
         this.moveStateTracker.tick();
         if (this.getSummonAnimation() != null && this.getAnimationHandler().isCurrent(this.getSummonAnimation())) {
             this.setDeltaMovement(Vec3.ZERO);
             this.getNavigation().stop();
         }
-        this.trackingTick();
         if (this.level() instanceof ServerLevel) {
             --this.nobelPhantasmCooldown;
             this.regenMana();
@@ -402,33 +407,6 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
     public void customServerAiStep() {
         super.customServerAiStep();
         this.tickBrain(this);
-        if (!(this.getControllingPassenger() instanceof Player) && this.isMoving() && this.isAlive()) {
-            double speed = this.getMoveControl().getSpeedModifier();
-            MoveType move = this.getMoveFromSpeed(speed);
-            if (this.isImmobile())
-                move = MoveType.NONE;
-            this.setMovingFlag(move);
-        } else {
-            this.setMovingFlag(MoveType.NONE);
-            this.setShiftKeyDown(false);
-            this.setSprinting(false);
-        }
-    }
-
-    protected MoveType getMoveFromSpeed(double speed) {
-        MoveType move;
-        if (speed > 1) {
-            move = MoveType.RUN;
-        } else if (speed <= 0.8) {
-            move = MoveType.SNEAK;
-        } else {
-            move = MoveType.WALK;
-        }
-        return move;
-    }
-
-    protected boolean isMoving() {
-        return this.getDeltaMovement().x != 0 || this.getDeltaMovement().z != 0;
     }
 
     @Override
@@ -441,12 +419,22 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
         return this.moveStateTracker.interpolatedMoveTickOf(moveType, partialTicks);
     }
 
-    public void setMovingFlag(MoveType type) {
-        this.entityData.set(MOVE_FLAGS, (byte) type.ordinal());
-    }
-
-    public MoveType getMoveFlag() {
-        return MoveType.values()[this.entityData.get(MOVE_FLAGS)];
+    public MoveType calculateMoveType() {
+        if (this.getControllingPassenger() instanceof Player || !this.walkAnimation.isMoving()) {
+            return MoveType.NONE;
+        }
+        if (this.isImmobile())
+            return MoveType.NONE;
+        double d0 = this.getMoveControl().getSpeedModifier();
+        MoveType move;
+        if (d0 > 1 || this.getTarget() != null) {
+            move = MoveType.RUN;
+        } else if (d0 <= 0.8) {
+            move = MoveType.SNEAK;
+        } else {
+            move = MoveType.WALK;
+        }
+        return move;
     }
 
     protected Vec3 directionToLookAt() {

@@ -171,8 +171,8 @@ public class Sasaki extends BaseServant {
     }
 
     @Override
-    public void baseTick() {
-        super.baseTick();
+    public void aiStep() {
+        super.aiStep();
         if (this.level().isClientSide) {
             AnimationState anim = this.getAnimationHandler().getAnimation();
             if (anim != null) {

@@ -147,7 +147,7 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
 
     private List<Entity> hitEntities = new ArrayList<>();
 
-    private final MoveStateTracker moveStateTracker = new MoveStateTracker(2, this::getMoveType);
+    private final MoveStateTracker moveStateTracker = new MoveStateTracker(this, 2, MOVE_FLAGS, this::calculateMoveType);
 
     public Pegasus(EntityType<? extends Pegasus> type, Level level) {
         super(type, level);
@@ -298,6 +298,19 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
     @Override
     public void tick() {
         super.tick();
+        Vec3 lookDir = this.directionToLookAt();
+        if (lookDir != null) {
+            float[] yxRot = MathsHelper.YXRotFrom(lookDir);
+            this.setYRot(MathsHelper.rotlerp(this.getYRot(), yxRot[0], 30));
+            this.setXRot(MathsHelper.rotlerp(this.getXRot(), yxRot[1], 30));
+            this.setYBodyRot(this.getYRot());
+            this.setYHeadRot(this.getYRot());
+        }
+    }
+
+    @Override
+    public void aiStep() {
+        super.aiStep();
         this.getAnimationHandler().tick();
         if (this.level().isClientSide) {
             if (this.getAnimationHandler().isCurrent(SUMMON)) {
@@ -357,14 +370,6 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
             }
         }
         this.moveStateTracker.tick();
-        Vec3 lookDir = this.directionToLookAt();
-        if (lookDir != null) {
-            float[] yxRot = MathsHelper.YXRotFrom(lookDir);
-            this.setYRot(MathsHelper.rotlerp(this.getYRot(), yxRot[0], 30));
-            this.setXRot(MathsHelper.rotlerp(this.getXRot(), yxRot[1], 30));
-            this.setYBodyRot(this.getYRot());
-            this.setYHeadRot(this.getYRot());
-        }
     }
 
     private Vec3 directionToLookAt() {
@@ -377,34 +382,6 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
     protected void customServerAiStep() {
         super.customServerAiStep();
         this.tickBrain(this);
-        if (!this.onGround())
-            this.setMovingFlag(MoveType.FLY);
-        else if (!(this.getControllingPassenger() instanceof Player) && this.getDeltaMovement().horizontalDistanceSqr() > 0.003 && this.isAlive()) {
-            double speedMod = this.getMoveControl().getSpeedModifier();
-            MoveType move;
-            if (speedMod > 1 || (speedMod >= 1 && this.getTarget() != null)) {
-                move = MoveType.RUN;
-            } else if (speedMod <= 0.8) {
-                move = MoveType.SNEAK;
-            } else {
-                move = MoveType.WALK;
-            }
-            if (this.isImmobile())
-                move = MoveType.NONE;
-            this.setMovingFlag(move);
-        } else {
-            this.setMovingFlag(MoveType.NONE);
-            this.setShiftKeyDown(false);
-            this.setSprinting(false);
-        }
-    }
-
-    public void setMovingFlag(MoveType type) {
-        this.entityData.set(MOVE_FLAGS, (byte) type.ordinal());
-    }
-
-    public MoveType getMoveType() {
-        return MoveType.values()[this.entityData.get(MOVE_FLAGS)];
     }
 
     public float interpolatedMoveTick(float partialTicks) {
@@ -413,6 +390,26 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
 
     public float interpolatedMoveTickOf(MoveType type, float partialTicks) {
         return this.moveStateTracker.interpolatedMoveTickOf(type, partialTicks);
+    }
+
+    public MoveType calculateMoveType() {
+        if (!this.onGround())
+            return MoveType.FLY;
+        if (this.getControllingPassenger() instanceof Player || !this.walkAnimation.isMoving()) {
+            return MoveType.NONE;
+        }
+        if (this.isImmobile())
+            return MoveType.NONE;
+        double d0 = this.getMoveControl().getSpeedModifier();
+        MoveType move;
+        if (d0 > 1 || this.getTarget() != null) {
+            move = MoveType.RUN;
+        } else if (d0 <= 0.8) {
+            move = MoveType.SNEAK;
+        } else {
+            move = MoveType.WALK;
+        }
+        return move;
     }
 
     @Override

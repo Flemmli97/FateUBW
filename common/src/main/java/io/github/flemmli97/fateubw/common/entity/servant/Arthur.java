@@ -197,8 +197,8 @@ public class Arthur extends BaseServant {
     }
 
     @Override
-    public void baseTick() {
-        super.baseTick();
+    public void aiStep() {
+        super.aiStep();
         if (this.healthBelow(0.25f)) {
             if (!this.hasEffect(MobEffects.REGENERATION))
                 this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 50, 1, false, false));

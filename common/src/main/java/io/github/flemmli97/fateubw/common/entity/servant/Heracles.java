@@ -4,7 +4,6 @@ import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.api.datapack.ServantExtraData;
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
-import io.github.flemmli97.fateubw.common.entity.utils.MoveType;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.particles.RingParticleData;
@@ -224,8 +223,8 @@ public class Heracles extends BaseServant {
     }
 
     @Override
-    public void baseTick() {
-        super.baseTick();
+    public void aiStep() {
+        super.aiStep();
         AnimationState anim = this.getAnimationHandler().getAnimation();
         if (!this.level().isClientSide) {
             if (anim != null) {
@@ -255,13 +254,6 @@ public class Heracles extends BaseServant {
                 }
             }
         }
-    }
-
-    @Override
-    protected MoveType getMoveFromSpeed(double speed) {
-        if (this.getTarget() != null && speed >= 1)
-            return MoveType.RUN;
-        return super.getMoveFromSpeed(speed);
     }
 
     @Override

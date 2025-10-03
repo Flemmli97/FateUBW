@@ -152,8 +152,8 @@ public class Diarmuid extends BaseServant {
     }
 
     @Override
-    public void baseTick() {
-        super.baseTick();
+    public void aiStep() {
+        super.aiStep();
         if (!this.level().isClientSide) {
             --this.unsealedDuration;
             if (this.unsealedDuration == 0) {

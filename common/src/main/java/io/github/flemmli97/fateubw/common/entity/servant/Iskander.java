@@ -157,8 +157,8 @@ public class Iskander extends BaseServant {
     }
 
     @Override
-    public void baseTick() {
-        super.baseTick();
+    public void aiStep() {
+        super.aiStep();
         if (!this.level().isClientSide && !this.isPassenger()) {
             --this.summonCooldown;
         }

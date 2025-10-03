@@ -122,7 +122,7 @@ public class GordiusWheel extends PathfinderMob implements AnimatedEntity, Stand
 
     private MultiPartEntity wheels;
 
-    private final MoveStateTracker moveStateTracker = new MoveStateTracker(2, this::getMoveType);
+    private final MoveStateTracker moveStateTracker = new MoveStateTracker(this, 2, MOVE_FLAGS, this::calculateMoveType);
 
     public int wheelMoveTick;
     public float wheelPartial;
@@ -266,24 +266,6 @@ public class GordiusWheel extends PathfinderMob implements AnimatedEntity, Stand
     protected void customServerAiStep() {
         super.customServerAiStep();
         this.tickBrain(this);
-        if (!(this.getControllingPassenger() instanceof Player) && this.getDeltaMovement().horizontalDistanceSqr() > 0.003 && this.isAlive()) {
-            double speedMod = this.getMoveControl().getSpeedModifier();
-            MoveType move;
-            if (speedMod > 1 || (speedMod >= 1 && this.getTarget() != null)) {
-                move = MoveType.RUN;
-            } else if (speedMod <= 0.8) {
-                move = MoveType.SNEAK;
-            } else {
-                move = MoveType.WALK;
-            }
-            if (this.isImmobile())
-                move = MoveType.NONE;
-            this.setMovingFlag(move);
-        } else {
-            this.setMovingFlag(MoveType.NONE);
-            this.setShiftKeyDown(false);
-            this.setSprinting(false);
-        }
     }
 
     public float interpolatedMoveTick(float partialTicks) {
@@ -294,12 +276,26 @@ public class GordiusWheel extends PathfinderMob implements AnimatedEntity, Stand
         return this.moveStateTracker.interpolatedMoveTickOf(moveType, partialTicks);
     }
 
-    public void setMovingFlag(MoveType type) {
-        this.entityData.set(MOVE_FLAGS, (byte) type.ordinal());
-    }
-
     public MoveType getMoveType() {
         return MoveType.values()[this.entityData.get(MOVE_FLAGS)];
+    }
+
+    public MoveType calculateMoveType() {
+        if (this.getControllingPassenger() instanceof Player || !this.walkAnimation.isMoving()) {
+            return MoveType.NONE;
+        }
+        if (this.isImmobile())
+            return MoveType.NONE;
+        double d0 = this.getMoveControl().getSpeedModifier();
+        MoveType move;
+        if (d0 > 1 || this.getTarget() != null) {
+            move = MoveType.RUN;
+        } else if (d0 <= 0.8) {
+            move = MoveType.SNEAK;
+        } else {
+            move = MoveType.WALK;
+        }
+        return move;
     }
 
     @Override

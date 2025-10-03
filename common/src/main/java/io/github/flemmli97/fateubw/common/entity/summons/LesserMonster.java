@@ -82,7 +82,7 @@ public class LesserMonster extends PathfinderMob implements AnimatedEntity, Owna
 
     private final AnimationHandler<LesserMonster> animationHandler = new AnimationHandler<>(this, ANIMS);
 
-    private final MoveStateTracker moveStateTracker = new MoveStateTracker(3, this::getMoveType);
+    private final MoveStateTracker moveStateTracker = new MoveStateTracker(this, 3, MOVE_FLAGS, this::calculateMoveType);
 
     private final int maxLivingTicks;
 
@@ -209,8 +209,10 @@ public class LesserMonster extends PathfinderMob implements AnimatedEntity, Owna
     }
 
     @Override
-    public void baseTick() {
-        super.baseTick();
+    public void aiStep() {
+        super.aiStep();
+        this.moveStateTracker.tick();
+        this.getAnimationHandler().tick();
         if (!this.level().isClientSide) {
             this.livingTicks++;
             if (this.livingTicks > this.maxLivingTicks)
@@ -227,31 +229,23 @@ public class LesserMonster extends PathfinderMob implements AnimatedEntity, Owna
                 }
             }
         }
-        this.moveStateTracker.tick();
-        this.getAnimationHandler().tick();
     }
 
     @Override
     protected void customServerAiStep() {
         super.customServerAiStep();
         this.tickBrain(this);
-        if (this.getDeltaMovement().horizontalDistanceSqr() > 0.003 && this.isAlive() && !this.isImmobile()) {
-            this.setMovingFlag(MoveType.RUN);
-        } else {
-            this.setMovingFlag(MoveType.NONE);
-        }
     }
 
     public float interpolatedMoveTick(float partialTicks) {
         return this.moveStateTracker.interpolatedMoveTick(partialTicks);
     }
 
-    public void setMovingFlag(MoveType type) {
-        this.entityData.set(MOVE_FLAGS, (byte) type.ordinal());
-    }
-
-    public MoveType getMoveType() {
-        return MoveType.values()[this.entityData.get(MOVE_FLAGS)];
+    public MoveType calculateMoveType() {
+        if (this.isImmobile() || !this.walkAnimation.isMoving()) {
+            return MoveType.NONE;
+        }
+        return MoveType.RUN;
     }
 
     @Override

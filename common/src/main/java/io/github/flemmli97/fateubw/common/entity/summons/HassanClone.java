@@ -148,7 +148,7 @@ public class HassanClone extends PathfinderMob implements AnimatedEntity, Ownabl
     });
 
     private final SyncedDataContainer<HassanClone> syncedDataContainer;
-    private final MoveStateTracker moveStateTracker = new MoveStateTracker(BaseServant.MOVE_TICK_MAX, this::getMoveFlag);
+    private final MoveStateTracker moveStateTracker = new MoveStateTracker(this, BaseServant.MOVE_TICK_MAX, MOVE_FLAGS, this::calculateMoveType);
 
     protected Vec3 targetPosition;
 
@@ -328,7 +328,10 @@ public class HassanClone extends PathfinderMob implements AnimatedEntity, Ownabl
     }
 
     @Override
-    public void tick() {
+    public void aiStep() {
+        super.aiStep();
+        this.getAnimationHandler().tick();
+        this.moveStateTracker.tick();
         if (!this.level().isClientSide) {
             if (this.tickCount > 200 && this.isAlive() && (this.getOwner() == null || !this.getOwner().isAlive())) {
                 this.hurt(this.damageSources().genericKill(), Integer.MAX_VALUE);
@@ -341,15 +344,7 @@ public class HassanClone extends PathfinderMob implements AnimatedEntity, Ownabl
                 }
             }
             this.getAnimationHandler().runIfNotNull(this::handleAttack);
-        }
-        super.tick();
-        this.getAnimationHandler().tick();
-    }
-
-    @Override
-    public void baseTick() {
-        super.baseTick();
-        if (this.level().isClientSide) {
+        } else {
             AnimationState anim = this.getAnimationHandler().getAnimation();
             if (anim != null) {
                 if (anim.isAt(EntityWeaponTrailProvider.TRAIL_START)) {
@@ -369,24 +364,6 @@ public class HassanClone extends PathfinderMob implements AnimatedEntity, Ownabl
     public void customServerAiStep() {
         super.customServerAiStep();
         this.tickBrain(this);
-        if (!(this.getControllingPassenger() instanceof Player) && this.isMoving() && this.isAlive()) {
-            double d0 = this.getMoveControl().getSpeedModifier();
-            MoveType move;
-            if (d0 > 1) {
-                move = MoveType.RUN;
-            } else if (d0 <= 0.8) {
-                move = MoveType.SNEAK;
-            } else {
-                move = MoveType.WALK;
-            }
-            if (this.isImmobile())
-                move = MoveType.NONE;
-            this.setMovingFlag(move);
-        } else {
-            this.setMovingFlag(MoveType.NONE);
-            this.setShiftKeyDown(false);
-            this.setSprinting(false);
-        }
     }
 
     protected boolean isMoving() {
@@ -403,12 +380,22 @@ public class HassanClone extends PathfinderMob implements AnimatedEntity, Ownabl
         return this.moveStateTracker.interpolatedMoveTickOf(moveType, partialTicks);
     }
 
-    public void setMovingFlag(MoveType type) {
-        this.entityData.set(MOVE_FLAGS, (byte) type.ordinal());
-    }
-
-    public MoveType getMoveFlag() {
-        return MoveType.values()[this.entityData.get(MOVE_FLAGS)];
+    public MoveType calculateMoveType() {
+        if (this.getControllingPassenger() instanceof Player || !this.walkAnimation.isMoving()) {
+            return MoveType.NONE;
+        }
+        if (this.isImmobile())
+            return MoveType.NONE;
+        double d0 = this.getMoveControl().getSpeedModifier();
+        MoveType move;
+        if (d0 > 1 || this.getTarget() != null) {
+            move = MoveType.RUN;
+        } else if (d0 <= 0.8) {
+            move = MoveType.SNEAK;
+        } else {
+            move = MoveType.WALK;
+        }
+        return move;
     }
 
     @Override

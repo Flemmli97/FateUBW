@@ -163,8 +163,8 @@ public class Medea extends BaseServant {
     }
 
     @Override
-    public void baseTick() {
-        super.baseTick();
+    public void aiStep() {
+        super.aiStep();
         --this.circleDelay;
         --this.aiCircledelay;
         if (this.level().isClientSide) {

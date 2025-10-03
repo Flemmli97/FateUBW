@@ -222,8 +222,8 @@ public class Medusa extends BaseServant implements OnProjectileHit {
     }
 
     @Override
-    public void baseTick() {
-        super.baseTick();
+    public void aiStep() {
+        super.aiStep();
         if (!this.level().isClientSide) {
             if (this.dagger != null) {
                 if (!this.dagger.isAlive()) {
