@@ -143,16 +143,15 @@ public class ServantModel<T extends LivingEntity & AnimatedEntity & ServantModel
 
     @Override
     public ModelPart getHead() {
-        PoseExtended pose = this.head.extendedPose();
-        this.dummyHead.x = pose.x;
-        this.dummyHead.y = pose.y;
-        this.dummyHead.z = pose.z;
-        this.dummyHead.xRot = pose.xRot;
-        this.dummyHead.yRot = pose.yRot;
-        this.dummyHead.zRot = pose.zRot;
-        this.dummyHead.xScale = pose.xScale;
-        this.dummyHead.yScale = pose.yScale;
-        this.dummyHead.zScale = pose.zScale;
+        this.dummyHead.x = this.head.x;
+        this.dummyHead.y = this.head.y;
+        this.dummyHead.z = this.head.z;
+        this.dummyHead.xRot = this.head.xRot;
+        this.dummyHead.yRot = this.head.yRot;
+        this.dummyHead.zRot = this.head.zRot;
+        this.dummyHead.xScale = this.head.xScale;
+        this.dummyHead.yScale = this.head.yScale;
+        this.dummyHead.zScale = this.head.zScale;
         return this.dummyHead;
     }
 
@@ -255,8 +254,8 @@ public class ServantModel<T extends LivingEntity & AnimatedEntity & ServantModel
     public void copyPropertiesTo(EntityModel<T> model) {
         super.copyPropertiesTo(model);
         if (model instanceof ServantModel<?> other) {
-            this.heldItemMain = other.heldItemMain;
-            this.heldItemOff = other.heldItemOff;
+            other.heldItemMain = this.heldItemMain;
+            other.heldItemOff = this.heldItemOff;
         }
     }
 }
