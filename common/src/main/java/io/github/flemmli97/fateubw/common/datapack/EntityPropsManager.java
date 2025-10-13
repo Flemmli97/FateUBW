@@ -100,8 +100,7 @@ public class EntityPropsManager extends SimpleJsonResourceReloadListener impleme
                     }
                 });
             } catch (Exception ex) {
-                Fate.LOGGER.error("Couldn't parse entity properties json {} {}", fres, ex);
-                ex.fillInStackTrace();
+                Fate.LOGGER.error("Couldn't parse entity properties json {} {}", fres, ex, ex.fillInStackTrace());
             }
         });
         this.props = builder.build();
