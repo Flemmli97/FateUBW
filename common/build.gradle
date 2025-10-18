@@ -1,26 +1,12 @@
-apply from: "https://raw.githubusercontent.com/Flemmli97/GradleScripts/arch-loom-v2/common.gradle"
-
-loom {
-    accessWidenerPath.set project(":fabric").file("src/main/resources/fate.accesswidener")
-}
-
-repositories {
-    maven {
-        name = 'GeckoLib'
-        url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
-        content {
-            includeGroupByRegex("software\\.bernie.*")
-            includeGroup("com.eliotlash.mclib")
-        }
-    }
+plugins {
+    id 'io.github.flemmli97.multiloader.platform-common'
 }
 
 dependencies {
-    modCompileOnly "io.github.flemmli97:tenshilib:${tenshilib_version}-common"
-    modCompileOnly "net.tslat.smartbrainlib:SmartBrainLib-common-${minecraft_version}:${sbl_version}"
-    modCompileOnly "fuzs.forgeconfigapiport:forgeconfigapiport-common-neoforgeapi:${forge_config_api}"
-    modCompileOnly("software.bernie.geckolib:geckolib-common-${minecraft_version}:${geckolib_version}")
-
+    compileOnly("io.github.flemmli97:tenshilib:${tenshilib_version}-common")
+    compileOnly("net.tslat.smartbrainlib:SmartBrainLib-common-${minecraft_version}:${sbl_version}")
+    compileOnly("fuzs.forgeconfigapiport:forgeconfigapiport-common-neoforgeapi:${forge_config_api}")
+    compileOnly("software.bernie.geckolib:geckolib-common-${minecraft_version}:${geckolib_version}")
 }
 
 sourceSets.main.resources {

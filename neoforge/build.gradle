@@ -1,19 +1,24 @@
-apply from: "https://raw.githubusercontent.com/Flemmli97/GradleScripts/arch-loom-v2/neoforge.gradle"
+plugins {
+    id 'com.matthewprenger.cursegradle' version '1.4.0'
+    id 'com.modrinth.minotaur' version '2.+'
+    id 'io.github.flemmli97.multiloader.platform-neoforge'
+}
 
-loom {
+neoForge {
     runs {
+        var common = project(":common")
         data {
             data()
-            programArgs "--all", "--mod", "fateubw"
-            programArgs "--output", project(":common").file("src/generated/resources").absolutePath
-            programArgs "--existing", project(":common").file("src/main/resources").absolutePath
+            programArguments.addAll "--all", "--mod", "fateubw"
+            programArguments.addAll "--output", common.file("src/generated/resources").absolutePath
+            programArguments.addAll "--existing", common.file("src/main/resources").absolutePath
         }
         client {
-            vmArgs "-XX:+AllowEnhancedClassRedefinition"
+            jvmArgument "-XX:+AllowEnhancedClassRedefinition"
         }
         client2 {
             client()
-            programArgs "--username", "Dev2"
+            programArguments.addAll "--username", "Dev2"
         }
     }
 }
@@ -27,23 +32,26 @@ repositories {
     maven {
         name = "CurseMaven"
         url "https://www.cursemaven.com"
+        content {
+            includeGroup 'curse.maven'
+        }
     }
 }
 
 dependencies {
-    modImplementation "io.github.flemmli97:tenshilib:${tenshilib_version}-neoforge"
-    modImplementation "net.tslat.smartbrainlib:SmartBrainLib-neoforge-${minecraft_version}:${sbl_version}"
+    implementation "io.github.flemmli97:tenshilib:${tenshilib_version}-neoforge"
+    implementation "net.tslat.smartbrainlib:SmartBrainLib-neoforge-${minecraft_version}:${sbl_version}"
 
     implementation "net.favouriteless.modopedia:modopedia-neoforge-${minecraft_version}:${modopedia}"
 
-    modCompileOnly("software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}")
+    compileOnly "software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}"
 
-    modRuntimeOnly "maven.modrinth:jade:2P7THd8J"
+    runtimeOnly "maven.modrinth:jade:2P7THd8J"
 
     //Mods useful for testing things
-    modRuntimeOnly "io.github.flemmli97:debugutils:1.21.1-1.0.8-neoforge"
-    modRuntimeOnly "io.github.flemmli97:mobbattle:1.21.1-2.6.2-neoforge"
-    modRuntimeOnly "curse.maven:moonlight-499980:6682378"
-    modRuntimeOnly "curse.maven:dummy-225738:6608246"
-    modRuntimeOnly "curse.maven:spark-361579:6225208"
+    runtimeOnly "io.github.flemmli97:debugutils:1.21.1-1.0.8-neoforge"
+    runtimeOnly "io.github.flemmli97:mobbattle:1.21.1-2.6.2-neoforge"
+    runtimeOnly "curse.maven:moonlight-499980:6682378"
+    runtimeOnly "curse.maven:dummy-225738:6608246"
+    runtimeOnly "curse.maven:spark-361579:6225208"
 }
