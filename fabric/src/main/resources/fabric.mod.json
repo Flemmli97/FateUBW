@@ -21,15 +21,13 @@
     ],
     "tenshilib_client": [
       "io.github.flemmli97.fateubw.fabric.client.FateUBWFabricClient"
-    ],
-    "modmenu": [
-      "io.github.flemmli97.fateubw.fabric.ModMenuIntegration"
     ]
   },
   "mixins": [
     "fateubw.mixins.json",
     "fateubw.fabric.mixins.json"
   ],
+  "accessWidener": "fateubw.accesswidener",
   "depends": {
     "fabric": ">=${fabric_version}",
     "minecraft": ">=${mcversion}",
