@@ -12,9 +12,12 @@ import io.github.flemmli97.tenshilib.common.particle.data.ColorData;
 import io.github.flemmli97.tenshilib.common.particle.data.MotionData;
 import io.github.flemmli97.tenshilib.common.particle.data.ParticleMetaData;
 import io.github.flemmli97.tenshilib.common.particle.data.ScaleData;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -99,11 +102,18 @@ public class Excalibur extends BaseBeam {
 
     @Override
     public HitResult getHitRay() {
-        HitResult res = super.getHitRay();
+        HitResult res = this.calculateHitRay();
         this.dir = res.getLocation().subtract(this.position());
         this.up = this.calculateViewVector(this.getXRot() - 90, this.getYRot()).scale(this.radius());
         this.side = this.dir.cross(this.up).normalize().scale(this.radius());
         return res;
+    }
+
+    public HitResult calculateHitRay() {
+        Vec3 posEye = this.getEyePosition(1);
+        Vec3 dir = this.getLookAngle().scale(this.getRange());
+        Vec3 to = posEye.add(dir);
+        return BlockHitResult.miss(to, Direction.getNearest(dir.x, dir.y, dir.z), BlockPos.containing(to));
     }
 
     @Override
