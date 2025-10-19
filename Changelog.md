@@ -1,3 +1,9 @@
+FateUBW 2.1.3
+================
+- Some internal changes
+- Fix ores not generating
+- Excalibur and EA now penetrate blocks and entities
+
 FateUBW 2.1.2
 ================
 - Some internal AI rewrite (shouldn't affect actual AI though)
