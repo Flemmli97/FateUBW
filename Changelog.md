@@ -1,3 +1,7 @@
+FateUBW 2.1.3.b
+=================
+- Fix fabric mixin
+
 FateUBW 2.1.3
 ================
 - Some internal changes
