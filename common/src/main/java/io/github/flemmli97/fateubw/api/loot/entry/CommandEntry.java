@@ -1,10 +1,10 @@
-package io.github.flemmli97.fateubw.common.loot.entry;
+package io.github.flemmli97.fateubw.api.loot.entry;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.flemmli97.fateubw.common.loot.GrailLootEntry;
-import io.github.flemmli97.fateubw.common.loot.LootSerializerType;
+import io.github.flemmli97.fateubw.api.loot.GrailLootEntry;
+import io.github.flemmli97.fateubw.api.loot.LootSerializerType;
 import io.github.flemmli97.fateubw.common.registry.FateGrailLootSerializer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.storage.loot.LootContext;

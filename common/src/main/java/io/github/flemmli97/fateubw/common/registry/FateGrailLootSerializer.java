@@ -1,15 +1,15 @@
 package io.github.flemmli97.fateubw.common.registry;
 
 import io.github.flemmli97.fateubw.Fate;
-import io.github.flemmli97.fateubw.common.loot.LootSerializerType;
-import io.github.flemmli97.fateubw.common.loot.entry.AttributeEntry;
-import io.github.flemmli97.fateubw.common.loot.entry.CommandEntry;
-import io.github.flemmli97.fateubw.common.loot.entry.EmptyEntry;
-import io.github.flemmli97.fateubw.common.loot.entry.LootTableEntry;
-import io.github.flemmli97.fateubw.common.loot.entry.ServantEntry;
-import io.github.flemmli97.fateubw.common.loot.entry.VanillaItemEntry;
-import io.github.flemmli97.fateubw.common.loot.entry.XPEntry;
-import io.github.flemmli97.fateubw.common.loot.function.EnchantMaxFunction;
+import io.github.flemmli97.fateubw.api.loot.LootSerializerType;
+import io.github.flemmli97.fateubw.api.loot.entry.AttributeEntry;
+import io.github.flemmli97.fateubw.api.loot.entry.CommandEntry;
+import io.github.flemmli97.fateubw.api.loot.entry.EmptyEntry;
+import io.github.flemmli97.fateubw.api.loot.entry.LootTableEntry;
+import io.github.flemmli97.fateubw.api.loot.entry.ServantEntry;
+import io.github.flemmli97.fateubw.api.loot.entry.VanillaItemEntry;
+import io.github.flemmli97.fateubw.api.loot.entry.XPEntry;
+import io.github.flemmli97.fateubw.api.loot.function.EnchantMaxFunction;
 import io.github.flemmli97.tenshilib.loader.LoaderRegistryAccess;
 import io.github.flemmli97.tenshilib.loader.registry.LoaderRegister;
 import io.github.flemmli97.tenshilib.loader.registry.RegistryEntrySupplier;

@@ -2,6 +2,7 @@ package io.github.flemmli97.fateubw.common.loot;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.github.flemmli97.fateubw.api.loot.GrailLootEntry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.storage.loot.LootContext;

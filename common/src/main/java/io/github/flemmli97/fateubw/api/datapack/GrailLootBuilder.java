@@ -1,7 +1,7 @@
 package io.github.flemmli97.fateubw.api.datapack;
 
 import com.google.common.collect.ImmutableList;
-import io.github.flemmli97.fateubw.common.loot.GrailLootEntry;
+import io.github.flemmli97.fateubw.api.loot.GrailLootEntry;
 import io.github.flemmli97.fateubw.common.loot.GrailLootTable;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 

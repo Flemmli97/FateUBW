@@ -1,4 +1,4 @@
-package io.github.flemmli97.fateubw.common.loot;
+package io.github.flemmli97.fateubw.api.loot;
 
 import com.mojang.serialization.Codec;
 import io.github.flemmli97.fateubw.common.registry.FateGrailLootSerializer;

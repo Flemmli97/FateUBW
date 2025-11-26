@@ -1,4 +1,4 @@
-package io.github.flemmli97.fateubw.common.loot.function;
+package io.github.flemmli97.fateubw.api.loot.function;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
