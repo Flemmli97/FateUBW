@@ -1,3 +1,10 @@
+FateUBW 2.2.0
+=================
+- Add Nero (Saber) ~ umu ~
+- Update some shaders
+- Fixed a crash with brain memory
+- Fix sasaki not using mana
+
 FateUBW 2.1.3.b
 =================
 - Fix fabric mixin
