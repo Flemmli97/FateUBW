@@ -153,6 +153,8 @@ public class BehaviourUtils {
     }
 
     public static <T> void modifyExpiringMemory(Mob mob, MemoryModuleType<T> memory, int modifier) {
+        if (!BrainUtils.hasMemory(mob, memory))
+            return;
         long current = BrainUtils.getTimeUntilMemoryExpires(mob, memory);
         if (current > 0) {
             current += modifier;
