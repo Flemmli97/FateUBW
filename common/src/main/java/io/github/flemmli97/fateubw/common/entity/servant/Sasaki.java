@@ -228,6 +228,8 @@ public class Sasaki extends BaseServant {
     public void tsubameSlash() {
         if (this.hikenPos == null)
             return;
+        if (!this.attemptUseNobelPhantasm())
+            return;
         Vec3 dir = this.hikenPos.subtract(this.position());
         float yRot = MathsHelper.YRotFrom(dir);
         OrientedBoundingBox obb = new OrientedBoundingBox(new AABB(this.getBbWidth() * 0.5 - 1.5, -0.3, 0, this.getBbWidth() * 0.5 + 1.5, this.getBbHeight() + 0.3, dir.length() + 2),
