@@ -43,7 +43,7 @@ public class ArcherBowItem extends BowItem implements SwingItem {
     }
 
     @Override
-    public boolean onEntitySwing(ItemStack stack, LivingEntity entity) {
+    public boolean onEntitySwing(ItemStack stack, LivingEntity entity, InteractionHand hand) {
         if (!this.charged(stack) && !entity.level().isClientSide && entity instanceof Player player) {
             if (player.isCreative())
                 this.setCharged(stack, true);

@@ -48,6 +48,7 @@ public class ConfigLoader {
         CommonConfig.gaeBolgEffect.read(ConfigSpecs.COMMON_CONFIG.gaeBolgEffect.get());
         CommonConfig.petrificationDuration = ConfigSpecs.COMMON_CONFIG.petrificationDuration.get();
         CommonConfig.ruleBreakerDuration = ConfigSpecs.COMMON_CONFIG.ruleBreakerDuration.get();
+        CommonConfig.aestusDomusDamage = ConfigSpecs.COMMON_CONFIG.aestusDomusDamage.get().floatValue();
 
         CommonConfig.excaliburMana = ConfigSpecs.COMMON_CONFIG.excaliburMana.get();
         CommonConfig.eaMana = ConfigSpecs.COMMON_CONFIG.eaMana.get();

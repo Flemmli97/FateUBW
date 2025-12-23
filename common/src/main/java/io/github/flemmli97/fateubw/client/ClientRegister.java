@@ -3,12 +3,15 @@ package io.github.flemmli97.fateubw.client;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.client.model.MedeaModel;
 import io.github.flemmli97.fateubw.client.model.ServantModel;
+import io.github.flemmli97.fateubw.client.particles.MagicCircleParticle;
 import io.github.flemmli97.fateubw.client.particles.RingParticle;
+import io.github.flemmli97.fateubw.client.particles.RosePetalParticle;
 import io.github.flemmli97.fateubw.client.particles.TrailParticle;
 import io.github.flemmli97.fateubw.client.render.RenderEmpty;
 import io.github.flemmli97.fateubw.client.render.ServantRenderer;
 import io.github.flemmli97.fateubw.client.render.layer.PetrificationLayer;
 import io.github.flemmli97.fateubw.client.render.misc.EmptyRender;
+import io.github.flemmli97.fateubw.client.render.misc.RenderAestusDomusBeam;
 import io.github.flemmli97.fateubw.client.render.misc.RenderArcherArrow;
 import io.github.flemmli97.fateubw.client.render.misc.RenderBabylon;
 import io.github.flemmli97.fateubw.client.render.misc.RenderCaladbolg;
@@ -31,6 +34,7 @@ import io.github.flemmli97.fateubw.common.registry.FateBlocks;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
+import io.github.flemmli97.tenshilib.client.particles.SpritedParticle;
 import io.github.flemmli97.tenshilib.client.particles.TranslucentAddParticle;
 import io.github.flemmli97.tenshilib.loader.registry.RegistryEntrySupplier;
 import net.minecraft.client.KeyMapping;
@@ -96,6 +100,7 @@ public class ClientRegister {
         consumer.register(FateEntities.MEDUSA.get(), MedusaRenderer::new);
         registerServant(consumer, FateEntities.HASSAN);
         registerServant(consumer, FateEntities.SASAKI);
+        registerServant(consumer, FateEntities.NERO);
 
         consumer.register(FateEntities.EXCALIBUR.get(), RenderExcalibur::new);
         consumer.register(FateEntities.GAEBOLG.get(), RenderGaeBolg::new);
@@ -112,6 +117,7 @@ public class ClientRegister {
         consumer.register(FateEntities.TENTACLE.get(), RenderTentacle::new);
         consumer.register(FateEntities.STARFISH_SHOT.get(), EmptyRender::new);
         consumer.register(FateEntities.ENKIDU_CHAINS.get(), RenderEnkiduChains::new);
+        consumer.register(FateEntities.AESTUS_DOMUS_BEAM.get(), RenderAestusDomusBeam::new);
 
         consumer.register(FateEntities.LESSER_MONSTER.get(), RenderStarfish::new);
         consumer.register(FateEntities.HASSAN_COPY.get(), RenderHassanCopy::new);
@@ -143,6 +149,10 @@ public class ClientRegister {
         consumer.register(FateParticles.TRAIL.get(), TrailParticle.Factory::new);
         consumer.register(FateParticles.RING.get(), RingParticle.Factory::new);
         consumer.register(FateParticles.FLASH.get(), TranslucentAddParticle.Factory::new);
+        consumer.register(FateParticles.MAGIC_CIRCLE_1.get(), MagicCircleParticle.Factory::new);
+        consumer.register(FateParticles.MAGIC_CIRCLE_2.get(), MagicCircleParticle.Factory::new);
+        consumer.register(FateParticles.GLOWING_RING.get(), SpritedParticle.Translucent::new);
+        consumer.register(FateParticles.ROSE_PETAL.get(), RosePetalParticle.Factory::new);
     }
 
     public static <T extends LivingEntity> void addLayersTo(LivingEntityRenderer<T, ?> renderer, Consumer<RenderLayer<T, ?>> layerConsumer) {

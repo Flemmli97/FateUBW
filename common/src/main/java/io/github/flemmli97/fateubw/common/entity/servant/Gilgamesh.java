@@ -264,6 +264,11 @@ public class Gilgamesh extends BaseServant implements OnProjectileHit {
     }
 
     @Override
+    protected boolean ignoreExternalMobInfluence() {
+        return this.getAnimationHandler().isCurrent(EA);
+    }
+
+    @Override
     public boolean nobelPhantasmCheck() {
         return this.healthBelow(0.5f) && super.nobelPhantasmCheck();
     }

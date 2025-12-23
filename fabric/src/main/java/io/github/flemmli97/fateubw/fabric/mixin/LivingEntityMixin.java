@@ -56,7 +56,7 @@ public abstract class LivingEntityMixin {
     private void onSwing(InteractionHand hand, boolean updateSelf, CallbackInfo info) {
         ItemStack stack = this.getItemInHand(hand);
         if (!stack.isEmpty() && stack.getItem() instanceof SwingItem swing) {
-            swing.onEntitySwing(stack, (LivingEntity) (Object) this);
+            swing.onEntitySwing(stack, (LivingEntity) (Object) this, hand);
         }
     }
 

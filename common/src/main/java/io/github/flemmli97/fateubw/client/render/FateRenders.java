@@ -33,14 +33,14 @@ public class FateRenders extends RenderType {
     private static final Vector4f NO_COLOR = new Vector4f(1, 1, 1, 1);
     private static ShaderInstance CORRUPTED_SHADER_INSTANCE;
     private static ShaderInstance CLIPPED_SHADER_INSTANCE;
-    private static ShaderInstance PULSING_TEXT_SHADER;
+    private static ShaderInstance FULL_BRIGHT_INSTANCE;
     private static ShaderInstance BABYLON_SHADER_INSTANCE;
     private static ShaderInstance PARTICLE_COLOR_ADD_SHADER_INSTANCE;
     private static ShaderInstance ENTITY_MASKED;
 
     private static final ShaderStateShard CORRUPTED_SHADER = new ShaderStateShard(() -> CORRUPTED_SHADER_INSTANCE);
     private static final ShaderStateShard CLIPPED_SHADER = new ShaderStateShard(() -> CLIPPED_SHADER_INSTANCE);
-    private static final ShaderStateShard BLOOM_SHADER = new ShaderStateShard(() -> PULSING_TEXT_SHADER);
+    private static final ShaderStateShard FULL_BRIGHT_SHADER = new ShaderStateShard(() -> FULL_BRIGHT_INSTANCE);
     private static final ShaderStateShard BABYLON_SHADER = new ShaderStateShard(() -> BABYLON_SHADER_INSTANCE);
     private static final ShaderStateShard ENTITY_MASKED_SHADER = new ShaderStateShard(() -> ENTITY_MASKED);
 
@@ -113,9 +113,9 @@ public class FateRenders extends RenderType {
             }) {
             };
 
-    private static final Function<ResourceLocation, RenderType> TRANSLUCENT_BLOOM_TEX = Util.memoize((resourceLocation) -> {
-        CompositeState compositeState = RenderType.CompositeState.builder().setShaderState(BLOOM_SHADER).setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false)).setTransparencyState(TRANSLUCENT_TRANSPARENCY).setLightmapState(LIGHTMAP).setWriteMaskState(RenderStateShard.COLOR_DEPTH_WRITE).createCompositeState(true);
-        return RenderType.create("fateubw:entity_translucent_bloom", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, true, compositeState);
+    private static final Function<ResourceLocation, RenderType> FULL_BRIGHT_TEXT = Util.memoize((resourceLocation) -> {
+        CompositeState compositeState = RenderType.CompositeState.builder().setShaderState(FULL_BRIGHT_SHADER).setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false)).setTransparencyState(TRANSLUCENT_TRANSPARENCY).setLightmapState(LIGHTMAP).setWriteMaskState(RenderStateShard.COLOR_DEPTH_WRITE).createCompositeState(true);
+        return RenderType.create("fateubw:texture_full_bright", DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS, 256, true, true, compositeState);
     });
 
     private static boolean init;
@@ -127,8 +127,8 @@ public class FateRenders extends RenderType {
                         shaderInstance -> FateRenders.CORRUPTED_SHADER_INSTANCE = shaderInstance);
                 register.register(Fate.modRes("rendertype_clipped"), DefaultVertexFormat.NEW_ENTITY,
                         shaderInstance -> FateRenders.CLIPPED_SHADER_INSTANCE = shaderInstance);
-                register.register(Fate.modRes("pulsing_entity_text"), DefaultVertexFormat.NEW_ENTITY,
-                        shaderInstance -> FateRenders.PULSING_TEXT_SHADER = shaderInstance);
+                register.register(Fate.modRes("texture_full_bright"), DefaultVertexFormat.POSITION_TEX_COLOR,
+                        shaderInstance -> FateRenders.FULL_BRIGHT_INSTANCE = shaderInstance);
                 register.register(Fate.modRes("babylon"), POSITION_COLOR_TEX_TIME,
                         shaderInstance -> FateRenders.BABYLON_SHADER_INSTANCE = shaderInstance);
                 register.register(Fate.modRes("particle_color_add"), DefaultVertexFormat.PARTICLE,
@@ -156,8 +156,8 @@ public class FateRenders extends RenderType {
         return CLIPPED.get(origin, clippingPlane, color, width);
     }
 
-    public static RenderType getPulsingEntityText(ResourceLocation texture) {
-        return TRANSLUCENT_BLOOM_TEX.apply(texture);
+    public static RenderType getFullBrightText(ResourceLocation texture) {
+        return FULL_BRIGHT_TEXT.apply(texture);
     }
 
     public static RenderType entityCutoutMasked(ResourceLocation location, ResourceLocation mask) {

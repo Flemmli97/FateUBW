@@ -2,7 +2,7 @@ package io.github.flemmli97.fateubw.client.particles;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import io.github.flemmli97.fateubw.common.particles.RingParticleData;
+import io.github.flemmli97.fateubw.common.particles.StaticFacingParticleData;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
@@ -19,7 +19,7 @@ public class RingParticle extends TextureSheetParticle {
 
     private final float yRot, xRot;
 
-    public RingParticle(ClientLevel level, double x, double y, double z, RingParticleData data, SpriteSet sprite) {
+    public RingParticle(ClientLevel level, double x, double y, double z, StaticFacingParticleData data, SpriteSet sprite) {
         super(level, x, y, z);
         this.yRot = data.rotY();
         this.xRot = data.rotX();
@@ -69,7 +69,7 @@ public class RingParticle extends TextureSheetParticle {
         return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
-    public static class Factory implements ParticleProvider<RingParticleData> {
+    public static class Factory implements ParticleProvider<StaticFacingParticleData> {
 
         private final SpriteSet sprite;
 
@@ -78,7 +78,7 @@ public class RingParticle extends TextureSheetParticle {
         }
 
         @Override
-        public Particle createParticle(RingParticleData data, ClientLevel level, double x, double y, double z, double motionX, double motionY, double motionZ) {
+        public Particle createParticle(StaticFacingParticleData data, ClientLevel level, double x, double y, double z, double motionX, double motionY, double motionZ) {
             return new RingParticle(level, x, y, z, data, this.sprite);
         }
     }

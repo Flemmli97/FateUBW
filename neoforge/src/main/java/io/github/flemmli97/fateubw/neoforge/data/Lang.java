@@ -96,7 +96,12 @@ public class Lang implements DataProvider {
         }
 
         for (RegistryEntrySupplier<SoundEvent, ? extends SoundEvent> reg : FateSounds.SOUND_EVENTS.getEntries()) {
-            this.add(reg.asHolder());
+            FateSounds.SoundHolder data = FateSounds.SOUND_DATA.get(reg.getID());
+            if (data != null && data.defaultTranslation() != null) {
+                this.add(reg.getID().toString(), data.defaultTranslation());
+            } else {
+                this.add(reg.asHolder());
+            }
         }
 
         this.add("itemGroup." + FateCreativeTab.TAB.getID().getNamespace() + "." + FateCreativeTab.TAB.getID().getPath(), "Fate Unlimited Block Works");

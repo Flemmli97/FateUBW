@@ -50,7 +50,6 @@ import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.ai.control.MoveControl;
@@ -134,10 +133,6 @@ public class GordiusWheel extends PathfinderMob implements AnimatedEntity, Stand
         }
         this.lookControl = new GordiusLookControl(this);
         this.moveControl = new GordiusMoveControl(this);
-    }
-
-    public static AttributeSupplier.Builder createAttributes() {
-        return BaseServant.createAttributes().add(Attributes.STEP_HEIGHT, 1.6);
     }
 
     private void updateAttributes() {

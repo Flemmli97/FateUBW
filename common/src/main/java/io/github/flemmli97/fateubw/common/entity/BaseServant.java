@@ -13,6 +13,7 @@ import io.github.flemmli97.fateubw.common.entity.utils.MoveType;
 import io.github.flemmli97.fateubw.common.entity.utils.ServantModelLike;
 import io.github.flemmli97.fateubw.common.entity.utils.TargetableOpponent;
 import io.github.flemmli97.fateubw.common.lib.FateTags;
+import io.github.flemmli97.fateubw.common.lib.LibAttributeModifiers;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.network.S2CServantGui;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailHolder;
@@ -483,13 +484,13 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
     public void setTargetPositionFromAttackTarget() {
         LivingEntity target = this.getTarget();
         if (target != null)
-            this.setTargetPosition(target);
+            this.setTargetPosition(target, true);
         else
             this.setTargetPosition(TargetPosition.of(this.position().add(this.getViewVector(1).scale(10))));
     }
 
-    public void setTargetPosition(LivingEntity target) {
-        this.setTargetPosition(target == null ? null : TargetPosition.of(target));
+    public void setTargetPosition(LivingEntity target, boolean ranged) {
+        this.setTargetPosition(target == null ? null : ranged ? TargetPosition.reducedRangeOf(target) : TargetPosition.fullRangeOf(target));
     }
 
     public void setTargetPosition(TargetPosition position) {
@@ -530,7 +531,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
     public void setupAttack(AnimationDefinition anim) {
         BrainUtils.clearMemory(this, MemoryModuleType.LOOK_TARGET);
         if (this.getTarget() != null) {
-            this.setTargetPosition(this.getTarget());
+            this.setTargetPosition(this.getTarget(), false);
         }
         this.getNavigation().stop();
     }
@@ -590,6 +591,14 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
             height = this.getAttackBoundingBox().maxY - entity.getBoundingBox().minY;
         }
         return height;
+    }
+
+    protected void applyNoGravityMove(boolean enable) {
+        this.getAttribute(Attributes.GRAVITY).removeModifier(LibAttributeModifiers.NO_GRAVITY_AI_MOD);
+        if (enable) {
+            this.getAttribute(Attributes.GRAVITY)
+                    .addTransientModifier(new AttributeModifier(LibAttributeModifiers.NO_GRAVITY_AI_MOD, -1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+        }
     }
 
     @Override
@@ -674,7 +683,34 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
 
     @Override
     public void knockback(double strength, double xRatio, double zRatio) {
+        if (this.ignoreExternalMobInfluence())
+            return;
         super.knockback(strength * 0.75, xRatio, zRatio);
+    }
+
+    @Override
+    public void push(Entity entity) {
+        if (this.ignoreExternalMobInfluence())
+            return;
+        super.push(entity);
+    }
+
+    @Override
+    public boolean canCollideWith(Entity entity) {
+        if (this.ignoreExternalMobInfluence())
+            return false;
+        return entity.canBeCollidedWith() && !this.isPassengerOfSameVehicle(entity);
+    }
+
+    @Override
+    public void push(double x, double y, double z) {
+        if (this.ignoreExternalMobInfluence())
+            return;
+        super.push(x, y, z);
+    }
+
+    protected boolean ignoreExternalMobInfluence() {
+        return false;
     }
 
     @Override

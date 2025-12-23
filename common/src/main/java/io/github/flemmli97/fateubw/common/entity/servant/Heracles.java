@@ -6,7 +6,7 @@ import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
-import io.github.flemmli97.fateubw.common.particles.RingParticleData;
+import io.github.flemmli97.fateubw.common.particles.StaticFacingParticleData;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailProvider;
@@ -374,7 +374,7 @@ public class Heracles extends BaseServant {
                     }
                 });
                 if (!this.hits.isEmpty()) {
-                    AdvancedParticleContainer.make(new RingParticleData(this.getYRot(), 40))
+                    AdvancedParticleContainer.make(new StaticFacingParticleData(FateParticles.RING.get(), this.getYRot(), 40))
                             .addData(new ColorData(0.9f, 0.9f, 0.9f))
                             .addData(new ScaleData(1, 4, 3))
                             .addData(new ParticleMetaData(8, false, 0))

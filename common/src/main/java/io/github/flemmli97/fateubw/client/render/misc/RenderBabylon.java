@@ -82,12 +82,12 @@ public class RenderBabylon extends EntityRenderer<BabylonWeapon> {
                     VertexUtils.SINGLE_FLOAT.get(),
                     tick
             );
+
             VertexUtils.addVertexData(
                     consumer.addVertex(matrix4f, -size, size, 0).setColor(this.color.x(), this.color.y(), this.color.z(), 1).setUv(0, 1),
                     VertexUtils.SINGLE_FLOAT.get(),
                     tick
             );
-
             VertexUtils.addVertexData(
                     consumer.addVertex(matrix4f, size, size, 0).setColor(this.color.x(), this.color.y(), this.color.z(), 1).setUv(1, 1),
                     VertexUtils.SINGLE_FLOAT.get(),

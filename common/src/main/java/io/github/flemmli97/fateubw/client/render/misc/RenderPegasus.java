@@ -28,8 +28,8 @@ public class RenderPegasus extends MobRenderer<Pegasus, PegasusModel> {
         super(ctx, new PegasusModel(), 0.5f);
         this.shadowDefault = this.shadowRadius;
         this.layers.add(new PortalLayerRenderer<>(this, e -> e.getAnimationHandler().isCurrent(Pegasus.SUMMON),
-                stack -> stack.translate(0, 0, this.portalOffset()), Fate.modRes("textures/misc/magic_circle.png"),
-                Pegasus.PORTAL_SIZE));
+                stack -> stack.translate(0, 0, this.portalOffset()), Fate.modRes("textures/misc/magic_circle_1.png"),
+                Pegasus.PORTAL_SIZE).color(255, 0, 0, 255));
         this.layers.add(new RiderEntityLayer<>(this));
     }
 

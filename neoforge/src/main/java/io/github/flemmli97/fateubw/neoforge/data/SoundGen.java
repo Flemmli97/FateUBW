@@ -2,10 +2,10 @@ package io.github.flemmli97.fateubw.neoforge.data;
 
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.registry.FateSounds;
+import io.github.flemmli97.tenshilib.loader.registry.RegistryEntrySupplier;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.common.data.SoundDefinition;
 import net.neoforged.neoforge.common.data.SoundDefinitionsProvider;
@@ -18,29 +18,31 @@ public class SoundGen extends SoundDefinitionsProvider {
 
     @Override
     public void registerSounds() {
-        this.add(FateSounds.ENTITY_BABYLON_SPAWN.get(), fromEvent(SoundEvents.BEACON_ACTIVATE.getLocation()));
-        this.add(FateSounds.ENTITY_BABYLON_SHOOT.get(), fromEvent(SoundEvents.PLAYER_ATTACK_SWEEP.getLocation()), 7, false);
-        this.add(FateSounds.ENTITY_EXCALIBUR_SHOOT.get(), ResourceLocation.withDefaultNamespace("random/explode"), 4, false);
-        this.add(FateSounds.ENTITY_EA_SHOOT.get(), ResourceLocation.withDefaultNamespace("random/explode"), 4, false);
-        this.add(FateSounds.HERACLES_ROAR.get());
+        for (RegistryEntrySupplier<SoundEvent, ?> sup : FateSounds.SOUND_EVENTS.getEntries()) {
+            FateSounds.SoundHolder data = FateSounds.SOUND_DATA.get(sup.getID());
+            if (data != null) {
+                this.add(sup.get(), data.location(), data.amount(), data.pitch());
+            } else {
+                this.add(sup.get());
+            }
+        }
     }
 
     private void add(SoundEvent event) {
-        this.add(event, ResourceLocation.fromNamespaceAndPath(event.getLocation().getNamespace(), event.getLocation().getPath().replace(".", "/")));
+        this.add(event, event.getLocation(), 1, 1);
     }
 
-    private void add(SoundEvent event, ResourceLocation sound) {
-        this.add(event, definition().subtitle(event.getLocation().toString()).with(SoundDefinition.Sound.sound(sound, SoundDefinition.SoundType.SOUND)));
-    }
-
-    private void add(SoundEvent event, ResourceLocation sound, int num, boolean underscore) {
+    private void add(SoundEvent event, ResourceLocation path, int num, float pitch) {
         SoundDefinition def = definition().subtitle(event.getLocation().toString());
-        for (int i = 0; i < num; i++)
-            def.with(SoundDefinition.Sound.sound(ResourceLocation.fromNamespaceAndPath(sound.getNamespace(), sound.getPath() + (underscore ? "_" : "") + (i + 1)), SoundDefinition.SoundType.SOUND));
+        if (num <= 1) {
+            def.with(SoundDefinition.Sound.sound(ResourceLocation.fromNamespaceAndPath(path.getNamespace(), path.getPath().replace(".", "/")), SoundDefinition.SoundType.SOUND)
+                    .pitch(pitch));
+        } else {
+            for (int i = 0; i < num; i++) {
+                def.with(SoundDefinition.Sound.sound(ResourceLocation.fromNamespaceAndPath(path.getNamespace(), path.getPath().replace(".", "/") + (i + 1)), SoundDefinition.SoundType.SOUND)
+                        .pitch(pitch));
+            }
+        }
         this.add(event, def);
-    }
-
-    private static ResourceLocation fromEvent(ResourceLocation res) {
-        return ResourceLocation.fromNamespaceAndPath(res.getNamespace(), res.getPath().replace(".", "/"));
     }
 }

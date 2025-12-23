@@ -1,5 +1,5 @@
 {
-  "format_version": "1.12.0",
+  "format_version": "1.21.0",
   "minecraft:geometry": [
     {
       "description": {
@@ -88,6 +88,11 @@
           "pivot": [5.5, 12, -2]
         },
         {
+          "name": "RightItemSwapped",
+          "parent": "LeftArmDown",
+          "pivot": [5.5, 12, -2]
+        },
+        {
           "name": "RightArm",
           "parent": "Body",
           "pivot": [-5, 22, 0],
@@ -125,6 +130,11 @@
         },
         {
           "name": "RightItem",
+          "parent": "RightArmDown",
+          "pivot": [-5.5, 12, -2]
+        },
+        {
+          "name": "LeftItemSwapped",
           "parent": "RightArmDown",
           "pivot": [-5.5, 12, -2]
         },
@@ -278,11 +288,11 @@
         },
         {
           "name": "LeftItemStandalone",
-          "pivot": [5.5, 15, 0]
+          "pivot": [5.5, 12, -2]
         },
         {
           "name": "RightItemStandalone",
-          "pivot": [-5.5, 13, -2]
+          "pivot": [-5.5, 12, -2]
         }
       ]
     }

@@ -19,7 +19,7 @@ import org.joml.Matrix4f;
 
 public class RenderAltar implements BlockEntityRenderer<AltarBlockEntity> {
 
-    private final ResourceLocation texture = Fate.modRes("textures/misc/magic_circle.png");
+    private final ResourceLocation texture = Fate.modRes("textures/misc/magic_circle_1.png");
     private final RenderUtils.BeamBuilder builder = new RenderUtils.BeamBuilder();
 
     public RenderAltar(BlockEntityRendererProvider.Context context) {
@@ -38,18 +38,18 @@ public class RenderAltar implements BlockEntityRenderer<AltarBlockEntity> {
             poseStack.pushPose();
             poseStack.translate(0.5F, 0.025F, 0.5F);
             poseStack.mulPose(Axis.YP.rotationDegrees(ticker * 0.5f));
-            VertexConsumer vert = buffer.getBuffer(FateRenders.getPulsingEntityText(this.texture));
+            VertexConsumer vert = buffer.getBuffer(FateRenders.getFullBrightText(this.texture));
             Matrix4f mat = poseStack.last().pose();
             float size = 2.5f;
-            vert.addVertex(mat, size, 0, size).setColor(255, 255, 255, 255).setUv(0, 0).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xff00ff).setNormal(1, 0, 0);
-            vert.addVertex(mat, size, 0, -size).setColor(255, 255, 255, 255).setUv(0, 1).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xff00ff).setNormal(1, 0, 0);
-            vert.addVertex(mat, -size, 0, -size).setColor(255, 255, 255, 255).setUv(1, 1).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xff00ff).setNormal(1, 0, 0);
-            vert.addVertex(mat, -size, 0, size).setColor(255, 255, 255, 255).setUv(1, 0).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xff00ff).setNormal(1, 0, 0);
+            vert.addVertex(mat, size, 0, size).setColor(255, 0, 0, 255).setUv(0, 0);
+            vert.addVertex(mat, size, 0, -size).setColor(255, 0, 0, 255).setUv(0, 1);
+            vert.addVertex(mat, -size, 0, -size).setColor(255, 0, 0, 255).setUv(1, 1);
+            vert.addVertex(mat, -size, 0, size).setColor(255, 0, 0, 255).setUv(1, 0);
 
-            vert.addVertex(mat, -size, 0, size).setColor(255, 255, 255, 255).setUv(1, 0).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xff00ff).setNormal(1, 0, 0);
-            vert.addVertex(mat, -size, 0, -size).setColor(255, 255, 255, 255).setUv(1, 1).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xff00ff).setNormal(1, 0, 0);
-            vert.addVertex(mat, size, 0, -size).setColor(255, 255, 255, 255).setUv(0, 1).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xff00ff).setNormal(1, 0, 0);
-            vert.addVertex(mat, size, 0, size).setColor(255, 255, 255, 255).setUv(0, 0).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xff00ff).setNormal(1, 0, 0);
+            vert.addVertex(mat, -size, 0, size).setColor(255, 0, 0, 255).setUv(1, 0);
+            vert.addVertex(mat, -size, 0, -size).setColor(255, 0, 0, 255).setUv(1, 1);
+            vert.addVertex(mat, size, 0, -size).setColor(255, 0, 0, 255).setUv(0, 1);
+            vert.addVertex(mat, size, 0, size).setColor(255, 0, 0, 255).setUv(0, 0);
             poseStack.popPose();
         }
         ItemStack stack = altar.getCharm();

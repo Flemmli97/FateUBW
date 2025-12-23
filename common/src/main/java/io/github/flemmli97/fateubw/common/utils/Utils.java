@@ -27,10 +27,7 @@ public class Utils {
     }
 
     public static Vec3 fromRelativeVector(float yRot, Vec3 relative) {
-        Vec3 vec3 = relative.normalize();
-        float f = Mth.sin(yRot * Mth.DEG_TO_RAD);
-        float g = Mth.cos(yRot * Mth.DEG_TO_RAD);
-        return new Vec3(vec3.x * g - vec3.z * f, vec3.y, vec3.z * g + vec3.x * f);
+        return relative.normalize().yRot(-yRot * Mth.DEG_TO_RAD);
     }
 
     public static float magicDamage(@Nullable Entity entity) {

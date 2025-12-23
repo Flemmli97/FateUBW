@@ -127,7 +127,7 @@ public class ItemModels extends ItemModelProvider {
                                         .texture("layer0", this.itemTexture(reg.getID().withPath(s -> s + "_inventory"))))
                                 .end())
                         .end();
-            } else if (reg == FateItems.ARONDIGHT || reg == FateItems.MONOHOSHI_ZAO || reg == FateItems.STAFF) {
+            } else if (reg == FateItems.ARONDIGHT || reg == FateItems.MONOHOSHI_ZAO || reg == FateItems.STAFF || reg == FateItems.AESTUS_ESTUS) {
                 this.withInventoryVariant(reg, "handheld_32x32");
             } else if (reg.get() instanceof SpawnEgg)
                 this.withExistingParent(reg.getID().getPath(), ModelLocationUtils.decorateItemModelLocation("template_spawn_egg"));

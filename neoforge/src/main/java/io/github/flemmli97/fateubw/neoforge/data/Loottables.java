@@ -75,6 +75,7 @@ public class Loottables extends LootTableProvider {
             this.registerLootTable(FateEntities.MEDUSA.get(), this.getDefault(FateItems.MEDUSA_DAGGER.get()));
             this.registerLootTable(FateEntities.HASSAN.get(), this.getDefault(FateItems.ASSASSIN_DAGGER.get()));
             this.registerLootTable(FateEntities.SASAKI.get(), this.getDefault(FateItems.MONOHOSHI_ZAO.get()));
+            this.registerLootTable(FateEntities.NERO.get(), this.getDefault(FateItems.AESTUS_ESTUS.get()));
         }
 
         private LootTable.Builder getDefault(ItemLike... items) {

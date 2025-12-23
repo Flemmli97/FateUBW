@@ -11,6 +11,7 @@ import io.github.flemmli97.fateubw.neoforge.data.tags.ItemTagGen;
 import io.github.flemmli97.fateubw.neoforge.data.tags.MobEffectTagGen;
 import io.github.flemmli97.fateubw.neoforge.data.worldgen.FeatureWorldGen;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -30,7 +31,9 @@ public class DataEvent {
         CompletableFuture<HolderLookup.Provider> provider = event.getLookupProvider();
         ExistingFileHelper fileHelper = event.getExistingFileHelper();
 
-        FeatureWorldGen.createWorldgenFeatures(event::createDatapackRegistryObjects);
+        RegistrySetBuilder builder = new RegistrySetBuilder();
+        FeatureWorldGen.createWorldgenFeatures(builder);
+        event.createDatapackRegistryObjects(builder);
 
         data.addProvider(true, new AdvancementsGen(output, provider, fileHelper));
         data.addProvider(true, new BlockStatesGen(output, fileHelper));

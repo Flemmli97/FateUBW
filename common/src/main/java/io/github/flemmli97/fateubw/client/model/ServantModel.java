@@ -41,8 +41,8 @@ public class ServantModel<T extends LivingEntity & AnimatedEntity & ServantModel
     public ModelPartsContainer.ModelPartExtended head;
     public ModelPartsContainer.ModelPartExtended body;
 
-    public ModelPartsContainer.ModelPartExtended rightItem;
-    public ModelPartsContainer.ModelPartExtended leftItem;
+    public ItemPart rightItem;
+    public ItemPart leftItem;
 
     @Nullable
     public ModelPartsContainer.ModelPartExtended rightArm;
@@ -57,10 +57,6 @@ public class ServantModel<T extends LivingEntity & AnimatedEntity & ServantModel
     public ModelPartsContainer.ModelPartExtended vehicleAttachment;
     @Nullable
     private Vector3f bodyVehicleOffset;
-    @Nullable
-    public ModelPartsContainer.ModelPartExtended leftItemDetached;
-    @Nullable
-    public ModelPartsContainer.ModelPartExtended rightItemDetached;
 
     protected final ModelPart dummyHead = new ModelPart(new ArrayList<>(), new HashMap<>());
 
@@ -77,8 +73,8 @@ public class ServantModel<T extends LivingEntity & AnimatedEntity & ServantModel
         this.model = GeoModelManager.getInstance().getModel(modelLocation, model -> {
             this.head = model.getPart("Head");
             this.body = model.getPart("Body");
-            this.rightItem = model.getPart("RightItem");
-            this.leftItem = model.getPart("LeftItem");
+            this.rightItem = new ItemPart(model, "RightItem");
+            this.leftItem = new ItemPart(model, "LeftItem");
 
             this.rightArm = model.getOptionalPart("RightArm").orElse(null);
             this.leftArm = model.getOptionalPart("LeftArm").orElse(null);
@@ -91,14 +87,6 @@ public class ServantModel<T extends LivingEntity & AnimatedEntity & ServantModel
                 PoseExtended bodyPose = this.body.getDefaultPose();
                 PoseExtended attachmentPose = this.vehicleAttachment.getDefaultPose();
                 this.bodyVehicleOffset = new Vector3f(attachmentPose.x - bodyPose.x, attachmentPose.y - bodyPose.y, attachmentPose.z - bodyPose.z);
-            }
-            this.leftItemDetached = model.getOptionalPart("LeftItemStandalone").orElse(null);
-            if (this.leftItemDetached != null) {
-                this.leftItemDetached.updateDefaultPose(this.leftItemDetached.getDefaultPose().withScale(0, 0, 0));
-            }
-            this.rightItemDetached = model.getOptionalPart("RightItemStandalone").orElse(null);
-            if (this.rightItemDetached != null) {
-                this.rightItemDetached.updateDefaultPose(this.rightItemDetached.getDefaultPose().withScale(0, 0, 0));
             }
             this.modelReloadListener(model);
         });
@@ -123,21 +111,9 @@ public class ServantModel<T extends LivingEntity & AnimatedEntity & ServantModel
     @Override
     public void transform(HumanoidArm hand, PoseStack stack) {
         if (hand == HumanoidArm.LEFT) {
-            boolean detached = this.leftItemDetached != null && this.leftItemDetached.xScale != 0 && this.leftItemDetached.yScale != 0
-                    && this.leftItemDetached.zScale != 0 && this.leftItemDetached.visible;
-            if (detached) {
-                this.leftItemDetached.translateAndRotateWithParents(stack);
-            } else if (this.leftItem != null) {
-                this.leftItem.translateAndRotateWithParents(stack);
-            }
+            this.leftItem.getPart().translateAndRotateWithParents(stack);
         } else {
-            boolean detached = this.rightItemDetached != null && this.rightItemDetached.xScale != 0 && this.rightItemDetached.yScale != 0
-                    && this.rightItemDetached.zScale != 0 && this.rightItemDetached.visible;
-            if (detached) {
-                this.rightItemDetached.translateAndRotateWithParents(stack);
-            } else if (this.rightItem != null) {
-                this.rightItem.translateAndRotateWithParents(stack);
-            }
+            this.rightItem.getPart().translateAndRotateWithParents(stack);
         }
     }
 
@@ -256,6 +232,39 @@ public class ServantModel<T extends LivingEntity & AnimatedEntity & ServantModel
         if (model instanceof ServantModel<?> other) {
             other.heldItemMain = this.heldItemMain;
             other.heldItemOff = this.heldItemOff;
+        }
+    }
+
+    public record ItemPart(ModelPartsContainer.ModelPartExtended base,
+                           @Nullable ModelPartsContainer.ModelPartExtended swapped,
+                           @Nullable ModelPartsContainer.ModelPartExtended detached) {
+
+        public ItemPart(ModelPartsContainer model, String name) {
+            this(model.getPart(name), model.getOptionalPart(name + "Swapped").orElse(null),
+                    model.getOptionalPart(name + "Standalone").orElse(null));
+            this.hidePart(this.swapped());
+            this.hidePart(this.detached());
+        }
+
+        private void hidePart(ModelPartsContainer.ModelPartExtended part) {
+            if (part != null) {
+                part.updateDefaultPose(part.getDefaultPose().withScale(0, 0, 0));
+            }
+        }
+
+        public ModelPartsContainer.ModelPartExtended getPart() {
+            if (this.isVisible(this.swapped())) {
+                return this.swapped();
+            }
+            if (this.isVisible(this.detached())) {
+                return this.detached();
+            }
+            return this.base;
+        }
+
+        private boolean isVisible(ModelPartsContainer.ModelPartExtended part) {
+            return part != null && part.xScale != 0 && part.yScale != 0
+                    && part.zScale != 0 && part.visible;
         }
     }
 }

@@ -2,7 +2,6 @@ package io.github.flemmli97.fateubw.client.render.layer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailHolderProvider;
-import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailProvider;
 import io.github.flemmli97.tenshilib.client.model.ItemHolderModel;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimatedEntity;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
@@ -28,7 +27,7 @@ public class ItemTrailLayer<T extends LivingEntity & AnimatedEntity & EntityWeap
     @Override
     public void render(PoseStack stack, MultiBufferSource buffer, int light, T entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         AnimationState anim = entity.getAnimationHandler().getAnimation();
-        if (anim != null && anim.isPast(EntityWeaponTrailProvider.TRAIL_START) && !anim.isPast(EntityWeaponTrailProvider.TRAIL_END)) {
+        if (entity.shouldRecordData()) {
             stack = this.renderer instanceof TrailPoseGetter getter ? getter.getPlainStack() : stack;
             Vec3[] data = this.calculatePosition(stack, entity, true);
             entity.getTrailHolder().recordData(anim.getID(), true, data[0], data[1]);

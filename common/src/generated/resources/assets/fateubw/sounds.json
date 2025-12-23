@@ -40,5 +40,47 @@
       "fateubw:entity/heracles/roar"
     ],
     "subtitle": "fateubw:entity.heracles.roar"
+  },
+  "generic.slash": {
+    "sounds": [
+      "fateubw:generic/slash"
+    ],
+    "subtitle": "fateubw:generic.slash"
+  },
+  "generic.slash_impact": {
+    "sounds": [
+      "fateubw:generic/slash_impact"
+    ],
+    "subtitle": "fateubw:generic.slash_impact"
+  },
+  "generic.swoosh": {
+    "sounds": [
+      "fateubw:generic/swoosh"
+    ],
+    "subtitle": "fateubw:generic.swoosh"
+  },
+  "nero.aestus_domus_ground_stab": {
+    "sounds": [
+      {
+        "name": "random/anvil_land",
+        "pitch": 0.4
+      }
+    ],
+    "subtitle": "fateubw:nero.aestus_domus_ground_stab"
+  },
+  "nero.aestus_domus_impact": {
+    "sounds": [
+      "random/explode1",
+      "random/explode2",
+      "random/explode3",
+      "random/explode4"
+    ],
+    "subtitle": "fateubw:nero.aestus_domus_impact"
+  },
+  "nero.aestus_domus_roses": {
+    "sounds": [
+      "fateubw:nero/aestus_domus_roses"
+    ],
+    "subtitle": "fateubw:nero.aestus_domus_roses"
   }
 }

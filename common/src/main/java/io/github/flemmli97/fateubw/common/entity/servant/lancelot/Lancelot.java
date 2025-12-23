@@ -285,13 +285,13 @@ public class Lancelot extends BaseServant {
                 if (anim.done(0)) {
                     if (this.onGround()) {
                         this.getAnimationHandler().setAnimation(this.getAnimationHandler().get(JUMP_LAND),
-                                0, AnimationHandler.FALLBACK_TRANSIT_TIME, 0);
+                                0, AnimationHandler.FALLBACK_TRANSIT_TIME, 0, 1);
                     }
                 }
                 // Stuck check. Or e.g. if in water
                 if (anim.isPast(6.0) && (!this.getInBlockState().is(Blocks.AIR) || !this.getBlockStateOn().is(Blocks.AIR))) {
                     this.getAnimationHandler().setAnimation(this.getAnimationHandler().get(JUMP_LAND),
-                            0, AnimationHandler.FALLBACK_TRANSIT_TIME, 0);
+                            0, AnimationHandler.FALLBACK_TRANSIT_TIME, 0, 1);
                 }
             }
         } else if (anim.is(CROSSBOW, BOW, TRIDENT)) {

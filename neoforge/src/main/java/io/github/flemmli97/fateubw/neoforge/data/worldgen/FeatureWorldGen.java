@@ -14,13 +14,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class FeatureWorldGen {
 
-    public static void createWorldgenFeatures(Consumer<RegistrySetBuilder> cons) {
-        RegistrySetBuilder builder = new RegistrySetBuilder();
+    public static void createWorldgenFeatures(RegistrySetBuilder builder) {
         Map<ResourceKey<ConfiguredFeature<?, ?>>, Function<FateFeatures.HolderGetterLookup, ConfiguredFeature<?, ?>>> configured = new HashMap<>();
         Map<ResourceKey<PlacedFeature>, Function<FateFeatures.HolderGetterLookup, PlacedFeature>> placed = new HashMap<>();
         List<FateFeatures.FeatureBiomeModifier> features = new ArrayList<>();
@@ -44,6 +42,5 @@ public class FeatureWorldGen {
                                 ctx.lookup(Registries.BIOME).getOrThrow(feat.tag()),
                                 HolderSet.direct(ctx.lookup(Registries.PLACED_FEATURE).getOrThrow(feat.placedFeature())),
                                 feat.decoration()))));
-        cons.accept(builder);
     }
 }

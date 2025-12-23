@@ -9,7 +9,7 @@ import io.github.flemmli97.fateubw.common.entity.misc.ChainDagger;
 import io.github.flemmli97.fateubw.common.entity.summons.GordiusWheel;
 import io.github.flemmli97.fateubw.common.entity.summons.Pegasus;
 import io.github.flemmli97.fateubw.common.entity.utils.OnProjectileHit;
-import io.github.flemmli97.fateubw.common.particles.RingParticleData;
+import io.github.flemmli97.fateubw.common.particles.StaticFacingParticleData;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailProvider;
@@ -301,13 +301,13 @@ public class Medusa extends BaseServant implements OnProjectileHit {
                 if (anim.done(0)) {
                     if (this.onGround()) {
                         this.getAnimationHandler().setAnimation(this.getAnimationHandler().get(LAND),
-                                0, AnimationHandler.FALLBACK_TRANSIT_TIME, 0);
+                                0, AnimationHandler.FALLBACK_TRANSIT_TIME, 0, 1);
                     }
                 }
                 // Stuck check. Or e.g. if in water
                 if (anim.isPast(6.0) && (!this.getInBlockState().is(Blocks.AIR) || !this.getBlockStateOn().is(Blocks.AIR))) {
                     this.getAnimationHandler().setAnimation(this.getAnimationHandler().get(LAND),
-                            0, AnimationHandler.FALLBACK_TRANSIT_TIME, 0);
+                            0, AnimationHandler.FALLBACK_TRANSIT_TIME, 0, 1);
                 }
             }
         } else if (anim.is(BELLEROPHON)) {
@@ -450,7 +450,7 @@ public class Medusa extends BaseServant implements OnProjectileHit {
             }
         }
         if (success) {
-            AdvancedParticleContainer.make(new RingParticleData(this.getYHeadRot(), 0))
+            AdvancedParticleContainer.make(new StaticFacingParticleData(FateParticles.RING.get(), this.getYHeadRot(), 0))
                     .addData(new ScaleData(1, 4, 8))
                     .addData(new ColorData(new Vector4f(125 / 255f, 12 / 255f, 127 / 255f, 1),
                             Optional.of(new Vector4f(125 / 255f, 12 / 255f, 127 / 255f, 0.2f)), 10))

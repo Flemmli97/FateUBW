@@ -45,6 +45,7 @@ public class DamageTypeTagGen extends TagsProvider<DamageType> {
         this.tag(FateDamageTypes.GORDIUS_TRAMPLE, DamageTypeTags.IS_LIGHTNING);
         this.tag(FateDamageTypes.PEGASUS_CHARGE, DamageTypeTags.BYPASSES_ARMOR, FateTags.DamageTypes.IS_MAGIC);
         this.tag(FateDamageTypes.PETRIFICATION, DamageTypeTags.BYPASSES_ARMOR, DamageTypeTags.BYPASSES_SHIELD, DamageTypeTags.BYPASSES_COOLDOWN, DamageTypeTags.NO_KNOCKBACK);
+        this.tag(FateDamageTypes.AESTUS_DOMUS, DamageTypeTags.BYPASSES_ARMOR, DamageTypeTags.BYPASSES_SHIELD, DamageTypeTags.NO_KNOCKBACK);
 
         this.tag(Tags.DamageTypes.IS_MAGIC)
                 .addTag(FateTags.DamageTypes.IS_MAGIC);

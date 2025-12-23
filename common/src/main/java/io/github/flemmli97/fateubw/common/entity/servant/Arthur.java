@@ -376,6 +376,11 @@ public class Arthur extends BaseServant {
     }
 
     @Override
+    protected boolean ignoreExternalMobInfluence() {
+        return this.getAnimationHandler().isCurrent(EXCALIBAA);
+    }
+
+    @Override
     public boolean nobelPhantasmCheck() {
         return this.healthBelow(0.5f) && super.nobelPhantasmCheck();
     }

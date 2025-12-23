@@ -71,6 +71,7 @@ public class ConfigSpecs {
         public final ModConfigSpec.ConfigValue<List<String>> gaeBolgEffect;
         public final ModConfigSpec.IntValue petrificationDuration;
         public final ModConfigSpec.IntValue ruleBreakerDuration;
+        public final ModConfigSpec.DoubleValue aestusDomusDamage;
 
         public final ModConfigSpec.IntValue excaliburMana;
         public final ModConfigSpec.IntValue eaMana;
@@ -132,6 +133,7 @@ public class ConfigSpecs {
                     CommonConfig.gaeBolgEffect.write(), stringList());
             this.petrificationDuration = builder.comment("Duration for the petrification effect from medusa").defineInRange("Petrification duration", CommonConfig.petrificationDuration, 0, Integer.MAX_VALUE);
             this.ruleBreakerDuration = builder.comment("Duration for rule breaker debuff").defineInRange("Rule Breaker duraiton", CommonConfig.ruleBreakerDuration, 0, Integer.MAX_VALUE);
+            this.aestusDomusDamage = builder.comment("Damage of aestus domus aurea hits").defineInRange("Aestus Domus Aurea Damage", CommonConfig.aestusDomusDamage, 0, Double.MAX_VALUE);
             builder.pop();
 
             builder.push("weapons");

@@ -55,6 +55,7 @@ public class CommonConfig {
     );
     public static int petrificationDuration = 600;
     public static int ruleBreakerDuration = 2400;
+    public static float aestusDomusDamage = 17;
 
     public static int excaliburMana = 70;
     public static int eaMana = 70;

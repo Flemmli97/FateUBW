@@ -244,17 +244,18 @@ public class Diarmuid extends BaseServant {
     @Override
     public void handleAttack(AnimationState anim) {
         if (anim.is(UNSEAL)) {
-            if (this.getMana() >= this.props().manaCost()) {
-                if (anim.isAt("unseal_1")) {
-                    this.unsealWeapon(this.getMainHandItem(), true);
+            if (anim.isAt("unseal_1")) {
+                if (!this.attemptUseNobelPhantasm()) {
+                    this.getAnimationHandler().setAnimation(null);
+                    return;
                 }
-                if (anim.isAt("unseal_2")) {
-                    this.unsealWeapon(this.getOffhandItem(), true);
-                }
-                if (anim.isAt("unsealed")) {
-                    this.useMana(this.props().manaCost());
-                    this.unsealedDuration = this.getRandom().nextInt(300) + 300;
-                }
+                this.unsealWeapon(this.getMainHandItem(), true);
+            }
+            if (anim.isAt("unseal_2")) {
+                this.unsealWeapon(this.getOffhandItem(), true);
+            }
+            if (anim.isAt("unsealed")) {
+                this.unsealedDuration = this.getRandom().nextInt(300) + 300;
             }
         } else if (anim.is(BLINK, BLINK_AWAY)) {
             if (anim.isAt("teleport_start")) {
@@ -425,6 +426,11 @@ public class Diarmuid extends BaseServant {
             return anim.isPast("teleport_start") && !anim.isPast("teleport_end");
         }
         return super.isInvisible();
+    }
+
+    @Override
+    protected boolean ignoreExternalMobInfluence() {
+        return this.getAnimationHandler().isCurrent(UNSEAL);
     }
 
     @Override

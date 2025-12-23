@@ -60,9 +60,10 @@ public class FateItems {
     public static final RegistryEntrySupplier<Item, AxeItem> HERACLES_AXE = register("heracles_axe", () -> new AxeItem(ItemTiers.HERACLES_AXE, new Item.Properties().attributes(createAttributes(ItemTiers.HERACLES_AXE, -3.2f))));
     public static final RegistryEntrySupplier<Item, SwordItem> ARONDIGHT = register("arondight", () -> new SwordItem(ItemTiers.ARONDIGHT, new Item.Properties().attributes(createAttributes(ItemTiers.ARONDIGHT, -2.4f))));
     public static final RegistryEntrySupplier<Item, SwordItem> KUPRIOTS = register("kupriots", () -> new SwordItem(ItemTiers.KUPRIOTS, new Item.Properties().attributes(createAttributes(ItemTiers.KUPRIOTS, -2.4f))));
-    public static final RegistryEntrySupplier<Item, MedusasDaggerItem> MEDUSA_DAGGER = register("medusas_dagger", () -> new MedusasDaggerItem(ItemTiers.DAGGER, new Item.Properties().attributes(createAttributes(ItemTiers.DAGGER, -2))));
+    public static final RegistryEntrySupplier<Item, MedusasDaggerItem> MEDUSA_DAGGER = register("medusas_dagger", () -> new MedusasDaggerItem(ItemTiers.MEDUSAS_DAGGER, new Item.Properties().attributes(createAttributes(ItemTiers.MEDUSAS_DAGGER, -2))));
     public static final RegistryEntrySupplier<Item, DaggerItem> ASSASSIN_DAGGER = register("assassin_dagger", () -> new DaggerItem(ItemTiers.ASSASSIN_DAGGER, new Item.Properties().attributes(createAttributes(ItemTiers.ASSASSIN_DAGGER, -1.5f))));
-    public static final RegistryEntrySupplier<Item, SwordItem> MONOHOSHI_ZAO = register("monohoshi_zao", () -> new SwordItem(ItemTiers.KATANA, new Item.Properties().attributes(createAttributes(ItemTiers.KATANA, -2.6f, 4.5))));
+    public static final RegistryEntrySupplier<Item, SwordItem> MONOHOSHI_ZAO = register("monohoshi_zao", () -> new SwordItem(ItemTiers.MONOHOSHI_ZAO, new Item.Properties().attributes(createAttributes(ItemTiers.MONOHOSHI_ZAO, -2.6f, 4.5))));
+    public static final RegistryEntrySupplier<Item, SwordItem> AESTUS_ESTUS = register("aestus_estus", () -> new SwordItem(ItemTiers.AESTUS_ESTUS, new Item.Properties().attributes(createAttributes(ItemTiers.AESTUS_ESTUS, -2.4f))));
 
     public static final RegistryEntrySupplier<Item, BlockItem> ALTAR = register("summoning_altar", () -> new BlockItem(FateBlocks.ALTAR.get(), new Item.Properties()));
     public static final RegistryEntrySupplier<Item, BlockItem> GEM_ORE = register("gem_ore", () -> new BlockItem(FateBlocks.GEM_ORE.get(), new Item.Properties()));

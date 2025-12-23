@@ -5,6 +5,7 @@ import io.github.flemmli97.fateubw.api.datapack.AttributeHolderProperties;
 import io.github.flemmli97.fateubw.api.datapack.ServantExtraData;
 import io.github.flemmli97.fateubw.api.datapack.ServantProperties;
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
+import io.github.flemmli97.fateubw.common.entity.misc.AestusDomusBeam;
 import io.github.flemmli97.fateubw.common.entity.misc.ArcherArrow;
 import io.github.flemmli97.fateubw.common.entity.misc.BabylonWeapon;
 import io.github.flemmli97.fateubw.common.entity.misc.CaladBolg;
@@ -30,6 +31,7 @@ import io.github.flemmli97.fateubw.common.entity.servant.Heracles;
 import io.github.flemmli97.fateubw.common.entity.servant.Iskander;
 import io.github.flemmli97.fateubw.common.entity.servant.Medea;
 import io.github.flemmli97.fateubw.common.entity.servant.Medusa;
+import io.github.flemmli97.fateubw.common.entity.servant.Nero;
 import io.github.flemmli97.fateubw.common.entity.servant.Sasaki;
 import io.github.flemmli97.fateubw.common.entity.servant.lancelot.Lancelot;
 import io.github.flemmli97.fateubw.common.entity.summons.GordiusChariot;
@@ -84,6 +86,17 @@ public class FateEntities {
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.34)
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1.5).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(80));
+    public static final RegistryEntrySupplier<EntityType<?>, EntityType<Nero>> NERO = regServant("nero_claudius_saber", "Aestus Domus Aurea", EntityType.Builder.of(Nero::new, MobCategory.MISC)
+                    .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
+            0xea1b04, 0xf8ef97,
+            new ServantProperties.Builder(BuiltinServantClasses.SABER)
+                    .putAttributes(Attributes.MAX_HEALTH, 380).putAttributes(Attributes.ATTACK_DAMAGE, 16)
+                    .putAttributes(Attributes.ARMOR, 17).putAttributes(Attributes.ARMOR_TOUGHNESS, 7)
+                    .putAttributes(FateAttributes.PROJECTILE_BLOCK_CHANCE.asHolder(), 0.15f).putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 13)
+                    .putAttributes(FateAttributes.MAGIC_ATTACK.asHolder(), 10).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 15)
+                    .putAttributes(Attributes.MOVEMENT_SPEED, 0.34)
+                    .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1.2).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
+                    .npCost(70));
 
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<Cuchulainn>> CUCHULAINN = regServant("cu_chulainn_lancer", "Gae Bolg", EntityType.Builder.of(Cuchulainn::new, MobCategory.MISC)
                     .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
@@ -239,6 +252,7 @@ public class FateEntities {
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<Tentacle>> TENTACLE = reg("tentacle", EntityType.Builder.of(Tentacle::new, MobCategory.MISC).sized(0.05F, 0.05F));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<StarfishShot>> STARFISH_SHOT = reg("starfish_shot", EntityType.Builder.<StarfishShot>of(StarfishShot::new, MobCategory.MISC).sized(0.25F, 0.25F));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<EnkiduChains>> ENKIDU_CHAINS = reg("enkidu_chains", EntityType.Builder.<EnkiduChains>of(EnkiduChains::new, MobCategory.MISC).sized(0.25F, 0.25F));
+    public static final RegistryEntrySupplier<EntityType<?>, EntityType<AestusDomusBeam>> AESTUS_DOMUS_BEAM = reg("aestus_domus_beam", EntityType.Builder.<AestusDomusBeam>of(AestusDomusBeam::new, MobCategory.MISC).sized(0.25F, 0.25F));
 
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<LesserMonster>> LESSER_MONSTER = regWithEgg("starfish_monster", EntityType.Builder.<LesserMonster>of(LesserMonster::new, MobCategory.MONSTER).clientTrackingRange(8),
             0x171c3f, 0x00ff00,
@@ -309,6 +323,7 @@ public class FateEntities {
     public static Map<EntityType<? extends LivingEntity>, AttributeSupplier.Builder> registeredAttributes() {
         Map<EntityType<? extends LivingEntity>, AttributeSupplier.Builder> map = new HashMap<>();
         map.put(FateEntities.ARTHUR.get(), BaseServant.createAttributes());
+        map.put(FateEntities.NERO.get(), BaseServant.createAttributes());
 
         map.put(FateEntities.CUCHULAINN.get(), BaseServant.createAttributes());
         map.put(FateEntities.DIARMUID.get(), BaseServant.createAttributes());
@@ -329,7 +344,7 @@ public class FateEntities {
         map.put(FateEntities.SASAKI.get(), BaseServant.createAttributes());
 
         map.put(FateEntities.LESSER_MONSTER.get(), BaseServant.createAttributes());
-        map.put(FateEntities.GORDIUS_WHEEL.get(), GordiusWheel.createAttributes());
+        map.put(FateEntities.GORDIUS_WHEEL.get(), BaseServant.createAttributes().add(Attributes.STEP_HEIGHT, 1.6));
         map.put(FateEntities.PEGASUS.get(), BaseServant.createAttributes().add(Attributes.FLYING_SPEED, 0.85));
         map.put(FateEntities.HASSAN_COPY.get(), BaseServant.createAttributes());
         return map;
