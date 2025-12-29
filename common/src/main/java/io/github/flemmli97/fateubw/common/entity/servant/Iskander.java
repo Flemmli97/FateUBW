@@ -9,6 +9,7 @@ import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.Entity
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
+import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.fateubw.mixinhelper.HorseExtension;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
@@ -206,6 +207,9 @@ public class Iskander extends BaseServant {
             if (anim.isAt("step")) {
                 Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(0.4);
                 this.setDeltaMovement(this.getDeltaMovement().add(dir));
+            }
+            if (anim.isAt("attack")) {
+                this.playSound(FateSounds.SWOOSH_2.get(), 1, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 0.8f);
             }
             super.handleAttack(anim);
         }

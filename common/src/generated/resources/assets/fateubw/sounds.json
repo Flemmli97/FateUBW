@@ -1,4 +1,19 @@
 {
+  "block.altar.summon": {
+    "sounds": [
+      "portal/travel"
+    ],
+    "subtitle": "fateubw:block.altar.summon"
+  },
+  "block.chalk.place": {
+    "sounds": [
+      "dig/cloth1",
+      "dig/cloth2",
+      "dig/cloth3",
+      "dig/cloth4"
+    ],
+    "subtitle": "fateubw:block.chalk.place"
+  },
   "entity.babylon.shoot": {
     "sounds": [
       "entity/player/attack/sweep1",
@@ -16,6 +31,56 @@
       "block/beacon/activate"
     ],
     "subtitle": "fateubw:entity.babylon.spawn"
+  },
+  "entity.caladbolg.impact": {
+    "sounds": [
+      "random/explode1",
+      "random/explode2",
+      "random/explode3",
+      "random/explode4"
+    ],
+    "subtitle": "fateubw:entity.caladbolg.impact"
+  },
+  "entity.chain": {
+    "sounds": [
+      "block/chain/break1",
+      "block/chain/break2",
+      "block/chain/break3",
+      "block/chain/break4"
+    ],
+    "subtitle": "fateubw:entity.chain"
+  },
+  "entity.dagger.throw": {
+    "sounds": [
+      "fateubw:entity/dagger/throw"
+    ],
+    "subtitle": "fateubw:entity.dagger.throw"
+  },
+  "entity.diarmuid.seal": {
+    "sounds": [
+      "block/beacon/activate"
+    ],
+    "subtitle": "fateubw:entity.diarmuid.seal"
+  },
+  "entity.diarmuid.teleport": {
+    "sounds": [
+      "entity/player/attack/sweep1",
+      "entity/player/attack/sweep2",
+      "entity/player/attack/sweep3",
+      "entity/player/attack/sweep4",
+      "entity/player/attack/sweep5",
+      "entity/player/attack/sweep6",
+      "entity/player/attack/sweep7"
+    ],
+    "subtitle": "fateubw:entity.diarmuid.teleport"
+  },
+  "entity.diarmuid.unseal": {
+    "sounds": [
+      "block/enchantment_table/enchant1",
+      "block/enchantment_table/enchant2",
+      "block/enchantment_table/enchant3"
+    ],
+    "subtitle": "fateubw:entity.diarmuid.unseal"
   },
   "entity.ea.shoot": {
     "sounds": [
@@ -35,11 +100,193 @@
     ],
     "subtitle": "fateubw:entity.excalibur.shoot"
   },
+  "entity.gilgamesh.block": {
+    "sounds": [
+      "random/explode1",
+      "random/explode2",
+      "random/explode3",
+      "random/explode4"
+    ],
+    "subtitle": "fateubw:entity.gilgamesh.block"
+  },
+  "entity.gordius.ambient": {
+    "sounds": [
+      {
+        "name": "mob/cow/say1",
+        "pitch": 0.3
+      },
+      {
+        "name": "mob/cow/say2",
+        "pitch": 0.3
+      },
+      {
+        "name": "mob/cow/say3",
+        "pitch": 0.3
+      },
+      {
+        "name": "mob/cow/say4",
+        "pitch": 0.3
+      }
+    ],
+    "subtitle": "fateubw:entity.gordius.ambient"
+  },
+  "entity.gordius.death": {
+    "sounds": [
+      {
+        "name": "mob/cow/hurt1",
+        "pitch": 0.3
+      },
+      {
+        "name": "mob/cow/hurt2",
+        "pitch": 0.3
+      },
+      {
+        "name": "mob/cow/hurt3",
+        "pitch": 0.3
+      }
+    ],
+    "subtitle": "fateubw:entity.gordius.death"
+  },
+  "entity.gordius.hurt": {
+    "sounds": [
+      {
+        "name": "mob/cow/hurt1",
+        "pitch": 0.3
+      },
+      {
+        "name": "mob/cow/hurt2",
+        "pitch": 0.3
+      },
+      {
+        "name": "mob/cow/hurt3",
+        "pitch": 0.3
+      }
+    ],
+    "subtitle": "fateubw:entity.gordius.hurt"
+  },
+  "entity.gordius.step": {
+    "sounds": [
+      {
+        "name": "mob/cow/step1",
+        "pitch": 0.4,
+        "volume": 0.5
+      },
+      {
+        "name": "mob/cow/step2",
+        "pitch": 0.4,
+        "volume": 0.5
+      },
+      {
+        "name": "mob/cow/step3",
+        "pitch": 0.4,
+        "volume": 0.5
+      },
+      {
+        "name": "mob/cow/step4",
+        "pitch": 0.4,
+        "volume": 0.5
+      }
+    ],
+    "subtitle": "fateubw:entity.gordius.step"
+  },
+  "entity.heracles.hit": {
+    "sounds": [
+      "random/explode1",
+      "random/explode2",
+      "random/explode3",
+      "random/explode4"
+    ],
+    "subtitle": "fateubw:entity.heracles.hit"
+  },
   "entity.heracles.roar": {
     "sounds": [
       "fateubw:entity/heracles/roar"
     ],
     "subtitle": "fateubw:entity.heracles.roar"
+  },
+  "entity.lancelot.reflect": {
+    "sounds": [
+      "random/anvil_land"
+    ],
+    "subtitle": "fateubw:entity.lancelot.reflect"
+  },
+  "entity.lancelot.slam": {
+    "sounds": [
+      "random/explode1",
+      "random/explode2",
+      "random/explode3",
+      "random/explode4"
+    ],
+    "subtitle": "fateubw:entity.lancelot.slam"
+  },
+  "entity.medea.cast": {
+    "sounds": [
+      "block/beacon/power1",
+      "block/beacon/power2",
+      "block/beacon/power3"
+    ],
+    "subtitle": "fateubw:entity.medea.cast"
+  },
+  "entity.medea.rule_breaker": {
+    "sounds": [
+      "item/totem/use_totem"
+    ],
+    "subtitle": "fateubw:entity.medea.rule_breaker"
+  },
+  "entity.medusa.gorgons_eyes": {
+    "sounds": [
+      "item/totem/use_totem"
+    ],
+    "subtitle": "fateubw:entity.medusa.gorgons_eyes"
+  },
+  "entity.monster.spits": {
+    "sounds": [
+      "block/honeyblock/break1",
+      "block/honeyblock/break2",
+      "block/honeyblock/break3",
+      "block/honeyblock/break4",
+      "block/honeyblock/break5"
+    ],
+    "subtitle": "fateubw:entity.monster.spits"
+  },
+  "entity.nero.aestus_domus_ground_stab": {
+    "sounds": [
+      {
+        "name": "random/anvil_land",
+        "pitch": 0.4
+      }
+    ],
+    "subtitle": "fateubw:entity.nero.aestus_domus_ground_stab"
+  },
+  "entity.nero.aestus_domus_impact": {
+    "sounds": [
+      "random/explode1",
+      "random/explode2",
+      "random/explode3",
+      "random/explode4"
+    ],
+    "subtitle": "fateubw:entity.nero.aestus_domus_impact"
+  },
+  "entity.nero.aestus_domus_roses": {
+    "sounds": [
+      "fateubw:entity/nero/aestus_domus_roses"
+    ],
+    "subtitle": "fateubw:entity.nero.aestus_domus_roses"
+  },
+  "entity.servant.death": {
+    "sounds": [
+      "mob/wither/spawn"
+    ],
+    "subtitle": "fateubw:entity.servant.death"
+  },
+  "entity.tentacle.slams": {
+    "sounds": [
+      "random/explode1",
+      "random/explode2",
+      "random/explode3",
+      "random/explode4"
+    ],
+    "subtitle": "fateubw:entity.tentacle.slams"
   },
   "generic.slash": {
     "sounds": [
@@ -53,34 +300,40 @@
     ],
     "subtitle": "fateubw:generic.slash_impact"
   },
-  "generic.swoosh": {
+  "generic.swoosh_1": {
     "sounds": [
-      "fateubw:generic/swoosh"
+      "fateubw:generic/swoosh_1"
     ],
-    "subtitle": "fateubw:generic.swoosh"
+    "subtitle": "fateubw:generic.swoosh_1"
   },
-  "nero.aestus_domus_ground_stab": {
+  "generic.swoosh_2": {
     "sounds": [
-      {
-        "name": "random/anvil_land",
-        "pitch": 0.4
-      }
+      "fateubw:generic/swoosh_2"
     ],
-    "subtitle": "fateubw:nero.aestus_domus_ground_stab"
+    "subtitle": "fateubw:generic.swoosh_2"
   },
-  "nero.aestus_domus_impact": {
+  "generic.teleport": {
     "sounds": [
-      "random/explode1",
-      "random/explode2",
-      "random/explode3",
-      "random/explode4"
+      "mob/endermen/portal",
+      "mob/endermen/portal2"
     ],
-    "subtitle": "fateubw:nero.aestus_domus_impact"
+    "subtitle": "fateubw:generic.teleport"
   },
-  "nero.aestus_domus_roses": {
+  "misc.magic.cast": {
     "sounds": [
-      "fateubw:nero/aestus_domus_roses"
+      "block/enchantment_table/enchant1",
+      "block/enchantment_table/enchant2",
+      "block/enchantment_table/enchant3"
     ],
-    "subtitle": "fateubw:nero.aestus_domus_roses"
+    "subtitle": "fateubw:misc.magic.cast"
+  },
+  "misc.petrification.crack": {
+    "sounds": [
+      "dig/stone1",
+      "dig/stone2",
+      "dig/stone3",
+      "dig/stone4"
+    ],
+    "subtitle": "fateubw:misc.petrification.crack"
   }
 }

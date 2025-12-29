@@ -8,6 +8,7 @@ import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailProvider;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
+import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.SelectableBehaviourBuilder;
@@ -216,7 +217,11 @@ public class Cuchulainn extends BaseServant {
                 this.setDeltaMovement(this.getDeltaMovement().add(dir));
             }
             if (anim.isAt("attack_final")) {
+                this.playSound(FateSounds.SWOOSH_1.get(), 2, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.1F);
                 this.mobAttack(anim, this.getTarget(), this::doHurtTarget);
+            }
+            if (anim.isAt("attack")) {
+                this.playSound(FateSounds.SWOOSH_1.get(), 2, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.1F);
             }
             super.handleAttack(anim);
         }

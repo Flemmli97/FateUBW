@@ -36,7 +36,6 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -363,6 +362,7 @@ public class Heracles extends BaseServant {
             }
         } else if (anim.is(JUMP_HIT)) {
             if (anim.isAt("attack") && this.hits != null) {
+                this.playSound(FateSounds.SLASH_IMPACT.get(), 1, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 0.5f);
                 Vec3 dir = Vec3.directionFromRotation(0, this.getYRot());
                 this.hits.forEach(e -> {
                     if (this.doHurtTarget(e)) {
@@ -421,6 +421,9 @@ public class Heracles extends BaseServant {
                 Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(0.3);
                 this.setDeltaMovement(this.getDeltaMovement().add(dir));
             }
+            if (anim.isAt("attack")) {
+                this.playSound(FateSounds.SWOOSH_1.get(), 1, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 0.4f);
+            }
             super.handleAttack(anim);
         }
     }
@@ -444,7 +447,7 @@ public class Heracles extends BaseServant {
         if (hurt) {
             if (this.lastHitTick != this.tickCount) {
                 S2CScreenShake.sendAround(this, 12, 8, 2);
-                this.playSound(SoundEvents.GENERIC_EXPLODE.value(), 1, this.getRandom().nextFloat() * 0.2f + 0.9f);
+                this.playSound(FateSounds.HERACLES_HIT.get(), 1, this.getRandom().nextFloat() * 0.2f + 0.9f);
             }
             this.lastHitTick = this.tickCount;
         }

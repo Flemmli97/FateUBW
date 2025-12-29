@@ -23,6 +23,7 @@ import io.github.flemmli97.fateubw.common.registry.FateAttributes;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
+import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.entity.AOEAttackEntity;
@@ -605,7 +606,7 @@ public class HassanClone extends PathfinderMob implements AnimatedEntity, Ownabl
             ++this.deathTime;
             if (this.deathTime == 1) {
                 serverLevel.getServer().getPlayerList().broadcastSystemMessage(Component.translatable("fateubw.chat.servant.death").withStyle(ChatFormatting.RED), true);
-                this.playSound(SoundEvents.WITHER_SPAWN, 1.0F, 1.0F);
+                this.playSound(FateSounds.SERVANT_DEATH.get(), 1.0F, 1.0F);
             }
             if (this.deathTime == this.maxDeathTick()) {
                 this.remove(RemovalReason.KILLED);
@@ -626,7 +627,7 @@ public class HassanClone extends PathfinderMob implements AnimatedEntity, Ownabl
         } else {
             item.shootFromRotation(this, this.getXRot() + 5, this.getYRot(), 0.0F, 1.2f, 1.0F);
         }
-        this.playSound(SoundEvents.FISHING_BOBBER_THROW, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
+        this.playSound(FateSounds.DAGGER_THROW.get(), 1.0F, (this.getRandom().nextFloat() - this.getRandom().nextFloat()) * 0.2F + 1.0F);
         this.level().addFreshEntity(item);
     }
 

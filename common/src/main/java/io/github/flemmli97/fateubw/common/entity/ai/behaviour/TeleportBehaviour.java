@@ -1,10 +1,10 @@
 package io.github.flemmli97.fateubw.common.entity.ai.behaviour;
 
 import com.mojang.datafixers.util.Pair;
+import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.TeleportUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -67,7 +67,7 @@ public class TeleportBehaviour<E extends PathfinderMob> extends ExtendedBehaviou
             if (posAway != null && target.distanceToSqr(posAway) >= this.minDistSqr) {
                 if (entity.isWithinRestriction(BlockPos.containing(posAway))) {
                     TeleportUtils.teleportTo(entity, posAway.x(), posAway.y(), posAway.z(),
-                            SoundEvents.ENDERMAN_TELEPORT, ParticleTypes.WITCH);
+                            FateSounds.TELEPORT.get(), ParticleTypes.WITCH);
                 }
             }
         }

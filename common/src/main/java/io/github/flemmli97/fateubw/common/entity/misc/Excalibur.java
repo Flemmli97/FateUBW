@@ -96,7 +96,7 @@ public class Excalibur extends BaseBeam {
                 ShakeHandler.shakeScreen(this.position(), this.getRange() + 4, 3, 1.5f);
             }
         } else if (this.livingTicks == 1) {
-            this.playSound(FateSounds.ENTITY_EXCALIBUR_SHOOT.get(), 0.8f, (this.random.nextFloat() - this.random.nextFloat()) * 0.2f + 0.4f);
+            this.playSound(FateSounds.EXCALIBUR_SHOOT.get(), 0.8f, (this.random.nextFloat() - this.random.nextFloat()) * 0.2f + 0.4f);
         }
     }
 

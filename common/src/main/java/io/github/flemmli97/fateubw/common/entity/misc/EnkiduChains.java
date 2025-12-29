@@ -22,7 +22,6 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -147,7 +146,7 @@ public class EnkiduChains extends BaseProjectile implements SyncedMobDataHandler
                 }
             }
             if (this.tickCount < 4) {
-                this.playSound(SoundEvents.CHAIN_PLACE, 1, (this.random.nextFloat() - this.random.nextFloat()) * 0.2f + 0.8f);
+                this.playSound(FateSounds.CHAIN_MOVE.get(), 1, (this.random.nextFloat() - this.random.nextFloat()) * 0.2f + 0.8f);
             }
         }
         super.tick();
@@ -174,7 +173,7 @@ public class EnkiduChains extends BaseProjectile implements SyncedMobDataHandler
             this.entityData.set(START_XROT, this.getXRot());
             this.syncedDataContainer.set(START_POSITION, this.position());
             if (this.tickCount == 1)
-                this.playSound(FateSounds.ENTITY_BABYLON_SPAWN.get(), 0.7f, (this.random.nextFloat() - this.random.nextFloat()) * 0.2f + 0.9f);
+                this.playSound(FateSounds.BABYLON_SPAWN.get(), 0.7f, (this.random.nextFloat() - this.random.nextFloat()) * 0.2f + 0.9f);
             if (this.preparing() && this.preparationTick >= this.entityData.get(SHOOT_TIME)) {
                 this.entityData.set(PREPARING, false);
                 Entity thrower = this.getOwner();
@@ -186,7 +185,7 @@ public class EnkiduChains extends BaseProjectile implements SyncedMobDataHandler
                 } else {
                     this.discard();
                 }
-                this.playSound(SoundEvents.CHAIN_PLACE, 1, (this.random.nextFloat() - this.random.nextFloat()) * 0.2f + 0.8f);
+                this.playSound(FateSounds.CHAIN_MOVE.get(), 1, (this.random.nextFloat() - this.random.nextFloat()) * 0.2f + 0.8f);
             }
         }
     }

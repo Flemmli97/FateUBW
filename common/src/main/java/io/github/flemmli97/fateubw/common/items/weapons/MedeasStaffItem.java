@@ -2,10 +2,10 @@ package io.github.flemmli97.fateubw.common.items.weapons;
 
 import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicBeam;
+import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.platform.Platform;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
@@ -59,7 +59,7 @@ public class MedeasStaffItem extends Item {
                 Vec3 target = entity.position().add(entity.getLookAngle().scale(16));
                 beam.setRotationTo(target.x(), target.y(), target.z(), 0);
                 level.addFreshEntity(beam);
-                level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ENCHANTMENT_TABLE_USE, entity.getSoundSource(), 1.0F, 1.0F / (entity.getRandom().nextFloat() * 0.4F + 0.8F));
+                level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), FateSounds.MAGIC_SPAWN.get(), entity.getSoundSource(), 1.0F, 1.0F / (entity.getRandom().nextFloat() * 0.4F + 0.8F));
             } else {
                 player.sendSystemMessage(Component.translatable("fateubw.chat.mana.missing").withStyle(ChatFormatting.AQUA));
             }

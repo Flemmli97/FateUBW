@@ -23,6 +23,7 @@ import io.github.flemmli97.fateubw.common.registry.FateAttributes;
 import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateMemoryTypes;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
+import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.ExtendedCombatRules;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
@@ -58,7 +59,6 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Unit;
@@ -967,7 +967,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
                 if (handler.isParticipant(this) || (this.getLastDamageSource() != null && this.getLastDamageSource().is(FateDamageTypes.GRAIL))) {
                     handler.broadcastParticipants(Component.translatable("fateubw.chat.servant.death").withStyle(ChatFormatting.RED));
                 }
-                this.playSound(SoundEvents.WITHER_SPAWN, 1.0F, 1.0F);
+                this.playSound(FateSounds.SERVANT_DEATH.get(), 1.0F, 1.0F);
                 this.getAnimationHandler().setAnimation(this.getDeathAnimation());
             }
             if (this.getLastDamageSource() == null || !this.getLastDamageSource().is(FateDamageTypes.GRAIL)) {

@@ -12,6 +12,7 @@ import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.Entity
 import io.github.flemmli97.fateubw.common.registry.FateDataComponents;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
+import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.entity.ai.TargetPosition;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
@@ -288,7 +289,15 @@ public class Arthur extends BaseServant {
                 this.setDeltaMovement(this.getDeltaMovement().add(dir));
             }
             if (anim.isAt("attack_final")) {
+                this.playSound(FateSounds.SWOOSH_1.get(), 2, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.2F);
                 this.mobAttack(anim, this.getTarget(), this::doHurtTarget);
+            }
+            if (anim.isAt("attack")) {
+                if (anim.is(STAB_1)) {
+                    this.playSound(FateSounds.SWOOSH_1.get(), 2, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.5F);
+                } else {
+                    this.playSound(FateSounds.SLASH.get(), 2, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+                }
             }
             super.handleAttack(anim);
         }

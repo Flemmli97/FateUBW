@@ -14,6 +14,7 @@ import io.github.flemmli97.fateubw.common.registry.FateAttributes;
 import io.github.flemmli97.fateubw.common.registry.FateDataComponents;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
+import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.tenshilib.common.entity.ai.TargetPosition;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.SelectableBehaviourBuilder;
@@ -30,7 +31,6 @@ import io.github.flemmli97.tenshilib.common.particle.AdvancedParticleContainer;
 import io.github.flemmli97.tenshilib.common.particle.data.CirclingData;
 import io.github.flemmli97.tenshilib.common.particle.data.ParticleMetaData;
 import io.github.flemmli97.tenshilib.common.utils.math.MathUtils;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Unit;
@@ -182,6 +182,9 @@ public class Gilgamesh extends BaseServant implements OnProjectileHit {
                 }
             }
         } else {
+            if (anim.isAt("attack")) {
+                this.playSound(FateSounds.SWOOSH_2.get(), 1, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 0.7f);
+            }
             super.handleAttack(anim);
         }
     }
@@ -223,7 +226,7 @@ public class Gilgamesh extends BaseServant implements OnProjectileHit {
         if (!this.getAnimationHandler().isCurrent(EA) && !damageSource.is(DamageTypeTags.BYPASSES_ARMOR)
                 && !damageSource.is(DamageTypeTags.IS_PROJECTILE)
                 && this.getMainHandItem().is(FateItems.ENUMAELISH.get()) && this.getRandom().nextFloat() < 0.15) {
-            this.playSound(SoundEvents.GENERIC_EXPLODE.value(), 1, 1);
+            this.playSound(FateSounds.GILGAMESH_BLOCK.get(), 1, 1);
             this.getAnimationHandler().setAnimation(GUARD);
             if (damageSource.getEntity() instanceof LivingEntity entity) {
                 Vec3 dir = entity.position().subtract(this.position());

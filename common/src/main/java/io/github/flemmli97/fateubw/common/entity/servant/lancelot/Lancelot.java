@@ -14,6 +14,7 @@ import io.github.flemmli97.fateubw.common.registry.FateDataComponents;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
+import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
@@ -33,7 +34,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.RandomSource;
@@ -323,7 +323,7 @@ public class Lancelot extends BaseServant {
             }
             if (anim.isAt("attack") && anim.is(JUMP_LAND)) {
                 S2CScreenShake.sendAround(this, 10, 8, 3);
-                this.playSound(SoundEvents.GENERIC_EXPLODE.value(), 1.0f, 0.9f);
+                this.playSound(FateSounds.LANCELOT_SLAM.get(), 1.0f, 0.9f);
             }
             super.handleAttack(anim);
         }
@@ -387,7 +387,7 @@ public class Lancelot extends BaseServant {
                 if (this.getRandom().nextFloat() < this.props().getConfig(ServantExtraData.LANCELOT_REFLECT_CHANCE) && damageSource.getDirectEntity() != null
                         && !(damageSource.getDirectEntity() instanceof LivingEntity)) {
                     this.reflectProjectile(damageSource.getDirectEntity());
-                    this.level().playSound(null, this.blockPosition(), SoundEvents.ANVIL_PLACE, SoundSource.NEUTRAL, 1, 1);
+                    this.level().playSound(null, this.blockPosition(), FateSounds.LANCELOT_REFLECT.get(), SoundSource.NEUTRAL, 1, 1);
                     return false;
                 }
             }

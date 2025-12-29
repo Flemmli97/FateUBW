@@ -21,7 +21,7 @@ public class SoundGen extends SoundDefinitionsProvider {
         for (RegistryEntrySupplier<SoundEvent, ?> sup : FateSounds.SOUND_EVENTS.getEntries()) {
             FateSounds.SoundHolder data = FateSounds.SOUND_DATA.get(sup.getID());
             if (data != null) {
-                this.add(sup.get(), data.location(), data.amount(), data.pitch());
+                this.add(sup.get(), data);
             } else {
                 this.add(sup.get());
             }
@@ -29,19 +29,17 @@ public class SoundGen extends SoundDefinitionsProvider {
     }
 
     private void add(SoundEvent event) {
-        this.add(event, event.getLocation(), 1, 1);
+        ResourceLocation path = event.getLocation();
+        SoundDefinition def = definition().subtitle(event.getLocation().toString());
+        def.with(SoundDefinition.Sound.sound(ResourceLocation.fromNamespaceAndPath(path.getNamespace(), path.getPath().replace(".", "/")), SoundDefinition.SoundType.SOUND));
+        this.add(event, def);
     }
 
-    private void add(SoundEvent event, ResourceLocation path, int num, float pitch) {
+    private void add(SoundEvent event, FateSounds.SoundHolder data) {
         SoundDefinition def = definition().subtitle(event.getLocation().toString());
-        if (num <= 1) {
-            def.with(SoundDefinition.Sound.sound(ResourceLocation.fromNamespaceAndPath(path.getNamespace(), path.getPath().replace(".", "/")), SoundDefinition.SoundType.SOUND)
-                    .pitch(pitch));
-        } else {
-            for (int i = 0; i < num; i++) {
-                def.with(SoundDefinition.Sound.sound(ResourceLocation.fromNamespaceAndPath(path.getNamespace(), path.getPath().replace(".", "/") + (i + 1)), SoundDefinition.SoundType.SOUND)
-                        .pitch(pitch));
-            }
+        for (ResourceLocation loc : data.locations()) {
+            def.with(SoundDefinition.Sound.sound(ResourceLocation.fromNamespaceAndPath(loc.getNamespace(), loc.getPath().replace(".", "/")), SoundDefinition.SoundType.SOUND)
+                    .pitch(data.pitch()).volume(data.volume()));
         }
         this.add(event, def);
     }

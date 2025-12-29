@@ -11,6 +11,7 @@ import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.Entity
 import io.github.flemmli97.fateubw.common.registry.FateAttributes;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
+import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.entity.ai.TargetPosition;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
@@ -294,11 +295,13 @@ public class Emiya extends BaseServant {
             }
             if (anim.isAt("attack_left")) {
                 this.leftHandAttackFlag = true;
+                this.playSound(FateSounds.SWOOSH_2.get(), 1, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 0.7f);
                 this.mobAttack(anim, this.getTarget(), this::doHurtTarget);
                 this.setTargetPosition((TargetPosition) null);
                 this.leftHandAttackFlag = false;
             }
             if (anim.isAt("attack_right")) {
+                this.playSound(FateSounds.SWOOSH_2.get(), 1, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 0.7f);
                 this.mobAttack(anim, this.getTarget(), this::doHurtTarget);
                 this.setTargetPosition((TargetPosition) null);
             }
@@ -385,7 +388,7 @@ public class Emiya extends BaseServant {
             arrow.setCritArrow(true);
             double mod = this.getAnimationHandler().isCurrent(BOW_2) ? 0.5 : 0.6;
             arrow.setBaseDamage(arrow.getBaseDamage() + this.getAttributeValue(Attributes.ATTACK_DAMAGE) * mod);
-            this.playSound(SoundEvents.SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
+            this.playSound(SoundEvents.ARROW_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
             this.level().addFreshEntity(arrow);
         }
     }
@@ -408,7 +411,7 @@ public class Emiya extends BaseServant {
             }
             arrow.setCritArrow(true);
             arrow.setBaseDamage(arrow.getBaseDamage() + this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.33);
-            this.playSound(SoundEvents.SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
+            this.playSound(SoundEvents.ARROW_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
             this.level().addFreshEntity(arrow);
         }
         this.applyManaLeechDebuff(40, 0.3);

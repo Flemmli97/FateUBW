@@ -2,12 +2,12 @@ package io.github.flemmli97.fateubw.common.effects;
 
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
+import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.tenshilib.common.effect.ExtendedMobEffect;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -40,7 +40,7 @@ public class PetrificationEffect extends MobEffect implements ExtendedMobEffect 
                         0,
                         0, 1);
             }
-            entity.playSound(SoundEvents.STONE_BREAK, 2, 1);
+            entity.playSound(FateSounds.PETRIFICATION_CRACK.get(), 2, 1);
             if (instance.getAmplifier() >= PetrificationEffect.MAX_PROGRESS) {
                 entity.invulnerableTime = 0;
                 if (entity.hurt(FateDamageTypes.create(FateDamageTypes.PETRIFICATION, entity.registryAccess()), entity.getMaxHealth() * 0.15f)) {

@@ -4,10 +4,10 @@ import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
+import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -53,7 +53,7 @@ public class CaladBolg extends BaseProjectile {
 
     private void doExplosion(double x, double y, double z, Entity hit) {
         this.doExplosion(hit);
-        this.level().playSound(null, x, y, z, SoundEvents.GENERIC_EXPLODE, this.getSoundSource(), 1.0f, 1.0f);
+        this.level().playSound(null, x, y, z, FateSounds.CALAD_BOLG_IMPACT.get(), this.getSoundSource(), 1.0f, 1.0f);
         this.discard();
         S2CScreenShake.sendAround(this, 9, 8, 2);
     }

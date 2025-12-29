@@ -43,7 +43,7 @@ public class BowHandler implements LancelotUseHandler {
         }
         arrow.setCritArrow(true);
         arrow.setBaseDamage(arrow.getBaseDamage() + entity.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.4);
-        entity.playSound(SoundEvents.SKELETON_SHOOT, 1, 1 / (entity.getRandom().nextFloat() * 0.4f + 0.8f));
+        entity.playSound(SoundEvents.ARROW_SHOOT, 1, 1 / (entity.getRandom().nextFloat() * 0.4f + 0.8f));
         entity.level().addFreshEntity(arrow);
     }
 

@@ -9,6 +9,7 @@ import io.github.flemmli97.fateubw.common.entity.summons.Tentacle;
 import io.github.flemmli97.fateubw.common.registry.FateAttributes;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
+import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.tenshilib.common.entity.ai.TargetPosition;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.SelectableBehaviourBuilder;
@@ -207,6 +208,7 @@ public class Gilles extends BaseServant {
         } else {
             proj.shoot(this, this.getXRot(), this.getYRot(), 0, 1, 0);
         }
+        this.playSound(FateSounds.MAGIC_SPAWN.get(), 1, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
         this.level().addFreshEntity(proj);
     }
 

@@ -17,6 +17,7 @@ import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateMobEffects;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
+import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.SelectableBehaviourBuilder;
@@ -35,7 +36,6 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -333,6 +333,9 @@ public class Medusa extends BaseServant implements OnProjectileHit {
                 Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(0.3);
                 this.setDeltaMovement(this.getDeltaMovement().add(dir));
             }
+            if (anim.isAt("attack")) {
+                this.playSound(FateSounds.SWOOSH_2.get(), 1, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1f);
+            }
             super.handleAttack(anim);
         }
     }
@@ -456,7 +459,7 @@ public class Medusa extends BaseServant implements OnProjectileHit {
                             Optional.of(new Vector4f(125 / 255f, 12 / 255f, 127 / 255f, 0.2f)), 10))
                     .addData(new ParticleMetaData(10, false, 0))
                     .add(this.level(), this.getX(), this.getEyeY(), this.getZ());
-            this.playSound(SoundEvents.TOTEM_USE, 1, this.getRandom().nextFloat() * 0.2f + 1.1f);
+            this.playSound(FateSounds.GORGONS_EYES.get(), 1, this.getRandom().nextFloat() * 0.2f + 1.1f);
         }
     }
 

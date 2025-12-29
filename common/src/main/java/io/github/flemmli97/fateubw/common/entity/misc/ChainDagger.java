@@ -3,6 +3,7 @@ package io.github.flemmli97.fateubw.common.entity.misc;
 import io.github.flemmli97.fateubw.common.attachment.PlayerData;
 import io.github.flemmli97.fateubw.common.entity.utils.OnProjectileHit;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
+import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.platform.Platform;
 import io.github.flemmli97.tenshilib.common.utils.HitResultUtils;
@@ -10,7 +11,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -84,7 +84,7 @@ public class ChainDagger extends BaseProjectile {
                 this.setPos(this.hookedEntity.getX(), this.hookedEntity.getY(0.5D), this.hookedEntity.getZ());
             }
         } else if (this.level().isClientSide) {
-            this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.CHAIN_PLACE, SoundSource.NEUTRAL, 1, 1, false);
+            this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), FateSounds.CHAIN_MOVE.get(), SoundSource.NEUTRAL, 1, 1, false);
             if (this.isAlive() && this.getOwner() instanceof Player player) {
                 PlayerData data = Platform.INSTANCE.getPlayerData(player);
                 if (data.getThrownDagger() != this)

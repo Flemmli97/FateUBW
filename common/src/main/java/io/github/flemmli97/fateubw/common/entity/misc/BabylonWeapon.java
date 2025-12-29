@@ -193,7 +193,7 @@ public class BabylonWeapon extends BaseProjectile {
                     .add(this.level(), this.getX(), this.getY(), this.getZ());
         } else {
             if (this.tickCount == 1)
-                this.playSound(FateSounds.ENTITY_BABYLON_SPAWN.get(), 0.7f, (this.random.nextFloat() - this.random.nextFloat()) * 0.2f + 0.9f);
+                this.playSound(FateSounds.BABYLON_SPAWN.get(), 0.7f, (this.random.nextFloat() - this.random.nextFloat()) * 0.2f + 0.9f);
             if (this.preparing() && this.preparationTick >= this.entityData.get(SHOOT_TIME)) {
                 this.entityData.set(PREPARING, false);
                 Entity thrower = this.getOwner();
@@ -205,7 +205,7 @@ public class BabylonWeapon extends BaseProjectile {
                 } else {
                     this.discard();
                 }
-                this.playSound(FateSounds.ENTITY_BABYLON_SHOOT.get(), 0.8f, (this.random.nextFloat() - this.random.nextFloat()) * 0.2f + 0.5f);
+                this.playSound(FateSounds.BABYLON_SHOOT.get(), 0.8f, (this.random.nextFloat() - this.random.nextFloat()) * 0.2f + 0.5f);
             }
         }
     }

@@ -5,6 +5,7 @@ import io.github.flemmli97.fateubw.common.network.S2CAltarUpdate;
 import io.github.flemmli97.fateubw.common.registry.FateBlocks;
 import io.github.flemmli97.fateubw.common.registry.FateDataComponents;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
+import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import io.github.flemmli97.fateubw.platform.Platform;
 import io.github.flemmli97.tenshilib.loader.LoaderNetwork;
@@ -17,7 +18,6 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
@@ -47,7 +47,7 @@ public class AltarBlockEntity extends BlockEntity {
             if (altar.isSummoning) {
                 altar.summoningTick++;
                 if (altar.summoningTick == 1) {
-                    level.playSound(null, altar.worldPosition, SoundEvents.PORTAL_TRAVEL, SoundSource.AMBIENT, 0.4F, 1F);
+                    level.playSound(null, altar.worldPosition, FateSounds.ALTAR_SUMMON.get(), SoundSource.AMBIENT, 0.4F, 1F);
                 }
                 if (altar.summoningTick == 150) {
                     if (altar.servant != null) {

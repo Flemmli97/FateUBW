@@ -13,6 +13,7 @@ import io.github.flemmli97.fateubw.common.entity.utils.StandingVehicle;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
+import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.entity.AOEAttackEntity;
@@ -37,7 +38,6 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
@@ -362,7 +362,7 @@ public class GordiusWheel extends PathfinderMob implements AnimatedEntity, Stand
                     for (LivingEntity e : list) {
                         e.hurt(FateDamageTypes.direct(FateDamageTypes.GORDIUS_TRAMPLE, this), (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE));
                     }
-                    this.playSound(SoundEvents.COW_STEP, 0.4F, 0.4F);
+                    this.playSound(FateSounds.GORDIUS_STEP.get(), 1, 1);
                     S2CAttackDebug.sendDebugPacket(obb, S2CAttackDebug.EnumAABBType.ATTACK, this);
                     S2CScreenShake.sendAround(this, 14, 4, 1.5f);
                 }
@@ -443,22 +443,22 @@ public class GordiusWheel extends PathfinderMob implements AnimatedEntity, Stand
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return SoundEvents.COW_AMBIENT;
+        return FateSounds.GORDIUS_AMBIENT.get();
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource damageSource) {
-        return SoundEvents.COW_HURT;
+        return FateSounds.GORDIUS_HURT.get();
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return SoundEvents.COW_DEATH;
+        return FateSounds.GORDIUS_DEATH.get();
     }
 
     @Override
     public float getVoicePitch() {
-        return (this.random.nextFloat() - this.random.nextFloat()) * 0.2F;
+        return (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1;
     }
 
     @Override

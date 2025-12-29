@@ -12,6 +12,7 @@ import io.github.flemmli97.fateubw.common.registry.FateDataComponents;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateMobEffects;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
+import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.TeleportUtils;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
@@ -29,7 +30,6 @@ import io.github.flemmli97.tenshilib.common.registry.TenshilibSyncableEntityData
 import io.github.flemmli97.tenshilib.common.utils.TypedResource;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Unit;
@@ -159,7 +159,7 @@ public class Diarmuid extends BaseServant {
             if (this.unsealedDuration == 0) {
                 this.unsealWeapon(this.getMainHandItem(), false);
                 this.unsealWeapon(this.getOffhandItem(), false);
-                this.playSound(SoundEvents.BEACON_DEACTIVATE, 1.0F, 1.0F);
+                this.playSound(FateSounds.DIARMUID_SEAL.get(), 1.0F, 1.0F);
             }
             if (this.healthBelow(0.3f)) {
                 this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 1, 1, false, false));
@@ -290,7 +290,7 @@ public class Diarmuid extends BaseServant {
             Vec3 blinkTarget = this.getDataContainer().get(BLINK_TARGET);
             if (anim.isAt("teleport") && blinkTarget != null) {
                 TeleportUtils.teleportTo(this, blinkTarget.x(), blinkTarget.y(), blinkTarget.z(),
-                        SoundEvents.PLAYER_ATTACK_SWEEP, ParticleTypes.CLOUD);
+                        FateSounds.DIARMUID_TELEPORT.get(), ParticleTypes.CLOUD);
                 this.getDataContainer().set(BLINK_TARGET, null);
             }
         } else {
@@ -301,10 +301,12 @@ public class Diarmuid extends BaseServant {
             super.handleAttack(anim);
             if (anim.isAt("attack_left")) {
                 this.leftHandAttackFlag = true;
+                this.playSound(FateSounds.SWOOSH_1.get(), 2, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 0.6F);
                 this.mobAttack(anim, this.getTarget(), this::doHurtTarget);
                 this.leftHandAttackFlag = false;
             }
             if (anim.isAt("attack_right")) {
+                this.playSound(FateSounds.SWOOSH_1.get(), 2, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 0.6F);
                 this.mobAttack(anim, this.getTarget(), this::doHurtTarget);
             }
         }
@@ -454,7 +456,7 @@ public class Diarmuid extends BaseServant {
         if (stack.getItem() == FateItems.GAEBUIDHE.get() || stack.getItem() == FateItems.GAEDEARG.get()) {
             if (unseal) {
                 stack.set(FateDataComponents.UNSEALED.get(), Unit.INSTANCE);
-                this.playSound(SoundEvents.ENCHANTMENT_TABLE_USE, 1, 1);
+                this.playSound(FateSounds.DIARMUID_UNSEAL.get(), 1, 1);
             } else {
                 stack.remove(FateDataComponents.UNSEALED.get());
             }

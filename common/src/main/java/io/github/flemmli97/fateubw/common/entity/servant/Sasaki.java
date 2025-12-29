@@ -10,6 +10,7 @@ import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.Entity
 import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
+import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
@@ -26,6 +27,7 @@ import io.github.flemmli97.tenshilib.common.particle.AdvancedParticleContainer;
 import io.github.flemmli97.tenshilib.common.particle.data.MotionData;
 import io.github.flemmli97.tenshilib.common.particle.data.ParticleMetaData;
 import io.github.flemmli97.tenshilib.common.particle.data.SinMotionData;
+import io.github.flemmli97.tenshilib.common.registry.TenshilibMemoryModules;
 import io.github.flemmli97.tenshilib.common.utils.math.OrientedBoundingBox;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -45,6 +47,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
+import net.tslat.smartbrainlib.util.BrainUtils;
 import org.joml.Vector4f;
 
 public class Sasaki extends BaseServant {
@@ -83,7 +86,7 @@ public class Sasaki extends BaseServant {
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
             .marker(EntityWeaponTrailProvider.TRAIL_END, 0.8));
     public static final String KATANA_1 = BUILDER.add("katana_1", AnimationsBuilder.definition(0.84)
-            .marker("attack", 0.72).marker("step", 0.64));
+            .marker("attack", 0.64).marker("step", 0.64));
     private static final String TSUBAME_GAESHI = BUILDER.add("tsubame_gaeshi", AnimationsBuilder.definition(2.16)
             .marker("attack_prepare", 1.24).marker("attack", 1.36)
             .marker("particle", 1.36));
@@ -166,7 +169,8 @@ public class Sasaki extends BaseServant {
                         .radius(5), BehaviourUtils.moveTo())
                 .add(2, BehaviourUtils.ifCloserThan(8), new LeapInDirection<BaseServant>()
                                 .horizontalDirection((owner, target) -> LeapInDirection.createBackwardsVec(owner.position(), target.position()).scale(1.3f))
-                                .whenStarting(e -> BehaviourUtils.modifyExpiringMemory(e, MemoryModuleType.ATTACK_COOLING_DOWN, -15)),
+                                .whenStarting(e -> BehaviourUtils.modifyExpiringMemory(e, MemoryModuleType.ATTACK_COOLING_DOWN, -15))
+                                .startCondition(s -> !BrainUtils.hasMemory(s, TenshilibMemoryModules.ANIMATION_TO_PLAY.get())),
                         new SetWalkTargetToAttackTarget<>(), BehaviourUtils.moveTo()).build();
     }
 
@@ -220,6 +224,13 @@ public class Sasaki extends BaseServant {
             if (anim.isAt("step")) {
                 Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(0.4);
                 this.setDeltaMovement(this.getDeltaMovement().add(dir));
+            }
+            if (anim.isAt("attack")) {
+                if (anim.is(KATANA_1)) {
+                    this.playSound(FateSounds.SWOOSH_1.get(), 2, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 0.5f);
+                } else {
+                    this.playSound(FateSounds.SLASH.get(), 2, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+                }
             }
             super.handleAttack(anim);
         }

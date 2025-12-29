@@ -6,6 +6,7 @@ import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
+import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.tenshilib.common.entity.EntityUtils;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimatedEntity;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionContainer;
@@ -15,7 +16,6 @@ import io.github.flemmli97.tenshilib.common.entity.animated.AnimationsBuilder;
 import io.github.flemmli97.tenshilib.common.utils.math.OrientedBoundingBox;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -117,7 +117,7 @@ public class Tentacle extends Entity implements AnimatedEntity, TraceableEntity 
                                     entity -> pred.test(entity) && obb.intersects(entity.getBoundingBox()))
                             .forEach(e -> e.hurt(this.damageSources().mobProjectile(this, this.getOwner()), damage));
                     S2CScreenShake.sendAround(this, 16, 8, 4);
-                    this.playSound(SoundEvents.GENERIC_EXPLODE.value(), 1.0f, 0.7f);
+                    this.playSound(FateSounds.TENTACLE_SLAM.get(), 1.0f, 0.7f);
                 }
             }
         }

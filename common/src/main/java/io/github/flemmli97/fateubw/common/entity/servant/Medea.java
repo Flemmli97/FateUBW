@@ -12,6 +12,7 @@ import io.github.flemmli97.fateubw.common.registry.FateAttributes;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateMobEffects;
+import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.TeleportUtils;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
@@ -28,7 +29,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
@@ -307,7 +307,7 @@ public class Medea extends BaseServant {
                 this.teleportPre = this.position();
                 this.gravityPre = this.isNoGravity();
                 TeleportUtils.teleportTo(this, this.getX() + dir.x(), this.getY() + dir.y(), this.getZ() + dir.z(),
-                        SoundEvents.ENDERMAN_TELEPORT, ParticleTypes.WITCH);
+                        FateSounds.TELEPORT.get(), ParticleTypes.WITCH);
                 this.teleportPos = this.position();
             }
             if (anim.isAt("teleport_end") && this.teleportPre != null) {
@@ -382,6 +382,7 @@ public class Medea extends BaseServant {
     public void ruleBreaker() {
         if (!this.attemptUseNobelPhantasm())
             return;
+        boolean[] success = {false};
         this.mobAttack(this.getAnimationHandler().getAnimation(), this.getTarget(), entity -> {
             if (this.doHurtTarget(entity)) {
                 entity.addEffect(new MobEffectInstance(FateMobEffects.RULE_BREAKER.asHolder(), CommonConfig.ruleBreakerDuration));
@@ -389,8 +390,12 @@ public class Medea extends BaseServant {
                     servant.useMana(servant.getMana());
                 }
                 entity.getActiveEffects().removeIf(inst -> inst.getEffect().value().getCategory() != MobEffectCategory.HARMFUL);
+                success[0] = true;
             }
         });
+        if (success[0]) {
+            this.playSound(FateSounds.RULE_BREAKER.get(), 2, 1);
+        }
         this.revealServant();
     }
 
@@ -408,6 +413,7 @@ public class Medea extends BaseServant {
         else {
             beam.setRotationToDir(look.x(), look.y(), look.z(), 0);
         }
+        this.playSound(FateSounds.MAGIC_SPAWN.get(), 2, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
         this.level().addFreshEntity(beam);
         this.revealServant();
     }
@@ -428,6 +434,7 @@ public class Medea extends BaseServant {
                 Vec3 dir = this.getViewVector(1);
                 beam.setRotationToDir(dir.x(), dir.y(), dir.z(), 0);
             }
+            this.playSound(FateSounds.MAGIC_SPAWN.get(), 2, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
             this.level().addFreshEntity(beam);
         }
         this.revealServant();
@@ -443,7 +450,7 @@ public class Medea extends BaseServant {
             this.circlePos = circle.position();
             if (this.getOwner() != null)
                 this.getOwner().sendSystemMessage(Component.translatable("fateubw.chat.medea.circle.spawn"));
-            this.playSound(SoundEvents.BEACON_POWER_SELECT, 1, 1);
+            this.playSound(FateSounds.MEDEA_CIRCLE.get(), 1, 1);
         }
     }
 

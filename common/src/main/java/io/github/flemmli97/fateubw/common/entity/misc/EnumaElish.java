@@ -95,7 +95,7 @@ public class EnumaElish extends BaseBeam {
                 ShakeHandler.shakeScreen(this.position(), this.getRange() + 4, 3, 1.5f);
             }
         } else if (this.livingTicks == 1) {
-            this.playSound(FateSounds.ENTITY_EA_SHOOT.get(), 0.8f, (this.random.nextFloat() - this.random.nextFloat()) * 0.2f + 0.5f);
+            this.playSound(FateSounds.EA_SHOOT.get(), 0.8f, (this.random.nextFloat() - this.random.nextFloat()) * 0.2f + 0.5f);
         }
     }
 

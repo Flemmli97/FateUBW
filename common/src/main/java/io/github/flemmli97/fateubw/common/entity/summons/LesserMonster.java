@@ -8,6 +8,7 @@ import io.github.flemmli97.fateubw.common.entity.misc.StarfishShot;
 import io.github.flemmli97.fateubw.common.entity.utils.MoveStateTracker;
 import io.github.flemmli97.fateubw.common.entity.utils.MoveType;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
+import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.fateubw.mixin.CombatTrackerAccessor;
 import io.github.flemmli97.tenshilib.common.entity.EntityUtils;
@@ -27,7 +28,6 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.world.damagesource.CombatEntry;
 import net.minecraft.world.entity.Entity;
@@ -298,7 +298,7 @@ public class LesserMonster extends PathfinderMob implements AnimatedEntity, Owna
             proj.shoot(this, this.getXRot() - 15, this.getYRot(), 0, 0.6f, 0);
         }
         this.level().addFreshEntity(proj);
-        this.playSound(SoundEvents.HONEY_BLOCK_BREAK, 1, 1);
+        this.playSound(FateSounds.MONSTER_SPIT.get(), 1, 1);
     }
 
     @Override

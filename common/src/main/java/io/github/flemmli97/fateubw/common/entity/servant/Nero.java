@@ -368,7 +368,7 @@ public class Nero extends BaseServant {
                 this.setDeltaMovement(this.getDeltaMovement().add(dir));
             }
             if (anim.isAt("crit")) {
-                this.playSound(FateSounds.SWOOSH.get(), 2, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+                this.playSound(FateSounds.SWOOSH_1.get(), 2, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
                 this.mobAttack(anim, this.getTarget(), this::doHurtTarget);
             }
             if (anim.isAt("attack")) {
