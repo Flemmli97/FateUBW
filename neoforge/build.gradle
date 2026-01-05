@@ -39,7 +39,7 @@ repositories {
 }
 
 dependencies {
-    implementation "io.github.flemmli97:tenshilib:${tenshilib_version}-neoforge"
+    api "io.github.flemmli97:tenshilib:${tenshilib_version}-neoforge"
     implementation "net.tslat.smartbrainlib:SmartBrainLib-neoforge-${minecraft_version}:${sbl_version}"
 
     implementation "net.favouriteless.modopedia:modopedia-neoforge-${minecraft_version}:${modopedia}"

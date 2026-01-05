@@ -1,0 +1,11 @@
+{
+  "type": "fateubw:unlimited_blade_works",
+  "generator": {
+    "type": "minecraft:noise",
+    "biome_source": {
+      "type": "minecraft:fixed",
+      "biome": "fateubw:unlimited_blade_works"
+    },
+    "settings": "fateubw:unlimited_blade_works"
+  }
+}

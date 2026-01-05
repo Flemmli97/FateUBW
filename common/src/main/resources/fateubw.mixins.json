@@ -18,6 +18,7 @@
   "client": [
     "ItemEntityRenderMixin",
     "ItemRendererMixin",
+    "LevelRendererMixin",
     "LivingEntityRendererMixin",
     "RenderBuffersMixin",
     "RenderTypeAccessor",

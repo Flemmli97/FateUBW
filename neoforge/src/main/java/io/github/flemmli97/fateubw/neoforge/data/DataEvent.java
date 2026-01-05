@@ -10,6 +10,7 @@ import io.github.flemmli97.fateubw.neoforge.data.tags.EntityTagGen;
 import io.github.flemmli97.fateubw.neoforge.data.tags.ItemTagGen;
 import io.github.flemmli97.fateubw.neoforge.data.tags.MobEffectTagGen;
 import io.github.flemmli97.fateubw.neoforge.data.worldgen.FeatureWorldGen;
+import io.github.flemmli97.fateubw.neoforge.data.worldgen.dimension.DimensionGen;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.data.DataGenerator;
@@ -33,6 +34,7 @@ public class DataEvent {
 
         RegistrySetBuilder builder = new RegistrySetBuilder();
         FeatureWorldGen.createWorldgenFeatures(builder);
+        DimensionGen.createDimensions(builder);
         event.createDatapackRegistryObjects(builder);
 
         data.addProvider(true, new AdvancementsGen(output, provider, fileHelper));

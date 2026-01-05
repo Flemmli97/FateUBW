@@ -20,7 +20,7 @@ ext {
 }
 
 dependencies {
-    modImplementation "io.github.flemmli97:tenshilib:${tenshilib_version}-fabric"
+    modApi "io.github.flemmli97:tenshilib:${tenshilib_version}-fabric"
     modApi "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${forge_config_api}"
     modImplementation "net.tslat.smartbrainlib:SmartBrainLib-fabric-${minecraft_version}:${sbl_version}"
 

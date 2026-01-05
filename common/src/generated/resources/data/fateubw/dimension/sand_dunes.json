@@ -1,0 +1,11 @@
+{
+  "type": "fateubw:sand_dunes",
+  "generator": {
+    "type": "minecraft:noise",
+    "biome_source": {
+      "type": "minecraft:fixed",
+      "biome": "fateubw:sand_dunes"
+    },
+    "settings": "fateubw:sand_dunes"
+  }
+}

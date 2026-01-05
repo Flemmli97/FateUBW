@@ -3,9 +3,9 @@ plugins {
 }
 
 dependencies {
-    compileOnly("io.github.flemmli97:tenshilib:${tenshilib_version}-common")
+    api("io.github.flemmli97:tenshilib:${tenshilib_version}-common")
     compileOnly("net.tslat.smartbrainlib:SmartBrainLib-common-${minecraft_version}:${sbl_version}")
-    compileOnly("fuzs.forgeconfigapiport:forgeconfigapiport-common-neoforgeapi:${forge_config_api}")
+    api("fuzs.forgeconfigapiport:forgeconfigapiport-common-neoforgeapi:${forge_config_api}")
     compileOnly("software.bernie.geckolib:geckolib-common-${minecraft_version}:${geckolib_version}")
 }
 
