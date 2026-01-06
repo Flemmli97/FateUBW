@@ -24,4 +24,5 @@ public class FateParticles {
     public static final RegistryEntrySupplier<ParticleType<?>, ParticleType<StaticFacingParticleData>> MAGIC_CIRCLE_2 = PARTICLES.register("magic_circle_2", () -> new ParticleTypeContainer<>(false, StaticFacingParticleData.CODEC, StaticFacingParticleData.STREAM_CODEC));
     public static final RegistryEntrySupplier<ParticleType<?>, SimpleParticleType> GLOWING_RING = PARTICLES.register("glowing_ring", () -> SimpleParticleTypeExp.of(false));
     public static final RegistryEntrySupplier<ParticleType<?>, SimpleParticleType> ROSE_PETAL = PARTICLES.register("rose_petal", () -> SimpleParticleTypeExp.of(false));
+    public static final RegistryEntrySupplier<ParticleType<?>, SimpleParticleType> SPHERE = PARTICLES.register("sphere", () -> SimpleParticleTypeExp.of(false));
 }

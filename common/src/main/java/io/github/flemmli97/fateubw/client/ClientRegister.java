@@ -6,6 +6,7 @@ import io.github.flemmli97.fateubw.client.model.ServantModel;
 import io.github.flemmli97.fateubw.client.particles.MagicCircleParticle;
 import io.github.flemmli97.fateubw.client.particles.RingParticle;
 import io.github.flemmli97.fateubw.client.particles.RosePetalParticle;
+import io.github.flemmli97.fateubw.client.particles.SphereParticle;
 import io.github.flemmli97.fateubw.client.particles.TrailParticle;
 import io.github.flemmli97.fateubw.client.render.RenderEmpty;
 import io.github.flemmli97.fateubw.client.render.ServantRenderer;
@@ -153,6 +154,7 @@ public class ClientRegister {
         consumer.register(FateParticles.MAGIC_CIRCLE_2.get(), MagicCircleParticle.Factory::new);
         consumer.register(FateParticles.GLOWING_RING.get(), SpritedParticle.Translucent::new);
         consumer.register(FateParticles.ROSE_PETAL.get(), RosePetalParticle.Factory::new);
+        consumer.register(FateParticles.SPHERE.get(), SphereParticle.Factory::new);
     }
 
     public static <T extends LivingEntity> void addLayersTo(LivingEntityRenderer<T, ?> renderer, Consumer<RenderLayer<T, ?>> layerConsumer) {

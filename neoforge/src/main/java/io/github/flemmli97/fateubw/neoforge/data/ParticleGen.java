@@ -7,6 +7,8 @@ import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.common.data.ParticleDescriptionProvider;
 
+import java.util.List;
+
 public class ParticleGen extends ParticleDescriptionProvider {
 
     public ParticleGen(PackOutput output, ExistingFileHelper fileHelper) {
@@ -23,6 +25,7 @@ public class ParticleGen extends ParticleDescriptionProvider {
         this.spriteSet(FateParticles.MAGIC_CIRCLE_2.get());
         this.spriteSet(FateParticles.GLOWING_RING.get());
         this.spriteSet(FateParticles.ROSE_PETAL.get(), 6);
+        this.empty(FateParticles.SPHERE.get());
     }
 
     public void spriteSet(ParticleType<?> type) {
@@ -31,5 +34,9 @@ public class ParticleGen extends ParticleDescriptionProvider {
 
     public void spriteSet(ParticleType<?> type, int num) {
         this.spriteSet(type, BuiltInRegistries.PARTICLE_TYPE.getKey(type), num, false);
+    }
+
+    public void empty(ParticleType<?> type) {
+        this.descriptions.put(BuiltInRegistries.PARTICLE_TYPE.getKey(type), List.of());
     }
 }
