@@ -156,12 +156,12 @@ public class Tentacle extends Entity implements AnimatedEntity, TraceableEntity 
         this.xRotO = this.getXRot();
     }
 
-    public float getDespawnProgress(float partialTicks) {
+    public float getDespawnProgress(float partialTick) {
         AnimationState anim = this.getAnimationHandler().getAnimation();
         if (anim == null)
             return 1;
         if (!anim.isPast("can_despawn"))
             return -1;
-        return (float) anim.progress(anim.getMarker("can_despawn", 0) * 20, anim.getLength(), partialTicks, 0);
+        return (float) anim.progress(anim.getMarker("can_despawn", 0) * 20, anim.getLength(), partialTick, 0);
     }
 }

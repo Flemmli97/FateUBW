@@ -21,7 +21,7 @@ public class RenderAestusDomusBeam extends EntityRenderer<AestusDomusBeam> {
     }
 
     @Override
-    public void render(AestusDomusBeam entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+    public void render(AestusDomusBeam entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
         int tick = entity.tickCount - AestusDomusBeam.START_DELAY;
         if (tick < 0)
             return;
@@ -30,7 +30,7 @@ public class RenderAestusDomusBeam extends EntityRenderer<AestusDomusBeam> {
         VertexConsumer consumer = buffer.getBuffer(FateRenders.getFullBrightText(this.getTextureLocation(entity)));
         PoseStack.Pose pose = poseStack.last();
         float size = 2.5f;
-        float height = Math.min(11, (tick + partialTicks) * 4);
+        float height = Math.min(11, (tick + partialTick) * 4);
         int idx = tick % 3;
         float u = (idx * 32f) / 96;
         float u2 = ((idx + 1) * 32f) / 96;
@@ -41,7 +41,7 @@ public class RenderAestusDomusBeam extends EntityRenderer<AestusDomusBeam> {
         poseStack.popPose();
         poseStack.pushPose();
         poseStack.translate(0, 0.01, 0);
-        poseStack.mulPose(Axis.YP.rotationDegrees((entity.tickCount + partialTicks) * 15));
+        poseStack.mulPose(Axis.YP.rotationDegrees((entity.tickCount + partialTick) * 15));
         pose = poseStack.last();
         consumer.addVertex(pose, -size, 0, -size).setColor(CommonColors.WHITE).setUv(0, 0);
         consumer.addVertex(pose, size, 0, -size).setColor(CommonColors.WHITE).setUv(32f / 96f, 0);

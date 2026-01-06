@@ -411,13 +411,13 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
     }
 
     @Override
-    public float interpolatedMoveTick(float partialTicks) {
-        return this.moveStateTracker.interpolatedMoveTick(partialTicks);
+    public float interpolatedMoveTick(float partialTick) {
+        return this.moveStateTracker.interpolatedMoveTick(partialTick);
     }
 
     @Override
-    public float interpolatedMoveTickOf(MoveType moveType, float partialTicks) {
-        return this.moveStateTracker.interpolatedMoveTickOf(moveType, partialTicks);
+    public float interpolatedMoveTickOf(MoveType moveType, float partialTick) {
+        return this.moveStateTracker.interpolatedMoveTickOf(moveType, partialTick);
     }
 
     public MoveType calculateMoveType() {
@@ -1017,10 +1017,10 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
         return null;
     }
 
-    public double getSummonProgress(float partialTicks) {
+    public double getSummonProgress(float partialTick) {
         String summon = this.getSummonAnimation();
         if (summon != null && this.getAnimationHandler().isCurrent(summon)) {
-            return this.getAnimationHandler().getAnimation().progress(partialTicks);
+            return this.getAnimationHandler().getAnimation().progress(partialTick);
         }
         return -1;
     }

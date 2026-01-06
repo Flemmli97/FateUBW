@@ -33,10 +33,10 @@ public class RenderChainDagger extends EntityRenderer<ChainDagger> {
     }
 
     @Override
-    public void render(ChainDagger entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+    public void render(ChainDagger entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
         Entity owner = entity.getOwner();
-        float yRot = Mth.lerp(partialTicks, entity.yRotO, entity.getYRot()) - 90.0F;
-        float xRot = Mth.lerp(partialTicks, entity.xRotO, entity.getXRot());
+        float yRot = Mth.lerp(partialTick, entity.yRotO, entity.getYRot()) - 90.0F;
+        float xRot = Mth.lerp(partialTick, entity.xRotO, entity.getXRot());
         if (entity.retracting()) {
             yRot -= 180;
             xRot *= -1;
@@ -70,7 +70,7 @@ public class RenderChainDagger extends EntityRenderer<ChainDagger> {
             if ((this.entityRenderDispatcher.options == null || this.entityRenderDispatcher.options.getCameraType().isFirstPerson()) && living == Minecraft.getInstance().cameraEntity) {
                 Vector3f left = this.entityRenderDispatcher.camera.getLeftVector().mul((float) i * 0.2F, new Vector3f());
                 Vector3f up = this.entityRenderDispatcher.camera.getUpVector().mul(-0.2F, new Vector3f());
-                float attackAnim = living.getAttackAnim(partialTicks);
+                float attackAnim = living.getAttackAnim(partialTick);
                 float g = Mth.sin(Mth.sqrt(attackAnim) * Mth.PI);
                 left = left.rotateY(g * 0.5F).rotateX(-g * 0.5F);
                 up = up.rotateY(g * 0.5F).rotateX(-g * 0.5F);
@@ -78,17 +78,17 @@ public class RenderChainDagger extends EntityRenderer<ChainDagger> {
                 targetY = this.entityRenderDispatcher.camera.getPosition().y() + left.y() + up.y();
                 targetZ = this.entityRenderDispatcher.camera.getPosition().z() + left.z() + up.z();
             } else {
-                float yRotLiving = Mth.lerp(partialTicks, living.yBodyRotO, living.yBodyRot) * Mth.DEG_TO_RAD;
+                float yRotLiving = Mth.lerp(partialTick, living.yBodyRotO, living.yBodyRot) * Mth.DEG_TO_RAD;
                 float hand = living.getBbWidth() * 0.6f;
-                targetX = Mth.lerp(partialTicks, living.xo, living.getX()) + Mth.cos(yRotLiving) * i * hand;
-                targetY = Mth.lerp(partialTicks, living.yo, living.getY()) + living.getEyeHeight() * 0.5;
-                targetZ = Mth.lerp(partialTicks, living.zo, living.getZ()) + Mth.sin(yRotLiving) * i * hand;
+                targetX = Mth.lerp(partialTick, living.xo, living.getX()) + Mth.cos(yRotLiving) * i * hand;
+                targetY = Mth.lerp(partialTick, living.yo, living.getY()) + living.getEyeHeight() * 0.5;
+                targetZ = Mth.lerp(partialTick, living.zo, living.getZ()) + Mth.sin(yRotLiving) * i * hand;
             }
 
             Vec3 look = Vec3.directionFromRotation(xRot, -yRot + 90).scale(0.17);
-            double entityX = Mth.lerp(partialTicks, entity.xo, entity.getX()) + look.x;
-            double entityY = Mth.lerp(partialTicks, entity.yo, entity.getY()) + look.y;
-            double entityZ = Mth.lerp(partialTicks, entity.zo, entity.getZ()) + look.z;
+            double entityX = Mth.lerp(partialTick, entity.xo, entity.getX()) + look.x;
+            double entityY = Mth.lerp(partialTick, entity.yo, entity.getY()) + look.y;
+            double entityZ = Mth.lerp(partialTick, entity.zo, entity.getZ()) + look.z;
 
             float dX = (float) (targetX - entityX);
             float dY = (float) (targetY - entityY);
@@ -104,7 +104,7 @@ public class RenderChainDagger extends EntityRenderer<ChainDagger> {
         }
 
         poseStack.popPose();
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+        super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);
     }
 
     protected void renderChains(PoseStack stack, VertexConsumer consumer, int packedLight, float length, float width) {

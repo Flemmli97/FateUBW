@@ -70,7 +70,7 @@ public class EntityWeaponTrailProvider<T extends Entity & AnimatedEntity & Entit
     }
 
     @Override
-    public float adjustedPartialTicks(float partialTicks) {
+    public float adjustedPartialTicks(float partialTick) {
         return 1;
     }
 

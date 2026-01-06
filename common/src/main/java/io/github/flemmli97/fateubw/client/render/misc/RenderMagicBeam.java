@@ -27,7 +27,7 @@ public class RenderMagicBeam extends BeamRenderer<MagicBeam> {
     }
 
     @Override
-    public void render(MagicBeam projectile, float rotation, float partialTicks, PoseStack stack, MultiBufferSource buffer, int packedLight) {
+    public void render(MagicBeam projectile, float rotation, float partialTick, PoseStack stack, MultiBufferSource buffer, int packedLight) {
         stack.pushPose();
         stack.scale(1.6f, 1.6f, 1.6f);
         stack.mulPose(Axis.YP.rotationDegrees(-projectile.getSpawnRotY()));
@@ -36,12 +36,12 @@ public class RenderMagicBeam extends BeamRenderer<MagicBeam> {
         RenderUtils.renderTexture(stack, buffer.getBuffer(RenderType.entityCutoutNoCull(TEX_CIRCLE)), 1, 1, this.textureBuilder);
         stack.popPose();
         if (!projectile.preparing())
-            super.render(projectile, rotation, partialTicks, stack, buffer, packedLight);
+            super.render(projectile, rotation, partialTick, stack, buffer, packedLight);
     }
 
     @Override
-    public float widthFunc(MagicBeam entity, float partialTicks) {
-        float width = (float) (entity.radius() * 2.0F * Math.sin(Math.clamp((entity.livingTicks() + partialTicks) / entity.livingTickMax(), 0, 1) * Math.PI));
+    public float widthFunc(MagicBeam entity, float partialTick) {
+        float width = (float) (entity.radius() * 2.0F * Math.sin(Math.clamp((entity.livingTicks() + partialTick) / entity.livingTickMax(), 0, 1) * Math.PI));
         return width / this.widthMod;
     }
 

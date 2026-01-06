@@ -21,7 +21,7 @@ public class RenderPegasus extends MobRenderer<Pegasus, PegasusModel> {
 
     public static final ResourceLocation TEX = Fate.modRes("textures/entity/pegasus.png");
 
-    private float partialTicks;
+    private float partialTick;
     private final float shadowDefault;
 
     public RenderPegasus(EntityRendererProvider.Context ctx) {
@@ -34,13 +34,13 @@ public class RenderPegasus extends MobRenderer<Pegasus, PegasusModel> {
     }
 
     @Override
-    public void render(Pegasus entity, float entityYaw, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int packedLight) {
-        this.partialTicks = partialTicks;
+    public void render(Pegasus entity, float entityYaw, float partialTick, PoseStack matrixStack, MultiBufferSource buffer, int packedLight) {
+        this.partialTick = partialTick;
         if (entity.getAnimationHandler().isCurrent(Pegasus.SUMMON))
             this.shadowRadius = 0;
         else
             this.shadowRadius = this.shadowDefault;
-        super.render(entity, entityYaw, partialTicks, matrixStack, buffer, packedLight);
+        super.render(entity, entityYaw, partialTick, matrixStack, buffer, packedLight);
     }
 
     @Nullable
@@ -50,7 +50,7 @@ public class RenderPegasus extends MobRenderer<Pegasus, PegasusModel> {
         if (origin == null || !livingEntity.getAnimationHandler().isCurrent(Pegasus.SUMMON))
             return origin;
         Vector3f normal = new Vector3f(0, 0, 1);
-        normal.rotate(Axis.YP.rotationDegrees(-Mth.rotLerp(this.partialTicks, livingEntity.yBodyRotO, livingEntity.yBodyRot)));
+        normal.rotate(Axis.YP.rotationDegrees(-Mth.rotLerp(this.partialTick, livingEntity.yBodyRotO, livingEntity.yBodyRot)));
         return FateRenders.getClippedRendertype(origin,
                 FateRenders.createClippingPlane(normal, livingEntity, this.portalOffset()));
     }

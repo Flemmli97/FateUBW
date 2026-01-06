@@ -20,12 +20,12 @@ import java.util.List;
 
 public class TrailRenderer {
 
-    public static void render(Entity entity, TrailInfo info, TrailPositions positions, VertexConsumer consumer, float partialTicks) {
+    public static void render(Entity entity, TrailInfo info, TrailPositions positions, VertexConsumer consumer, float partialTick) {
         PoseStack stack = new PoseStack();
         Vec3 vec3 = Minecraft.getInstance().getEntityRenderDispatcher().camera.getPosition();
-        double lerpX = Mth.lerp(partialTicks, entity.xo, entity.getX());
-        double lerpY = Mth.lerp(partialTicks, entity.yo, entity.getY());
-        double lerpZ = Mth.lerp(partialTicks, entity.zo, entity.getZ());
+        double lerpX = Mth.lerp(partialTick, entity.xo, entity.getX());
+        double lerpY = Mth.lerp(partialTick, entity.yo, entity.getY());
+        double lerpZ = Mth.lerp(partialTick, entity.zo, entity.getZ());
         double dx = lerpX - vec3.x();
         double dy = lerpY - vec3.y();
         double dz = lerpZ - vec3.z();

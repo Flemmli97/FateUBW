@@ -237,8 +237,8 @@ public class LesserMonster extends PathfinderMob implements AnimatedEntity, Owna
         this.tickBrain(this);
     }
 
-    public float interpolatedMoveTick(float partialTicks) {
-        return this.moveStateTracker.interpolatedMoveTick(partialTicks);
+    public float interpolatedMoveTick(float partialTick) {
+        return this.moveStateTracker.interpolatedMoveTick(partialTick);
     }
 
     public MoveType calculateMoveType() {

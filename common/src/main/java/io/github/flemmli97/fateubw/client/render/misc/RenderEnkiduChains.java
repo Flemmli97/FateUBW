@@ -29,19 +29,19 @@ public class RenderEnkiduChains extends EntityRenderer<EnkiduChains> {
     }
 
     @Override
-    public void render(EnkiduChains entity, float rotation, float partialTicks, PoseStack stack, MultiBufferSource buffer, int packedLight) {
+    public void render(EnkiduChains entity, float rotation, float partialTick, PoseStack stack, MultiBufferSource buffer, int packedLight) {
         Vec3 start = entity.getStartPosition();
-        float yRot = Mth.lerp(partialTicks, entity.yRotO, entity.getYRot());
-        float xRot = -Mth.lerp(partialTicks, entity.xRotO, entity.getXRot());
-        double x = Mth.lerp(partialTicks, entity.xo, entity.getX());
-        double y = Mth.lerp(partialTicks, entity.yo, entity.getY());
-        double z = Mth.lerp(partialTicks, entity.zo, entity.getZ());
+        float yRot = Mth.lerp(partialTick, entity.yRotO, entity.getYRot());
+        float xRot = -Mth.lerp(partialTick, entity.xRotO, entity.getXRot());
+        double x = Mth.lerp(partialTick, entity.xo, entity.getX());
+        double y = Mth.lerp(partialTick, entity.yo, entity.getY());
+        double z = Mth.lerp(partialTick, entity.zo, entity.getZ());
         double dx = x - start.x();
         double dy = y - start.y();
         double dz = z - start.z();
         double len = Math.sqrt(dx * dx + dy * dy + dz * dz);
         stack.pushPose();
-        float scale = Math.min(1, (entity.tickCount + partialTicks) / 6f);
+        float scale = Math.min(1, (entity.tickCount + partialTick) / 6f);
         stack.scale(scale, scale, scale);
 
         stack.mulPose(Axis.YP.rotationDegrees(yRot));
@@ -56,7 +56,7 @@ public class RenderEnkiduChains extends EntityRenderer<EnkiduChains> {
         Matrix4f matrix4f = stack.last().pose();
         VertexConsumer consumer = buffer.getBuffer(FateRenders.BABYLON_RENDER);
         float tick = entity.tickCount + entity.renderRand;
-        tick = ((tick % 24000) + partialTicks) / 24000.0f;
+        tick = ((tick % 24000) + partialTick) / 24000.0f;
         VertexUtils.addVertexData(
                 consumer.addVertex(matrix4f, -size, -size, 0).setColor(this.color.x(), this.color.y(), this.color.z(), 1).setUv(0, 0),
                 VertexUtils.SINGLE_FLOAT.get(),

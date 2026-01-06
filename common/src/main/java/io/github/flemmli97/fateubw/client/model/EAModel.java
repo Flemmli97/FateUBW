@@ -28,9 +28,9 @@ public class EAModel extends Model implements ExtendedModel {
         this.model.get().getRoot().render(poseStack, buffer, packedLight, packedOverlay, color);
     }
 
-    public void spinBlade(int tick, float partialTicks) {
+    public void spinBlade(int tick, float partialTick) {
         this.model.get().resetPoses();
-        this.animation.get().doAnimation(this, "spin", tick, partialTicks);
+        this.animation.get().doAnimation(this, "spin", tick, partialTick);
     }
 
     @Override

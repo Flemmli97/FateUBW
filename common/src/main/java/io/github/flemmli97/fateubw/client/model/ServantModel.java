@@ -3,14 +3,13 @@ package io.github.flemmli97.fateubw.client.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.flemmli97.fateubw.Fate;
-import io.github.flemmli97.fateubw.client.ClientHandler;
 import io.github.flemmli97.fateubw.common.entity.utils.MoveType;
 import io.github.flemmli97.fateubw.common.entity.utils.ServantModelLike;
 import io.github.flemmli97.tenshilib.client.data.GeoAnimationManager;
 import io.github.flemmli97.tenshilib.client.data.GeoModelManager;
 import io.github.flemmli97.tenshilib.client.data.ReloadableCache;
 import io.github.flemmli97.tenshilib.client.model.BedrockAnimations;
-import io.github.flemmli97.tenshilib.client.model.ExtendedModel;
+import io.github.flemmli97.tenshilib.client.model.ExtendedEntityModel;
 import io.github.flemmli97.tenshilib.client.model.ItemHolderModel;
 import io.github.flemmli97.tenshilib.client.model.ModelPartsContainer;
 import io.github.flemmli97.tenshilib.client.model.PoseExtended;
@@ -30,7 +29,7 @@ import org.joml.Vector3f;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ServantModel<T extends LivingEntity & AnimatedEntity & ServantModelLike> extends EntityModel<T> implements ItemHolderModel, HeadedModel, IPreRenderUpdate<T>, ExtendedModel {
+public class ServantModel<T extends LivingEntity & AnimatedEntity & ServantModelLike> extends ExtendedEntityModel<T> implements ItemHolderModel, HeadedModel, IPreRenderUpdate<T> {
 
     public static final ResourceLocation DEFAULT_ANIMATION = Fate.modRes("servant/generic");
 
@@ -133,12 +132,12 @@ public class ServantModel<T extends LivingEntity & AnimatedEntity & ServantModel
 
     @Override
     public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        float partialTicks = ClientHandler.getPartialTicks();
-        this.preAnimSetup(entity, limbSwing, limbSwingAmount, netHeadYaw, headPitch, partialTicks);
+        float partialTick = this.getPartialTick();
+        this.preAnimSetup(entity, limbSwing, limbSwingAmount, netHeadYaw, headPitch, partialTick);
         if (entity.isStaying()) {
-            this.animation.get().doAnimation(this, "stay", entity.tickCount, partialTicks);
+            this.animation.get().doAnimation(this, "stay", entity.tickCount, partialTick);
         } else {
-            this.animation.get().doAnimation(this, entity.getAnimationHandler(), partialTicks, entity.flipAnimation());
+            this.animation.get().doAnimation(this, entity.getAnimationHandler(), partialTick, entity.flipAnimation());
         }
 
         // Move the body to match the (detached) legs
@@ -158,7 +157,7 @@ public class ServantModel<T extends LivingEntity & AnimatedEntity & ServantModel
                 Math.max(0.15f, 1 - (entity.deathTime / (float) entity.maxDeathTick())) : -1;
     }
 
-    public void preAnimSetup(T entity, float limbSwing, float limbSwingAmount, float netHeadYaw, float headPitch, float partialTicks) {
+    public void preAnimSetup(T entity, float limbSwing, float limbSwingAmount, float netHeadYaw, float headPitch, float partialTick) {
         this.model.get().resetPoses();
         BedrockAnimations animation = this.animation.get();
         this.setupAnimationValues(animation, limbSwing, limbSwingAmount, netHeadYaw, headPitch);
@@ -167,29 +166,29 @@ public class ServantModel<T extends LivingEntity & AnimatedEntity & ServantModel
 
         String idle = this.getWeaponBasedAnimationFor(entity, animation, "idle_with_weapon", "idle", null);
         if (idle == null) {
-            defaulted.doAnimation(this, "idle", entity.tickCount, partialTicks, 1);
+            defaulted.doAnimation(this, "idle", entity.tickCount, partialTick, 1);
         } else {
-            animation.doAnimation(this, idle, entity.tickCount, partialTicks, 1);
+            animation.doAnimation(this, idle, entity.tickCount, partialTick, 1);
         }
         String walk = this.getWeaponBasedAnimationFor(entity, animation, "walk_with_weapon", "walk", null);
         if (walk == null) {
-            defaulted.doAnimation(this, "walk", entity.tickCount, partialTicks, 1, false, true);
+            defaulted.doAnimation(this, "walk", entity.tickCount, partialTick, 1, false, true);
         } else {
-            animation.doAnimation(this, walk, entity.tickCount, partialTicks, entity.interpolatedMoveTick(partialTicks), false, true);
+            animation.doAnimation(this, walk, entity.tickCount, partialTick, entity.interpolatedMoveTick(partialTick), false, true);
         }
-        animation.doAnimation(this, this.getWeaponBasedAnimationFor(entity, animation, "run_with_weapon", "run"), entity.tickCount, partialTicks, entity.interpolatedMoveTickOf(MoveType.RUN, partialTicks), false, true);
+        animation.doAnimation(this, this.getWeaponBasedAnimationFor(entity, animation, "run_with_weapon", "run"), entity.tickCount, partialTick, entity.interpolatedMoveTickOf(MoveType.RUN, partialTick), false, true);
         if (entity.isPassenger() && entity.getVehicle() != null) {
             if (this.riding) {
                 if (animation.has("riding")) {
-                    animation.doAnimation(this, "riding", entity.tickCount, partialTicks, 1, false, true);
+                    animation.doAnimation(this, "riding", entity.tickCount, partialTick, 1, false, true);
                 } else {
-                    defaulted.doAnimation(this, "riding", entity.tickCount, partialTicks, 1, false, true);
+                    defaulted.doAnimation(this, "riding", entity.tickCount, partialTick, 1, false, true);
                 }
             } else {
                 if (animation.has("riding_standing")) {
-                    animation.doAnimation(this, "riding_standing", entity.tickCount, partialTicks, 1, false, true);
+                    animation.doAnimation(this, "riding_standing", entity.tickCount, partialTick, 1, false, true);
                 } else {
-                    defaulted.doAnimation(this, "riding_standing", entity.tickCount, partialTicks, 1, false, true);
+                    defaulted.doAnimation(this, "riding_standing", entity.tickCount, partialTick, 1, false, true);
                 }
             }
         }

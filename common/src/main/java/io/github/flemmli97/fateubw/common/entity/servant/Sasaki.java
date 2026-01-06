@@ -370,8 +370,8 @@ public class Sasaki extends BaseServant {
     }
 
     @Override
-    public double getSummonProgress(float partialTicks) {
-        double prog = super.getSummonProgress(partialTicks);
+    public double getSummonProgress(float partialTick) {
+        double prog = super.getSummonProgress(partialTick);
         return prog >= 0 ? Mth.clamp(prog * 2, 0, 1) : prog;
     }
 

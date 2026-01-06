@@ -27,7 +27,7 @@ public class ShakeHandler {
         }
     }
 
-    public static void renderShaking(float yaw, float pitch, float roll, float partialTicks,
+    public static void renderShaking(float yaw, float pitch, float roll, float partialTick,
                                      Consumer<Float> setYaw, Consumer<Float> setPitch, Consumer<Float> setRoll) {
         int t = ShakeHandler.shakeTick;
         if (t <= 0)

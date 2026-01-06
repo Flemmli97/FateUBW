@@ -17,9 +17,9 @@ public class RenderTentacle extends SimpleModelRenderer<Tentacle> {
     }
 
     @Override
-    public void translate(Tentacle entity, PoseStack stack, float pitch, float yaw, float partialTicks) {
+    public void translate(Tentacle entity, PoseStack stack, float pitch, float yaw, float partialTick) {
         stack.scale(Tentacle.SCALE, Tentacle.SCALE, Tentacle.SCALE);
-        super.translate(entity, stack, pitch, yaw, partialTicks);
+        super.translate(entity, stack, pitch, yaw, partialTick);
     }
 
     @Override

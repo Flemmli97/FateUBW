@@ -2,9 +2,9 @@ package io.github.flemmli97.fateubw.common.entity.utils;
 
 public interface ServantModelLike {
 
-    float interpolatedMoveTick(float partialTicks);
+    float interpolatedMoveTick(float partialTick);
 
-    float interpolatedMoveTickOf(MoveType moveType, float partialTicks);
+    float interpolatedMoveTickOf(MoveType moveType, float partialTick);
 
     default boolean flipAnimation() {
         return false;

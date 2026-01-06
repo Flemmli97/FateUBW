@@ -22,12 +22,12 @@ public class RenderCaladbolg extends EntityRenderer<CaladBolg> {
     }
 
     @Override
-    public void render(CaladBolg entity, float entityYaw, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int packedLight) {
+    public void render(CaladBolg entity, float entityYaw, float partialTick, PoseStack matrixStack, MultiBufferSource buffer, int packedLight) {
         matrixStack.pushPose();
         int size = 6;
         matrixStack.scale(0.2f, 0.2f, 0.2f);
-        matrixStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, entity.yRotO, entity.getYRot()) - 90.0F));
-        matrixStack.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(partialTicks, entity.xRotO, entity.getXRot())));
+        matrixStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTick, entity.yRotO, entity.getYRot()) - 90.0F));
+        matrixStack.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(partialTick, entity.xRotO, entity.getXRot())));
         matrixStack.translate(-size + 2, entity.getBbHeight() * 0.6f / 0.2f, -entity.getBbWidth() * 0.3f / 0.2f);
         matrixStack.mulPose(Axis.XP.rotationDegrees(45.0F));
 
@@ -45,7 +45,7 @@ public class RenderCaladbolg extends EntityRenderer<CaladBolg> {
         }
 
         matrixStack.popPose();
-        super.render(entity, entityYaw, partialTicks, matrixStack, buffer, packedLight);
+        super.render(entity, entityYaw, partialTick, matrixStack, buffer, packedLight);
     }
 
     public void vertex(PoseStack.Pose pose, VertexConsumer vertexBuilder, float x, float y, float z, float textureX, float textureY, float normalX, float normalY, float normalZ, int packedLight) {

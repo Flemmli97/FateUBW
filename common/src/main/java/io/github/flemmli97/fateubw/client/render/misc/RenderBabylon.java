@@ -47,12 +47,12 @@ public class RenderBabylon extends EntityRenderer<BabylonWeapon> {
     }
 
     @Override
-    public void render(BabylonWeapon entity, float rotation, float partialTicks, PoseStack stack, MultiBufferSource buffer, int packedLight) {
-        float yRot = Mth.lerp(partialTicks, entity.yRotO, entity.getYRot());
-        float xRot = -Mth.lerp(partialTicks, entity.xRotO, entity.getXRot());
+    public void render(BabylonWeapon entity, float rotation, float partialTick, PoseStack stack, MultiBufferSource buffer, int packedLight) {
+        float yRot = Mth.lerp(partialTick, entity.yRotO, entity.getYRot());
+        float xRot = -Mth.lerp(partialTick, entity.xRotO, entity.getXRot());
         if (entity.preparing()) {
             stack.pushPose();
-            float scale = Math.min(1, (entity.tickCount + partialTicks) / 6f);
+            float scale = Math.min(1, (entity.tickCount + partialTick) / 6f);
             stack.scale(scale, scale, scale);
             stack.mulPose(Axis.YP.rotationDegrees(yRot));
             stack.mulPose(Axis.XP.rotationDegrees(xRot));
@@ -61,7 +61,7 @@ public class RenderBabylon extends EntityRenderer<BabylonWeapon> {
             Matrix4f matrix4f = stack.last().pose();
             VertexConsumer consumer = buffer.getBuffer(FateRenders.BABYLON_RENDER);
             float tick = entity.tickCount + entity.renderRand;
-            tick = ((tick % 24000) + partialTicks) / 24000.0f;
+            tick = ((tick % 24000) + partialTick) / 24000.0f;
             VertexUtils.addVertexData(
                     consumer.addVertex(matrix4f, -size, -size, 0).setColor(this.color.x(), this.color.y(), this.color.z(), 1).setUv(0, 0),
                     VertexUtils.SINGLE_FLOAT.get(),
@@ -105,7 +105,7 @@ public class RenderBabylon extends EntityRenderer<BabylonWeapon> {
             );
             stack.popPose();
         } else {
-            TrailRenderer.render(entity, this.info, entity.trailPositions(), buffer.getBuffer(FateRenders.TRAIL_TRANSLUCENT), partialTicks);
+            TrailRenderer.render(entity, this.info, entity.trailPositions(), buffer.getBuffer(FateRenders.TRAIL_TRANSLUCENT), partialTick);
         }
         stack.pushPose();
         stack.scale(2, 2, 2);
@@ -113,7 +113,7 @@ public class RenderBabylon extends EntityRenderer<BabylonWeapon> {
         stack.mulPose(Axis.YP.rotationDegrees(90 + yRot));
         stack.mulPose(Axis.ZP.rotationDegrees(xRot));
         if (entity.preparing()) {
-            stack.translate(Math.max(0, 2 * (0.8 - entity.preparationState(partialTicks))), 0, 0);
+            stack.translate(Math.max(0, 2 * (0.8 - entity.preparationState(partialTick))), 0, 0);
         }
         stack.translate(-entity.getBbWidth() * 0.25, 0, 0);
         stack.mulPose(Axis.ZP.rotationDegrees(135));
@@ -151,7 +151,7 @@ public class RenderBabylon extends EntityRenderer<BabylonWeapon> {
             return cons;
         } : buffer;
         Minecraft.getInstance().getItemRenderer().renderStatic(this.getRenderItemStack(entity), ItemDisplayContext.GROUND, 0xff00ff, OverlayTexture.NO_OVERLAY, stack, buf, entity.level(), entity.getId());
-        super.render(entity, rotation, partialTicks, stack, buf, 0xff00ff);
+        super.render(entity, rotation, partialTick, stack, buf, 0xff00ff);
         if (state.get() != 0) // other buffersource was used
             SEP.endBatch();
         stack.popPose();

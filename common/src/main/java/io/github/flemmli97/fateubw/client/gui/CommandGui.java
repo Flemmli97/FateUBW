@@ -157,7 +157,7 @@ public class CommandGui extends Screen {
     }
 
     @Override
-    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         Player player = this.minecraft.player;
         PlayerData data = Platform.INSTANCE.getPlayerData(player);
         if (data == null)

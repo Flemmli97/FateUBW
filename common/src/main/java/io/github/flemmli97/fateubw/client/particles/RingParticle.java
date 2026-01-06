@@ -28,18 +28,18 @@ public class RingParticle extends TextureSheetParticle {
     }
 
     @Override
-    public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
+    public void render(VertexConsumer buffer, Camera renderInfo, float partialTick) {
         Quaternionf quaternion = new Quaternionf(0.0F, 0.0F, 0.0F, 1.0F);
         Vec3 vec3 = renderInfo.getPosition();
-        float x = (float) (Mth.lerp(partialTicks, this.xo, this.x) - vec3.x());
-        float y = (float) (Mth.lerp(partialTicks, this.yo, this.y) - vec3.y());
-        float z = (float) (Mth.lerp(partialTicks, this.zo, this.z) - vec3.z());
+        float x = (float) (Mth.lerp(partialTick, this.xo, this.x) - vec3.x());
+        float y = (float) (Mth.lerp(partialTick, this.yo, this.y) - vec3.y());
+        float z = (float) (Mth.lerp(partialTick, this.zo, this.z) - vec3.z());
 
         quaternion.mul(Axis.YP.rotationDegrees(-this.yRot));
         quaternion.mul(Axis.XP.rotationDegrees(this.xRot));
 
         Vector3f[] vertices = new Vector3f[]{new Vector3f(-1.0f, -1.0f, 0.0f), new Vector3f(-1.0f, 1.0f, 0.0f), new Vector3f(1.0f, 1.0f, 0.0f), new Vector3f(1.0f, -1.0f, 0.0f)};
-        float scale = this.getQuadSize(partialTicks);
+        float scale = this.getQuadSize(partialTick);
         for (int k = 0; k < 4; ++k) {
             vertices[k].rotate(quaternion).mul(scale).add(x, y, z);
         }
@@ -47,8 +47,8 @@ public class RingParticle extends TextureSheetParticle {
         float u1 = this.getU1();
         float v0 = this.getV0();
         float v1 = this.getV1();
-        int light = this.getLightColor(partialTicks);
-        float alpha = this.alpha * (1 - this.fadeProgress(partialTicks));
+        int light = this.getLightColor(partialTick);
+        float alpha = this.alpha * (1 - this.fadeProgress(partialTick));
         buffer.addVertex(vertices[0].x(), vertices[0].y(), vertices[0].z()).setUv(u1, v1).setColor(this.rCol, this.gCol, this.bCol, alpha).setLight(light);
         buffer.addVertex(vertices[1].x(), vertices[1].y(), vertices[1].z()).setUv(u1, v0).setColor(this.rCol, this.gCol, this.bCol, alpha).setLight(light);
         buffer.addVertex(vertices[2].x(), vertices[2].y(), vertices[2].z()).setUv(u0, v0).setColor(this.rCol, this.gCol, this.bCol, alpha).setLight(light);
@@ -60,8 +60,8 @@ public class RingParticle extends TextureSheetParticle {
         buffer.addVertex(vertices[0].x(), vertices[0].y(), vertices[0].z()).setUv(u1, v1).setColor(this.rCol, this.gCol, this.bCol, alpha).setLight(light);
     }
 
-    public float fadeProgress(float partialTicks) {
-        return Mth.clamp((this.age + partialTicks) / this.lifetime, 0, 1);
+    public float fadeProgress(float partialTick) {
+        return Mth.clamp((this.age + partialTick) / this.lifetime, 0, 1);
     }
 
     @Override

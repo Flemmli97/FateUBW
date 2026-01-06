@@ -64,23 +64,23 @@ public class TrailParticle extends TextureSheetParticle {
     }
 
     @Override
-    public void render(VertexConsumer buffer, Camera camera, float partialTicks) {
+    public void render(VertexConsumer buffer, Camera camera, float partialTick) {
         if (this.trailProvider == null)
             return;
-        partialTicks = this.trailProvider.adjustedPartialTicks(partialTicks);
+        partialTick = this.trailProvider.adjustedPartialTicks(partialTick);
         PoseStack stack = new PoseStack();
-        this.translate(stack, camera, partialTicks);
+        this.translate(stack, camera, partialTick);
         TrailRenderer.render(this.trail, this.trailProvider.positions(), stack, buffer, camera,
                 (float) this.x, (float) this.y, (float) this.z,
                 (float) this.x, (float) this.y, (float) this.z,
                 this.getU0(), this.getU1(), this.getV0(), this.getV1());
     }
 
-    protected void translate(PoseStack stack, Camera camera, float partialTicks) {
+    protected void translate(PoseStack stack, Camera camera, float partialTick) {
         Vec3 vec3 = camera.getPosition();
-        double dx = Mth.lerp(partialTicks, this.xo, this.x) - vec3.x();
-        double dy = Mth.lerp(partialTicks, this.yo, this.y) - vec3.y();
-        double dz = Mth.lerp(partialTicks, this.zo, this.z) - vec3.z();
+        double dx = Mth.lerp(partialTick, this.xo, this.x) - vec3.x();
+        double dy = Mth.lerp(partialTick, this.yo, this.y) - vec3.y();
+        double dz = Mth.lerp(partialTick, this.zo, this.z) - vec3.z();
         stack.translate(dx, dy, dz);
     }
 
@@ -118,7 +118,7 @@ public class TrailParticle extends TextureSheetParticle {
     /**
      * NeoForge culling
      */
-    public AABB getRenderBoundingBox(float partialTicks) {
+    public AABB getRenderBoundingBox(float partialTick) {
         return this.getBoundingBox().inflate(1);
     }
 

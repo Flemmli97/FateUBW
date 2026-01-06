@@ -3,20 +3,18 @@ package io.github.flemmli97.fateubw.client.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.flemmli97.fateubw.Fate;
-import io.github.flemmli97.fateubw.client.ClientHandler;
 import io.github.flemmli97.fateubw.common.entity.summons.Tentacle;
 import io.github.flemmli97.tenshilib.client.data.GeoAnimationManager;
 import io.github.flemmli97.tenshilib.client.data.GeoModelManager;
 import io.github.flemmli97.tenshilib.client.data.ReloadableCache;
 import io.github.flemmli97.tenshilib.client.model.BedrockAnimations;
-import io.github.flemmli97.tenshilib.client.model.ExtendedModel;
+import io.github.flemmli97.tenshilib.client.model.ExtendedEntityModel;
 import io.github.flemmli97.tenshilib.client.model.ModelPartsContainer;
-import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 
-public class TentacleModel<T extends Tentacle> extends EntityModel<T> implements ExtendedModel {
+public class TentacleModel<T extends Tentacle> extends ExtendedEntityModel<T> {
 
     public static final ResourceLocation LOCATION = Fate.modRes("tentacle");
 
@@ -47,10 +45,10 @@ public class TentacleModel<T extends Tentacle> extends EntityModel<T> implements
     @Override
     public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.getModel().resetPoses();
-        float partialTicks = ClientHandler.getPartialTicks();
-        this.anim.get().doAnimation(this, "idle", entity.tickCount, partialTicks);
-        this.anim.get().doAnimation(this, entity.getAnimationHandler(), partialTicks);
-        this.progress = entity.getDespawnProgress(partialTicks);
+        float partialTick = this.getPartialTick();
+        this.anim.get().doAnimation(this, "idle", entity.tickCount, partialTick);
+        this.anim.get().doAnimation(this, entity.getAnimationHandler(), partialTick);
+        this.progress = entity.getDespawnProgress(partialTick);
     }
 
     @Override

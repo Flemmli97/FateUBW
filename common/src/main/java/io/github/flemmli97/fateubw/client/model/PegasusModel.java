@@ -1,20 +1,18 @@
-package io.github.flemmli97.fateubw.client.model;// Made with Blockbench 3.5.2
+package io.github.flemmli97.fateubw.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.flemmli97.fateubw.Fate;
-import io.github.flemmli97.fateubw.client.ClientHandler;
 import io.github.flemmli97.fateubw.common.entity.summons.Pegasus;
 import io.github.flemmli97.fateubw.common.entity.utils.MoveType;
 import io.github.flemmli97.tenshilib.client.data.GeoAnimationManager;
 import io.github.flemmli97.tenshilib.client.data.GeoModelManager;
 import io.github.flemmli97.tenshilib.client.data.ReloadableCache;
 import io.github.flemmli97.tenshilib.client.model.BedrockAnimations;
-import io.github.flemmli97.tenshilib.client.model.ExtendedModel;
+import io.github.flemmli97.tenshilib.client.model.ExtendedEntityModel;
 import io.github.flemmli97.tenshilib.client.model.ModelPartsContainer;
 import io.github.flemmli97.tenshilib.client.model.RideableModel;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
-import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -22,7 +20,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 
-public class PegasusModel extends EntityModel<Pegasus> implements ExtendedModel, RideableModel<Pegasus> {
+public class PegasusModel extends ExtendedEntityModel<Pegasus> implements RideableModel<Pegasus> {
 
     public static final ResourceLocation LOCATION = Fate.modRes("pegasus");
 
@@ -51,15 +49,15 @@ public class PegasusModel extends EntityModel<Pegasus> implements ExtendedModel,
         this.getModel().resetPoses();
         this.head.yRot += netHeadYaw * Mth.DEG_TO_RAD * 0.3f;
         this.head.xRot += headPitch * Mth.DEG_TO_RAD * 0.1f;
-        float partialTicks = ClientHandler.getPartialTicks();
+        float partialTick = this.getPartialTick();
         this.anim.get().setVariable("x_rotation", entity::getXRot);
         if (entity.deathTime <= 0) {
-            this.anim.get().doAnimation(this, "idle", entity.tickCount, partialTicks);
-            this.anim.get().doAnimation(this, "walk", entity.tickCount, partialTicks, entity.interpolatedMoveTick(partialTicks));
-            this.anim.get().doAnimation(this, "run", entity.tickCount, partialTicks, entity.interpolatedMoveTickOf(MoveType.RUN, partialTicks));
-            this.anim.get().doAnimation(this, "fly", entity.tickCount, partialTicks, entity.interpolatedMoveTickOf(MoveType.FLY, partialTicks));
+            this.anim.get().doAnimation(this, "idle", entity.tickCount, partialTick);
+            this.anim.get().doAnimation(this, "walk", entity.tickCount, partialTick, entity.interpolatedMoveTick(partialTick));
+            this.anim.get().doAnimation(this, "run", entity.tickCount, partialTick, entity.interpolatedMoveTickOf(MoveType.RUN, partialTick));
+            this.anim.get().doAnimation(this, "fly", entity.tickCount, partialTick, entity.interpolatedMoveTickOf(MoveType.FLY, partialTick));
         }
-        this.anim.get().doAnimation(this, entity.getAnimationHandler(), partialTicks);
+        this.anim.get().doAnimation(this, entity.getAnimationHandler(), partialTick);
     }
 
     @Override

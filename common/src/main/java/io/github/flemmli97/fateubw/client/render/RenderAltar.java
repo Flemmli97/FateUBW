@@ -32,8 +32,8 @@ public class RenderAltar implements BlockEntityRenderer<AltarBlockEntity> {
     }
 
     @Override
-    public void render(AltarBlockEntity altar, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int light, int uv) {
-        float ticker = altar.ticker() + partialTicks;
+    public void render(AltarBlockEntity altar, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int light, int uv) {
+        float ticker = altar.ticker() + partialTick;
         if (altar.isComplete()) {
             poseStack.pushPose();
             poseStack.translate(0.5F, 0.025F, 0.5F);
@@ -62,7 +62,7 @@ public class RenderAltar implements BlockEntityRenderer<AltarBlockEntity> {
             poseStack.popPose();
         }
         NonNullList<ItemStack> catalyst = altar.getCatalyst();
-        float summoningTick = altar.isSummoning() ? altar.getSummoningTick() + partialTicks : 0;
+        float summoningTick = altar.isSummoning() ? altar.getSummoningTick() + partialTick : 0;
         double yTrans = 0.01F * (float) Math.sin((ticker * Math.PI) / 180) + summoningTick * 0.01;
         int centerTime = 140;
         double x = Math.max(2.5F - (summoningTick * 2.5 / centerTime), 0);
@@ -73,7 +73,7 @@ public class RenderAltar implements BlockEntityRenderer<AltarBlockEntity> {
             poseStack.translate(0.5F, 1.125F, 0.5F);
             poseStack.translate(0, yTrans, 0);
             if (summoningTick > centerTime - 15)
-                RenderUtils.renderGradientBeams3d(poseStack, buffer, 0.7f, 0.25f, altar.ticker(), partialTicks, 5, 10, this.builder);
+                RenderUtils.renderGradientBeams3d(poseStack, buffer, 0.7f, 0.25f, altar.ticker(), partialTick, 5, 10, this.builder);
             poseStack.mulPose(Axis.YP.rotationDegrees(ticker * (altar.isSummoning() ? 2 : 1) + (float) (i * 45.0)));
             poseStack.translate(x, 0, 0);
             poseStack.mulPose(Axis.YP.rotationDegrees(90));

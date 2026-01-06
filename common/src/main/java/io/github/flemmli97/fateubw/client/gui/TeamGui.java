@@ -184,7 +184,7 @@ public class TeamGui extends Screen {
     }
 
     @Override
-    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         graphics.blit(this.page.texture, this.leftPos, this.topPos, 0, 0, this.sizeX, this.sizeY);
         if (this.leaveButton != null) {
             this.leaveButton.active = hasShiftDown();

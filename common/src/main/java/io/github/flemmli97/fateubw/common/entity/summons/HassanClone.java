@@ -372,13 +372,13 @@ public class HassanClone extends PathfinderMob implements AnimatedEntity, Ownabl
     }
 
     @Override
-    public float interpolatedMoveTick(float partialTicks) {
-        return this.moveStateTracker.interpolatedMoveTick(partialTicks);
+    public float interpolatedMoveTick(float partialTick) {
+        return this.moveStateTracker.interpolatedMoveTick(partialTick);
     }
 
     @Override
-    public float interpolatedMoveTickOf(MoveType moveType, float partialTicks) {
-        return this.moveStateTracker.interpolatedMoveTickOf(moveType, partialTicks);
+    public float interpolatedMoveTickOf(MoveType moveType, float partialTick) {
+        return this.moveStateTracker.interpolatedMoveTickOf(moveType, partialTick);
     }
 
     public MoveType calculateMoveType() {

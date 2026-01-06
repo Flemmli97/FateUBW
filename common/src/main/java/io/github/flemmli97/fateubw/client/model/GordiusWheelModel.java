@@ -1,19 +1,17 @@
-package io.github.flemmli97.fateubw.client.model;// Made with Blockbench 3.5.2
+package io.github.flemmli97.fateubw.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.flemmli97.fateubw.Fate;
-import io.github.flemmli97.fateubw.client.ClientHandler;
 import io.github.flemmli97.fateubw.common.entity.summons.GordiusWheel;
 import io.github.flemmli97.fateubw.common.entity.utils.MoveType;
 import io.github.flemmli97.tenshilib.client.data.GeoAnimationManager;
 import io.github.flemmli97.tenshilib.client.data.GeoModelManager;
 import io.github.flemmli97.tenshilib.client.data.ReloadableCache;
 import io.github.flemmli97.tenshilib.client.model.BedrockAnimations;
-import io.github.flemmli97.tenshilib.client.model.ExtendedModel;
+import io.github.flemmli97.tenshilib.client.model.ExtendedEntityModel;
 import io.github.flemmli97.tenshilib.client.model.ModelPartsContainer;
 import io.github.flemmli97.tenshilib.client.model.RideableModel;
-import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -21,7 +19,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 
-public class GordiusWheelModel extends EntityModel<GordiusWheel> implements ExtendedModel, RideableModel<GordiusWheel> {
+public class GordiusWheelModel extends ExtendedEntityModel<GordiusWheel> implements RideableModel<GordiusWheel> {
 
     public static final ResourceLocation LOCATION = Fate.modRes("gordius_wheel");
 
@@ -54,23 +52,23 @@ public class GordiusWheelModel extends EntityModel<GordiusWheel> implements Exte
     @Override
     public void setupAnim(GordiusWheel entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.getModel().resetPoses();
-        float partialTicks = ClientHandler.getPartialTicks();
+        float partialTick = this.getPartialTick();
         if (entity.deathTime <= 0) {
-            this.anim.get().doAnimation(this, "idle", entity.tickCount, partialTicks);
-            this.anim.get().doAnimation(this, "move", entity.tickCount, partialTicks, entity.interpolatedMoveTick(partialTicks));
-            this.anim.get().doAnimation(this, "run", entity.tickCount, partialTicks, entity.interpolatedMoveTickOf(MoveType.RUN, partialTicks));
+            this.anim.get().doAnimation(this, "idle", entity.tickCount, partialTick);
+            this.anim.get().doAnimation(this, "move", entity.tickCount, partialTick, entity.interpolatedMoveTick(partialTick));
+            this.anim.get().doAnimation(this, "run", entity.tickCount, partialTick, entity.interpolatedMoveTickOf(MoveType.RUN, partialTick));
             if (entity.getMoveType() != MoveType.NONE)
-                entity.wheelPartial = partialTicks;
+                entity.wheelPartial = partialTick;
             this.anim.get().doAnimation(this, "wheel_move", entity.wheelMoveTick, entity.wheelPartial, 1);
         }
-        this.anim.get().doAnimation(this, entity.getAnimationHandler(), partialTicks);
+        this.anim.get().doAnimation(this, entity.getAnimationHandler(), partialTick);
 
         if (entity.getWheelEntity() != null) {
-            float yRot = lerpClamped(partialTicks, entity.getWheelEntity().yRotO, entity.getWheelEntity().getYRot());
-            float pYRot = lerpClamped(partialTicks, entity.yRotO, entity.getYRot());
+            float yRot = lerpClamped(partialTick, entity.getWheelEntity().yRotO, entity.getWheelEntity().getYRot());
+            float pYRot = lerpClamped(partialTick, entity.yRotO, entity.getYRot());
             this.backBeam.yRot -= pYRot * Mth.DEG_TO_RAD;
             this.backBeam.yRot += yRot * Mth.DEG_TO_RAD;
-            float xRot = Mth.lerp(partialTicks, entity.getWheelEntity().xRotO, entity.getWheelEntity().getXRot());
+            float xRot = Mth.lerp(partialTick, entity.getWheelEntity().xRotO, entity.getWheelEntity().getXRot());
             float chariotX = Mth.clamp(xRot, -15, 15);
             this.centerBeam.xRot += chariotX * Mth.DEG_TO_RAD;
             chariotX = Mth.clamp(xRot - chariotX, -40, 40);
@@ -78,7 +76,7 @@ public class GordiusWheelModel extends EntityModel<GordiusWheel> implements Exte
         }
     }
 
-    private static float lerpClamped(float partialTicks, float start, float end) {
+    private static float lerpClamped(float partialTick, float start, float end) {
         while (start < 0) {
             start += 360;
         }
@@ -90,9 +88,9 @@ public class GordiusWheelModel extends EntityModel<GordiusWheel> implements Exte
         float diff1 = end - start;
         float diff2 = (Math.min(start, end) + 360) - Math.max(start, end);
         if (Math.abs(diff2) > Math.abs(diff1)) {
-            return start + partialTicks * diff1;
+            return start + partialTick * diff1;
         }
-        return start + partialTicks * diff2;
+        return start + partialTick * diff2;
     }
 
     @Override

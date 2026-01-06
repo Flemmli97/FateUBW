@@ -27,11 +27,11 @@ public class MagicCircleParticle extends TextureSheetParticle {
     }
 
     @Override
-    public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
+    public void render(VertexConsumer buffer, Camera renderInfo, float partialTick) {
         Quaternionf quaternion = new Quaternionf(0.0F, 0.0F, 0.0F, 1.0F);
         quaternion.mul(Axis.YP.rotationDegrees(-this.yRot));
         quaternion.mul(Axis.XP.rotationDegrees(this.xRot));
-        this.renderRotatedQuad(buffer, renderInfo, quaternion, partialTicks);
+        this.renderRotatedQuad(buffer, renderInfo, quaternion, partialTick);
     }
 
     @Override

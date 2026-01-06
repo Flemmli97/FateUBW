@@ -19,7 +19,7 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
     protected M model;
 
     @Inject(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;isBaby()Z", ordinal = 0))
-    private void nonSit(T entity, float entityYaw, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int packedLight, CallbackInfo info) {
+    private void nonSit(T entity, float entityYaw, float partialTick, PoseStack matrixStack, MultiBufferSource buffer, int packedLight, CallbackInfo info) {
         if (!StandingVehicle.shouldSit(entity))
             this.model.riding = false;
     }

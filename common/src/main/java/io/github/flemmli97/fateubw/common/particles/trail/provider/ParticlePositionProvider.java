@@ -40,8 +40,8 @@ public class ParticlePositionProvider implements TrailProvider {
     }
 
     @Override
-    public float adjustedPartialTicks(float partialTicks) {
-        return this.isFading() ? 1 : partialTicks;
+    public float adjustedPartialTicks(float partialTick) {
+        return this.isFading() ? 1 : partialTick;
     }
 
     @Override

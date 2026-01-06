@@ -53,11 +53,11 @@ public class SphereParticle extends Particle {
     }
 
     @Override
-    public void render(VertexConsumer buffer, Camera camera, float partialTicks) {
+    public void render(VertexConsumer buffer, Camera camera, float partialTick) {
         Vec3 vec3 = camera.getPosition();
-        float x = (float) (Mth.lerp(partialTicks, this.xo, this.x) - vec3.x());
-        float y = (float) (Mth.lerp(partialTicks, this.yo, this.y) - vec3.y());
-        float z = (float) (Mth.lerp(partialTicks, this.zo, this.z) - vec3.z());
+        float x = (float) (Mth.lerp(partialTick, this.xo, this.x) - vec3.x());
+        float y = (float) (Mth.lerp(partialTick, this.yo, this.y) - vec3.y());
+        float z = (float) (Mth.lerp(partialTick, this.zo, this.z) - vec3.z());
         PoseStack stack = new PoseStack();
         stack.translate(x, y, z);
         RenderUtils.renderSphere(buffer, false, stack, this.rCol, this.gCol, this.bCol, this.alpha, this.scale, 20, LightTexture.FULL_BRIGHT);

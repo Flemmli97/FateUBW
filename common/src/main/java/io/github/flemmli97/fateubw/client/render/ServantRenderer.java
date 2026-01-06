@@ -40,11 +40,11 @@ public class ServantRenderer<T extends BaseServant, M extends ServantModel<T>> e
     }
 
     @Override
-    public void render(T entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int light) {
+    public void render(T entity, float yaw, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int light) {
         this.model.update(entity);
         DoublePoseStack recording = new DoublePoseStack(poseStack);
         this.plainPose = recording.getApplied();
-        float summonProgress = (float) entity.getSummonProgress(partialTicks);
+        float summonProgress = (float) entity.getSummonProgress(partialTick);
         Vector4f clip;
         if (summonProgress >= 0 && summonProgress < 1) {
             Vector3f normal = new Vector3f(0, 0, 1);
@@ -63,7 +63,7 @@ public class ServantRenderer<T extends BaseServant, M extends ServantModel<T>> e
                 state.set(2);
             return cons;
         } : buffer;
-        super.render(entity, yaw, partialTicks, recording, buf, light);
+        super.render(entity, yaw, partialTick, recording, buf, light);
         if (state.get() != 0) // other buffersource was used
             SEP.endBatch();
     }

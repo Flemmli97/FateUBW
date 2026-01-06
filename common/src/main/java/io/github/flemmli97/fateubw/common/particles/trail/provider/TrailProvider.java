@@ -16,7 +16,7 @@ public interface TrailProvider {
 
     boolean removed();
 
-    default float adjustedPartialTicks(float partialTicks) {
-        return partialTicks;
+    default float adjustedPartialTicks(float partialTick) {
+        return partialTick;
     }
 }

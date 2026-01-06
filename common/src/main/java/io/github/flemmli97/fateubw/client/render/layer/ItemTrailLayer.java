@@ -25,7 +25,7 @@ public class ItemTrailLayer<T extends LivingEntity & AnimatedEntity & EntityWeap
     }
 
     @Override
-    public void render(PoseStack stack, MultiBufferSource buffer, int light, T entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void render(PoseStack stack, MultiBufferSource buffer, int light, T entity, float limbSwing, float limbSwingAmount, float partialTick, float ageInTicks, float netHeadYaw, float headPitch) {
         AnimationState anim = entity.getAnimationHandler().getAnimation();
         if (entity.shouldRecordData()) {
             stack = this.renderer instanceof TrailPoseGetter getter ? getter.getPlainStack() : stack;

@@ -20,7 +20,7 @@ public class RenderEmpty<T extends Entity> extends EntityRenderer<T> {
     }
 
     @Override
-    public void render(T entity, float entityYaw, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int packedLight) {
+    public void render(T entity, float entityYaw, float partialTick, PoseStack matrixStack, MultiBufferSource buffer, int packedLight) {
     }
 
     @Override

@@ -28,27 +28,27 @@ public class RenderExcalibur extends BeamRenderer<Excalibur> {
     }
 
     @Override
-    public void render(Excalibur entity, float entityYaw, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int packedLight) {
+    public void render(Excalibur entity, float entityYaw, float partialTick, PoseStack matrixStack, MultiBufferSource buffer, int packedLight) {
         matrixStack.pushPose();
         boolean playerView = entity.getOwner() == Minecraft.getInstance().player && Minecraft.getInstance().options.getCameraType() != CameraType.THIRD_PERSON_BACK;
         if (!playerView) {
-            float y = Mth.lerp(partialTicks, entity.yRotO, entity.getYRot()) + 90;
-            float x = -Mth.lerp(partialTicks, entity.xRotO, entity.getXRot());
+            float y = Mth.lerp(partialTick, entity.yRotO, entity.getYRot()) + 90;
+            float x = -Mth.lerp(partialTick, entity.xRotO, entity.getXRot());
             matrixStack.mulPose(Axis.YN.rotationDegrees(y));
             matrixStack.mulPose(Axis.ZP.rotationDegrees(x));
-            float scale = Mth.sin((entity.tickCount + partialTicks) * 1000) * 0.05f + 1f;
+            float scale = Mth.sin((entity.tickCount + partialTick) * 1000) * 0.05f + 1f;
             matrixStack.scale(1, scale, scale);
             matrixStack.translate(0, RANDOM.nextFloat() * 0.2, RANDOM.nextFloat() * 0.2);
             matrixStack.mulPose(Axis.ZP.rotationDegrees(-x));
             matrixStack.mulPose(Axis.YN.rotationDegrees(-y));
         }
-        super.render(entity, entityYaw, partialTicks, matrixStack, buffer, packedLight);
+        super.render(entity, entityYaw, partialTick, matrixStack, buffer, packedLight);
         matrixStack.popPose();
     }
 
     @Override
-    public float widthFunc(Excalibur entity, float partialTicks) {
-        return super.widthFunc(entity, partialTicks) / this.widthMod;
+    public float widthFunc(Excalibur entity, float partialTick) {
+        return super.widthFunc(entity, partialTick) / this.widthMod;
     }
 
     @Override

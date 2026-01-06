@@ -171,10 +171,10 @@ public class BabylonWeapon extends BaseProjectile {
         return Math.min(1, this.despawnTimer / 40f);
     }
 
-    public float preparationState(float partialTicks) {
+    public float preparationState(float partialTick) {
         if (!this.preparing())
             return 1;
-        return Mth.clamp((this.preparationTick + partialTicks) / this.entityData.get(SHOOT_TIME), 0, 1);
+        return Mth.clamp((this.preparationTick + partialTick) / this.entityData.get(SHOOT_TIME), 0, 1);
     }
 
     private void updatePreparation() {

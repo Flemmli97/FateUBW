@@ -62,7 +62,7 @@ public class GuiHolyGrail extends Screen {
     }
 
     @Override
-    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         graphics.blit(TEX, this.width / 2 - X_SIZE / 2, this.height / 2 - Y_SIZE / 2, 0, 0, X_SIZE, Y_SIZE);
     }
 

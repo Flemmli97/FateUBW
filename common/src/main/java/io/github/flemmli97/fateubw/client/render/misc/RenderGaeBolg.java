@@ -28,12 +28,12 @@ public class RenderGaeBolg extends ItemProjectileRenderer<GaeBolg> {
     }
 
     @Override
-    public void render(GaeBolg entity, float rotation, float partialTicks, PoseStack stack, MultiBufferSource buffer, int packedLight) {
+    public void render(GaeBolg entity, float rotation, float partialTick, PoseStack stack, MultiBufferSource buffer, int packedLight) {
         stack.pushPose();
         stack.translate(0, 0.05, 0);
-        super.render(entity, rotation, partialTicks, stack, buffer, packedLight);
+        super.render(entity, rotation, partialTick, stack, buffer, packedLight);
         stack.popPose();
-        TrailRenderer.render(entity, this.info, entity.trailPositions(), buffer.getBuffer(FateRenders.TRAIL_TRANSLUCENT), partialTicks);
+        TrailRenderer.render(entity, this.info, entity.trailPositions(), buffer.getBuffer(FateRenders.TRAIL_TRANSLUCENT), partialTick);
     }
 
     @Override

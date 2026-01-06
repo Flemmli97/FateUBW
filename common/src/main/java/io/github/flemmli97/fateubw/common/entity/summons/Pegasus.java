@@ -384,12 +384,12 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
         this.tickBrain(this);
     }
 
-    public float interpolatedMoveTick(float partialTicks) {
-        return this.moveStateTracker.interpolatedMoveTick(partialTicks);
+    public float interpolatedMoveTick(float partialTick) {
+        return this.moveStateTracker.interpolatedMoveTick(partialTick);
     }
 
-    public float interpolatedMoveTickOf(MoveType type, float partialTicks) {
-        return this.moveStateTracker.interpolatedMoveTickOf(type, partialTicks);
+    public float interpolatedMoveTickOf(MoveType type, float partialTick) {
+        return this.moveStateTracker.interpolatedMoveTickOf(type, partialTick);
     }
 
     public MoveType calculateMoveType() {
