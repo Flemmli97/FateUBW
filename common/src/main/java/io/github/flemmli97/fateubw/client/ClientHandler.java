@@ -1,10 +1,10 @@
 package io.github.flemmli97.fateubw.client;
 
-import io.github.flemmli97.fateubw.client.gui.CommandGui;
-import io.github.flemmli97.fateubw.client.gui.GuiHolyGrail;
-import io.github.flemmli97.fateubw.client.gui.ManaBar;
-import io.github.flemmli97.fateubw.client.gui.SpawnEggScreen;
-import io.github.flemmli97.fateubw.client.gui.TeamGui;
+import io.github.flemmli97.fateubw.client.screen.CommandScreen;
+import io.github.flemmli97.fateubw.client.screen.HolyGrailScreen;
+import io.github.flemmli97.fateubw.client.screen.ManaBar;
+import io.github.flemmli97.fateubw.client.screen.SpawnEggScreen;
+import io.github.flemmli97.fateubw.client.screen.TeamScreen;
 import io.github.flemmli97.fateubw.common.network.C2SServantCommand;
 import io.github.flemmli97.fateubw.common.network.C2STeamMessage;
 import io.github.flemmli97.fateubw.common.network.S2CServantGui;
@@ -45,16 +45,16 @@ public class ClientHandler {
     }
 
     public static void displayCommandGui(S2CServantGui.ServantMetaData data, boolean open) {
-        if (Minecraft.getInstance().screen instanceof CommandGui teamGui) {
+        if (Minecraft.getInstance().screen instanceof CommandScreen teamGui) {
             teamGui.update(data);
         } else if (open)
-            Minecraft.getInstance().setScreen(new CommandGui(data));
+            Minecraft.getInstance().setScreen(new CommandScreen(data));
         else
             LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.ActionType.CLOSE, data.entityId()));
     }
 
     public static void openGrailGui(Map<ResourceLocation, Component> rewards) {
-        Minecraft.getInstance().setScreen(new GuiHolyGrail(rewards));
+        Minecraft.getInstance().setScreen(new HolyGrailScreen(rewards));
     }
 
     public static void openSpawneggGui(InteractionHand hand) {
@@ -62,10 +62,10 @@ public class ClientHandler {
     }
 
     public static void openTeamGui(boolean open, GrailTeam.ClientTeamInfo info) {
-        if (Minecraft.getInstance().screen instanceof TeamGui teamGui) {
-            teamGui.update(info, true);
+        if (Minecraft.getInstance().screen instanceof TeamScreen teamScreen) {
+            teamScreen.update(info, true);
         } else if (open)
-            Minecraft.getInstance().setScreen(new TeamGui(info));
+            Minecraft.getInstance().setScreen(new TeamScreen(info));
         else
             LoaderNetwork.INSTANCE.sendToServer(new C2STeamMessage(C2STeamMessage.Type.CLOSE, ""));
     }

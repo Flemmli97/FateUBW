@@ -10,6 +10,8 @@
     "ServerPlayerMixin"
   ],
   "client": [
+    "ClientPacketListenerMixin",
+    "MinecraftMixin"
   ],
   "injectors": {
     "defaultRequire": 1

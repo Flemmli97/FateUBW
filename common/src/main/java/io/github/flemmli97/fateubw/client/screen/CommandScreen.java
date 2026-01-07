@@ -1,4 +1,4 @@
-package io.github.flemmli97.fateubw.client.gui;
+package io.github.flemmli97.fateubw.client.screen;
 
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.api.entity.ServantLike;
@@ -7,7 +7,7 @@ import io.github.flemmli97.fateubw.common.network.C2SMessageGui;
 import io.github.flemmli97.fateubw.common.network.C2SServantCommand;
 import io.github.flemmli97.fateubw.common.network.C2SServantSpecial;
 import io.github.flemmli97.fateubw.common.network.S2CServantGui;
-import io.github.flemmli97.fateubw.platform.Platform;
+import io.github.flemmli97.fateubw.common.registry.FateAttachments;
 import io.github.flemmli97.tenshilib.client.render.RenderUtils;
 import io.github.flemmli97.tenshilib.loader.LoaderNetwork;
 import net.minecraft.ChatFormatting;
@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.function.Consumer;
 
-public class CommandGui extends Screen {
+public class CommandScreen extends Screen {
 
     private final static ResourceLocation GUI_BACK_GROUND = Fate.modRes("textures/gui/command_gui.png");
     private static final ResourceLocation SEAL_1 = Fate.modRes("icon/command_seal_1");
@@ -52,7 +52,7 @@ public class CommandGui extends Screen {
     private final ServantLike<?> servant;
     private S2CServantGui.ServantMetaData data;
 
-    public CommandGui(S2CServantGui.ServantMetaData data) {
+    public CommandScreen(S2CServantGui.ServantMetaData data) {
         super(Component.translatable("fateubw.gui.command"));
         this.servant = this.createFrom(data);
         this.rand.setSeed(Minecraft.getInstance().player.getUUID().getLeastSignificantBits());
@@ -159,7 +159,7 @@ public class CommandGui extends Screen {
     @Override
     public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         Player player = this.minecraft.player;
-        PlayerData data = Platform.INSTANCE.getPlayerData(player);
+        PlayerData data = FateAttachments.PLAYER_DATA.get().get(player);
         if (data == null)
             return;
         graphics.blit(GUI_BACK_GROUND, this.leftPos, this.topPos, 0, 0, this.sizeX, this.sizeY);

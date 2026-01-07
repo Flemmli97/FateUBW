@@ -1,4 +1,4 @@
-package io.github.flemmli97.fateubw.client.gui;
+package io.github.flemmli97.fateubw.client.screen;
 
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.network.C2SGrailReward;
@@ -13,7 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.List;
 import java.util.Map;
 
-public class GuiHolyGrail extends Screen {
+public class HolyGrailScreen extends Screen {
 
     private static final ResourceLocation TEX = Fate.modRes("textures/gui/grail_reward.png");
     private static final WidgetSprites ENTRY_WIDGET = new WidgetSprites(Fate.modRes("widget/grail_reward_entry"), Fate.modRes("widget/grail_reward_entry_highlighted"));
@@ -25,7 +25,7 @@ public class GuiHolyGrail extends Screen {
 
     private static final int X_SIZE = 255, Y_SIZE = 186;
 
-    public GuiHolyGrail(Map<ResourceLocation, Component> rewards) {
+    public HolyGrailScreen(Map<ResourceLocation, Component> rewards) {
         super(Component.translatable("fateubw.gui.holy_grail"));
         this.rewards = rewards;
     }

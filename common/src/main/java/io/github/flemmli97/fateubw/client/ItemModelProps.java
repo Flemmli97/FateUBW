@@ -5,8 +5,8 @@ import io.github.flemmli97.fateubw.common.entity.misc.ChainDagger;
 import io.github.flemmli97.fateubw.common.entity.servant.Emiya;
 import io.github.flemmli97.fateubw.common.entity.servant.Medusa;
 import io.github.flemmli97.fateubw.common.items.weapons.ArcherBowItem;
+import io.github.flemmli97.fateubw.common.registry.FateAttachments;
 import io.github.flemmli97.fateubw.common.registry.FateDataComponents;
-import io.github.flemmli97.fateubw.platform.Platform;
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -25,7 +25,7 @@ public class ItemModelProps {
     public static final ClampedItemPropertyFunction THROWN_DAGGER_PROP = (stack, world, entity, seed) -> {
         boolean thrown = false;
         if (entity instanceof Player player) {
-            ChainDagger dagger = Platform.INSTANCE.getPlayerData(player).getThrownDagger();
+            ChainDagger dagger = FateAttachments.PLAYER_DATA.get().get(player).getThrownDagger();
             if (dagger != null) {
                 thrown = dagger.fromMainHand() ? player.getMainHandItem() == stack : player.getOffhandItem() == stack;
             }

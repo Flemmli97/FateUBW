@@ -1,8 +1,8 @@
-package io.github.flemmli97.fateubw.client.gui;
+package io.github.flemmli97.fateubw.client.screen;
 
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.config.ClientConfig;
-import io.github.flemmli97.fateubw.platform.Platform;
+import io.github.flemmli97.fateubw.common.registry.FateAttachments;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -22,7 +22,7 @@ public class ManaBar {
     public void renderBar(GuiGraphics graphics, DeltaTracker tracker) {
         if (this.mc.player.isCreative() || this.mc.player.isSpectator() || this.mc.options.hideGui)
             return;
-        int mana = Platform.INSTANCE.getPlayerData(this.mc.player).getMana();
+        int mana = FateAttachments.PLAYER_DATA.get().get(this.mc.player).getMana();
         int guiWidth = this.mc.getWindow().getGuiScaledWidth();
         int guiHeight = this.mc.getWindow().getGuiScaledHeight();
         int width = 101;

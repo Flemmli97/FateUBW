@@ -12,7 +12,7 @@ import io.github.flemmli97.tenshilib.client.model.ExtendedEntityModel;
 import io.github.flemmli97.tenshilib.client.model.ModelPartsContainer;
 import net.minecraft.resources.ResourceLocation;
 
-public class StarfishModel<T extends LesserMonster> extends ExtendedEntityModel<T>  {
+public class StarfishModel<T extends LesserMonster> extends ExtendedEntityModel<T> {
 
     public static final ResourceLocation LOCATION = Fate.modRes("starfish");
 

@@ -1,4 +1,4 @@
-package io.github.flemmli97.fateubw.client.gui;
+package io.github.flemmli97.fateubw.client.screen;
 
 import io.github.flemmli97.fateubw.common.components.ServantSpawneggData;
 import io.github.flemmli97.fateubw.common.network.C2SSpawnEgg;

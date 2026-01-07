@@ -1,4 +1,4 @@
-package io.github.flemmli97.fateubw.client.gui;
+package io.github.flemmli97.fateubw.client.screen;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.datafixers.util.Pair;
@@ -26,7 +26,7 @@ import org.lwjgl.glfw.GLFW;
 import java.util.List;
 import java.util.UUID;
 
-public class TeamGui extends Screen {
+public class TeamScreen extends Screen {
 
     private static final ResourceLocation WIDGETS = Fate.modRes("textures/gui/widgets.png");
     private static final WidgetSprites ACCEPT = new WidgetSprites(Fate.modRes("icon/team/accept"), Fate.modRes("icon/team/accept_highlighted"));
@@ -51,7 +51,7 @@ public class TeamGui extends Screen {
     private EditBox box;
     private Button leaveButton;
 
-    public TeamGui(GrailTeam.ClientTeamInfo info) {
+    public TeamScreen(GrailTeam.ClientTeamInfo info) {
         super(Component.translatable("fateubw.gui.team"));
         this.update(info, false);
     }

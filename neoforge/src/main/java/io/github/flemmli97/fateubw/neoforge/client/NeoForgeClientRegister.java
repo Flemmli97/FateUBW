@@ -6,6 +6,7 @@ import io.github.flemmli97.fateubw.client.ClientRegister;
 import io.github.flemmli97.fateubw.client.render.RenderAltar;
 import io.github.flemmli97.fateubw.client.render.item.RenderEAItem;
 import io.github.flemmli97.fateubw.client.render.item.RenderExcaliburItem;
+import io.github.flemmli97.fateubw.client.screen.RealityMarbleTransitionScreen;
 import io.github.flemmli97.fateubw.common.registry.FateBlocks;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import net.minecraft.client.Minecraft;
@@ -21,6 +22,7 @@ import net.minecraft.core.particles.ParticleType;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterDimensionTransitionScreenEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
@@ -96,6 +98,14 @@ public class NeoForgeClientRegister {
             public <T extends ParticleOptions> void register(ParticleType<T> type, Function<SpriteSet, ParticleProvider<T>> provider) {
                 event.registerSpriteSet(type, provider::apply);
             }
+        });
+    }
+
+    @SubscribeEvent
+    public static void registerDimensionTransitions(RegisterDimensionTransitionScreenEvent event) {
+        RealityMarbleTransitionScreen.DIMENSIONS.forEach(key -> {
+            event.registerIncomingEffect(key, (b, r) -> new RealityMarbleTransitionScreen(b, r, key));
+            event.registerOutgoingEffect(key, (b, r) -> new RealityMarbleTransitionScreen(b, r, key));
         });
     }
 }
