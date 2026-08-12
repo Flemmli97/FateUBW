@@ -66,6 +66,7 @@ public class ConfigSpecs {
         public final ModConfigSpec.DoubleValue eaDamage;
         public final ModConfigSpec.DoubleValue excaliburDamage;
         public final ModConfigSpec.DoubleValue caladBolgDmg;
+        public final ModConfigSpec.DoubleValue ubwScale;
         public final ModConfigSpec.DoubleValue magicBeam;
         public final ModConfigSpec.DoubleValue gaeBolgDmg;
         public final ModConfigSpec.ConfigValue<List<String>> gaeBolgEffect;
@@ -127,6 +128,7 @@ public class ConfigSpecs {
             this.eaDamage = builder.comment("Damage of EA").defineInRange("EA Dmg", CommonConfig.eaDamage, 0, Double.MAX_VALUE);
             this.excaliburDamage = builder.comment("Damage of excalibur").defineInRange("Excalibur Dmg", CommonConfig.excaliburDamage, 0, Double.MAX_VALUE);
             this.caladBolgDmg = builder.comment("Caladbolg damage").defineInRange("Caladbolg Dmg", CommonConfig.caladBolgDmg, 0, Double.MAX_VALUE);
+            this.ubwScale = builder.comment("Damage scaling for projectiles from unlimited bladeworks projectiles").defineInRange("UBW Dmg Scale", CommonConfig.ubwScale, 0, Double.MAX_VALUE);
             this.magicBeam = builder.comment("Damage of medeas magic beams").defineInRange("Magic Beam Dmg", CommonConfig.magicBeam, 0, Double.MAX_VALUE);
             this.gaeBolgDmg = builder.comment("Damage of Gae Bolg").defineInRange("Gae Bolg Dmg", CommonConfig.gaeBolgDmg, 0, Double.MAX_VALUE);
             this.gaeBolgEffect = builder.comment("Potions applied by Gae Bolg. Usage: " + PotionEffectsConfig.usage()).define("Gae Bolg Potions",

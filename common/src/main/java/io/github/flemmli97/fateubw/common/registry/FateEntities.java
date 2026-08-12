@@ -7,13 +7,14 @@ import io.github.flemmli97.fateubw.api.datapack.ServantProperties;
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.misc.AestusDomusBeam;
 import io.github.flemmli97.fateubw.common.entity.misc.ArcherArrow;
-import io.github.flemmli97.fateubw.common.entity.misc.BabylonWeapon;
+import io.github.flemmli97.fateubw.common.entity.misc.WeaponProjectile;
 import io.github.flemmli97.fateubw.common.entity.misc.CaladBolg;
 import io.github.flemmli97.fateubw.common.entity.misc.ChainDagger;
 import io.github.flemmli97.fateubw.common.entity.misc.EnkiduChains;
 import io.github.flemmli97.fateubw.common.entity.misc.EnumaElish;
 import io.github.flemmli97.fateubw.common.entity.misc.Excalibur;
 import io.github.flemmli97.fateubw.common.entity.misc.GaeBolg;
+import io.github.flemmli97.fateubw.common.entity.misc.ItemInGroundEntity;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicBeam;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicBufCircle;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicShot;
@@ -129,7 +130,7 @@ public class FateEntities {
                     .putAttributes(Attributes.ARMOR, 16).putAttributes(Attributes.ARMOR_TOUGHNESS, 6)
                     .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 17)
                     .putAttributes(FateAttributes.MAGIC_ATTACK.asHolder(), 14).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 12)
-                    .putAttributes(Attributes.MOVEMENT_SPEED, 0.35)
+                    .putAttributes(Attributes.MOVEMENT_SPEED, 0.27)
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(50));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<Gilgamesh>> GILGAMESH = regServant("gilgamesh_archer", "Gate of Babylon/EA", EntityType.Builder.of(Gilgamesh::new, MobCategory.MISC)
@@ -241,7 +242,7 @@ public class FateEntities {
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<GaeBolg>> GAEBOLG = reg("gae_bolg", EntityType.Builder.<GaeBolg>of(GaeBolg::new, MobCategory.MISC).sized(0.25F, 0.25F).updateInterval(1));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<ArcherArrow>> ARCHER_ARROW = reg("archer_arrow", EntityType.Builder.<ArcherArrow>of(ArcherArrow::new, MobCategory.MISC).sized(0.25F, 0.25F));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<CaladBolg>> CALADBOLG = reg("caladbolg", EntityType.Builder.<CaladBolg>of(CaladBolg::new, MobCategory.MISC).sized(0.25F, 0.25F));
-    public static final RegistryEntrySupplier<EntityType<?>, EntityType<BabylonWeapon>> BABYLON = reg("babylon", EntityType.Builder.<BabylonWeapon>of(BabylonWeapon::new, MobCategory.MISC).sized(0.25F, 0.25F));
+    public static final RegistryEntrySupplier<EntityType<?>, EntityType<WeaponProjectile>> BABYLON = reg("babylon", EntityType.Builder.<WeaponProjectile>of(WeaponProjectile::new, MobCategory.MISC).sized(0.25F, 0.25F));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<EnumaElish>> EA = reg("ea", EntityType.Builder.<EnumaElish>of(EnumaElish::new, MobCategory.MISC).sized(0.05F, 0.05F));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<MagicBeam>> MAGIC_BEAM = reg("magic_beam", EntityType.Builder.<MagicBeam>of(MagicBeam::new, MobCategory.MISC).sized(0.05F, 0.05F));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<MagicBufCircle>> MEDEA_CIRCLE = reg("medeas_circle", EntityType.Builder.of(MagicBufCircle::new, MobCategory.MISC));
@@ -253,6 +254,7 @@ public class FateEntities {
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<StarfishShot>> STARFISH_SHOT = reg("starfish_shot", EntityType.Builder.<StarfishShot>of(StarfishShot::new, MobCategory.MISC).sized(0.25F, 0.25F));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<EnkiduChains>> ENKIDU_CHAINS = reg("enkidu_chains", EntityType.Builder.<EnkiduChains>of(EnkiduChains::new, MobCategory.MISC).sized(0.25F, 0.25F));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<AestusDomusBeam>> AESTUS_DOMUS_BEAM = reg("aestus_domus_beam", EntityType.Builder.<AestusDomusBeam>of(AestusDomusBeam::new, MobCategory.MISC).sized(0.25F, 0.25F));
+    public static final RegistryEntrySupplier<EntityType<?>, EntityType<ItemInGroundEntity>> ITEM_IN_GROUND_ENTITY = reg("item_in_ground_entity", EntityType.Builder.of(ItemInGroundEntity::new, MobCategory.MISC).sized(0.75F, 1.5F));
 
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<LesserMonster>> LESSER_MONSTER = regWithEgg("starfish_monster", EntityType.Builder.<LesserMonster>of(LesserMonster::new, MobCategory.MONSTER).clientTrackingRange(8),
             0x171c3f, 0x00ff00,

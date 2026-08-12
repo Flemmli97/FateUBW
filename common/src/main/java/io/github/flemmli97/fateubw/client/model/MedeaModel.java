@@ -19,7 +19,8 @@ public class MedeaModel<T extends Medea> extends ServantModel<T> {
     }
 
     @Override
-    protected void modelReloadListener(ModelPartsContainer model) {
+    protected void onModelReload(ModelPartsContainer model) {
+        super.onModelReload(model);
         this.cloak = model.getPart("Cloak");
         this.hat = model.getPart("Hat");
         this.cloakBack = model.getPart("CloakBackLayer");

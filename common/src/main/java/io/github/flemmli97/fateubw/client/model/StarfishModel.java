@@ -4,10 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.entity.summons.LesserMonster;
-import io.github.flemmli97.tenshilib.client.data.GeoAnimationManager;
-import io.github.flemmli97.tenshilib.client.data.GeoModelManager;
-import io.github.flemmli97.tenshilib.client.data.ReloadableCache;
-import io.github.flemmli97.tenshilib.client.model.BedrockAnimations;
 import io.github.flemmli97.tenshilib.client.model.ExtendedEntityModel;
 import io.github.flemmli97.tenshilib.client.model.ModelPartsContainer;
 import net.minecraft.resources.ResourceLocation;
@@ -16,13 +12,8 @@ public class StarfishModel<T extends LesserMonster> extends ExtendedEntityModel<
 
     public static final ResourceLocation LOCATION = Fate.modRes("starfish");
 
-    protected final ReloadableCache<ModelPartsContainer> model;
-    protected final ReloadableCache<BedrockAnimations> anim;
-
     public StarfishModel() {
-        super();
-        this.model = GeoModelManager.getInstance().getModel(LOCATION);
-        this.anim = GeoAnimationManager.getInstance().getAnimation(LOCATION);
+        super(LOCATION, LOCATION);
     }
 
     @Override
@@ -35,12 +26,12 @@ public class StarfishModel<T extends LesserMonster> extends ExtendedEntityModel<
         this.getModel().resetPoses();
         float partialTick = this.getPartialTick();
         if (entity.deathTime <= 0) {
-            this.anim.get().doAnimation(this, "idle", entity.tickCount, partialTick);
+            this.animation.get().doAnimation(this, "idle", entity.tickCount, partialTick);
             float moveTick = entity.interpolatedMoveTick(partialTick);
             if (moveTick > 0)
-                this.anim.get().doAnimation(this, "walk", entity.tickCount, partialTick, moveTick);
+                this.animation.get().doAnimation(this, "walk", entity.tickCount, partialTick, moveTick);
         }
-        this.anim.get().doAnimation(this, entity.getAnimationHandler(), partialTick);
+        this.animation.get().doAnimation(this, entity.getAnimationHandler(), partialTick);
     }
 
     @Override

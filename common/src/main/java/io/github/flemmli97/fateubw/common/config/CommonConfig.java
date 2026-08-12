@@ -47,6 +47,7 @@ public class CommonConfig {
     public static float eaDamage = 15;
     public static float excaliburDamage = 15;
     public static float caladBolgDmg = 30;
+    public static float ubwScale = 0.9f;
     public static float magicBeam = 6;
     public static float gaeBolgDmg = 25;
     public static PotionEffectsConfig gaeBolgEffect = new PotionEffectsConfig(

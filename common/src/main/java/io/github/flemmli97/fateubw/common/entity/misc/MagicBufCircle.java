@@ -17,12 +17,13 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.OwnableEntity;
+import net.minecraft.world.entity.TraceableEntity;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
 import java.util.UUID;
 
-public class MagicBufCircle extends Entity implements OwnableEntity {
+public class MagicBufCircle extends Entity implements TraceableEntity {
 
     protected static final EntityDataAccessor<Float> RANGE = SynchedEntityData.defineId(MagicBufCircle.class, EntityDataSerializers.FLOAT);
 
@@ -99,7 +100,6 @@ public class MagicBufCircle extends Entity implements OwnableEntity {
         compound.putFloat("Range", this.entityData.get(RANGE));
     }
 
-    @Override
     public UUID getOwnerUUID() {
         return this.ownerUUID;
     }

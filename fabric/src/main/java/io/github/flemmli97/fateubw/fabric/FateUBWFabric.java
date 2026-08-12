@@ -58,6 +58,7 @@ public class FateUBWFabric implements ModInitializer {
         ServerEntityEvents.ENTITY_LOAD.register(((entity, world) -> {
             if (entity instanceof ServerPlayer serverPlayer)
                 EventCalls.joinWorld(serverPlayer);
+            EventCalls.onLoad(entity);
         }));
         ServerTickEvents.END_WORLD_TICK.register(world -> {
             if (world.dimension() == Level.OVERWORLD) {

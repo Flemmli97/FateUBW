@@ -352,8 +352,8 @@ public class GrailTeam {
                 players.sort(Comparator.comparing(p -> p.getFirst().getName()));
             }
             List<Pair<ShortTeamInfo, TeamStatus>> others = team == null ? List.of() : handler.getTeams(team)
-                    .stream()
-                    .map(other -> Pair.of(other.getInfo(), team.getAllyStatus(other))).toList();
+                                                                                      .stream()
+                                                                                      .map(other -> Pair.of(other.getInfo(), team.getAllyStatus(other))).toList();
             return new ClientTeamInfo(Optional.ofNullable(team != null ? team.getInfo(player) : null),
                     players, others, handler.fetchInvitesFor(player));
         }

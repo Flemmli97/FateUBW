@@ -3,14 +3,17 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.summons.GordiusWheel;
+import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailProvider;
+import io.github.flemmli97.fateubw.common.registry.FateDimensions;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.Utils;
+import io.github.flemmli97.fateubw.common.world.RealityMarbleHandler;
 import io.github.flemmli97.fateubw.mixinhelper.HorseExtension;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.SelectableBehaviourBuilder;
@@ -21,7 +24,12 @@ import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionC
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationsBuilder;
+import io.github.flemmli97.tenshilib.common.particle.AdvancedParticleContainer;
+import io.github.flemmli97.tenshilib.common.particle.data.ColorData;
+import io.github.flemmli97.tenshilib.common.particle.data.ParticleMetaData;
+import io.github.flemmli97.tenshilib.common.particle.data.ScaleData;
 import io.github.flemmli97.tenshilib.common.utils.math.OrientedBoundingBox;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
@@ -42,6 +50,8 @@ import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
 import org.joml.Vector4f;
+
+import java.util.List;
 
 public class Iskander extends BaseServant {
 
@@ -79,6 +89,8 @@ public class Iskander extends BaseServant {
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.52)
             .marker(EntityWeaponTrailProvider.TRAIL_END, 0.8));
     private static final String SUMMON_HORSE = BUILDER.add("horse", CHARIOT);
+    public static final String IONIOI_HETAIROI = BUILDER.add("ionioi_hetairoi", AnimationsBuilder.definition(5.4)
+            .marker("start", 0.28).marker("cast", 3.4).marker("teleport", 5.24));
     public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2.));
     public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
 
@@ -181,7 +193,38 @@ public class Iskander extends BaseServant {
 
     @Override
     public void handleAttack(AnimationState anim) {
-        if (anim.is(CHARIOT, SUMMON_HORSE)) {
+        if (anim.is(IONIOI_HETAIROI)) {
+            this.getNavigation().stop();
+            if (anim.isPast("start")) {
+                for (int i = 0; i < 4; i++) {
+                    AdvancedParticleContainer.make(ParticleTypes.SMOKE)
+                            .addData(new ScaleData(0.25f))
+                            .addData(new ColorData((210 + this.getRandom().nextInt(10)) / 255f, (190 + this.getRandom().nextInt(20)) / 255f, (150 + this.getRandom().nextInt(15)) / 255f))
+                            .add(this.level(), this.getRandomX(16), this.getY(this.getRandom().nextDouble() * 7 - 2), this.getRandomZ(16));
+                }
+            }
+            if (anim.isAt("cast")) {
+                if (RealityMarbleHandler.get(this.getServer())
+                        .isInRealityMarble(this) || !this.attemptUseNobelPhantasm()) {
+                    this.getAnimationHandler().setAnimation(null);
+                    return;
+                }
+                AdvancedParticleContainer.make(FateParticles.SPHERE_CLOUD.get())
+                        .addData(new ScaleData(0, 48, 40))
+                        .addData(new ColorData(1, 1, 1, 0.5f))
+                        .addData(new ParticleMetaData(60, false, 0))
+                        .add(this.level(), null, this.getX(), this.getY(0.5), this.getZ(), true);
+                RealityMarbleHandler.prepareChunks(this, FateDimensions.SAND_DUNES.dimension(), 48);
+            }
+            if (anim.isPast("cast")) {
+                S2CScreenShake.sendAround(this, 64, 2, 1);
+            }
+            if (anim.isAt("teleport")) {
+                List<Entity> entities = this.level().getEntities(EntityTypeTest.forClass(Entity.class), this.getBoundingBox().inflate(48), e -> true);
+                RealityMarbleHandler.get(this.getServer())
+                        .createAndTransportTo(this, entities, FateDimensions.SAND_DUNES.dimension());
+            }
+        } else if (anim.is(CHARIOT, SUMMON_HORSE)) {
             LivingEntity target = this.getTarget();
             if (target != null && !anim.isPast(0.28)) {
                 this.lookAt(target, 60, 30);

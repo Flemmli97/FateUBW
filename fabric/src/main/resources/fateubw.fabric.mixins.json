@@ -6,8 +6,7 @@
   "mixins": [
     "ItemRendererAccessor",
     "LivingEntityMixin",
-    "PlayerMixin",
-    "ServerPlayerMixin"
+    "PlayerMixin"
   ],
   "client": [
     "ClientPacketListenerMixin",

@@ -60,7 +60,8 @@ public class SphereParticle extends Particle {
         float z = (float) (Mth.lerp(partialTick, this.zo, this.z) - vec3.z());
         PoseStack stack = new PoseStack();
         stack.translate(x, y, z);
-        RenderUtils.renderSphere(buffer, false, stack, this.rCol, this.gCol, this.bCol, this.alpha, this.scale, 20, LightTexture.FULL_BRIGHT);
+        RenderUtils.renderSphere(buffer, stack, this.rCol, this.gCol, this.bCol, this.alpha, this.scale, 20, LightTexture.FULL_BRIGHT,
+                0, 0, 1, 1);
     }
 
     @Override

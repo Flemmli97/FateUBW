@@ -11,6 +11,7 @@ public class FateRegistration {
         FateAttributes.ATTRIBUTES.registerContent();
         FateBlocks.BLOCK_ENTITIES.registerContent();
         FateBlocks.BLOCKS.registerContent();
+        FateChunkGenerators.GENERATORS.registerContent();
         FateCreativeTab.TABS.registerContent();
         FateCriterionTriggers.TRIGGERS.registerContent();
         FateDataComponents.DATA_COMPONENTS.registerContent();

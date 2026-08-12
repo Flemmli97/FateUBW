@@ -44,17 +44,20 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector4f;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-public class BabylonWeapon extends BaseProjectile {
+public class WeaponProjectile extends BaseProjectile {
 
-    protected static final EntityDataAccessor<ItemStack> WEAPON_TYPE = SynchedEntityData.defineId(BabylonWeapon.class, EntityDataSerializers.ITEM_STACK);
-    protected static final EntityDataAccessor<Integer> SHOOT_TIME = SynchedEntityData.defineId(BabylonWeapon.class, EntityDataSerializers.INT);
-    protected static final EntityDataAccessor<Boolean> PREPARING = SynchedEntityData.defineId(BabylonWeapon.class, EntityDataSerializers.BOOLEAN);
-    protected static final EntityDataAccessor<Boolean> DESPAWN = SynchedEntityData.defineId(BabylonWeapon.class, EntityDataSerializers.BOOLEAN);
-    protected static final EntityDataAccessor<BlockPos> GROUND = SynchedEntityData.defineId(BabylonWeapon.class, EntityDataSerializers.BLOCK_POS);
+    protected static final EntityDataAccessor<ItemStack> WEAPON_TYPE = SynchedEntityData.defineId(WeaponProjectile.class, EntityDataSerializers.ITEM_STACK);
+    protected static final EntityDataAccessor<Integer> SHOOT_TIME = SynchedEntityData.defineId(WeaponProjectile.class, EntityDataSerializers.INT);
+    protected static final EntityDataAccessor<Boolean> PREPARING = SynchedEntityData.defineId(WeaponProjectile.class, EntityDataSerializers.BOOLEAN);
+    protected static final EntityDataAccessor<Boolean> DESPAWN = SynchedEntityData.defineId(WeaponProjectile.class, EntityDataSerializers.BOOLEAN);
+    protected static final EntityDataAccessor<BlockPos> GROUND = SynchedEntityData.defineId(WeaponProjectile.class, EntityDataSerializers.BLOCK_POS);
+    private static final EntityDataAccessor<Integer> TYPE_DATA = SynchedEntityData.defineId(WeaponProjectile.class, EntityDataSerializers.INT);
 
     private LivingEntity target;
 
@@ -65,16 +68,18 @@ public class BabylonWeapon extends BaseProjectile {
 
     private final EntityTrailHandler trailHandler = new EntityTrailHandler(this, 12);
 
-    public BabylonWeapon(EntityType<? extends BabylonWeapon> type, Level level) {
+    private Type type = Type.BABYLON;
+
+    public WeaponProjectile(EntityType<? extends WeaponProjectile> type, Level level) {
         super(type, level);
     }
 
-    public BabylonWeapon(Level level, LivingEntity shootingEntity) {
+    public WeaponProjectile(Level level, LivingEntity shootingEntity) {
         super(FateEntities.BABYLON.get(), level, shootingEntity);
         this.entityData.set(SHOOT_TIME, this.random.nextInt(15) + 15);
     }
 
-    public BabylonWeapon(Level level, LivingEntity shootingEntity, LivingEntity target) {
+    public WeaponProjectile(Level level, LivingEntity shootingEntity, LivingEntity target) {
         this(level, shootingEntity);
         this.target = target;
     }
@@ -87,6 +92,7 @@ public class BabylonWeapon extends BaseProjectile {
         builder.define(SHOOT_TIME, 20);
         builder.define(DESPAWN, false);
         builder.define(GROUND, BlockPos.ZERO);
+        builder.define(TYPE_DATA, 0);
     }
 
     @Override
@@ -95,6 +101,21 @@ public class BabylonWeapon extends BaseProjectile {
         if (key == GROUND) {
             this.setInGround(this.entityData.get(GROUND));
         }
+        if (key == TYPE_DATA) {
+            int id = this.entityData.get(TYPE_DATA);
+            if (id >= 0 && id < Type.values().length)
+                this.type = Type.values()[id];
+        }
+    }
+
+    public void setType(Type type) {
+        this.setDamageMultiplier(type == Type.BABYLON ? CommonConfig.babylonScale : CommonConfig.ubwScale);
+        this.type = type;
+        this.entityData.set(TYPE_DATA, this.type.ordinal());
+    }
+
+    public Type getWeaponType() {
+        return this.type;
     }
 
     public boolean preparing() {
@@ -133,7 +154,7 @@ public class BabylonWeapon extends BaseProjectile {
                     this.discard();
             } else if (this.random.nextBoolean()) {
                 AdvancedParticleContainer.make(FateParticles.LIGHT.get())
-                        .addData(new ColorData(1.0f, 0.85f, 0.3f, 0.5f))
+                        .addData(new ColorData(this.getWeaponType().despawnParticleColor, Optional.empty(), 0))
                         .addData(new ScaleData(0.15f))
                         .addData(new MotionData(this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01))
                         .addData(new ParticleMetaData(20, false, 0))
@@ -186,7 +207,7 @@ public class BabylonWeapon extends BaseProjectile {
 
         if (this.level().isClientSide) {
             AdvancedParticleContainer.make(FateParticles.LIGHT.get())
-                    .addData(new ColorData(235 / 255F, 235 / 255F, 0 / 255F, 1))
+                    .addData(new ColorData(this.getWeaponType().spawnParticleColor, Optional.empty(), 0))
                     .addData(new ScaleData(0.15f))
                     .addData(new MotionData(this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01))
                     .addData(new ParticleMetaData(20, false, 0))
@@ -239,7 +260,7 @@ public class BabylonWeapon extends BaseProjectile {
         DamageSource source = FateDamageTypes.indirect(FateDamageTypes.BABYLON, this, this.getOwner());
         float damage = (float) ItemUtils.damage(this.level(), null, result.getEntity(), source, this.getWeapon());
         boolean res = Utils.runWithInvulTimer(this.getOwner(), result.getEntity(),
-                e -> e.hurt(source, damage * CommonConfig.babylonScale), 2);
+                e -> e.hurt(source, damage * this.damageMultiplier), 2);
         if (res) {
             if (result.getEntity() instanceof LivingEntity entity) {
                 entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40));
@@ -285,6 +306,7 @@ public class BabylonWeapon extends BaseProjectile {
         super.addAdditionalSaveData(compound);
         compound.put("Weapon", ItemStack.CODEC.encodeStart(this.registryAccess().createSerializationContext(NbtOps.INSTANCE), this.getWeapon()).getOrThrow());
         compound.putBoolean("Preparing", this.preparing());
+        compound.putInt("ProjectileType", this.type.ordinal());
     }
 
     @Override
@@ -292,15 +314,17 @@ public class BabylonWeapon extends BaseProjectile {
         super.readAdditionalSaveData(compound);
         this.setWeapon(ItemStack.CODEC.parse(this.registryAccess().createSerializationContext(NbtOps.INSTANCE), compound.get("Weapon")).getOrThrow());
         this.entityData.set(PREPARING, compound.getBoolean("Preparing"));
+        this.setType(Type.values()[compound.getInt("ProjectileType")]);
     }
 
     public TrailPositions trailPositions() {
         return this.trailHandler.getPositions();
     }
 
-    public static void spawnWeapons(LivingEntity thrower, LivingEntity target, int amount, int range) {
+    public static void spawnWeapons(LivingEntity thrower, LivingEntity target, int amount, int range, Type type) {
         for (Vec3 offset : Utils.randomSidedPositions(thrower, amount, range)) {
-            BabylonWeapon weapon = new BabylonWeapon(thrower.level(), thrower, target);
+            WeaponProjectile weapon = new WeaponProjectile(thrower.level(), thrower, target);
+            weapon.setType(type);
             // Initial rotation is based of the delta. don't want to dig into where its exactly handled so this will do
             weapon.setPos(offset.x, offset.y + thrower.getBbHeight() * 0.5, offset.z);
             Vec3 dir = Vec3.directionFromRotation(0, thrower.getYRot());
@@ -340,7 +364,7 @@ public class BabylonWeapon extends BaseProjectile {
         for (Pair<Float, Float> offset : angles) {
             if (offset == null)
                 continue;
-            BabylonWeapon weapon = new BabylonWeapon(thrower.level(), thrower, target);
+            WeaponProjectile weapon = new WeaponProjectile(thrower.level(), thrower, target);
             // Initial rotation is based of the delta. don't want to dig into where its exactly handled so this will do
             Vec3 dir = Vec3.directionFromRotation(-offset.getSecond(), offset.getFirst());
             Vec3 area = pos.add(dir.scale(range));
@@ -353,5 +377,18 @@ public class BabylonWeapon extends BaseProjectile {
 
     private static float greatCircDist(float yRot1, float xRot1, float yRot2, float xRot2) {
         return (float) Math.acos(Mth.sin(xRot1) * Mth.sin(xRot2) + Mth.cos(xRot1) * Mth.cos(xRot2) * Mth.cos(Mth.abs(yRot1 - yRot2)));
+    }
+
+    public enum Type {
+
+        BABYLON(new Vector4f(235 / 255F, 235 / 255F, 0 / 255F, 1), new Vector4f(255 / 255f, 217 / 255f, 76 / 255f, 0.5f)),
+        UBW(new Vector4f(129 / 255F, 132 / 255F, 152 / 255F, 1), new Vector4f(172 / 255f, 175 / 255f, 195 / 255f, 0.5f));
+
+        private final Vector4f spawnParticleColor, despawnParticleColor;
+
+        Type(Vector4f spawnParticleColor, Vector4f despawnParticleColor) {
+            this.spawnParticleColor = spawnParticleColor;
+            this.despawnParticleColor = despawnParticleColor;
+        }
     }
 }

@@ -3,9 +3,11 @@ package io.github.flemmli97.fateubw.client;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.client.model.MedeaModel;
 import io.github.flemmli97.fateubw.client.model.ServantModel;
+import io.github.flemmli97.fateubw.client.particles.LightningParticle;
 import io.github.flemmli97.fateubw.client.particles.MagicCircleParticle;
 import io.github.flemmli97.fateubw.client.particles.RingParticle;
 import io.github.flemmli97.fateubw.client.particles.RosePetalParticle;
+import io.github.flemmli97.fateubw.client.particles.SphereCloudParticle;
 import io.github.flemmli97.fateubw.client.particles.SphereParticle;
 import io.github.flemmli97.fateubw.client.particles.TrailParticle;
 import io.github.flemmli97.fateubw.client.render.RenderEmpty;
@@ -14,7 +16,7 @@ import io.github.flemmli97.fateubw.client.render.layer.PetrificationLayer;
 import io.github.flemmli97.fateubw.client.render.misc.EmptyRender;
 import io.github.flemmli97.fateubw.client.render.misc.RenderAestusDomusBeam;
 import io.github.flemmli97.fateubw.client.render.misc.RenderArcherArrow;
-import io.github.flemmli97.fateubw.client.render.misc.RenderBabylon;
+import io.github.flemmli97.fateubw.client.render.misc.RenderWeaponProjectile;
 import io.github.flemmli97.fateubw.client.render.misc.RenderCaladbolg;
 import io.github.flemmli97.fateubw.client.render.misc.RenderChainDagger;
 import io.github.flemmli97.fateubw.client.render.misc.RenderEA;
@@ -24,6 +26,7 @@ import io.github.flemmli97.fateubw.client.render.misc.RenderGaeBolg;
 import io.github.flemmli97.fateubw.client.render.misc.RenderGem;
 import io.github.flemmli97.fateubw.client.render.misc.RenderGordius;
 import io.github.flemmli97.fateubw.client.render.misc.RenderHassanCopy;
+import io.github.flemmli97.fateubw.client.render.misc.RenderItemInGround;
 import io.github.flemmli97.fateubw.client.render.misc.RenderMagicBeam;
 import io.github.flemmli97.fateubw.client.render.misc.RenderPegasus;
 import io.github.flemmli97.fateubw.client.render.misc.RenderStarfish;
@@ -107,7 +110,7 @@ public class ClientRegister {
         consumer.register(FateEntities.GAEBOLG.get(), RenderGaeBolg::new);
         consumer.register(FateEntities.ARCHER_ARROW.get(), RenderArcherArrow::new);
         consumer.register(FateEntities.CALADBOLG.get(), RenderCaladbolg::new);
-        consumer.register(FateEntities.BABYLON.get(), RenderBabylon::new);
+        consumer.register(FateEntities.BABYLON.get(), RenderWeaponProjectile::new);
         consumer.register(FateEntities.EA.get(), RenderEA::new);
         consumer.register(FateEntities.MAGIC_BEAM.get(), RenderMagicBeam::new);
         consumer.register(FateEntities.MEDEA_CIRCLE.get(), RenderEmpty::new);
@@ -119,6 +122,7 @@ public class ClientRegister {
         consumer.register(FateEntities.STARFISH_SHOT.get(), EmptyRender::new);
         consumer.register(FateEntities.ENKIDU_CHAINS.get(), RenderEnkiduChains::new);
         consumer.register(FateEntities.AESTUS_DOMUS_BEAM.get(), RenderAestusDomusBeam::new);
+        consumer.register(FateEntities.ITEM_IN_GROUND_ENTITY.get(), RenderItemInGround::new);
 
         consumer.register(FateEntities.LESSER_MONSTER.get(), RenderStarfish::new);
         consumer.register(FateEntities.HASSAN_COPY.get(), RenderHassanCopy::new);
@@ -155,6 +159,9 @@ public class ClientRegister {
         consumer.register(FateParticles.GLOWING_RING.get(), SpritedParticle.Translucent::new);
         consumer.register(FateParticles.ROSE_PETAL.get(), RosePetalParticle.Factory::new);
         consumer.register(FateParticles.SPHERE.get(), SphereParticle.Factory::new);
+        consumer.register(FateParticles.UBW_CHANT_SMOKE.get(), SpritedParticle.Opaque::new);
+        consumer.register(FateParticles.LIGHTNING.get(), LightningParticle.Factory::new);
+        consumer.register(FateParticles.SPHERE_CLOUD.get(), SphereCloudParticle.Factory::new);
     }
 
     public static <T extends LivingEntity> void addLayersTo(LivingEntityRenderer<T, ?> renderer, Consumer<RenderLayer<T, ?>> layerConsumer) {

@@ -6,7 +6,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.github.flemmli97.fateubw.client.particles.TrailRenderer;
 import io.github.flemmli97.fateubw.client.render.FateRenders;
-import io.github.flemmli97.fateubw.common.entity.misc.BabylonWeapon;
+import io.github.flemmli97.fateubw.common.entity.misc.WeaponProjectile;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.ParticlePositionProvider;
 import io.github.flemmli97.tenshilib.client.VertexUtils;
@@ -28,13 +28,13 @@ import org.joml.Vector4f;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class RenderBabylon extends EntityRenderer<BabylonWeapon> {
+public class RenderWeaponProjectile extends EntityRenderer<WeaponProjectile> {
 
     private static final MultiBufferSource.BufferSource SEP = MultiBufferSource.immediate(new ByteBufferBuilder(1536));
 
     private final Vector4f color = new Vector4f(234 / 255f, 165 / 255f, 37 / 255f, 0.7f);
 
-    private final TrailInfo info = TrailInfo.builder(new ParticlePositionProvider.ParticlePositionData(0))
+    private final TrailInfo babylon = TrailInfo.builder(new ParticlePositionProvider.ParticlePositionData(0))
             .setColor(234 / 255f, 165 / 255f, 37 / 255f, 0.7f)
             .setColor2(255 / 255f, 217 / 255f, 67 / 255f, 0.3f)
             .setWidth(0.07f)
@@ -42,15 +42,23 @@ public class RenderBabylon extends EntityRenderer<BabylonWeapon> {
             .setInterpolation(1)
             .build();
 
-    public RenderBabylon(EntityRendererProvider.Context ctx) {
+    private final TrailInfo ubw = TrailInfo.builder(new ParticlePositionProvider.ParticlePositionData(0))
+            .setColor(111 / 255f, 123 / 255f, 207 / 255f, 0.7f)
+            .setColor2(103 / 255f, 107 / 255f, 138 / 255f, 0.3f)
+            .setWidth(0.07f)
+            .setWidth2(0.005f)
+            .setInterpolation(1)
+            .build();
+
+    public RenderWeaponProjectile(EntityRendererProvider.Context ctx) {
         super(ctx);
     }
 
     @Override
-    public void render(BabylonWeapon entity, float rotation, float partialTick, PoseStack stack, MultiBufferSource buffer, int packedLight) {
+    public void render(WeaponProjectile entity, float rotation, float partialTick, PoseStack stack, MultiBufferSource buffer, int packedLight) {
         float yRot = Mth.lerp(partialTick, entity.yRotO, entity.getYRot());
         float xRot = -Mth.lerp(partialTick, entity.xRotO, entity.getXRot());
-        if (entity.preparing()) {
+        if (entity.preparing() && entity.getWeaponType() == WeaponProjectile.Type.BABYLON) {
             stack.pushPose();
             float scale = Math.min(1, (entity.tickCount + partialTick) / 6f);
             stack.scale(scale, scale, scale);
@@ -105,7 +113,7 @@ public class RenderBabylon extends EntityRenderer<BabylonWeapon> {
             );
             stack.popPose();
         } else {
-            TrailRenderer.render(entity, this.info, entity.trailPositions(), buffer.getBuffer(FateRenders.TRAIL_TRANSLUCENT), partialTick);
+            TrailRenderer.render(entity, entity.getWeaponType() == WeaponProjectile.Type.UBW ? this.ubw : this.babylon, entity.trailPositions(), buffer.getBuffer(FateRenders.TRAIL_TRANSLUCENT), partialTick);
         }
         stack.pushPose();
         stack.scale(2, 2, 2);
@@ -158,11 +166,11 @@ public class RenderBabylon extends EntityRenderer<BabylonWeapon> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(BabylonWeapon entity) {
+    public ResourceLocation getTextureLocation(WeaponProjectile entity) {
         return InventoryMenu.BLOCK_ATLAS;
     }
 
-    public ItemStack getRenderItemStack(BabylonWeapon entity) {
+    public ItemStack getRenderItemStack(WeaponProjectile entity) {
         return entity.getWeapon();
     }
 }

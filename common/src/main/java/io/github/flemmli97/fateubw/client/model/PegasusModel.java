@@ -5,10 +5,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.entity.summons.Pegasus;
 import io.github.flemmli97.fateubw.common.entity.utils.MoveType;
-import io.github.flemmli97.tenshilib.client.data.GeoAnimationManager;
-import io.github.flemmli97.tenshilib.client.data.GeoModelManager;
-import io.github.flemmli97.tenshilib.client.data.ReloadableCache;
-import io.github.flemmli97.tenshilib.client.model.BedrockAnimations;
 import io.github.flemmli97.tenshilib.client.model.ExtendedEntityModel;
 import io.github.flemmli97.tenshilib.client.model.ModelPartsContainer;
 import io.github.flemmli97.tenshilib.client.model.RideableModel;
@@ -24,19 +20,17 @@ public class PegasusModel extends ExtendedEntityModel<Pegasus> implements Rideab
 
     public static final ResourceLocation LOCATION = Fate.modRes("pegasus");
 
-    protected final ReloadableCache<ModelPartsContainer> model;
-    protected final ReloadableCache<BedrockAnimations> anim;
-
     public ModelPartsContainer.ModelPartExtended head;
     public ModelPartsContainer.ModelPartExtended ridingPosition;
 
     public PegasusModel() {
-        super();
-        this.model = GeoModelManager.getInstance().getModel(LOCATION, model -> {
-            this.head = model.getPart("head");
-            this.ridingPosition = model.getPart("mountPos");
-        });
-        this.anim = GeoAnimationManager.getInstance().getAnimation(LOCATION);
+        super(LOCATION, LOCATION);
+    }
+
+    @Override
+    protected void onModelReload(ModelPartsContainer model) {
+        this.head = model.getPart("head");
+        this.ridingPosition = model.getPart("mountPos");
     }
 
     @Override
@@ -50,14 +44,14 @@ public class PegasusModel extends ExtendedEntityModel<Pegasus> implements Rideab
         this.head.yRot += netHeadYaw * Mth.DEG_TO_RAD * 0.3f;
         this.head.xRot += headPitch * Mth.DEG_TO_RAD * 0.1f;
         float partialTick = this.getPartialTick();
-        this.anim.get().setVariable("x_rotation", entity::getXRot);
+        this.animation.get().setVariable("x_rotation", entity::getXRot);
         if (entity.deathTime <= 0) {
-            this.anim.get().doAnimation(this, "idle", entity.tickCount, partialTick);
-            this.anim.get().doAnimation(this, "walk", entity.tickCount, partialTick, entity.interpolatedMoveTick(partialTick));
-            this.anim.get().doAnimation(this, "run", entity.tickCount, partialTick, entity.interpolatedMoveTickOf(MoveType.RUN, partialTick));
-            this.anim.get().doAnimation(this, "fly", entity.tickCount, partialTick, entity.interpolatedMoveTickOf(MoveType.FLY, partialTick));
+            this.animation.get().doAnimation(this, "idle", entity.tickCount, partialTick);
+            this.animation.get().doAnimation(this, "walk", entity.tickCount, partialTick, entity.interpolatedMoveTick(partialTick));
+            this.animation.get().doAnimation(this, "run", entity.tickCount, partialTick, entity.interpolatedMoveTickOf(MoveType.RUN, partialTick));
+            this.animation.get().doAnimation(this, "fly", entity.tickCount, partialTick, entity.interpolatedMoveTickOf(MoveType.FLY, partialTick));
         }
-        this.anim.get().doAnimation(this, entity.getAnimationHandler(), partialTick);
+        this.animation.get().doAnimation(this, entity.getAnimationHandler(), partialTick);
     }
 
     @Override

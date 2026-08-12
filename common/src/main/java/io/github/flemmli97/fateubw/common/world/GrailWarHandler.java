@@ -5,6 +5,7 @@ import io.github.flemmli97.fateubw.api.entity.ServantLike;
 import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.datapack.EntityPropsManager;
+import io.github.flemmli97.fateubw.common.registry.FateAttachments;
 import io.github.flemmli97.fateubw.common.registry.FateCriterionTriggers;
 import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
@@ -300,7 +301,7 @@ public class GrailWarHandler extends SavedData {
                     player.sendSystemMessage(Component.translatable("fateubw.chat.grailwar.win.spawn")
                             .withStyle(ChatFormatting.GRAY));
 
-                    Platform.INSTANCE.getPlayerData(player).saveServant(participant.getServant(this.server));
+                    FateAttachments.PLAYER_DATA.get().get(player).saveServant(participant.getServant(this.server));
                 } else {
                     this.server.getPlayerList().broadcastSystemMessage(Component.translatable("fateubw.chat.grailwar.win.none").withStyle(ChatFormatting.RED), true);
                 }

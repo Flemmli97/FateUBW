@@ -5,10 +5,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.entity.summons.GordiusWheel;
 import io.github.flemmli97.fateubw.common.entity.utils.MoveType;
-import io.github.flemmli97.tenshilib.client.data.GeoAnimationManager;
-import io.github.flemmli97.tenshilib.client.data.GeoModelManager;
-import io.github.flemmli97.tenshilib.client.data.ReloadableCache;
-import io.github.flemmli97.tenshilib.client.model.BedrockAnimations;
 import io.github.flemmli97.tenshilib.client.model.ExtendedEntityModel;
 import io.github.flemmli97.tenshilib.client.model.ModelPartsContainer;
 import io.github.flemmli97.tenshilib.client.model.RideableModel;
@@ -23,9 +19,6 @@ public class GordiusWheelModel extends ExtendedEntityModel<GordiusWheel> impleme
 
     public static final ResourceLocation LOCATION = Fate.modRes("gordius_wheel");
 
-    protected final ReloadableCache<ModelPartsContainer> model;
-    protected final ReloadableCache<BedrockAnimations> anim;
-
     public ModelPartsContainer.ModelPartExtended bull1;
     public ModelPartsContainer.ModelPartExtended bull2;
     public ModelPartsContainer.ModelPartExtended centerBeam;
@@ -33,15 +26,16 @@ public class GordiusWheelModel extends ExtendedEntityModel<GordiusWheel> impleme
     public ModelPartsContainer.ModelPartExtended ridingPosition;
 
     public GordiusWheelModel() {
-        super();
-        this.model = GeoModelManager.getInstance().getModel(LOCATION, model -> {
-            this.bull1 = model.getPart("bull1");
-            this.bull2 = model.getPart("bull2");
-            this.centerBeam = model.getPart("centerBeam");
-            this.backBeam = model.getPart("backBeam");
-            this.ridingPosition = model.getPart("mountPos");
-        });
-        this.anim = GeoAnimationManager.getInstance().getAnimation(LOCATION);
+        super(LOCATION, LOCATION);
+    }
+
+    @Override
+    protected void onModelReload(ModelPartsContainer model) {
+        this.bull1 = model.getPart("bull1");
+        this.bull2 = model.getPart("bull2");
+        this.centerBeam = model.getPart("centerBeam");
+        this.backBeam = model.getPart("backBeam");
+        this.ridingPosition = model.getPart("mountPos");
     }
 
     @Override
@@ -54,14 +48,14 @@ public class GordiusWheelModel extends ExtendedEntityModel<GordiusWheel> impleme
         this.getModel().resetPoses();
         float partialTick = this.getPartialTick();
         if (entity.deathTime <= 0) {
-            this.anim.get().doAnimation(this, "idle", entity.tickCount, partialTick);
-            this.anim.get().doAnimation(this, "move", entity.tickCount, partialTick, entity.interpolatedMoveTick(partialTick));
-            this.anim.get().doAnimation(this, "run", entity.tickCount, partialTick, entity.interpolatedMoveTickOf(MoveType.RUN, partialTick));
+            this.animation.get().doAnimation(this, "idle", entity.tickCount, partialTick);
+            this.animation.get().doAnimation(this, "move", entity.tickCount, partialTick, entity.interpolatedMoveTick(partialTick));
+            this.animation.get().doAnimation(this, "run", entity.tickCount, partialTick, entity.interpolatedMoveTickOf(MoveType.RUN, partialTick));
             if (entity.getMoveType() != MoveType.NONE)
                 entity.wheelPartial = partialTick;
-            this.anim.get().doAnimation(this, "wheel_move", entity.wheelMoveTick, entity.wheelPartial, 1);
+            this.animation.get().doAnimation(this, "wheel_move", entity.wheelMoveTick, entity.wheelPartial, 1);
         }
-        this.anim.get().doAnimation(this, entity.getAnimationHandler(), partialTick);
+        this.animation.get().doAnimation(this, entity.getAnimationHandler(), partialTick);
 
         if (entity.getWheelEntity() != null) {
             float yRot = lerpClamped(partialTick, entity.getWheelEntity().yRotO, entity.getWheelEntity().getYRot());

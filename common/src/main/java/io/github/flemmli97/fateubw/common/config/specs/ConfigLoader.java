@@ -43,6 +43,7 @@ public class ConfigLoader {
         CommonConfig.eaDamage = ConfigSpecs.COMMON_CONFIG.eaDamage.get().floatValue();
         CommonConfig.excaliburDamage = ConfigSpecs.COMMON_CONFIG.excaliburDamage.get().floatValue();
         CommonConfig.caladBolgDmg = ConfigSpecs.COMMON_CONFIG.caladBolgDmg.get().floatValue();
+        CommonConfig.ubwScale = ConfigSpecs.COMMON_CONFIG.ubwScale.get().floatValue();
         CommonConfig.magicBeam = ConfigSpecs.COMMON_CONFIG.magicBeam.get().floatValue();
         CommonConfig.gaeBolgDmg = ConfigSpecs.COMMON_CONFIG.gaeBolgDmg.get().floatValue();
         CommonConfig.gaeBolgEffect.read(ConfigSpecs.COMMON_CONFIG.gaeBolgEffect.get());

@@ -4,6 +4,7 @@ import io.github.flemmli97.fateubw.client.ClientCalls;
 import io.github.flemmli97.fateubw.common.commands.CommandHandler;
 import io.github.flemmli97.fateubw.common.event.EventCalls;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
+import io.github.flemmli97.fateubw.common.world.RealityMarbleHandler;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
@@ -11,11 +12,11 @@ import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.entity.EntityTravelToDimensionEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingHealEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 
@@ -30,6 +31,15 @@ public class EventHandler {
     public static void joinWorld(EntityJoinLevelEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer)
             EventCalls.joinWorld(serverPlayer);
+        EventCalls.onLoad(event.getEntity());
+    }
+
+    @SubscribeEvent
+    public static void onDimensionChange(EntityTravelToDimensionEvent event) {
+        if(event.getEntity().getServer() != null && !RealityMarbleHandler.get(event.getEntity().getServer())
+                .allowChangingDimensionsTo(event.getEntity(), event.getDimension())) {
+            event.setCanceled(true);
+        }
     }
 
     @SubscribeEvent
@@ -37,11 +47,6 @@ public class EventHandler {
         if (event.getLevel() instanceof ServerLevel serverLevel && serverLevel.dimension() == Level.OVERWORLD) {
             GrailWarHandler.get(serverLevel.getServer()).tick(serverLevel);
         }
-    }
-
-    @SubscribeEvent
-    public static void clone(PlayerEvent.Clone event) {
-        EventCalls.clone(event.getOriginal(), event.getEntity());
     }
 
     @SubscribeEvent

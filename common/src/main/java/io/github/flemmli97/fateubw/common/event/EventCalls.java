@@ -9,6 +9,7 @@ import io.github.flemmli97.fateubw.common.registry.FateAttributes;
 import io.github.flemmli97.fateubw.common.registry.FateMobEffects;
 import io.github.flemmli97.fateubw.common.utils.ExtendedCombatRules;
 import io.github.flemmli97.fateubw.common.world.GrailTeam;
+import io.github.flemmli97.fateubw.common.world.RealityMarbleHandler;
 import io.github.flemmli97.fateubw.common.world.TeamHandler;
 import io.github.flemmli97.fateubw.mixin.CombatTrackerAccessor;
 import io.github.flemmli97.tenshilib.loader.LoaderNetwork;
@@ -43,6 +44,15 @@ public class EventCalls {
         if (!requests.isEmpty()) {
             player.sendSystemMessage(Component.translatable("fateubw.chat.team.alliance.pending",
                     String.join(",", requests.stream().map(GrailTeam.ShortTeamInfo::name).toList())).withStyle(ChatFormatting.GOLD));
+        }
+    }
+
+    public static void onLoad(Entity entity) {
+        if (entity.level().isClientSide)
+            return;
+        RealityMarbleHandler.RealityMarbleGroup group = RealityMarbleHandler.get(entity.getServer()).getGroupOf(entity);
+        if (group == null) {
+            RealityMarbleHandler.get(entity.getServer()).clearAndTeleportBack(entity);
         }
     }
 
@@ -112,5 +122,14 @@ public class EventCalls {
 
     public static boolean preventEffectApply(LivingEntity entity, MobEffectInstance instance) {
         return instance.getEffect().value().getCategory() != MobEffectCategory.HARMFUL && entity.hasEffect(FateMobEffects.RULE_BREAKER.asHolder());
+    }
+
+    public static void onDeath(Entity entity) {
+        if (entity.level().isClientSide)
+            return;
+        RealityMarbleHandler.RealityMarbleGroup group = RealityMarbleHandler.get(entity.getServer()).getGroupOf(entity);
+        if (group != null) {
+            RealityMarbleHandler.get(entity.getServer()).clearAndTeleportBack(entity);
+        }
     }
 }

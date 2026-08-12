@@ -1,18 +1,26 @@
 package io.github.flemmli97.fateubw.common.entity.servant;
 
+import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.HeldEquipmentHandler;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.misc.ArcherArrow;
+import io.github.flemmli97.fateubw.common.entity.misc.ThrownItemEntity;
+import io.github.flemmli97.fateubw.common.entity.misc.WeaponProjectile;
 import io.github.flemmli97.fateubw.common.entity.misc.CaladBolg;
+import io.github.flemmli97.fateubw.common.entity.misc.ItemInGroundEntity;
+import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailProvider;
 import io.github.flemmli97.fateubw.common.registry.FateAttributes;
+import io.github.flemmli97.fateubw.common.registry.FateDimensions;
+import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.Utils;
+import io.github.flemmli97.fateubw.common.world.RealityMarbleHandler;
 import io.github.flemmli97.tenshilib.common.entity.ai.TargetPosition;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.SelectableBehaviourBuilder;
@@ -24,7 +32,18 @@ import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionC
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationsBuilder;
+import io.github.flemmli97.tenshilib.common.particle.AdvancedParticleContainer;
+import io.github.flemmli97.tenshilib.common.particle.data.CirclingData;
+import io.github.flemmli97.tenshilib.common.particle.data.ColorData;
+import io.github.flemmli97.tenshilib.common.particle.data.MotionData;
+import io.github.flemmli97.tenshilib.common.particle.data.ParticleMetaData;
+import io.github.flemmli97.tenshilib.common.particle.data.ScaleData;
+import io.github.flemmli97.tenshilib.common.utils.math.MathUtils;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
@@ -37,51 +56,64 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
 import org.joml.Vector4f;
 
+import java.util.List;
+
 public class Emiya extends BaseServant {
 
+    public static final String LEFT_TRAIL_START = "left_trail_start";
     public static final String LEFT_TRAIL_END = "left_trail_end";
     public static final String RIGHT_TRAIL_START = "right_trail_start";
+    public static final String RIGHT_TRAIL_END = "right_trail_end";
 
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
-    public static final String DUAL_SLASH_1 = BUILDER.add("dual_slash_1", AnimationsBuilder.definition(1.12)
-            .marker("attack_left", 0.6).marker("attack_right", 1).marker("step", 0.32, 0.72)
-            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.4).marker(LEFT_TRAIL_END, 0.64)
-            .marker(RIGHT_TRAIL_START, 0.8).marker(EntityWeaponTrailProvider.TRAIL_END, 1.04));
-    public static final String DUAL_SLASH_2 = BUILDER.add("dual_slash_2", AnimationsBuilder.definition(0.68)
-            .marker("attack_left", 0.56).marker("attack_right", 0.56));
-    public static final String DUAL_SLASH_3 = BUILDER.add("dual_slash_3", AnimationsBuilder.definition(0.72)
-            .marker("attack_left", 0.52).marker("attack_right", 0.52).marker("step", 0.4)
-            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.4).marker(LEFT_TRAIL_END, 0.64)
-            .marker(RIGHT_TRAIL_START, 0.4).marker(EntityWeaponTrailProvider.TRAIL_END, 0.64));
-    public static final String DUAL_SLASH_4 = BUILDER.add("dual_slash_4", AnimationsBuilder.definition(0.68)
-            .marker("attack_left", 0.52).marker("attack_right", 0.52).marker("step", 0.32)
-            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.4).marker(LEFT_TRAIL_END, 0.6)
-            .marker(RIGHT_TRAIL_START, 0.4).marker(EntityWeaponTrailProvider.TRAIL_END, 0.6));
-    public static final String DUAL_SLASH_5 = BUILDER.add("dual_slash_5", AnimationsBuilder.definition(0.96)
-            .marker("attack_left", 0.52).marker("attack_right", 0.52).marker("leap", 0.32)
-            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.4).marker(LEFT_TRAIL_END, 0.64)
-            .marker(RIGHT_TRAIL_START, 0.4).marker(EntityWeaponTrailProvider.TRAIL_END, 0.64));
-    public static final String DUAL_SLASH_6 = BUILDER.add("dual_slash_6", AnimationsBuilder.definition(1.32)
-            .marker("attack_left", 0.68, 1.2).marker("attack_right", 0.56, 1.2)
-            .marker("attack_end", 1.2)
-            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.4, 1.04).marker(LEFT_TRAIL_END, 0.76, 1.24)
-            .marker(RIGHT_TRAIL_START, 0.48, 1.04).marker(EntityWeaponTrailProvider.TRAIL_END, 0.76, 1.24));
-    public static final String BOW_1 = BUILDER.add("bow_1", AnimationsBuilder.definition(1.2)
-            .marker("use_start", 0.24).marker("use_end", 1).marker("shoot", 1));
-    public static final String BOW_2 = BUILDER.add("bow_2", AnimationsBuilder.definition(1.6)
-            .marker("use_start", 0.24).marker("use_end", 1.4).marker("shoot", 1, 1.2, 1.4));
-    public static final String BOW_AIR = BUILDER.add("bow_air", AnimationsBuilder.definition(1.72)
-            .marker("use_start", 0.48).marker("use_end", 1.08).marker("shoot", 1.08)
-            .marker("float_start", 0.6).marker("float_end", 1.2)
-            .marker("jump", 0.2));
-    public static final String CALADBOLG = BUILDER.add("caladbolg", AnimationsBuilder.definition(2.52)
-            .marker("use_start", 0.24).marker("shoot", 2.24));
+    public static final String DUAL_SLASH_1_1 = BUILDER.add("dual_blade_1_1", AnimationsBuilder.definition(0.8)
+            .marker("attack_right", 0.64).marker("step", 0.6)
+            .marker(RIGHT_TRAIL_START, 0.48).marker(RIGHT_TRAIL_END, 0.68));
+    public static final String DUAL_SLASH_1_2 = BUILDER.add("dual_blade_1_2", AnimationsBuilder.definition(1)
+            .marker("attack_left", 0.72).marker("step", 0.64)
+            .marker(LEFT_TRAIL_START, 0.48).marker(LEFT_TRAIL_END, 0.88));
+    public static final String DUAL_BLADE_1_3 = BUILDER.add("dual_blade_1_3", AnimationsBuilder.definition(1.04)
+            .marker("attack_left", 0.6).marker("attack_right", 0.6).marker("leap", 0.4)
+            .marker(LEFT_TRAIL_START, 0.48).marker(LEFT_TRAIL_END, 0.68)
+            .marker(RIGHT_TRAIL_START, 0.48).marker(RIGHT_TRAIL_END, 0.68));
+
+    public static final String DUAL_BLADE_2_1 = BUILDER.add("dual_blade_2_1", AnimationsBuilder.definition(0.8)
+            .marker("attack_left", 0.68).marker("attack_right", 0.68)
+            .marker(LEFT_TRAIL_START, 0.48).marker(LEFT_TRAIL_END, 0.68)
+            .marker(RIGHT_TRAIL_START, 0.48).marker(RIGHT_TRAIL_END, 0.68));
+    public static final String DUAL_BLADE_2_2 = BUILDER.add("dual_blade_2_2", AnimationsBuilder.definition(0.8)
+            .marker("attack_left", 0.68).marker("attack_right", 0.68));
+
+    public static final String DUAL_BLADE_THROW = BUILDER.add("dual_blade_throw", AnimationsBuilder.definition(0.76)
+            .marker("throw", 0.56));
+
+    public static final String BOW_1 = BUILDER.add("bow_1", AnimationsBuilder.definition(1.24)
+            .marker("use_start", 0.48).marker("use_end", 1).marker("shoot", 1));
+    public static final String BOW_2 = BUILDER.add("bow_2", AnimationsBuilder.definition(1.72)
+            .marker("use_start", 0.48).marker("use_end", 1.48).marker("shoot", 1, 1.24, 1.48));
+    public static final String BOW_AIR = BUILDER.add("bow_air", AnimationsBuilder.definition(1.92)
+            .marker("use_start", 0.6).marker("use_end", 1.12).marker("shoot", 1.12)
+            .marker("float_start", 0.6).marker("float_end", 1.24)
+            .marker("jump", 0.24));
+
+    public static final String CALADBOLG = BUILDER.add("caladbolg", AnimationsBuilder.definition(5)
+            .marker("use_start", 0.68).marker("use_end", 3.2)
+            .marker("shoot", 3.2));
+
+    public static final String UNLIMITED_BLADE_WORKS = BUILDER.add("unlimited_blade_works", AnimationsBuilder.definition(7)
+            .marker("start", 0.36).marker("cast", 4.2).marker("teleport", 6.8));
+    public static final String UBW_ATTACK_1 = BUILDER.add("ubw_attack_1", AnimationsBuilder.definition(1.08)
+            .marker("shoot", 0.48));
+    public static final String UBW_ATTACK_2 = BUILDER.add("ubw_attack_2", AnimationsBuilder.definition(1.08)
+            .marker("shoot", 0.48));
+
     public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2.));
     public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
 
@@ -92,6 +124,8 @@ public class Emiya extends BaseServant {
     private final Vector4f summonColor = new Vector4f(213 / 255f, 0, 6 / 255f, 0.7f);
 
     private boolean leftHandAttackFlag;
+
+    private int weaponSpawnCooldown;
 
     public Emiya(EntityType<? extends Emiya> entityType, Level level) {
         super(entityType, level);
@@ -114,81 +148,94 @@ public class Emiya extends BaseServant {
 
     @Override
     public ExtendedBehaviour<? extends BaseServant> getCombatAI() {
-        return AttackBehaviourBuilder.<BaseServant>create()
-                .start(DUAL_SLASH_1).play(BehaviourUtils.cooldownedPlay(true, 16, 28))
-                .condition(BehaviourUtils.ifCloserThan(7))
-                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(8)
-                .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(DUAL_SLASH_1)
-                        .start(DUAL_SLASH_4, 2, 0.32f, 1)
+        float moveSpeed = 1.5f;
+        return AttackBehaviourBuilder.<Emiya>create()
+                .start(BehaviourUtils.of(AnimationPlayHolder.<Emiya>builder(DUAL_SLASH_1_1)
+                        .start(DUAL_SLASH_1_2, 2, 0.28f, 1)
+                        .start(DUAL_SLASH_1_2, 2, 0.28f, 2, owner -> owner.healthBelow(0.5f))
+                                .chain(DUAL_BLADE_1_3)
                         .build())).play(BehaviourUtils.cooldownedPlay(true, 16, 28))
                 .condition(BehaviourUtils.ifCloserThan(7))
-                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(4)
-                .start(DUAL_SLASH_2).play(BehaviourUtils.cooldownedPlay(true, 16, 28))
-                .condition(BehaviourUtils.ifCloserThan(7))
-                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .prepare(new SetWalkTargetToAttackTarget<Emiya>().speedMod((owner, target) -> moveSpeed)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(8)
-                .start(DUAL_SLASH_3).play(BehaviourUtils.cooldownedPlay(true, 16, 28))
+
+                .start(BehaviourUtils.of(AnimationPlayHolder.<Emiya>builder(DUAL_BLADE_2_1)
+                        .start(DUAL_BLADE_2_2, 2, 0.28f, 1)
+                        .build())).play(BehaviourUtils.cooldownedPlay(true, 16, 28))
                 .condition(BehaviourUtils.ifCloserThan(7))
-                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .prepare(new SetWalkTargetToAttackTarget<Emiya>().speedMod((owner, target) -> moveSpeed)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(8)
-                .start(DUAL_SLASH_5).play(BehaviourUtils.cooldownedPlay(true, 16, 28))
-                .condition(BehaviourUtils.ifCloserThan(7))
-                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(8)
-                .start(DUAL_SLASH_6).play(BehaviourUtils.cooldownedPlay(true, 16, 28))
-                .condition(BehaviourUtils.ifCloserThan(7))
-                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(6)
+
+//                .start(DUAL_BLADE_THROW).play(BehaviourUtils.cooldownedPlay(true, 16, 28))
+//                .condition(BehaviourUtils.ifCloserThan(7))
+//                .prepare(new SetWalkTargetToAttackTarget<Emiya>().speedMod((owner, target) -> 1.5f)).prepareOptional(BehaviourUtils.timedMoveAttack())
+//                .end(6)
+
                 .start(BOW_1).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(12), 16, 28))
-                .prepare(new SetWalkTargetWithinDist<BaseServant>()
-                        .min(5).max(14).speedMod(1.2f)).prepareOptional(BehaviourUtils.moveAttack())
+                .prepare(new SetWalkTargetWithinDist<Emiya>()
+                        .min(5).max(14).speedMod(moveSpeed)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(9)
                 .start(BOW_1).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(12), 16, 28))
-                .prepare(new LeapInDirection<BaseServant>().shouldLeap((owner, target) -> owner.distanceToSqr(target) < 49)
+                .prepare(new LeapInDirection<Emiya>().shouldLeap((owner, target) -> owner.distanceToSqr(target) < 49)
                         .horizontalDirection((owner, target) -> LeapInDirection.createBackwardsVec(owner.position(), target.position()).scale(1.3f)))
                 .end(7)
                 .start(BOW_1).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(12), 16, 28))
                 .condition(BehaviourUtils.ifFurtherThan(11))
-                .prepare(new SetWalkTargetWithinDist<BaseServant>()
-                        .min(5).max(14).speedMod(1.2f)).prepareOptional(BehaviourUtils.moveAttack())
+                .prepare(new SetWalkTargetWithinDist<Emiya>()
+                        .min(5).max(14).speedMod(moveSpeed)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(6)
                 .start(BOW_2).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(12), 16, 28))
-                .prepare(new SetWalkTargetWithinDist<BaseServant>()
-                        .min(5).max(14).speedMod(1.2f)).prepareOptional(BehaviourUtils.moveAttack())
+                .prepare(new SetWalkTargetWithinDist<Emiya>()
+                        .min(5).max(14).speedMod(moveSpeed)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(7)
                 .start(BOW_2).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(12), 16, 28))
-                .prepare(new LeapInDirection<BaseServant>().shouldLeap((owner, target) -> owner.distanceToSqr(target) < 49)
+                .prepare(new LeapInDirection<Emiya>().shouldLeap((owner, target) -> owner.distanceToSqr(target) < 49)
                         .horizontalDirection((owner, target) -> LeapInDirection.createBackwardsVec(owner.position(), target.position()).scale(1.3f)))
                 .end(7)
                 .start(BOW_2).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(12), 16, 28))
                 .condition(BehaviourUtils.ifFurtherThan(11))
-                .prepare(new SetWalkTargetWithinDist<BaseServant>()
-                        .min(5).max(14).speedMod(1.2f)).prepareOptional(BehaviourUtils.moveAttack())
+                .prepare(new SetWalkTargetWithinDist<Emiya>()
+                        .min(5).max(14).speedMod(moveSpeed)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(5)
                 .start(BOW_AIR).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(12), 16, 28))
-                .prepare(new SetWalkTargetWithinDist<BaseServant>()
-                        .min(4).max(10).speedMod(1.2f)).prepareOptional(BehaviourUtils.moveAttack())
+                .prepare(new SetWalkTargetWithinDist<Emiya>()
+                        .min(4).max(10).speedMod(moveSpeed)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(7)
                 .start(BOW_AIR).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(12), 16, 28))
                 .condition(BehaviourUtils.ifFurtherThan(11))
-                .prepare(new SetWalkTargetWithinDist<BaseServant>()
-                        .min(4).max(10).speedMod(1.2f)).prepareOptional(BehaviourUtils.moveAttack())
+                .prepare(new SetWalkTargetWithinDist<Emiya>()
+                        .min(4).max(10).speedMod(moveSpeed)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(9)
+                .start(UBW_ATTACK_1).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(18), 16, 28))
+                .condition(owner -> this.isInRealityMarble() && BehaviourUtils.ifFurtherThan(11).test(owner))
+                .prepare(new SetWalkTargetWithinDist<Emiya>()
+                        .min(5).max(14).speedMod(moveSpeed)).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .end(19)
+                .start(UBW_ATTACK_2).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(18), 16, 28))
+                .condition(owner -> this.isInRealityMarble() && BehaviourUtils.ifFurtherThan(11).test(owner))
+                .prepare(new SetWalkTargetWithinDist<Emiya>()
+                        .min(5).max(14).speedMod(moveSpeed)).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .end(19)
                 .start(CALADBOLG).play(BehaviourUtils.cooldownedPlay(false, 20, 30))
                 .condition(BaseServant::canUseNobelPhantasm)
-                .prepare(new SetWalkTargetWithinDist<BaseServant>()
-                        .min(8).max(16).speedMod(1.3f)).prepareOptional(BehaviourUtils.moveAttack())
-                .end(45)
+                .prepare(new SetWalkTargetWithinDist<Emiya>()
+                        .min(8).max(16).speedMod(moveSpeed + 0.1f)).prepareOptional(BehaviourUtils.moveAttack())
+                .end(3)
                 .build();
     }
 
     @Override
     public ExtendedBehaviour<? extends BaseServant> getCooldownAI() {
+        float moveSpeed = 1.5f;
         return SelectableBehaviourBuilder.<BaseServant>builder()
-                .add(4, new SetWalkTargetToAttackTarget<>(), BehaviourUtils.moveTo())
-                .add(6, new SetWalkTargetAwayFromTarget<>(), BehaviourUtils.moveTo()).build();
+                .add(4, new SetWalkTargetToAttackTarget<BaseServant>().speedMod((owner, target) -> moveSpeed), BehaviourUtils.moveTo())
+                .add(6, new SetWalkTargetAwayFromTarget<BaseServant>().speedMod((owner, target) -> moveSpeed), BehaviourUtils.moveTo()).build();
+    }
+
+    public boolean isInRealityMarble() {
+//        RealityMarbleHandler.get(this.getServer())
+//                        .isInRealityMarble(this)
+        return this.level().dimension().equals(FateDimensions.UNLIMITED_BLADEWORKS.dimension());
     }
 
     @Override
@@ -197,7 +244,7 @@ public class Emiya extends BaseServant {
         if (this.level().isClientSide) {
             AnimationState anim = this.getAnimationHandler().getAnimation();
             if (anim != null) {
-                if (anim.isAt(EntityWeaponTrailProvider.TRAIL_START)) {
+                if (anim.isAt(LEFT_TRAIL_START)) {
                     this.level().addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
                                     TrailInfo.builder(new EntityWeaponTrailProvider.EntityTrailData(this.getId(), anim.getID(), true, 3, LEFT_TRAIL_END))
                                             .setColor(25 / 255f, 25 / 255f, 75 / 255f, 0.6f)
@@ -208,7 +255,7 @@ public class Emiya extends BaseServant {
                 }
                 if (anim.isAt(RIGHT_TRAIL_START)) {
                     this.level().addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
-                                    TrailInfo.builder(EntityWeaponTrailProvider.EntityTrailData.create(this, anim.getID(), false))
+                                    TrailInfo.builder(new EntityWeaponTrailProvider.EntityTrailData(this.getId(), anim.getID(), false, 3, RIGHT_TRAIL_END))
                                             .setColor(25 / 255f, 25 / 255f, 75 / 255f, 0.6f)
                                             .setColor2(25 / 255f, 25 / 255f, 75 / 255f, 0.2f)
                                             .setType(TrailInfo.Visual.TEXTURE, 0)
@@ -218,7 +265,34 @@ public class Emiya extends BaseServant {
             }
         } else {
             this.heldEquipmentHandler.setInUse(this.getAnimationHandler().isCurrent(BOW_1, BOW_2, BOW_AIR, CALADBOLG));
+            --this.weaponSpawnCooldown;
+            if (this.level().dimension().equals(FateDimensions.UNLIMITED_BLADEWORKS.dimension())) {
+                if (this.weaponSpawnCooldown <= 0 && this.getTarget() != null) {
+                    this.spawnWeaponsAround();
+                }
+            }
+
         }
+    }
+
+    private void spawnWeaponsAround() {
+        int amount = this.getRandom().nextInt(7) + 4;
+        for (int i = 0; i < amount; i++) {
+            ItemInGroundEntity item = FateEntities.ITEM_IN_GROUND_ENTITY.get().create(this.level());
+            item.setItem(CommonConfig.babylonWeapons.getRandomWeapon(this.getRandom()));
+            double x = this.getX() + (this.getRandom().nextDouble() - 0.5) * 16;
+            double y = this.getY() + 12;
+            double z = this.getZ() + (this.getRandom().nextDouble() - 0.5) * 16;
+            BlockPos.MutableBlockPos pos = BlockPos.containing(x, y - 1, z).mutable();
+            while (!(this.level().getBlockState(pos)).entityCanStandOnFace(this.level(), pos, item, Direction.UP) && pos.distToCenterSqr(x, y, z) < 16 * 16) {
+                pos.move(Direction.DOWN);
+            }
+            item.setPos(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5);
+            if (this.level().noCollision(item)) {
+                this.level().addFreshEntity(item);
+            }
+        }
+        this.weaponSpawnCooldown = this.getRandom().nextInt(300) + 600;
     }
 
     @Override
@@ -236,7 +310,70 @@ public class Emiya extends BaseServant {
 
     @Override
     public void handleAttack(AnimationState anim) {
-        if (anim.is(CALADBOLG)) {
+        if (anim.is(UNLIMITED_BLADE_WORKS)) {
+            this.getNavigation().stop();
+            if (anim.isPast("start")) {
+                for (int i = 0; i < 40; i++) {
+                    AdvancedParticleContainer.make(FateParticles.UBW_CHANT_SMOKE.get())
+                            .addData(new CirclingData(1 + this.getRandom().nextFloat() * 0.5f, 0.19f,
+                                    this.getRandom().nextFloat() * 360, 2 + this.getRandom().nextFloat() * 1, MathUtils.NORMAL_Y))
+                            .addData(new MotionData(0, 0.04, 0))
+                            .addData(new ScaleData(0.6f))
+                            .addData(new ParticleMetaData(8 + this.getRandom().nextInt(4), false, 0))
+                            .add(this.level(), this.getX(), this.getY(), this.getZ());
+                }
+                for (int i = 0; i < 4; i++) {
+                    AdvancedParticleContainer.make(FateParticles.LIGHTNING.get())
+                            .addData(new ScaleData(0.3f))
+                            .addData(new ParticleMetaData(5, false, 0))
+                            .add(this.level(), this.getRandomX(16), this.getY(this.getRandom().nextDouble() * 7 - 2), this.getRandomZ(16));
+                }
+            }
+            if (anim.isAt("cast")) {
+                if (RealityMarbleHandler.get(this.getServer())
+                        .isInRealityMarble(this) || !this.attemptUseNobelPhantasm()) {
+                    this.getAnimationHandler().setAnimation(null);
+                    return;
+                }
+                AdvancedParticleContainer.make(FateParticles.SPHERE.get())
+                        .addData(new ScaleData(0, 48, 40))
+                        .addData(new ColorData(1, 1, 1, 0.5f))
+                        .addData(new ParticleMetaData(60, false, 0))
+                        .add(this.level(), null, this.getX(), this.getY(0.5), this.getZ(), false);
+                RealityMarbleHandler.prepareChunks(this, FateDimensions.UNLIMITED_BLADEWORKS.dimension(), 48);
+                for (int i = 0; i < 20; i++) {
+                    AdvancedParticleContainer.make(ParticleTypes.SMOKE)
+                            .addData(new CirclingData(0.1f, 48 / 40f,
+                                    this.getRandom().nextFloat() * 360, 10 + this.getRandom().nextFloat() * 8, MathUtils.NORMAL_Y))
+                            .addData(new ScaleData(0.5f))
+                            .addData(new ColorData(1, 1, 1, 0.7f))
+                            .addData(new ParticleMetaData(40, false, 0))
+                            .add(this.level(), this.getX(), this.getY(0.5), this.getZ());
+                    AdvancedParticleContainer.make(ParticleTypes.SMOKE)
+                            .addData(new CirclingData(0.1f, 40 / 40f,
+                                    this.getRandom().nextFloat() * 360, 10 + this.getRandom().nextFloat() * 8, MathUtils.NORMAL_Y))
+                            .addData(new ScaleData(0.5f))
+                            .addData(new ColorData(1, 1, 1, 0.7f))
+                            .addData(new ParticleMetaData(40, false, 0))
+                            .add(this.level(), this.getX(), this.getY(2.5), this.getZ());
+                    AdvancedParticleContainer.make(ParticleTypes.SMOKE)
+                            .addData(new CirclingData(0.1f, 40 / 40f,
+                                    this.getRandom().nextFloat() * 360, 10 + this.getRandom().nextFloat() * 8, MathUtils.NORMAL_Y))
+                            .addData(new ScaleData(0.5f))
+                            .addData(new ColorData(1, 1, 1, 0.7f))
+                            .addData(new ParticleMetaData(40, false, 0))
+                            .add(this.level(), this.getX(), this.getY(-1.5), this.getZ());
+                }
+            }
+            if (anim.isPast("cast")) {
+                S2CScreenShake.sendAround(this, 64, 2, 1);
+            }
+            if (anim.isAt("teleport")) {
+                List<Entity> entities = this.level().getEntities(EntityTypeTest.forClass(Entity.class), this.getBoundingBox().inflate(48), e -> true);
+                RealityMarbleHandler.get(this.getServer())
+                        .createAndTransportTo(this, entities, FateDimensions.UNLIMITED_BLADEWORKS.dimension());
+            }
+        } else if (anim.is(CALADBOLG)) {
             LivingEntity target = this.getTarget();
             if (anim.isAt("use_start")) {
                 this.startUsingItem(this.bowHand());
@@ -264,7 +401,7 @@ public class Emiya extends BaseServant {
             LivingEntity target = this.getTarget();
             if (anim.isAt("jump")) {
                 Vec3 dir = target != null ? target.position().subtract(this.position()) : this.getViewVector(1);
-                dir = new Vec3(dir.x(), 0, dir.z()).normalize().scale(-1.2).add(0, 1.3, 0);
+                dir = new Vec3(dir.x(), 0, dir.z()).normalize().scale(-1.2).add(0, 1.1, 0);
                 this.setDeltaMovement(dir);
             }
             if (anim.isAt("use_start")) {
@@ -282,10 +419,44 @@ public class Emiya extends BaseServant {
                     this.attackWithRangedAttackBarrage(target);
             }
             this.fallDistance = 0;
+        } else if (anim.is(UBW_ATTACK_1, UBW_ATTACK_2)) {
+            LivingEntity target = this.getTarget();
+            if (!anim.isPast("shoot") && target != null) {
+                this.getLookControl().setLookAt(target, 60.0F, 30.0F);
+            }
+            if (anim.isAt("shoot")) {
+                if (target != null) {
+                    WeaponProjectile.spawnWeapons(this, target, 7 + this.getRandom().nextInt(10), 7, WeaponProjectile.Type.UBW);
+                }
+            }
+        } else if (anim.is(DUAL_BLADE_THROW)) {
+            LivingEntity target = this.getTarget();
+            if (!anim.isPast("throw") && target != null) {
+                this.getLookControl().setLookAt(target, 60.0F, 30.0F);
+            }
+            if (anim.isAt("throw")) {
+                Vec3 dir = target != null ? target.position().subtract(this.position()) : this.getViewVector(1);
+                Vec3 side = new Vec3(dir.x(), 0, dir.z()).normalize().yRot(90 * Mth.DEG_TO_RAD).scale(0.3);
+
+                ThrownItemEntity item = new ThrownItemEntity(this.level(), this);
+                item.setPos(item.getX() + side.x(), item.getY(), item.getZ() + side.z());
+                item.setItemType(ThrownItemEntity.ItemType.KANSHOU);
+                item.setWeapon(this.getMainHandItem().copy());
+                item.shoot(dir.x(), dir.y(), dir.z(), 1.2f, 0);
+                this.level().addFreshEntity(item);
+
+                item = new ThrownItemEntity(this.level(), this);
+                item.setPos(item.getX() - side.x(), item.getY(), item.getZ() - side.z());
+                item.setWeapon(new ItemStack(FateItems.BAKUYA.get()));
+                item.setItemType(ThrownItemEntity.ItemType.BAKUYA);
+                item.shoot(dir.x(), dir.y(), dir.z(), 1.2f, 0);
+                this.playSound(FateSounds.DAGGER_THROW.get(), 1.0F, (this.getRandom().nextFloat() - this.getRandom().nextFloat()) * 0.2F + 1.0F);
+                this.level().addFreshEntity(item);
+            }
         } else {
             if (anim.isAt("leap")) {
                 LivingEntity target = this.getTarget();
-                Vec3 dir = target != null ? target.position().subtract(this.position()) : this.position().add(this.getViewVector(1));
+                Vec3 dir = target != null ? target.position().subtract(this.position()) : this.getViewVector(1);
                 dir = new Vec3(dir.x(), 0, dir.z()).normalize().add(0, 0.24, 0);
                 this.setDeltaMovement(dir);
             }
@@ -314,34 +485,23 @@ public class Emiya extends BaseServant {
         double height = this.getBbHeight();
         double width = this.getBbWidth();
         double length = 1 * this.getScale();
-        if (anim.is(DUAL_SLASH_1)) {
+        if (anim.is(DUAL_SLASH_1_1)) {
             width += 0.7 * this.getScale();
             length += 0.5 * this.getScale();
             return new AABB(-width * (this.leftHandAttackFlag ? 0.3 : 0.7), -0.03, 0, width * (this.leftHandAttackFlag ? 0.7 : 0.3), height + 0.03, length);
         }
-        if (anim.is(DUAL_SLASH_2)) {
-            width += 0.5 * this.getScale();
+        if (anim.is(DUAL_SLASH_1_2)) {
+            width += 1 * this.getScale();
             length += 1 * this.getScale();
+            return new AABB(-width * 1.5, -0.03, -length, width * 0.5, height + 0.03, length);
         }
-        if (anim.is(DUAL_SLASH_3)) {
-            width += 0.6 * this.getScale();
-            length += 0.8 * this.getScale();
+        if (anim.is(DUAL_BLADE_1_3)) {
+            width += 0.8 * this.getScale();
+            length += 1.5 * this.getScale();
         }
-        if (anim.is(DUAL_SLASH_4)) {
-            width += 1.2 * this.getScale();
-            length += 0.6 * this.getScale();
-        }
-        if (anim.is(DUAL_SLASH_5)) {
-            width += 1.4 * this.getScale();
-            length += 0.6 * this.getScale();
-        }
-        if (anim.is(DUAL_SLASH_6)) {
-            if (anim.isAt("attack_end")) {
-                width += 0.6 * this.getScale();
-            } else {
-                width += 1.4 * this.getScale();
-            }
-            length += 0.8 * this.getScale();
+        if (anim.is(DUAL_BLADE_2_1) || anim.is(DUAL_BLADE_2_2)) {
+            width += 1 * this.getScale();
+            length += 1.5 * this.getScale();
         }
         return new AABB(-width * 0.5, -0.03, 0, width * 0.5, height + 0.03, length);
     }
@@ -418,8 +578,6 @@ public class Emiya extends BaseServant {
     }
 
     public void caladBolg(LivingEntity target) {
-        if (!this.attemptUseNobelPhantasm())
-            return;
         CaladBolg bolg = new CaladBolg(this.level(), this);
         if (target != null)
             bolg.shootAtEntity(target, 2F, 0);
@@ -427,10 +585,6 @@ public class Emiya extends BaseServant {
             bolg.shoot(this, this.getXRot(), this.getYRot(), 0, 2, 0);
         this.level().addFreshEntity(bolg);
         this.revealServant();
-    }
-
-    protected boolean hasBow() {
-        return this.getMainHandItem().getItem() instanceof BowItem || this.getOffhandItem().getItem() instanceof BowItem;
     }
 
     protected InteractionHand bowHand() {
@@ -451,6 +605,13 @@ public class Emiya extends BaseServant {
     @Override
     public Vector4f summonColor() {
         return this.summonColor;
+    }
+
+    @Override
+    public boolean shouldRecordData() {
+        AnimationState anim = this.getAnimationHandler().getAnimation();
+        return anim != null && ((anim.isPast(LEFT_TRAIL_START) && !anim.isPast(LEFT_TRAIL_END))
+                || (anim.isPast(RIGHT_TRAIL_START) && !anim.isPast(RIGHT_TRAIL_END)));
     }
 
     @Override

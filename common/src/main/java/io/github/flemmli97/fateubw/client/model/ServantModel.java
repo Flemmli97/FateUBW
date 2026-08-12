@@ -6,14 +6,16 @@ import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.entity.utils.MoveType;
 import io.github.flemmli97.fateubw.common.entity.utils.ServantModelLike;
 import io.github.flemmli97.tenshilib.client.data.GeoAnimationManager;
-import io.github.flemmli97.tenshilib.client.data.GeoModelManager;
 import io.github.flemmli97.tenshilib.client.data.ReloadableCache;
 import io.github.flemmli97.tenshilib.client.model.BedrockAnimations;
 import io.github.flemmli97.tenshilib.client.model.ExtendedEntityModel;
 import io.github.flemmli97.tenshilib.client.model.ItemHolderModel;
 import io.github.flemmli97.tenshilib.client.model.ModelPartsContainer;
 import io.github.flemmli97.tenshilib.client.model.PoseExtended;
+import io.github.flemmli97.tenshilib.client.model.animation.Animation;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimatedEntity;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
+import io.github.flemmli97.tenshilib.common.utils.math.parser.VariableMap;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HeadedModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -26,15 +28,13 @@ import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ServantModel<T extends LivingEntity & AnimatedEntity & ServantModelLike> extends ExtendedEntityModel<T> implements ItemHolderModel, HeadedModel, IPreRenderUpdate<T> {
 
     public static final ResourceLocation DEFAULT_ANIMATION = Fate.modRes("servant/generic");
 
-    protected final ReloadableCache<ModelPartsContainer> model;
-    protected final ReloadableCache<BedrockAnimations> animation;
     protected final ReloadableCache<BedrockAnimations> defaultAnimations;
 
     public ModelPartsContainer.ModelPartExtended head;
@@ -57,43 +57,42 @@ public class ServantModel<T extends LivingEntity & AnimatedEntity & ServantModel
     @Nullable
     private Vector3f bodyVehicleOffset;
 
-    protected final ModelPart dummyHead = new ModelPart(new ArrayList<>(), new HashMap<>());
+    protected final ModelPart dummyHead = new ModelPart(List.of(), Map.of());
 
     public int heldItemMain, heldItemOff;
 
     private float alpha = -1;
+
+    private float limbSwing, limbSwingAmount;
 
     public ServantModel(ResourceLocation location) {
         this(location, location);
     }
 
     public ServantModel(ResourceLocation modelLocation, ResourceLocation animationLocation) {
-        super(RenderType::entityTranslucent);
-        this.model = GeoModelManager.getInstance().getModel(modelLocation, model -> {
-            this.head = model.getPart("Head");
-            this.body = model.getPart("Body");
-            this.rightItem = new ItemPart(model, "RightItem");
-            this.leftItem = new ItemPart(model, "LeftItem");
-
-            this.rightArm = model.getOptionalPart("RightArm").orElse(null);
-            this.leftArm = model.getOptionalPart("LeftArm").orElse(null);
-            this.rightLeg = model.getOptionalPart("RightLeg").orElse(null);
-            this.leftLeg = model.getOptionalPart("LeftLeg").orElse(null);
-
-            this.vehicleAttachment = model.getOptionalPart("VehicleAttachment").orElse(null);
-            if (this.vehicleAttachment != null) {
-                this.vehicleAttachment.updateDefaultPose(this.vehicleAttachment.getDefaultPose().withScale(0, 0, 0));
-                PoseExtended bodyPose = this.body.getDefaultPose();
-                PoseExtended attachmentPose = this.vehicleAttachment.getDefaultPose();
-                this.bodyVehicleOffset = new Vector3f(attachmentPose.x - bodyPose.x, attachmentPose.y - bodyPose.y, attachmentPose.z - bodyPose.z);
-            }
-            this.modelReloadListener(model);
-        });
-        this.animation = GeoAnimationManager.getInstance().getAnimation(animationLocation);
+        super(RenderType::entityTranslucent, modelLocation, animationLocation);
         this.defaultAnimations = GeoAnimationManager.getInstance().getAnimation(DEFAULT_ANIMATION);
     }
 
-    protected void modelReloadListener(ModelPartsContainer model) {
+    @Override
+    protected void onModelReload(ModelPartsContainer model) {
+        this.head = model.getPart("Head");
+        this.body = model.getPart("Body");
+        this.rightItem = new ItemPart(model, "RightItem");
+        this.leftItem = new ItemPart(model, "LeftItem");
+
+        this.rightArm = model.getOptionalPart("RightArm").orElse(null);
+        this.leftArm = model.getOptionalPart("LeftArm").orElse(null);
+        this.rightLeg = model.getOptionalPart("RightLeg").orElse(null);
+        this.leftLeg = model.getOptionalPart("LeftLeg").orElse(null);
+
+        this.vehicleAttachment = model.getOptionalPart("VehicleAttachment").orElse(null);
+        if (this.vehicleAttachment != null) {
+            this.vehicleAttachment.updateDefaultPose(this.vehicleAttachment.getDefaultPose().withScale(0, 0, 0));
+            PoseExtended bodyPose = this.body.getDefaultPose();
+            PoseExtended attachmentPose = this.vehicleAttachment.getDefaultPose();
+            this.bodyVehicleOffset = new Vector3f(attachmentPose.x - bodyPose.x, attachmentPose.y - bodyPose.y, attachmentPose.z - bodyPose.z);
+        }
     }
 
     @Override
@@ -132,15 +131,15 @@ public class ServantModel<T extends LivingEntity & AnimatedEntity & ServantModel
 
     @Override
     public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.getModel().resetPoses();
+        this.limbSwing = limbSwing;
+        this.limbSwingAmount = limbSwingAmount;
         float partialTick = this.getPartialTick();
-        this.preAnimSetup(entity, limbSwing, limbSwingAmount, netHeadYaw, headPitch, partialTick);
-        if (entity.isStaying()) {
-            this.animation.get().doAnimation(this, "stay", entity.tickCount, partialTick);
-        } else {
-            this.animation.get().doAnimation(this, entity.getAnimationHandler(), partialTick, entity.flipAnimation());
-        }
+        this.preAnimSetup(entity, partialTick);
+        this.animation.get().doAnimation(this, entity.getAnimationHandler(), partialTick, entity.flipAnimation());
 
         // Move the body to match the (detached) legs
+        // Legacy. Remove once all animations and models are updated
         if (entity.isPassenger() && entity.getVehicle() != null) {
             this.body.x = this.body.getDefaultPose().x;
             this.body.y = this.body.getDefaultPose().y;
@@ -157,26 +156,22 @@ public class ServantModel<T extends LivingEntity & AnimatedEntity & ServantModel
                 Math.max(0.15f, 1 - (entity.deathTime / (float) entity.maxDeathTick())) : -1;
     }
 
-    public void preAnimSetup(T entity, float limbSwing, float limbSwingAmount, float netHeadYaw, float headPitch, float partialTick) {
-        this.model.get().resetPoses();
+    public void preAnimSetup(T entity, float partialTick) {
         BedrockAnimations animation = this.animation.get();
-        this.setupAnimationValues(animation, limbSwing, limbSwingAmount, netHeadYaw, headPitch);
         BedrockAnimations defaulted = this.defaultAnimations.get();
-        this.setupAnimationValues(defaulted, limbSwing, limbSwingAmount, netHeadYaw, headPitch);
 
-        String idle = this.getWeaponBasedAnimationFor(entity, animation, "idle_with_weapon", "idle", null);
-        if (idle == null) {
+        if (!animation.has("idle")) {
             defaulted.doAnimation(this, "idle", entity.tickCount, partialTick, 1);
         } else {
-            animation.doAnimation(this, idle, entity.tickCount, partialTick, 1);
+            animation.doAnimation(this, "idle", entity.tickCount, partialTick, 1);
         }
-        String walk = this.getWeaponBasedAnimationFor(entity, animation, "walk_with_weapon", "walk", null);
-        if (walk == null) {
+        animation.doAnimation(this, "look", entity.tickCount, partialTick, 1);
+        if (!animation.has("walk")) {
             defaulted.doAnimation(this, "walk", entity.tickCount, partialTick, 1, false, true);
         } else {
-            animation.doAnimation(this, walk, entity.tickCount, partialTick, entity.interpolatedMoveTick(partialTick), false, true);
+            animation.doAnimation(this, "walk", entity.tickCount, partialTick, entity.interpolatedMoveTick(partialTick));
         }
-        animation.doAnimation(this, this.getWeaponBasedAnimationFor(entity, animation, "run_with_weapon", "run"), entity.tickCount, partialTick, entity.interpolatedMoveTickOf(MoveType.RUN, partialTick), false, true);
+        animation.doAnimation(this, "run", entity.tickCount, partialTick, entity.interpolatedMoveTickOf(MoveType.RUN, partialTick));
         if (entity.isPassenger() && entity.getVehicle() != null) {
             if (this.riding) {
                 if (animation.has("riding")) {
@@ -194,35 +189,22 @@ public class ServantModel<T extends LivingEntity & AnimatedEntity & ServantModel
         }
     }
 
-    protected void setupAnimationValues(BedrockAnimations animation, float limbSwing, float limbSwingAmount, float netHeadYaw, float headPitch) {
-        animation.setVariable("query.head_x_rotation", () -> headPitch);
-        animation.setVariable("query.head_y_rotation", () -> netHeadYaw);
-        animation.setVariable("left_held", () -> this.heldItemOff);
-        animation.setVariable("left_arm_x_rot", () -> this.leftArm != null ? this.leftArm.xRot * Mth.RAD_TO_DEG : 0);
-        animation.setVariable("right_held", () -> this.heldItemMain);
-        animation.setVariable("right_arm_x_rot", () -> this.rightArm != null ? this.rightArm.xRot * Mth.RAD_TO_DEG : 0);
-        animation.setVariable("limb_swing", () -> limbSwing * Mth.RAD_TO_DEG);
-        animation.setVariable("limb_swing_amount", () -> limbSwingAmount * Mth.RAD_TO_DEG);
-    }
-
-    protected String getWeaponBasedAnimationFor(T entity, BedrockAnimations animations, String either, String or) {
-        return this.getWeaponBasedAnimationFor(entity, animations, either, or, or);
-    }
-
-    protected String getWeaponBasedAnimationFor(T entity, BedrockAnimations animations, String either, String either2, String or) {
-        if (entity.hasOwnWeapon() && animations.has(either)) {
-            return either;
-        }
-        if (animations.has(either2))
-            return either2;
-        return or;
+    @Override
+    public void onPlayAnimation(AnimationState state, Animation animation, float tick, VariableMap variables) {
+        super.onPlayAnimation(state, animation, tick, variables);
+        variables.setVariable("left_held", () -> this.heldItemOff);
+        variables.setVariable("left_arm_x_rot", () -> this.leftArm != null ? this.leftArm.xRot * Mth.RAD_TO_DEG : 0);
+        variables.setVariable("right_held", () -> this.heldItemMain);
+        variables.setVariable("right_arm_x_rot", () -> this.rightArm != null ? this.rightArm.xRot * Mth.RAD_TO_DEG : 0);
+        variables.setVariable("limb_swing", () -> this.limbSwing * Mth.RAD_TO_DEG);
+        variables.setVariable("limb_swing_amount", () -> this.limbSwingAmount * Mth.RAD_TO_DEG);
     }
 
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
         if (this.alpha != -1)
             color = FastColor.ARGB32.color((int) (this.alpha * 255), color);
-        this.model.get().getRoot().render(poseStack, buffer, packedLight, packedOverlay, color);
+        super.renderToBuffer(poseStack, buffer, packedLight, packedOverlay, color);
     }
 
     @Override

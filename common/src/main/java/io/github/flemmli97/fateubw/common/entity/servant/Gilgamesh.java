@@ -3,7 +3,7 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.HeldEquipmentHandler;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
-import io.github.flemmli97.fateubw.common.entity.misc.BabylonWeapon;
+import io.github.flemmli97.fateubw.common.entity.misc.WeaponProjectile;
 import io.github.flemmli97.fateubw.common.entity.misc.EnkiduChains;
 import io.github.flemmli97.fateubw.common.entity.misc.EnumaElish;
 import io.github.flemmli97.fateubw.common.entity.utils.OnProjectileHit;
@@ -318,12 +318,12 @@ public class Gilgamesh extends BaseServant implements OnProjectileHit {
     }
 
     private void spawnBehind(LivingEntity target, int amount) {
-        BabylonWeapon.spawnWeapons(this, target, amount, 7);
+        WeaponProjectile.spawnWeapons(this, target, amount, 7, WeaponProjectile.Type.BABYLON);
         this.chainCooldown -= 50;
     }
 
     private void spawnAroundTarget(LivingEntity target, int amount) {
-        BabylonWeapon.spawnWeaponsAround(this, target, amount, 6 + amount / 5);
+        WeaponProjectile.spawnWeaponsAround(this, target, amount, 6 + amount / 5);
         this.chainCooldown -= 50;
     }
 

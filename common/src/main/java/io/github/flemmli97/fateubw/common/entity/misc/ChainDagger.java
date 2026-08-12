@@ -2,10 +2,10 @@ package io.github.flemmli97.fateubw.common.entity.misc;
 
 import io.github.flemmli97.fateubw.common.attachment.PlayerData;
 import io.github.flemmli97.fateubw.common.entity.utils.OnProjectileHit;
+import io.github.flemmli97.fateubw.common.registry.FateAttachments;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
-import io.github.flemmli97.fateubw.platform.Platform;
 import io.github.flemmli97.tenshilib.common.utils.HitResultUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -86,7 +86,7 @@ public class ChainDagger extends BaseProjectile {
         } else if (this.level().isClientSide) {
             this.level().playLocalSound(this.getX(), this.getY(), this.getZ(), FateSounds.CHAIN_MOVE.get(), SoundSource.NEUTRAL, 1, 1, false);
             if (this.isAlive() && this.getOwner() instanceof Player player) {
-                PlayerData data = Platform.INSTANCE.getPlayerData(player);
+                PlayerData data = FateAttachments.PLAYER_DATA.get().get(player);
                 if (data.getThrownDagger() != this)
                     data.setThrownDagger(this);
             }
@@ -196,6 +196,6 @@ public class ChainDagger extends BaseProjectile {
     public void remove(RemovalReason reason) {
         super.remove(reason);
         if (this.getOwner() instanceof Player player)
-            Platform.INSTANCE.getPlayerData(player).setThrownDagger(null);
+            FateAttachments.PLAYER_DATA.get().get(player).setThrownDagger(null);
     }
 }

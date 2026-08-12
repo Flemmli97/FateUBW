@@ -11,6 +11,7 @@
     "CombatTrackerAccessor",
     "CrossbowAccessor",
     "EnchantmentHelperMixin",
+    "EntityMixin",
     "PathFinderMixin",
     "PathNavigationMixin",
     "SynchedEntityDataAccessor"

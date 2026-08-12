@@ -1,7 +1,7 @@
 {
   "type": "fateubw:unlimited_blade_works",
   "generator": {
-    "type": "minecraft:noise",
+    "type": "fateubw:ubw_chunk_generator",
     "biome_source": {
       "type": "minecraft:fixed",
       "biome": "fateubw:unlimited_blade_works"

@@ -11,7 +11,7 @@
           "rotation": ["math.sin(time*60)*-3+right_held*(-18)", 0, "math.cos(time*90)*-3+3"]
         },
         "Head": {
-          "rotation": ["query.head_x_rotation", "query.head_y_rotation", 0]
+          "rotation": ["query.head_x_rotation", "(query.head_y_rotation - query.body_y_rotation)", 0]
         }
       }
     },

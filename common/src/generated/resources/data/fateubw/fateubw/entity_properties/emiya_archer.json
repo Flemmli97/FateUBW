@@ -9,7 +9,7 @@
     "minecraft:generic.armor_toughness": 6.0,
     "minecraft:generic.attack_damage": 13.0,
     "minecraft:generic.max_health": 350.0,
-    "minecraft:generic.movement_speed": 0.35
+    "minecraft:generic.movement_speed": 0.27
   },
   "class": "fateubw:archer",
   "nobel_phantasm_cost": 50,

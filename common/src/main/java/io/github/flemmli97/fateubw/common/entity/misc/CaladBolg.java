@@ -4,8 +4,13 @@ import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
+import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.Utils;
+import io.github.flemmli97.tenshilib.common.particle.AdvancedParticleContainer;
+import io.github.flemmli97.tenshilib.common.particle.data.ColorData;
+import io.github.flemmli97.tenshilib.common.particle.data.ParticleMetaData;
+import io.github.flemmli97.tenshilib.common.particle.data.ScaleData;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -72,7 +77,18 @@ public class CaladBolg extends BaseProjectile {
             float dmgPerc = (float) Mth.clamp(1 - (dist / 26f), 0.15f, 1);
             e.hurt(FateDamageTypes.indirect(FateDamageTypes.CALADBOLG, this, this.getOwner()), dmg * dmgPerc);
         }
-        if (this.level() instanceof ServerLevel serverLevel)
+        if (this.level() instanceof ServerLevel serverLevel) {
             serverLevel.sendParticles(ParticleTypes.EXPLOSION_EMITTER, pos.x(), pos.y(), pos.z(), 2, 1.0, 0.0, 0.0, 1);
+            AdvancedParticleContainer.make(FateParticles.SPHERE_CLOUD.get())
+                    .addData(new ScaleData(0, 6, 8))
+                    .addData(new ColorData(37/255f, 37/255f, 188/255f, 1))
+                    .addData(new ParticleMetaData(30, false, 0))
+                    .add(this.level(), null, this.getX(), this.getY(0.5), this.getZ(), true);
+            AdvancedParticleContainer.make(FateParticles.SPHERE_CLOUD.get())
+                    .addData(new ScaleData(0, 6, 8))
+                    .addData(new ColorData(245/255f, 101/255f, 116/255f, 1))
+                    .addData(new ParticleMetaData(30, false, 0))
+                    .add(this.level(), null, this.getX(), this.getY(0.5), this.getZ(), true);
+        }
     }
 }
