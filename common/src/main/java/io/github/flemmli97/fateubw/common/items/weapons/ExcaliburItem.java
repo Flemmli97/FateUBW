@@ -3,8 +3,8 @@ package io.github.flemmli97.fateubw.common.items.weapons;
 import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.entity.misc.Excalibur;
 import io.github.flemmli97.fateubw.common.lib.ItemTiers;
+import io.github.flemmli97.fateubw.common.registry.FateAttachments;
 import io.github.flemmli97.fateubw.common.registry.FateDataComponents;
-import io.github.flemmli97.fateubw.platform.Platform;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Unit;
@@ -38,7 +38,7 @@ public class ExcaliburItem extends SwordItem {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!level.isClientSide) {
-            if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).getMana() >= CommonConfig.excaliburMana) {
+            if (player.isCreative() || FateAttachments.PLAYER_DATA.get().get(player).getMana() >= CommonConfig.excaliburMana) {
                 player.startUsingItem(hand);
                 stack.set(FateDataComponents.GLOWING_ITEM.get(), Unit.INSTANCE);
                 return InteractionResultHolder.consume(stack);
@@ -57,7 +57,7 @@ public class ExcaliburItem extends SwordItem {
             return;
         }
         if (!level.isClientSide) {
-            if (!(entity instanceof Player player) || player.isCreative() || Platform.INSTANCE.getPlayerData(player).useMana(CommonConfig.excaliburMana)) {
+            if (!(entity instanceof Player player) || player.isCreative() || FateAttachments.PLAYER_DATA.get().get(player).useMana(CommonConfig.excaliburMana)) {
                 Excalibur excalibur = new Excalibur(level, entity);
                 level.addFreshEntity(excalibur);
             } else {

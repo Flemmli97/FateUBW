@@ -4,8 +4,8 @@ import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.entity.misc.ArcherArrow;
 import io.github.flemmli97.fateubw.common.entity.misc.CaladBolg;
 import io.github.flemmli97.fateubw.common.items.SwingItem;
+import io.github.flemmli97.fateubw.common.registry.FateAttachments;
 import io.github.flemmli97.fateubw.common.registry.FateDataComponents;
-import io.github.flemmli97.fateubw.platform.Platform;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -48,7 +48,7 @@ public class ArcherBowItem extends BowItem implements SwingItem {
             if (player.isCreative())
                 this.setCharged(stack, true);
             else {
-                if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).useMana(CommonConfig.caladbolgMana)) {
+                if (player.isCreative() || FateAttachments.PLAYER_DATA.get().get(player).useMana(CommonConfig.caladbolgMana)) {
                     this.setCharged(stack, true);
                 }
             }
@@ -67,7 +67,7 @@ public class ArcherBowItem extends BowItem implements SwingItem {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        if (player.isCreative() || this.charged(player.getItemInHand(hand)) || Platform.INSTANCE.getPlayerData(player).getMana() >= CommonConfig.archerBowMana) {
+        if (player.isCreative() || this.charged(player.getItemInHand(hand)) || FateAttachments.PLAYER_DATA.get().get(player).getMana() >= CommonConfig.archerBowMana) {
             player.startUsingItem(hand);
             return InteractionResultHolder.consume(player.getItemInHand(hand));
         } else {
@@ -96,7 +96,7 @@ public class ArcherBowItem extends BowItem implements SwingItem {
     public void spawnNormalArrow(ItemStack stack, Level level, LivingEntity entity, int timeLeft) {
         if (entity instanceof ServerPlayer player) {
             int ammoCount = player.hasInfiniteMaterials() ? 0 : EnchantmentHelper.processAmmoUse(player.serverLevel(), stack, new ItemStack(Items.ARROW), 1);
-            boolean flag = ammoCount <= 0 || Platform.INSTANCE.getPlayerData(player).useMana(CommonConfig.archerBowMana * ammoCount);
+            boolean flag = ammoCount <= 0 || FateAttachments.PLAYER_DATA.get().get(player).useMana(CommonConfig.archerBowMana * ammoCount);
             int i = this.getUseDuration(stack, entity) - timeLeft;
 
             if (flag) {

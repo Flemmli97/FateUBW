@@ -11,9 +11,9 @@ import io.github.flemmli97.fateubw.api.loot.entry.AttributeEntry;
 import io.github.flemmli97.fateubw.common.attachment.PlayerData;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.loot.GrailLootTable;
+import io.github.flemmli97.fateubw.common.registry.FateAttachments;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import io.github.flemmli97.fateubw.mixin.AttributeMapAccessor;
-import io.github.flemmli97.fateubw.platform.Platform;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
@@ -93,7 +93,7 @@ public class CommandHandler {
         Collection<ServerPlayer> players = EntityArgument.getPlayers(ctx, "players");
         int amount = IntegerArgumentType.getInteger(ctx, "amount");
         players.forEach(player -> {
-            PlayerData data = Platform.INSTANCE.getPlayerData(player);
+            PlayerData data = FateAttachments.PLAYER_DATA.get().get(player);
             int count = switch (mode) {
                 case SET -> amount;
                 case TAKE -> data.getCommandSeals() - amount;

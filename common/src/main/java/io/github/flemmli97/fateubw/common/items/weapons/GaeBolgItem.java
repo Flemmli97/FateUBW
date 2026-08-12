@@ -3,7 +3,7 @@ package io.github.flemmli97.fateubw.common.items.weapons;
 import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.entity.misc.GaeBolg;
 import io.github.flemmli97.fateubw.common.lib.ItemTiers;
-import io.github.flemmli97.fateubw.platform.Platform;
+import io.github.flemmli97.fateubw.common.registry.FateAttachments;
 import io.github.flemmli97.tenshilib.common.utils.HitResultUtils;
 import io.github.flemmli97.tenshilib.common.utils.math.OrientedBoundingBox;
 import net.minecraft.ChatFormatting;
@@ -40,7 +40,7 @@ public class GaeBolgItem extends TieredItem {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!level.isClientSide) {
-            if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).useMana(CommonConfig.gaeBolgMana)) {
+            if (player.isCreative() || FateAttachments.PLAYER_DATA.get().get(player).useMana(CommonConfig.gaeBolgMana)) {
                 GaeBolg gaeBolg = new GaeBolg(level, player);
                 gaeBolg.shoot(player, player.getXRot(), player.getYRot(), 0, 2, 0);
                 EntityHitResult res = HitResultUtils.calculateEntityFromLook(player, 32);

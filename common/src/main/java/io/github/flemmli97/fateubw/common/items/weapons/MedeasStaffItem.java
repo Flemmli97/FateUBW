@@ -2,8 +2,8 @@ package io.github.flemmli97.fateubw.common.items.weapons;
 
 import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicBeam;
+import io.github.flemmli97.fateubw.common.registry.FateAttachments;
 import io.github.flemmli97.fateubw.common.registry.FateSounds;
-import io.github.flemmli97.fateubw.platform.Platform;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -36,7 +36,7 @@ public class MedeasStaffItem extends Item {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!level.isClientSide) {
-            if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).getMana() >= CommonConfig.staffMana) {
+            if (player.isCreative() || FateAttachments.PLAYER_DATA.get().get(player).getMana() >= CommonConfig.staffMana) {
                 player.startUsingItem(hand);
                 return InteractionResultHolder.consume(stack);
             }
@@ -53,7 +53,7 @@ public class MedeasStaffItem extends Item {
             return;
         }
         if (!level.isClientSide) {
-            if (!(entity instanceof Player player) || player.isCreative() || Platform.INSTANCE.getPlayerData(player).useMana(CommonConfig.staffMana)) {
+            if (!(entity instanceof Player player) || player.isCreative() || FateAttachments.PLAYER_DATA.get().get(player).useMana(CommonConfig.staffMana)) {
                 MagicBeam beam = new MagicBeam(level, entity);
                 beam.setPos(entity.getEyePosition().add(0, 2, 0));
                 Vec3 target = entity.position().add(entity.getLookAngle().scale(16));

@@ -1,6 +1,6 @@
 package io.github.flemmli97.fateubw.common.items;
 
-import io.github.flemmli97.fateubw.platform.Platform;
+import io.github.flemmli97.fateubw.common.registry.FateAttachments;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
@@ -20,7 +20,7 @@ public class ManaBottleItem extends Item {
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
         Player player = entity instanceof Player ? (Player) entity : null;
         if (!level.isClientSide && player != null)
-            Platform.INSTANCE.getPlayerData(player).addMana(50);
+            FateAttachments.PLAYER_DATA.get().get(player).addMana(50);
         if (player == null || !player.isCreative())
             stack.shrink(1);
         return stack;

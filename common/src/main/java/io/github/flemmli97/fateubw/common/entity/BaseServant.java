@@ -19,6 +19,7 @@ import io.github.flemmli97.fateubw.common.network.S2CServantGui;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailHolder;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailHolderProvider;
 import io.github.flemmli97.fateubw.common.registry.FateActivities;
+import io.github.flemmli97.fateubw.common.registry.FateAttachments;
 import io.github.flemmli97.fateubw.common.registry.FateAttributes;
 import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateMemoryTypes;
@@ -28,7 +29,6 @@ import io.github.flemmli97.fateubw.common.utils.ExtendedCombatRules;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
-import io.github.flemmli97.fateubw.platform.Platform;
 import io.github.flemmli97.tenshilib.common.entity.AOEAttackEntity;
 import io.github.flemmli97.tenshilib.common.entity.ai.MoveControllerPlus;
 import io.github.flemmli97.tenshilib.common.entity.ai.TargetPosition;
@@ -439,8 +439,8 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
     }
 
     protected Vec3 directionToLookAt() {
-        return this.getAnimationHandler().hasAnimation() && this.getTargetPosition() != null ? this.getTargetPosition()
-                .asVec(this.position()).subtract(this.position()) : null;
+        return this.getAnimationHandler().hasAnimation() && this.getTargetPosition() != null
+                ? this.getTargetPosition().asVec(this.position()).subtract(this.position()) : null;
     }
 
     protected float[] targetLookClamp() {
@@ -734,7 +734,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
         }
         if (behaviour == CommandType.NP) {
             if (!this.commandNPUse) {
-                PlayerData data = Platform.INSTANCE.getPlayerData(player);
+                PlayerData data = FateAttachments.PLAYER_DATA.get().get(player);
                 if (player.hasInfiniteMaterials() || (data.useMana(this.props().manaCost()) && data.useCommandSeal())) {
                     player.sendSystemMessage(Component.translatable("fateubw.chat.command.npsuccess").withStyle(ChatFormatting.RED));
                     this.commandNPUse = true;

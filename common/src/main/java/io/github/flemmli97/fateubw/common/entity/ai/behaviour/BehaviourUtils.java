@@ -39,7 +39,7 @@ public class BehaviourUtils {
                 return false;
             if (entity instanceof AOEAttackEntity aoeEntity)
                 return aoeEntity.prepareAttackBox(anim.animation(), target, -0.15, true)
-                        .intersects(target.getBoundingBox());
+                       .intersects(target.getBoundingBox());
             return target instanceof LivingEntity living && entity.isWithinMeleeAttackRange(living);
         } : null, cooldownFunc);
     }

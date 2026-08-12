@@ -4,8 +4,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import io.github.flemmli97.fateubw.api.loot.GrailLootEntry;
 import io.github.flemmli97.fateubw.api.loot.LootSerializerType;
+import io.github.flemmli97.fateubw.common.registry.FateAttachments;
 import io.github.flemmli97.fateubw.common.registry.FateGrailLootSerializer;
-import io.github.flemmli97.fateubw.platform.Platform;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.storage.loot.LootContext;
 
@@ -31,6 +31,6 @@ public class ServantEntry extends GrailLootEntry<ServantEntry> {
 
     @Override
     public void accept(ServerPlayer player, LootContext lootContext) {
-        Platform.INSTANCE.getPlayerData(player).restoreServant(this.loot);
+        FateAttachments.PLAYER_DATA.get().get(player).restoreServant(this.loot);
     }
 }

@@ -3,7 +3,7 @@ package io.github.flemmli97.fateubw.common.network;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.client.ClientHandler;
 import io.github.flemmli97.fateubw.common.attachment.PlayerData;
-import io.github.flemmli97.fateubw.platform.Platform;
+import io.github.flemmli97.fateubw.common.registry.FateAttachments;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -40,7 +40,7 @@ public class S2CPlayerCap implements CustomPacketPayload {
     public static void handle(S2CPlayerCap pkt) {
         Player player = ClientHandler.clientPlayer();
         if (player != null)
-            Platform.INSTANCE.getPlayerData(player).handleClientUpdatePacket(pkt);
+            FateAttachments.PLAYER_DATA.get().get(player).handleClientUpdatePacket(pkt);
     }
 
     @Override

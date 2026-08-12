@@ -6,9 +6,9 @@ import io.github.flemmli97.fateubw.api.entity.ServantLike;
 import io.github.flemmli97.fateubw.common.attachment.PlayerData;
 import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
+import io.github.flemmli97.fateubw.common.registry.FateAttachments;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
-import io.github.flemmli97.fateubw.platform.Platform;
 import io.github.flemmli97.tenshilib.common.utils.HitResultUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -41,7 +41,7 @@ public record C2SServantCommand(ActionType command, int entityId) implements Cus
     public static void handle(C2SServantCommand pkt, ServerPlayer sender) {
         if (sender == null)
             return;
-        PlayerData data = Platform.INSTANCE.getPlayerData(sender);
+        PlayerData data = FateAttachments.PLAYER_DATA.get().get(sender);
         ServantLike<?> servant = getServant(sender, pkt.entityId);
         if (servant == null)
             return;

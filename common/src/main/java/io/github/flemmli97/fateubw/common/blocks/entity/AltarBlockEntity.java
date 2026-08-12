@@ -2,12 +2,12 @@ package io.github.flemmli97.fateubw.common.blocks.entity;
 
 import io.github.flemmli97.fateubw.api.entity.ServantLike;
 import io.github.flemmli97.fateubw.common.network.S2CAltarUpdate;
+import io.github.flemmli97.fateubw.common.registry.FateAttachments;
 import io.github.flemmli97.fateubw.common.registry.FateBlocks;
 import io.github.flemmli97.fateubw.common.registry.FateDataComponents;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
-import io.github.flemmli97.fateubw.platform.Platform;
 import io.github.flemmli97.tenshilib.loader.LoaderNetwork;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
@@ -184,7 +184,7 @@ public class AltarBlockEntity extends BlockEntity {
             if (servant != null) {
                 this.isSummoning = true;
                 LoaderNetwork.INSTANCE.sendToTracking(new S2CAltarUpdate(this.getBlockPos(), this.isSummoning), serverPlayer.serverLevel(), new ChunkPos(this.getBlockPos()));
-                Platform.INSTANCE.getPlayerData(serverPlayer).setCommandSeals(3);
+                FateAttachments.PLAYER_DATA.get().get(serverPlayer).setCommandSeals(3);
                 this.servant = servant;
                 return true;
             }

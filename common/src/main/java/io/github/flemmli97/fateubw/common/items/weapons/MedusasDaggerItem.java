@@ -3,7 +3,7 @@ package io.github.flemmli97.fateubw.common.items.weapons;
 import io.github.flemmli97.fateubw.common.attachment.PlayerData;
 import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.entity.misc.ChainDagger;
-import io.github.flemmli97.fateubw.platform.Platform;
+import io.github.flemmli97.fateubw.common.registry.FateAttachments;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -33,7 +33,7 @@ public class MedusasDaggerItem extends SwordItem {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         if (!level.isClientSide) {
-            PlayerData data = Platform.INSTANCE.getPlayerData(player);
+            PlayerData data = FateAttachments.PLAYER_DATA.get().get(player);
             ChainDagger thrownDagger = data.getThrownDagger();
             if (thrownDagger == null) {
                 if (player.isCreative() || data.useMana(CommonConfig.chainMana)) {

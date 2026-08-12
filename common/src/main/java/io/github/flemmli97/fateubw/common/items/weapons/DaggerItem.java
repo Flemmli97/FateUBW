@@ -2,8 +2,8 @@ package io.github.flemmli97.fateubw.common.items.weapons;
 
 import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.entity.misc.ThrownItemEntity;
+import io.github.flemmli97.fateubw.common.registry.FateAttachments;
 import io.github.flemmli97.fateubw.common.registry.FateSounds;
-import io.github.flemmli97.fateubw.platform.Platform;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -34,7 +34,7 @@ public class DaggerItem extends SwordItem {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         if (!level.isClientSide) {
             ItemStack stack = player.getItemInHand(hand);
-            if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).useMana(CommonConfig.daggerThrowMana)) {
+            if (player.isCreative() || FateAttachments.PLAYER_DATA.get().get(player).useMana(CommonConfig.daggerThrowMana)) {
                 ThrownItemEntity dagger = new ThrownItemEntity(level, player);
                 dagger.setWeapon(stack.copy());
                 dagger.shoot(player, player.getXRot(), player.getYRot(), 0, 1.5f, 0);

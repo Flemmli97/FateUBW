@@ -8,7 +8,9 @@ import io.github.flemmli97.fateubw.common.network.S2CCommandSeals;
 import io.github.flemmli97.fateubw.common.network.S2CMana;
 import io.github.flemmli97.fateubw.common.network.S2CPlayerCap;
 import io.github.flemmli97.fateubw.common.registry.FateMobEffects;
+import io.github.flemmli97.tenshilib.common.attachment.SerializableAttachment;
 import io.github.flemmli97.tenshilib.loader.LoaderNetwork;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
@@ -30,7 +32,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
 
-public class PlayerData {
+public class PlayerData implements SerializableAttachment<CompoundTag, PlayerData> {
 
     private final Player player;
 
@@ -163,7 +165,9 @@ public class PlayerData {
         return null;
     }
 
-    public CompoundTag save(CompoundTag compound) {
+    @Override
+    public CompoundTag write(HolderLookup.Provider provider) {
+        CompoundTag compound = new CompoundTag();
         compound.putInt("Mana", this.currentMana);
         compound.putInt("CommandSeal", this.commandSeals);
         if (this.savedServant != null) {
@@ -173,19 +177,22 @@ public class PlayerData {
         return compound;
     }
 
-    public void load(CompoundTag compound) {
+    @Override
+    public PlayerData read(CompoundTag compound, HolderLookup.Provider provider) {
         this.currentMana = compound.getInt("Mana");
         this.commandSeals = compound.getInt("CommandSeal");
         if (compound.contains("SavedServantType")) {
             this.savedServant = Pair.of(BuiltInRegistries.ENTITY_TYPE.get(ResourceLocation.parse(compound.getString("SavedServantType"))),
                     compound.getCompound("SavedServant"));
         }
+        return this;
     }
 
-    public void from(PlayerData other) {
+    public PlayerData from(PlayerData other) {
         this.currentMana = other.currentMana;
         this.commandSeals = other.commandSeals;
         this.savedServant = other.savedServant;
+        return this;
     }
 
     public void handleClientUpdatePacket(S2CPlayerCap pkt) {

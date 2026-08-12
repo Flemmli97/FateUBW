@@ -2,7 +2,7 @@ package io.github.flemmli97.fateubw.common.items.weapons;
 
 import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.entity.summons.LesserMonster;
-import io.github.flemmli97.fateubw.platform.Platform;
+import io.github.flemmli97.fateubw.common.registry.FateAttachments;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -31,7 +31,7 @@ public class GrimoireItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         if (!level.isClientSide) {
-            if (player.isCreative() || Platform.INSTANCE.getPlayerData(player).useMana(CommonConfig.grimoireMana)) {
+            if (player.isCreative() || FateAttachments.PLAYER_DATA.get().get(player).useMana(CommonConfig.grimoireMana)) {
                 this.spawn(player, player.getItemInHand(hand));
                 return InteractionResultHolder.consume(player.getItemInHand(hand));
             }

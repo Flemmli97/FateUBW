@@ -6,6 +6,7 @@ public class FateRegistration {
 
     public static void registerContent() {
         TenshiLib.registerSyncedRegistry();
+        FateAttachments.ATTACHMENTS.registerContent();
         FateActivities.ACTIVITIES.registerContent();
         FateAttributes.ATTRIBUTES.registerContent();
         FateBlocks.BLOCK_ENTITIES.registerContent();

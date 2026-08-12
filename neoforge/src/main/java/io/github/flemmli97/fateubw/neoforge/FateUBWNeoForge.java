@@ -10,7 +10,7 @@ import io.github.flemmli97.fateubw.common.registry.FateRegistration;
 import io.github.flemmli97.fateubw.neoforge.client.ClientEvents;
 import io.github.flemmli97.fateubw.neoforge.event.EventHandler;
 import io.github.flemmli97.fateubw.neoforge.network.PacketHandler;
-import io.github.flemmli97.fateubw.neoforge.registry.FateAttachments;
+import net.minecraft.server.MinecraftServer;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -29,7 +29,6 @@ public class FateUBWNeoForge {
         container.registerConfig(ModConfig.Type.CLIENT, ConfigSpecs.CLIENT_SPEC, Fate.MODID + "/client.toml");
         container.registerConfig(ModConfig.Type.COMMON, ConfigSpecs.COMMON_SPEC, Fate.MODID + "/common.toml");
         FateRegistration.registerContent();
-        FateAttachments.ATTACHMENT_TYPES.register(modBus);
         modBus.addListener(this::configLoading);
         modBus.addListener(this::configReloading);
         modBus.addListener(this::attributes);
