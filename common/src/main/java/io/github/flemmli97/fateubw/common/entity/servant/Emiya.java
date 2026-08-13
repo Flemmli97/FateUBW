@@ -5,10 +5,10 @@ import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.HeldEquipmentHandler;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.misc.ArcherArrow;
-import io.github.flemmli97.fateubw.common.entity.misc.ThrownItemEntity;
-import io.github.flemmli97.fateubw.common.entity.misc.WeaponProjectile;
 import io.github.flemmli97.fateubw.common.entity.misc.CaladBolg;
 import io.github.flemmli97.fateubw.common.entity.misc.ItemInGroundEntity;
+import io.github.flemmli97.fateubw.common.entity.misc.ThrownItemEntity;
+import io.github.flemmli97.fateubw.common.entity.misc.WeaponProjectile;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
@@ -153,7 +153,7 @@ public class Emiya extends BaseServant {
                 .start(BehaviourUtils.of(AnimationPlayHolder.<Emiya>builder(DUAL_SLASH_1_1)
                         .start(DUAL_SLASH_1_2, 2, 0.28f, 1)
                         .start(DUAL_SLASH_1_2, 2, 0.28f, 2, owner -> owner.healthBelow(0.5f))
-                                .chain(DUAL_BLADE_1_3)
+                        .chain(DUAL_BLADE_1_3)
                         .build())).play(BehaviourUtils.cooldownedPlay(true, 16, 28))
                 .condition(BehaviourUtils.ifCloserThan(7))
                 .prepare(new SetWalkTargetToAttackTarget<Emiya>().speedMod((owner, target) -> moveSpeed)).prepareOptional(BehaviourUtils.timedMoveAttack())

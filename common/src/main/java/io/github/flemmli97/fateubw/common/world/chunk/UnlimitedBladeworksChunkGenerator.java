@@ -8,7 +8,6 @@ import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
-import net.minecraft.world.level.levelgen.PhantomSpawner;
 
 public class UnlimitedBladeworksChunkGenerator extends NoiseBasedChunkGenerator {
 

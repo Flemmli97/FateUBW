@@ -30,12 +30,12 @@ public class RenderThrownItem extends ItemProjectileRenderer<ThrownItemEntity> {
         this.scaleX = 2;
         this.scaleY = 2;
         this.scaleZ = 2;
-        if (entity.getItemType() == ThrownItemEntity.ItemType.KANSHOU || entity.getItemType() ==  ThrownItemEntity.ItemType.BAKUYA) {
+        if (entity.getItemType() == ThrownItemEntity.ItemType.KANSHOU || entity.getItemType() == ThrownItemEntity.ItemType.BAKUYA) {
             stack.pushPose();
             stack.scale(this.scaleX, this.scaleY, this.scaleZ);
             stack.translate(0, 0.15, 0);
             float tick = (entity.tickCount + partialTick) * 100;
-            if (entity.getItemType() ==  ThrownItemEntity.ItemType.KANSHOU) {
+            if (entity.getItemType() == ThrownItemEntity.ItemType.KANSHOU) {
                 tick *= -1;
             }
             stack.mulPose(Axis.YP.rotationDegrees(tick + 90 + Mth.lerp(partialTick, entity.yRotO, entity.getYRot())));
