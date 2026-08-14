@@ -2,7 +2,6 @@ package io.github.flemmli97.fateubw.client.particles;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.datafixers.util.Pair;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailPositions;
 import net.minecraft.client.Camera;
@@ -41,56 +40,60 @@ public class TrailRenderer {
         if (position == null || position.size() < 2)
             return;
         Matrix4f mat = stack.last().pose();
-        List<Pair<Vector3f, Vector3f>> positions = new ArrayList<>();
+        // Calculate interpolated positions and their normals
+        List<TrailPosition3f> positions = new ArrayList<>();
+        partialX = position.hasBeenFull() ? x : partialX;
+        partialY = position.hasBeenFull() ? y : partialY;
+        partialZ = position.hasBeenFull() ? z : partialZ;
         for (int i = 0; i < position.size() - 1; i++) {
-            TrailPositions.TrailPosition pos = position.getAt(i);
-            if (pos == null)
+            TrailPositions.TrailPosition[] current = extractPositionsFor(position, i);
+            if (current == null)
                 continue;
-            TrailPositions.TrailPosition previous = position.getAt(i - 1);
-            if (previous == null)
-                previous = pos;
-            TrailPositions.TrailPosition next = position.getAt(i + 1);
-            if (next == null)
-                next = pos;
-            TrailPositions.TrailPosition next2 = position.getAt(i + 2);
-            if (next2 == null)
-                next2 = next;
             float step = 1f / Math.max(1, info.interpolation());
             for (float j = 0; j < 1; j += step) {
-                Vector3f stepPos = catmullRom(j, previous.pos(), pos.pos(), next.pos(), next2.pos())
+                Vector3f stepPos = catmullRom(j, current[0].pos(), current[1].pos(), current[2].pos(), current[3].pos())
                         .sub(partialX, partialY, partialZ);
                 if (stepPos == null)
                     continue;
-                Vector3f stepNormal = catmullRom(j, previous.normal(), pos.normal(), next.normal(), next2.normal());
-                Vector3f prevPos;
-                Vector3f previousNormal = null;
-                if (!positions.isEmpty()) {
-                    prevPos = positions.getLast().getFirst();
-                    previousNormal = positions.getLast().getSecond();
-                } else if (i == 0) {
-                    prevPos = next.pos().toVector3f().sub(partialX, partialY, partialZ);
-                } else {
-                    prevPos = previous.pos().toVector3f().sub(partialX, partialY, partialZ);
+                Vector3f stepNormal = catmullRom(j, current[0].normal(), current[1].normal(), current[2].normal(), current[3].normal());
+                if (positions.isEmpty()) {
+                    positions.add(TrailPosition3f.of(stepPos, stepNormal));
+                    break;
                 }
-                Vector3f normal = calculateNormal((i == 0) ? stepPos : prevPos, (i == 0) ? prevPos : stepPos, stepNormal, previousNormal, camera);
-                positions.add(Pair.of(stepPos, normal));
+                Vector3f prevPos = positions.getLast().pos();
+                Vector3f previousNormal = positions.getLast().normal();
+                Vector3f normal = calculateNormal(prevPos, stepPos, stepNormal, previousNormal, camera);
+                if (positions.size() == 1 && previousNormal == null) {
+                    // Update the first normal
+                    positions.set(0, TrailPosition3f.of(prevPos, normal));
+                }
+                positions.add(TrailPosition3f.of(stepPos, normal));
             }
         }
         TrailPositions.TrailPosition current = position.getLast();
         if (current != null) {
             Vector3f currentPos = current.pos().toVector3f().sub(x, y, z);
-            Pair<Vector3f, Vector3f> last = positions.getLast();
-            positions.add(Pair.of(currentPos, calculateNormal(last.getFirst(), currentPos, current.normal() != null ? current.normal().toVector3f() : null, last.getSecond(), camera)));
+            TrailPosition3f last = positions.getLast();
+            Vector3f normal = calculateNormal(last.pos(), currentPos, last.normal(), current.normal() != null ? current.normal().toVector3f() : null, camera);
+            positions.add(TrailPosition3f.of(currentPos, normal));
         }
+        // Updates the normal of the first entry cause it can be null
+        TrailPosition3f first = positions.getFirst();
+        if (first.normal() == null) {
+            // Update the first normal
+            first.updateNormal(positions.get(1).normal());
+        }
+        // Finally render the trail data
         int size = position.getLength() * info.interpolation();
         int diff = Math.abs(size - (positions.size() - 1));
-        for (int i = 0; i < positions.size() - 1; i++) {
-            Pair<Vector3f, Vector3f> pos = positions.get(i);
-            Pair<Vector3f, Vector3f> next = positions.get(i + 1);
-            float prog = Mth.clamp((float) (i + diff) / size, 0, 1);
-            float progNext = Mth.clamp((float) (i + diff + 1) / size, 0, 1);
+        for (int i = 1; i < positions.size(); i++) {
+            int idx = i - 1;
+            TrailPosition3f pos = positions.get(idx);
+            TrailPosition3f next = positions.get(idx + 1);
+            float prog = Mth.clamp((float) (idx + diff) / size, 0, 1);
+            float progNext = Mth.clamp((float) (idx + diff + 1) / size, 0, 1);
 
-            Vector4f[] vertices = vertices(info, pos.getFirst(), next.getFirst(), pos.getSecond(), next.getSecond(), prog, progNext);
+            Vector4f[] vertices = vertices(info, pos.pos(), next.pos(), pos.normal(), next.normal(), prog, progNext);
             for (Vector4f vert : vertices) {
                 vert.mul(mat);
             }
@@ -113,6 +116,24 @@ public class TrailRenderer {
         }
     }
 
+    private static TrailPositions.TrailPosition[] extractPositionsFor(TrailPositions positions, int idx) {
+        TrailPositions.TrailPosition current = positions.getAt(idx);
+        if (current == null)
+            return null;
+        TrailPositions.TrailPosition next = positions.getAt(idx + 1);
+        if (next == null)
+            return null;
+        TrailPositions.TrailPosition previous = positions.getAt(idx - 1);
+        if (previous == null)
+            previous = current;
+        TrailPositions.TrailPosition next2 = positions.getAt(idx + 2);
+        if (next2 == null)
+            next2 = next;
+        return new TrailPositions.TrailPosition[]{
+                previous, current, next, next2
+        };
+    }
+
     protected static Vector3f catmullRom(float delta, @Nullable Vec3 p1, @Nullable Vec3 p2, @Nullable Vec3 p3, @Nullable Vec3 p4) {
         if (delta == 0)
             return p2 != null ? p2.toVector3f() : null;
@@ -133,8 +154,11 @@ public class TrailRenderer {
         if (from.equals(to)) {
             return previousNormal != null ? previousNormal : new Vector3f(0, 1, 0);
         }
-        Vector3f target = to.add(from, new Vector3f());
-        return target.cross(camera.getLookVector(), new Vector3f()).normalize();
+        Vector3f direction = to.sub(from, new Vector3f()).normalize();
+        Vector3f result = direction.cross(camera.getLookVector(), new Vector3f());
+        if (result.length() < 1E-3)
+            return new Vector3f(0, 1, 0.1f);
+        return result.normalize();
     }
 
     protected static Vector4f[] vertices(TrailInfo info, Vector3f current, Vector3f next, Vector3f currentNorm, Vector3f nextNorm, float progPrev, float prog) {
@@ -154,6 +178,33 @@ public class TrailRenderer {
             buffer.addVertex(vertices[i + 1].x(), vertices[i + 1].y(), vertices[i + 1].z()).setUv(u0, v0).setColor(r, g, b, a).setLight(0xff00ff);
             buffer.addVertex(vertices[i + 2].x(), vertices[i + 2].y(), vertices[i + 2].z()).setUv(u1, v0).setColor(r2, g2, b2, a2).setLight(0xff00ff);
             buffer.addVertex(vertices[i + 3].x(), vertices[i + 3].y(), vertices[i + 3].z()).setUv(u1, v1).setColor(r2, g2, b2, a2).setLight(0xff00ff);
+        }
+    }
+
+    public static class TrailPosition3f {
+
+        private final Vector3f pos;
+        private Vector3f normal;
+
+        private TrailPosition3f(Vector3f pos, Vector3f normal) {
+            this.pos = pos;
+            this.normal = normal;
+        }
+
+        public static TrailPosition3f of(Vector3f pos, Vector3f normal) {
+            return new TrailPosition3f(pos, normal);
+        }
+
+        public Vector3f pos() {
+            return pos;
+        }
+
+        public Vector3f normal() {
+            return normal;
+        }
+
+        public void updateNormal(Vector3f normal) {
+            this.normal = normal;
         }
     }
 }

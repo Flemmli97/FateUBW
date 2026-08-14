@@ -73,10 +73,10 @@ public class Emiya extends BaseServant {
     public static final String RIGHT_TRAIL_END = "right_trail_end";
 
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
-    public static final String DUAL_SLASH_1_1 = BUILDER.add("dual_blade_1_1", AnimationsBuilder.definition(0.8)
+    public static final String DUAL_BLADE_1_1 = BUILDER.add("dual_blade_1_1", AnimationsBuilder.definition(0.8)
             .marker("attack_right", 0.64).marker("step", 0.6)
             .marker(RIGHT_TRAIL_START, 0.48).marker(RIGHT_TRAIL_END, 0.68));
-    public static final String DUAL_SLASH_1_2 = BUILDER.add("dual_blade_1_2", AnimationsBuilder.definition(1)
+    public static final String DUAL_BLADE_1_2 = BUILDER.add("dual_blade_1_2", AnimationsBuilder.definition(1)
             .marker("attack_left", 0.72).marker("step", 0.64)
             .marker(LEFT_TRAIL_START, 0.48).marker(LEFT_TRAIL_END, 0.88));
     public static final String DUAL_BLADE_1_3 = BUILDER.add("dual_blade_1_3", AnimationsBuilder.definition(1.04)
@@ -150,9 +150,9 @@ public class Emiya extends BaseServant {
     public ExtendedBehaviour<? extends BaseServant> getCombatAI() {
         float moveSpeed = 1.5f;
         return AttackBehaviourBuilder.<Emiya>create()
-                .start(BehaviourUtils.of(AnimationPlayHolder.<Emiya>builder(DUAL_SLASH_1_1)
-                        .start(DUAL_SLASH_1_2, 2, 0.28f, 1)
-                        .start(DUAL_SLASH_1_2, 2, 0.28f, 2, owner -> owner.healthBelow(0.5f))
+                .start(BehaviourUtils.of(AnimationPlayHolder.<Emiya>builder(DUAL_BLADE_1_1)
+                        .start(DUAL_BLADE_1_2, 2, 0.28f, 1)
+                        .start(DUAL_BLADE_1_2, 2, 0.28f, 2, owner -> owner.healthBelow(0.5f))
                         .chain(DUAL_BLADE_1_3)
                         .build())).play(BehaviourUtils.cooldownedPlay(true, 16, 28))
                 .condition(BehaviourUtils.ifCloserThan(7))
@@ -485,12 +485,12 @@ public class Emiya extends BaseServant {
         double height = this.getBbHeight();
         double width = this.getBbWidth();
         double length = 1 * this.getScale();
-        if (anim.is(DUAL_SLASH_1_1)) {
+        if (anim.is(DUAL_BLADE_1_1)) {
             width += 0.7 * this.getScale();
             length += 0.5 * this.getScale();
             return new AABB(-width * (this.leftHandAttackFlag ? 0.3 : 0.7), -0.03, 0, width * (this.leftHandAttackFlag ? 0.7 : 0.3), height + 0.03, length);
         }
-        if (anim.is(DUAL_SLASH_1_2)) {
+        if (anim.is(DUAL_BLADE_1_2)) {
             width += 1 * this.getScale();
             length += 1 * this.getScale();
             return new AABB(-width * 1.5, -0.03, -length, width * 0.5, height + 0.03, length);

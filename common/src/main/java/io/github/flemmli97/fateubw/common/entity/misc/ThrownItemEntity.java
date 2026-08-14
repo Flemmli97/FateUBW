@@ -7,12 +7,14 @@ import io.github.flemmli97.fateubw.common.particles.trail.provider.ParticlePosit
 import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.tenshilib.common.utils.ItemUtils;
+import io.github.flemmli97.tenshilib.common.utils.math.MathUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -83,10 +85,24 @@ public class ThrownItemEntity extends BaseProjectile {
     @Override
     public void tick() {
         if (this.firstTick) {
-            this.trailHandler.tick();
+            switch (this.itemType) {
+                case KANSHOU -> this.trailHandler.tick(MathUtils.NORMAL_Z
+                        .xRot(-5 * Mth.DEG_TO_RAD)
+                        .yRot((this.getYRot() + 90) * Mth.DEG_TO_RAD));
+                case BAKUYA -> this.trailHandler.tick(MathUtils.NORMAL_Z
+                        .xRot(5 * Mth.DEG_TO_RAD)
+                        .yRot((this.getYRot() + 90) * Mth.DEG_TO_RAD));
+            }
         }
         super.tick();
-        this.trailHandler.tick();
+        switch (this.itemType) {
+            case KANSHOU -> this.trailHandler.tick(MathUtils.NORMAL_Z
+                    .xRot(-5 * Mth.DEG_TO_RAD)
+                    .yRot((this.getYRot() + 90) * Mth.DEG_TO_RAD));
+            case BAKUYA -> this.trailHandler.tick(MathUtils.NORMAL_Z
+                    .xRot(5 * Mth.DEG_TO_RAD)
+                    .yRot((this.getYRot() + 90) * Mth.DEG_TO_RAD));
+        }
     }
 
     @Override

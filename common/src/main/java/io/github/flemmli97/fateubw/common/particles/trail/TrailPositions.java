@@ -24,6 +24,8 @@ public class TrailPositions {
     private AABB bounds;
     private double lastScale = 1;
 
+    private boolean hasBeenFull;
+
     public TrailPositions(int length) {
         this(length, null);
     }
@@ -49,6 +51,7 @@ public class TrailPositions {
         this.positions[this.tail] = pos;
         if (this.size == this.length) {
             this.head = this.nextTail();
+            this.hasBeenFull = true;
         }
         this.size = Math.min(this.size + 1, this.length);
         this.calculateBounds(this.lastScale);
@@ -134,6 +137,14 @@ public class TrailPositions {
 
     private int nextTail() {
         return (this.tail + 1) % this.positions.length;
+    }
+
+    /**
+     * Tracks whether the positions have been filled to max at least once
+     * Used for rendering interpolation
+     */
+    public boolean hasBeenFull() {
+        return hasBeenFull;
     }
 
     @Override

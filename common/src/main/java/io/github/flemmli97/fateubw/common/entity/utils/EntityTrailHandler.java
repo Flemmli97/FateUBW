@@ -15,8 +15,12 @@ public class EntityTrailHandler {
     }
 
     public void tick() {
+        this.tick(null);
+    }
+
+    public void tick(Vec3 normal) {
         Vec3 pos = this.entity.position().add(0, this.entity.getBbHeight() * 0.5, 0);
-        this.positions.add(pos, null);
+        this.positions.add(pos, normal);
     }
 
     public TrailPositions getPositions() {
