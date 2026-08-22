@@ -27,12 +27,12 @@ import net.minecraft.world.phys.Vec3;
 
 public class SphereCloudParticle extends Particle {
 
-    private static final ResourceLocation TEXTURE = Fate.modRes("textures/particle/sphere_cloud.png");
+    private static final ResourceLocation TEXTURE = Fate.modRes("textures/particle/cloud_noise.png");
 
     private float scale = 1;
     private final float baseOffset;
 
-    public SphereCloudParticle(ClientLevel level, double x, double y, double z, SpriteSet spriteProvider) {
+    public SphereCloudParticle(ClientLevel level, double x, double y, double z) {
         super(level, x, y, z, 0, 0, 0);
         this.xd = 0;
         this.yd = 0;
@@ -83,10 +83,8 @@ public class SphereCloudParticle extends Particle {
             RenderSystem.enableBlend();
             RenderSystem.disableCull();
             RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
-//            RenderSystem.setShaderTexture(0, Fate.modRes("textures/particle/sphere_cloud.png"));
-//            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-            RenderSystem.setShaderTexture(0, Fate.modRes("textures/particle/sphere_cloud_2.png"));
-            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_COLOR, GlStateManager.DestFactor.ONE_MINUS_CONSTANT_COLOR);
+            RenderSystem.setShaderTexture(0, TEXTURE);
+            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             return tesselator.begin(VertexFormat.Mode.TRIANGLE_STRIP, DefaultVertexFormat.POSITION_TEX_COLOR);
         }
 
@@ -99,7 +97,7 @@ public class SphereCloudParticle extends Particle {
 
         @Override
         public Particle createParticle(T data, ClientLevel level, double x, double y, double z, double motionX, double motionY, double motionZ) {
-            return new SphereCloudParticle(level, x, y, z, this.sprite);
+            return new SphereCloudParticle(level, x, y, z);
         }
     }
 }

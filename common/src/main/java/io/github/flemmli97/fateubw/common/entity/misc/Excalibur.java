@@ -72,7 +72,7 @@ public class Excalibur extends BaseBeam {
             if (this.livingTicks <= this.livingTickMax() - 15) {
                 for (int i = 0; i < 2; i++) {
                     AdvancedParticleContainer.make(FateParticles.LIGHT.get())
-                            .addData(new ColorData(245 / 255F, 245 / 255F, 5 / 255F, 0.6f))
+                            .addData(new ColorData(245 / 255F, 245 / 255F, 5 / 255F, 0.7f))
                             .addData(new ScaleData(2))
                             .addData(new MotionData(this.random.nextGaussian() * 0.007, this.random.nextGaussian() * 0.007 + 0.003, this.random.nextGaussian() * 0.007))
                             .addData(new ParticleMetaData(20, false, 0))

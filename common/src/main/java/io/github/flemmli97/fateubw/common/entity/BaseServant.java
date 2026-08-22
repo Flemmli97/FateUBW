@@ -949,7 +949,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
         if (this.level().isClientSide) {
             for (int i = 0; i < ((int) ((9 / (float) this.maxDeathTick()) * this.deathTime - 1)); i++) {
                 AdvancedParticleContainer.make(FateParticles.LIGHT.get())
-                        .addData(new ColorData(76 / 255f, 128 / 255f, 207 / 255f, 0.3f))
+                        .addData(new ColorData(76 / 255f, 128 / 255f, 207 / 255f, 0.6f))
                         .addData(new ScaleData(0.15f))
                         .addData(new MotionData(this.random.nextGaussian() * 0.02D,
                                 this.random.nextGaussian() * 0.02D,

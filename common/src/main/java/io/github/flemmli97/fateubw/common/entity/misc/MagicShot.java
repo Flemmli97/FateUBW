@@ -74,7 +74,7 @@ public class MagicShot extends BaseProjectile {
             Vec3 delta = this.getDeltaMovement().scale(0.5);
             for (int i = 0; i < 8; i++) {
                 AdvancedParticleContainer.make(FateParticles.LIGHT.get())
-                        .addData(new ColorData(color.x(), color.y(), color.z(), 0.5f))
+                        .addData(new ColorData(color.x(), color.y(), color.z(), 0.7f))
                         .addData(new ScaleData(0.5f))
                         .addData(new MotionData(this.random.nextGaussian() * 0.01, Math.abs(this.random.nextGaussian() * 0.03), this.random.nextGaussian() * 0.01))
                         .addData(new ParticleMetaData(20, false, 0))

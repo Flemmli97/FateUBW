@@ -81,12 +81,12 @@ public class CaladBolg extends BaseProjectile {
             serverLevel.sendParticles(ParticleTypes.EXPLOSION_EMITTER, pos.x(), pos.y(), pos.z(), 2, 1.0, 0.0, 0.0, 1);
             AdvancedParticleContainer.make(FateParticles.SPHERE_CLOUD.get())
                     .addData(new ScaleData(0, 6, 8))
-                    .addData(new ColorData(37 / 255f, 37 / 255f, 188 / 255f, 1))
+                    .addData(new ColorData(37 / 255f, 37 / 255f, 188 / 255f, 0.6f))
                     .addData(new ParticleMetaData(30, false, 0))
                     .add(this.level(), null, this.getX(), this.getY(0.5), this.getZ(), true);
             AdvancedParticleContainer.make(FateParticles.SPHERE_CLOUD.get())
                     .addData(new ScaleData(0, 6, 8))
-                    .addData(new ColorData(245 / 255f, 101 / 255f, 116 / 255f, 1))
+                    .addData(new ColorData(245 / 255f, 101 / 255f, 116 / 255f, 0.4f))
                     .addData(new ParticleMetaData(30, false, 0))
                     .add(this.level(), null, this.getX(), this.getY(0.5), this.getZ(), true);
         }

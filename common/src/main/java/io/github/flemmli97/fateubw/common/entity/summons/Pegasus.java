@@ -321,7 +321,7 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
                     double upScale = (this.random.nextDouble() - this.random.nextDouble()) * PORTAL_SIZE + PORTAL_SIZE;
                     Vec3 pos = this.position().add(base).add(base2.scale(sideScale)).add(new Vec3(0, 1, 0).scale(upScale));
                     AdvancedParticleContainer.make(FateParticles.LIGHT.get())
-                            .addData(new ColorData(245 / 255F, 10 / 255F, 10 / 255F, 0.5f))
+                            .addData(new ColorData(245 / 255F, 10 / 255F, 10 / 255F, 0.8f))
                             .addData(new ScaleData(0.5f))
                             .addData(new MotionData(this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01))
                             .addData(new ParticleMetaData(20, false, 0))
