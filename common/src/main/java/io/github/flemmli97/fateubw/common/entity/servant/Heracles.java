@@ -4,6 +4,7 @@ import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.api.datapack.ServantExtraData;
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
+import io.github.flemmli97.fateubw.common.entity.utils.ServantModelLike;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.particles.StaticFacingParticleData;
@@ -40,6 +41,7 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -158,8 +160,17 @@ public class Heracles extends BaseServant {
     }
 
     @Override
-    public boolean hasOwnWeapon() {
-        return this.getMainHandItem().is(FateItems.HERACLES_AXE.get());
+    public ItemStack getRenderHandStack(InteractionHand hand) {
+        return switch (hand) {
+            case MAIN_HAND -> {
+                ItemStack stack = this.getMainHandItem();
+                if (stack.is(FateItems.HERACLES_AXE.get())) {
+                    yield stack;
+                }
+                yield ServantModelLike.getStack(FateItems.HERACLES_AXE.get());
+            }
+            case OFF_HAND -> this.getOffhandItem();
+        };
     }
 
     @Override

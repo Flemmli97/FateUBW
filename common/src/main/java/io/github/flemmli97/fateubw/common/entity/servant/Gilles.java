@@ -6,6 +6,7 @@ import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicShot;
 import io.github.flemmli97.fateubw.common.entity.summons.LesserMonster;
 import io.github.flemmli97.fateubw.common.entity.summons.Tentacle;
+import io.github.flemmli97.fateubw.common.entity.utils.ServantModelLike;
 import io.github.flemmli97.fateubw.common.registry.FateAttributes;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
@@ -25,6 +26,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -60,8 +62,17 @@ public class Gilles extends BaseServant {
     }
 
     @Override
-    public boolean hasOwnWeapon() {
-        return this.getMainHandItem().is(FateItems.GRIMOIRE.get());
+    public ItemStack getRenderHandStack(InteractionHand hand) {
+        return switch (hand) {
+            case MAIN_HAND -> {
+                ItemStack stack = this.getMainHandItem();
+                if (stack.is(FateItems.GRIMOIRE.get())) {
+                    yield stack;
+                }
+                yield ServantModelLike.getStack(FateItems.GRIMOIRE.get());
+            }
+            case OFF_HAND -> this.getOffhandItem();
+        };
     }
 
     @Override

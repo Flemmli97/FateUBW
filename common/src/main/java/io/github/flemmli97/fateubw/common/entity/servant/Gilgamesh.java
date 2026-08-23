@@ -83,11 +83,6 @@ public class Gilgamesh extends BaseServant implements OnProjectileHit {
     }
 
     @Override
-    public boolean hasOwnWeapon() {
-        return true;
-    }
-
-    @Override
     public HeldEquipmentHandler getEquipmentHandler() {
         return this.heldEquipmentHandler;
     }

@@ -9,6 +9,7 @@ import io.github.flemmli97.fateubw.common.entity.misc.ChainDagger;
 import io.github.flemmli97.fateubw.common.entity.summons.GordiusWheel;
 import io.github.flemmli97.fateubw.common.entity.summons.Pegasus;
 import io.github.flemmli97.fateubw.common.entity.utils.OnProjectileHit;
+import io.github.flemmli97.fateubw.common.entity.utils.ServantModelLike;
 import io.github.flemmli97.fateubw.common.particles.StaticFacingParticleData;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
@@ -40,6 +41,7 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -142,9 +144,23 @@ public class Medusa extends BaseServant implements OnProjectileHit {
     }
 
     @Override
-    public boolean hasOwnWeapon() {
-        return this.getMainHandItem().is(FateItems.MEDUSA_DAGGER.get()) ||
-                this.getOffhandItem().is(FateItems.MEDUSA_DAGGER.get());
+    public ItemStack getRenderHandStack(InteractionHand hand) {
+        return switch (hand) {
+            case MAIN_HAND -> {
+                ItemStack stack = this.getMainHandItem();
+                if (stack.is(FateItems.MEDUSA_DAGGER.get())) {
+                    yield stack;
+                }
+                yield ServantModelLike.getStack(FateItems.MEDUSA_DAGGER.get());
+            }
+            case OFF_HAND -> {
+                ItemStack stack = this.getOffhandItem();
+                if (stack.is(FateItems.MEDUSA_DAGGER.get())) {
+                    yield stack;
+                }
+                yield ServantModelLike.getStack(FateItems.MEDUSA_DAGGER.get());
+            }
+        };
     }
 
     @Override

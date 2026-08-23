@@ -9,6 +9,7 @@ import io.github.flemmli97.fateubw.common.entity.misc.CaladBolg;
 import io.github.flemmli97.fateubw.common.entity.misc.ItemInGroundEntity;
 import io.github.flemmli97.fateubw.common.entity.misc.ThrownItemEntity;
 import io.github.flemmli97.fateubw.common.entity.misc.WeaponProjectile;
+import io.github.flemmli97.fateubw.common.entity.utils.ServantModelLike;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
@@ -137,8 +138,27 @@ public class Emiya extends BaseServant {
     }
 
     @Override
-    public boolean hasOwnWeapon() {
-        return this.getMainHandItem().is(FateItems.KANSHOU.get());
+    public ItemStack getRenderHandStack(InteractionHand hand) {
+        return switch (hand) {
+            case MAIN_HAND -> {
+                ItemStack stack = this.getMainHandItem();
+                ItemStack off = this.getOffhandItem();
+                if (stack.is(FateItems.KANSHOU.get()) || stack.is(FateItems.BAKUYA.get()) || stack.is(FateItems.EMIYAS_BOW.get())) {
+                    yield stack;
+                }
+                if (off.is(FateItems.EMIYAS_BOW.get())) {
+                    yield stack;
+                }
+                yield ServantModelLike.getStack(FateItems.KANSHOU.get());
+            }
+            case OFF_HAND -> {
+                ItemStack stack = this.getOffhandItem();
+                if (stack.is(FateItems.KANSHOU.get()) || stack.is(FateItems.BAKUYA.get()) || stack.is(FateItems.EMIYAS_BOW.get())) {
+                    yield stack;
+                }
+                yield ServantModelLike.getStack(FateItems.BAKUYA.get());
+            }
+        };
     }
 
     @Override

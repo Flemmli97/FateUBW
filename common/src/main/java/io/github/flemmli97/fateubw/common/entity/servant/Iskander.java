@@ -3,6 +3,7 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.summons.GordiusWheel;
+import io.github.flemmli97.fateubw.common.entity.utils.ServantModelLike;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
@@ -33,6 +34,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -109,8 +111,17 @@ public class Iskander extends BaseServant {
     }
 
     @Override
-    public boolean hasOwnWeapon() {
-        return this.getMainHandItem().is(FateItems.KUPRIOTS.get());
+    public ItemStack getRenderHandStack(InteractionHand hand) {
+        return switch (hand) {
+            case MAIN_HAND -> {
+                ItemStack stack = this.getMainHandItem();
+                if (stack.is(FateItems.KUPRIOTS.get())) {
+                    yield stack;
+                }
+                yield ServantModelLike.getStack(FateItems.KUPRIOTS.get());
+            }
+            case OFF_HAND -> this.getOffhandItem();
+        };
     }
 
     @Override

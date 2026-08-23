@@ -6,9 +6,9 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.github.flemmli97.fateubw.client.model.ServantModel;
 import io.github.flemmli97.fateubw.client.render.layer.ItemTrailLayer;
+import io.github.flemmli97.fateubw.client.render.layer.ServantItemRender;
 import io.github.flemmli97.fateubw.client.render.layer.TrailPoseGetter;
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
-import io.github.flemmli97.tenshilib.client.render.layer.ItemLayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -34,7 +34,7 @@ public class ServantRenderer<T extends BaseServant, M extends ServantModel<T>> e
     public ServantRenderer(EntityRendererProvider.Context ctx, M model, ResourceLocation texture, float shadow) {
         super(ctx, model, shadow);
         this.texture = texture;
-        this.addLayer(new ItemLayer<>(this, ctx.getItemInHandRenderer()));
+        this.addLayer(new ServantItemRender<>(this, ctx.getItemInHandRenderer()));
         this.addLayer(new CustomHeadLayer<>(this, ctx.getModelSet(), ctx.getItemInHandRenderer()));
         this.addLayer(new ItemTrailLayer<>(this));
     }

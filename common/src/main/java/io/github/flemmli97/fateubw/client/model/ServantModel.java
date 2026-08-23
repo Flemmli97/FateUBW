@@ -23,6 +23,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.Nullable;
@@ -97,8 +98,8 @@ public class ServantModel<T extends LivingEntity & AnimatedEntity & ServantModel
 
     @Override
     public void update(T obj) {
-        this.heldItemMain = obj.getMainHandItem().isEmpty() ? 0 : 1;
-        this.heldItemOff = obj.getOffhandItem().isEmpty() ? 0 : 1;
+        this.heldItemMain = obj.getRenderHandStack(InteractionHand.MAIN_HAND).isEmpty() ? 0 : 1;
+        this.heldItemOff = obj.getRenderHandStack(InteractionHand.OFF_HAND).isEmpty() ? 0 : 1;
     }
 
     @Override
@@ -192,12 +193,12 @@ public class ServantModel<T extends LivingEntity & AnimatedEntity & ServantModel
     @Override
     public void onPlayAnimation(AnimationState state, Animation animation, float tick, VariableMap variables) {
         super.onPlayAnimation(state, animation, tick, variables);
-        variables.setVariable("left_held", () -> this.heldItemOff);
-        variables.setVariable("left_arm_x_rot", () -> this.leftArm != null ? this.leftArm.xRot * Mth.RAD_TO_DEG : 0);
-        variables.setVariable("right_held", () -> this.heldItemMain);
-        variables.setVariable("right_arm_x_rot", () -> this.rightArm != null ? this.rightArm.xRot * Mth.RAD_TO_DEG : 0);
-        variables.setVariable("limb_swing", () -> this.limbSwing * Mth.RAD_TO_DEG);
-        variables.setVariable("limb_swing_amount", () -> this.limbSwingAmount * Mth.RAD_TO_DEG);
+        variables.setVariable("left_held", this.heldItemOff);
+        variables.setVariable("left_arm_x_rot", this.leftArm != null ? this.leftArm.xRot * Mth.RAD_TO_DEG : 0);
+        variables.setVariable("right_held", this.heldItemMain);
+        variables.setVariable("right_arm_x_rot", this.rightArm != null ? this.rightArm.xRot * Mth.RAD_TO_DEG : 0);
+        variables.setVariable("limb_swing", this.limbSwing * Mth.RAD_TO_DEG);
+        variables.setVariable("limb_swing_amount", this.limbSwingAmount * Mth.RAD_TO_DEG);
     }
 
     @Override

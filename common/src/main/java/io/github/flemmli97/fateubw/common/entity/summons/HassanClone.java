@@ -206,6 +206,20 @@ public class HassanClone extends PathfinderMob implements AnimatedEntity, Ownabl
     }
 
     @Override
+    public ItemStack getRenderHandStack(InteractionHand hand) {
+        return switch (hand) {
+            case MAIN_HAND -> {
+                ItemStack stack = this.getMainHandItem();
+                if (stack.is(FateItems.ASSASSIN_DAGGER.get())) {
+                    yield stack;
+                }
+                yield ServantModelLike.getStack(FateItems.ASSASSIN_DAGGER.get());
+            }
+            case OFF_HAND -> this.getOffhandItem();
+        };
+    }
+
+    @Override
     public List<? extends ExtendedSensor<? extends HassanClone>> getSensors() {
         return List.of(new NearbyPlayersSensor<>(),
                 new NearbyLivingEntitySensor<HassanClone>()

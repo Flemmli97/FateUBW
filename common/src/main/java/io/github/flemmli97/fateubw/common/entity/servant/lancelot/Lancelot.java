@@ -129,11 +129,6 @@ public class Lancelot extends BaseServant {
     }
 
     @Override
-    public boolean hasOwnWeapon() {
-        return this.getMainHandItem().is(FateItems.ARONDIGHT.get());
-    }
-
-    @Override
     public HeldEquipmentHandler getEquipmentHandler() {
         return this.heldEquipmentHandler;
     }
