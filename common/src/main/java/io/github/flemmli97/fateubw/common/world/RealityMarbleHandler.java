@@ -224,9 +224,9 @@ public class RealityMarbleHandler extends SavedData {
         tag.put("groups", groups);
         CompoundTag lookup = new CompoundTag();
         this.entityGroupLookup.forEach((id, data) ->
-                groups.put(id.toString(), EntityMarbleData.CODEC.encodeStart(NbtOps.INSTANCE, data).getOrThrow()));
+                lookup.put(id.toString(), EntityMarbleData.CODEC.encodeStart(NbtOps.INSTANCE, data).getOrThrow()));
         tag.put("lookup", lookup);
-        return new CompoundTag();
+        return tag;
     }
 
     public record RealityMarbleGroup(UUID id, UUID creator, ResourceKey<Level> sourceLevel,
