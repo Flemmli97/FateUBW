@@ -334,10 +334,11 @@ public class Emiya extends BaseServant {
             this.getNavigation().stop();
             if (anim.isPast("start")) {
                 for (int i = 0; i < 40; i++) {
-                    AdvancedParticleContainer.make(FateParticles.UBW_CHANT_SMOKE.get())
+                    AdvancedParticleContainer.make(FateParticles.SMOKE.get())
                             .addData(new CirclingData(1 + this.getRandom().nextFloat() * 0.5f, 0.19f,
                                     this.getRandom().nextFloat() * 360, 2 + this.getRandom().nextFloat() * 1, MathUtils.NORMAL_Y))
                             .addData(new MotionData(0, 0.04, 0))
+                            .addData(new ColorData(40 / 255f, 40 / 255f, 120 / 255f, 1))
                             .addData(new ScaleData(0.6f))
                             .addData(new ParticleMetaData(8 + this.getRandom().nextInt(4), false, 0))
                             .add(this.level(), this.getX(), this.getY(), this.getZ());
@@ -345,6 +346,7 @@ public class Emiya extends BaseServant {
                 for (int i = 0; i < 4; i++) {
                     AdvancedParticleContainer.make(FateParticles.LIGHTNING.get())
                             .addData(new ScaleData(0.3f))
+                            .addData(new ColorData(35 / 255f, 53 / 255f, 206 / 255f, 1))
                             .addData(new ParticleMetaData(5, false, 0))
                             .add(this.level(), this.getRandomX(16), this.getY(this.getRandom().nextDouble() * 7 - 2), this.getRandomZ(16));
                 }

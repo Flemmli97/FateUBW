@@ -159,7 +159,7 @@ public class ClientRegister {
         consumer.register(FateParticles.GLOWING_RING.get(), SpritedParticle.Translucent::new);
         consumer.register(FateParticles.ROSE_PETAL.get(), RosePetalParticle.Factory::new);
         consumer.register(FateParticles.SPHERE.get(), SphereParticle.Factory::new);
-        consumer.register(FateParticles.UBW_CHANT_SMOKE.get(), SpritedParticle.Opaque::new);
+        consumer.register(FateParticles.SMOKE.get(), SpritedParticle.Opaque::new);
         consumer.register(FateParticles.LIGHTNING.get(), LightningParticle.Factory::new);
         consumer.register(FateParticles.SPHERE_CLOUD.get(), SphereCloudParticle.Factory::new);
     }

@@ -36,6 +36,7 @@ public class FateRenders extends RenderType {
     private static ShaderInstance FULL_BRIGHT_INSTANCE;
     private static ShaderInstance BABYLON_SHADER_INSTANCE;
     private static ShaderInstance PARTICLE_COLOR_ADD_SHADER_INSTANCE;
+    private static ShaderInstance PARTICLE_COLORIZE_SHADER_INSTANCE;
     private static ShaderInstance ENTITY_MASKED;
 
     private static final ShaderStateShard CORRUPTED_SHADER = new ShaderStateShard(() -> CORRUPTED_SHADER_INSTANCE);
@@ -133,6 +134,8 @@ public class FateRenders extends RenderType {
                         shaderInstance -> FateRenders.BABYLON_SHADER_INSTANCE = shaderInstance);
                 register.register(Fate.modRes("particle_color_add"), DefaultVertexFormat.PARTICLE,
                         shaderInstance -> FateRenders.PARTICLE_COLOR_ADD_SHADER_INSTANCE = shaderInstance);
+                register.register(Fate.modRes("particle_colorize"), DefaultVertexFormat.PARTICLE,
+                        shaderInstance -> FateRenders.PARTICLE_COLORIZE_SHADER_INSTANCE = shaderInstance);
                 register.register(Fate.modRes("rendertype_entity_masked"), DefaultVertexFormat.NEW_ENTITY,
                         shaderInstance -> FateRenders.ENTITY_MASKED = shaderInstance);
             } catch (IOException e) {
@@ -174,6 +177,10 @@ public class FateRenders extends RenderType {
 
     public static ShaderInstance getParticleColorAddShaderInstance() {
         return PARTICLE_COLOR_ADD_SHADER_INSTANCE;
+    }
+
+    public static ShaderInstance getParticleColorizeShaderInstance() {
+        return PARTICLE_COLORIZE_SHADER_INSTANCE;
     }
 
     private FateRenders(String string, VertexFormat vertexFormat, VertexFormat.Mode mode, int i, boolean bl, boolean bl2, Runnable runnable, Runnable runnable2) {
