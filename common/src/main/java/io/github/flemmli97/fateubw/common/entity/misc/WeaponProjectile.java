@@ -3,7 +3,9 @@ package io.github.flemmli97.fateubw.common.entity.misc;
 import com.mojang.datafixers.util.Pair;
 import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.entity.utils.EntityTrailHandler;
+import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailPositions;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.ParticlePositionProvider;
 import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
@@ -142,7 +144,7 @@ public class WeaponProjectile extends BaseProjectile {
             if (this.firstTick) {
                 this.trailHandler.tick();
             }
-            if (this.level().isClientSide && !this.inGround)
+            if (this.level().isClientSide && !this.inGround && this.type == Type.BABYLON)
                 this.level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, this.particleState), this.getX(), this.getY(), this.getZ(), 0, 0, 0);
             super.tick();
             this.trailHandler.tick();
@@ -154,7 +156,7 @@ public class WeaponProjectile extends BaseProjectile {
                     this.discard();
             } else if (this.random.nextBoolean()) {
                 AdvancedParticleContainer.make(FateParticles.LIGHT.get())
-                        .addData(new ColorData(this.getWeaponType().despawnParticleColor, Optional.empty(), 0))
+                        .addData(new ColorData(this.getWeaponType().particleColor, Optional.empty(), 0))
                         .addData(new ScaleData(0.15f))
                         .addData(new MotionData(this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01))
                         .addData(new ParticleMetaData(20, false, 0))
@@ -207,7 +209,7 @@ public class WeaponProjectile extends BaseProjectile {
 
         if (this.level().isClientSide) {
             AdvancedParticleContainer.make(FateParticles.LIGHT.get())
-                    .addData(new ColorData(this.getWeaponType().spawnParticleColor, Optional.empty(), 0))
+                    .addData(new ColorData(this.getWeaponType().particleColor, Optional.empty(), 0))
                     .addData(new ScaleData(0.15f))
                     .addData(new MotionData(this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01, this.random.nextGaussian() * 0.01))
                     .addData(new ParticleMetaData(20, false, 0))
@@ -381,14 +383,31 @@ public class WeaponProjectile extends BaseProjectile {
 
     public enum Type {
 
-        BABYLON(new Vector4f(235 / 255F, 235 / 255F, 0 / 255F, 1), new Vector4f(255 / 255f, 217 / 255f, 76 / 255f, 0.5f)),
-        UBW(new Vector4f(129 / 255F, 132 / 255F, 152 / 255F, 1), new Vector4f(172 / 255f, 175 / 255f, 195 / 255f, 0.5f));
+        BABYLON(new Vector4f(235 / 255F, 235 / 255F, 0 / 255F, 1),
+                new Vector4f(234 / 255f, 165 / 255f, 37 / 255f, 0.7f), TrailInfo.builder(new ParticlePositionProvider.ParticlePositionData(0))
+                .setColor(234 / 255f, 165 / 255f, 37 / 255f, 0.7f)
+                .setColor2(255 / 255f, 217 / 255f, 67 / 255f, 0.3f)
+                .setWidth(0.07f)
+                .setWidth2(0.005f)
+                .setInterpolation(1)
+                .build()),
+        UBW(new Vector4f(45 / 255F, 88 / 255F, 190 / 255F, 1),
+                new Vector4f(22 / 255f, 39 / 255f, 139 / 255f, 0.7f), TrailInfo.builder(new ParticlePositionProvider.ParticlePositionData(0))
+                .setColor(66 / 255f, 111 / 255f, 197 / 255f, 0.7f)
+                .setColor2(143 / 255f, 173 / 255f, 230 / 255f, 0.3f)
+                .setWidth(0.07f)
+                .setWidth2(0.005f)
+                .setInterpolation(1)
+                .build());
 
-        private final Vector4f spawnParticleColor, despawnParticleColor;
+        public final Vector4f particleColor, mainColor;
 
-        Type(Vector4f spawnParticleColor, Vector4f despawnParticleColor) {
-            this.spawnParticleColor = spawnParticleColor;
-            this.despawnParticleColor = despawnParticleColor;
+        public final TrailInfo trail;
+
+        Type(Vector4f particleColor, Vector4f mainColor, TrailInfo trail) {
+            this.particleColor = particleColor;
+            this.mainColor = mainColor;
+            this.trail = trail;
         }
     }
 }

@@ -77,6 +77,9 @@ public class TrailRenderer {
             Vector3f normal = calculateNormal(last.pos(), currentPos, last.normal(), current.normal() != null ? current.normal().toVector3f() : null, camera);
             positions.add(TrailPosition3f.of(currentPos, normal));
         }
+        if (position.size() < 2) {
+            return;
+        }
         // Updates the normal of the first entry cause it can be null
         TrailPosition3f first = positions.getFirst();
         if (first.normal() == null) {
