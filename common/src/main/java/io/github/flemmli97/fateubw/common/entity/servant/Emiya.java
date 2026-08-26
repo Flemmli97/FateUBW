@@ -115,6 +115,7 @@ public class Emiya extends BaseServant {
     public static final String UBW_ATTACK_2 = BUILDER.add("ubw_attack_2", AnimationsBuilder.definition(1.08)
             .marker("shoot", 0.48));
 
+    private static final String DEATH = BUILDER.add("death", AnimationsBuilder.definition(2.52).infinite());
     public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2.));
     public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
 
@@ -617,6 +618,11 @@ public class Emiya extends BaseServant {
     public boolean flipAnimation() {
         return this.getAnimationHandler().isCurrent(BOW_1, BOW_AIR, CALADBOLG)
                 && this.getMainHandItem().getItem() instanceof BowItem;
+    }
+
+    @Override
+    public String getDeathAnimation() {
+        return DEATH;
     }
 
     @Override
