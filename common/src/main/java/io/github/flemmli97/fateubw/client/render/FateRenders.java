@@ -80,11 +80,10 @@ public class FateRenders extends RenderType {
             .setTexturingState(GLINT_TEXTURING).createCompositeState(false));
     public static final RenderType TRAIL_TRANSLUCENT = RenderType.create("fateubw:trail_translucent", DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 1536, false, true, RenderType.CompositeState.builder()
             .setShaderState(RENDERTYPE_LIGHTNING_SHADER)
-            .setTransparencyState(LIGHTNING_TRANSPARENCY)
-            .setDepthTestState(LEQUAL_DEPTH_TEST)
+            .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
             .setCullState(NO_CULL).createCompositeState(false));
 
-    private static final BiFunction<ResourceLocation, ResourceLocation, RenderType> MASKED_ENTITY_CUTOUT = Util.memoize((texture, mask) -> RenderType.create("entity_cutout", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 1536, true, false, CompositeState.builder()
+    private static final BiFunction<ResourceLocation, ResourceLocation, RenderType> MASKED_ENTITY_CUTOUT = Util.memoize((texture, mask) -> RenderType.create("fateubw:entity_cutout", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 1536, true, false, CompositeState.builder()
             .setShaderState(ENTITY_MASKED_SHADER)
             .setTextureState(MultiTextureStateShard.builder().add(texture, false, false).add(mask, false, false).build())
             .setTransparencyState(NO_TRANSPARENCY)

@@ -154,16 +154,17 @@ public class ThrownItemEntity extends BaseProjectile {
 
         NONE(null),
         KANSHOU(TrailInfo.builder(new ParticlePositionProvider.ParticlePositionData(0))
-                .setWidth(0.75f)
+                .setWidth(0.5f)
                 .setWidth2(0.05f)
                 .setInterpolation(1)
-//                .setType(TrailInfo.Visual.TEXTURE)
+                .setColor2(1, 1, 1, 0)
                 .build()),
         BAKUYA(TrailInfo.builder(new ParticlePositionProvider.ParticlePositionData(0))
-                .setWidth(0.75f)
+                .setWidth(0.5f)
                 .setWidth2(0.05f)
                 .setInterpolation(1)
-//                .setType(TrailInfo.Visual.TEXTURE)
+                .setColor(0, 0, 0, 0.5f)
+                .setColor2(0, 0, 0, 0)
                 .build());
 
         public final TrailInfo info;

@@ -385,16 +385,16 @@ public class WeaponProjectile extends BaseProjectile {
 
         BABYLON(new Vector4f(235 / 255F, 235 / 255F, 0 / 255F, 1),
                 new Vector4f(234 / 255f, 165 / 255f, 37 / 255f, 0.7f), TrailInfo.builder(new ParticlePositionProvider.ParticlePositionData(0))
-                .setColor(234 / 255f, 165 / 255f, 37 / 255f, 0.7f)
-                .setColor2(255 / 255f, 217 / 255f, 67 / 255f, 0.3f)
+                .setColor(228 / 255f, 195 / 255f, 60 / 255f, 0.7f)
+                .setColor2(246 / 255f, 220 / 255f, 116 / 255f, 0.3f)
                 .setWidth(0.07f)
                 .setWidth2(0.005f)
                 .setInterpolation(1)
                 .build()),
         UBW(new Vector4f(45 / 255F, 88 / 255F, 190 / 255F, 1),
                 new Vector4f(22 / 255f, 39 / 255f, 139 / 255f, 0.7f), TrailInfo.builder(new ParticlePositionProvider.ParticlePositionData(0))
-                .setColor(66 / 255f, 111 / 255f, 197 / 255f, 0.7f)
-                .setColor2(143 / 255f, 173 / 255f, 230 / 255f, 0.3f)
+                .setColor(20 / 255f, 41 / 255f, 168 / 255f, 0.7f)
+                .setColor2(42 / 255f, 63 / 255f, 185 / 255f, 0.3f)
                 .setWidth(0.07f)
                 .setWidth2(0.005f)
                 .setInterpolation(1)
