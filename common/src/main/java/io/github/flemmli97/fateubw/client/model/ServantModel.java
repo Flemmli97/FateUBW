@@ -141,20 +141,34 @@ public class ServantModel<T extends LivingEntity & AnimatedEntity & ServantModel
 
         // Move the body to match the (detached) legs
         // Legacy. Remove once all animations and models are updated
-        if (entity.isPassenger() && entity.getVehicle() != null) {
+        if (entity.isPassenger() && entity.getVehicle() != null && this.bodyVehicleOffset != null) {
             this.body.x = this.body.getDefaultPose().x;
             this.body.y = this.body.getDefaultPose().y;
             this.body.z = this.body.getDefaultPose().z;
             PoseStack stack = new PoseStack();
             this.body.translateAndRotate(stack);
-            Vector3f v = this.bodyVehicleOffset != null ? new Vector3f(this.bodyVehicleOffset) : new Vector3f();
-            v.mulTranspose(stack.last().normal());
-            this.body.x += v.x() - this.bodyVehicleOffset.x;
-            this.body.y += v.y() - this.bodyVehicleOffset.y;
-            this.body.z += v.z() - this.bodyVehicleOffset.z;
+            if (this.bodyVehicleOffset != null) {
+                Vector3f v = new Vector3f(this.bodyVehicleOffset);
+                v.mulTranspose(stack.last().normal());
+                this.body.x += v.x() - this.bodyVehicleOffset.x;
+                this.body.y += v.y() - this.bodyVehicleOffset.y;
+                this.body.z += v.z() - this.bodyVehicleOffset.z;
+            }
         }
         this.alpha = entity.isDeadOrDying() && entity.getDeathAnimation() == null ?
                 Math.max(0.15f, 1 - (entity.deathTime / (float) entity.maxDeathTick())) : -1;
+
+        // Leg animations (and any other defined bones) should override anything
+        if (this.bodyVehicleOffset == null) {
+            BedrockAnimations animation = this.animation.get();
+            if (entity.isPassenger() && entity.getVehicle() != null) {
+                if (this.riding) {
+                    animation.doAnimation(this, "riding", entity.tickCount, partialTick, 1);
+                } else {
+                    animation.doAnimation(this, "riding_standing", entity.tickCount, partialTick, 1);
+                }
+            }
+        }
     }
 
     public void preAnimSetup(T entity, float partialTick) {
@@ -173,18 +187,21 @@ public class ServantModel<T extends LivingEntity & AnimatedEntity & ServantModel
             animation.doAnimation(this, "walk", entity.tickCount, partialTick, entity.interpolatedMoveTick(partialTick));
         }
         animation.doAnimation(this, "run", entity.tickCount, partialTick, entity.interpolatedMoveTickOf(MoveType.RUN, partialTick));
-        if (entity.isPassenger() && entity.getVehicle() != null) {
-            if (this.riding) {
-                if (animation.has("riding")) {
-                    animation.doAnimation(this, "riding", entity.tickCount, partialTick, 1, false, true);
+        // Legacy
+        if (this.bodyVehicleOffset != null) {
+            if (entity.isPassenger() && entity.getVehicle() != null) {
+                if (this.riding) {
+                    if (animation.has("riding")) {
+                        animation.doAnimation(this, "riding", entity.tickCount, partialTick, 1, false, true);
+                    } else {
+                        defaulted.doAnimation(this, "riding", entity.tickCount, partialTick, 1, false, true);
+                    }
                 } else {
-                    defaulted.doAnimation(this, "riding", entity.tickCount, partialTick, 1, false, true);
-                }
-            } else {
-                if (animation.has("riding_standing")) {
-                    animation.doAnimation(this, "riding_standing", entity.tickCount, partialTick, 1, false, true);
-                } else {
-                    defaulted.doAnimation(this, "riding_standing", entity.tickCount, partialTick, 1, false, true);
+                    if (animation.has("riding_standing")) {
+                        animation.doAnimation(this, "riding_standing", entity.tickCount, partialTick, 1, false, true);
+                    } else {
+                        defaulted.doAnimation(this, "riding_standing", entity.tickCount, partialTick, 1, false, true);
+                    }
                 }
             }
         }

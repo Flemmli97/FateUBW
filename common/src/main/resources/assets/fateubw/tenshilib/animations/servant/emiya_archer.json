@@ -2056,9 +2056,57 @@
         }
       }
     },
-    "ubw_throw_attack": {
+    "ubw_summon_swords": {
       "loop": "hold_on_last_frame",
-      "animation_length": 0.96
+      "animation_length": 2.2,
+      "bones": {
+        "LeftArm": {
+          "rotation": {
+            "0.0": [0, 0, 0],
+            "0.48": [-5.1044, 7.3212, -1.6322],
+            "2.0": [-5.1044, 7.3212, -1.6322],
+            "2.2": [0, 0, 0]
+          }
+        },
+        "LeftArmDown": {
+          "rotation": {
+            "0.0": [0, 0, 0],
+            "0.48": [-15, 0, 0],
+            "2.0": [-15, 0, 0],
+            "2.2": [0, 0, 0]
+          }
+        },
+        "RightArm": {
+          "rotation": {
+            "0.0": [0, 0, 0],
+            "0.48": [-170.0469, 0.868, -7.4435],
+            "2.0": [-170.0469, 0.868, -7.4435],
+            "2.2": [0, 0, 0]
+          },
+          "scale": {
+            "0.0": [1, 1, 1],
+            "2.2": [1, 1, 1]
+          }
+        },
+        "RightArmDown": {
+          "rotation": {
+            "0.0": [0, 0, 0],
+            "0.48": [-3.2188, 5.7162, -5.411],
+            "2.0": [-3.2188, 5.7162, -5.411],
+            "2.2": [0, 0, 0]
+          },
+          "scale": {
+            "0.0": [1, 1, 1],
+            "2.2": [1, 1, 1]
+          }
+        },
+        "RightItem": {
+          "scale": {
+            "0.0": [0, 0, 0],
+            "2.2": [1, 1, 1]
+          }
+        }
+      }
     },
     "summon": {
       "loop": true,
@@ -2901,20 +2949,43 @@
     "riding": {
       "loop": true,
       "bones": {
+        "Body": {
+          "position": [0, 0, 0]
+        },
         "LeftLeg": {
-          "rotation": [-72, -18, 0]
+          "rotation": [-72, -18, 0],
+          "position": [0, 0, 0],
+          "scale": 1
+        },
+        "LeftLegDown": {
+          "rotation": [0, 0, 0],
+          "position": [0, 0, 0],
+          "scale": 1
         },
         "RightLeg": {
-          "rotation": [-72, 18, 0]
+          "rotation": [-72, 18, 0],
+          "position": [0, 0, 0],
+          "scale": 1
+        },
+        "RightLegDown": {
+          "rotation": [0, 0, 0],
+          "position": [0, 0, 0],
+          "scale": 1
         },
         "CoatBase": {
-          "rotation": [55, 0, 0]
+          "rotation": [55, 0, 0],
+          "position": [0, 0, 0],
+          "scale": 1
         },
         "CoatBottom": {
-          "rotation": [12.5, 0, 0]
+          "rotation": [12.5, 0, 0],
+          "position": [0, 0, 0],
+          "scale": 1
         },
         "CoatBottom2": {
-          "rotation": [22.5, 0, 0]
+          "rotation": [22.5, 0, 0],
+          "position": [0, 0, 0],
+          "scale": 1
         }
       }
     }
