@@ -1,5 +1,6 @@
 package io.github.flemmli97.fateubw.client;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.flemmli97.fateubw.client.screen.CommandScreen;
 import io.github.flemmli97.fateubw.client.screen.HolyGrailScreen;
 import io.github.flemmli97.fateubw.client.screen.ManaBar;
@@ -15,7 +16,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Map;
 
@@ -68,5 +72,12 @@ public class ClientHandler {
             Minecraft.getInstance().setScreen(new TeamScreen(info));
         else
             LoaderNetwork.INSTANCE.sendToServer(new C2STeamMessage(C2STeamMessage.Type.CLOSE, ""));
+    }
+
+    public static void translateRider(PoseStack poseStack, LivingEntity entity, Entity rider) {
+        Vec3 attach = rider.getVehicleAttachmentPoint(entity);
+        float scale = entity.getScale();
+        poseStack.scale(1 / scale, 1 / scale, 1 / scale);
+        poseStack.translate(attach.x(), attach.y(), attach.z());
     }
 }

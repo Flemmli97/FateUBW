@@ -25,6 +25,7 @@ public class ConfigLoader {
         CommonConfig.servantMaxSpawnDelay = ConfigSpecs.COMMON_CONFIG.servantMaxSpawnDelay.get();
         CommonConfig.classArtifactMultiplier = ConfigSpecs.COMMON_CONFIG.classArtifactMultiplier.get();
         CommonConfig.servantArtifactMultiplier = ConfigSpecs.COMMON_CONFIG.servantArtifactMultiplier.get();
+        CommonConfig.realityMarbleOverride = ConfigSpecs.COMMON_CONFIG.realityMarbleOverride.get();
 
         CommonConfig.effectiveArmor.read(ConfigSpecs.COMMON_CONFIG.effectiveArmor.get());
         CommonConfig.armorReduction.read(ConfigSpecs.COMMON_CONFIG.armorReduction.get());

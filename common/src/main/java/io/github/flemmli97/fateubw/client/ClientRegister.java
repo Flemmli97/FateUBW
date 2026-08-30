@@ -16,6 +16,7 @@ import io.github.flemmli97.fateubw.client.render.layer.PetrificationLayer;
 import io.github.flemmli97.fateubw.client.render.misc.EmptyRender;
 import io.github.flemmli97.fateubw.client.render.misc.RenderAestusDomusBeam;
 import io.github.flemmli97.fateubw.client.render.misc.RenderArcherArrow;
+import io.github.flemmli97.fateubw.client.render.misc.RenderBucephalos;
 import io.github.flemmli97.fateubw.client.render.misc.RenderCaladbolg;
 import io.github.flemmli97.fateubw.client.render.misc.RenderChainDagger;
 import io.github.flemmli97.fateubw.client.render.misc.RenderEA;
@@ -128,6 +129,7 @@ public class ClientRegister {
         consumer.register(FateEntities.HASSAN_COPY.get(), RenderHassanCopy::new);
         consumer.register(FateEntities.PEGASUS.get(), RenderPegasus::new);
         consumer.register(FateEntities.DAGGER_HOOK.get(), RenderChainDagger::new);
+        consumer.register(FateEntities.BUCEPHALOS.get(), RenderBucephalos::new);
 
         consumer.register(FateEntities.MULTIPART.get(), EmptyRender::new);
         consumer.register(FateEntities.GORDIUS_CHARIOT.get(), EmptyRender::new);

@@ -4,7 +4,6 @@ import com.mojang.datafixers.util.Pair;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.api.datapack.AttributeHolderProperties;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
-import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.SetTargetFromRider;
 import io.github.flemmli97.fateubw.common.entity.utils.MoveStateTracker;
@@ -53,7 +52,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.SpawnGroupData;
@@ -116,18 +114,7 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
             .marker("seated", 1.04));
     public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
 
-    public final Predicate<LivingEntity> targetPred = target -> {
-        if (target == this)
-            return false;
-        if (this.getTarget() == target)
-            return true;
-        if (this.getFirstPassenger() instanceof Mob mob && target == mob.getTarget())
-            return true;
-        if (this.getFirstPassenger() instanceof BaseServant servant) {
-            return servant.targetPred.test(target);
-        }
-        return this.canAttack(target) && !this.hasPassenger(target);
-    };
+    public final Predicate<LivingEntity> targetPred = Utils.summonTargetPredicate(this);
 
     private final AnimationHandler<Pegasus> animationHandler = new AnimationHandler<>(this, ANIMS)
             .withChangeListener(anim -> {

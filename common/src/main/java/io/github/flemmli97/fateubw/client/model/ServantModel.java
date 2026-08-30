@@ -205,6 +205,11 @@ public class ServantModel<T extends LivingEntity & AnimatedEntity & ServantModel
                 }
             }
         }
+        if (this.bodyVehicleOffset == null) {
+            if (this.riding) {
+                animation.doAnimation(this, "riding_pre", entity.tickCount, partialTick, 1);
+            }
+        }
     }
 
     @Override

@@ -35,6 +35,7 @@ import io.github.flemmli97.fateubw.common.entity.servant.Medusa;
 import io.github.flemmli97.fateubw.common.entity.servant.Nero;
 import io.github.flemmli97.fateubw.common.entity.servant.Sasaki;
 import io.github.flemmli97.fateubw.common.entity.servant.lancelot.Lancelot;
+import io.github.flemmli97.fateubw.common.entity.summons.Bucephalos;
 import io.github.flemmli97.fateubw.common.entity.summons.GordiusChariot;
 import io.github.flemmli97.fateubw.common.entity.summons.GordiusWheel;
 import io.github.flemmli97.fateubw.common.entity.summons.HassanClone;
@@ -198,14 +199,16 @@ public class FateEntities {
                     .withConfigData(ServantExtraData.LANCELOT_REFLECT_CHANCE));
 
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<Iskander>> ISKANDER = regServant("iskander_rider", "Gordius Bulls", EntityType.Builder.of(Iskander::new, MobCategory.MISC)
-                    .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
+                    .vehicleAttachment(new Vec3(0, 14 / 16d, 0)).sized(0.7f, 2.2f),
             0xd40000, 0x8d0101,
             new ServantProperties.Builder(BuiltinServantClasses.RIDER)
                     .putAttributes(Attributes.MAX_HEALTH, 450).putAttributes(Attributes.ATTACK_DAMAGE, 12)
                     .putAttributes(Attributes.ARMOR, 14)
-                    .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 4).putAttributes(Attributes.MOVEMENT_SPEED, 0.35)
+                    .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 4).putAttributes(Attributes.MOVEMENT_SPEED, 0.27)
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1.5).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
-                    .npCost(70));
+                    .npCost(70)
+                    .withConfigData(ServantExtraData.ISKANDER_BUCEPHALOS)
+                    .withConfigData(ServantExtraData.ISKANDER_CHARIOT));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<Medusa>> MEDUSA = regServant("medusa_rider", "Bellerophon", EntityType.Builder.of(Medusa::new, MobCategory.MISC)
                     .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
             0x000000, 0xf234ea,
@@ -283,6 +286,13 @@ public class FateEntities {
                     .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 6).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 14)
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.34)
                     .putAttributes(Attributes.FLYING_SPEED, 0.85));
+    public static final RegistryEntrySupplier<EntityType<?>, EntityType<Bucephalos>> BUCEPHALOS = regWithEgg("bucephalos", EntityType.Builder.of(Bucephalos::new, MobCategory.MONSTER).sized(1.4f, 1.55f),
+            0x0a0a0a, 0x951a15,
+            new AttributeHolderProperties.Builder()
+                    .putAttributes(Attributes.MAX_HEALTH, 80).putAttributes(Attributes.ATTACK_DAMAGE, 17)
+                    .putAttributes(Attributes.ARMOR, 7).putAttributes(FateAttributes.PROJECTILE_BLOCK_CHANCE.asHolder(), 0.2)
+                    .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 6).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 14)
+                    .putAttributes(Attributes.MOVEMENT_SPEED, 0.29));
 
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<MultiPartEntity>> MULTIPART = reg("multi_part", EntityType.Builder.<MultiPartEntity>of(MultiPartEntity::new, MobCategory.MISC)
             .noSave().noSummon().sized(0.25F, 0.25F));
@@ -303,7 +313,8 @@ public class FateEntities {
 
     private static <V extends Mob> RegistryEntrySupplier<EntityType<?>, EntityType<V>> regWithEgg(String name, EntityType.Builder<V> entity, int primary, int secondary, AttributeHolderProperties.Builder props) {
         RegistryEntrySupplier<EntityType<?>, EntityType<V>> reg = reg(name, entity.clientTrackingRange(10));
-        FateCreativeTab.addToTab(FateItems.ITEMS.register(name + "_spawn_egg", () -> new SpawnEgg(reg, primary, secondary, new Item.Properties())));
+        FateCreativeTab.addToTab(FateItems.ITEMS.register(name + "_spawn_egg",
+                () -> new SpawnEgg(new SpawnEgg.EntityTypeHolder<>(Mob.class, reg), primary, secondary, new Item.Properties())));
         if (TenshiLibCrossPlat.INSTANCE.isDatagen()) {
             DEFAULT_ENTITY_PROPERTIES.put(reg.getID(), props);
         }
@@ -349,6 +360,7 @@ public class FateEntities {
         map.put(FateEntities.GORDIUS_WHEEL.get(), BaseServant.createAttributes().add(Attributes.STEP_HEIGHT, 1.6));
         map.put(FateEntities.PEGASUS.get(), BaseServant.createAttributes().add(Attributes.FLYING_SPEED, 0.85));
         map.put(FateEntities.HASSAN_COPY.get(), BaseServant.createAttributes());
+        map.put(FateEntities.BUCEPHALOS.get(), BaseServant.createAttributes());
         return map;
     }
 }

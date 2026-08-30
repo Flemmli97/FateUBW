@@ -86,6 +86,10 @@ public class FateDamageTypes {
             "The curtain fell on %1$s",
             null,
             "The curtain fell on %1$s");
+    public static final ResourceKey<DamageType> LIGHTNING_STRIKE = create("lightning_strike",
+            "%1$s was slain by %2$s",
+            null,
+            "%1$s was slain by %2$s using %3$s");
 
     private static ResourceKey<DamageType> create(String path, String generic, String player, String item) {
         ResourceKey<DamageType> key = ResourceKey.create(Registries.DAMAGE_TYPE, Fate.modRes(path));

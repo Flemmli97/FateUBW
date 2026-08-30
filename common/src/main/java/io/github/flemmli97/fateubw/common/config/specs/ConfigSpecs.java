@@ -47,6 +47,7 @@ public class ConfigSpecs {
         public final ModConfigSpec.IntValue servantMaxSpawnDelay;
         public final ModConfigSpec.DoubleValue classArtifactMultiplier;
         public final ModConfigSpec.DoubleValue servantArtifactMultiplier;
+        public final ModConfigSpec.DoubleValue realityMarbleOverride;
 
         public final ModConfigSpec.ConfigValue<String> effectiveArmor;
         public final ModConfigSpec.ConfigValue<String> armorReduction;
@@ -100,6 +101,9 @@ public class ConfigSpecs {
             this.servantMaxSpawnDelay = builder.comment("Maximum time between each attempt to spawn masterless servants. (Fill Empty Slots needs to be true)").defineInRange("Servant Spawn Delay (Max)", CommonConfig.servantMaxSpawnDelay, 0, Integer.MAX_VALUE);
             this.classArtifactMultiplier = builder.comment("When using a class artifact increases the chance of summoning a servant of that class by x").defineInRange("Class Artifact Multiplier", CommonConfig.classArtifactMultiplier, 0, Double.MAX_VALUE);
             this.servantArtifactMultiplier = builder.comment("When using a servant artifact increases the chance of summoning that servant by x", "Note: Currently no servant artifacts are added").defineInRange("Servant Artifact Multiplier", CommonConfig.servantArtifactMultiplier, 0, Double.MAX_VALUE);
+            this.realityMarbleOverride = builder.comment("Amount of health percentage wise the caster of a reality marble needs to have when already inside a reality marble compared to the current owner of it. ",
+                    "Set to 0 to never be able to use it",
+                    "Set to -1 to always be able to use it", "Note this only applies when already inside a marble").defineInRange("Reality Marble Override Multiplier", CommonConfig.realityMarbleOverride, -1, Double.MAX_VALUE);
 
             this.punishTeleport = builder.comment("Should teleporting servants to the owner during a fight be punished").define("Punish Teleport", CommonConfig.punishTeleport);
             this.notifyBlackList = builder.comment("Servants that dont notify players when spawned (from filling missing slots)").define("Servant notification", CommonConfig.notifyBlacklist, stringList());

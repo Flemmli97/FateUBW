@@ -5,6 +5,7 @@ import io.github.flemmli97.fateubw.api.datapack.ServantProperties;
 import io.github.flemmli97.fateubw.api.entity.CommandType;
 import io.github.flemmli97.fateubw.api.entity.ServantLike;
 import io.github.flemmli97.fateubw.common.attachment.PlayerData;
+import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.SetTargetFromRider;
@@ -29,7 +30,9 @@ import io.github.flemmli97.fateubw.common.utils.ExtendedCombatRules;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
+import io.github.flemmli97.fateubw.common.world.RealityMarbleHandler;
 import io.github.flemmli97.tenshilib.common.entity.AOEAttackEntity;
+import io.github.flemmli97.tenshilib.common.entity.EntityUtils;
 import io.github.flemmli97.tenshilib.common.entity.ai.MoveControllerPlus;
 import io.github.flemmli97.tenshilib.common.entity.ai.TargetPosition;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetMoveToRestriction;
@@ -352,7 +355,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
         if (!this.initAnim) {
             this.getAnimationHandler().withChangeListener(anim -> {
                 if (!this.level().isClientSide && this.getTargetPosition() != null)
-                    this.setTargetPosition((TargetPosition) null);
+                    this.setTargetPosition(null);
                 if (anim != null)
                     this.setupAttack(anim);
                 return false;
@@ -428,7 +431,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
             return MoveType.NONE;
         double d0 = this.getMoveControl().getSpeedModifier();
         MoveType move;
-        if (d0 > 1 || this.getTarget() != null) {
+        if (d0 > 1) {
             move = MoveType.RUN;
         } else if (d0 <= 0.8) {
             move = MoveType.SNEAK;
@@ -532,6 +535,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
         BrainUtils.clearMemory(this, MemoryModuleType.LOOK_TARGET);
         if (this.getTarget() != null) {
             this.setTargetPosition(this.getTarget(), false);
+            this.lookAt(this.getTarget(), 60, 30);
         }
         this.getNavigation().stop();
     }
@@ -844,7 +848,11 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
     }
 
     public boolean nobelPhantasmCheck() {
-        return (this.getMana() >= this.props().manaCost() && this.nobelPhantasmCooldown <= 0);
+        return this.hasMana(this.getMana()) && this.nobelPhantasmCooldown <= 0;
+    }
+
+    public boolean hasMana(double amount) {
+        return this.getMana() >= amount;
     }
 
     public boolean attemptUseNobelPhantasm() {
@@ -859,6 +867,23 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
 
     protected int nobelPhantasmCooldown() {
         return 200 + this.getRandom().nextInt(100);
+    }
+
+    public boolean canOverrideRealityMarble() {
+        if (this.getServer() == null)
+            return false;
+        RealityMarbleHandler.RealityMarbleGroup group = RealityMarbleHandler.get(this.getServer())
+                .getGroupOf(this);
+        if (group == null || CommonConfig.realityMarbleOverride == -1)
+            return true;
+        if (CommonConfig.realityMarbleOverride == 0)
+            return false;
+        LivingEntity creator = EntityUtils.findFromUUID(LivingEntity.class, this.level(), group.creator());
+        if (creator == null)
+            return true;
+        float targetHealthPerc = creator.getHealth() / creator.getMaxHealth();
+        float healthPerc = this.getHealth() / this.getMaxHealth();
+        return targetHealthPerc < (healthPerc * CommonConfig.realityMarbleOverride);
     }
 
     public HeldEquipmentHandler getEquipmentHandler() {

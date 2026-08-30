@@ -1,13 +1,16 @@
 package io.github.flemmli97.fateubw.common.entity.servant;
 
+import io.github.flemmli97.fateubw.api.datapack.ServantExtraData;
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
+import io.github.flemmli97.fateubw.common.entity.summons.Bucephalos;
 import io.github.flemmli97.fateubw.common.entity.summons.GordiusWheel;
 import io.github.flemmli97.fateubw.common.entity.utils.ServantModelLike;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailProvider;
+import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateDimensions;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
@@ -15,7 +18,6 @@ import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.fateubw.common.world.RealityMarbleHandler;
-import io.github.flemmli97.fateubw.mixinhelper.HorseExtension;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.SelectableBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetWalkTargetAwayFromTarget;
@@ -31,6 +33,7 @@ import io.github.flemmli97.tenshilib.common.particle.data.ParticleMetaData;
 import io.github.flemmli97.tenshilib.common.particle.data.ScaleData;
 import io.github.flemmli97.tenshilib.common.utils.math.OrientedBoundingBox;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
@@ -41,8 +44,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.animal.horse.Horse;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.entity.EntityTypeTest;
@@ -58,41 +60,39 @@ import java.util.List;
 public class Iskander extends BaseServant {
 
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
-    public static final String ONE_HAND_1 = BUILDER.add("one_hand_1", AnimationsBuilder.definition(0.68)
-            .marker("attack", 0.56).marker("step", 0.28)
-            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.36)
-            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.6));
-    public static final String ONE_HAND_2 = BUILDER.add("one_hand_2", AnimationsBuilder.definition(0.68)
-            .marker("attack", 0.56).marker("step", 0.28)
-            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.36)
-            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.6));
-    public static final String ONE_HAND_3 = BUILDER.add("one_hand_3", AnimationsBuilder.definition(0.68)
-            .marker("attack", 0.56).marker("step", 0.28)
-            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.36)
-            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.6));
-    public static final String ONE_HAND_4 = BUILDER.add("one_hand_4", AnimationsBuilder.definition(0.68)
-            .marker("attack", 0.56).marker("step", 0.28)
-            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.36)
-            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.6));
-    public static final String ONE_HAND_5 = BUILDER.add("one_hand_5", AnimationsBuilder.definition(0.68)
-            .marker("attack", 0.56).marker("step", 0.28)
-            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.36)
-            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.6));
-    public static final String ONE_HAND_6 = BUILDER.add("one_hand_6", AnimationsBuilder.definition(0.68)
-            .marker("attack", 0.56).marker("step", 0.28)
-            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.36)
-            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.6));
-    public static final String ONE_HAND_7 = BUILDER.add("one_hand_7", AnimationsBuilder.definition(0.68)
-            .marker("attack", 0.56).marker("step", 0.28)
-            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.36)
-            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.6));
-    private static final String CHARIOT = BUILDER.add("chariot_summon", AnimationsBuilder.definition(1.68)
-            .marker("attack", 0.76)
+    public static final String ONE_HAND_1_1 = BUILDER.add("one_hand_1_1", AnimationsBuilder.definition(0.8)
+            .marker("attack", 0.72).marker("step", 0.6)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.52)
-            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.8));
-    private static final String SUMMON_HORSE = BUILDER.add("horse", CHARIOT);
-    public static final String IONIOI_HETAIROI = BUILDER.add("ionioi_hetairoi", AnimationsBuilder.definition(5.4)
-            .marker("start", 0.28).marker("cast", 3.4).marker("teleport", 5.24));
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.72));
+    public static final String ONE_HAND_1_2 = BUILDER.add("one_hand_1_2", AnimationsBuilder.definition(0.84)
+            .marker("attack", 0.72).marker("step", 0.6)
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.52)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.72));
+    public static final String LIGHTNING_1 = BUILDER.add("lightning_1", AnimationsBuilder.definition(0.84)
+            .marker("attack", 0.72));
+
+    public static final String ONE_HAND_2_1 = BUILDER.add("one_hand_2_1", AnimationsBuilder.definition(0.84)
+            .marker("attack", 0.72).marker("step", 0.6)
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.52)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.72));
+    public static final String ONE_HAND_2_2 = BUILDER.add("one_hand_2_2", AnimationsBuilder.definition(0.84)
+            .marker("attack", 0.72).marker("step", 0.6)
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.52)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.72));
+    public static final String STAB_1 = BUILDER.add("stab_1", AnimationsBuilder.definition(0.76)
+            .marker("attack", 0.68).marker("step", 0.6));
+
+    public static final String SUMMON_ARMY = BUILDER.add("summon_army", AnimationsBuilder.definition(1.6)
+            .marker("summon", 0.88));
+    public static final String SUMMON_BUCEPHALOS = BUILDER.add("summon_bucephalos", SUMMON_ARMY);
+    public static final String SUMMON_CHARIOT = BUILDER.add("summon_chariot", AnimationsBuilder.definition(1.6)
+            .marker("summon", 1.12)
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.8)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 1.04));
+
+    public static final String IONIOI_HETAIROI = BUILDER.add("ionioi_hetairoi", AnimationsBuilder.definition(7)
+            .marker("start", 0.28).marker("cast", 3.88).marker("teleport", 6));
+    private static final String DEATH = BUILDER.add("death", AnimationsBuilder.definition(3.68).infinite());
     public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2.));
     public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
 
@@ -127,46 +127,44 @@ public class Iskander extends BaseServant {
     @Override
     public ExtendedBehaviour<? extends BaseServant> getCombatAI() {
         return AttackBehaviourBuilder.<Iskander>create()
-                .start(BehaviourUtils.of(AnimationPlayHolder.<Iskander>builder(ONE_HAND_1)
-                        .start(ONE_HAND_3, 2, 0.28f, 1)
-                        .start(ONE_HAND_5, 2, 0.28f, 1)
+                .start(BehaviourUtils.of(AnimationPlayHolder.<Iskander>builder(ONE_HAND_1_1)
+                        .start(ONE_HAND_1_2, 2, 0.28f, 1)
+                        .start(ONE_HAND_1_2, 2, 0.28f, 2, owner -> owner.healthBelow(0.5f) && !owner.isPassenger())
+                        .chain(LIGHTNING_1)
                         .build())).play(BehaviourUtils.cooldownedPlay(true, 20, 27))
                 .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(8)
-                .start(BehaviourUtils.of(AnimationPlayHolder.<Iskander>builder(ONE_HAND_2)
-                        .start(ONE_HAND_1, 2, 0.28f, 1)
-                        .start(ONE_HAND_6, 2, 0.28f, 1)
-                        .start(ONE_HAND_7, 2, 0.28f, 1)
+                .end(12)
+                .start(BehaviourUtils.of(AnimationPlayHolder.<Iskander>builder(ONE_HAND_2_1)
+                        .start(ONE_HAND_2_2, 2, 0.28f, 1)
+                        .start(ONE_HAND_2_2, 2, 0.28f, 2, owner -> owner.healthBelow(0.5f))
+                        .chain(STAB_1)
                         .build())).play(BehaviourUtils.cooldownedPlay(true, 20, 27))
                 .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(8)
-                .start(BehaviourUtils.of(AnimationPlayHolder.<Iskander>builder(ONE_HAND_3)
-                        .start(ONE_HAND_6, 2, 0.28f, 1)
-                        .start(ONE_HAND_7, 2, 0.28f, 1)
-                        .build())).play(BehaviourUtils.cooldownedPlay(true, 20, 27))
+                .end(12)
+                .start(STAB_1).play(BehaviourUtils.cooldownedPlay(true, 20, 27))
+                .condition(Entity::isPassenger)
                 .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(8)
-                .start(BehaviourUtils.of(AnimationPlayHolder.<Iskander>builder(ONE_HAND_4)
-                        .start(ONE_HAND_3, 2, 0.28f, 1)
-                        .start(ONE_HAND_5, 2, 0.28f, 1)
-                        .build())).play(BehaviourUtils.cooldownedPlay(true, 20, 27))
-                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(8)
-                .start(SUMMON_HORSE).play(BehaviourUtils.cooldownedPlay(false, 25, 40))
-                .condition(Iskander::canSummonMounts)
+                .end(14)
+
+                .start(SUMMON_BUCEPHALOS).play(BehaviourUtils.cooldownedPlay(false, 25, 40))
+                .condition(entity -> entity.canSummonMounts() && entity.hasMana(entity.props().getConfig(ServantExtraData.ISKANDER_BUCEPHALOS)))
                 .prepare(new SetWalkTargetWithinDist<Iskander>()
                         .min(5).max(10).speedMod(1.2f)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(5)
-                .start(SUMMON_HORSE).play(BehaviourUtils.cooldownedPlay(false, 25, 40))
-                .condition(entity -> entity.canSummonMounts() && !entity.canUseNobelPhantasm())
+                .start(SUMMON_BUCEPHALOS).play(BehaviourUtils.cooldownedPlay(false, 25, 40))
+                .condition(entity -> entity.canSummonMounts() && !entity.canUseNobelPhantasm() && entity.hasMana(entity.props().getConfig(ServantExtraData.ISKANDER_BUCEPHALOS)))
                 .prepare(new SetWalkTargetWithinDist<Iskander>()
                         .min(5).max(10).speedMod(1.2f)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(7)
-                .start(CHARIOT).play(BehaviourUtils.cooldownedPlay(false, 25, 40))
-                .condition(entity -> entity.canSummonMounts() && entity.canUseNobelPhantasm())
+                .start(SUMMON_CHARIOT).play(BehaviourUtils.cooldownedPlay(false, 25, 40))
+                .condition(entity -> entity.canSummonMounts() && entity.canUseNobelPhantasm() && entity.hasMana(entity.props().getConfig(ServantExtraData.ISKANDER_CHARIOT)))
                 .prepare(new SetWalkTargetWithinDist<Iskander>()
                         .min(6).max(12).speedMod(1.2f)).prepareOptional(BehaviourUtils.moveAttack())
-                .end(14)
+                .end(15)
+                .start(IONIOI_HETAIROI)
+                .condition(entity -> entity.canUseNobelPhantasm() && !this.canOverrideRealityMarble())
+                .prepare(new SetWalkTargetToAttackTarget<Iskander>().closeEnoughDist(BehaviourUtils.closeEnough(16))).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .end(30)
                 .build();
     }
 
@@ -215,8 +213,7 @@ public class Iskander extends BaseServant {
                 }
             }
             if (anim.isAt("cast")) {
-                if (RealityMarbleHandler.get(this.getServer())
-                        .isInRealityMarble(this) || !this.attemptUseNobelPhantasm()) {
+                if (!this.canOverrideRealityMarble() || !this.attemptUseNobelPhantasm()) {
                     this.getAnimationHandler().setAnimation(null);
                     return;
                 }
@@ -235,7 +232,7 @@ public class Iskander extends BaseServant {
                 RealityMarbleHandler.get(this.getServer())
                         .createAndTransportTo(this, entities, FateDimensions.SAND_DUNES.dimension());
             }
-        } else if (anim.is(CHARIOT, SUMMON_HORSE)) {
+        } else if (anim.is(SUMMON_CHARIOT, SUMMON_BUCEPHALOS)) {
             LivingEntity target = this.getTarget();
             if (target != null && !anim.isPast(0.28)) {
                 this.lookAt(target, 60, 30);
@@ -250,11 +247,33 @@ public class Iskander extends BaseServant {
                         e.setDeltaMovement(e.getDeltaMovement().add(dir));
                         e.hurtMarked = true;
                     });
-            if (anim.isAt("attack")) {
-                if (anim.is(SUMMON_HORSE)) {
-                    this.summonHorse();
+            if (anim.isAt("summon")) {
+                if (anim.is(SUMMON_BUCEPHALOS)) {
+                    this.summonBucephalos();
                 } else {
                     this.summonChariot();
+                }
+            }
+        } else if (anim.is(SUMMON_ARMY)) {
+            // TODO
+        } else if (anim.is(LIGHTNING_1)) {
+            if (anim.isAt("attack")) {
+                this.mobAttack(anim, this.getTarget(), this::doHurtTarget);
+                S2CScreenShake.sendAround(this, 32, 4, 1);
+                for (int i = 0; i < 16; i++) {
+                    AdvancedParticleContainer.make(FateParticles.LIGHTNING.get())
+                            .addData(new ScaleData(0.3f))
+                            .addData(new ColorData(35 / 255f, 53 / 255f, 206 / 255f, 1))
+                            .addData(new ParticleMetaData(5, false, 0))
+                            .add(this.level(), this.getRandomX(16), this.getY(this.getRandom().nextDouble() * 7 - 2), this.getRandomZ(16));
+                }
+            } else if (anim.isPast("attack")) {
+                for (int i = 0; i < 16; i++) {
+                    AdvancedParticleContainer.make(FateParticles.LIGHTNING.get())
+                            .addData(new ScaleData(0.3f))
+                            .addData(new ColorData(35 / 255f, 53 / 255f, 206 / 255f, 1))
+                            .addData(new ParticleMetaData(5, false, 0))
+                            .add(this.level(), this.getRandomX(6), this.getY(this.getRandom().nextDouble() * 7 - 2), this.getRandomZ(6));
                 }
             }
         } else {
@@ -270,15 +289,23 @@ public class Iskander extends BaseServant {
     }
 
     @Override
+    protected DamageSource damageSourceAttack(Entity target) {
+        if (this.animationHandler.isCurrent(LIGHTNING_1)) {
+            return FateDamageTypes.direct(FateDamageTypes.LIGHTNING_STRIKE, this);
+        }
+        return super.damageSourceAttack(target);
+    }
+
+    @Override
     public OrientedBoundingBox calculateAttackAABB(AnimationState anim, Vec3 target, double grow) {
         if (this.getVehicle() != null) {
             Entity vehicle = this.getVehicle();
             if (this.getVehicle() instanceof GordiusWheel gordiusWheel && gordiusWheel.getWheelEntity() != null) {
                 vehicle = gordiusWheel.getWheelEntity();
             }
-            double width = vehicle.getBbWidth() * 0.5 + 1.7;
             double height = (this.getY() - vehicle.getY() + this.getBbHeight()) + 0.2;
-            AABB aabb = new AABB(-width * 0.5, -0.02, -width * 0.5, width * 0.5, height, width * 0.5);
+            AABB aabb = this.attackBB(anim);
+            aabb = new AABB(aabb.minX, -0.02, aabb.minZ, aabb.maxX, height, aabb.maxZ);
             return new OrientedBoundingBox(aabb, vehicle.getYRot(), 0, vehicle.position());
         }
         return super.calculateAttackAABB(anim, target, grow);
@@ -289,22 +316,22 @@ public class Iskander extends BaseServant {
         double height = this.getBbHeight();
         double width = this.getBbWidth();
         double length = 1 * this.getScale();
-        if (anim.is(ONE_HAND_1)) {
-            width += 1.1 * this.getScale();
-            length += 0.7 * this.getScale();
-            return new AABB(-width * 0.7, -0.03, 0, width * 0.3, height + 0.03, length);
-        }
-        if (anim.is(ONE_HAND_2, ONE_HAND_3, ONE_HAND_4)) {
+        if (anim.is(ONE_HAND_1_1, ONE_HAND_2_2)) {
             width += 1.3 * this.getScale();
-            length += 0.6 * this.getScale();
+            length += 0.8 * this.getScale();
+            return new AABB(-width * 0.8, -0.03, 0, width * 0.2, height + 0.03, length);
         }
-        if (anim.is(ONE_HAND_5, ONE_HAND_6)) {
-            width += 1.8 * this.getScale();
+        if (anim.is(ONE_HAND_1_2, ONE_HAND_2_1)) {
+            width += 1.5 * this.getScale();
             length += 0.7 * this.getScale();
         }
-        if (anim.is(ONE_HAND_7)) {
-            width += 0.6 * this.getScale();
-            length += 0.9 * this.getScale();
+        if (anim.is(STAB_1)) {
+            width += 0.7 * this.getScale();
+            length += 1.3 * this.getScale();
+        }
+        if (anim.is(LIGHTNING_1)) {
+            width *= 5;
+            return new AABB(-width, -0.03, -width, width, height * 0.5 + 0.03, width);
         }
         return new AABB(-width * 0.5, -0.03, 0, width * 0.5, height + 0.03, length);
     }
@@ -316,7 +343,7 @@ public class Iskander extends BaseServant {
 
     @Override
     public boolean hurt(DamageSource damageSource, float damage) {
-        if (this.getAnimationHandler().isCurrent(CHARIOT)) {
+        if (this.getAnimationHandler().isCurrent(SUMMON_CHARIOT)) {
             return false;
         }
         if (damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
@@ -357,19 +384,12 @@ public class Iskander extends BaseServant {
         this.revealServant();
     }
 
-    public void summonHorse() {
-        if (this.isPassenger() || this.level().isClientSide)
+    public void summonBucephalos() {
+        if (this.isPassenger() || !(this.level() instanceof ServerLevel level))
             return;
-        Horse horse = EntityType.HORSE.create(this.level());
-        horse.setPos(this.getX(), this.getY(), this.getZ());
-        horse.setTamed(true);
-        ((HorseExtension) horse).fate$setTotalControl(true);
-        this.level().addFreshEntity(horse);
-        horse.getAttribute(Attributes.MAX_HEALTH).setBaseValue(horse.getAttributeBaseValue(Attributes.MAX_HEALTH) + 30);
-        horse.getAttribute(Attributes.ARMOR).setBaseValue(2);
-        horse.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(horse.getAttributeBaseValue(Attributes.MOVEMENT_SPEED) + 0.15);
+        Bucephalos bucephalos = FateEntities.BUCEPHALOS.get().spawn(level, b -> b.setPos(this.getX(), this.getY(), this.getZ()), this.blockPosition(), MobSpawnType.MOB_SUMMONED, false, false);
         this.boardingCooldown = 0;
-        this.startRiding(horse);
+        this.startRiding(bucephalos);
         for (int i = 0; i < 5; i++) {
             LightningBolt lightningboltentity = EntityType.LIGHTNING_BOLT.create(this.level());
             lightningboltentity.moveTo(this.getX() + this.random.nextGaussian() * 2, this.getY(), this.getZ() + this.random.nextGaussian() * 2);
@@ -378,6 +398,11 @@ public class Iskander extends BaseServant {
         }
         this.summonCooldown = 150 + this.getRandom().nextInt(100);
         this.revealServant();
+    }
+
+    @Override
+    public String getDeathAnimation() {
+        return DEATH;
     }
 
     @Override

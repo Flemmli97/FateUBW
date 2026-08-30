@@ -2,6 +2,7 @@ package io.github.flemmli97.fateubw.common.utils;
 
 import com.mojang.datafixers.util.Pair;
 import io.github.flemmli97.fateubw.api.entity.ServantLike;
+import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.registry.FateAttributes;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import io.github.flemmli97.fateubw.common.world.TeamHandler;
@@ -100,6 +101,21 @@ public class Utils {
                     return true;
             }
             return target instanceof Enemy;
+        };
+    }
+
+    public static Predicate<LivingEntity> summonTargetPredicate(Mob entity) {
+        return target -> {
+            if (target == entity)
+                return false;
+            if (entity.getTarget() == target)
+                return true;
+            if (entity.getFirstPassenger() instanceof Mob mob && target == mob.getTarget())
+                return true;
+            if (entity.getFirstPassenger() instanceof BaseServant servant) {
+                return servant.targetPred.test(target);
+            }
+            return entity.canAttack(target) && !entity.hasPassenger(target);
         };
     }
 

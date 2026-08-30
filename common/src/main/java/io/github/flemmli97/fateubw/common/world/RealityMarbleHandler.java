@@ -95,7 +95,9 @@ public class RealityMarbleHandler extends SavedData {
         ServerLevel target = creator.getServer().getLevel(targetLevel);
         if (target == null)
             return;
-        RealityMarbleGroup group = new RealityMarbleGroup(UUID.randomUUID(), creator.getUUID(), creator.level().dimension(), targetLevel, entities
+        RealityMarbleGroup current = this.getGroupOf(creator);
+        RealityMarbleGroup group = new RealityMarbleGroup(UUID.randomUUID(), creator.getUUID(),
+                current != null ? current.sourceLevel() : creator.level().dimension(), targetLevel, entities
                 .stream().map(Entity::getUUID).toList());
         entities.forEach(entity -> this.overrideAndTransportEntity(entity, target, group));
         this.overrideAndTransportEntity(creator, target, group);

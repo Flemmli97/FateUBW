@@ -72,6 +72,7 @@ public class Emiya extends BaseServant {
     public static final String LEFT_TRAIL_END = "left_trail_end";
     public static final String RIGHT_TRAIL_START = "right_trail_start";
     public static final String RIGHT_TRAIL_END = "right_trail_end";
+    private static final float ATTACK_MOVE_SPEED = 1.5f;
 
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
     public static final String DUAL_BLADE_1_1 = BUILDER.add("dual_blade_1_1", AnimationsBuilder.definition(0.8)
@@ -169,7 +170,6 @@ public class Emiya extends BaseServant {
 
     @Override
     public ExtendedBehaviour<? extends BaseServant> getCombatAI() {
-        float moveSpeed = 1.5f;
         return AttackBehaviourBuilder.<Emiya>create()
                 .start(BehaviourUtils.of(AnimationPlayHolder.<Emiya>builder(DUAL_BLADE_1_1)
                         .start(DUAL_BLADE_1_2, 2, 0.28f, 1)
@@ -177,14 +177,14 @@ public class Emiya extends BaseServant {
                         .chain(DUAL_BLADE_1_3)
                         .build())).play(BehaviourUtils.cooldownedPlay(true, 16, 28))
                 .condition(BehaviourUtils.ifCloserThan(7))
-                .prepare(new SetWalkTargetToAttackTarget<Emiya>().speedMod((owner, target) -> moveSpeed)).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .prepare(new SetWalkTargetToAttackTarget<Emiya>().speedMod((owner, target) -> ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(8)
 
                 .start(BehaviourUtils.of(AnimationPlayHolder.<Emiya>builder(DUAL_BLADE_2_1)
                         .start(DUAL_BLADE_2_2, 2, 0.28f, 1)
                         .build())).play(BehaviourUtils.cooldownedPlay(true, 16, 28))
                 .condition(BehaviourUtils.ifCloserThan(7))
-                .prepare(new SetWalkTargetToAttackTarget<Emiya>().speedMod((owner, target) -> moveSpeed)).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .prepare(new SetWalkTargetToAttackTarget<Emiya>().speedMod((owner, target) -> ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(8)
 
 //                .start(DUAL_BLADE_THROW).play(BehaviourUtils.cooldownedPlay(true, 16, 28))
@@ -194,7 +194,7 @@ public class Emiya extends BaseServant {
 
                 .start(BOW_1).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(12), 16, 28))
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
-                        .min(5).max(14).speedMod(moveSpeed)).prepareOptional(BehaviourUtils.moveAttack())
+                        .min(5).max(14).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(9)
                 .start(BOW_1).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(12), 16, 28))
                 .prepare(new LeapInDirection<Emiya>().shouldLeap((owner, target) -> owner.distanceToSqr(target) < 49)
@@ -203,11 +203,11 @@ public class Emiya extends BaseServant {
                 .start(BOW_1).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(12), 16, 28))
                 .condition(BehaviourUtils.ifFurtherThan(11))
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
-                        .min(5).max(14).speedMod(moveSpeed)).prepareOptional(BehaviourUtils.moveAttack())
+                        .min(5).max(14).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(6)
                 .start(BOW_2).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(12), 16, 28))
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
-                        .min(5).max(14).speedMod(moveSpeed)).prepareOptional(BehaviourUtils.moveAttack())
+                        .min(5).max(14).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(7)
                 .start(BOW_2).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(12), 16, 28))
                 .prepare(new LeapInDirection<Emiya>().shouldLeap((owner, target) -> owner.distanceToSqr(target) < 49)
@@ -216,47 +216,40 @@ public class Emiya extends BaseServant {
                 .start(BOW_2).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(12), 16, 28))
                 .condition(BehaviourUtils.ifFurtherThan(11))
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
-                        .min(5).max(14).speedMod(moveSpeed)).prepareOptional(BehaviourUtils.moveAttack())
+                        .min(5).max(14).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(5)
                 .start(BOW_AIR).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(12), 16, 28))
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
-                        .min(4).max(10).speedMod(moveSpeed)).prepareOptional(BehaviourUtils.moveAttack())
+                        .min(4).max(10).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(7)
                 .start(BOW_AIR).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(12), 16, 28))
                 .condition(BehaviourUtils.ifFurtherThan(11))
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
-                        .min(4).max(10).speedMod(moveSpeed)).prepareOptional(BehaviourUtils.moveAttack())
+                        .min(4).max(10).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(9)
                 .start(UBW_ATTACK_1).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(18), 16, 28))
-                .condition(owner -> this.isInRealityMarble() && BehaviourUtils.ifFurtherThan(11).test(owner))
+                .condition(owner -> this.canOverrideRealityMarble() && BehaviourUtils.ifFurtherThan(11).test(owner))
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
-                        .min(5).max(14).speedMod(moveSpeed)).prepareOptional(BehaviourUtils.timedMoveAttack())
+                        .min(5).max(14).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(19)
                 .start(UBW_ATTACK_2).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(18), 16, 28))
-                .condition(owner -> this.isInRealityMarble() && BehaviourUtils.ifFurtherThan(11).test(owner))
+                .condition(owner -> this.canOverrideRealityMarble() && BehaviourUtils.ifFurtherThan(11).test(owner))
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
-                        .min(5).max(14).speedMod(moveSpeed)).prepareOptional(BehaviourUtils.timedMoveAttack())
+                        .min(5).max(14).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(19)
                 .start(CALADBOLG).play(BehaviourUtils.cooldownedPlay(false, 20, 30))
                 .condition(BaseServant::canUseNobelPhantasm)
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
-                        .min(8).max(16).speedMod(moveSpeed + 0.1f)).prepareOptional(BehaviourUtils.moveAttack())
+                        .min(8).max(16).speedMod(ATTACK_MOVE_SPEED + 0.1f)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(3)
                 .build();
     }
 
     @Override
     public ExtendedBehaviour<? extends BaseServant> getCooldownAI() {
-        float moveSpeed = 1.5f;
         return SelectableBehaviourBuilder.<BaseServant>builder()
-                .add(4, new SetWalkTargetToAttackTarget<BaseServant>().speedMod((owner, target) -> moveSpeed), BehaviourUtils.moveTo())
-                .add(6, new SetWalkTargetAwayFromTarget<BaseServant>().speedMod((owner, target) -> moveSpeed), BehaviourUtils.moveTo()).build();
-    }
-
-    public boolean isInRealityMarble() {
-//        RealityMarbleHandler.get(this.getServer())
-//                        .isInRealityMarble(this)
-        return this.level().dimension().equals(FateDimensions.UNLIMITED_BLADEWORKS.dimension());
+                .add(4, new SetWalkTargetToAttackTarget<BaseServant>().speedMod((owner, target) -> ATTACK_MOVE_SPEED), BehaviourUtils.moveTo())
+                .add(6, new SetWalkTargetAwayFromTarget<BaseServant>().speedMod((owner, target) -> ATTACK_MOVE_SPEED), BehaviourUtils.moveTo()).build();
     }
 
     @Override
@@ -353,8 +346,7 @@ public class Emiya extends BaseServant {
                 }
             }
             if (anim.isAt("cast")) {
-                if (RealityMarbleHandler.get(this.getServer())
-                        .isInRealityMarble(this) || !this.attemptUseNobelPhantasm()) {
+                if (!this.canOverrideRealityMarble() || !this.attemptUseNobelPhantasm()) {
                     this.getAnimationHandler().setAnimation(null);
                     return;
                 }
