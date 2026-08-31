@@ -9,6 +9,10 @@
     "minecraft:generic.movement_speed": 0.27
   },
   "class": "fateubw:rider",
+  "configs": {
+    "fateubw:iskander_bucephalos_summon_mana": 20.0,
+    "fateubw:iskander_chariot_summon_mana": 35.0
+  },
   "nobel_phantasm_cost": 70,
   "weight": 1
 }

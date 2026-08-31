@@ -30,8 +30,8 @@ public class ServantExtraData {
     public static final DataType<Integer> GILLES_MONSTER_MAX = register(Fate.MODID, "gilles_monster_max", ExtraCodecs.NON_NEGATIVE_INT, 7);
     public static final DataType<Float> GILLES_TENTACLE_DAMAGE = register(Fate.MODID, "gilles_tentacle_damage", Codec.FLOAT, 15f);
     public static final DataType<Integer> HERACLES_DEATH_MAX = register(Fate.MODID, "heracles_death_max", ExtraCodecs.POSITIVE_INT, 2);
-    public static final DataType<Double> ISKANDER_BUCEPHALOS = register(Fate.MODID, "iskander_bucephalos_summon", Codec.DOUBLE, 20.);
-    public static final DataType<Double> ISKANDER_CHARIOT = register(Fate.MODID, "iskander_chariot_summon", Codec.DOUBLE, 35.);
+    public static final DataType<Double> ISKANDER_BUCEPHALOS = register(Fate.MODID, "iskander_bucephalos_summon_mana", Codec.DOUBLE, 20.);
+    public static final DataType<Double> ISKANDER_CHARIOT = register(Fate.MODID, "iskander_chariot_summon_mana", Codec.DOUBLE, 35.);
 
     public static final Codec<ServantExtraData> CODEC = new Codec<>() {
         @Override

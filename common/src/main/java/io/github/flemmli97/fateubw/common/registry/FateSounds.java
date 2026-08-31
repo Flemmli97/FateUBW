@@ -27,9 +27,9 @@ public class FateSounds {
     public static final RegistryEntrySupplier<SoundEvent, SoundEvent> CHALK_PLACE = register("block.chalk.place",
             b -> b.defaultTranslation("Block placed").sound(ResourceLocation.withDefaultNamespace("dig/cloth"), 4));
 
-    public static final RegistryEntrySupplier<SoundEvent, SoundEvent> BABYLON_SHOOT = register("entity.babylon.shoot",
-            b -> b.defaultTranslation("Babylon firing").sound(SoundEvents.PLAYER_ATTACK_SWEEP.getLocation(), 7));
-    public static final RegistryEntrySupplier<SoundEvent, SoundEvent> BABYLON_SPAWN = register("entity.babylon.spawn",
+    public static final RegistryEntrySupplier<SoundEvent, SoundEvent> WEAPON_FIRE = register("entity.weapon.projectile.shoot",
+            b -> b.defaultTranslation("Weapon firing").sound(SoundEvents.PLAYER_ATTACK_SWEEP.getLocation(), 7));
+    public static final RegistryEntrySupplier<SoundEvent, SoundEvent> BABYLON_SPAWN = register("entity.weapon.projectile.spawn",
             b -> b.defaultTranslation("Weapon spawns").sound(SoundEvents.BEACON_ACTIVATE.getLocation()));
     public static final RegistryEntrySupplier<SoundEvent, SoundEvent> CALAD_BOLG_IMPACT = register("entity.caladbolg.impact",
             b -> b.defaultTranslation("Calad Bolg impact").sound(ResourceLocation.withDefaultNamespace("random/explode"), 4));

@@ -113,9 +113,9 @@ public class Emiya extends BaseServant {
 
     public static final String UNLIMITED_BLADE_WORKS = BUILDER.add("unlimited_blade_works", AnimationsBuilder.definition(7)
             .marker("start", 0.36).marker("cast", 4.2).marker("teleport", 6.8));
-    public static final String UBW_ATTACK_1 = BUILDER.add("ubw_attack_1", AnimationsBuilder.definition(1.08)
+    public static final String UBW_ATTACK_1 = BUILDER.add("ubw_attack_1", AnimationsBuilder.definition(1.28)
             .marker("shoot", 0.48));
-    public static final String UBW_ATTACK_2 = BUILDER.add("ubw_attack_2", AnimationsBuilder.definition(1.08)
+    public static final String UBW_ATTACK_2 = BUILDER.add("ubw_attack_2", AnimationsBuilder.definition(1.28)
             .marker("shoot", 0.48));
 
     private static final String DEATH = BUILDER.add("death", AnimationsBuilder.definition(2.52).infinite());
@@ -442,9 +442,7 @@ public class Emiya extends BaseServant {
                 this.getLookControl().setLookAt(target, 60.0F, 30.0F);
             }
             if (anim.isAt("shoot")) {
-                if (target != null) {
-                    WeaponProjectile.spawnWeapons(this, target, 7 + this.getRandom().nextInt(10), 7, WeaponProjectile.Type.UBW);
-                }
+                WeaponProjectile.spawnWeapons(this, target, 7 + this.getRandom().nextInt(10), 7, WeaponProjectile.Type.UBW);
             }
         } else if (anim.is(DUAL_BLADE_THROW)) {
             LivingEntity target = this.getTarget();
@@ -485,13 +483,13 @@ public class Emiya extends BaseServant {
                 this.leftHandAttackFlag = true;
                 this.playSound(FateSounds.SWOOSH_2.get(), 1, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 0.7f);
                 this.mobAttack(anim, this.getTarget(), this::doHurtTarget);
-                this.setTargetPosition((TargetPosition) null);
+                this.setTargetPosition(null);
                 this.leftHandAttackFlag = false;
             }
             if (anim.isAt("attack_right")) {
                 this.playSound(FateSounds.SWOOSH_2.get(), 1, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 0.7f);
                 this.mobAttack(anim, this.getTarget(), this::doHurtTarget);
-                this.setTargetPosition((TargetPosition) null);
+                this.setTargetPosition(null);
             }
             super.handleAttack(anim);
         }
@@ -598,8 +596,9 @@ public class Emiya extends BaseServant {
         CaladBolg bolg = new CaladBolg(this.level(), this);
         if (target != null)
             bolg.shootAtEntity(target, 2F, 0);
-        else
-            bolg.shoot(this, this.getXRot(), this.getYRot(), 0, 2, 0);
+        else {
+            bolg.shoot(this, this.getViewXRot(1), this.getViewYRot(1), 0, 2, 0);
+        }
         this.level().addFreshEntity(bolg);
         this.revealServant();
     }

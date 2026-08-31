@@ -172,9 +172,7 @@ public class Gilgamesh extends BaseServant implements OnProjectileHit {
                 this.getLookControl().setLookAt(target, 60.0F, 30.0F);
             }
             if (anim.isAt("attack")) {
-                if (target != null) {
-                    this.attackWithRangedAttack(target);
-                }
+                this.attackWithRangedAttack(target);
             }
         } else {
             if (anim.isAt("attack")) {

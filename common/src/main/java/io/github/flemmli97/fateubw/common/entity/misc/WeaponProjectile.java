@@ -225,10 +225,13 @@ public class WeaponProjectile extends BaseProjectile {
                     this.shootAtPosition(hit.getLocation().x, hit.getLocation().y, hit.getLocation().z, 1.f, 6);
                 } else if (this.target != null) {
                     this.shootAtEntity(this.target, 1.f, 6);
+                } else if(this.getOwner() instanceof LivingEntity living) {
+                    Vec3 dir = living.calculateViewVector(15, living.getYRot());
+                    this.shoot(dir.x(), dir.y(), dir.z(), 1.f, 6);
                 } else {
                     this.discard();
                 }
-                this.playSound(FateSounds.BABYLON_SHOOT.get(), 0.8f, (this.random.nextFloat() - this.random.nextFloat()) * 0.2f + 0.5f);
+                this.playSound(FateSounds.WEAPON_FIRE.get(), 0.8f, (this.random.nextFloat() - this.random.nextFloat()) * 0.2f + 0.5f);
             }
         }
     }

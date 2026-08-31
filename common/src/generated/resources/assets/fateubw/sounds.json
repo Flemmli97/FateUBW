@@ -14,24 +14,6 @@
     ],
     "subtitle": "fateubw:block.chalk.place"
   },
-  "entity.babylon.shoot": {
-    "sounds": [
-      "entity/player/attack/sweep1",
-      "entity/player/attack/sweep2",
-      "entity/player/attack/sweep3",
-      "entity/player/attack/sweep4",
-      "entity/player/attack/sweep5",
-      "entity/player/attack/sweep6",
-      "entity/player/attack/sweep7"
-    ],
-    "subtitle": "fateubw:entity.babylon.shoot"
-  },
-  "entity.babylon.spawn": {
-    "sounds": [
-      "block/beacon/activate"
-    ],
-    "subtitle": "fateubw:entity.babylon.spawn"
-  },
   "entity.caladbolg.impact": {
     "sounds": [
       "random/explode1",
@@ -287,6 +269,24 @@
       "random/explode4"
     ],
     "subtitle": "fateubw:entity.tentacle.slams"
+  },
+  "entity.weapon.projectile.shoot": {
+    "sounds": [
+      "entity/player/attack/sweep1",
+      "entity/player/attack/sweep2",
+      "entity/player/attack/sweep3",
+      "entity/player/attack/sweep4",
+      "entity/player/attack/sweep5",
+      "entity/player/attack/sweep6",
+      "entity/player/attack/sweep7"
+    ],
+    "subtitle": "fateubw:entity.weapon.projectile.shoot"
+  },
+  "entity.weapon.projectile.spawn": {
+    "sounds": [
+      "block/beacon/activate"
+    ],
+    "subtitle": "fateubw:entity.weapon.projectile.spawn"
   },
   "generic.slash": {
     "sounds": [

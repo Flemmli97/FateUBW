@@ -330,7 +330,7 @@ public class Heracles extends BaseServant {
         if (anim.is(UPPER_CUT)) {
             if (anim.isAt("attack")) {
                 Vec3 dir = Vec3.directionFromRotation(0, this.getYRot()).scale(2);
-                this.setTargetPosition((TargetPosition) null);
+                this.setTargetPosition(null);
                 this.mobAttack(anim, this.getTarget(), e -> {
                     if (this.doHurtTarget(e)) {
                         e.setDeltaMovement(dir.x(), 2, dir.z());
