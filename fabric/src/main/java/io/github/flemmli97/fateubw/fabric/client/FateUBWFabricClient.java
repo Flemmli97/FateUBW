@@ -25,6 +25,7 @@ public class FateUBWFabricClient implements ClientSetupModInitializer {
                 ClientHandler.clientTick++;
             ClientCalls.keyEvent();
         });
+        ClientTickEvents.END_WORLD_TICK.register(ClientCalls::levelTick);
         WorldRenderEvents.END.register(ctx -> ClientCalls.worldRender(ctx.matrixStack()));
         HudRenderCallback.EVENT.register(ClientHandler.getManaBar()::renderBar);
         ParticleTypeRegisterEvent.EVENT.register(register -> {

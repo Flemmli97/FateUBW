@@ -4,7 +4,6 @@ import com.mojang.datafixers.util.Pair;
 import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.entity.utils.EntityTrailHandler;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
-import io.github.flemmli97.fateubw.common.particles.trail.TrailPositions;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.ParticlePositionProvider;
 import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
@@ -46,6 +45,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector4f;
 
 import java.util.ArrayList;
@@ -68,9 +68,8 @@ public class WeaponProjectile extends BaseProjectile {
     private final BlockState particleState = Blocks.GOLD_BLOCK.defaultBlockState();
     private int preparationTick, despawnTimer;
 
-    private final EntityTrailHandler trailHandler = new EntityTrailHandler(this, 12);
-
     private Type type = Type.BABYLON;
+    private final EntityTrailHandler trailHandler = new EntityTrailHandler(this, 12).setInfo(this.getWeaponType().trail);
 
     public WeaponProjectile(EntityType<? extends WeaponProjectile> type, Level level) {
         super(type, level);
@@ -106,7 +105,7 @@ public class WeaponProjectile extends BaseProjectile {
         if (key == TYPE_DATA) {
             int id = this.entityData.get(TYPE_DATA);
             if (id >= 0 && id < Type.values().length)
-                this.type = Type.values()[id];
+                this.setType(Type.values()[id]);
         }
     }
 
@@ -114,6 +113,7 @@ public class WeaponProjectile extends BaseProjectile {
         this.setDamageMultiplier(type == Type.BABYLON ? CommonConfig.babylonScale : CommonConfig.ubwScale);
         this.type = type;
         this.entityData.set(TYPE_DATA, this.type.ordinal());
+        this.trailHandler.setInfo(this.getWeaponType().trail);
     }
 
     public Type getWeaponType() {
@@ -141,13 +141,9 @@ public class WeaponProjectile extends BaseProjectile {
                     return;
                 }
             }
-            if (this.firstTick) {
-                this.trailHandler.tick();
-            }
             if (this.level().isClientSide && !this.inGround && this.type == Type.BABYLON)
                 this.level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, this.particleState), this.getX(), this.getY(), this.getZ(), 0, 0, 0);
             super.tick();
-            this.trailHandler.tick();
         }
         if (this.despawning()) {
             ++this.despawnTimer;
@@ -322,11 +318,7 @@ public class WeaponProjectile extends BaseProjectile {
         this.setType(Type.values()[compound.getInt("ProjectileType")]);
     }
 
-    public TrailPositions trailPositions() {
-        return this.trailHandler.getPositions();
-    }
-
-    public static void spawnWeapons(LivingEntity thrower, LivingEntity target, int amount, int range, Type type) {
+    public static void spawnWeapons(LivingEntity thrower, @Nullable LivingEntity target, int amount, int range, Type type) {
         for (Vec3 offset : Utils.randomSidedPositions(thrower, amount, range)) {
             WeaponProjectile weapon = new WeaponProjectile(thrower.level(), thrower, target);
             weapon.setType(type);
@@ -339,8 +331,9 @@ public class WeaponProjectile extends BaseProjectile {
         }
     }
 
-    public static void spawnWeaponsAround(LivingEntity thrower, LivingEntity target, int amount, int range) {
-        int targetSize = Math.max(Mth.ceil(target.getBbHeight()), Mth.ceil(target.getBbWidth()));
+    public static void spawnWeaponsAround(LivingEntity thrower, @Nullable LivingEntity target, int amount, int range) {
+        Vec3 targetPos = target == null ? thrower.position().add(thrower.calculateViewVector(0, thrower.getYRot()).scale(9)) : target.position();
+        int targetSize = target == null ? 3 : Math.max(Mth.ceil(target.getBbHeight()), Mth.ceil(target.getBbWidth()));
         range = Math.max(targetSize + 3, range);
         List<Pair<Float, Float>> angles = new ArrayList<>(amount);
         for (int i = 0; i < amount; i++) {
@@ -365,14 +358,13 @@ public class WeaponProjectile extends BaseProjectile {
                     break;
             }
         }
-        Vec3 pos = target.position();
         for (Pair<Float, Float> offset : angles) {
             if (offset == null)
                 continue;
             WeaponProjectile weapon = new WeaponProjectile(thrower.level(), thrower, target);
             // Initial rotation is based of the delta. don't want to dig into where its exactly handled so this will do
             Vec3 dir = Vec3.directionFromRotation(-offset.getSecond(), offset.getFirst());
-            Vec3 area = pos.add(dir.scale(range));
+            Vec3 area = targetPos.add(dir.scale(range));
             weapon.setPos(area.x, area.y, area.z);
             weapon.shoot(-dir.x(), -dir.y(), -dir.z(), 0.02F, 0);
             weapon.setWeapon(CommonConfig.babylonWeapons.getRandomWeapon(weapon.random));

@@ -3,7 +3,8 @@ package io.github.flemmli97.fateubw.common.entity.misc;
 import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.entity.servant.Cuchulainn;
 import io.github.flemmli97.fateubw.common.entity.utils.EntityTrailHandler;
-import io.github.flemmli97.fateubw.common.particles.trail.TrailPositions;
+import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
+import io.github.flemmli97.fateubw.common.particles.trail.provider.ParticlePositionProvider;
 import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
@@ -25,8 +26,16 @@ import net.minecraft.world.phys.Vec3;
 
 public class GaeBolg extends BaseProjectile {
 
+    private static final TrailInfo INFO = TrailInfo.builder(new ParticlePositionProvider.ParticlePositionData(0))
+            .setColor(121 / 255f, 15 / 255f, 15 / 255f, 0.5f)
+            .setColor2(121 / 255f, 15 / 255f, 15 / 255f, 0.3f)
+            .setWidth(0.07f)
+            .setWidth2(0.005f)
+            .setInterpolation(1)
+            .build();
+
     private Entity target;
-    private final EntityTrailHandler trailHandler = new EntityTrailHandler(this, 8);
+    private final EntityTrailHandler trailHandler = new EntityTrailHandler(this, 8).setInfo(INFO);
 
     public GaeBolg(EntityType<? extends GaeBolg> type, Level level) {
         super(type, level);
@@ -47,9 +56,6 @@ public class GaeBolg extends BaseProjectile {
 
     @Override
     public void tick() {
-        if (this.firstTick) {
-            this.trailHandler.tick();
-        }
         super.tick();
         if (!this.level().isClientSide) {
             if (this.target != null) {
@@ -60,7 +66,6 @@ public class GaeBolg extends BaseProjectile {
                 }
             }
         }
-        this.trailHandler.tick();
     }
 
     protected void homeTarget(Vec3 dist) {
@@ -143,9 +148,5 @@ public class GaeBolg extends BaseProjectile {
     @Override
     protected float getGravityVelocity() {
         return 0.01F;
-    }
-
-    public TrailPositions trailPositions() {
-        return this.trailHandler.getPositions();
     }
 }

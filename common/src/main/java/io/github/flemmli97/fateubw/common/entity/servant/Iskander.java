@@ -7,6 +7,7 @@ import io.github.flemmli97.fateubw.common.entity.summons.Bucephalos;
 import io.github.flemmli97.fateubw.common.entity.summons.GordiusWheel;
 import io.github.flemmli97.fateubw.common.entity.utils.ServantModelLike;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
+import io.github.flemmli97.fateubw.common.particles.StaticFacingParticleData;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailProvider;
@@ -68,8 +69,8 @@ public class Iskander extends BaseServant {
             .marker("attack", 0.72).marker("step", 0.6)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.52)
             .marker(EntityWeaponTrailProvider.TRAIL_END, 0.72));
-    public static final String LIGHTNING_1 = BUILDER.add("lightning_1", AnimationsBuilder.definition(0.84)
-            .marker("attack", 0.72));
+    public static final String LIGHTNING_1 = BUILDER.add("lightning_1", AnimationsBuilder.definition(1.4)
+            .marker("attack", 0.72).marker("sparks", 1.04));
 
     public static final String ONE_HAND_2_1 = BUILDER.add("one_hand_2_1", AnimationsBuilder.definition(0.84)
             .marker("attack", 0.72).marker("step", 0.6)
@@ -260,14 +261,17 @@ public class Iskander extends BaseServant {
             if (anim.isAt("attack")) {
                 this.mobAttack(anim, this.getTarget(), this::doHurtTarget);
                 S2CScreenShake.sendAround(this, 32, 4, 1);
-                for (int i = 0; i < 16; i++) {
-                    AdvancedParticleContainer.make(FateParticles.LIGHTNING.get())
-                            .addData(new ScaleData(0.3f))
-                            .addData(new ColorData(35 / 255f, 53 / 255f, 206 / 255f, 1))
-                            .addData(new ParticleMetaData(5, false, 0))
-                            .add(this.level(), this.getRandomX(16), this.getY(this.getRandom().nextDouble() * 7 - 2), this.getRandomZ(16));
-                }
-            } else if (anim.isPast("attack")) {
+                AdvancedParticleContainer.make(new StaticFacingParticleData(FateParticles.RING.get(), 0, 90))
+                        .addData(new ColorData(0.9f, 0.9f, 0.9f))
+                        .addData(new ScaleData(1, 4, 4))
+                        .addData(new ParticleMetaData(8, false, 0))
+                        .add(this.level(), this.getX(), this.getY() + 0.01, this.getZ());
+                AdvancedParticleContainer.make(new StaticFacingParticleData(FateParticles.RING.get(), 0, 90))
+                        .addData(new ColorData(0.9f, 0.9f, 0.9f))
+                        .addData(new ScaleData(1, 8, 4))
+                        .addData(new ParticleMetaData(8, false, 0))
+                        .add(this.level(), this.getX(), this.getY() + 0.01, this.getZ());
+            } else if (anim.isAt("sparks")) {
                 for (int i = 0; i < 16; i++) {
                     AdvancedParticleContainer.make(FateParticles.LIGHTNING.get())
                             .addData(new ScaleData(0.3f))

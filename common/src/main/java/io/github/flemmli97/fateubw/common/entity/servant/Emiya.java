@@ -23,7 +23,6 @@ import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.fateubw.common.world.RealityMarbleHandler;
-import io.github.flemmli97.tenshilib.common.entity.ai.TargetPosition;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.SelectableBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.LeapInDirection;
@@ -180,19 +179,24 @@ public class Emiya extends BaseServant {
                         .build())).play(BehaviourUtils.cooldownedPlay(true, 16, 28))
                 .condition(BehaviourUtils.ifCloserThan(7))
                 .prepare(new SetWalkTargetToAttackTarget<Emiya>().speedMod((owner, target) -> ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(8)
+                .end(9)
 
                 .start(BehaviourUtils.of(AnimationPlayHolder.<Emiya>builder(DUAL_BLADE_2_1)
                         .start(DUAL_BLADE_2_2, 2, 0.28f, 1)
                         .build())).play(BehaviourUtils.cooldownedPlay(true, 16, 28))
                 .condition(BehaviourUtils.ifCloserThan(7))
                 .prepare(new SetWalkTargetToAttackTarget<Emiya>().speedMod((owner, target) -> ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(8)
+                .end(9)
 
-//                .start(DUAL_BLADE_THROW).play(BehaviourUtils.cooldownedPlay(true, 16, 28))
-//                .condition(BehaviourUtils.ifCloserThan(7))
-//                .prepare(new SetWalkTargetToAttackTarget<Emiya>().speedMod((owner, target) -> 1.5f)).prepareOptional(BehaviourUtils.timedMoveAttack())
-//                .end(6)
+                .start(DUAL_BLADE_THROW).play(BehaviourUtils.cooldownedPlay(true, 16, 28))
+                .prepare(new SetWalkTargetWithinDist<Emiya>()
+                        .min(5).max(12).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.moveAttack())
+                .end(6)
+                .start(DUAL_BLADE_THROW).play(BehaviourUtils.cooldownedPlay(true, 16, 28))
+                .condition(BehaviourUtils.ifFurtherThan(9))
+                .prepare(new SetWalkTargetWithinDist<Emiya>()
+                        .min(5).max(16).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.moveAttack())
+                .end(8)
 
                 .start(BOW_1).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(12), 16, 28))
                 .prepare(new SetWalkTargetWithinDist<Emiya>()

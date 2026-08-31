@@ -43,7 +43,7 @@ public class ThrownItemEntity extends BaseProjectile {
 
     @Override
     public int livingTickMax() {
-        return this.inGround ? Integer.MAX_VALUE : 250;
+        return 20;
     }
 
     @Override
@@ -59,13 +59,22 @@ public class ThrownItemEntity extends BaseProjectile {
         if (key == TYPE_DATA) {
             int id = this.entityData.get(TYPE_DATA);
             if (id >= 0 && id < ItemType.values().length)
-                this.itemType = ItemType.values()[id];
+                this.setItemType(ItemType.values()[id]);
         }
     }
 
     public void setItemType(ItemType itemType) {
         this.itemType = itemType;
         this.entityData.set(TYPE_DATA, this.itemType.ordinal());
+        this.trailHandler.setInfo(this.itemType.info);
+        switch (this.itemType) {
+            case KANSHOU -> this.trailHandler.setNormal(MathUtils.NORMAL_Z
+                    .xRot(-5 * Mth.DEG_TO_RAD)
+                    .yRot((this.getYRot() + 90) * Mth.DEG_TO_RAD));
+            case BAKUYA -> this.trailHandler.setNormal(MathUtils.NORMAL_Z
+                    .xRot(5 * Mth.DEG_TO_RAD)
+                    .yRot((this.getYRot() + 90) * Mth.DEG_TO_RAD));
+        }
     }
 
     public ItemType getItemType() {
@@ -80,29 +89,6 @@ public class ThrownItemEntity extends BaseProjectile {
     @Override
     protected float motionReduction(boolean inWater) {
         return 1;
-    }
-
-    @Override
-    public void tick() {
-        if (this.firstTick) {
-            switch (this.itemType) {
-                case KANSHOU -> this.trailHandler.tick(MathUtils.NORMAL_Z
-                        .xRot(-5 * Mth.DEG_TO_RAD)
-                        .yRot((this.getYRot() + 90) * Mth.DEG_TO_RAD));
-                case BAKUYA -> this.trailHandler.tick(MathUtils.NORMAL_Z
-                        .xRot(5 * Mth.DEG_TO_RAD)
-                        .yRot((this.getYRot() + 90) * Mth.DEG_TO_RAD));
-            }
-        }
-        super.tick();
-        switch (this.itemType) {
-            case KANSHOU -> this.trailHandler.tick(MathUtils.NORMAL_Z
-                    .xRot(-5 * Mth.DEG_TO_RAD)
-                    .yRot((this.getYRot() + 90) * Mth.DEG_TO_RAD));
-            case BAKUYA -> this.trailHandler.tick(MathUtils.NORMAL_Z
-                    .xRot(5 * Mth.DEG_TO_RAD)
-                    .yRot((this.getYRot() + 90) * Mth.DEG_TO_RAD));
-        }
     }
 
     @Override

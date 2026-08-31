@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import io.github.flemmli97.fateubw.client.particles.TrailRenderer;
 import io.github.flemmli97.fateubw.client.render.FateRenders;
 import io.github.flemmli97.fateubw.common.entity.misc.WeaponProjectile;
 import io.github.flemmli97.tenshilib.client.VertexUtils;
@@ -94,9 +93,6 @@ public class RenderWeaponProjectile extends EntityRenderer<WeaponProjectile> {
                     tick
             );
             stack.popPose();
-        }
-        if (!entity.preparing()) {
-            TrailRenderer.render(entity, entity.getWeaponType().trail, entity.trailPositions(), buffer.getBuffer(FateRenders.TRAIL_TRANSLUCENT), partialTick);
         }
         stack.pushPose();
         stack.scale(2, 2, 2);

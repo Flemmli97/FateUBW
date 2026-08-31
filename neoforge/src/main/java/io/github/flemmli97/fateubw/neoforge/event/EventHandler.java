@@ -47,6 +47,9 @@ public class EventHandler {
         if (event.getLevel() instanceof ServerLevel serverLevel && serverLevel.dimension() == Level.OVERWORLD) {
             GrailWarHandler.get(serverLevel.getServer()).tick(serverLevel);
         }
+        if (event.getLevel().isClientSide()) {
+            ClientCalls.levelTick(event.getLevel());
+        }
     }
 
     @SubscribeEvent

@@ -108,8 +108,8 @@ void main() {
     if (dist > 0.8) {
         color *= max(0., 1. - pow(dist, 3.));
     }
-    fragColor = color;
-    if (fragColor.a <= 0.2) {
+    if (color.a <= 0.2) {
         discard;
     }
+    fragColor = color;
 }

@@ -1,12 +1,14 @@
 package io.github.flemmli97.fateubw.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import io.github.flemmli97.fateubw.client.render.EntityTrailRenderer;
 import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.network.C2SGuiOpenRequest;
 import io.github.flemmli97.fateubw.common.network.C2SServantCommand;
 import io.github.flemmli97.tenshilib.loader.LoaderNetwork;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
 
 public class ClientCalls {
 
@@ -31,9 +33,16 @@ public class ClientCalls {
         }
     }
 
+    public static void levelTick(Level level) {
+        if (level == Minecraft.getInstance().level) {
+            EntityTrailRenderer.tick();
+        }
+    }
+
     public static void worldRender(PoseStack stack) {
         if (CommonConfig.debugAttack) {
             AttackBBRender.INST.render(stack, Minecraft.getInstance().renderBuffers().crumblingBufferSource());
         }
+        EntityTrailRenderer.render(Minecraft.getInstance().renderBuffers().bufferSource(), ClientHandler.getPartialTicks());
     }
 }
