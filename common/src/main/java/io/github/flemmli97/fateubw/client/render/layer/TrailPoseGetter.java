@@ -8,5 +8,5 @@ public interface TrailPoseGetter {
      * @return A PoseStack that has all the model transformations applied but in relative format.
      * This means e.g. no translation of camera and entity positions are applied.
      */
-    PoseStack getPlainStack();
+    PoseStack getModelStack();
 }

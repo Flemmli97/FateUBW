@@ -2,7 +2,7 @@ package io.github.flemmli97.fateubw.common.particles.trail.provider.entity;
 
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimatedEntity;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
-import org.joml.Vector4f;
+import org.joml.Vector3f;
 
 public interface EntityWeaponTrailHolderProvider {
 
@@ -17,9 +17,9 @@ public interface EntityWeaponTrailHolderProvider {
     }
 
     default WeaponTrail weaponTrailEdge(boolean left) {
-        return new WeaponTrail(new Vector4f(0, 0, 0, 1), new Vector4f(0, 0, -0.5f, 1));
+        return new WeaponTrail(new Vector3f(0, 0, 0), new Vector3f(0, 0, -1f));
     }
 
-    record WeaponTrail(Vector4f start, Vector4f end) {
+    record WeaponTrail(Vector3f start, Vector3f end) {
     }
 }

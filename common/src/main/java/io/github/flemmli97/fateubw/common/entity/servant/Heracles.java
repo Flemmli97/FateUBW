@@ -62,6 +62,7 @@ import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
 import net.tslat.smartbrainlib.util.BrainUtils;
+import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import java.util.ArrayList;
@@ -518,6 +519,6 @@ public class Heracles extends BaseServant {
 
     @Override
     public WeaponTrail weaponTrailEdge(boolean left) {
-        return new WeaponTrail(new Vector4f(0, 0, -0.8f, 1), new Vector4f(0, 0, -1.9f, 1));
+        return new WeaponTrail(new Vector3f(0, 0, -0.8f), new Vector3f(0, 0, -3f));
     }
 }

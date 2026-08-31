@@ -111,7 +111,7 @@ import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
 import net.tslat.smartbrainlib.util.BrainUtils;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector4f;
+import org.joml.Vector3f;
 
 import java.util.List;
 import java.util.UUID;
@@ -669,6 +669,6 @@ public class HassanClone extends PathfinderMob implements AnimatedEntity, Ownabl
 
     @Override
     public WeaponTrail weaponTrailEdge(boolean left) {
-        return new WeaponTrail(new Vector4f(0, 0, -0.2f, 1), new Vector4f(0, 0, -0.6f, 1));
+        return new WeaponTrail(new Vector3f(0, 0, -0.2f), new Vector3f(0, 0, -0.6f));
     }
 }

@@ -29,7 +29,7 @@ public class ServantRenderer<T extends BaseServant, M extends ServantModel<T>> e
     /**
      * This one does not have transformations such as camera rotations etc. applied
      */
-    private PoseStack plainPose;
+    private PoseStack modelStack;
 
     public ServantRenderer(EntityRendererProvider.Context ctx, M model, ResourceLocation texture, float shadow) {
         super(ctx, model, shadow);
@@ -43,7 +43,7 @@ public class ServantRenderer<T extends BaseServant, M extends ServantModel<T>> e
     public void render(T entity, float yaw, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int light) {
         this.model.update(entity);
         DoublePoseStack recording = new DoublePoseStack(poseStack);
-        this.plainPose = recording.getApplied();
+        this.modelStack = recording.getApplied();
         float summonProgress = (float) entity.getSummonProgress(partialTick);
         Vector4f clip;
         if (summonProgress >= 0 && summonProgress < 1) {
@@ -84,7 +84,7 @@ public class ServantRenderer<T extends BaseServant, M extends ServantModel<T>> e
     }
 
     @Override
-    public PoseStack getPlainStack() {
-        return this.plainPose;
+    public PoseStack getModelStack() {
+        return this.modelStack;
     }
 }

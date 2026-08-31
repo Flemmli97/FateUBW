@@ -13,7 +13,7 @@ import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
-import org.joml.Vector4f;
+import org.joml.Vector3f;
 
 public class ItemTrailLayer<T extends LivingEntity & AnimatedEntity & EntityWeaponTrailHolderProvider, M extends EntityModel<T> & ItemHolderModel> extends RenderLayer<T, M> {
 
@@ -28,7 +28,7 @@ public class ItemTrailLayer<T extends LivingEntity & AnimatedEntity & EntityWeap
     public void render(PoseStack stack, MultiBufferSource buffer, int light, T entity, float limbSwing, float limbSwingAmount, float partialTick, float ageInTicks, float netHeadYaw, float headPitch) {
         AnimationState anim = entity.getAnimationHandler().getAnimation();
         if (entity.shouldRecordData()) {
-            stack = this.renderer instanceof TrailPoseGetter getter ? getter.getPlainStack() : stack;
+            stack = this.renderer instanceof TrailPoseGetter getter ? getter.getModelStack() : stack;
             Vec3[] data = this.calculatePosition(stack, entity, true);
             entity.getTrailHolder().recordData(anim.getID(), true, data[0], data[1]);
             data = this.calculatePosition(stack, entity, false);
@@ -41,12 +41,12 @@ public class ItemTrailLayer<T extends LivingEntity & AnimatedEntity & EntityWeap
         this.getParentModel().transform(left ? HumanoidArm.LEFT : HumanoidArm.RIGHT, stack);
 
         EntityWeaponTrailHolderProvider.WeaponTrail edge = entity.weaponTrailEdge(left);
-        Vector4f start = edge.start();
-        Vector4f end = edge.end();
+        Vector3f start = edge.start();
+        Vector3f end = edge.end();
         Matrix4f last = stack.last().pose();
-        start.mul(last);
-        end.mul(last);
-        Vec3 normal = new Vec3(end.x() - start.x(), end.y() - start.y(), end.z() - start.z());
+        last.transformPosition(start);
+        last.transformPosition(end);
+        Vec3 normal = new Vec3(end.x() - start.x(), end.y() - start.y(), end.z() - start.z()).scale(0.5);
         stack.popPose();
         return new Vec3[]{new Vec3(start.x() + normal.x(), start.y() + normal.y(), start.z() + normal.z()), normal};
     }

@@ -1,5 +1,6 @@
 package io.github.flemmli97.fateubw.common.entity.servant;
 
+import com.mojang.math.Axis;
 import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.HeldEquipmentHandler;
@@ -62,6 +63,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
+import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import java.util.List;
@@ -260,18 +262,18 @@ public class Emiya extends BaseServant {
             if (anim != null) {
                 if (anim.isAt(LEFT_TRAIL_START)) {
                     this.level().addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
-                                    TrailInfo.builder(new EntityWeaponTrailProvider.EntityTrailData(this.getId(), anim.getID(), true, 3, LEFT_TRAIL_END))
-                                            .setColor(25 / 255f, 25 / 255f, 75 / 255f, 0.6f)
-                                            .setColor2(25 / 255f, 25 / 255f, 75 / 255f, 0.2f)
+                                    TrailInfo.builder(new EntityWeaponTrailProvider.EntityTrailData(this.getId(), anim.getID(), true, 4, LEFT_TRAIL_END))
+                                            .setColor(75 / 255f, 75 / 255f, 75 / 255f, 0.6f)
+                                            .setColor2(75 / 255f, 75 / 255f, 75 / 255f, 0.2f)
                                             .setType(TrailInfo.Visual.TEXTURE, 0)
                                             .build()),
                             this.getX(), this.getY(), this.getZ(), 0, 0, 0);
                 }
                 if (anim.isAt(RIGHT_TRAIL_START)) {
                     this.level().addParticle(new TrailParticleData(FateParticles.TRAIL.get(),
-                                    TrailInfo.builder(new EntityWeaponTrailProvider.EntityTrailData(this.getId(), anim.getID(), false, 3, RIGHT_TRAIL_END))
-                                            .setColor(25 / 255f, 25 / 255f, 75 / 255f, 0.6f)
-                                            .setColor2(25 / 255f, 25 / 255f, 75 / 255f, 0.2f)
+                                    TrailInfo.builder(new EntityWeaponTrailProvider.EntityTrailData(this.getId(), anim.getID(), false, 4, RIGHT_TRAIL_END))
+                                            .setColor(10 / 255f, 10 / 255f, 10 / 255f, 0.6f)
+                                            .setColor2(10 / 255f, 10 / 255f, 10 / 255f, 0.2f)
                                             .setType(TrailInfo.Visual.TEXTURE, 0)
                                             .build()),
                             this.getX(), this.getY(), this.getZ(), 0, 0, 0);
@@ -511,7 +513,7 @@ public class Emiya extends BaseServant {
             return new AABB(-width * 1.5, -0.03, -length, width * 0.5, height + 0.03, length);
         }
         if (anim.is(DUAL_BLADE_1_3)) {
-            width += 0.8 * this.getScale();
+            width += 2.5 * this.getScale();
             length += 1.5 * this.getScale();
         }
         if (anim.is(DUAL_BLADE_2_1) || anim.is(DUAL_BLADE_2_2)) {
@@ -636,6 +638,10 @@ public class Emiya extends BaseServant {
 
     @Override
     public WeaponTrail weaponTrailEdge(boolean left) {
-        return new WeaponTrail(new Vector4f(0, 0, -0.2f, 1), new Vector4f(0, 0, -0.6f, 1));
+        if (this.animationHandler.isCurrent(DUAL_BLADE_1_3)) {
+            return new WeaponTrail(new Vector3f(0, 0, -0.2f), new Vector3f(0, 0, -3.5f)
+                    .rotate(Axis.ZN.rotation((left ? -25 : 25) * Mth.DEG_TO_RAD)).rotate(Axis.YP.rotation((left ? -25 : 25) * Mth.DEG_TO_RAD)));
+        }
+        return new WeaponTrail(new Vector3f(0, 0, -0.2f), new Vector3f(0, 0, -1.2f));
     }
 }

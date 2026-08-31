@@ -50,7 +50,7 @@ import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
 import net.tslat.smartbrainlib.util.BrainUtils;
-import org.joml.Vector4f;
+import org.joml.Vector3f;
 
 public class Sasaki extends BaseServant {
 
@@ -393,6 +393,6 @@ public class Sasaki extends BaseServant {
 
     @Override
     public WeaponTrail weaponTrailEdge(boolean left) {
-        return new WeaponTrail(new Vector4f(0, 0, -1.2f, 1), new Vector4f(0, 0, -1.8f, 1));
+        return new WeaponTrail(new Vector3f(0, 0, -1.2f), new Vector3f(0, 0, -2.4f));
     }
 }
