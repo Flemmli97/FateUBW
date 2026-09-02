@@ -64,11 +64,16 @@ public class GordiusChariot extends MultiPartEntity implements OwnableEntity {
         Vec3 offsetDir = wheelJoint.subtract(this.position());
         double maxDist = CHARIOT_JOINT_DIST * this.getOwner().getScale();
         Vec3 target = wheelJoint.subtract(offsetDir.normalize().scale(maxDist));
-        if (this.position().distanceToSqr(target) > 6) {
+        if (this.position().distanceToSqr(target) > 5) {
             this.teleportTo(target.x(), target.y(), target.z());
         } else {
-            this.moveTo(target.x(), target.y(), target.z(), false);
+            this.moveTo(target.x(), this.getOwner().getY(), target.z(), false);
         }
+    }
+
+    @Override
+    protected float maxVerticalDistFromOwner() {
+        return 0.5f;
     }
 
     @Override

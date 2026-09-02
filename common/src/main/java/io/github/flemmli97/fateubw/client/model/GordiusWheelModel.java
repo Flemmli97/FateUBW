@@ -21,8 +21,8 @@ public class GordiusWheelModel extends ExtendedEntityModel<GordiusWheel> impleme
 
     public ModelPartsContainer.ModelPartExtended bull1;
     public ModelPartsContainer.ModelPartExtended bull2;
-    public ModelPartsContainer.ModelPartExtended centerBeam;
-    public ModelPartsContainer.ModelPartExtended backBeam;
+    public ModelPartsContainer.ModelPartExtended couplerBase;
+    public ModelPartsContainer.ModelPartExtended chariotBase;
     public ModelPartsContainer.ModelPartExtended ridingPosition;
 
     public GordiusWheelModel() {
@@ -33,8 +33,8 @@ public class GordiusWheelModel extends ExtendedEntityModel<GordiusWheel> impleme
     protected void onModelReload(ModelPartsContainer model) {
         this.bull1 = model.getPart("bull1");
         this.bull2 = model.getPart("bull2");
-        this.centerBeam = model.getPart("centerBeam");
-        this.backBeam = model.getPart("backBeam");
+        this.couplerBase = model.getPart("couplerBase");
+        this.chariotBase = model.getPart("chariotBase");
         this.ridingPosition = model.getPart("mountPos");
     }
 
@@ -49,24 +49,23 @@ public class GordiusWheelModel extends ExtendedEntityModel<GordiusWheel> impleme
         float partialTick = this.getPartialTick();
         if (entity.deathTime <= 0) {
             this.animation.get().doAnimation(this, "idle", entity.tickCount, partialTick);
-            this.animation.get().doAnimation(this, "move", entity.tickCount, partialTick, entity.interpolatedMoveTick(partialTick));
+            this.animation.get().doAnimation(this, "walk", entity.tickCount, partialTick, entity.interpolatedMoveTick(partialTick));
             this.animation.get().doAnimation(this, "run", entity.tickCount, partialTick, entity.interpolatedMoveTickOf(MoveType.RUN, partialTick));
             if (entity.getMoveType() != MoveType.NONE)
                 entity.wheelPartial = partialTick;
-            this.animation.get().doAnimation(this, "wheel_move", entity.wheelMoveTick, entity.wheelPartial, 1);
+            this.animation.get().doAnimation(this, "wheel_move", entity.wheelMoveTick + entity.wheelPartial
+                    * Mth.clamp(entity.walkAnimation.speed(partialTick) / 0.25f, 0, 1), 1, false, false);
         }
         this.animation.get().doAnimation(this, entity.getAnimationHandler(), partialTick);
 
         if (entity.getWheelEntity() != null) {
             float yRot = lerpClamped(partialTick, entity.getWheelEntity().yRotO, entity.getWheelEntity().getYRot());
             float pYRot = lerpClamped(partialTick, entity.yRotO, entity.getYRot());
-            this.backBeam.yRot -= pYRot * Mth.DEG_TO_RAD;
-            this.backBeam.yRot += yRot * Mth.DEG_TO_RAD;
+            this.couplerBase.yRot -= pYRot * Mth.DEG_TO_RAD;
+            this.couplerBase.yRot += yRot * Mth.DEG_TO_RAD;
             float xRot = Mth.lerp(partialTick, entity.getWheelEntity().xRotO, entity.getWheelEntity().getXRot());
-            float chariotX = Mth.clamp(xRot, -15, 15);
-            this.centerBeam.xRot += chariotX * Mth.DEG_TO_RAD;
-            chariotX = Mth.clamp(xRot - chariotX, -40, 40);
-            this.backBeam.xRot += chariotX * Mth.DEG_TO_RAD;
+            float chariotX = Mth.clamp(xRot, -60, 60);
+            this.chariotBase.xRot += chariotX * Mth.DEG_TO_RAD;
         }
     }
 

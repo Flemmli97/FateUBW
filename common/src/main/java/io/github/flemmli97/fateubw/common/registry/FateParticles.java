@@ -1,6 +1,7 @@
 package io.github.flemmli97.fateubw.common.registry;
 
 import io.github.flemmli97.fateubw.Fate;
+import io.github.flemmli97.fateubw.common.particles.BlockStateParticleData;
 import io.github.flemmli97.fateubw.common.particles.ParticleTypeContainer;
 import io.github.flemmli97.fateubw.common.particles.SimpleParticleTypeExp;
 import io.github.flemmli97.fateubw.common.particles.StaticFacingParticleData;
@@ -29,4 +30,5 @@ public class FateParticles {
     public static final RegistryEntrySupplier<ParticleType<?>, SimpleParticleType> LIGHTNING = PARTICLES.register("lightning", () -> SimpleParticleTypeExp.of(false));
     public static final RegistryEntrySupplier<ParticleType<?>, SimpleParticleType> LIGHTNING_SPARK = PARTICLES.register("lightning_spark", () -> SimpleParticleTypeExp.of(false));
     public static final RegistryEntrySupplier<ParticleType<?>, SimpleParticleType> SPHERE_CLOUD = PARTICLES.register("sphere_cloud", () -> SimpleParticleTypeExp.of(false));
+    public static final RegistryEntrySupplier<ParticleType<?>, ParticleTypeContainer<BlockStateParticleData>> BLOCK = PARTICLES.register("block", () -> new ParticleTypeContainer<>(false, BlockStateParticleData::codec, BlockStateParticleData::streamCodec));
 }

@@ -266,12 +266,12 @@ public class FateEntities {
                     .putAttributes(Attributes.ARMOR, 6).putAttributes(Attributes.MOVEMENT_SPEED, 0.28)
                     .putAttributes(Attributes.KNOCKBACK_RESISTANCE, 1));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<GordiusWheel>> GORDIUS_WHEEL = regWithEgg("gordius_wheel", EntityType.Builder.of(GordiusWheel::new, MobCategory.CREATURE).sized(2, 1.5f),
-            0x87595c, 0x981a24,
+            0x28211f, 0x8f1b11,
             new AttributeHolderProperties.Builder()
                     .putAttributes(Attributes.MAX_HEALTH, 120).putAttributes(Attributes.ATTACK_DAMAGE, 15)
                     .putAttributes(Attributes.ARMOR, 6)
                     .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 6).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 4)
-                    .putAttributes(Attributes.MOVEMENT_SPEED, 0.34)
+                    .putAttributes(Attributes.MOVEMENT_SPEED, 0.27)
                     .putAttributes(Attributes.KNOCKBACK_RESISTANCE, 1));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<HassanClone>> HASSAN_COPY = hassanClone(new AttributeHolderProperties.Builder()
             .putAttributes(Attributes.MAX_HEALTH, 50).putAttributes(Attributes.ATTACK_DAMAGE, 8)

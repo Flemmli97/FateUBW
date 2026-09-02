@@ -3,6 +3,7 @@ package io.github.flemmli97.fateubw.client;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.client.model.MedeaModel;
 import io.github.flemmli97.fateubw.client.model.ServantModel;
+import io.github.flemmli97.fateubw.client.particles.BlockParticle;
 import io.github.flemmli97.fateubw.client.particles.LightningParticle;
 import io.github.flemmli97.fateubw.client.particles.LightningSparkParticle;
 import io.github.flemmli97.fateubw.client.particles.MagicCircleParticle;
@@ -166,6 +167,7 @@ public class ClientRegister {
         consumer.register(FateParticles.LIGHTNING.get(), LightningParticle.Factory::new);
         consumer.register(FateParticles.LIGHTNING_SPARK.get(), LightningSparkParticle.Factory::new);
         consumer.register(FateParticles.SPHERE_CLOUD.get(), SphereCloudParticle.Factory::new);
+        consumer.register(FateParticles.BLOCK.get(), BlockParticle.Factory::new);
     }
 
     public static <T extends LivingEntity> void addLayersTo(LivingEntityRenderer<T, ?> renderer, Consumer<RenderLayer<T, ?>> layerConsumer) {
