@@ -13,9 +13,9 @@
   },
   "class": "fateubw:caster",
   "configs": {
-    "fateubw:medea_circle_duration": 2000,
-    "fateubw:medea_circle_range": 24.0
+    "fateubw:magic_circle_duration": 2000,
+    "fateubw:magic_circle_range": 24.0
   },
-  "nobel_phantasm_cost": 70,
+  "noble_phantasm_cost": 70,
   "weight": 1
 }

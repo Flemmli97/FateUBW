@@ -2,8 +2,6 @@ package io.github.flemmli97.fateubw.client.render.misc;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.flemmli97.fateubw.common.entity.misc.GaeBolg;
-import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
-import io.github.flemmli97.fateubw.common.particles.trail.provider.ParticlePositionProvider;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.tenshilib.client.render.ItemProjectileRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;

@@ -94,7 +94,7 @@ public class LesserMonster extends PathfinderMob implements AnimatedEntity, Owna
             this.updateAttributes();
         }
         this.maxLivingTicks = DatapackHandler.SERVANT_PROPS.get(FateEntities.GILLES.get())
-                .getConfig(ServantExtraData.GILLES_MONSTER_DURATION);
+                .getConfig(ServantExtraData.SUMMONED_MONSTER_DURATION);
     }
 
     public LesserMonster(Level level, LivingEntity owner) {

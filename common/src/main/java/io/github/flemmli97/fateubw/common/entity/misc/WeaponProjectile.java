@@ -221,7 +221,7 @@ public class WeaponProjectile extends BaseProjectile {
                     this.shootAtPosition(hit.getLocation().x, hit.getLocation().y, hit.getLocation().z, 1.f, 6);
                 } else if (this.target != null) {
                     this.shootAtEntity(this.target, 1.f, 6);
-                } else if(this.getOwner() instanceof LivingEntity living) {
+                } else if (this.getOwner() instanceof LivingEntity living) {
                     Vec3 dir = living.calculateViewVector(15, living.getYRot());
                     this.shoot(dir.x(), dir.y(), dir.z(), 1.f, 6);
                 } else {
@@ -258,7 +258,7 @@ public class WeaponProjectile extends BaseProjectile {
 
     @Override
     protected boolean entityRayTraceHit(EntityHitResult result) {
-        DamageSource source = FateDamageTypes.indirect(FateDamageTypes.BABYLON, this, this.getOwner());
+        DamageSource source = FateDamageTypes.indirect(FateDamageTypes.WEAPON_PROJECTILE, this, this.getOwner());
         float damage = (float) ItemUtils.damage(this.level(), null, result.getEntity(), source, this.getWeapon());
         boolean res = Utils.runWithInvulTimer(this.getOwner(), result.getEntity(),
                 e -> e.hurt(source, damage * this.damageMultiplier), 2);

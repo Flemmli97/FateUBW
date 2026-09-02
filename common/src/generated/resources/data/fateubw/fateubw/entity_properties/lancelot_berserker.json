@@ -12,8 +12,8 @@
   },
   "class": "fateubw:berserker",
   "configs": {
-    "fateubw:lancelot_reflect_chance": 0.4
+    "fateubw:projectile_reflect_chance": 0.4
   },
-  "nobel_phantasm_cost": 0,
+  "noble_phantasm_cost": 0,
   "weight": 1
 }

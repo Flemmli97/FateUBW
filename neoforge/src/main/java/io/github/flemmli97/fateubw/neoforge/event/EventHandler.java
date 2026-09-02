@@ -36,7 +36,7 @@ public class EventHandler {
 
     @SubscribeEvent
     public static void onDimensionChange(EntityTravelToDimensionEvent event) {
-        if(event.getEntity().getServer() != null && !RealityMarbleHandler.get(event.getEntity().getServer())
+        if (event.getEntity().getServer() != null && !RealityMarbleHandler.get(event.getEntity().getServer())
                 .allowChangingDimensionsTo(event.getEntity(), event.getDimension())) {
             event.setCanceled(true);
         }

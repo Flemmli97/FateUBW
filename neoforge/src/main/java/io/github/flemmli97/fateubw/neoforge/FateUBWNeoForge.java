@@ -10,7 +10,6 @@ import io.github.flemmli97.fateubw.common.registry.FateRegistration;
 import io.github.flemmli97.fateubw.neoforge.client.ClientEvents;
 import io.github.flemmli97.fateubw.neoforge.event.EventHandler;
 import io.github.flemmli97.fateubw.neoforge.network.PacketHandler;
-import net.minecraft.server.MinecraftServer;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;

@@ -6,13 +6,16 @@
     "minecraft:generic.armor": 14.0,
     "minecraft:generic.attack_damage": 12.0,
     "minecraft:generic.max_health": 450.0,
-    "minecraft:generic.movement_speed": 0.27
+    "minecraft:generic.movement_speed": 0.28
   },
   "class": "fateubw:rider",
   "configs": {
-    "fateubw:iskander_bucephalos_summon_mana": 20.0,
-    "fateubw:iskander_chariot_summon_mana": 35.0
+    "fateubw:mount_summon_cooldown": {
+      "type": "minecraft:uniform",
+      "max": 600.0,
+      "min": 250.0
+    }
   },
-  "nobel_phantasm_cost": 70,
+  "noble_phantasm_cost": 70,
   "weight": 1
 }

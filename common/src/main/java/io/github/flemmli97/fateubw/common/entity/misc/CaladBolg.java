@@ -58,9 +58,9 @@ public class CaladBolg extends BaseProjectile {
 
     private void doExplosion(double x, double y, double z, Entity hit) {
         this.doExplosion(hit);
-        this.level().playSound(null, x, y, z, FateSounds.CALAD_BOLG_IMPACT.get(), this.getSoundSource(), 1.0f, 1.0f);
+        this.level().playSound(null, x, y, z, FateSounds.CALAD_BOLG_IMPACT.get(), this.getSoundSource(), 2, 1);
         this.discard();
-        S2CScreenShake.sendAround(this, 9, 8, 2);
+        S2CScreenShake.sendAround(this, 20, 30, 1.5f);
     }
 
     protected void doExplosion(Entity hit) {

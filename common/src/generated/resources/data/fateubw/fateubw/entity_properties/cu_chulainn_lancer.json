@@ -13,6 +13,6 @@
     "minecraft:generic.movement_speed": 0.37
   },
   "class": "fateubw:lancer",
-  "nobel_phantasm_cost": 50,
+  "noble_phantasm_cost": 50,
   "weight": 1
 }

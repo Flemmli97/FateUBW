@@ -27,5 +27,6 @@ public class FateParticles {
     public static final RegistryEntrySupplier<ParticleType<?>, SimpleParticleType> SPHERE = PARTICLES.register("sphere", () -> SimpleParticleTypeExp.of(false));
     public static final RegistryEntrySupplier<ParticleType<?>, SimpleParticleType> SMOKE = PARTICLES.register("smoke", () -> SimpleParticleTypeExp.of(false));
     public static final RegistryEntrySupplier<ParticleType<?>, SimpleParticleType> LIGHTNING = PARTICLES.register("lightning", () -> SimpleParticleTypeExp.of(false));
+    public static final RegistryEntrySupplier<ParticleType<?>, SimpleParticleType> LIGHTNING_SPARK = PARTICLES.register("lightning_spark", () -> SimpleParticleTypeExp.of(false));
     public static final RegistryEntrySupplier<ParticleType<?>, SimpleParticleType> SPHERE_CLOUD = PARTICLES.register("sphere_cloud", () -> SimpleParticleTypeExp.of(false));
 }

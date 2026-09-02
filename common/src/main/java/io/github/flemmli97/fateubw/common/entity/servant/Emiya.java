@@ -1,15 +1,15 @@
 package io.github.flemmli97.fateubw.common.entity.servant;
 
 import com.mojang.math.Axis;
-import io.github.flemmli97.fateubw.common.config.CommonConfig;
+import io.github.flemmli97.fateubw.api.datapack.ServantExtraData;
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.HeldEquipmentHandler;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.misc.ArcherArrow;
 import io.github.flemmli97.fateubw.common.entity.misc.CaladBolg;
-import io.github.flemmli97.fateubw.common.entity.misc.ItemInGroundEntity;
 import io.github.flemmli97.fateubw.common.entity.misc.ThrownItemEntity;
 import io.github.flemmli97.fateubw.common.entity.misc.WeaponProjectile;
+import io.github.flemmli97.fateubw.common.entity.utils.CooldownHolder;
 import io.github.flemmli97.fateubw.common.entity.utils.ServantModelLike;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
@@ -17,7 +17,6 @@ import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailProvider;
 import io.github.flemmli97.fateubw.common.registry.FateAttributes;
 import io.github.flemmli97.fateubw.common.registry.FateDimensions;
-import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.registry.FateSounds;
@@ -40,8 +39,6 @@ import io.github.flemmli97.tenshilib.common.particle.data.MotionData;
 import io.github.flemmli97.tenshilib.common.particle.data.ParticleMetaData;
 import io.github.flemmli97.tenshilib.common.particle.data.ScaleData;
 import io.github.flemmli97.tenshilib.common.utils.math.MathUtils;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -73,7 +70,7 @@ public class Emiya extends BaseServant {
     public static final String LEFT_TRAIL_END = "left_trail_end";
     public static final String RIGHT_TRAIL_START = "right_trail_start";
     public static final String RIGHT_TRAIL_END = "right_trail_end";
-    private static final float ATTACK_MOVE_SPEED = 1.5f;
+    private static final float ATTACK_MOVE_SPEED = 1.75f;
 
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
     public static final String DUAL_BLADE_1_1 = BUILDER.add("dual_blade_1_1", AnimationsBuilder.definition(0.8)
@@ -129,10 +126,11 @@ public class Emiya extends BaseServant {
 
     private boolean leftHandAttackFlag;
 
-    private int weaponSpawnCooldown;
+    private final CooldownHolder caladBolgCooldown;
 
     public Emiya(EntityType<? extends Emiya> entityType, Level level) {
         super(entityType, level);
+        this.caladBolgCooldown = this.createCooldown("caladbolg", this.props().getConfig(ServantExtraData.CALADBOLG_COOLDOWN));
     }
 
     @Override
@@ -173,20 +171,20 @@ public class Emiya extends BaseServant {
     public ExtendedBehaviour<? extends BaseServant> getCombatAI() {
         return AttackBehaviourBuilder.<Emiya>create()
                 .start(BehaviourUtils.of(AnimationPlayHolder.<Emiya>builder(DUAL_BLADE_1_1)
-                        .start(DUAL_BLADE_1_2, 2, 0.28f, 1)
-                        .start(DUAL_BLADE_1_2, 2, 0.28f, 2, owner -> owner.healthBelow(0.5f))
+                        .start(DUAL_BLADE_1_2, 1, 0.36f, 1)
+                        .start(DUAL_BLADE_1_2, 1, 0.36f, 3, owner -> owner.healthBelow(0.5f))
                         .chain(DUAL_BLADE_1_3)
                         .build())).play(BehaviourUtils.cooldownedPlay(true, 16, 28))
                 .condition(BehaviourUtils.ifCloserThan(7))
                 .prepare(new SetWalkTargetToAttackTarget<Emiya>().speedMod((owner, target) -> ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(9)
+                .end(11)
 
                 .start(BehaviourUtils.of(AnimationPlayHolder.<Emiya>builder(DUAL_BLADE_2_1)
-                        .start(DUAL_BLADE_2_2, 2, 0.28f, 1)
+                        .start(DUAL_BLADE_2_2, 2, 0.32f, 1)
                         .build())).play(BehaviourUtils.cooldownedPlay(true, 16, 28))
                 .condition(BehaviourUtils.ifCloserThan(7))
                 .prepare(new SetWalkTargetToAttackTarget<Emiya>().speedMod((owner, target) -> ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(9)
+                .end(7)
 
                 .start(DUAL_BLADE_THROW).play(BehaviourUtils.cooldownedPlay(true, 16, 28))
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
@@ -201,11 +199,11 @@ public class Emiya extends BaseServant {
                 .start(BOW_1).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(12), 16, 28))
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
                         .min(5).max(14).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.moveAttack())
-                .end(9)
+                .end(10)
                 .start(BOW_1).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(12), 16, 28))
                 .prepare(new LeapInDirection<Emiya>().shouldLeap((owner, target) -> owner.distanceToSqr(target) < 49)
                         .horizontalDirection((owner, target) -> LeapInDirection.createBackwardsVec(owner.position(), target.position()).scale(1.3f)))
-                .end(7)
+                .end(8)
                 .start(BOW_1).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(12), 16, 28))
                 .condition(BehaviourUtils.ifFurtherThan(11))
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
@@ -223,7 +221,7 @@ public class Emiya extends BaseServant {
                 .condition(BehaviourUtils.ifFurtherThan(11))
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
                         .min(5).max(14).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.moveAttack())
-                .end(5)
+                .end(6)
                 .start(BOW_AIR).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(12), 16, 28))
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
                         .min(4).max(10).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.moveAttack())
@@ -232,22 +230,23 @@ public class Emiya extends BaseServant {
                 .condition(BehaviourUtils.ifFurtherThan(11))
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
                         .min(4).max(10).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.moveAttack())
-                .end(9)
+                .end(10)
+
                 .start(UBW_ATTACK_1).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(18), 16, 28))
-                .condition(owner -> this.canOverrideRealityMarble() && BehaviourUtils.ifFurtherThan(11).test(owner))
+                .condition(owner -> this.isInUBW() && BehaviourUtils.ifFurtherThan(11).test(owner))
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
                         .min(5).max(14).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(19)
                 .start(UBW_ATTACK_2).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(18), 16, 28))
-                .condition(owner -> this.canOverrideRealityMarble() && BehaviourUtils.ifFurtherThan(11).test(owner))
+                .condition(owner -> this.isInUBW() && BehaviourUtils.ifFurtherThan(11).test(owner))
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
                         .min(5).max(14).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(19)
                 .start(CALADBOLG).play(BehaviourUtils.cooldownedPlay(false, 20, 30))
-                .condition(BaseServant::canUseNobelPhantasm)
+                .condition(owner -> owner.caladBolgCooldown.canUse())
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
                         .min(8).max(16).speedMod(ATTACK_MOVE_SPEED + 0.1f)).prepareOptional(BehaviourUtils.moveAttack())
-                .end(3)
+                .end(4)
                 .build();
     }
 
@@ -256,6 +255,10 @@ public class Emiya extends BaseServant {
         return SelectableBehaviourBuilder.<BaseServant>builder()
                 .add(4, new SetWalkTargetToAttackTarget<BaseServant>().speedMod((owner, target) -> ATTACK_MOVE_SPEED), BehaviourUtils.moveTo())
                 .add(6, new SetWalkTargetAwayFromTarget<BaseServant>().speedMod((owner, target) -> ATTACK_MOVE_SPEED), BehaviourUtils.moveTo()).build();
+    }
+
+    public boolean isInUBW() {
+        return this.level().dimension().equals(FateDimensions.UNLIMITED_BLADEWORKS.dimension());
     }
 
     @Override
@@ -285,34 +288,7 @@ public class Emiya extends BaseServant {
             }
         } else {
             this.heldEquipmentHandler.setInUse(this.getAnimationHandler().isCurrent(BOW_1, BOW_2, BOW_AIR, CALADBOLG));
-            --this.weaponSpawnCooldown;
-            if (this.level().dimension().equals(FateDimensions.UNLIMITED_BLADEWORKS.dimension())) {
-                if (this.weaponSpawnCooldown <= 0 && this.getTarget() != null) {
-                    this.spawnWeaponsAround();
-                }
-            }
-
         }
-    }
-
-    private void spawnWeaponsAround() {
-        int amount = this.getRandom().nextInt(7) + 4;
-        for (int i = 0; i < amount; i++) {
-            ItemInGroundEntity item = FateEntities.ITEM_IN_GROUND_ENTITY.get().create(this.level());
-            item.setItem(CommonConfig.babylonWeapons.getRandomWeapon(this.getRandom()));
-            double x = this.getX() + (this.getRandom().nextDouble() - 0.5) * 16;
-            double y = this.getY() + 12;
-            double z = this.getZ() + (this.getRandom().nextDouble() - 0.5) * 16;
-            BlockPos.MutableBlockPos pos = BlockPos.containing(x, y - 1, z).mutable();
-            while (!(this.level().getBlockState(pos)).entityCanStandOnFace(this.level(), pos, item, Direction.UP) && pos.distToCenterSqr(x, y, z) < 16 * 16) {
-                pos.move(Direction.DOWN);
-            }
-            item.setPos(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5);
-            if (this.level().noCollision(item)) {
-                this.level().addFreshEntity(item);
-            }
-        }
-        this.weaponSpawnCooldown = this.getRandom().nextInt(300) + 600;
     }
 
     @Override
@@ -344,9 +320,9 @@ public class Emiya extends BaseServant {
                             .add(this.level(), this.getX(), this.getY(), this.getZ());
                 }
                 for (int i = 0; i < 4; i++) {
-                    AdvancedParticleContainer.make(FateParticles.LIGHTNING.get())
-                            .addData(new ScaleData(0.3f))
-                            .addData(new ColorData(35 / 255f, 53 / 255f, 206 / 255f, 1))
+                    AdvancedParticleContainer.make(FateParticles.LIGHTNING_SPARK.get())
+                            .addData(new ScaleData(0.3f + this.getRandom().nextFloat() * 0.2f))
+                            .addData(new ColorData(14 / 255f, 35 / 255f, 211 / 255f, 1))
                             .addData(new ParticleMetaData(5, false, 0))
                             .add(this.level(), this.getRandomX(16), this.getY(this.getRandom().nextDouble() * 7 - 2), this.getRandomZ(16));
                 }
@@ -385,6 +361,7 @@ public class Emiya extends BaseServant {
                             .addData(new ParticleMetaData(40, false, 0))
                             .add(this.level(), this.getX(), this.getY(-1.5), this.getZ());
                 }
+                this.playSound(FateSounds.REALITY_MARBLE.get(), 4, 1);
             }
             if (anim.isPast("cast")) {
                 S2CScreenShake.sendAround(this, 64, 2, 1);
@@ -605,6 +582,7 @@ public class Emiya extends BaseServant {
         }
         this.level().addFreshEntity(bolg);
         this.revealServant();
+        this.caladBolgCooldown.use();
     }
 
     protected InteractionHand bowHand() {

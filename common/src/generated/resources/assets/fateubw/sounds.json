@@ -288,6 +288,12 @@
     ],
     "subtitle": "fateubw:entity.weapon.projectile.spawn"
   },
+  "generic.reality_marble_cast": {
+    "sounds": [
+      "fateubw:generic/reality_marble_cast"
+    ],
+    "subtitle": "fateubw:generic.reality_marble_cast"
+  },
   "generic.slash": {
     "sounds": [
       "fateubw:generic/slash"
@@ -318,6 +324,12 @@
       "mob/endermen/portal2"
     ],
     "subtitle": "fateubw:generic.teleport"
+  },
+  "generic.zap": {
+    "sounds": [
+      "fateubw:generic/zap"
+    ],
+    "subtitle": "fateubw:generic.zap"
   },
   "misc.magic.cast": {
     "sounds": [

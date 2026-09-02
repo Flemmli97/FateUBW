@@ -9,8 +9,8 @@
   },
   "class": "fateubw:berserker",
   "configs": {
-    "fateubw:heracles_death_max": 2
+    "fateubw:lives": 2
   },
-  "nobel_phantasm_cost": 0,
+  "noble_phantasm_cost": 0,
   "weight": 1
 }

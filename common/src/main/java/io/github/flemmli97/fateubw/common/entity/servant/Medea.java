@@ -228,7 +228,7 @@ public class Medea extends BaseServant {
     @Override
     public boolean isWithinRestriction(BlockPos pos) {
         if (this.circlePos != null) {
-            float range = this.props().getConfig(ServantExtraData.MEDEA_CIRCLE_RANGE);
+            float range = this.props().getConfig(ServantExtraData.MAGIC_CIRCLE_RANGE);
             if (this.circlePos.distanceToSqr(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5) > range * range)
                 return false;
         }
@@ -453,9 +453,9 @@ public class Medea extends BaseServant {
 
     public void makeCircle() {
         if (!this.level().isClientSide) {
-            MagicBufCircle circle = new MagicBufCircle(this.level(), this, this.props().getConfig(ServantExtraData.MEDEA_CIRCLE_RANGE));
+            MagicBufCircle circle = new MagicBufCircle(this.level(), this, this.props().getConfig(ServantExtraData.MAGIC_CIRCLE_RANGE));
             this.level().addFreshEntity(circle);
-            int duration = this.props().getConfig(ServantExtraData.MEDEA_CIRCLE_DURATION);
+            int duration = this.props().getConfig(ServantExtraData.MAGIC_CIRCLE_DURATION);
             this.circleDelay = duration + this.random.nextInt(100);
             this.aiCircledelay = duration + this.random.nextInt(400);
             this.circlePos = circle.position();

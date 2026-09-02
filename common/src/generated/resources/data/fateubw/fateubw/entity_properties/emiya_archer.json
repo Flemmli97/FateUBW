@@ -12,6 +12,13 @@
     "minecraft:generic.movement_speed": 0.27
   },
   "class": "fateubw:archer",
-  "nobel_phantasm_cost": 50,
+  "configs": {
+    "fateubw:caladbolg_cooldown": {
+      "type": "minecraft:uniform",
+      "max": 500.0,
+      "min": 200.0
+    }
+  },
+  "noble_phantasm_cost": 100,
   "weight": 1
 }

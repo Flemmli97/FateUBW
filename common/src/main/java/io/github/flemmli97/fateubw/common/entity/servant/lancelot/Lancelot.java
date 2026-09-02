@@ -380,7 +380,7 @@ public class Lancelot extends BaseServant {
             return this.getVehicle().hurt(damageSource, damage);
         if (!damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && !this.level().isClientSide) {
             if (damageSource.is(DamageTypeTags.IS_PROJECTILE) && !damageSource.is(DamageTypeTags.BYPASSES_ARMOR)) {
-                if (this.getRandom().nextFloat() < this.props().getConfig(ServantExtraData.LANCELOT_REFLECT_CHANCE) && damageSource.getDirectEntity() != null
+                if (this.getRandom().nextFloat() < this.props().getConfig(ServantExtraData.PROJECTILE_REFLECT_CHANCE) && damageSource.getDirectEntity() != null
                         && !(damageSource.getDirectEntity() instanceof LivingEntity)) {
                     this.reflectProjectile(damageSource.getDirectEntity());
                     this.level().playSound(null, this.blockPosition(), FateSounds.LANCELOT_REFLECT.get(), SoundSource.NEUTRAL, 1, 1);

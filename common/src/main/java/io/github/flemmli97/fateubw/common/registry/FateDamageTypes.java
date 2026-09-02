@@ -19,7 +19,7 @@ public class FateDamageTypes {
     /**
      * This is purely for datagen
      */
-    public static final Map<ResourceKey<DamageType>, Translation> TRANSLATIONS = new HashMap<>();
+    public static final Map<ResourceKey<DamageType>, Translation> ENTRIES = new HashMap<>();
 
     public static final ResourceKey<DamageType> GRAIL = create("grail",
             "%1$s died by the power of the holy grail",
@@ -34,10 +34,10 @@ public class FateDamageTypes {
             "%1$s was erased by the swirling void of Ea",
             null,
             "%1$s was erased by the swirling void from %2$s using %3$s");
-    public static final ResourceKey<DamageType> BABYLON = create("babylon",
-            "%1$s was impaled by %2$s with the gate of babylon",
+    public static final ResourceKey<DamageType> WEAPON_PROJECTILE = create("weapon_projectile",
+            "%1$s was impaled by %2$s with a weapon projectile",
             null,
-            "%1$s was impaled by %2$s with the gate of babylon");
+            "%1$s was impaled by %2$s with a weapon projectile");
     public static final ResourceKey<DamageType> THROWN_ITEM = create("thrown_item",
             "%1$s was killed by %2$s",
             null,
@@ -93,7 +93,7 @@ public class FateDamageTypes {
 
     private static ResourceKey<DamageType> create(String path, String generic, String player, String item) {
         ResourceKey<DamageType> key = ResourceKey.create(Registries.DAMAGE_TYPE, Fate.modRes(path));
-        TRANSLATIONS.put(key, new Translation(key, generic, player, item));
+        ENTRIES.put(key, new Translation(key, generic, player, item));
         return key;
     }
 

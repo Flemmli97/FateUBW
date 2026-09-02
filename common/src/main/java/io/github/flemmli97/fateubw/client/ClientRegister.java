@@ -4,6 +4,7 @@ import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.client.model.MedeaModel;
 import io.github.flemmli97.fateubw.client.model.ServantModel;
 import io.github.flemmli97.fateubw.client.particles.LightningParticle;
+import io.github.flemmli97.fateubw.client.particles.LightningSparkParticle;
 import io.github.flemmli97.fateubw.client.particles.MagicCircleParticle;
 import io.github.flemmli97.fateubw.client.particles.RingParticle;
 import io.github.flemmli97.fateubw.client.particles.RosePetalParticle;
@@ -163,6 +164,7 @@ public class ClientRegister {
         consumer.register(FateParticles.SPHERE.get(), SphereParticle.Factory::new);
         consumer.register(FateParticles.SMOKE.get(), SpritedParticle.Opaque::new);
         consumer.register(FateParticles.LIGHTNING.get(), LightningParticle.Factory::new);
+        consumer.register(FateParticles.LIGHTNING_SPARK.get(), LightningSparkParticle.Factory::new);
         consumer.register(FateParticles.SPHERE_CLOUD.get(), SphereCloudParticle.Factory::new);
     }
 

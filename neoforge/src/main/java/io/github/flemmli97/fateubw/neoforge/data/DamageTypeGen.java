@@ -24,7 +24,7 @@ public class DamageTypeGen extends JsonCodecProvider<DamageType> {
 
     @Override
     protected void gather() {
-        for (ResourceKey<DamageType> types : FateDamageTypes.TRANSLATIONS.keySet()) {
+        for (ResourceKey<DamageType> types : FateDamageTypes.ENTRIES.keySet()) {
             if (types.equals(FateDamageTypes.GRAIL)) {
                 this.unconditional(FateDamageTypes.GRAIL.location(), new DamageType(
                         FateDamageTypes.GRAIL.location().toLanguageKey(), DamageScaling.NEVER, 0.25f, DamageEffects.HURT));

@@ -67,8 +67,8 @@ public class Bucephalos extends PathfinderMob implements AnimatedEntity, AOEAtta
     public static final TypedResource<Vec3> CHARGE_MOTION = new TypedResource<>(Fate.modRes("charge_motion"));
 
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
-    public static final String STOMP = BUILDER.add("stomp", AnimationsBuilder.definition(0.76).marker("attack", 0.56));
-    public static final String HEADBUTT = BUILDER.add("headbutt", AnimationsBuilder.definition(0.84).marker("attack", 0.48));
+    public static final String STOMP = BUILDER.add("stomp", AnimationsBuilder.definition(0.76).marker("attack", 0.52));
+    public static final String HEADBUTT = BUILDER.add("headbutt", AnimationsBuilder.definition(0.84).marker("attack", 0.44));
     public static final String CHARGE = BUILDER.add("charge", AnimationsBuilder.definition(1.44)
             .marker("charge_start", 0.64).marker("charge_end", 1.16));
 

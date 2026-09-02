@@ -9,6 +9,6 @@
     "minecraft:generic.movement_speed": 0.36
   },
   "class": "fateubw:rider",
-  "nobel_phantasm_cost": 70,
+  "noble_phantasm_cost": 70,
   "weight": 1
 }

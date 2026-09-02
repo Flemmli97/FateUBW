@@ -11,6 +11,6 @@
     "minecraft:generic.movement_speed": 0.33
   },
   "class": "fateubw:assassin",
-  "nobel_phantasm_cost": 30,
+  "noble_phantasm_cost": 30,
   "weight": 1
 }

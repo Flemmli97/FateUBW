@@ -125,7 +125,7 @@ public class FateEntities {
 
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<Emiya>> EMIYA = regServant("emiya_archer", "Caladbolg", EntityType.Builder.of(Emiya::new, MobCategory.MISC)
                     .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
-            0x9f0707, 0x000000,
+            0x78121e, 0x1f1e1e,
             new ServantProperties.Builder(BuiltinServantClasses.ARCHER)
                     .putAttributes(Attributes.MAX_HEALTH, 350).putAttributes(Attributes.ATTACK_DAMAGE, 13)
                     .putAttributes(Attributes.ARMOR, 16).putAttributes(Attributes.ARMOR_TOUGHNESS, 6)
@@ -133,7 +133,8 @@ public class FateEntities {
                     .putAttributes(FateAttributes.MAGIC_ATTACK.asHolder(), 14).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 12)
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.27)
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
-                    .npCost(50));
+                    .npCost(100)
+                    .withConfigData(ServantExtraData.CALADBOLG_COOLDOWN));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<Gilgamesh>> GILGAMESH = regServant("gilgamesh_archer", "Gate of Babylon/EA", EntityType.Builder.of(Gilgamesh::new, MobCategory.MISC)
                     .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
             0xfff400, 0xffdb00,
@@ -157,8 +158,8 @@ public class FateEntities {
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.31)
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1.25).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(70)
-                    .withConfigData(ServantExtraData.MEDEA_CIRCLE_DURATION)
-                    .withConfigData(ServantExtraData.MEDEA_CIRCLE_RANGE));
+                    .withConfigData(ServantExtraData.MAGIC_CIRCLE_DURATION)
+                    .withConfigData(ServantExtraData.MAGIC_CIRCLE_RANGE));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<Gilles>> GILLES = regServant("gilles_de_rais_caster", "Prelati's Spellbook", EntityType.Builder.of(Gilles::new, MobCategory.MISC)
                     .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
             0x100460, 0x600453,
@@ -170,9 +171,9 @@ public class FateEntities {
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.32)
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1.25).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(80)
-                    .withConfigData(ServantExtraData.GILLES_MONSTER_DURATION)
-                    .withConfigData(ServantExtraData.GILLES_MONSTER_MAX)
-                    .withConfigData(ServantExtraData.GILLES_TENTACLE_DAMAGE));
+                    .withConfigData(ServantExtraData.SUMMONED_MONSTER_DURATION)
+                    .withConfigData(ServantExtraData.SUMMONED_MONSTER_MAX)
+                    .withConfigData(ServantExtraData.TENTACLE_DAMAGE));
 
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<Heracles>> HERACLES = regServant("heracles_berserker", "God Hand", EntityType.Builder.of(Heracles::new, MobCategory.MISC)
                     .sized(1.4f, 2.6f),
@@ -184,7 +185,7 @@ public class FateEntities {
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.3)
                     .putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(0)
-                    .withConfigData(ServantExtraData.HERACLES_DEATH_MAX));
+                    .withConfigData(ServantExtraData.LIVES));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<Lancelot>> LANCELOT = regServant("lancelot_berserker", "Knight of Owner", EntityType.Builder.of(Lancelot::new, MobCategory.MISC)
                     .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
             0x071a33, 0x1d4f94,
@@ -196,19 +197,18 @@ public class FateEntities {
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.3)
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(0)
-                    .withConfigData(ServantExtraData.LANCELOT_REFLECT_CHANCE));
+                    .withConfigData(ServantExtraData.PROJECTILE_REFLECT_CHANCE));
 
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<Iskander>> ISKANDER = regServant("iskander_rider", "Gordius Bulls", EntityType.Builder.of(Iskander::new, MobCategory.MISC)
                     .vehicleAttachment(new Vec3(0, 14 / 16d, 0)).sized(0.7f, 2.2f),
-            0xd40000, 0x8d0101,
+            0x8f1b11, 0xefab5a,
             new ServantProperties.Builder(BuiltinServantClasses.RIDER)
                     .putAttributes(Attributes.MAX_HEALTH, 450).putAttributes(Attributes.ATTACK_DAMAGE, 12)
                     .putAttributes(Attributes.ARMOR, 14)
-                    .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 4).putAttributes(Attributes.MOVEMENT_SPEED, 0.27)
+                    .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 4).putAttributes(Attributes.MOVEMENT_SPEED, 0.28)
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1.5).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(70)
-                    .withConfigData(ServantExtraData.ISKANDER_BUCEPHALOS)
-                    .withConfigData(ServantExtraData.ISKANDER_CHARIOT));
+                    .withConfigData(ServantExtraData.MOUNT_SUMMON_COOLDOWN));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<Medusa>> MEDUSA = regServant("medusa_rider", "Bellerophon", EntityType.Builder.of(Medusa::new, MobCategory.MISC)
                     .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
             0x000000, 0xf234ea,

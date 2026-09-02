@@ -170,7 +170,7 @@ public class Gilles extends BaseServant {
 
     protected boolean canSummonMore() {
         return this.level().getEntitiesOfClass(LesserMonster.class, this.getBoundingBox().inflate(48),
-                monster -> this.getUUID().equals(monster.getOwnerUUID())).size() < this.props().getConfig(ServantExtraData.GILLES_MONSTER_MAX);
+                monster -> this.getUUID().equals(monster.getOwnerUUID())).size() < this.props().getConfig(ServantExtraData.SUMMONED_MONSTER_MAX);
     }
 
     public void summonMonster() {

@@ -36,7 +36,7 @@ public class MagicBufCircle extends Entity implements TraceableEntity {
     public MagicBufCircle(EntityType<?> entityTypeIn, Level level) {
         super(entityTypeIn, level);
         this.maxLivingTicks = DatapackHandler.SERVANT_PROPS.get(FateEntities.MEDEA.get())
-                .getConfig(ServantExtraData.MEDEA_CIRCLE_DURATION);
+                .getConfig(ServantExtraData.MAGIC_CIRCLE_DURATION);
     }
 
     public MagicBufCircle(Level level, LivingEntity owner, float r) {

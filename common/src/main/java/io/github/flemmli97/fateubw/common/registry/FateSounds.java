@@ -94,6 +94,8 @@ public class FateSounds {
     public static final RegistryEntrySupplier<SoundEvent, SoundEvent> SWOOSH_2 = register("generic.swoosh_2", "Swoosh");
     public static final RegistryEntrySupplier<SoundEvent, SoundEvent> TELEPORT = register("generic.teleport",
             b -> b.defaultTranslation("Entity teleports").sound(ResourceLocation.withDefaultNamespace("mob/endermen/portal")).sound(ResourceLocation.withDefaultNamespace("mob/endermen/portal2")));
+    public static final RegistryEntrySupplier<SoundEvent, SoundEvent> ZAP = register("generic.zap", "Zap");
+    public static final RegistryEntrySupplier<SoundEvent, SoundEvent> REALITY_MARBLE = register("generic.reality_marble_cast", "Reality Marble used");
 
     private static RegistryEntrySupplier<SoundEvent, SoundEvent> register(String name, String translation) {
         return register(name, b -> b.defaultTranslation(translation));

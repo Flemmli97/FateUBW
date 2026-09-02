@@ -13,6 +13,6 @@
     "minecraft:generic.movement_speed": 0.34
   },
   "class": "fateubw:saber",
-  "nobel_phantasm_cost": 70,
+  "noble_phantasm_cost": 70,
   "weight": 1
 }

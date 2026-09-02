@@ -20,7 +20,7 @@ public record ServantProperties(Map<Holder<Attribute>, Double> attributes, int m
 
     public static final Codec<ServantProperties> CODEC = RecordCodecBuilder.create((instance) ->
             instance.group(Codec.unboundedMap(BuiltInRegistries.ATTRIBUTE.holderByNameCodec(), Codec.DOUBLE).fieldOf("attributes").forGetter(d -> d.attributes),
-                    Codec.INT.fieldOf("nobel_phantasm_cost").forGetter(ServantProperties::manaCost),
+                    Codec.INT.fieldOf("noble_phantasm_cost").forGetter(ServantProperties::manaCost),
                     Codec.INT.fieldOf("weight").forGetter(ServantProperties::weight),
                     ResourceLocation.CODEC.fieldOf("class").forGetter(ServantProperties::servantClass),
                     ServantExtraData.CODEC.optionalFieldOf("configs").forGetter(d -> d.extraData.flatMap(ex -> ex.empty() ? Optional.empty() : Optional.of(ex)))

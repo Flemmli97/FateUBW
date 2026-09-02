@@ -12,6 +12,6 @@
     "minecraft:generic.movement_speed": 0.33
   },
   "class": "fateubw:archer",
-  "nobel_phantasm_cost": 80,
+  "noble_phantasm_cost": 80,
   "weight": 1
 }

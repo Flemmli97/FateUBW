@@ -27,7 +27,8 @@ public class ParticleGen extends ParticleDescriptionProvider {
         this.spriteSet(FateParticles.ROSE_PETAL.get(), 6);
         this.empty(FateParticles.SPHERE.get());
         this.spriteSet(FateParticles.SMOKE.get(), 10);
-        this.spriteSet(FateParticles.LIGHTNING.get(), 20);
+        this.spriteSet(FateParticles.LIGHTNING.get(), 13);
+        this.spriteSet(FateParticles.LIGHTNING_SPARK.get(), 26);
         this.empty(FateParticles.SPHERE_CLOUD.get());
     }
 

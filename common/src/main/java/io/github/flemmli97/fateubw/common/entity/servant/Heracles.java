@@ -16,7 +16,6 @@ import io.github.flemmli97.fateubw.common.registry.FateMobEffects;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.Utils;
-import io.github.flemmli97.tenshilib.common.entity.ai.TargetPosition;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.SelectableBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetWalkTargetAwayFromTarget;
@@ -244,7 +243,7 @@ public class Heracles extends BaseServant {
                     S2CScreenShake.sendAround(this, 24, 16, 2);
                 }
                 if (anim.is(FAKE_DEATH) && anim.isAt("revive")) {
-                    int maxDeaths = this.props().getConfig(ServantExtraData.HERACLES_DEATH_MAX);
+                    int maxDeaths = this.props().getConfig(ServantExtraData.LIVES);
                     double mod = ((double) this.getDeaths() / maxDeaths) * 0.7;
                     this.applyDeathMod(mod);
                     this.setHealth(this.getMaxHealth());
@@ -282,7 +281,7 @@ public class Heracles extends BaseServant {
     }
 
     public void setDeathNumber(int death) {
-        this.entityData.set(DEATH_COUNT, Mth.clamp(death, 0, this.props().getConfig(ServantExtraData.HERACLES_DEATH_MAX)));
+        this.entityData.set(DEATH_COUNT, Mth.clamp(death, 0, this.props().getConfig(ServantExtraData.LIVES)));
     }
 
     public int getDeaths() {
@@ -305,7 +304,7 @@ public class Heracles extends BaseServant {
     protected void actuallyHurt(DamageSource damageSource, float damageAmount) {
         super.actuallyHurt(damageSource, damageAmount);
         if (this.getHealth() <= 0 && !damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
-            int maxDeaths = this.props().getConfig(ServantExtraData.HERACLES_DEATH_MAX);
+            int maxDeaths = this.props().getConfig(ServantExtraData.LIVES);
             if (this.getDeaths() < maxDeaths) {
                 this.getAnimationHandler().setAnimation(FAKE_DEATH);
                 this.setHealth(0.0001f);

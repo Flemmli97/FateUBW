@@ -31,11 +31,11 @@ public class DamageTypeTagGen extends TagsProvider<DamageType> {
                 DamageTypeTags.BYPASSES_SHIELD, DamageTypeTags.NO_KNOCKBACK);
         this.tag(FateDamageTypes.ENUMA_ELISH, DamageTypeTags.BYPASSES_ARMOR, FateTags.DamageTypes.IS_MAGIC,
                 DamageTypeTags.BYPASSES_SHIELD, DamageTypeTags.NO_KNOCKBACK);
-        this.tag(FateDamageTypes.BABYLON, DamageTypeTags.IS_PROJECTILE);
+        this.tag(FateDamageTypes.WEAPON_PROJECTILE, DamageTypeTags.IS_PROJECTILE);
         this.tag(FateDamageTypes.THROWN_ITEM, DamageTypeTags.IS_PROJECTILE);
         this.tag(FateDamageTypes.GAE_BOLG, DamageTypeTags.BYPASSES_ARMOR, DamageTypeTags.BYPASSES_SHIELD,
                 DamageTypeTags.BYPASSES_SHIELD, FateTags.DamageTypes.IS_MAGIC);
-        this.tag(FateDamageTypes.CALADBOLG, DamageTypeTags.BYPASSES_ARMOR,
+        this.tag(FateDamageTypes.CALADBOLG, DamageTypeTags.IS_EXPLOSION, DamageTypeTags.BYPASSES_ARMOR,
                 DamageTypeTags.BYPASSES_SHIELD, FateTags.DamageTypes.IS_MAGIC);
         this.tag(FateDamageTypes.ARCHER_NORMAL, DamageTypeTags.IS_PROJECTILE);
         this.tag(FateDamageTypes.MAGIC_BEAM, DamageTypeTags.BYPASSES_ARMOR, FateTags.DamageTypes.IS_MAGIC);
@@ -47,8 +47,12 @@ public class DamageTypeTagGen extends TagsProvider<DamageType> {
         this.tag(FateDamageTypes.PETRIFICATION, DamageTypeTags.BYPASSES_ARMOR, DamageTypeTags.BYPASSES_SHIELD, DamageTypeTags.BYPASSES_COOLDOWN, DamageTypeTags.NO_KNOCKBACK);
         this.tag(FateDamageTypes.AESTUS_DOMUS, DamageTypeTags.BYPASSES_ARMOR, DamageTypeTags.BYPASSES_SHIELD, DamageTypeTags.NO_KNOCKBACK);
         this.tag(FateDamageTypes.LIGHTNING_STRIKE, DamageTypeTags.PANIC_CAUSES, DamageTypeTags.IS_LIGHTNING, FateTags.DamageTypes.IS_MAGIC);
+
         this.tag(Tags.DamageTypes.IS_MAGIC)
                 .addTag(FateTags.DamageTypes.IS_MAGIC);
+
+        this.tag(DamageTypeTags.PANIC_CAUSES)
+                .addAll(FateDamageTypes.ENTRIES.keySet().stream().filter(type -> !type.equals(FateDamageTypes.GRAIL)).toList());
     }
 
     @SafeVarargs

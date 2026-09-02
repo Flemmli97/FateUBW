@@ -11,6 +11,9 @@ import com.mojang.serialization.RecordBuilder;
 import io.github.flemmli97.fateubw.Fate;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
+import net.minecraft.world.level.storage.loot.providers.number.NumberProviders;
+import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -22,16 +25,16 @@ public class ServantExtraData {
 
     private static final Map<ResourceLocation, DataType<?>> REGISTRY = new HashMap<>();
 
-    public static final DataType<Float> LANCELOT_REFLECT_CHANCE = register(Fate.MODID, "lancelot_reflect_chance", Codec.FLOAT, 0.4f);
+    public static final DataType<Float> PROJECTILE_REFLECT_CHANCE = register(Fate.MODID, "projectile_reflect_chance", Codec.FLOAT, 0.4f);
     public static final DataType<Integer> HASSAN_COPIES = register(Fate.MODID, "hassan_copies", Codec.INT, 4);
-    public static final DataType<Integer> MEDEA_CIRCLE_DURATION = register(Fate.MODID, "medea_circle_duration", ExtraCodecs.POSITIVE_INT, 2000);
-    public static final DataType<Float> MEDEA_CIRCLE_RANGE = register(Fate.MODID, "medea_circle_range", Codec.FLOAT, 24f);
-    public static final DataType<Integer> GILLES_MONSTER_DURATION = register(Fate.MODID, "gilles_monster_duration", ExtraCodecs.POSITIVE_INT, 6000);
-    public static final DataType<Integer> GILLES_MONSTER_MAX = register(Fate.MODID, "gilles_monster_max", ExtraCodecs.NON_NEGATIVE_INT, 7);
-    public static final DataType<Float> GILLES_TENTACLE_DAMAGE = register(Fate.MODID, "gilles_tentacle_damage", Codec.FLOAT, 15f);
-    public static final DataType<Integer> HERACLES_DEATH_MAX = register(Fate.MODID, "heracles_death_max", ExtraCodecs.POSITIVE_INT, 2);
-    public static final DataType<Double> ISKANDER_BUCEPHALOS = register(Fate.MODID, "iskander_bucephalos_summon_mana", Codec.DOUBLE, 20.);
-    public static final DataType<Double> ISKANDER_CHARIOT = register(Fate.MODID, "iskander_chariot_summon_mana", Codec.DOUBLE, 35.);
+    public static final DataType<Integer> MAGIC_CIRCLE_DURATION = register(Fate.MODID, "magic_circle_duration", ExtraCodecs.POSITIVE_INT, 2000);
+    public static final DataType<Float> MAGIC_CIRCLE_RANGE = register(Fate.MODID, "magic_circle_range", Codec.FLOAT, 24f);
+    public static final DataType<Integer> SUMMONED_MONSTER_DURATION = register(Fate.MODID, "summoned_monster_duration", ExtraCodecs.POSITIVE_INT, 6000);
+    public static final DataType<Integer> SUMMONED_MONSTER_MAX = register(Fate.MODID, "summoned_monster_max", ExtraCodecs.NON_NEGATIVE_INT, 7);
+    public static final DataType<Float> TENTACLE_DAMAGE = register(Fate.MODID, "tentacle_damage", Codec.FLOAT, 15f);
+    public static final DataType<Integer> LIVES = register(Fate.MODID, "lives", ExtraCodecs.POSITIVE_INT, 2);
+    public static final DataType<NumberProvider> CALADBOLG_COOLDOWN = register(Fate.MODID, "caladbolg_cooldown", NumberProviders.CODEC, UniformGenerator.between(200, 500));
+    public static final DataType<NumberProvider> MOUNT_SUMMON_COOLDOWN = register(Fate.MODID, "mount_summon_cooldown", NumberProviders.CODEC, UniformGenerator.between(250, 600));
 
     public static final Codec<ServantExtraData> CODEC = new Codec<>() {
         @Override

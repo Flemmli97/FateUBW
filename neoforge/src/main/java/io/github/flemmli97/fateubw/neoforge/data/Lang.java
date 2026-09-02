@@ -208,7 +208,7 @@ public class Lang implements DataProvider {
 
         this.add("fateubw.gui.holy_grail", "Holy Grail");
 
-        FateDamageTypes.TRANSLATIONS.values().forEach(t -> t.add(this::add));
+        FateDamageTypes.ENTRIES.values().forEach(t -> t.add(this::add));
 
         this.add("fateubw.advancements.title", "Welcome to the §k__§r grailwar");
         this.add("fateubw.advancements.description", "Mine some gem shards to start");

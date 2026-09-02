@@ -9,6 +9,7 @@ import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.SetTargetFromRider;
+import io.github.flemmli97.fateubw.common.entity.utils.CooldownHolder;
 import io.github.flemmli97.fateubw.common.entity.utils.MoveStateTracker;
 import io.github.flemmli97.fateubw.common.entity.utils.MoveType;
 import io.github.flemmli97.fateubw.common.entity.utils.ServantModelLike;
@@ -97,6 +98,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
@@ -133,6 +135,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -179,6 +182,8 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
     private boolean initAnim;
 
     private final EntityWeaponTrailHolder<BaseServant> trailHolder = new EntityWeaponTrailHolder<>(this);
+
+    private Map<String, CooldownHolder> cooldowns;
 
     public BaseServant(EntityType<? extends BaseServant> entityType, Level level) {
         super(entityType, level);
@@ -350,6 +355,17 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
         DebugPackets.sendEntityBrain(this);
     }
 
+    public CooldownHolder createCooldown(String id, NumberProvider provider) {
+        return this.createCooldown(id, provider, null);
+    }
+
+    public CooldownHolder createCooldown(String id, NumberProvider provider, BooleanSupplier supplier) {
+        if (this.cooldowns == null) {
+            this.cooldowns = new HashMap<>();
+        }
+        return this.cooldowns.computeIfAbsent(id, k -> new CooldownHolder(this, provider, supplier));
+    }
+
     @Override
     public void tick() {
         if (!this.initAnim) {
@@ -404,6 +420,9 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
             }
             if (this.getTarget() != null && this.getTarget().getVehicle() instanceof LivingEntity)
                 this.setTarget((LivingEntity) this.getTarget().getVehicle());
+            if (this.cooldowns != null) {
+                this.cooldowns.values().forEach(CooldownHolder::tick);
+            }
         }
     }
 
@@ -992,7 +1011,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
                 if (handler.isParticipant(this) || (this.getLastDamageSource() != null && this.getLastDamageSource().is(FateDamageTypes.GRAIL))) {
                     handler.broadcastParticipants(Component.translatable("fateubw.chat.servant.death").withStyle(ChatFormatting.RED));
                 }
-                this.playSound(FateSounds.SERVANT_DEATH.get(), 1.0F, 1.0F);
+                this.playSound(FateSounds.SERVANT_DEATH.get(), 2, 1);
                 this.getAnimationHandler().setAnimation(this.getDeathAnimation());
             }
             if (this.getLastDamageSource() == null || !this.getLastDamageSource().is(FateDamageTypes.GRAIL)) {

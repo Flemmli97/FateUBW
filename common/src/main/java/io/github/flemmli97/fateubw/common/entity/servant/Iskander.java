@@ -5,6 +5,7 @@ import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.summons.Bucephalos;
 import io.github.flemmli97.fateubw.common.entity.summons.GordiusWheel;
+import io.github.flemmli97.fateubw.common.entity.utils.CooldownHolder;
 import io.github.flemmli97.fateubw.common.entity.utils.ServantModelLike;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.particles.StaticFacingParticleData;
@@ -35,7 +36,9 @@ import io.github.flemmli97.tenshilib.common.particle.data.ScaleData;
 import io.github.flemmli97.tenshilib.common.utils.math.OrientedBoundingBox;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
@@ -60,6 +63,8 @@ import java.util.List;
 
 public class Iskander extends BaseServant {
 
+    private static final float ATTACK_MOVE_SPEED = 1.5f;
+
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
     public static final String ONE_HAND_1_1 = BUILDER.add("one_hand_1_1", AnimationsBuilder.definition(0.8)
             .marker("attack", 0.72).marker("step", 0.6)
@@ -70,7 +75,8 @@ public class Iskander extends BaseServant {
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.52)
             .marker(EntityWeaponTrailProvider.TRAIL_END, 0.72));
     public static final String LIGHTNING_1 = BUILDER.add("lightning_1", AnimationsBuilder.definition(1.4)
-            .marker("attack", 0.72).marker("sparks", 1.04));
+            .marker("prepare", 0.72).marker("sparks", 0.92)
+            .marker("attack", 1.04));
 
     public static final String ONE_HAND_2_1 = BUILDER.add("one_hand_2_1", AnimationsBuilder.definition(0.84)
             .marker("attack", 0.72).marker("step", 0.6)
@@ -100,10 +106,11 @@ public class Iskander extends BaseServant {
     private final AnimationHandler<Iskander> animationHandler = new AnimationHandler<>(this, ANIMS);
     private final Vector4f summonColor = new Vector4f(112 / 255f, 23 / 255f, 21 / 255f, 0.7f);
 
-    private int summonCooldown;
+    private final CooldownHolder summonCooldown;
 
     public Iskander(EntityType<? extends Iskander> entityType, Level level) {
         super(entityType, level);
+        this.summonCooldown = this.createCooldown("summon", this.props().getConfig(ServantExtraData.MOUNT_SUMMON_COOLDOWN), () -> !this.isPassenger());
     }
 
     @Override
@@ -130,37 +137,41 @@ public class Iskander extends BaseServant {
         return AttackBehaviourBuilder.<Iskander>create()
                 .start(BehaviourUtils.of(AnimationPlayHolder.<Iskander>builder(ONE_HAND_1_1)
                         .start(ONE_HAND_1_2, 2, 0.28f, 1)
-                        .start(ONE_HAND_1_2, 2, 0.28f, 2, owner -> owner.healthBelow(0.5f) && !owner.isPassenger())
+                        .start(ONE_HAND_1_2, 2, 0.28f, 3, owner -> owner.healthBelow(0.5f) && !owner.isPassenger())
                         .chain(LIGHTNING_1)
                         .build())).play(BehaviourUtils.cooldownedPlay(true, 20, 27))
-                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .prepare(new SetWalkTargetToAttackTarget<Iskander>().speedMod((owner, target) -> ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(12)
                 .start(BehaviourUtils.of(AnimationPlayHolder.<Iskander>builder(ONE_HAND_2_1)
                         .start(ONE_HAND_2_2, 2, 0.28f, 1)
-                        .start(ONE_HAND_2_2, 2, 0.28f, 2, owner -> owner.healthBelow(0.5f))
+                        .start(ONE_HAND_2_2, 2, 0.28f, 3, owner -> owner.healthBelow(0.5f))
                         .chain(STAB_1)
                         .build())).play(BehaviourUtils.cooldownedPlay(true, 20, 27))
-                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .prepare(new SetWalkTargetToAttackTarget<Iskander>().speedMod((owner, target) -> ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(12)
                 .start(STAB_1).play(BehaviourUtils.cooldownedPlay(true, 20, 27))
                 .condition(Entity::isPassenger)
-                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .prepare(new SetWalkTargetToAttackTarget<Iskander>().speedMod((owner, target) -> ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(14)
+                .start(LIGHTNING_1).play(BehaviourUtils.cooldownedPlay(true, 20, 27))
+                .condition(owner -> !owner.isPassenger() && owner.healthBelow(0.75f))
+                .prepare(new SetWalkTargetToAttackTarget<Iskander>().speedMod((owner, target) -> ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .end(9)
 
                 .start(SUMMON_BUCEPHALOS).play(BehaviourUtils.cooldownedPlay(false, 25, 40))
-                .condition(entity -> entity.canSummonMounts() && entity.hasMana(entity.props().getConfig(ServantExtraData.ISKANDER_BUCEPHALOS)))
+                .condition(Iskander::canSummonMounts)
                 .prepare(new SetWalkTargetWithinDist<Iskander>()
-                        .min(5).max(10).speedMod(1.2f)).prepareOptional(BehaviourUtils.moveAttack())
+                        .min(5).max(10).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(5)
                 .start(SUMMON_BUCEPHALOS).play(BehaviourUtils.cooldownedPlay(false, 25, 40))
-                .condition(entity -> entity.canSummonMounts() && !entity.canUseNobelPhantasm() && entity.hasMana(entity.props().getConfig(ServantExtraData.ISKANDER_BUCEPHALOS)))
+                .condition(entity -> entity.canSummonMounts() && !entity.healthBelow(0.66f))
                 .prepare(new SetWalkTargetWithinDist<Iskander>()
-                        .min(5).max(10).speedMod(1.2f)).prepareOptional(BehaviourUtils.moveAttack())
+                        .min(5).max(10).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(7)
                 .start(SUMMON_CHARIOT).play(BehaviourUtils.cooldownedPlay(false, 25, 40))
-                .condition(entity -> entity.canSummonMounts() && entity.canUseNobelPhantasm() && entity.hasMana(entity.props().getConfig(ServantExtraData.ISKANDER_CHARIOT)))
+                .condition(entity -> entity.canSummonMounts() && entity.healthBelow(0.66f))
                 .prepare(new SetWalkTargetWithinDist<Iskander>()
-                        .min(6).max(12).speedMod(1.2f)).prepareOptional(BehaviourUtils.moveAttack())
+                        .min(6).max(12).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(15)
                 .start(IONIOI_HETAIROI)
                 .condition(entity -> entity.canUseNobelPhantasm() && !this.canOverrideRealityMarble())
@@ -172,19 +183,16 @@ public class Iskander extends BaseServant {
     @Override
     public ExtendedBehaviour<? extends BaseServant> getCooldownAI() {
         return SelectableBehaviourBuilder.<BaseServant>builder()
-                .add(6, new SetWalkTargetToAttackTarget<>(), BehaviourUtils.moveTo())
+                .add(6, new SetWalkTargetToAttackTarget<BaseServant>().speedMod((owner, target) -> ATTACK_MOVE_SPEED), BehaviourUtils.moveTo())
                 .add(6, BehaviourUtils.withCondition(Entity::isPassenger), new SetRandomWalkTarget<BaseServant>()
-                        .setRadius(8, 4), BehaviourUtils.moveTo())
+                        .setRadius(8, 4).speedModifier(ATTACK_MOVE_SPEED), BehaviourUtils.moveTo())
                 .add(3, new SetWalkTargetAwayFromTarget<BaseServant>()
-                        .radius(6), BehaviourUtils.moveTo()).build();
+                        .radius(6).speedMod(ATTACK_MOVE_SPEED), BehaviourUtils.moveTo()).build();
     }
 
     @Override
     public void aiStep() {
         super.aiStep();
-        if (!this.level().isClientSide && !this.isPassenger()) {
-            --this.summonCooldown;
-        }
         if (this.level().isClientSide) {
             AnimationState anim = this.getAnimationHandler().getAnimation();
             if (anim != null) {
@@ -224,6 +232,7 @@ public class Iskander extends BaseServant {
                         .addData(new ParticleMetaData(60, false, 0))
                         .add(this.level(), null, this.getX(), this.getY(0.5), this.getZ(), true);
                 RealityMarbleHandler.prepareChunks(this, FateDimensions.SAND_DUNES.dimension(), 48);
+                this.playSound(FateSounds.REALITY_MARBLE.get(), 4, 1);
             }
             if (anim.isPast("cast")) {
                 S2CScreenShake.sendAround(this, 64, 2, 1);
@@ -258,27 +267,34 @@ public class Iskander extends BaseServant {
         } else if (anim.is(SUMMON_ARMY)) {
             // TODO
         } else if (anim.is(LIGHTNING_1)) {
-            if (anim.isAt("attack")) {
-                this.mobAttack(anim, this.getTarget(), this::doHurtTarget);
+            if (anim.isAt("prepare")) {
                 S2CScreenShake.sendAround(this, 32, 4, 1);
                 AdvancedParticleContainer.make(new StaticFacingParticleData(FateParticles.RING.get(), 0, 90))
                         .addData(new ColorData(0.9f, 0.9f, 0.9f))
-                        .addData(new ScaleData(1, 4, 4))
+                        .addData(new ScaleData(1, 3, 4))
                         .addData(new ParticleMetaData(8, false, 0))
-                        .add(this.level(), this.getX(), this.getY() + 0.01, this.getZ());
+                        .add(this.level(), this.getX(), Math.ceil(this.getY()) + 0.01, this.getZ());
                 AdvancedParticleContainer.make(new StaticFacingParticleData(FateParticles.RING.get(), 0, 90))
                         .addData(new ColorData(0.9f, 0.9f, 0.9f))
-                        .addData(new ScaleData(1, 8, 4))
+                        .addData(new ScaleData(1, 5, 4))
                         .addData(new ParticleMetaData(8, false, 0))
-                        .add(this.level(), this.getX(), this.getY() + 0.01, this.getZ());
-            } else if (anim.isAt("sparks")) {
-                for (int i = 0; i < 16; i++) {
+                        .add(this.level(), this.getX(), Math.ceil(this.getY()) + 0.01, this.getZ());
+                this.playSound(SoundEvents.GENERIC_EXPLODE.value(), 2, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 0.8f);
+            }
+            if (anim.isAt("sparks")) {
+                Vec3 dir = new Vec3(0, 0, 3);
+                for (int i = 0; i < 8; i++) {
+                    Vec3 off = dir.yRot(i * 45 * Mth.DEG_TO_RAD);
                     AdvancedParticleContainer.make(FateParticles.LIGHTNING.get())
-                            .addData(new ScaleData(0.3f))
-                            .addData(new ColorData(35 / 255f, 53 / 255f, 206 / 255f, 1))
-                            .addData(new ParticleMetaData(5, false, 0))
-                            .add(this.level(), this.getRandomX(6), this.getY(this.getRandom().nextDouble() * 7 - 2), this.getRandomZ(6));
+                            .addData(new ScaleData(1))
+                            .addData(new ColorData(42 / 255f, 151 / 255f, 255 / 255f, 1))
+                            .addData(new ParticleMetaData(15, false, 0))
+                            .add(this.level(), this.getX() + off.x(), this.getY() + off.y(), this.getZ() + off.z());
                 }
+                this.playSound(FateSounds.ZAP.get(), 2, (this.random.nextFloat() - this.random.nextFloat()) * 0.1F + 1.0f);
+            }
+            if (anim.isAt("attack")) {
+                this.mobAttack(anim, this.getTarget(), this::doHurtTarget);
             }
         } else {
             if (anim.isAt("step")) {
@@ -286,7 +302,7 @@ public class Iskander extends BaseServant {
                 this.setDeltaMovement(this.getDeltaMovement().add(dir));
             }
             if (anim.isAt("attack")) {
-                this.playSound(FateSounds.SWOOSH_2.get(), 1, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 0.8f);
+                this.playSound(FateSounds.SWOOSH_2.get(), 1, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 0.9f);
             }
             super.handleAttack(anim);
         }
@@ -298,6 +314,14 @@ public class Iskander extends BaseServant {
             return FateDamageTypes.direct(FateDamageTypes.LIGHTNING_STRIKE, this);
         }
         return super.damageSourceAttack(target);
+    }
+
+    @Override
+    public float damageModifier(Entity target) {
+        if (this.animationHandler.isCurrent(LIGHTNING_1)) {
+            return 1.25f;
+        }
+        return super.damageModifier(target);
     }
 
     @Override
@@ -365,7 +389,7 @@ public class Iskander extends BaseServant {
     }
 
     protected boolean canSummonMounts() {
-        return !this.isPassenger() && this.summonCooldown <= 0;
+        return !this.isPassenger() && this.summonCooldown.canUse();
     }
 
     public void summonChariot() {
@@ -384,7 +408,7 @@ public class Iskander extends BaseServant {
             lightningboltentity.setVisualOnly(true);
             this.level().addFreshEntity(lightningboltentity);
         }
-        this.summonCooldown = 150 + this.getRandom().nextInt(100);
+        this.summonCooldown.use();
         this.revealServant();
     }
 
@@ -400,7 +424,7 @@ public class Iskander extends BaseServant {
             lightningboltentity.setVisualOnly(true);
             this.level().addFreshEntity(lightningboltentity);
         }
-        this.summonCooldown = 150 + this.getRandom().nextInt(100);
+        this.summonCooldown.use();
         this.revealServant();
     }
 

@@ -13,10 +13,10 @@
   },
   "class": "fateubw:caster",
   "configs": {
-    "fateubw:gilles_monster_duration": 6000,
-    "fateubw:gilles_monster_max": 7,
-    "fateubw:gilles_tentacle_damage": 15.0
+    "fateubw:summoned_monster_duration": 6000,
+    "fateubw:summoned_monster_max": 7,
+    "fateubw:tentacle_damage": 15.0
   },
-  "nobel_phantasm_cost": 80,
+  "noble_phantasm_cost": 80,
   "weight": 1
 }

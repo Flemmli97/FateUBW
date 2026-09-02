@@ -111,7 +111,7 @@ public class Tentacle extends Entity implements AnimatedEntity, TraceableEntity 
                     OrientedBoundingBox obb = new OrientedBoundingBox(aabb, -this.getYRot(), 0, this.position());
                     S2CAttackDebug.sendDebugPacket(obb, S2CAttackDebug.EnumAABBType.ATTACK, this);
                     float damage = DatapackHandler.SERVANT_PROPS.get(FateEntities.GILLES.get())
-                            .getConfig(ServantExtraData.GILLES_TENTACLE_DAMAGE);
+                            .getConfig(ServantExtraData.TENTACLE_DAMAGE);
                     Predicate<LivingEntity> pred = this.getOwner() instanceof BaseServant servant ? servant.targetPred : e -> true;
                     this.level().getEntitiesOfClass(LivingEntity.class, obb.getEncompassingBox(),
                                     entity -> pred.test(entity) && obb.intersects(entity.getBoundingBox()))
