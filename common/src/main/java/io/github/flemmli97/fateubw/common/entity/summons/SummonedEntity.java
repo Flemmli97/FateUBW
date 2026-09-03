@@ -274,6 +274,38 @@ public abstract class SummonedEntity extends PathfinderMob implements AnimatedEn
     public abstract OrientedBoundingBox calculateAttackAABB(AnimationState anim, double grow);
 
     @Override
+    public void knockback(double strength, double xRatio, double zRatio) {
+        if (this.ignoreExternalMobInfluence())
+            return;
+        super.knockback(strength, xRatio, zRatio);
+    }
+
+    @Override
+    public void push(Entity entity) {
+        if (this.ignoreExternalMobInfluence())
+            return;
+        super.push(entity);
+    }
+
+    @Override
+    public boolean canCollideWith(Entity entity) {
+        if (this.ignoreExternalMobInfluence())
+            return false;
+        return super.canCollideWith(entity);
+    }
+
+    @Override
+    public void push(double x, double y, double z) {
+        if (this.ignoreExternalMobInfluence())
+            return;
+        super.push(x, y, z);
+    }
+
+    protected boolean ignoreExternalMobInfluence() {
+        return false;
+    }
+
+    @Override
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
         if (tag.contains("Owner"))

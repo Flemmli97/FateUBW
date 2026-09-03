@@ -310,7 +310,7 @@ public class Iskander extends BaseServant {
                             .addData(new ScaleData(1))
                             .addData(new ColorData(42 / 255f, 151 / 255f, 255 / 255f, 1))
                             .addData(new ParticleMetaData(15, false, 0))
-                            .add(this.level(), this.getX() + off.x(), this.getY() + off.y(), this.getZ() + off.z());
+                            .add(this.level(), this.getX() + off.x(), this.getY() + 0.01, this.getZ() + off.z());
                 }
                 this.playSound(FateSounds.ZAP.get(), 2, (this.random.nextFloat() - this.random.nextFloat()) * 0.1F + 1.0f);
             }
@@ -380,7 +380,7 @@ public class Iskander extends BaseServant {
         }
         if (anim.is(LIGHTNING_1)) {
             width *= 5;
-            return new AABB(-width, -0.03, -width, width, height * 0.5 + 0.03, width);
+            return new AABB(-width, -0.2, -width, width, height + 0.03, width);
         }
         return new AABB(-width * 0.5, -0.03, 0, width * 0.5, height + 0.03, length);
     }

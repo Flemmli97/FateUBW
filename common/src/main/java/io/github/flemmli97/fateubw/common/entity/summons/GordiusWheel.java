@@ -412,7 +412,7 @@ public class GordiusWheel extends SummonedEntity implements StandingVehicle, Syn
     }
 
     @Override
-    public boolean canBeCollidedWith() {
+    protected boolean ignoreExternalMobInfluence() {
         return !this.animationHandler.isCurrent(EXPUGNATIO);
     }
 
