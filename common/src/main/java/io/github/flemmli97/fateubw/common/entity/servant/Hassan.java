@@ -381,7 +381,7 @@ public class Hassan extends BaseServant {
         if (this.getTarget() != null) {
             item.shootAtEntity(this.getTarget(), 1.2f, 7 - this.level().getDifficulty().getId() * 2);
         } else {
-            item.shootFromRotation(this, this.getXRot() + 5, this.getYRot(), 0.0F, 1.2f, 1.0F);
+            item.shootFromRotation(this, this.getViewXRot(1) + 5, this.getViewYRot(1), 0.0F, 1.2f, 1.0F);
         }
         this.playSound(FateSounds.DAGGER_THROW.get(), 1.0F, (this.getRandom().nextFloat() - this.getRandom().nextFloat()) * 0.2F + 1.0F);
         this.level().addFreshEntity(item);

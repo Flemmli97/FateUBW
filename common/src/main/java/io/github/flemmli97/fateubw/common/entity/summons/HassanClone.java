@@ -343,6 +343,11 @@ public class HassanClone extends PathfinderMob implements AnimatedEntity, Ownabl
     }
 
     @Override
+    public boolean removeWhenFarAway(double dist) {
+        return false;
+    }
+
+    @Override
     public void aiStep() {
         super.aiStep();
         this.getAnimationHandler().tick();

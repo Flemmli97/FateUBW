@@ -509,7 +509,7 @@ public class Emiya extends BaseServant {
 
     @Override
     public boolean hurt(DamageSource damageSource, float damage) {
-        return !this.getAnimationHandler().isCurrent(CALADBOLG) && super.hurt(damageSource, damage);
+        return !this.getAnimationHandler().isCurrent(CALADBOLG, UNLIMITED_BLADE_WORKS) && super.hurt(damageSource, damage);
     }
 
     @Override
@@ -524,7 +524,7 @@ public class Emiya extends BaseServant {
 
     @Override
     public boolean nobelPhantasmCheck() {
-        return this.healthBelow(0.75f) && super.nobelPhantasmCheck();
+        return this.healthBelow(0.5f) && super.nobelPhantasmCheck();
     }
 
     public void attackWithRangedAttack(LivingEntity target) {

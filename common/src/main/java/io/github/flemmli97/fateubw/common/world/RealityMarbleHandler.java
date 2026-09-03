@@ -16,6 +16,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
@@ -103,6 +104,24 @@ public class RealityMarbleHandler extends SavedData {
         this.overrideAndTransportEntity(creator, target, group);
         this.entityGroups.put(group.id(), group);
         this.setDirty();
+    }
+
+    public void onEntityLoad(Entity entity) {
+        if (entity instanceof OwnableEntity ownable) {
+            EntityMarbleData current = this.entityGroupLookup.get(ownable.getOwnerUUID());
+            if(current != null) {
+                RealityMarbleGroup group = this.getGroup(current.group());
+                if (group != null) {
+                    group.entities().add(entity.getUUID());
+                    this.entityGroupLookup.put(entity.getUUID(), new EntityMarbleData(group.id(), group.sourceLevel()));
+                    this.setDirty();
+                }
+            }
+        }
+        RealityMarbleHandler.RealityMarbleGroup group = this.getGroupOf(entity);
+        if (group == null) {
+            this.clearAndTeleportBack(entity);
+        }
     }
 
     private void overrideAndTransportEntity(Entity entity, ServerLevel targetLevel, RealityMarbleGroup group) {

@@ -7,6 +7,7 @@ import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.misc.StarfishShot;
 import io.github.flemmli97.fateubw.common.entity.utils.MoveStateTracker;
 import io.github.flemmli97.fateubw.common.entity.utils.MoveType;
+import io.github.flemmli97.fateubw.common.entity.utils.TargetableOpponent;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.Utils;
@@ -67,8 +68,9 @@ import net.tslat.smartbrainlib.util.BrainUtils;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Predicate;
 
-public class LesserMonster extends PathfinderMob implements AnimatedEntity, OwnableEntity, SmartBrainOwner<LesserMonster> {
+public class LesserMonster extends PathfinderMob implements AnimatedEntity, OwnableEntity, SmartBrainOwner<LesserMonster>, TargetableOpponent {
 
     protected static final EntityDataAccessor<Byte> MOVE_FLAGS = SynchedEntityData.defineId(LesserMonster.class, EntityDataSerializers.BYTE);
 
@@ -312,5 +314,10 @@ public class LesserMonster extends PathfinderMob implements AnimatedEntity, Owna
     @Override
     public UUID getOwnerUUID() {
         return this.ownerUUID;
+    }
+
+    @Override
+    public Predicate<LivingEntity> validTargetPredicate() {
+        return target -> !Utils.alliedTo(this, target);
     }
 }

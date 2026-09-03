@@ -86,7 +86,7 @@ public class ArcherBowItem extends BowItem implements SwingItem {
             int i = this.getUseDuration(stack, entity) - timeLeft;
             float f = getPowerForTime(i * 2);
             if (f >= 0.1D) {
-                bolg.shoot(entity, entity.getXRot(), entity.getYRot(), 0, f, 0);
+                bolg.shoot(entity, entity.getXRot(), entity.getYRot(), 0, 0.5f + f, 0);
                 level.addFreshEntity(bolg);
                 this.setCharged(stack, false);
             }

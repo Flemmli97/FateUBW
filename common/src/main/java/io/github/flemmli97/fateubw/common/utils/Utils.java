@@ -106,7 +106,7 @@ public class Utils {
 
     public static Predicate<LivingEntity> summonTargetPredicate(Mob entity) {
         return target -> {
-            if (target == entity)
+            if (target == entity || Utils.alliedTo(entity, target))
                 return false;
             if (entity.getTarget() == target)
                 return true;

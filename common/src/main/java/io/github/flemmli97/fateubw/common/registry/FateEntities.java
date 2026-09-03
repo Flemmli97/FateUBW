@@ -17,6 +17,7 @@ import io.github.flemmli97.fateubw.common.entity.misc.ItemInGroundEntity;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicBeam;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicBufCircle;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicShot;
+import io.github.flemmli97.fateubw.common.entity.misc.SpearProjectile;
 import io.github.flemmli97.fateubw.common.entity.misc.StarfishShot;
 import io.github.flemmli97.fateubw.common.entity.misc.ThrownGem;
 import io.github.flemmli97.fateubw.common.entity.misc.ThrownItemEntity;
@@ -39,6 +40,7 @@ import io.github.flemmli97.fateubw.common.entity.summons.Bucephalos;
 import io.github.flemmli97.fateubw.common.entity.summons.GordiusChariot;
 import io.github.flemmli97.fateubw.common.entity.summons.GordiusWheel;
 import io.github.flemmli97.fateubw.common.entity.summons.HassanClone;
+import io.github.flemmli97.fateubw.common.entity.summons.Hoplite;
 import io.github.flemmli97.fateubw.common.entity.summons.LesserMonster;
 import io.github.flemmli97.fateubw.common.entity.summons.Pegasus;
 import io.github.flemmli97.fateubw.common.entity.summons.Tentacle;
@@ -208,7 +210,10 @@ public class FateEntities {
                     .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 4).putAttributes(Attributes.MOVEMENT_SPEED, 0.28)
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1.5).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(70)
-                    .withConfigData(ServantExtraData.MOUNT_SUMMON_COOLDOWN));
+                    .withConfigData(ServantExtraData.MOUNT_SUMMON_COOLDOWN)
+                    .withConfigData(ServantExtraData.ARMY_SUMMON_COOLDOWN)
+                    .withConfigData(ServantExtraData.MAX_NEARBY_ARMY)
+                    .withConfigData(ServantExtraData.STRONG_HOPLITE_CHANCE));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<Medusa>> MEDUSA = regServant("medusa_rider", "Bellerophon", EntityType.Builder.of(Medusa::new, MobCategory.MISC)
                     .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
             0x000000, 0xf234ea,
@@ -258,27 +263,44 @@ public class FateEntities {
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<EnkiduChains>> ENKIDU_CHAINS = reg("enkidu_chains", EntityType.Builder.<EnkiduChains>of(EnkiduChains::new, MobCategory.MISC).sized(0.25F, 0.25F));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<AestusDomusBeam>> AESTUS_DOMUS_BEAM = reg("aestus_domus_beam", EntityType.Builder.<AestusDomusBeam>of(AestusDomusBeam::new, MobCategory.MISC).sized(0.25F, 0.25F));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<ItemInGroundEntity>> ITEM_IN_GROUND_ENTITY = reg("item_in_ground_entity", EntityType.Builder.of(ItemInGroundEntity::new, MobCategory.MISC).sized(0.75F, 1.5F));
+    public static final RegistryEntrySupplier<EntityType<?>, EntityType<SpearProjectile>> SPEAR = reg("spear", EntityType.Builder.<SpearProjectile>of(SpearProjectile::new, MobCategory.MISC).sized(0.25F, 0.25F));
 
-    public static final RegistryEntrySupplier<EntityType<?>, EntityType<LesserMonster>> LESSER_MONSTER = regWithEgg("starfish_monster", EntityType.Builder.<LesserMonster>of(LesserMonster::new, MobCategory.MONSTER).clientTrackingRange(8),
+    public static final RegistryEntrySupplier<EntityType<?>, EntityType<LesserMonster>> LESSER_MONSTER = regWithEgg("starfish_monster", EntityType.Builder.<LesserMonster>of(LesserMonster::new, MobCategory.MONSTER)
+                    .clientTrackingRange(8).sized(0.6f, 1.5f),
             0x171c3f, 0x00ff00,
             new AttributeHolderProperties.Builder()
-                    .putAttributes(Attributes.MAX_HEALTH, 28).putAttributes(Attributes.ATTACK_DAMAGE, 11)
-                    .putAttributes(Attributes.ARMOR, 6).putAttributes(Attributes.MOVEMENT_SPEED, 0.28)
+                    .putAttributes(Attributes.MAX_HEALTH, 30).putAttributes(Attributes.ATTACK_DAMAGE, 11)
+                    .putAttributes(Attributes.ARMOR, 8).putAttributes(Attributes.MOVEMENT_SPEED, 0.27)
+                    .putAttributes(Attributes.KNOCKBACK_RESISTANCE, 1));
+    public static final RegistryEntrySupplier<EntityType<?>, EntityType<Bucephalos>> BUCEPHALOS = regWithEgg("bucephalos", EntityType.Builder.of(Bucephalos::new, MobCategory.CREATURE).sized(1.4f, 1.55f),
+            0x0a0a0a, 0x951a15,
+            new AttributeHolderProperties.Builder()
+                    .putAttributes(Attributes.MAX_HEALTH, 80).putAttributes(Attributes.ATTACK_DAMAGE, 15)
+                    .putAttributes(Attributes.ARMOR, 7).putAttributes(Attributes.ARMOR_TOUGHNESS, 2)
+                    .putAttributes(FateAttributes.PROJECTILE_BLOCK_CHANCE.asHolder(), 0.2)
+                    .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 6).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 3)
+                    .putAttributes(Attributes.MOVEMENT_SPEED, 0.29));
+    public static final RegistryEntrySupplier<EntityType<?>, EntityType<Hoplite>> HOPLITE = regWithEgg("hoplite", EntityType.Builder.of(Hoplite::new, MobCategory.CREATURE).clientTrackingRange(8),
+            0xa26c1d, 0xa51c13,
+            new AttributeHolderProperties.Builder()
+                    .putAttributes(Attributes.MAX_HEALTH, 50).putAttributes(Attributes.ATTACK_DAMAGE, 12)
+                    .putAttributes(Attributes.ARMOR, 9).putAttributes(Attributes.ARMOR_TOUGHNESS, 4)
+                    .putAttributes(Attributes.MOVEMENT_SPEED, 0.26)
                     .putAttributes(Attributes.KNOCKBACK_RESISTANCE, 1));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<GordiusWheel>> GORDIUS_WHEEL = regWithEgg("gordius_wheel", EntityType.Builder.of(GordiusWheel::new, MobCategory.CREATURE).sized(2, 1.5f),
             0x28211f, 0x8f1b11,
             new AttributeHolderProperties.Builder()
                     .putAttributes(Attributes.MAX_HEALTH, 120).putAttributes(Attributes.ATTACK_DAMAGE, 15)
-                    .putAttributes(Attributes.ARMOR, 6)
-                    .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 6).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 4)
+                    .putAttributes(Attributes.ARMOR, 12).putAttributes(Attributes.ARMOR_TOUGHNESS, 4)
+                    .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 7).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 5)
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.27)
                     .putAttributes(Attributes.KNOCKBACK_RESISTANCE, 1));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<HassanClone>> HASSAN_COPY = hassanClone(new AttributeHolderProperties.Builder()
-            .putAttributes(Attributes.MAX_HEALTH, 50).putAttributes(Attributes.ATTACK_DAMAGE, 8)
+            .putAttributes(Attributes.MAX_HEALTH, 75).putAttributes(Attributes.ATTACK_DAMAGE, 8)
             .putAttributes(Attributes.ARMOR, 10).putAttributes(Attributes.ARMOR_TOUGHNESS, 2)
             .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 10).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 6)
             .putAttributes(Attributes.MOVEMENT_SPEED, 0.35));
-    public static final RegistryEntrySupplier<EntityType<?>, EntityType<Pegasus>> PEGASUS = regWithEgg("pegasus", EntityType.Builder.of(Pegasus::new, MobCategory.MONSTER).sized(1.35f, 1.65f),
+    public static final RegistryEntrySupplier<EntityType<?>, EntityType<Pegasus>> PEGASUS = regWithEgg("pegasus", EntityType.Builder.of(Pegasus::new, MobCategory.CREATURE).sized(1.35f, 1.65f),
             0xffffff, 0xdde0e1,
             new AttributeHolderProperties.Builder()
                     .putAttributes(Attributes.MAX_HEALTH, 80).putAttributes(Attributes.ATTACK_DAMAGE, 17)
@@ -286,13 +308,6 @@ public class FateEntities {
                     .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 6).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 14)
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.34)
                     .putAttributes(Attributes.FLYING_SPEED, 0.85));
-    public static final RegistryEntrySupplier<EntityType<?>, EntityType<Bucephalos>> BUCEPHALOS = regWithEgg("bucephalos", EntityType.Builder.of(Bucephalos::new, MobCategory.MONSTER).sized(1.4f, 1.55f),
-            0x0a0a0a, 0x951a15,
-            new AttributeHolderProperties.Builder()
-                    .putAttributes(Attributes.MAX_HEALTH, 80).putAttributes(Attributes.ATTACK_DAMAGE, 17)
-                    .putAttributes(Attributes.ARMOR, 7).putAttributes(FateAttributes.PROJECTILE_BLOCK_CHANCE.asHolder(), 0.2)
-                    .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 6).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 14)
-                    .putAttributes(Attributes.MOVEMENT_SPEED, 0.29));
 
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<MultiPartEntity>> MULTIPART = reg("multi_part", EntityType.Builder.<MultiPartEntity>of(MultiPartEntity::new, MobCategory.MISC)
             .noSave().noSummon().sized(0.25F, 0.25F));
@@ -361,6 +376,7 @@ public class FateEntities {
         map.put(FateEntities.PEGASUS.get(), BaseServant.createAttributes().add(Attributes.FLYING_SPEED, 0.85));
         map.put(FateEntities.HASSAN_COPY.get(), BaseServant.createAttributes());
         map.put(FateEntities.BUCEPHALOS.get(), BaseServant.createAttributes());
+        map.put(FateEntities.HOPLITE.get(), BaseServant.createAttributes());
         return map;
     }
 }

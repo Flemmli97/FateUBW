@@ -66,6 +66,7 @@ public class GordiusWheelModel extends ExtendedEntityModel<GordiusWheel> impleme
             float xRot = Mth.lerp(partialTick, entity.getWheelEntity().xRotO, entity.getWheelEntity().getXRot());
             float chariotX = Mth.clamp(xRot, -60, 60);
             this.chariotBase.xRot += chariotX * Mth.DEG_TO_RAD;
+            this.ridingPosition.xRot -= (chariotX * 0.75f) * Mth.DEG_TO_RAD;
         }
     }
 

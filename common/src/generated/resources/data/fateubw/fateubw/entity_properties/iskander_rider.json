@@ -10,11 +10,17 @@
   },
   "class": "fateubw:rider",
   "configs": {
+    "fateubw:army_summon_mana": {
+      "type": "minecraft:uniform",
+      "max": 250.0,
+      "min": 60.0
+    },
     "fateubw:mount_summon_cooldown": {
       "type": "minecraft:uniform",
       "max": 600.0,
       "min": 250.0
-    }
+    },
+    "fateubw:strong_hoplite_chance": 0.1
   },
   "noble_phantasm_cost": 70,
   "weight": 1

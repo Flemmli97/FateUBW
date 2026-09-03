@@ -50,10 +50,7 @@ public class EventCalls {
     public static void onLoad(Entity entity) {
         if (entity.level().isClientSide)
             return;
-        RealityMarbleHandler.RealityMarbleGroup group = RealityMarbleHandler.get(entity.getServer()).getGroupOf(entity);
-        if (group == null) {
-            RealityMarbleHandler.get(entity.getServer()).clearAndTeleportBack(entity);
-        }
+        RealityMarbleHandler.get(entity.getServer()).onEntityLoad(entity);
     }
 
     public static void tick(LivingEntity entity) {

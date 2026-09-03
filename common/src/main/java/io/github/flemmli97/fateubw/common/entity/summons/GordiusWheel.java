@@ -641,7 +641,10 @@ public class GordiusWheel extends PathfinderMob implements AnimatedEntity, Stand
         @Override
         protected void tick(GordiusWheel entity) {
             super.tick(entity);
-            this.targetPos = BrainUtils.getTargetOfEntity(entity).getEyePosition();
+            LivingEntity target = BrainUtils.getTargetOfEntity(entity);
+            if (target != null) {
+                this.targetPos = target.getEyePosition();
+            }
             double dY = this.targetPos.y() - entity.getEyeY();
             double dX = this.targetPos.x() - entity.getX();
             double dZ = this.targetPos.z() - entity.getZ();

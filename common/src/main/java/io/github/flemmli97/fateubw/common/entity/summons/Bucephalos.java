@@ -198,8 +198,8 @@ public class Bucephalos extends PathfinderMob implements AnimatedEntity, AOEAtta
     }
 
     @Override
-    public void tick() {
-        super.tick();
+    public void baseTick() {
+        super.baseTick();
         if (this.animationHandler.isCurrent(CHARGE)) {
             Vec3 charge = this.syncedDataContainer.get(CHARGE_MOTION);
             if (charge != null) {
@@ -210,6 +210,11 @@ public class Bucephalos extends PathfinderMob implements AnimatedEntity, AOEAtta
                 this.setYHeadRot(this.getYRot());
             }
         }
+    }
+
+    @Override
+    public boolean removeWhenFarAway(double dist) {
+        return false;
     }
 
     @Override

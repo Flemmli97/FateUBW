@@ -283,8 +283,8 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
     }
 
     @Override
-    public void tick() {
-        super.tick();
+    public void baseTick() {
+        super.baseTick();
         Vec3 lookDir = this.directionToLookAt();
         if (lookDir != null) {
             float[] yxRot = MathsHelper.YXRotFrom(lookDir);
@@ -293,6 +293,11 @@ public class Pegasus extends PathfinderMob implements AnimatedEntity, StandingVe
             this.setYBodyRot(this.getYRot());
             this.setYHeadRot(this.getYRot());
         }
+    }
+
+    @Override
+    public boolean removeWhenFarAway(double dist) {
+        return false;
     }
 
     @Override

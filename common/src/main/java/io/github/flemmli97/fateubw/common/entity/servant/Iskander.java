@@ -5,6 +5,7 @@ import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.summons.Bucephalos;
 import io.github.flemmli97.fateubw.common.entity.summons.GordiusWheel;
+import io.github.flemmli97.fateubw.common.entity.summons.Hoplite;
 import io.github.flemmli97.fateubw.common.entity.utils.CooldownHolder;
 import io.github.flemmli97.fateubw.common.entity.utils.ServantModelLike;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
@@ -34,6 +35,8 @@ import io.github.flemmli97.tenshilib.common.particle.data.ColorData;
 import io.github.flemmli97.tenshilib.common.particle.data.ParticleMetaData;
 import io.github.flemmli97.tenshilib.common.particle.data.ScaleData;
 import io.github.flemmli97.tenshilib.common.utils.math.OrientedBoundingBox;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -48,9 +51,11 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -107,10 +112,12 @@ public class Iskander extends BaseServant {
     private final Vector4f summonColor = new Vector4f(112 / 255f, 23 / 255f, 21 / 255f, 0.7f);
 
     private final CooldownHolder summonCooldown;
+    private final CooldownHolder armySummonCooldown;
 
     public Iskander(EntityType<? extends Iskander> entityType, Level level) {
         super(entityType, level);
         this.summonCooldown = this.createCooldown("summon", this.props().getConfig(ServantExtraData.MOUNT_SUMMON_COOLDOWN), () -> !this.isPassenger());
+        this.armySummonCooldown = this.createCooldown("army_summon", this.props().getConfig(ServantExtraData.ARMY_SUMMON_COOLDOWN));
     }
 
     @Override
@@ -136,15 +143,15 @@ public class Iskander extends BaseServant {
     public ExtendedBehaviour<? extends BaseServant> getCombatAI() {
         return AttackBehaviourBuilder.<Iskander>create()
                 .start(BehaviourUtils.of(AnimationPlayHolder.<Iskander>builder(ONE_HAND_1_1)
-                        .start(ONE_HAND_1_2, 2, 0.28f, 1)
-                        .start(ONE_HAND_1_2, 2, 0.28f, 3, owner -> owner.healthBelow(0.5f) && !owner.isPassenger())
-                        .chain(LIGHTNING_1)
+                        .start(ONE_HAND_1_2, 2, 0.36f, 1)
+                        .start(ONE_HAND_1_2, 2, 0.36f, 3, owner -> owner.healthBelow(0.66f) && !owner.isPassenger())
+                        .chain(LIGHTNING_1, 1, 0.36f)
                         .build())).play(BehaviourUtils.cooldownedPlay(true, 20, 27))
                 .prepare(new SetWalkTargetToAttackTarget<Iskander>().speedMod((owner, target) -> ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(12)
                 .start(BehaviourUtils.of(AnimationPlayHolder.<Iskander>builder(ONE_HAND_2_1)
-                        .start(ONE_HAND_2_2, 2, 0.28f, 1)
-                        .start(ONE_HAND_2_2, 2, 0.28f, 3, owner -> owner.healthBelow(0.5f))
+                        .start(ONE_HAND_2_2, 2, 0.36f, 1)
+                        .start(ONE_HAND_2_2, 2, 0.36f, 3, owner -> owner.healthBelow(0.66f))
                         .chain(STAB_1)
                         .build())).play(BehaviourUtils.cooldownedPlay(true, 20, 27))
                 .prepare(new SetWalkTargetToAttackTarget<Iskander>().speedMod((owner, target) -> ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
@@ -154,7 +161,7 @@ public class Iskander extends BaseServant {
                 .prepare(new SetWalkTargetToAttackTarget<Iskander>().speedMod((owner, target) -> ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(14)
                 .start(LIGHTNING_1).play(BehaviourUtils.cooldownedPlay(true, 20, 27))
-                .condition(owner -> !owner.isPassenger() && owner.healthBelow(0.75f))
+                .condition(owner -> !owner.isPassenger() && owner.healthBelow(0.66f))
                 .prepare(new SetWalkTargetToAttackTarget<Iskander>().speedMod((owner, target) -> ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(9)
 
@@ -174,9 +181,13 @@ public class Iskander extends BaseServant {
                         .min(6).max(12).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(15)
                 .start(IONIOI_HETAIROI)
-                .condition(entity -> entity.canUseNobelPhantasm() && !this.canOverrideRealityMarble())
+                .condition(entity -> entity.canUseNobelPhantasm() && this.canOverrideRealityMarble())
                 .prepare(new SetWalkTargetToAttackTarget<Iskander>().closeEnoughDist(BehaviourUtils.closeEnough(16))).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(30)
+                .start(SUMMON_ARMY)
+                .condition(entity -> this.isInRealityMarble() && this.canSummonHoplites())
+                .prepare(new SetWalkTargetToAttackTarget<Iskander>().closeEnoughDist(BehaviourUtils.closeEnough(24))).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .end(18)
                 .build();
     }
 
@@ -188,6 +199,10 @@ public class Iskander extends BaseServant {
                         .setRadius(8, 4).speedModifier(ATTACK_MOVE_SPEED), BehaviourUtils.moveTo())
                 .add(3, new SetWalkTargetAwayFromTarget<BaseServant>()
                         .radius(6).speedMod(ATTACK_MOVE_SPEED), BehaviourUtils.moveTo()).build();
+    }
+
+    public boolean isInRealityMarble() {
+        return this.level().dimension().equals(FateDimensions.SAND_DUNES.dimension());
     }
 
     @Override
@@ -265,7 +280,13 @@ public class Iskander extends BaseServant {
                 }
             }
         } else if (anim.is(SUMMON_ARMY)) {
-            // TODO
+            LivingEntity target = this.getTarget();
+            if (target != null && !anim.isPast(0.28)) {
+                this.lookAt(target, 60, 30);
+            }
+            if (anim.isAt("summon")) {
+                this.summonArmy();
+            }
         } else if (anim.is(LIGHTNING_1)) {
             if (anim.isAt("prepare")) {
                 S2CScreenShake.sendAround(this, 32, 4, 1);
@@ -371,7 +392,7 @@ public class Iskander extends BaseServant {
 
     @Override
     public boolean hurt(DamageSource damageSource, float damage) {
-        if (this.getAnimationHandler().isCurrent(SUMMON_CHARIOT)) {
+        if (this.getAnimationHandler().isCurrent(SUMMON_CHARIOT, IONIOI_HETAIROI)) {
             return false;
         }
         if (damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
@@ -385,7 +406,7 @@ public class Iskander extends BaseServant {
 
     @Override
     public boolean nobelPhantasmCheck() {
-        return this.healthBelow(0.8f) && super.nobelPhantasmCheck();
+        return this.healthBelow(0.5f) && super.nobelPhantasmCheck();
     }
 
     protected boolean canSummonMounts() {
@@ -394,8 +415,6 @@ public class Iskander extends BaseServant {
 
     public void summonChariot() {
         if (this.isPassenger() || this.level().isClientSide)
-            return;
-        if (!this.attemptUseNobelPhantasm())
             return;
         GordiusWheel wheel = FateEntities.GORDIUS_WHEEL.get().create(this.level());
         wheel.setPos(this.getX(), this.getY(), this.getZ());
@@ -426,6 +445,56 @@ public class Iskander extends BaseServant {
         }
         this.summonCooldown.use();
         this.revealServant();
+    }
+
+    public boolean canSummonHoplites() {
+        return this.armySummonCooldown.canUse() && this.level().getEntitiesOfClass(Hoplite.class, this.getBoundingBox().inflate(32), e -> this.getUUID().equals(e.getOwnerUUID())).size() < this.props().getConfig(ServantExtraData.MAX_NEARBY_ARMY);
+    }
+
+    public void summonArmy() {
+        if (!(this.level() instanceof ServerLevel level))
+            return;
+        int amount = this.getRandom().nextIntBetweenInclusive(3, 6);
+        Hoplite last = null;
+        for (int i = 0; i < amount; i++) {
+            Hoplite hoplite = FateEntities.HOPLITE.get().create(level, b -> b.setOwner(this), this.blockPosition(), MobSpawnType.MOB_SUMMONED, false, false);
+            for (int tries = 0; tries < 4; tries++) {
+                double x = this.getX() + this.random.nextInt(10) - 5.0;
+                double y = this.getY() + this.random.nextInt(3) - 1.0;
+                double z = this.getZ() + this.random.nextInt(10) - 5.0;
+                BlockPos pos = this.firstNonSolidBelow(x, y, z);
+                if (pos == null)
+                    continue;
+                hoplite.absMoveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, this.getRandom().nextFloat() * 360.0f, 0.0f);
+                if (level.noCollision(hoplite)) {
+                    if (this.getRandom().nextFloat() < this.props().getConfig(ServantExtraData.STRONG_HOPLITE_CHANCE)) {
+                        hoplite.setIronArmor(true);
+                    }
+                    level.addFreshEntity(hoplite);
+                    last = hoplite;
+                    break;
+                }
+            }
+        }
+        if (last != null) {
+            for (Mob mob : this.level().getEntitiesOfClass(Mob.class, this.getBoundingBox().inflate(32))) {
+                if (mob.getTarget() == this)
+                    mob.setTarget(last);
+            }
+        }
+        this.armySummonCooldown.use();
+    }
+
+    private BlockPos firstNonSolidBelow(double x, double y, double z) {
+        BlockPos.MutableBlockPos blockpos = BlockPos.containing(x, y, z).mutable();
+        while (blockpos.getY() > this.level().getMinBuildHeight()) {
+            BlockState blockstate = this.level().getBlockState(blockpos.below());
+            if (blockstate.blocksMotion()) {
+                return blockpos.immutable();
+            }
+            blockpos.move(Direction.DOWN);
+        }
+        return null;
     }
 
     @Override
