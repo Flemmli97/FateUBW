@@ -28,6 +28,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -96,6 +97,9 @@ public class RealityMarbleHandler extends SavedData {
         ServerLevel target = creator.getServer().getLevel(targetLevel);
         if (target == null)
             return;
+        List<Entity> vehicles = new ArrayList<>();
+        entities.forEach(entity -> this.addVehicles(vehicles, entity, entities));
+        entities.addAll(vehicles);
         RealityMarbleGroup current = this.getGroupOf(creator);
         RealityMarbleGroup group = new RealityMarbleGroup(UUID.randomUUID(), creator.getUUID(),
                 current != null ? current.sourceLevel() : creator.level().dimension(), targetLevel, entities
@@ -104,6 +108,14 @@ public class RealityMarbleHandler extends SavedData {
         this.overrideAndTransportEntity(creator, target, group);
         this.entityGroups.put(group.id(), group);
         this.setDirty();
+    }
+
+    private void addVehicles(List<Entity> vehicles, Entity current, List<Entity> entities) {
+        Entity vehicle = current.getVehicle();
+        if (vehicle != null && !entities.contains(vehicle)) {
+            vehicles.add(vehicle);
+            this.addVehicles(vehicles, vehicle, entities);
+        }
     }
 
     public void onEntityLoad(Entity entity) {
@@ -148,13 +160,14 @@ public class RealityMarbleHandler extends SavedData {
     }
 
     private void teleportEntityTo(Entity entity, ServerLevel targetLevel) {
+        entity = entity.getRootVehicle();
         if (entity.level().dimension().equals(targetLevel.dimension()))
             return;
         double scale = DimensionType.getTeleportationScale(entity.level().dimensionType(), targetLevel.dimensionType());
         Vec3 pos = entity.position().multiply(scale, 1, scale);
         BlockPos blockPos = BlockPos.containing(pos);
         int height = targetLevel.getChunkAt(blockPos).getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, blockPos.getX(), blockPos.getZ()) + 1;
-        AABB aabb = entity.getBoundingBox()
+        AABB aabb = this.collectiveBB(entity, null).toAABB()
                 .move(-entity.getX(), -entity.getY(), -entity.getZ())
                 .move(pos.x(), height, pos.z());
         while (!targetLevel.noCollision(entity, aabb)) {
@@ -162,7 +175,16 @@ public class RealityMarbleHandler extends SavedData {
             aabb = aabb.move(0, 1, 0);
         }
         int finalHeight = height;
-        entity.getServer().tell(new TickTask(1, () -> entity.changeDimension(new DimensionTransition(targetLevel, new Vec3(pos.x(), finalHeight, pos.z()), Vec3.ZERO, entity.getYRot(), entity.getXRot(), DimensionTransition.PLACE_PORTAL_TICKET))));
+        Entity toTeleport = entity;
+        entity.getServer().tell(new TickTask(1, () -> toTeleport.changeDimension(new DimensionTransition(targetLevel, new Vec3(pos.x(), finalHeight, pos.z()), Vec3.ZERO, toTeleport.getYRot(), toTeleport.getXRot(), DimensionTransition.PLACE_PORTAL_TICKET))));
+    }
+
+    private MutableAABB collectiveBB(Entity entity, MutableAABB bb) {
+        bb = bb == null ? new MutableAABB(entity.getBoundingBox()) : bb.merge(entity.getBoundingBox());
+        for (Entity passenger : entity.getPassengers()) {
+            this.collectiveBB(passenger, bb);
+        }
+        return bb;
     }
 
     /**
@@ -180,9 +202,9 @@ public class RealityMarbleHandler extends SavedData {
         this.setDirty();
     }
 
-    private void deleteGroupOf(Entity creator) {
+    public void deleteGroupOf(Entity creator) {
         RealityMarbleGroup current = this.getGroupOf(creator);
-        if (current == null)
+        if (current == null || !current.creator().equals(creator.getUUID()))
             return;
         ServerLevel serverLevel = (ServerLevel) creator.level();
         Collection<UUID> entities = Set.copyOf(current.entities());
@@ -273,5 +295,57 @@ public class RealityMarbleHandler extends SavedData {
                 instance.group(UUIDUtil.CODEC.fieldOf("group").forGetter(EntityMarbleData::group),
                                 ResourceKey.codec(Registries.DIMENSION).fieldOf("source_level").forGetter(EntityMarbleData::sourceLevel))
                         .apply(instance, EntityMarbleData::new));
+    }
+
+    private static class MutableAABB {
+
+        public double minX;
+        public double minY;
+        public double minZ;
+        public double maxX;
+        public double maxY;
+        public double maxZ;
+
+        public MutableAABB(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+            this.minX = minX;
+            this.minY = minY;
+            this.minZ = minZ;
+            this.maxX = maxX;
+            this.maxY = maxY;
+            this.maxZ = maxZ;
+        }
+
+        public MutableAABB(AABB aabb) {
+            this.minX = aabb.minX;
+            this.minY = aabb.minY;
+            this.minZ = aabb.minZ;
+            this.maxX = aabb.maxX;
+            this.maxY = aabb.maxY;
+            this.maxZ = aabb.maxZ;
+        }
+
+        public MutableAABB merge(AABB aabb) {
+            this.minX = Math.min(this.minX, aabb.minX);
+            this.minY = Math.min(this.minY, aabb.minY);
+            this.minZ = Math.min(this.minZ, aabb.minZ);
+            this.maxX = Math.max(this.maxX, aabb.maxX);
+            this.maxY = Math.max(this.maxY, aabb.maxY);
+            this.maxZ = Math.max(this.maxZ, aabb.maxZ);
+            return this;
+        }
+
+        public MutableAABB merge(MutableAABB aabb) {
+            this.minX = Math.min(this.minX, aabb.minX);
+            this.minY = Math.min(this.minY, aabb.minY);
+            this.minZ = Math.min(this.minZ, aabb.minZ);
+            this.maxX = Math.max(this.maxX, aabb.maxX);
+            this.maxY = Math.max(this.maxY, aabb.maxY);
+            this.maxZ = Math.max(this.maxZ, aabb.maxZ);
+            return this;
+        }
+
+        public AABB toAABB() {
+            return new AABB(this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ);
+        }
     }
 }
