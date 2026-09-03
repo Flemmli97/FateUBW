@@ -4,6 +4,8 @@ import com.mojang.datafixers.util.Pair;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.misc.SpearProjectile;
+import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
+import io.github.flemmli97.fateubw.common.registry.FateDimensions;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.SelectableBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetWalkTargetAwayFromTarget;
@@ -52,6 +54,8 @@ public class Hoplite extends SummonedEntity {
     private float shieldHealth;
     private int shieldCooldown, stopBlockingTick;
     private int spearRegen;
+
+    private int wrongDimensionTicker = 300;
 
     public Hoplite(EntityType<? extends Hoplite> type, Level level) {
         super(type, level);
@@ -108,7 +112,7 @@ public class Hoplite extends SummonedEntity {
 
     @Override
     protected Pair<Integer, Integer> followRange() {
-        return Pair.of(12, 32);
+        return Pair.of(12, 48);
     }
 
     @Override
@@ -163,6 +167,15 @@ public class Hoplite extends SummonedEntity {
                 this.entityData.set(HAS_SPEAR, true);
                 this.playSound(SoundEvents.ANVIL_USE, 1, 1);
             }
+            if (this.level().dimension().equals(FateDimensions.SAND_DUNES.dimension())) {
+                this.wrongDimensionTicker = 300;
+            } else {
+                --this.wrongDimensionTicker;
+                if (this.wrongDimensionTicker <= 0) {
+                    this.wrongDimensionTicker = 20;
+                    this.hurt(FateDamageTypes.create(FateDamageTypes.GRAIL, this.registryAccess()), this.getMaxHealth() * 0.1f);
+                }
+            }
         }
     }
 
@@ -204,19 +217,21 @@ public class Hoplite extends SummonedEntity {
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        if (!source.is(DamageTypeTags.BYPASSES_SHIELD) && this.isBlockingShield()) {
-            amount *= 0.5f;
-            this.shieldHealth -= Math.clamp(amount, 0.0f, 5.0f);
-            if (this.shieldHealth <= 0.0f) {
-                this.playSound(SoundEvents.ZOMBIE_ATTACK_WOODEN_DOOR, 1, 1);
-                this.entityData.set(HAS_SHIELD, false);
-                this.entityData.set(BLOCKING, false);
-                this.shieldCooldown = 100;
-            } else {
-                this.playSound(SoundEvents.SHIELD_BLOCK, 1, 1);
+        if (!source.is(DamageTypeTags.BYPASSES_SHIELD)) {
+            if (this.isBlockingShield()) {
+                amount *= 0.5f;
+                this.shieldHealth -= Math.clamp(amount, 0.0f, 5.0f);
+                if (this.shieldHealth <= 0.0f) {
+                    this.playSound(SoundEvents.ZOMBIE_ATTACK_WOODEN_DOOR, 1, 1);
+                    this.entityData.set(HAS_SHIELD, false);
+                    this.entityData.set(BLOCKING, false);
+                    this.shieldCooldown = 100;
+                } else {
+                    this.playSound(SoundEvents.SHIELD_BLOCK, 1, 1);
+                }
             }
+            this.startBlockWithShield();
         }
-        this.startBlockWithShield();
         return super.hurt(source, amount);
     }
 
@@ -259,9 +274,9 @@ public class Hoplite extends SummonedEntity {
         projectile.setPos(this.getX() + side.x(), this.getY() + this.getEyeHeight() - 0.1, this.getZ() + side.z());
         if (this.getTarget() != null) {
             Vec3 pos = this.getTarget().position();
-            projectile.shootAtPosition(pos.x(), this.getTarget().getY(1), pos.z(), 1.3f, 0);
+            projectile.shootAtPosition(pos.x(), this.getTarget().getY(1), pos.z(), 1.2f, 0);
         } else {
-            projectile.shootFromRotation(this, this.getViewXRot(1) - 15, this.getViewYRot(1), 0.0F, 1.3f, 0);
+            projectile.shootFromRotation(this, this.getViewXRot(1) - 15, this.getViewYRot(1), 0.0F, 1.2f, 0);
         }
         this.playSound(SoundEvents.TRIDENT_THROW.value(), 1, 1);
         this.level().addFreshEntity(projectile);
