@@ -1,21 +1,14 @@
 package io.github.flemmli97.fateubw.common.entity.summons;
 
 import io.github.flemmli97.fateubw.Fate;
-import io.github.flemmli97.fateubw.api.datapack.AttributeHolderProperties;
-import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
-import io.github.flemmli97.fateubw.common.entity.ai.behaviour.SetTargetFromRider;
-import io.github.flemmli97.fateubw.common.entity.utils.MoveStateTracker;
 import io.github.flemmli97.fateubw.common.entity.utils.MoveType;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
-import io.github.flemmli97.tenshilib.common.entity.AOEAttackEntity;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.SelectableBehaviourBuilder;
-import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetMoveToRestriction;
-import io.github.flemmli97.tenshilib.common.entity.animated.AnimatedEntity;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionContainer;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
@@ -25,43 +18,27 @@ import io.github.flemmli97.tenshilib.common.entity.data.SyncedMobDataHandler;
 import io.github.flemmli97.tenshilib.common.registry.TenshilibSyncableEntityDatas;
 import io.github.flemmli97.tenshilib.common.utils.TypedResource;
 import io.github.flemmli97.tenshilib.common.utils.math.OrientedBoundingBox;
-import net.minecraft.network.protocol.game.DebugPackets;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.ai.Brain;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.tslat.smartbrainlib.api.SmartBrainOwner;
-import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
-import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
-import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliate;
-import net.tslat.smartbrainlib.api.core.navigation.SmoothGroundNavigation;
-import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
-public class Bucephalos extends PathfinderMob implements AnimatedEntity, AOEAttackEntity, SyncedMobDataHandler, SmartBrainOwner<Bucephalos> {
+public class Bucephalos extends SummonedEntity implements SyncedMobDataHandler {
 
-    private static final EntityDataAccessor<Byte> MOVE_FLAGS = SynchedEntityData.defineId(Bucephalos.class, EntityDataSerializers.BYTE);
     private static final float ATTACK_MOVE_SPEED = 1.5f;
 
     public static final TypedResource<Vec3> CHARGE_MOTION = new TypedResource<>(Fate.modRes("charge_motion"));
@@ -74,8 +51,6 @@ public class Bucephalos extends PathfinderMob implements AnimatedEntity, AOEAtta
 
     public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
 
-    public final Predicate<LivingEntity> targetPred = Utils.summonTargetPredicate(this);
-
     private final AnimationHandler<Bucephalos> animationHandler = new AnimationHandler<>(this, ANIMS)
             .withChangeListener(anim -> {
                 if (!this.level().isClientSide && anim != null && anim.is(CHARGE)) {
@@ -87,31 +62,10 @@ public class Bucephalos extends PathfinderMob implements AnimatedEntity, AOEAtta
     private final SyncedDataContainer<Bucephalos> syncedDataContainer = SyncedDataContainer.builder(this)
             .define(CHARGE_MOTION, TenshilibSyncableEntityDatas.VEC_3.get(), null).build();
 
-    private final MoveStateTracker moveStateTracker = new MoveStateTracker(this, 2, MOVE_FLAGS, this::calculateMoveType);
+    private int gallopSoundCounter;
 
     public Bucephalos(EntityType<? extends Bucephalos> type, Level level) {
         super(type, level);
-        if (!level.isClientSide) {
-            this.updateAttributes();
-        }
-    }
-
-    private void updateAttributes() {
-        AttributeHolderProperties props = DatapackHandler.SERVANT_PROPS.getGeneric(this.getType());
-        props.attributes().forEach((att, val) -> {
-            AttributeInstance inst = this.getAttribute(att);
-            if (inst != null) {
-                inst.setBaseValue(val);
-                if (att == Attributes.MAX_HEALTH)
-                    this.setHealth(this.getMaxHealth());
-            }
-        });
-    }
-
-    @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
-        builder.define(MOVE_FLAGS, (byte) 0);
     }
 
     @Override
@@ -120,44 +74,6 @@ public class Bucephalos extends PathfinderMob implements AnimatedEntity, AOEAtta
     }
 
     @Override
-    protected PathNavigation createNavigation(Level level) {
-        return new SmoothGroundNavigation(this, level);
-    }
-
-    @Override
-    public List<? extends ExtendedSensor<? extends Bucephalos>> getSensors() {
-        return List.of();
-    }
-
-    @Override
-    public BrainActivityGroup<? extends Bucephalos> getCoreTasks() {
-        return BrainActivityGroup.coreTasks(
-                new FloatToSurfaceOfFluid<GordiusWheel>(),
-                new SetTargetFromRider<>());
-    }
-
-    @Override
-    public BrainActivityGroup<? extends Bucephalos> getIdleTasks() {
-        return BrainActivityGroup.idleTasks(
-                new MoveToWalkTarget<>(),
-                new FirstApplicableBehaviour<>(
-                        new TargetOrRetaliate<GordiusWheel>(),
-                        new SetMoveToRestriction<GordiusWheel>(),
-                        new SetRandomWalkTarget<>().startCondition(m -> m.getRandom().nextInt(120) == 0)
-                )
-        );
-    }
-
-    @Override
-    public BrainActivityGroup<? extends Bucephalos> getFightTasks() {
-        return BrainActivityGroup.fightTasks(
-                new InvalidateAttackTarget<Bucephalos>(),
-                this.getCooldownAI().startCondition(BehaviourUtils::runCooldownBehaviour)
-                        .stopIf(e -> !BehaviourUtils.runCooldownBehaviour(e)),
-                this.getCombatAI().startCondition(BehaviourUtils::runCombatBehaviour)
-        );
-    }
-
     public ExtendedBehaviour<? extends Bucephalos> getCombatAI() {
         return AttackBehaviourBuilder.<Bucephalos>create()
                 .start(STOMP).play(BehaviourUtils.cooldownedPlay(true, 20, 45))
@@ -178,23 +94,13 @@ public class Bucephalos extends PathfinderMob implements AnimatedEntity, AOEAtta
                 .build();
     }
 
+    @Override
     public ExtendedBehaviour<? extends Bucephalos> getCooldownAI() {
         return SelectableBehaviourBuilder.<Bucephalos>builder()
                 .add(7, new SetWalkTargetToAttackTarget<Bucephalos>().speedMod((owner, target) -> ATTACK_MOVE_SPEED), BehaviourUtils.moveTo())
                 .add(5, BehaviourUtils.withCondition(BehaviourUtils.ifCloserThan(7)),
                         new SetRandomWalkTarget<Bucephalos>().speedModifier(ATTACK_MOVE_SPEED).setRadius(12, 5), BehaviourUtils.moveTo())
                 .build();
-    }
-
-    @Override
-    protected Brain.Provider<?> brainProvider() {
-        return new SmartBrainProvider<>(this);
-    }
-
-    @Override
-    protected void sendDebugPackets() {
-        super.sendDebugPackets();
-        DebugPackets.sendEntityBrain(this);
     }
 
     @Override
@@ -213,52 +119,6 @@ public class Bucephalos extends PathfinderMob implements AnimatedEntity, AOEAtta
     }
 
     @Override
-    public boolean removeWhenFarAway(double dist) {
-        return false;
-    }
-
-    @Override
-    public void aiStep() {
-        super.aiStep();
-        this.getAnimationHandler().tick();
-        this.moveStateTracker.tick();
-        if (!this.level().isClientSide) {
-            this.getAnimationHandler().runIfNotNull(this::handleAttack);
-        }
-    }
-
-    @Override
-    protected void customServerAiStep() {
-        super.customServerAiStep();
-        this.tickBrain(this);
-    }
-
-    public float interpolatedMoveTick(float partialTick) {
-        return this.moveStateTracker.interpolatedMoveTick(partialTick);
-    }
-
-    public float interpolatedMoveTickOf(MoveType type, float partialTick) {
-        return this.moveStateTracker.interpolatedMoveTickOf(type, partialTick);
-    }
-
-    public MoveType calculateMoveType() {
-        if (this.getControllingPassenger() instanceof Player || !this.walkAnimation.isMoving()) {
-            return MoveType.NONE;
-        }
-        if (this.isImmobile())
-            return MoveType.NONE;
-        double d0 = this.getMoveControl().getSpeedModifier();
-        MoveType move;
-        if (d0 > 1) {
-            move = MoveType.RUN;
-        } else if (d0 <= 0.8) {
-            move = MoveType.SNEAK;
-        } else {
-            move = MoveType.WALK;
-        }
-        return move;
-    }
-
     public void handleAttack(AnimationState anim) {
         if (anim.is(CHARGE)) {
             if (!anim.isPast("charge_start")) {
@@ -313,23 +173,7 @@ public class Bucephalos extends PathfinderMob implements AnimatedEntity, AOEAtta
         }
     }
 
-    public void mobAttack(AnimationState anim, LivingEntity target, Consumer<LivingEntity> cons) {
-        OrientedBoundingBox obb = this.prepareAttackBox(anim.getAnimation(), target, 0.2, false);
-        this.level().getEntitiesOfClass(LivingEntity.class, obb.getEncompassingBox(),
-                entity -> this.targetPred.test(entity) && obb.intersects(entity.getBoundingBox())).forEach(cons);
-        if (!this.level().isClientSide)
-            S2CAttackDebug.sendDebugPacket(obb, S2CAttackDebug.EnumAABBType.ATTACK, this);
-    }
-
     @Override
-    public OrientedBoundingBox prepareAttackBox(String anim, Entity target, double grow, boolean debug) {
-        OrientedBoundingBox obb = this.calculateAttackAABB(this.getAnimationHandler().createDefaulted(anim),
-                grow);
-        if (debug)
-            S2CAttackDebug.sendDebugPacket(obb, S2CAttackDebug.EnumAABBType.ATTEMPT, this);
-        return obb;
-    }
-
     public OrientedBoundingBox calculateAttackAABB(AnimationState anim, double grow) {
         if (anim.is(CHARGE)) {
             AABB aabb = OrientedBoundingBox.originAABB(this).inflate(grow).expandTowards(this.getDeltaMovement());
@@ -357,5 +201,37 @@ public class Bucephalos extends PathfinderMob implements AnimatedEntity, AOEAtta
     @Override
     public AnimationHandler<Bucephalos> getAnimationHandler() {
         return this.animationHandler;
+    }
+
+    @Override
+    protected void playStepSound(BlockPos pos, BlockState block) {
+        if (!block.liquid()) {
+            BlockState blockstate = this.level().getBlockState(pos.above());
+            SoundType soundType = block.getSoundType();
+            if (blockstate.is(Blocks.SNOW)) {
+                soundType = blockstate.getSoundType();
+            }
+
+            if (this.interpolatedMoveTickOf(MoveType.RUN, 1) == 1) {
+                this.gallopSoundCounter++;
+                if (this.gallopSoundCounter > 5 && this.gallopSoundCounter % 3 == 0) {
+                    this.playSound(SoundEvents.HORSE_GALLOP, soundType.getVolume() * 0.15F, soundType.getPitch());
+                } else if (this.gallopSoundCounter <= 5) {
+                    this.playSound(SoundEvents.HORSE_STEP_WOOD, soundType.getVolume() * 0.15F, soundType.getPitch());
+                }
+            } else if (this.isWoodSoundType(soundType)) {
+                this.playSound(SoundEvents.HORSE_STEP_WOOD, soundType.getVolume() * 0.15F, soundType.getPitch());
+            } else {
+                this.playSound(SoundEvents.HORSE_STEP, soundType.getVolume() * 0.15F, soundType.getPitch());
+            }
+        }
+    }
+
+    private boolean isWoodSoundType(SoundType soundType) {
+        return soundType == SoundType.WOOD
+                || soundType == SoundType.NETHER_WOOD
+                || soundType == SoundType.STEM
+                || soundType == SoundType.CHERRY_WOOD
+                || soundType == SoundType.BAMBOO_WOOD;
     }
 }

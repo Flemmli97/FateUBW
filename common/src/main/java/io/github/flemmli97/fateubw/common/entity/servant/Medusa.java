@@ -488,14 +488,16 @@ public class Medusa extends BaseServant implements OnProjectileHit {
         if (this.level() instanceof ServerLevel serverLevel) {
             if (!this.attemptUseNobelPhantasm())
                 return;
-            Pegasus peg = FateEntities.PEGASUS.get().create(serverLevel, null, this.blockPosition(), MobSpawnType.MOB_SUMMONED, false, false);
-            peg.setPos(this.position());
-            peg.setYRot(this.getYRot());
-            peg.yRotO = this.getYRot();
-            peg.yHeadRot = this.getYRot();
-            peg.yHeadRotO = this.getYRot();
-            peg.yBodyRot = this.getYRot();
-            peg.yBodyRotO = this.getYRot();
+            Pegasus peg = FateEntities.PEGASUS.get().create(serverLevel, e -> {
+                e.setPos(this.position());
+                e.setYRot(this.getYRot());
+                e.yRotO = this.getYRot();
+                e.yHeadRot = this.getYRot();
+                e.yHeadRotO = this.getYRot();
+                e.yBodyRot = this.getYRot();
+                e.yBodyRotO = this.getYRot();
+                e.setOwner(this);
+            }, this.blockPosition(), MobSpawnType.MOB_SUMMONED, false, false);
             this.level().addFreshEntity(peg);
             this.startRiding(peg, true);
             this.revealServant();

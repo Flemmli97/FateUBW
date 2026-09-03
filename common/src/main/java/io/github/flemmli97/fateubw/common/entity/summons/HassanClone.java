@@ -1,40 +1,31 @@
 package io.github.flemmli97.fateubw.common.entity.summons;
 
 import io.github.flemmli97.fateubw.Fate;
-import io.github.flemmli97.fateubw.api.datapack.AttributeHolderProperties;
-import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.MoveBehindBehaviour;
 import io.github.flemmli97.fateubw.common.entity.misc.ThrownItemEntity;
 import io.github.flemmli97.fateubw.common.entity.servant.Hassan;
-import io.github.flemmli97.fateubw.common.entity.utils.MoveStateTracker;
-import io.github.flemmli97.fateubw.common.entity.utils.MoveType;
 import io.github.flemmli97.fateubw.common.entity.utils.ServantModelLike;
-import io.github.flemmli97.fateubw.common.entity.utils.TargetableOpponent;
 import io.github.flemmli97.fateubw.common.lib.FateTags;
-import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailHolder;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailHolderProvider;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailProvider;
 import io.github.flemmli97.fateubw.common.registry.FateAttributes;
-import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
-import io.github.flemmli97.tenshilib.common.entity.AOEAttackEntity;
-import io.github.flemmli97.tenshilib.common.entity.EntityUtils;
+import io.github.flemmli97.tenshilib.common.entity.ai.TargetPosition;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.SelectableBehaviourBuilder;
-import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetMoveToRestriction;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetWalkTargetAwayFromTarget;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetWalkTargetWithinDist;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.data.AnimationPlayHolder;
-import io.github.flemmli97.tenshilib.common.entity.animated.AnimatedEntity;
+import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinition;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionContainer;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
@@ -51,10 +42,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.DebugPackets;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -62,7 +49,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
@@ -72,11 +58,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.OwnableEntity;
-import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.SpawnGroupData;
-import net.minecraft.world.entity.ai.Brain;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -86,55 +68,24 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
-import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
-import net.tslat.smartbrainlib.api.core.behaviour.AllApplicableBehaviours;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
-import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
-import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtAttackTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FollowEntity;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.InteractWithDoor;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetPlayerLookTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliate;
-import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
-import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
-import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
-import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyPlayersSensor;
 import net.tslat.smartbrainlib.util.BrainUtils;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
-import java.util.List;
-import java.util.UUID;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-
-public class HassanClone extends PathfinderMob implements AnimatedEntity, OwnableEntity, AOEAttackEntity, TargetableOpponent,
-        ServantModelLike, SmartBrainOwner<HassanClone>, SyncedMobDataHandler, EntityWeaponTrailHolderProvider {
+public class HassanClone extends SummonedEntity implements ServantModelLike, SyncedMobDataHandler, EntityWeaponTrailHolderProvider {
 
     public static final ResourceLocation BACKSTAB_MODIFIER = Fate.modRes("hassan_backstab");
 
-    protected static final EntityDataAccessor<Byte> MOVE_FLAGS = SynchedEntityData.defineId(HassanClone.class, EntityDataSerializers.BYTE);
-
     public static final AnimationDefinitionContainer ANIMS = Hassan.BUILDER.build();
 
-    private UUID ownerUUID;
-    private Hassan owner;
-
-    public final Predicate<LivingEntity> targetPred = Utils.servantTargetPredicate(this);
-
     private final AnimationHandler<HassanClone> animationHandler = new AnimationHandler<>(this, ANIMS).withChangeListener(anim -> {
-        if (anim != null && this.getTarget() != null)
-            this.targetPosition = this.getTarget().position();
+        if (anim != null)
+            this.setupAttack(anim);
         if (anim == null || !anim.is(Hassan.SUMMON)) {
             if (!this.offHandCache.isEmpty()) {
                 this.setItemInHand(InteractionHand.OFF_HAND, this.offHandCache);
@@ -148,10 +99,8 @@ public class HassanClone extends PathfinderMob implements AnimatedEntity, Ownabl
         return false;
     });
 
-    private final SyncedDataContainer<HassanClone> syncedDataContainer;
-    private final MoveStateTracker moveStateTracker = new MoveStateTracker(this, BaseServant.MOVE_TICK_MAX, MOVE_FLAGS, this::calculateMoveType);
-
-    protected Vec3 targetPosition;
+    private final SyncedDataContainer<HassanClone> syncedDataContainer = SyncedDataContainer.builder(this)
+            .define(BaseServant.TARGET_POSITION, TenshilibSyncableEntityDatas.TARGET_POS.get(), null).build();
 
     private ItemStack mainHandCache = ItemStack.EMPTY;
     private ItemStack offHandCache = ItemStack.EMPTY;
@@ -160,44 +109,11 @@ public class HassanClone extends PathfinderMob implements AnimatedEntity, Ownabl
 
     public HassanClone(EntityType<? extends HassanClone> type, Level level) {
         super(type, level);
-        SyncedDataContainer.Builder<HassanClone> builder = SyncedDataContainer.builder(this);
-        this.definedAdditinoalSyncedData(builder);
-        this.syncedDataContainer = builder.build();
-        if (!level.isClientSide) {
-            this.updateAttributes();
-        }
-    }
-
-    public HassanClone(Level level, Hassan entityHassan) {
-        this(FateEntities.HASSAN_COPY.get(), level);
-        this.setOriginal(entityHassan);
-    }
-
-    @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
-        builder.define(MOVE_FLAGS, (byte) 0);
-    }
-
-    protected void definedAdditinoalSyncedData(SyncedDataContainer.Builder<HassanClone> builder) {
-        builder.define(BaseServant.TARGET_POSITION, TenshilibSyncableEntityDatas.TARGET_POS.get(), null);
     }
 
     @Override
     public SyncedDataContainer<?> getDataContainer() {
         return this.syncedDataContainer;
-    }
-
-    private void updateAttributes() {
-        AttributeHolderProperties props = DatapackHandler.SERVANT_PROPS.getGeneric(this.getType());
-        props.attributes().forEach((att, val) -> {
-            AttributeInstance inst = this.getAttribute(att);
-            if (inst != null) {
-                inst.setBaseValue(val);
-                if (att == Attributes.MAX_HEALTH)
-                    this.setHealth(this.getMaxHealth());
-            }
-        });
     }
 
     @Override
@@ -220,66 +136,13 @@ public class HassanClone extends PathfinderMob implements AnimatedEntity, Ownabl
     }
 
     @Override
-    public List<? extends ExtendedSensor<? extends HassanClone>> getSensors() {
-        return List.of(new NearbyPlayersSensor<>(),
-                new NearbyLivingEntitySensor<HassanClone>()
-                        .setPredicate((target, entity) -> entity.getOwner() != null && entity.getOwner().getTarget() == target)
-                        .setScanRate(e -> 10),
-                new HurtBySensor<HassanClone>().setPredicate((source, entity) -> {
-                    if (source.getEntity() instanceof LivingEntity attacker)
-                        return !Utils.alliedTo(entity, attacker);
-                    return true;
-                }));
-    }
-
-    @Override
-    public BrainActivityGroup<? extends HassanClone> getCoreTasks() {
-        return BrainActivityGroup.coreTasks(
-                new FloatToSurfaceOfFluid<HassanClone>(),
-                new InteractWithDoor<>(),
-                new FollowEntity<HassanClone, Hassan>()
-                        .following(HassanClone::getOwner)
-                        .teleportToTargetAfter(17)
-                        .stopFollowingWithin(6)
-                        .speedMod(1.1f),
-                this.lookBehaviour(),
+    public BrainActivityGroup<? extends SummonedEntity> getCoreTasks() {
+        return super.getCoreTasks().behaviours(new InteractWithDoor<>(),
                 new LookAtTarget<>().runFor(entity -> entity.getRandom().nextIntBetweenInclusive(40, 100))
                         .whenStopping(m -> BrainUtils.clearMemory(m, MemoryModuleType.LOOK_TARGET)));
     }
 
-    protected ExtendedBehaviour<? extends HassanClone> lookBehaviour() {
-        return new AllApplicableBehaviours<HassanClone>(
-                new LookAtAttackTarget<>(),
-                new OneRandomBehaviour<>(
-                        new SetRandomLookTarget<>().lookChance(ConstantFloat.of(1)),
-                        new SetPlayerLookTarget<>()
-                ).startCondition(m -> m.getRandom().nextFloat() < 0.1 && !BrainUtils.hasMemory(m, MemoryModuleType.WALK_TARGET))
-        ).startCondition(e -> !BrainUtils.hasMemory(e, MemoryModuleType.ATTACK_TARGET) && !e.isSleeping()
-                && !e.getAnimationHandler().hasAnimation());
-    }
-
     @Override
-    public BrainActivityGroup<? extends HassanClone> getIdleTasks() {
-        return BrainActivityGroup.idleTasks(
-                new MoveToWalkTarget<>(),
-                new FirstApplicableBehaviour<>(
-                        new TargetOrRetaliate<HassanClone>(),
-                        new SetMoveToRestriction<HassanClone>(),
-                        new SetRandomWalkTarget<>().startCondition(m -> m.getRandom().nextInt(120) == 0)
-                )
-        );
-    }
-
-    @Override
-    public BrainActivityGroup<? extends HassanClone> getFightTasks() {
-        return BrainActivityGroup.fightTasks(
-                new InvalidateAttackTarget<HassanClone>(),
-                this.getCooldownAI().startCondition(BehaviourUtils::runCooldownBehaviour)
-                        .stopIf(e -> !BehaviourUtils.runCooldownBehaviour(e)),
-                this.getCombatAI().startCondition(BehaviourUtils::runCombatBehaviour)
-        );
-    }
-
     public ExtendedBehaviour<? extends HassanClone> getCombatAI() {
         return AttackBehaviourBuilder.<HassanClone>create()
                 .start(BehaviourUtils.of(AnimationPlayHolder.<HassanClone>builder(Hassan.DAGGER_1)
@@ -324,6 +187,7 @@ public class HassanClone extends PathfinderMob implements AnimatedEntity, Ownabl
                 .build();
     }
 
+    @Override
     public ExtendedBehaviour<? extends HassanClone> getCooldownAI() {
         return SelectableBehaviourBuilder.<HassanClone>builder()
                 .add(6, new SetWalkTargetToAttackTarget<>(), BehaviourUtils.moveTo())
@@ -332,38 +196,12 @@ public class HassanClone extends PathfinderMob implements AnimatedEntity, Ownabl
     }
 
     @Override
-    protected Brain.Provider<?> brainProvider() {
-        return new SmartBrainProvider<>(this);
-    }
-
-    @Override
-    protected void sendDebugPackets() {
-        super.sendDebugPackets();
-        DebugPackets.sendEntityBrain(this);
-    }
-
-    @Override
-    public boolean removeWhenFarAway(double dist) {
-        return false;
-    }
-
-    @Override
     public void aiStep() {
         super.aiStep();
-        this.getAnimationHandler().tick();
-        this.moveStateTracker.tick();
         if (!this.level().isClientSide) {
             if (this.tickCount > 200 && this.isAlive() && (this.getOwner() == null || !this.getOwner().isAlive())) {
                 this.hurt(this.damageSources().genericKill(), Integer.MAX_VALUE);
-                return;
             }
-            if (this.getTarget() == null) {
-                if (this.getFirstPassenger() instanceof Mob mob) {
-                    if (mob.getTarget() != this.getTarget())
-                        this.setTarget(mob.getTarget());
-                }
-            }
-            this.getAnimationHandler().runIfNotNull(this::handleAttack);
         } else {
             AnimationState anim = this.getAnimationHandler().getAnimation();
             if (anim != null) {
@@ -381,48 +219,8 @@ public class HassanClone extends PathfinderMob implements AnimatedEntity, Ownabl
     }
 
     @Override
-    public void customServerAiStep() {
-        super.customServerAiStep();
-        this.tickBrain(this);
-    }
-
-    protected boolean isMoving() {
-        return this.getDeltaMovement().x != 0 || this.getDeltaMovement().z != 0;
-    }
-
-    @Override
-    public float interpolatedMoveTick(float partialTick) {
-        return this.moveStateTracker.interpolatedMoveTick(partialTick);
-    }
-
-    @Override
-    public float interpolatedMoveTickOf(MoveType moveType, float partialTick) {
-        return this.moveStateTracker.interpolatedMoveTickOf(moveType, partialTick);
-    }
-
-    public MoveType calculateMoveType() {
-        if (this.getControllingPassenger() instanceof Player || !this.walkAnimation.isMoving()) {
-            return MoveType.NONE;
-        }
-        if (this.isImmobile())
-            return MoveType.NONE;
-        double d0 = this.getMoveControl().getSpeedModifier();
-        MoveType move;
-        if (d0 > 1 || this.getTarget() != null) {
-            move = MoveType.RUN;
-        } else if (d0 <= 0.8) {
-            move = MoveType.SNEAK;
-        } else {
-            move = MoveType.WALK;
-        }
-        return move;
-    }
-
-    @Override
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
-        if (this.ownerUUID != null)
-            tag.putUUID("Owner", this.ownerUUID);
         tag.put("MainHandCache", this.mainHandCache.save(this.registryAccess(), new CompoundTag()));
         tag.put("OffHandCache", this.offHandCache.save(this.registryAccess(), new CompoundTag()));
     }
@@ -430,12 +228,40 @@ public class HassanClone extends PathfinderMob implements AnimatedEntity, Ownabl
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
-        if (tag.hasUUID("Owner"))
-            this.ownerUUID = tag.getUUID("Owner");
         this.mainHandCache = ItemStack.parseOptional(this.registryAccess(), tag.getCompound("MainHandCache"));
         this.offHandCache = ItemStack.parseOptional(this.registryAccess(), tag.getCompound("OffHandCache"));
     }
 
+    public TargetPosition getTargetPosition() {
+        return this.getDataContainer().get(BaseServant.TARGET_POSITION);
+    }
+
+    public void setTargetPosition(LivingEntity target, boolean ranged) {
+        this.setTargetPosition(target == null ? null : ranged ? TargetPosition.reducedRangeOf(target) : TargetPosition.fullRangeOf(target));
+    }
+
+    public void setTargetPosition(TargetPosition position) {
+        this.getDataContainer().set(BaseServant.TARGET_POSITION, position);
+    }
+
+    @Nullable
+    public Vec3 tryGetTargetPosition(LivingEntity target) {
+        if (this.getTargetPosition() != null)
+            return this.getTargetPosition()
+                    .asVec(this.position());
+        return target != null ? target.position() : null;
+    }
+
+    public void setupAttack(AnimationDefinition anim) {
+        BrainUtils.clearMemory(this, MemoryModuleType.LOOK_TARGET);
+        if (this.getTarget() != null) {
+            this.setTargetPosition(this.getTarget(), false);
+            this.lookAt(this.getTarget(), 60, 30);
+        }
+        this.getNavigation().stop();
+    }
+
+    @Override
     public void handleAttack(AnimationState anim) {
         if (anim.is(Hassan.THROW)) {
             if (anim.isAt("attack")) {
@@ -446,13 +272,15 @@ public class HassanClone extends PathfinderMob implements AnimatedEntity, Ownabl
         } else {
             if (anim.is(Hassan.SUMMON))
                 return;
-            this.getNavigation().stop();
-            if (this.getTarget() != null) {
-                this.lookAt(this.getTarget(), 60, 90);
+            if (anim.isAt("step")) {
+                Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(0.35);
+                this.setDeltaMovement(this.getDeltaMovement().add(dir));
+            }
+            if (anim.isAt("attack")) {
+                this.playSound(FateSounds.SWOOSH_2.get(), 1, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.1f);
             }
             if (anim.isAt("attack")) {
                 this.mobAttack(anim, this.getTarget(), this::doHurtTarget);
-                this.targetPosition = null;
             }
         }
     }
@@ -488,24 +316,9 @@ public class HassanClone extends PathfinderMob implements AnimatedEntity, Ownabl
         return hurt;
     }
 
-    public void mobAttack(AnimationState anim, LivingEntity target, Consumer<LivingEntity> cons) {
-        OrientedBoundingBox obb = this.calculateAttackAABB(anim, this.targetPosition != null || target == null ? this.targetPosition : target.position(), 0.2);
-        this.level().getEntitiesOfClass(LivingEntity.class, obb.getEncompassingBox(),
-                entity -> this.targetPred.test(entity) && obb.intersects(entity.getBoundingBox())).forEach(cons);
-        if (!this.level().isClientSide)
-            S2CAttackDebug.sendDebugPacket(obb, S2CAttackDebug.EnumAABBType.ATTACK, this);
-    }
-
     @Override
-    public OrientedBoundingBox prepareAttackBox(String anim, Entity target, double grow, boolean debug) {
-        OrientedBoundingBox obb = this.calculateAttackAABB(this.getAnimationHandler().createDefaulted(anim),
-                target != null ? target.position() : null, grow);
-        if (debug)
-            S2CAttackDebug.sendDebugPacket(obb, S2CAttackDebug.EnumAABBType.ATTEMPT, this);
-        return obb;
-    }
-
-    public OrientedBoundingBox calculateAttackAABB(AnimationState anim, @Nullable Vec3 target, double grow) {
+    public OrientedBoundingBox calculateAttackAABB(AnimationState anim, double grow) {
+        Vec3 target = this.tryGetTargetPosition(this.getTarget());
         float yRot = this.getYHeadRot();
         float xRot = this.getXRot();
         if (this.getControllingPassenger() instanceof Player player) {
@@ -551,11 +364,6 @@ public class HassanClone extends PathfinderMob implements AnimatedEntity, Ownabl
     }
 
     @Override
-    public Predicate<LivingEntity> validTargetPredicate() {
-        return this.targetPred;
-    }
-
-    @Override
     public boolean hurt(DamageSource damageSource, float damage) {
         if (damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             return super.hurt(damageSource, damage);
@@ -577,18 +385,6 @@ public class HassanClone extends PathfinderMob implements AnimatedEntity, Ownabl
     }
 
     @Override
-    public UUID getOwnerUUID() {
-        return this.ownerUUID;
-    }
-
-    @Override
-    public Hassan getOwner() {
-        if ((this.owner == null || !this.owner.isAlive()) && this.getOwnerUUID() != null)
-            this.owner = EntityUtils.findFromUUID(Hassan.class, this.level(), this.getOwnerUUID());
-        return this.owner;
-    }
-
-    @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType reason, SpawnGroupData data) {
         super.finalizeSpawn(world, difficulty, reason, data);
         this.populateDefaultEquipmentSlots(this.getRandom(), difficulty);
@@ -598,11 +394,6 @@ public class HassanClone extends PathfinderMob implements AnimatedEntity, Ownabl
             this.getAnimationHandler().setAnimation(Hassan.SUMMON);
         }
         return data;
-    }
-
-    public void setOriginal(Hassan entityHassan) {
-        this.ownerUUID = entityHassan.getUUID();
-        this.owner = entityHassan;
     }
 
     @Override

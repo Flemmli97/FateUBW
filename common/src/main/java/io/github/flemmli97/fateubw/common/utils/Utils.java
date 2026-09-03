@@ -104,18 +104,27 @@ public class Utils {
         };
     }
 
-    public static Predicate<LivingEntity> summonTargetPredicate(Mob entity) {
+    public static <T extends Mob & OwnableEntity> Predicate<LivingEntity> summonTargetPredicate(T entity) {
         return target -> {
-            if (target == entity || Utils.alliedTo(entity, target))
+            if (target == entity || !entity.canAttack(target) || Utils.alliedTo(entity, target))
                 return false;
             if (entity.getTarget() == target)
                 return true;
+            LivingEntity owner = entity.getOwner();
+            if (owner != null) {
+                if (owner instanceof Mob mob && mob.getTarget() == target)
+                    return true;
+                if (owner.getLastAttacker() == target)
+                    return true;
+            }
+            if (entity.hasPassenger(target))
+                return false;
             if (entity.getFirstPassenger() instanceof Mob mob && target == mob.getTarget())
                 return true;
             if (entity.getFirstPassenger() instanceof BaseServant servant) {
                 return servant.targetPred.test(target);
             }
-            return entity.canAttack(target) && !entity.hasPassenger(target);
+            return false;
         };
     }
 

@@ -46,9 +46,14 @@ public class HopliteModel<T extends Hoplite> extends ExtendedEntityModel<T> {
         this.shield.visible = entity.hasShield();
         this.spear.visible = entity.hasSpear();
         if (entity.deathTime <= 0) {
-            this.animation.get().doAnimation(this, entity.isBlockingShield() ? "block" : "idle", entity.tickCount, partialTick);
-            this.animation.get().doAnimation(this, entity.isBlockingShield() ? "block_walk" : "walk", entity.tickCount, partialTick, entity.interpolatedMoveTick(partialTick));
-            this.animation.get().doAnimation(this, "run", entity.tickCount, partialTick, entity.interpolatedMoveTickOf(MoveType.RUN, partialTick));
+            if (entity.isBlockingShield()) {
+                this.animation.get().doAnimation(this, "block", entity.tickCount, partialTick);
+                this.animation.get().doAnimation(this, "block_walk", entity.tickCount, partialTick, entity.interpolatedMoveTick(partialTick));
+            } else {
+                this.animation.get().doAnimation(this, "idle", entity.tickCount, partialTick);
+                this.animation.get().doAnimation(this, "walk", entity.tickCount, partialTick, entity.interpolatedMoveTick(partialTick));
+                this.animation.get().doAnimation(this, "run", entity.tickCount, partialTick, entity.interpolatedMoveTickOf(MoveType.RUN, partialTick));
+            }
         }
         if (this.riding) {
             this.animation.get().doAnimation(this, "riding_pre", entity.tickCount, partialTick, 1);

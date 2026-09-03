@@ -10,6 +10,7 @@ import io.github.flemmli97.fateubw.common.entity.utils.ServantModelLike;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailProvider;
+import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.registry.FateSounds;
@@ -48,7 +49,6 @@ import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
@@ -336,7 +336,7 @@ public class Hassan extends BaseServant {
         ArrayList<HassanClone> list = new ArrayList<>();
         for (HassanClone e : this.level().getEntitiesOfClass(HassanClone.class, this.getBoundingBox().inflate(32))) {
             if (this.copies.contains(e.getUUID())) {
-                e.setOriginal(this);
+                e.setOwner(this);
                 list.add(e);
             }
         }
@@ -354,15 +354,16 @@ public class Hassan extends BaseServant {
     }
 
     public void summonClones() {
-        if (!this.level().isClientSide && this.gatherCopies().isEmpty()) {
+        if (this.level() instanceof ServerLevel level && this.gatherCopies().isEmpty()) {
             if (!this.attemptUseNobelPhantasm())
                 return;
             this.copies.clear();
             for (int i = 0; i < this.props().getConfig(ServantExtraData.HASSAN_COPIES); i++) {
-                HassanClone hassan = new HassanClone(this.level(), this);
-                hassan.moveTo(this.getX(), this.getY(), this.getZ(), Mth.wrapDegrees(this.level().random.nextFloat() * 360.0F), 0.0F);
-                hassan.finalizeSpawn((ServerLevelAccessor) this.level(), this.level().getCurrentDifficultyAt(this.blockPosition()), MobSpawnType.MOB_SUMMONED, null);
-                this.level().addFreshEntity(hassan);
+                HassanClone hassan = FateEntities.HASSAN_COPY.get().spawn(level, e -> {
+                            e.moveTo(this.getX(), this.getY(), this.getZ(), Mth.wrapDegrees(this.level().random.nextFloat() * 360.0F), 0.0F);
+                            e.setOwner(this);
+                        },
+                        this.blockPosition(), MobSpawnType.MOB_SUMMONED, false, false);
                 this.addCopy(hassan);
             }
             this.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 300, 1, true, false));

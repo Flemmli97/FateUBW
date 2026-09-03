@@ -10,11 +10,12 @@
   },
   "class": "fateubw:rider",
   "configs": {
-    "fateubw:army_summon_mana": {
+    "fateubw:army_summon_cooldown": {
       "type": "minecraft:uniform",
-      "max": 250.0,
-      "min": 60.0
+      "max": 500.0,
+      "min": 200.0
     },
+    "fateubw:max_nearby_army": 12,
     "fateubw:mount_summon_cooldown": {
       "type": "minecraft:uniform",
       "max": 600.0,

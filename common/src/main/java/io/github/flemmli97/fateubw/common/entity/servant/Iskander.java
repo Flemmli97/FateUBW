@@ -414,11 +414,13 @@ public class Iskander extends BaseServant {
     }
 
     public void summonChariot() {
-        if (this.isPassenger() || this.level().isClientSide)
+        if (this.isPassenger() || !(this.level() instanceof ServerLevel level))
             return;
-        GordiusWheel wheel = FateEntities.GORDIUS_WHEEL.get().create(this.level());
-        wheel.setPos(this.getX(), this.getY(), this.getZ());
-        this.level().addFreshEntity(wheel);
+        GordiusWheel wheel = FateEntities.GORDIUS_WHEEL.get().spawn(level, e -> {
+                    e.setPos(this.getX(), this.getY(), this.getZ());
+                    e.setOwner(this);
+                },
+                this.blockPosition(), MobSpawnType.MOB_SUMMONED, false, false);
         this.boardingCooldown = 0;
         this.startRiding(wheel);
         for (int i = 0; i < 5; i++) {
@@ -434,7 +436,11 @@ public class Iskander extends BaseServant {
     public void summonBucephalos() {
         if (this.isPassenger() || !(this.level() instanceof ServerLevel level))
             return;
-        Bucephalos bucephalos = FateEntities.BUCEPHALOS.get().spawn(level, b -> b.setPos(this.getX(), this.getY(), this.getZ()), this.blockPosition(), MobSpawnType.MOB_SUMMONED, false, false);
+        Bucephalos bucephalos = FateEntities.BUCEPHALOS.get().spawn(level, e -> {
+                    e.setPos(this.getX(), this.getY(), this.getZ());
+                    e.setOwner(this);
+                },
+                this.blockPosition(), MobSpawnType.MOB_SUMMONED, false, false);
         this.boardingCooldown = 0;
         this.startRiding(bucephalos);
         for (int i = 0; i < 5; i++) {

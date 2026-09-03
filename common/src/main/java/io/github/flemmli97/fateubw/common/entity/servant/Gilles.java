@@ -174,7 +174,7 @@ public class Gilles extends BaseServant {
     }
 
     public void summonMonster() {
-        if (!this.level().isClientSide) {
+        if (this.level() instanceof ServerLevel level) {
             if (this.canSummonMore()) {
                 int amount = 1;
                 if (this.getHealth() < 0.5 * this.getMaxHealth()) {
@@ -183,7 +183,8 @@ public class Gilles extends BaseServant {
                     amount += 1;
                 }
                 for (int i = 0; i < amount; i++) {
-                    LesserMonster minion = new LesserMonster(this.level(), this);
+                    LesserMonster minion = FateEntities.LESSER_MONSTER.get().create(level, e -> e.setOwner(this),
+                            this.blockPosition(), MobSpawnType.MOB_SUMMONED, false, false);
                     for (int j = 0; j < 10; j++) {
                         double x = this.getX() + this.random.nextInt(18) - 9;
                         double y = this.getY() + this.random.nextInt(4) - 2.0;

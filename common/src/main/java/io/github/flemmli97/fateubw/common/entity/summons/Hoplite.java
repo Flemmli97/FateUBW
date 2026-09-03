@@ -1,86 +1,42 @@
 package io.github.flemmli97.fateubw.common.entity.summons;
 
+import com.mojang.datafixers.util.Pair;
 import io.github.flemmli97.fateubw.Fate;
-import io.github.flemmli97.fateubw.api.datapack.AttributeHolderProperties;
-import io.github.flemmli97.fateubw.common.datapack.DatapackHandler;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.misc.SpearProjectile;
-import io.github.flemmli97.fateubw.common.entity.utils.MoveStateTracker;
-import io.github.flemmli97.fateubw.common.entity.utils.MoveType;
-import io.github.flemmli97.fateubw.common.entity.utils.TargetableOpponent;
-import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
-import io.github.flemmli97.fateubw.common.utils.Utils;
-import io.github.flemmli97.tenshilib.common.entity.AOEAttackEntity;
-import io.github.flemmli97.tenshilib.common.entity.EntityUtils;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.SelectableBehaviourBuilder;
-import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetMoveToRestriction;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetWalkTargetAwayFromTarget;
-import io.github.flemmli97.tenshilib.common.entity.animated.AnimatedEntity;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionContainer;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationsBuilder;
 import io.github.flemmli97.tenshilib.common.utils.math.OrientedBoundingBox;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.game.DebugPackets;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
-import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.OwnableEntity;
-import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.ai.Brain;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
-import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
-import net.tslat.smartbrainlib.api.core.behaviour.AllApplicableBehaviours;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
-import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
-import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtAttackTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetPlayerLookTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliate;
-import net.tslat.smartbrainlib.api.core.navigation.SmoothGroundNavigation;
-import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
-import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
-import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
-import net.tslat.smartbrainlib.util.BrainUtils;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-import java.util.UUID;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-
-public class Hoplite extends PathfinderMob implements AnimatedEntity, AOEAttackEntity, OwnableEntity, SmartBrainOwner<Hoplite>, TargetableOpponent {
+public class Hoplite extends SummonedEntity {
 
     public static final ResourceLocation IRON_MODIFIER = Fate.modRes("iron_modifier");
 
-    protected static final EntityDataAccessor<Byte> MOVE_FLAGS = SynchedEntityData.defineId(Hoplite.class, EntityDataSerializers.BYTE);
     protected static final EntityDataAccessor<Boolean> HAS_SHIELD = SynchedEntityData.defineId(Hoplite.class, EntityDataSerializers.BOOLEAN);
     protected static final EntityDataAccessor<Boolean> HAS_SPEAR = SynchedEntityData.defineId(Hoplite.class, EntityDataSerializers.BOOLEAN);
     protected static final EntityDataAccessor<Boolean> BLOCKING = SynchedEntityData.defineId(Hoplite.class, EntityDataSerializers.BOOLEAN);
@@ -91,14 +47,7 @@ public class Hoplite extends PathfinderMob implements AnimatedEntity, AOEAttackE
     public static final String THROW = BUILDER.add("throw", AnimationsBuilder.definition(1.76).marker("throw", 0.8));
     public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
 
-    public final Predicate<LivingEntity> targetPred = Utils.summonTargetPredicate(this);
-
-    private UUID ownerUUID;
-    private LivingEntity owner;
-
     private final AnimationHandler<Hoplite> animationHandler = new AnimationHandler<>(this, ANIMS);
-
-    private final MoveStateTracker moveStateTracker = new MoveStateTracker(this, 3, MOVE_FLAGS, this::calculateMoveType);
 
     private float shieldHealth;
     private int shieldCooldown, stopBlockingTick;
@@ -106,28 +55,12 @@ public class Hoplite extends PathfinderMob implements AnimatedEntity, AOEAttackE
 
     public Hoplite(EntityType<? extends Hoplite> type, Level level) {
         super(type, level);
-        if (!level.isClientSide) {
-            this.updateAttributes();
-        }
         this.shieldHealth = this.getMaxHealth() * 0.4f;
-    }
-
-    protected void updateAttributes() {
-        AttributeHolderProperties props = DatapackHandler.SERVANT_PROPS.getGeneric(this.getType());
-        props.attributes().forEach((att, val) -> {
-            AttributeInstance inst = this.getAttribute(att);
-            if (inst != null) {
-                inst.setBaseValue(val);
-                if (att == Attributes.MAX_HEALTH)
-                    this.setHealth(this.getMaxHealth());
-            }
-        });
     }
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
-        builder.define(MOVE_FLAGS, (byte) 0);
         builder.define(HAS_SHIELD, true);
         builder.define(HAS_SPEAR, true);
         builder.define(BLOCKING, false);
@@ -174,96 +107,47 @@ public class Hoplite extends PathfinderMob implements AnimatedEntity, AOEAttackE
     }
 
     @Override
-    protected PathNavigation createNavigation(Level level) {
-        return new SmoothGroundNavigation(this, level);
+    protected Pair<Integer, Integer> followRange() {
+        return Pair.of(12, 32);
     }
 
     @Override
-    public List<? extends ExtendedSensor<? extends Hoplite>> getSensors() {
-        return List.of(new NearbyLivingEntitySensor<Hoplite>()
-                        .setPredicate((target, entity) -> entity.getOwner() != null
-                                && (entity.getOwner() instanceof Mob mob && mob.getTarget() == target || entity.getOwner().getLastAttacker() == target))
-                        .setScanRate(e -> 10),
-                new HurtBySensor<Hoplite>().setPredicate((source, entity) -> {
-                    if (source.getEntity() instanceof LivingEntity attacker)
-                        return !Utils.alliedTo(entity, attacker);
-                    return true;
-                }));
-    }
-
-    @Override
-    public BrainActivityGroup<? extends Hoplite> getCoreTasks() {
-        return BrainActivityGroup.coreTasks(
-                new FloatToSurfaceOfFluid<Hoplite>(),
-                this.lookBehaviour(),
-                new LookAtTarget<>().runFor(entity -> entity.getRandom().nextIntBetweenInclusive(40, 100))
-                        .whenStopping(m -> BrainUtils.clearMemory(m, MemoryModuleType.LOOK_TARGET)));
-    }
-
-    protected ExtendedBehaviour<? extends Hoplite> lookBehaviour() {
-        return new AllApplicableBehaviours<>(
-                new LookAtAttackTarget<>(),
-                new OneRandomBehaviour<>(
-                        new SetRandomLookTarget<>().lookChance(ConstantFloat.of(1)),
-                        new SetPlayerLookTarget<>()
-                ).startCondition(m -> m.getRandom().nextFloat() < 0.1 && !BrainUtils.hasMemory(m, MemoryModuleType.WALK_TARGET))
-        );
-    }
-
-    @Override
-    public BrainActivityGroup<? extends Hoplite> getIdleTasks() {
-        return BrainActivityGroup.idleTasks(
-                new MoveToWalkTarget<>(),
-                new FirstApplicableBehaviour<>(
-                        new TargetOrRetaliate<Hoplite>(),
-                        new SetMoveToRestriction<Hoplite>(),
-                        new SetRandomWalkTarget<>().startCondition(m -> m.getRandom().nextInt(120) == 0)
-                )
-        );
-    }
-
-    @Override
-    public BrainActivityGroup<? extends Hoplite> getFightTasks() {
+    public BrainActivityGroup<? extends SummonedEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
-                new InvalidateAttackTarget<Hoplite>(),
-                SelectableBehaviourBuilder.<Hoplite>builder()
-                        .add(1, owner -> owner.hasShield() || owner.hasSpear(), new SetWalkTargetToAttackTarget<Hoplite>().closeEnoughDist(BehaviourUtils.closeEnough(2)), BehaviourUtils.moveTo())
-                        .add(1, owner -> !owner.hasShield() && !owner.hasSpear(), new SetWalkTargetAwayFromTarget<Hoplite>()
-                                .minDist(7).speedMod(1.5f), BehaviourUtils.moveTo())
-                        .build().startCondition(owner -> !owner.hasSpear() || BehaviourUtils.runCooldownBehaviour(owner))
+                new InvalidateAttackTarget<>(),
+                this.getCooldownAI().startCondition(owner -> !owner.hasSpear() || BehaviourUtils.runCooldownBehaviour(owner))
                         .stopIf(owner -> owner.hasSpear() && !BehaviourUtils.runCooldownBehaviour(owner)),
-                AttackBehaviourBuilder.<Hoplite>create()
-                        .start(STAB).play(BehaviourUtils.cooldownedPlay(false, 10, 25))
-                        .prepare(new SetWalkTargetToAttackTarget<Hoplite>().closeEnoughDist(BehaviourUtils.closeEnough(2))).prepareOptional(BehaviourUtils.timedMoveAttack())
-                        .end(1)
-                        .start(THROW).play(BehaviourUtils.cooldownedPlay(false, 10, 25))
-                        .condition(owner -> BehaviourUtils.ifFurtherThan(5).test(owner))
-                        .prepare(new SetWalkTargetToAttackTarget<Hoplite>()
-                                .closeEnoughDist(BehaviourUtils.closeEnough(15))).prepareOptional(BehaviourUtils.moveTo())
-                        .end(1)
-                        .build()
-                        .startCondition(owner -> owner.hasSpear() && BehaviourUtils.runCombatBehaviour(owner))
+                this.getCombatAI().startCondition(owner -> owner.hasSpear() && BehaviourUtils.runCombatBehaviour(owner))
         );
     }
 
     @Override
-    protected Brain.Provider<?> brainProvider() {
-        return new SmartBrainProvider<>(this);
+    public ExtendedBehaviour<? extends Hoplite> getCombatAI() {
+        return AttackBehaviourBuilder.<Hoplite>create()
+                .start(STAB).play(BehaviourUtils.cooldownedPlay(false, 10, 25))
+                .prepare(new SetWalkTargetToAttackTarget<Hoplite>().closeEnoughDist(BehaviourUtils.closeEnough(2))).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .end(1)
+                .start(THROW).play(BehaviourUtils.cooldownedPlay(false, 10, 25))
+                .condition(owner -> BehaviourUtils.ifFurtherThan(5).test(owner))
+                .prepare(new SetWalkTargetToAttackTarget<Hoplite>()
+                        .closeEnoughDist(BehaviourUtils.closeEnough(15))).prepareOptional(BehaviourUtils.moveTo())
+                .end(1)
+                .build();
     }
 
     @Override
-    protected void sendDebugPackets() {
-        super.sendDebugPackets();
-        DebugPackets.sendEntityBrain(this);
+    public ExtendedBehaviour<? extends Hoplite> getCooldownAI() {
+        return SelectableBehaviourBuilder.<Hoplite>builder()
+                .add(1, owner -> owner.hasShield() || owner.hasSpear(), new SetWalkTargetToAttackTarget<Hoplite>().closeEnoughDist(BehaviourUtils.closeEnough(2)), BehaviourUtils.moveTo())
+                .add(1, owner -> !owner.hasShield() && !owner.hasSpear(), new SetWalkTargetAwayFromTarget<Hoplite>()
+                        .minDist(7).speedMod(1.5f), BehaviourUtils.moveTo())
+                .build();
     }
 
     @Override
     public void aiStep() {
         super.aiStep();
-        this.moveStateTracker.tick();
-        this.getAnimationHandler().tick();
         if (!this.level().isClientSide) {
-            this.getAnimationHandler().runIfNotNull(this::handleAttack);
             this.shieldCooldown = Math.max(-1, --this.shieldCooldown);
             if (this.shieldCooldown == 0) {
                 this.restoreShield();
@@ -283,35 +167,6 @@ public class Hoplite extends PathfinderMob implements AnimatedEntity, AOEAttackE
     }
 
     @Override
-    protected void customServerAiStep() {
-        super.customServerAiStep();
-        this.tickBrain(this);
-    }
-
-    public float interpolatedMoveTick(float partialTick) {
-        return this.moveStateTracker.interpolatedMoveTick(partialTick);
-    }
-
-    public float interpolatedMoveTickOf(MoveType type, float partialTick) {
-        return this.moveStateTracker.interpolatedMoveTickOf(type, partialTick);
-    }
-
-    public MoveType calculateMoveType() {
-        if (this.isImmobile() || !this.walkAnimation.isMoving()) {
-            return MoveType.NONE;
-        }
-        double d0 = this.getMoveControl().getSpeedModifier();
-        MoveType move;
-        if (d0 > 1 && this.getTarget() == null) {
-            move = MoveType.RUN;
-        } else if (d0 <= 0.8) {
-            move = MoveType.SNEAK;
-        } else {
-            move = MoveType.WALK;
-        }
-        return move;
-    }
-
     public void handleAttack(AnimationState anim) {
         if (anim.is(THROW)) {
             this.getNavigation().stop();
@@ -332,23 +187,7 @@ public class Hoplite extends PathfinderMob implements AnimatedEntity, AOEAttackE
         }
     }
 
-    public void mobAttack(AnimationState anim, LivingEntity target, Consumer<LivingEntity> cons) {
-        OrientedBoundingBox obb = this.prepareAttackBox(anim.getAnimation(), target, 0.2, false);
-        this.level().getEntitiesOfClass(LivingEntity.class, obb.getEncompassingBox(),
-                entity -> this.targetPred.test(entity) && obb.intersects(entity.getBoundingBox())).forEach(cons);
-        if (!this.level().isClientSide)
-            S2CAttackDebug.sendDebugPacket(obb, S2CAttackDebug.EnumAABBType.ATTACK, this);
-    }
-
     @Override
-    public OrientedBoundingBox prepareAttackBox(String anim, Entity target, double grow, boolean debug) {
-        OrientedBoundingBox obb = this.calculateAttackAABB(this.getAnimationHandler().createDefaulted(anim),
-                grow);
-        if (debug)
-            S2CAttackDebug.sendDebugPacket(obb, S2CAttackDebug.EnumAABBType.ATTEMPT, this);
-        return obb;
-    }
-
     public OrientedBoundingBox calculateAttackAABB(AnimationState anim, double grow) {
         double width = this.getBbWidth() * 1.25;
         double length = this.getBbWidth() * 5;
@@ -384,8 +223,6 @@ public class Hoplite extends PathfinderMob implements AnimatedEntity, AOEAttackE
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
-        if (tag.contains("Owner"))
-            this.ownerUUID = tag.getUUID("Owner");
         this.entityData.set(HAS_SHIELD, tag.getBoolean("HasShield"));
         this.entityData.set(HAS_SPEAR, tag.getBoolean("HasSpear"));
         this.setIronArmor(tag.getBoolean("HasIronArmor"));
@@ -398,8 +235,6 @@ public class Hoplite extends PathfinderMob implements AnimatedEntity, AOEAttackE
     @Override
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
-        if (this.ownerUUID != null)
-            tag.putUUID("Owner", this.ownerUUID);
         tag.putBoolean("HasShield", this.hasShield());
         tag.putBoolean("HasSpear", this.hasSpear());
         tag.putBoolean("HasIronArmor", this.hasIronArmor());
@@ -430,28 +265,5 @@ public class Hoplite extends PathfinderMob implements AnimatedEntity, AOEAttackE
         }
         this.playSound(SoundEvents.TRIDENT_THROW.value(), 1, 1);
         this.level().addFreshEntity(projectile);
-    }
-
-    public void setOwner(LivingEntity owner) {
-        this.owner = owner;
-        this.ownerUUID = owner.getUUID();
-    }
-
-    @Override
-    public LivingEntity getOwner() {
-        if (this.owner == null && this.ownerUUID != null) {
-            this.owner = EntityUtils.findFromUUID(LivingEntity.class, this.level(), this.ownerUUID);
-        }
-        return this.owner;
-    }
-
-    @Override
-    public UUID getOwnerUUID() {
-        return this.ownerUUID;
-    }
-
-    @Override
-    public Predicate<LivingEntity> validTargetPredicate() {
-        return this.targetPred;
     }
 }

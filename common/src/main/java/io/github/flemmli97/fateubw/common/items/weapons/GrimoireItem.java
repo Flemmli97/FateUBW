@@ -3,10 +3,13 @@ package io.github.flemmli97.fateubw.common.items.weapons;
 import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.entity.summons.LesserMonster;
 import io.github.flemmli97.fateubw.common.registry.FateAttachments;
+import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -42,7 +45,8 @@ public class GrimoireItem extends Item {
     }
 
     private void spawn(Player player, ItemStack stack) {
-        LesserMonster monster = new LesserMonster(player.level(), player);
+        LesserMonster monster = FateEntities.LESSER_MONSTER.get().create((ServerLevel) player.level(), e -> e.setOwner(player),
+                player.blockPosition(), MobSpawnType.MOB_SUMMONED, false, false);
         double x = player.getX() + player.getRandom().nextInt(8) - 4.0;
         double y = player.getY() + player.getRandom().nextInt(2) - 1.0;
         double z = player.getZ() + player.getRandom().nextInt(8) - 4.0;

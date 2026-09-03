@@ -109,7 +109,7 @@ public class RealityMarbleHandler extends SavedData {
     public void onEntityLoad(Entity entity) {
         if (entity instanceof OwnableEntity ownable) {
             EntityMarbleData current = this.entityGroupLookup.get(ownable.getOwnerUUID());
-            if(current != null) {
+            if (current != null) {
                 RealityMarbleGroup group = this.getGroup(current.group());
                 if (group != null) {
                     group.entities().add(entity.getUUID());
