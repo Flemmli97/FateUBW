@@ -32,6 +32,7 @@ import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import io.github.flemmli97.fateubw.common.world.RealityMarbleHandler;
+import io.github.flemmli97.fateubw.mixin.CombatTrackerAccessor;
 import io.github.flemmli97.tenshilib.common.entity.AOEAttackEntity;
 import io.github.flemmli97.tenshilib.common.entity.EntityUtils;
 import io.github.flemmli97.tenshilib.common.entity.ai.MoveControllerPlus;
@@ -423,6 +424,10 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
             if (this.cooldowns != null) {
                 this.cooldowns.values().forEach(CooldownHolder::tick);
             }
+            if (this.tickCount > 400 && this.getTarget() == null && !((CombatTrackerAccessor) this.getCombatTracker()).getInCombat()) {
+                RealityMarbleHandler.get(this.getServer())
+                        .deleteGroupOf(this);
+            }
         }
     }
 
@@ -722,7 +727,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
     public boolean canCollideWith(Entity entity) {
         if (this.ignoreExternalMobInfluence())
             return false;
-        return entity.canBeCollidedWith() && !this.isPassengerOfSameVehicle(entity);
+        return super.canCollideWith(entity);
     }
 
     @Override
@@ -867,7 +872,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
     }
 
     public boolean nobelPhantasmCheck() {
-        return this.hasMana(this.getMana()) && this.nobelPhantasmCooldown <= 0;
+        return this.hasMana(this.props().manaCost()) && this.nobelPhantasmCooldown <= 0;
     }
 
     public boolean hasMana(double amount) {
