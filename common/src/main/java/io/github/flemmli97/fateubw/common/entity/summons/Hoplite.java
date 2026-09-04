@@ -6,6 +6,7 @@ import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.misc.SpearProjectile;
 import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateDimensions;
+import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.SelectableBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetWalkTargetAwayFromTarget;
@@ -77,7 +78,7 @@ public class Hoplite extends SummonedEntity {
 
     public void restoreShield() {
         this.entityData.set(HAS_SHIELD, true);
-        this.playSound(SoundEvents.ANVIL_USE, 1, 1);
+        this.playSound(FateSounds.HOPLITE_REPAIR.get(), 1, 1);
         this.shieldHealth = this.getMaxHealth() * 0.4f;
     }
 
@@ -112,7 +113,7 @@ public class Hoplite extends SummonedEntity {
 
     @Override
     protected Pair<Integer, Integer> followRange() {
-        return Pair.of(12, 48);
+        return Pair.of(10, 48);
     }
 
     @Override
@@ -165,7 +166,7 @@ public class Hoplite extends SummonedEntity {
             this.spearRegen = Math.max(-1, --this.spearRegen);
             if (this.spearRegen == 0) {
                 this.entityData.set(HAS_SPEAR, true);
-                this.playSound(SoundEvents.ANVIL_USE, 1, 1);
+                this.playSound(FateSounds.HOPLITE_REPAIR.get(), 1, 1);
             }
             if (this.level().dimension().equals(FateDimensions.SAND_DUNES.dimension())) {
                 this.wrongDimensionTicker = 300;
@@ -196,6 +197,7 @@ public class Hoplite extends SummonedEntity {
             }
             if (anim.isAt("attack")) {
                 this.mobAttack(anim, this.getTarget(), this::doHurtTarget);
+                this.playSound(FateSounds.SWOOSH_2.get(), 1, 1.2f);
             }
         }
     }
@@ -203,7 +205,7 @@ public class Hoplite extends SummonedEntity {
     @Override
     public OrientedBoundingBox calculateAttackAABB(AnimationState anim, double grow) {
         double width = this.getBbWidth() * 1.25;
-        double length = this.getBbWidth() * 5;
+        double length = this.getBbWidth() * 5.5;
         AABB aabb = new AABB(-width * 0.7, -0.02, 0, width * 0.3, this.getBbHeight() + 0.02, length)
                 .inflate(grow);
         return new OrientedBoundingBox(aabb, this.getYHeadRot(), 0, this.position());
@@ -222,7 +224,7 @@ public class Hoplite extends SummonedEntity {
                 amount *= 0.5f;
                 this.shieldHealth -= Math.clamp(amount, 0.0f, 5.0f);
                 if (this.shieldHealth <= 0.0f) {
-                    this.playSound(SoundEvents.ZOMBIE_ATTACK_WOODEN_DOOR, 1, 1);
+                    this.playSound(FateSounds.HOPLITE_SHIELD_BREAK.get(), 1, 1);
                     this.entityData.set(HAS_SHIELD, false);
                     this.entityData.set(BLOCKING, false);
                     this.shieldCooldown = 100;
@@ -278,7 +280,7 @@ public class Hoplite extends SummonedEntity {
         } else {
             projectile.shootFromRotation(this, this.getViewXRot(1) - 15, this.getViewYRot(1), 0.0F, 1.2f, 0);
         }
-        this.playSound(SoundEvents.TRIDENT_THROW.value(), 1, 1);
+        this.playSound(FateSounds.HOPLITE_SPEAR.get(), 1, 1);
         this.level().addFreshEntity(projectile);
     }
 }

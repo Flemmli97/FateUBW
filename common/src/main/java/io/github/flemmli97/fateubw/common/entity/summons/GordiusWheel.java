@@ -83,6 +83,7 @@ public class GordiusWheel extends SummonedEntity implements StandingVehicle, Syn
             .marker("attack", 0.52).marker("sparks", 0.72)
             .marker("lightning", 0.82));
     public static final String EXPUGNATIO = BUILDER.add("expugnatio", AnimationsBuilder.definition(3.12)
+                    .marker("moo", 0.16)
             .marker("charge_start", 0.72).marker("charge_end", 2.4));
     public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
 
@@ -244,6 +245,9 @@ public class GordiusWheel extends SummonedEntity implements StandingVehicle, Syn
     @Override
     public void handleAttack(AnimationState anim) {
         if (anim.is(EXPUGNATIO)) {
+            if (anim.isAt("moo")) {
+                this.playSound(FateSounds.GORDIUS_CHARGE.get(), 1, 1);
+            }
             if (anim.isPast("charge_start") && !anim.isPast("charge_end")) {
                 Vec3 dir = this.getChargeMotion();
                 if (dir == null) {

@@ -91,7 +91,7 @@
     ],
     "subtitle": "fateubw:entity.gilgamesh.block"
   },
-  "entity.gordius.ambient": {
+  "entity.gordius_wheel.ambient": {
     "sounds": [
       {
         "name": "mob/cow/say1",
@@ -110,9 +110,15 @@
         "pitch": 0.3
       }
     ],
-    "subtitle": "fateubw:entity.gordius.ambient"
+    "subtitle": "fateubw:entity.gordius_wheel.ambient"
   },
-  "entity.gordius.death": {
+  "entity.gordius_wheel.charge": {
+    "sounds": [
+      "fateubw:entity/gordius_wheel/charge"
+    ],
+    "subtitle": "fateubw:entity.gordius_wheel.charge"
+  },
+  "entity.gordius_wheel.death": {
     "sounds": [
       {
         "name": "mob/cow/hurt1",
@@ -127,9 +133,9 @@
         "pitch": 0.3
       }
     ],
-    "subtitle": "fateubw:entity.gordius.death"
+    "subtitle": "fateubw:entity.gordius_wheel.death"
   },
-  "entity.gordius.hurt": {
+  "entity.gordius_wheel.hurt": {
     "sounds": [
       {
         "name": "mob/cow/hurt1",
@@ -144,9 +150,9 @@
         "pitch": 0.3
       }
     ],
-    "subtitle": "fateubw:entity.gordius.hurt"
+    "subtitle": "fateubw:entity.gordius_wheel.hurt"
   },
-  "entity.gordius.step": {
+  "entity.gordius_wheel.step": {
     "sounds": [
       {
         "name": "mob/cow/step1",
@@ -169,7 +175,7 @@
         "volume": 0.5
       }
     ],
-    "subtitle": "fateubw:entity.gordius.step"
+    "subtitle": "fateubw:entity.gordius_wheel.step"
   },
   "entity.heracles.hit": {
     "sounds": [
@@ -185,6 +191,28 @@
       "fateubw:entity/heracles/roar"
     ],
     "subtitle": "fateubw:entity.heracles.roar"
+  },
+  "entity.hoplite.repair": {
+    "sounds": [
+      "random/anvil_use"
+    ],
+    "subtitle": "fateubw:entity.hoplite.repair"
+  },
+  "entity.hoplite.shield_break": {
+    "sounds": [
+      "mob/zombie/wood1",
+      "mob/zombie/wood2",
+      "mob/zombie/wood3",
+      "mob/zombie/wood4"
+    ],
+    "subtitle": "fateubw:entity.hoplite.shield_break"
+  },
+  "entity.hoplite.spear_throw": {
+    "sounds": [
+      "item/trident/throw1",
+      "item/trident/throw2"
+    ],
+    "subtitle": "fateubw:entity.hoplite.spear_throw"
   },
   "entity.lancelot.reflect": {
     "sounds": [

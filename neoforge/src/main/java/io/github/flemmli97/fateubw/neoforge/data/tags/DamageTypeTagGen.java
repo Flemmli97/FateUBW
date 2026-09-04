@@ -14,6 +14,7 @@ import net.minecraft.world.damagesource.DamageType;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
+import java.util.Comparator;
 import java.util.concurrent.CompletableFuture;
 
 public class DamageTypeTagGen extends TagsProvider<DamageType> {
@@ -46,13 +47,13 @@ public class DamageTypeTagGen extends TagsProvider<DamageType> {
         this.tag(FateDamageTypes.PEGASUS_CHARGE, DamageTypeTags.BYPASSES_ARMOR, FateTags.DamageTypes.IS_MAGIC);
         this.tag(FateDamageTypes.PETRIFICATION, DamageTypeTags.BYPASSES_ARMOR, DamageTypeTags.BYPASSES_SHIELD, DamageTypeTags.BYPASSES_COOLDOWN, DamageTypeTags.NO_KNOCKBACK);
         this.tag(FateDamageTypes.AESTUS_DOMUS, DamageTypeTags.BYPASSES_ARMOR, DamageTypeTags.BYPASSES_SHIELD, DamageTypeTags.NO_KNOCKBACK);
-        this.tag(FateDamageTypes.LIGHTNING_STRIKE, DamageTypeTags.PANIC_CAUSES, DamageTypeTags.IS_LIGHTNING, FateTags.DamageTypes.IS_MAGIC, DamageTypeTags.NO_KNOCKBACK);
+        this.tag(FateDamageTypes.LIGHTNING_STRIKE, DamageTypeTags.IS_LIGHTNING, FateTags.DamageTypes.IS_MAGIC, DamageTypeTags.NO_KNOCKBACK);
 
         this.tag(Tags.DamageTypes.IS_MAGIC)
                 .addTag(FateTags.DamageTypes.IS_MAGIC);
 
         this.tag(DamageTypeTags.PANIC_CAUSES)
-                .addAll(FateDamageTypes.ENTRIES.keySet().stream().filter(type -> !type.equals(FateDamageTypes.GRAIL)).toList());
+                .addAll(FateDamageTypes.ENTRIES.keySet().stream().sorted(Comparator.comparing(ResourceKey::location)).filter(type -> !type.equals(FateDamageTypes.GRAIL)).toList());
     }
 
     @SafeVarargs

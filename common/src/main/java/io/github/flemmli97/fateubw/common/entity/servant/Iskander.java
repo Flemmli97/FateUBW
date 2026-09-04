@@ -31,9 +31,12 @@ import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationState;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationsBuilder;
 import io.github.flemmli97.tenshilib.common.particle.AdvancedParticleContainer;
+import io.github.flemmli97.tenshilib.common.particle.data.CirclingData;
 import io.github.flemmli97.tenshilib.common.particle.data.ColorData;
+import io.github.flemmli97.tenshilib.common.particle.data.MotionData;
 import io.github.flemmli97.tenshilib.common.particle.data.ParticleMetaData;
 import io.github.flemmli97.tenshilib.common.particle.data.ScaleData;
+import io.github.flemmli97.tenshilib.common.utils.math.MathUtils;
 import io.github.flemmli97.tenshilib.common.utils.math.OrientedBoundingBox;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -231,9 +234,27 @@ public class Iskander extends BaseServant {
             if (anim.isPast("start")) {
                 for (int i = 0; i < 4; i++) {
                     AdvancedParticleContainer.make(ParticleTypes.SMOKE)
-                            .addData(new ScaleData(0.25f))
+                            .addData(new ScaleData(0.3f + this.getRandom().nextFloat() * 0.1f))
                             .addData(new ColorData((210 + this.getRandom().nextInt(10)) / 255f, (190 + this.getRandom().nextInt(20)) / 255f, (150 + this.getRandom().nextInt(15)) / 255f))
                             .add(this.level(), this.getRandomX(16), this.getY(this.getRandom().nextDouble() * 7 - 2), this.getRandomZ(16));
+                }
+                for (int i = 0; i < 8; i++) {
+                    double x = this.getRandomX(4);
+                    double y = this.getY(this.getRandom().nextDouble() * 6 - 3);
+                    double z = this.getRandomZ(4);
+                    AdvancedParticleContainer.make(ParticleTypes.SMOKE)
+                            .addData(new ScaleData(0.25f))
+                            .addData(new ColorData((210 + this.getRandom().nextInt(10)) / 255f, (190 + this.getRandom().nextInt(20)) / 255f, (150 + this.getRandom().nextInt(15)) / 255f))
+                            .addData(new MotionData(new Vec3(x - this.getX(), y - this.getY(), z - this.getZ()).scale(0.15)))
+                            .add(this.level(), x, y, z);
+                }
+                for (int i = 0; i < 3; i++) {
+                    AdvancedParticleContainer.make(ParticleTypes.SMOKE)
+                            .addData(new ScaleData(0.25f))
+                            .addData(new ColorData((210 + this.getRandom().nextInt(10)) / 255f, (190 + this.getRandom().nextInt(20)) / 255f, (150 + this.getRandom().nextInt(15)) / 255f))
+                            .addData(new CirclingData(this.getBbWidth() * 1.5f, 0,
+                                    this.getRandom().nextFloat() * 360, 20, MathUtils.NORMAL_Y))
+                            .add(this.level(), this.getX(), this.getY(this.getRandom().nextDouble()), this.getZ());
                 }
             }
             if (anim.isAt("cast")) {

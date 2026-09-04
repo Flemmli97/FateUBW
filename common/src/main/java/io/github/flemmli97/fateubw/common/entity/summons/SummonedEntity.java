@@ -135,7 +135,7 @@ public abstract class SummonedEntity extends PathfinderMob implements AnimatedEn
     }
 
     protected Pair<Integer, Integer> followRange() {
-        return Pair.of(10, 20);
+        return Pair.of(8, 24);
     }
 
     protected ExtendedBehaviour<? extends SummonedEntity> lookBehaviour() {

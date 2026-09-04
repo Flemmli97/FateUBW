@@ -74,14 +74,21 @@ public class FateSounds {
             b -> b.defaultTranslation("Magic casted").sound(ResourceLocation.withDefaultNamespace("block/beacon/power"), 3));
     public static final RegistryEntrySupplier<SoundEvent, SoundEvent> RULE_BREAKER = register("entity.medea.rule_breaker",
             b -> b.defaultTranslation("Magic being severed").sound(ResourceLocation.withDefaultNamespace("item/totem/use_totem")));
-    public static final RegistryEntrySupplier<SoundEvent, SoundEvent> GORDIUS_STEP = register("entity.gordius.step",
+    public static final RegistryEntrySupplier<SoundEvent, SoundEvent> GORDIUS_STEP = register("entity.gordius_wheel.step",
             b -> b.defaultTranslation("Chariot moves").sound(ResourceLocation.withDefaultNamespace("mob/cow/step"), 4).pitch(0.4f).volume(0.5f));
-    public static final RegistryEntrySupplier<SoundEvent, SoundEvent> GORDIUS_AMBIENT = register("entity.gordius.ambient",
+    public static final RegistryEntrySupplier<SoundEvent, SoundEvent> GORDIUS_AMBIENT = register("entity.gordius_wheel.ambient",
             b -> b.defaultTranslation("Bulls moos").sound(ResourceLocation.withDefaultNamespace("mob/cow/say"), 4).pitch(0.3f));
-    public static final RegistryEntrySupplier<SoundEvent, SoundEvent> GORDIUS_HURT = register("entity.gordius.hurt",
+    public static final RegistryEntrySupplier<SoundEvent, SoundEvent> GORDIUS_HURT = register("entity.gordius_wheel.hurt",
             b -> b.defaultTranslation("Bulls hurt").sound(ResourceLocation.withDefaultNamespace("mob/cow/hurt"), 3).pitch(0.3f));
-    public static final RegistryEntrySupplier<SoundEvent, SoundEvent> GORDIUS_DEATH = register("entity.gordius.death",
+    public static final RegistryEntrySupplier<SoundEvent, SoundEvent> GORDIUS_DEATH = register("entity.gordius_wheel.death",
             b -> b.defaultTranslation("Chariot defeated").sound(ResourceLocation.withDefaultNamespace("mob/cow/hurt"), 3).pitch(0.3f));
+    public static final RegistryEntrySupplier<SoundEvent, SoundEvent> GORDIUS_CHARGE = register("entity.gordius_wheel.charge", "Angry Bulls");
+    public static final RegistryEntrySupplier<SoundEvent, SoundEvent> HOPLITE_REPAIR = register("entity.hoplite.repair",
+            b->b.defaultTranslation("Gear Repaired").sound(ResourceLocation.withDefaultNamespace("random/anvil_use")));
+    public static final RegistryEntrySupplier<SoundEvent, SoundEvent> HOPLITE_SPEAR = register("entity.hoplite.spear_throw",
+            b->b.defaultTranslation("Spear Thrown").sound(ResourceLocation.withDefaultNamespace("item/trident/throw"), 2));
+    public static final RegistryEntrySupplier<SoundEvent, SoundEvent> HOPLITE_SHIELD_BREAK = register("entity.hoplite.shield_break",
+            b->b.defaultTranslation("Shield Break").sound(ResourceLocation.withDefaultNamespace("mob/zombie/wood"), 4));
 
     public static final RegistryEntrySupplier<SoundEvent, SoundEvent> MAGIC_SPAWN = register("misc.magic.cast",
             b -> b.defaultTranslation("Magic casted").sound(ResourceLocation.withDefaultNamespace("block/enchantment_table/enchant"), 3));

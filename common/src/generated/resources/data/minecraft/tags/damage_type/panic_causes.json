@@ -1,22 +1,21 @@
 {
   "values": [
-    "fateubw:lightning_strike",
+    "fateubw:aestus_domus",
+    "fateubw:arrow",
+    "fateubw:caladbolg",
+    "fateubw:enuma_elish",
+    "fateubw:excalibur",
     "fateubw:gae_bolg",
-    "fateubw:pegasus",
+    "fateubw:gae_dearg",
+    "fateubw:gordius",
     "fateubw:lightning_strike",
     "fateubw:magic_beam",
-    "fateubw:weapon_projectile",
-    "fateubw:gordius",
-    "fateubw:spear",
-    "fateubw:aestus_domus",
-    "fateubw:thrown_item",
-    "fateubw:petrification",
-    "fateubw:tsubame",
     "fateubw:magic_shot",
-    "fateubw:caladbolg",
-    "fateubw:gae_dearg",
-    "fateubw:excalibur",
-    "fateubw:enuma_elish",
-    "fateubw:arrow"
+    "fateubw:pegasus",
+    "fateubw:petrification",
+    "fateubw:spear",
+    "fateubw:thrown_item",
+    "fateubw:tsubame",
+    "fateubw:weapon_projectile"
   ]
 }
