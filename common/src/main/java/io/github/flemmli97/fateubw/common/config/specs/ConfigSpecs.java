@@ -48,6 +48,7 @@ public class ConfigSpecs {
         public final ModConfigSpec.DoubleValue classArtifactMultiplier;
         public final ModConfigSpec.DoubleValue servantArtifactMultiplier;
         public final ModConfigSpec.DoubleValue realityMarbleOverride;
+        public final ModConfigSpec.DoubleValue realityMarbleSize;
 
         public final ModConfigSpec.ConfigValue<String> effectiveArmor;
         public final ModConfigSpec.ConfigValue<String> armorReduction;
@@ -104,6 +105,7 @@ public class ConfigSpecs {
             this.realityMarbleOverride = builder.comment("Amount of health percentage wise the caster of a reality marble needs to have when already inside a reality marble compared to the current owner of it. ",
                     "Set to 0 to never be able to use it",
                     "Set to -1 to always be able to use it", "Note this only applies when already inside a marble").defineInRange("Reality Marble Override Multiplier", CommonConfig.realityMarbleOverride, -1, Double.MAX_VALUE);
+            this.realityMarbleSize = builder.comment("Radius in blocks of a reality marble").defineInRange("Reality Marble Size", CommonConfig.realityMarbleSize, 0, 1000);
 
             this.punishTeleport = builder.comment("Should teleporting servants to the owner during a fight be punished").define("Punish Teleport", CommonConfig.punishTeleport);
             this.notifyBlackList = builder.comment("Servants that dont notify players when spawned (from filling missing slots)").define("Servant notification", CommonConfig.notifyBlacklist, stringList());

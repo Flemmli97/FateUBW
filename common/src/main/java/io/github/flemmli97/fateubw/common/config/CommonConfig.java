@@ -25,6 +25,7 @@ public class CommonConfig {
     public static double classArtifactMultiplier = 2;
     public static double servantArtifactMultiplier = 2;
     public static double realityMarbleOverride = 1;
+    public static double realityMarbleSize = 128;
 
     public static ExpressionConfig effectiveArmor = new ExpressionConfig("max(armor - damage / (2 + armor_toughness / 4), armor * 0.2)");
     public static ExpressionConfig armorReduction = new ExpressionConfig("effective_armor > 20 ? exp(-(ln(5)/20) * effective_armor) : effective_armor / 25");

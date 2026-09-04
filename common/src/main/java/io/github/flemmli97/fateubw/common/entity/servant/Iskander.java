@@ -20,7 +20,7 @@ import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.Utils;
-import io.github.flemmli97.fateubw.common.world.RealityMarbleHandler;
+import io.github.flemmli97.fateubw.common.world.realitymarble.RealityMarbleHandler;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.SelectableBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetWalkTargetAwayFromTarget;
@@ -171,7 +171,7 @@ public class Iskander extends BaseServant {
                         .min(5).max(10).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(5)
                 .start(SUMMON_BUCEPHALOS).play(BehaviourUtils.cooldownedPlay(false, 25, 40))
-                .condition(entity -> entity.canSummonMounts() && !entity.healthBelow(0.66f))
+                .condition(owner -> owner.canSummonMounts() && !owner.healthBelow(0.66f))
                 .prepare(new SetWalkTargetWithinDist<Iskander>()
                         .min(5).max(10).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(7)
@@ -181,11 +181,11 @@ public class Iskander extends BaseServant {
                         .min(6).max(12).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(15)
                 .start(IONIOI_HETAIROI)
-                .condition(entity -> entity.canUseNobelPhantasm() && this.canOverrideRealityMarble())
+                .condition(owner -> owner.canUseNobelPhantasm() && owner.canOverrideRealityMarble())
                 .prepare(new SetWalkTargetToAttackTarget<Iskander>().closeEnoughDist(BehaviourUtils.closeEnough(16))).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(30)
                 .start(SUMMON_ARMY)
-                .condition(entity -> this.isInRealityMarble() && this.canSummonHoplites())
+                .condition(owner -> owner.isInRealityMarble() && owner.canSummonHoplites())
                 .prepare(new SetWalkTargetToAttackTarget<Iskander>().closeEnoughDist(BehaviourUtils.closeEnough(24))).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(18)
                 .build();
@@ -202,7 +202,7 @@ public class Iskander extends BaseServant {
     }
 
     public boolean isInRealityMarble() {
-        return this.level().dimension().equals(FateDimensions.SAND_DUNES.dimension());
+        return RealityMarbleHandler.get(this.getServer()).isManagingRealityMarble(this);
     }
 
     @Override

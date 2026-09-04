@@ -13,7 +13,9 @@ import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateFeatures;
 import io.github.flemmli97.fateubw.common.registry.FateRegistration;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
+import io.github.flemmli97.fateubw.fabric.events.EventHandler;
 import io.github.flemmli97.fateubw.fabric.network.PacketHandler;
+import io.github.flemmli97.tenshilib.fabric.events.EntityTickEvent;
 import io.github.flemmli97.tenshilib.fabric.loader.events.CommonSetupEvent;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
@@ -65,6 +67,7 @@ public class FateUBWFabric implements ModInitializer {
                 GrailWarHandler.get(world.getServer()).tick(world);
             }
         });
+        EntityTickEvent.ON_ENTITY_TICK_POST.register(EventHandler::entityTick);
         PacketHandler.register();
 
         DatapackHandler.addListeners(listener -> ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(listener.id(), reg -> new IdentifiableResourceReloadListener() {

@@ -1,12 +1,13 @@
-package io.github.flemmli97.fateubw.common.world;
+package io.github.flemmli97.fateubw.common.world.realitymarble;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.github.flemmli97.fateubw.common.config.CommonConfig;
+import io.github.flemmli97.fateubw.common.registry.FateAttachments;
+import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.SectionPos;
-import net.minecraft.core.UUIDUtil;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceKey;
@@ -16,7 +17,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
@@ -31,7 +31,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,8 +41,10 @@ public class RealityMarbleHandler extends SavedData {
     private static final String IDENTIFIER = "RealityMarbleHandler";
     private static final Factory<RealityMarbleHandler> FACTORY = new Factory<>(RealityMarbleHandler::new, RealityMarbleHandler::new, DataFixTypes.LEVEL);
 
-    private final Map<UUID, RealityMarbleGroup> entityGroups = new HashMap<>();
+    private final Map<UUID, RealityMarbleGroup> realityMarbleGroups = new HashMap<>();
     private final Map<UUID, EntityMarbleData> entityGroupLookup = new HashMap<>();
+
+    private final Map<ResourceKey<Level>, Int2ObjectMap<UUID>> spacingLookup = new HashMap<>();
 
     private RealityMarbleHandler() {
     }
@@ -87,7 +88,7 @@ public class RealityMarbleHandler extends SavedData {
 
     @Nullable
     public RealityMarbleGroup getGroup(UUID id) {
-        return this.entityGroups.get(id);
+        return this.realityMarbleGroups.get(id);
     }
 
     /**
@@ -95,19 +96,51 @@ public class RealityMarbleHandler extends SavedData {
      */
     public void createAndTransportTo(Entity creator, List<Entity> entities, ResourceKey<Level> targetLevel) {
         ServerLevel target = creator.getServer().getLevel(targetLevel);
-        if (target == null)
+        if (target == null || this.isManagingRealityMarble(creator))
             return;
         List<Entity> vehicles = new ArrayList<>();
         entities.forEach(entity -> this.addVehicles(vehicles, entity, entities));
         entities.addAll(vehicles);
+        entities.remove(creator);
         RealityMarbleGroup current = this.getGroupOf(creator);
-        RealityMarbleGroup group = new RealityMarbleGroup(UUID.randomUUID(), creator.getUUID(),
-                current != null ? current.sourceLevel() : creator.level().dimension(), targetLevel, entities
-                .stream().map(Entity::getUUID).toList());
+        RealityMarbleGroup group;
+        if (current != null) {
+            this.removeGroup(current.id());
+            Pair<Integer, BlockPos> free = this.findFreePosition(targetLevel);
+            // Add all entities from existing group since we need to teleport them too
+            ServerLevel currentLevel = (ServerLevel) creator.level();
+            current.loadChunks(currentLevel);
+            current.entities().forEach(uuid -> {
+                Entity entity = currentLevel.getEntity(uuid);
+                if (entity != null && !entities.contains(entity)) {
+                    entities.add(entity);
+                }
+            });
+            group = new RealityMarbleGroup(UUID.randomUUID(), creator.getUUID(),
+                    current.sourceLevel(),
+                    current.sourcePosition(),
+                    targetLevel, free.right(), free.first(), entities.stream().map(Entity::getUUID).toList());
+        } else {
+            Pair<Integer, BlockPos> free = this.findFreePosition(targetLevel);
+            group = new RealityMarbleGroup(UUID.randomUUID(), creator.getUUID(),
+                    creator.level().dimension(),
+                    creator.blockPosition(),
+                    targetLevel, free.right(), free.first(), entities.stream().map(Entity::getUUID).toList());
+        }
         entities.forEach(entity -> this.overrideAndTransportEntity(entity, target, group));
         this.overrideAndTransportEntity(creator, target, group);
-        this.entityGroups.put(group.id(), group);
+        this.addGroup(group);
         this.setDirty();
+    }
+
+    private Pair<Integer, BlockPos> findFreePosition(ResourceKey<Level> targetLevel) {
+        int idx = 0;
+        Int2ObjectMap<UUID> lookup = this.spacingLookup.get(targetLevel);
+        while (lookup != null && lookup.containsKey(idx)) {
+            idx++;
+        }
+        int[] coords = PositionUtil.spiralCoord(idx);
+        return Pair.of(idx, new BlockPos(coords[0] * PositionUtil.SPACING, 0, coords[1] * PositionUtil.SPACING));
     }
 
     private void addVehicles(List<Entity> vehicles, Entity current, List<Entity> entities) {
@@ -119,52 +152,57 @@ public class RealityMarbleHandler extends SavedData {
     }
 
     public void onEntityLoad(Entity entity) {
-        if (entity instanceof OwnableEntity ownable) {
-            EntityMarbleData current = this.entityGroupLookup.get(ownable.getOwnerUUID());
-            if (current != null) {
-                RealityMarbleGroup group = this.getGroup(current.group());
-                if (group != null) {
-                    group.entities().add(entity.getUUID());
-                    this.entityGroupLookup.put(entity.getUUID(), new EntityMarbleData(group.id(), group.sourceLevel()));
-                    this.setDirty();
-                }
+        RealityMarbleGroup group = this.getGroupOf(entity);
+        if (group == null) {
+            RealityMarbleGroup nearest = this.getNearest(entity);
+            if (nearest != null) {
+                nearest.entities().add(entity.getUUID());
+                this.entityGroupLookup.put(entity.getUUID(), new EntityMarbleData(nearest));
+                this.setDirty();
+            } else {
+                this.clearEntityData(entity, true);
             }
         }
-        RealityMarbleHandler.RealityMarbleGroup group = this.getGroupOf(entity);
-        if (group == null) {
-            this.clearAndTeleportBack(entity);
+    }
+
+    private RealityMarbleGroup getNearest(Entity entity) {
+        Int2ObjectMap<UUID> lookup = this.spacingLookup.get(entity.level().dimension());
+        if (lookup == null)
+            return null;
+        for (UUID id : lookup.values()) {
+            RealityMarbleGroup group = this.getGroup(id);
+            if (group == null) continue;
+            double distSqr = entity.position().distanceToSqr(group.targetPosition().getX() + 0.5, entity.position().y(), group.targetPosition().getZ() + 0.5);
+            double size = CommonConfig.realityMarbleSize + 64;
+            if (distSqr < size * size) {
+                return group;
+            }
         }
+        return null;
     }
 
     private void overrideAndTransportEntity(Entity entity, ServerLevel targetLevel, RealityMarbleGroup group) {
-        RealityMarbleGroup current = this.getGroupOf(entity);
-        if (current != null) {
-            if (current.creator().equals(entity.getUUID())) {
-                // Incase it's the creator merge the old group with the new one and warp the entities too
-                this.entityGroups.remove(current.id(), group);
-                current.entities().forEach(uuid -> {
-                    if (!current.entities().contains(uuid)) {
-                        Entity other = ((ServerLevel) entity.level()).getEntity(uuid);
-                        if (other != null) {
-                            this.teleportEntityTo(entity, targetLevel);
-                        }
-                        this.entityGroupLookup.put(uuid, new EntityMarbleData(group.id(), group.sourceLevel()));
-                    }
-                });
-            } else {
-                current.entities().remove(entity.getUUID());
-            }
-        }
-        this.entityGroupLookup.put(entity.getUUID(), new EntityMarbleData(group.id(), group.sourceLevel()));
-        this.teleportEntityTo(entity, targetLevel);
+        this.entityGroupLookup.put(entity.getUUID(), new EntityMarbleData(group));
+        this.teleportEntityTo(entity, targetLevel, group.sourcePosition(), group.targetPosition());
     }
 
-    private void teleportEntityTo(Entity entity, ServerLevel targetLevel) {
+    /**
+     * Teleport the entity to the target level.
+     * The location depends on the current position of the entity in relation to the reality marbles root position
+     *
+     * @param center         Current center of where this entity resides.
+     *                       When entering this is the location where the reality marble was used.
+     *                       When exiting this is the location where the reality marbles center is.
+     * @param targetPosition Target position in the target level
+     */
+    private void teleportEntityTo(Entity entity, ServerLevel targetLevel,
+                                  BlockPos center, BlockPos targetPosition) {
         entity = entity.getRootVehicle();
-        if (entity.level().dimension().equals(targetLevel.dimension()))
+        if (entity.level().dimension().equals(targetLevel.dimension())) {
             return;
-        double scale = DimensionType.getTeleportationScale(entity.level().dimensionType(), targetLevel.dimensionType());
-        Vec3 pos = entity.position().multiply(scale, 1, scale);
+        }
+        Vec3 offset = entity.position().subtract(center.getX() + 0.5, 0, center.getZ() + 0.5);
+        Vec3 pos = offset.add(targetPosition.getX() + 0.5, 0, targetPosition.getZ() + 0.5);
         BlockPos blockPos = BlockPos.containing(pos);
         int height = targetLevel.getChunkAt(blockPos).getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, blockPos.getX(), blockPos.getZ()) + 1;
         AABB aabb = this.collectiveBB(entity, null).toAABB()
@@ -192,14 +230,11 @@ public class RealityMarbleHandler extends SavedData {
      */
     public void removeFromGroup(Entity entity) {
         RealityMarbleGroup current = this.getGroupOf(entity);
-        if (current == null)
-            return;
-        if (current.creator().equals(entity.getUUID())) {
+        if (current != null && current.creator().equals(entity.getUUID())) {
             this.deleteGroupOf(entity);
-        } else {
-            current.entities().remove(entity.getUUID());
+            return;
         }
-        this.setDirty();
+        this.clearEntityData(entity, false);
     }
 
     public void deleteGroupOf(Entity creator) {
@@ -207,37 +242,40 @@ public class RealityMarbleHandler extends SavedData {
         if (current == null || !current.creator().equals(creator.getUUID()))
             return;
         ServerLevel serverLevel = (ServerLevel) creator.level();
+        // Load all chunks for this group first so unloaded entities also get processed.
+        current.loadChunks(serverLevel);
         Collection<UUID> entities = Set.copyOf(current.entities());
         entities.forEach(uuid -> {
             Entity entity = serverLevel.getEntity(uuid);
             if (entity != null) {
-                this.clearAndTeleportBack(entity);
+                this.clearEntityData(entity, true);
             }
         });
-        this.clearAndTeleportBack(creator);
-        this.entityGroups.remove(current.id());
-        this.setDirty();
+        this.clearEntityData(creator, true);
+        this.removeGroup(current.id());
     }
 
-    public void clearAndTeleportBack(Entity entity) {
+    private void clearEntityData(Entity entity, boolean teleport) {
         RealityMarbleGroup current = this.getGroupOf(entity);
         if (current != null) {
             current.entities().remove(entity.getUUID());
         }
         EntityMarbleData data = this.entityGroupLookup.remove(entity.getUUID());
-        this.setDirty();
+        FateAttachments.REALITY_MARBLE_CONSTRAINT.get().get(entity).clearConstraints();
         if (data == null) {
             return;
         }
+        this.setDirty();
         ServerLevel targetLevel = entity.getServer().getLevel(data.sourceLevel());
-        if (targetLevel == null) {
+        if (targetLevel == null || !teleport) {
             return;
         }
-        this.teleportEntityTo(entity, targetLevel);
+        this.teleportEntityTo(entity, targetLevel, data.targetPosition(), data.sourcePosition());
     }
 
-    public boolean isInRealityMarble(Entity entity) {
-        return this.getGroupOf(entity) != null;
+    public boolean isManagingRealityMarble(Entity entity) {
+        RealityMarbleGroup group = this.getGroupOf(entity);
+        return group != null && group.creator().equals(entity.getUUID());
     }
 
     public boolean allowChangingDimensionsTo(Entity entity, ResourceKey<Level> target) {
@@ -247,22 +285,36 @@ public class RealityMarbleHandler extends SavedData {
         return group.targetLevel().equals(target);
     }
 
+    private void addGroup(RealityMarbleGroup group) {
+        this.realityMarbleGroups.put(group.id(), group);
+        this.spacingLookup.computeIfAbsent(group.targetLevel(), k -> new Int2ObjectArrayMap<>())
+                .put(group.positionIndex(), group.id());
+        this.setDirty();
+    }
+
+    private void removeGroup(UUID id) {
+        RealityMarbleGroup current = this.realityMarbleGroups.remove(id);
+        if (current != null) {
+            Int2ObjectMap<UUID> lookup = this.spacingLookup.get(current.targetLevel());
+            if (lookup != null) {
+                lookup.remove(current.positionIndex());
+            }
+            this.setDirty();
+        }
+    }
+
     private void load(CompoundTag tag) {
         CompoundTag groups = tag.getCompound("groups");
-        groups.getAllKeys().forEach(id -> {
-            this.entityGroups.put(UUID.fromString(id), RealityMarbleGroup.CODEC.parse(NbtOps.INSTANCE, groups.get(id)).getOrThrow());
-        });
+        groups.getAllKeys().forEach(id -> this.addGroup(RealityMarbleGroup.CODEC.parse(NbtOps.INSTANCE, groups.get(id)).getOrThrow()));
         CompoundTag lookup = tag.getCompound("lookup");
-        lookup.getAllKeys().forEach(id -> {
-            this.entityGroupLookup.put(UUID.fromString(id), EntityMarbleData.CODEC.parse(NbtOps.INSTANCE, lookup.get(id)).getOrThrow());
-        });
+        lookup.getAllKeys().forEach(id -> this.entityGroupLookup.put(UUID.fromString(id), EntityMarbleData.CODEC.parse(NbtOps.INSTANCE, lookup.get(id)).getOrThrow()));
     }
 
     @Override
     public CompoundTag save(CompoundTag compoundTag, HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
         CompoundTag groups = new CompoundTag();
-        this.entityGroups.forEach((id, group) ->
+        this.realityMarbleGroups.forEach((id, group) ->
                 groups.put(id.toString(), RealityMarbleGroup.CODEC.encodeStart(NbtOps.INSTANCE, group).getOrThrow()));
         tag.put("groups", groups);
         CompoundTag lookup = new CompoundTag();
@@ -272,29 +324,8 @@ public class RealityMarbleHandler extends SavedData {
         return tag;
     }
 
-    public record RealityMarbleGroup(UUID id, UUID creator, ResourceKey<Level> sourceLevel,
-                                     ResourceKey<Level> targetLevel,
-                                     Set<UUID> entities) {
-
-        public static final Codec<RealityMarbleGroup> CODEC = RecordCodecBuilder.create(instance ->
-                instance.group(UUIDUtil.CODEC.fieldOf("id").forGetter(RealityMarbleGroup::id),
-                                UUIDUtil.CODEC.fieldOf("creator").forGetter(RealityMarbleGroup::creator),
-                                ResourceKey.codec(Registries.DIMENSION).fieldOf("source_level").forGetter(RealityMarbleGroup::sourceLevel),
-                                ResourceKey.codec(Registries.DIMENSION).fieldOf("target_level").forGetter(RealityMarbleGroup::targetLevel),
-                                UUIDUtil.CODEC.listOf().fieldOf("entities").forGetter(d -> List.copyOf(d.entities())))
-                        .apply(instance, RealityMarbleGroup::new));
-
-        public RealityMarbleGroup(UUID id, UUID creator, ResourceKey<Level> sourceLevel, ResourceKey<Level> targetLevel, Collection<UUID> entities) {
-            this(id, creator, sourceLevel, targetLevel, new HashSet<>(entities));
-        }
-    }
-
-    public record EntityMarbleData(UUID group, ResourceKey<Level> sourceLevel) {
-
-        public static final Codec<EntityMarbleData> CODEC = RecordCodecBuilder.create(instance ->
-                instance.group(UUIDUtil.CODEC.fieldOf("group").forGetter(EntityMarbleData::group),
-                                ResourceKey.codec(Registries.DIMENSION).fieldOf("source_level").forGetter(EntityMarbleData::sourceLevel))
-                        .apply(instance, EntityMarbleData::new));
+    public String debug() {
+        return String.format("%s %s ", this.realityMarbleGroups, this.entityGroupLookup);
     }
 
     private static class MutableAABB {
@@ -306,15 +337,6 @@ public class RealityMarbleHandler extends SavedData {
         public double maxY;
         public double maxZ;
 
-        public MutableAABB(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
-            this.minX = minX;
-            this.minY = minY;
-            this.minZ = minZ;
-            this.maxX = maxX;
-            this.maxY = maxY;
-            this.maxZ = maxZ;
-        }
-
         public MutableAABB(AABB aabb) {
             this.minX = aabb.minX;
             this.minY = aabb.minY;
@@ -325,16 +347,6 @@ public class RealityMarbleHandler extends SavedData {
         }
 
         public MutableAABB merge(AABB aabb) {
-            this.minX = Math.min(this.minX, aabb.minX);
-            this.minY = Math.min(this.minY, aabb.minY);
-            this.minZ = Math.min(this.minZ, aabb.minZ);
-            this.maxX = Math.max(this.maxX, aabb.maxX);
-            this.maxY = Math.max(this.maxY, aabb.maxY);
-            this.maxZ = Math.max(this.maxZ, aabb.maxZ);
-            return this;
-        }
-
-        public MutableAABB merge(MutableAABB aabb) {
             this.minX = Math.min(this.minX, aabb.minX);
             this.minY = Math.min(this.minY, aabb.minY);
             this.minZ = Math.min(this.minZ, aabb.minZ);

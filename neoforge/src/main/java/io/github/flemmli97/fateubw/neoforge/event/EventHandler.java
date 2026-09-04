@@ -4,7 +4,7 @@ import io.github.flemmli97.fateubw.client.ClientCalls;
 import io.github.flemmli97.fateubw.common.commands.CommandHandler;
 import io.github.flemmli97.fateubw.common.event.EventCalls;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
-import io.github.flemmli97.fateubw.common.world.RealityMarbleHandler;
+import io.github.flemmli97.fateubw.common.world.realitymarble.RealityMarbleHandler;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
@@ -53,9 +53,10 @@ public class EventHandler {
     }
 
     @SubscribeEvent
-    public static void updateLivingTick(EntityTickEvent.Post event) {
+    public static void entityTick(EntityTickEvent.Post event) {
+        EventCalls.tick(event.getEntity());
         if (event.getEntity() instanceof LivingEntity living) {
-            EventCalls.tick(living);
+            EventCalls.tickLiving(living);
             if (living.level().isClientSide)
                 ClientCalls.tick(living);
         }

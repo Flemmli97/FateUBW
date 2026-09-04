@@ -21,7 +21,7 @@ import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.Utils;
-import io.github.flemmli97.fateubw.common.world.RealityMarbleHandler;
+import io.github.flemmli97.fateubw.common.world.realitymarble.RealityMarbleHandler;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.SelectableBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.LeapInDirection;
@@ -195,6 +195,11 @@ public class Emiya extends BaseServant {
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
                         .min(5).max(16).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(8)
+                .start(DUAL_BLADE_THROW).play(BehaviourUtils.cooldownedPlay(true, 16, 28))
+                .condition(Emiya::isInRealityMarble)
+                .prepare(new SetWalkTargetWithinDist<Emiya>()
+                        .min(5).max(16).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.moveAttack())
+                .end(9)
 
                 .start(BOW_1).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(12), 16, 28))
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
@@ -232,13 +237,17 @@ public class Emiya extends BaseServant {
                         .min(4).max(10).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(10)
 
+                .start(UNLIMITED_BLADE_WORKS)
+                .condition(owner -> owner.canUseNobelPhantasm() && this.canOverrideRealityMarble())
+                .prepare(new SetWalkTargetToAttackTarget<Emiya>().closeEnoughDist(BehaviourUtils.closeEnough(16))).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .end(30)
                 .start(UBW_ATTACK_1).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(18), 16, 28))
-                .condition(owner -> this.isInUBW() && BehaviourUtils.ifFurtherThan(11).test(owner))
+                .condition(owner -> owner.isInRealityMarble() && BehaviourUtils.ifFurtherThan(11).test(owner))
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
                         .min(5).max(14).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(19)
                 .start(UBW_ATTACK_2).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(18), 16, 28))
-                .condition(owner -> this.isInUBW() && BehaviourUtils.ifFurtherThan(11).test(owner))
+                .condition(owner -> owner.isInRealityMarble() && BehaviourUtils.ifFurtherThan(11).test(owner))
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
                         .min(5).max(14).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(19)
@@ -257,8 +266,8 @@ public class Emiya extends BaseServant {
                 .add(6, new SetWalkTargetAwayFromTarget<BaseServant>().speedMod((owner, target) -> ATTACK_MOVE_SPEED), BehaviourUtils.moveTo()).build();
     }
 
-    public boolean isInUBW() {
-        return this.level().dimension().equals(FateDimensions.UNLIMITED_BLADEWORKS.dimension());
+    public boolean isInRealityMarble() {
+        return RealityMarbleHandler.get(this.getServer()).isManagingRealityMarble(this);
     }
 
     @Override

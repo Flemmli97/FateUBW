@@ -1,5 +1,7 @@
 package io.github.flemmli97.fateubw.common.event;
 
+import io.github.flemmli97.fateubw.common.attachment.RealityMarbleConstraint;
+import io.github.flemmli97.fateubw.common.config.CommonConfig;
 import io.github.flemmli97.fateubw.common.effects.PetrificationEffect;
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.lib.FateTags;
@@ -9,8 +11,9 @@ import io.github.flemmli97.fateubw.common.registry.FateAttributes;
 import io.github.flemmli97.fateubw.common.registry.FateMobEffects;
 import io.github.flemmli97.fateubw.common.utils.ExtendedCombatRules;
 import io.github.flemmli97.fateubw.common.world.GrailTeam;
-import io.github.flemmli97.fateubw.common.world.RealityMarbleHandler;
 import io.github.flemmli97.fateubw.common.world.TeamHandler;
+import io.github.flemmli97.fateubw.common.world.realitymarble.RealityMarbleGroup;
+import io.github.flemmli97.fateubw.common.world.realitymarble.RealityMarbleHandler;
 import io.github.flemmli97.fateubw.mixin.CombatTrackerAccessor;
 import io.github.flemmli97.tenshilib.loader.LoaderNetwork;
 import net.minecraft.ChatFormatting;
@@ -27,6 +30,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
@@ -53,7 +58,22 @@ public class EventCalls {
         RealityMarbleHandler.get(entity.getServer()).onEntityLoad(entity);
     }
 
-    public static void tick(LivingEntity entity) {
+    public static void tick(Entity entity) {
+        if (entity.getServer() != null) {
+            RealityMarbleGroup group = RealityMarbleHandler.get(entity.getServer()).getGroupOf(entity);
+            if (group != null) {
+                RealityMarbleConstraint constraint = FateAttachments.REALITY_MARBLE_CONSTRAINT.get().get(entity);
+                constraint.setConstraint(group.targetPosition(), CommonConfig.realityMarbleSize);
+                if (!(entity instanceof Player) && !constraint.inside()) {
+                    Vec3 towards = entity.position().subtract(group.targetPosition().getX() + 0.5, entity.position().y(), group.targetPosition().getZ() + 0.5).normalize().scale(-1);
+                    entity.fallDistance = 0;
+                    entity.setDeltaMovement(new Vec3(towards.x(), entity.getDeltaMovement().y(), towards.z()));
+                }
+            }
+        }
+    }
+
+    public static void tickLiving(LivingEntity entity) {
         if (entity instanceof ServerPlayer player)
             FateAttachments.PLAYER_DATA.get().get(player).tick();
         if (!entity.level().isClientSide) {
@@ -119,14 +139,5 @@ public class EventCalls {
 
     public static boolean preventEffectApply(LivingEntity entity, MobEffectInstance instance) {
         return instance.getEffect().value().getCategory() != MobEffectCategory.HARMFUL && entity.hasEffect(FateMobEffects.RULE_BREAKER.asHolder());
-    }
-
-    public static void onDeath(Entity entity) {
-        if (entity.level().isClientSide)
-            return;
-        RealityMarbleHandler.RealityMarbleGroup group = RealityMarbleHandler.get(entity.getServer()).getGroupOf(entity);
-        if (group != null) {
-            RealityMarbleHandler.get(entity.getServer()).clearAndTeleportBack(entity);
-        }
     }
 }

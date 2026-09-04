@@ -32,6 +32,7 @@ public class PacketRegistrar {
         register.register(S2CServantGui.TYPE, S2CServantGui.STREAM_CODEC, S2CServantGui::handle);
         register.register(S2CSpawnEggScreen.TYPE, S2CSpawnEggScreen.STREAM_CODEC, S2CSpawnEggScreen::handle);
         register.register(S2CTeamGuiData.TYPE, S2CTeamGuiData.STREAM_CODEC, S2CTeamGuiData::handle);
+        register.register(S2CRealityMarbleConstraint.TYPE, S2CRealityMarbleConstraint.STREAM_CODEC, S2CRealityMarbleConstraint::handle);
     }
 
     public interface ServerPacketRegister {

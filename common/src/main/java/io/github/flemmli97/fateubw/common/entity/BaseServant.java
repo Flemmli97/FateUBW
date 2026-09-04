@@ -31,7 +31,8 @@ import io.github.flemmli97.fateubw.common.utils.ExtendedCombatRules;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
-import io.github.flemmli97.fateubw.common.world.RealityMarbleHandler;
+import io.github.flemmli97.fateubw.common.world.realitymarble.RealityMarbleGroup;
+import io.github.flemmli97.fateubw.common.world.realitymarble.RealityMarbleHandler;
 import io.github.flemmli97.fateubw.mixin.CombatTrackerAccessor;
 import io.github.flemmli97.tenshilib.common.entity.AOEAttackEntity;
 import io.github.flemmli97.tenshilib.common.entity.EntityUtils;
@@ -424,7 +425,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
             if (this.cooldowns != null) {
                 this.cooldowns.values().forEach(CooldownHolder::tick);
             }
-            if (this.tickCount > 400 && this.getTarget() == null && !((CombatTrackerAccessor) this.getCombatTracker()).getInCombat()) {
+            if (this.isAlive() && this.tickCount > 400 && this.getTarget() == null && !((CombatTrackerAccessor) this.getCombatTracker()).getInCombat()) {
                 RealityMarbleHandler.get(this.getServer())
                         .deleteGroupOf(this);
             }
@@ -896,9 +897,13 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
     public boolean canOverrideRealityMarble() {
         if (this.getServer() == null)
             return false;
-        RealityMarbleHandler.RealityMarbleGroup group = RealityMarbleHandler.get(this.getServer())
+        RealityMarbleGroup group = RealityMarbleHandler.get(this.getServer())
                 .getGroupOf(this);
-        if (group == null || CommonConfig.realityMarbleOverride == -1)
+        if (group == null)
+            return true;
+        if (group.creator().equals(this.getUUID()))
+            return false;
+        if (CommonConfig.realityMarbleOverride == -1)
             return true;
         if (CommonConfig.realityMarbleOverride == 0)
             return false;
