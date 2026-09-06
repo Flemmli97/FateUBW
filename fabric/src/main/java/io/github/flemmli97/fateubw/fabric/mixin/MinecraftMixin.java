@@ -22,7 +22,7 @@ public abstract class MinecraftMixin {
 
     @WrapOperation(method = "setLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;updateScreenAndTick(Lnet/minecraft/client/gui/screens/Screen;)V"))
     private void modifyLevelSetScreen(Minecraft instance, Screen screen, Operation<Void> original, ClientLevel level, ReceivingLevelScreen.Reason reason) {
-        if (RealityMarbleTransitionScreen.DIMENSIONS.contains(this.level.dimension())) {
+        if (this.level != null && RealityMarbleTransitionScreen.DIMENSIONS.contains(this.level.dimension())) {
             this.updateScreenAndTick(new RealityMarbleTransitionScreen(() -> false, reason, this.level.dimension()));
             return;
         }
