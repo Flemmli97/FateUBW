@@ -12,7 +12,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.datafix.DataFixTypes;
@@ -182,8 +181,8 @@ public class RealityMarbleHandler extends SavedData {
     }
 
     private void overrideAndTransportEntity(Entity entity, ServerLevel targetLevel, RealityMarbleGroup group) {
-        this.entityGroupLookup.put(entity.getUUID(), new EntityMarbleData(group));
         this.teleportEntityTo(entity, targetLevel, group.sourcePosition(), group.targetPosition());
+        this.entityGroupLookup.put(entity.getUUID(), new EntityMarbleData(group));
     }
 
     /**
@@ -212,9 +211,7 @@ public class RealityMarbleHandler extends SavedData {
             height++;
             aabb = aabb.move(0, 1, 0);
         }
-        int finalHeight = height;
-        Entity toTeleport = entity;
-        entity.getServer().tell(new TickTask(1, () -> toTeleport.changeDimension(new DimensionTransition(targetLevel, new Vec3(pos.x(), finalHeight, pos.z()), Vec3.ZERO, toTeleport.getYRot(), toTeleport.getXRot(), DimensionTransition.PLACE_PORTAL_TICKET))));
+        entity.changeDimension(new DimensionTransition(targetLevel, new Vec3(pos.x(), height, pos.z()), Vec3.ZERO, entity.getYRot(), entity.getXRot(), DimensionTransition.PLACE_PORTAL_TICKET));
     }
 
     private MutableAABB collectiveBB(Entity entity, MutableAABB bb) {
