@@ -316,6 +316,12 @@
     ],
     "subtitle": "fateubw:entity.weapon.projectile.spawn"
   },
+  "generic.block": {
+    "sounds": [
+      "random/anvil_land"
+    ],
+    "subtitle": "fateubw:generic.block"
+  },
   "generic.reality_marble_cast": {
     "sounds": [
       "fateubw:generic/reality_marble_cast"

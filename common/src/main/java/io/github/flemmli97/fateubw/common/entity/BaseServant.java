@@ -594,8 +594,8 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
         float yRot = this.getYHeadRot();
         float xRot = this.getXRot();
         if (this.getControllingPassenger() instanceof Player player) {
-            yRot = player.getYHeadRot();
-            xRot = player.getXRot();
+            yRot = player.getViewYRot(1);
+            xRot = player.getViewXRot(1);
         } else if (target != null) {
             Vec3 dir = target.subtract(this.position()).normalize();
             float[] yXRot = MathsHelper.YXRotFrom(dir);

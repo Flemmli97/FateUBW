@@ -38,6 +38,7 @@ public class ServantExtraData {
     public static final DataType<NumberProvider> ARMY_SUMMON_COOLDOWN = register(Fate.MODID, "army_summon_cooldown", NumberProviders.CODEC, UniformGenerator.between(200, 500));
     public static final DataType<Integer> MAX_NEARBY_ARMY = register(Fate.MODID, "max_nearby_army", Codec.INT, 12);
     public static final DataType<Float> STRONG_HOPLITE_CHANCE = register(Fate.MODID, "strong_hoplite_chance", Codec.FLOAT, 0.1f);
+    public static final DataType<Float> BLOCK_CHANCE = register(Fate.MODID, "block_chance", Codec.FLOAT, 0.33f);
 
     public static final Codec<ServantExtraData> CODEC = new Codec<>() {
         @Override

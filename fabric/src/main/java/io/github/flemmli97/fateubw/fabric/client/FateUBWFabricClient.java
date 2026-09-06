@@ -3,7 +3,7 @@ package io.github.flemmli97.fateubw.fabric.client;
 import io.github.flemmli97.fateubw.client.ClientCalls;
 import io.github.flemmli97.fateubw.client.ClientHandler;
 import io.github.flemmli97.fateubw.client.ShakeHandler;
-import io.github.flemmli97.fateubw.client.particles.LightningParticle;
+import io.github.flemmli97.fateubw.client.particles.ParticleRenderTypes;
 import io.github.flemmli97.fateubw.client.particles.SphereCloudParticle;
 import io.github.flemmli97.fateubw.client.particles.SphereParticle;
 import io.github.flemmli97.fateubw.client.particles.TrailParticle;
@@ -32,10 +32,10 @@ public class FateUBWFabricClient implements ClientSetupModInitializer {
         HudRenderCallback.EVENT.register(ClientHandler.getManaBar()::renderBar);
         ParticleTypeRegisterEvent.EVENT.register(register -> {
             register.addRenderType(TrailParticle.SOLID_COLOR_PARTICLE);
-            register.addRenderType(TrailParticle.COLOR_PARTICLE);
+            register.addRenderType(ParticleRenderTypes.COLORIZE_PARTICLE_NO_CULL);
             register.addRenderType(SphereParticle.SPHERE_RENDER_TYPE);
             register.addRenderType(SphereCloudParticle.SPHERE_RENDER_TYPE);
-            register.addRenderType(LightningParticle.PARTICLE_LIGHTNING);
+            register.addRenderType(ParticleRenderTypes.COLORIZE_PARTICLE);
         });
 
         FateRenders.registerShader();

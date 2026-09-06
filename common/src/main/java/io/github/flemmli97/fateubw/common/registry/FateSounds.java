@@ -103,6 +103,8 @@ public class FateSounds {
             b -> b.defaultTranslation("Entity teleports").sound(ResourceLocation.withDefaultNamespace("mob/endermen/portal")).sound(ResourceLocation.withDefaultNamespace("mob/endermen/portal2")));
     public static final RegistryEntrySupplier<SoundEvent, SoundEvent> ZAP = register("generic.zap", "Zap");
     public static final RegistryEntrySupplier<SoundEvent, SoundEvent> REALITY_MARBLE = register("generic.reality_marble_cast", "Reality Marble used");
+    public static final RegistryEntrySupplier<SoundEvent, SoundEvent> BLOCK = register("generic.block",
+            b->b.defaultTranslation("Attack blocked").sound(ResourceLocation.withDefaultNamespace("random/anvil_land")));
 
     private static RegistryEntrySupplier<SoundEvent, SoundEvent> register(String name, String translation) {
         return register(name, b -> b.defaultTranslation(translation));

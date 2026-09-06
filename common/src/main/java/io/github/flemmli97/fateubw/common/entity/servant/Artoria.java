@@ -1,12 +1,15 @@
 package io.github.flemmli97.fateubw.common.entity.servant;
 
 import io.github.flemmli97.fateubw.Fate;
+import io.github.flemmli97.fateubw.api.datapack.ServantExtraData;
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.HeldEquipmentHandler;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.misc.Excalibur;
 import io.github.flemmli97.fateubw.common.entity.utils.ServantModelLike;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
+import io.github.flemmli97.fateubw.common.particles.BlockStateParticleData;
+import io.github.flemmli97.fateubw.common.particles.StrikeParticleData;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailProvider;
@@ -15,11 +18,13 @@ import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.CombatUtils;
+import io.github.flemmli97.fateubw.common.utils.MathsHelper;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.entity.ai.TargetPosition;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.SelectableBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetWalkTargetAwayFromTarget;
+import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetWalkTargetWithinDist;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.data.AnimationPlayHolder;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionContainer;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
@@ -33,11 +38,13 @@ import io.github.flemmli97.tenshilib.common.particle.data.ScaleData;
 import io.github.flemmli97.tenshilib.common.registry.TenshilibSyncableEntityDatas;
 import io.github.flemmli97.tenshilib.common.utils.TypedResource;
 import io.github.flemmli97.tenshilib.common.utils.math.OrientedBoundingBox;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.game.ClientboundAnimatePacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Unit;
@@ -52,6 +59,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
@@ -59,6 +67,7 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAtt
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class Artoria extends BaseServant {
@@ -92,16 +101,20 @@ public class Artoria extends BaseServant {
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.72)
             .marker(EntityWeaponTrailProvider.TRAIL_END, 0.88));
 
-    public static final String STAB_1 = BUILDER.add("stab_1", AnimationsBuilder.definition(1.4)
-            .marker("attack", 0.72, 0.96).marker("attack_final", 1.16));
-    public static final String INVISIBLE_BURST = BUILDER.add("invisible_burst", AnimationsBuilder.definition(1).marker("start", 0.44));
-    public static final String INVISIBLE_BURST_HIT = BUILDER.add("invisible_burst_hit", AnimationsBuilder.definition(0.6)
-            .marker("attack", 0.48)
-            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.28)
-            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.52));
-    public static final String EXCALIBAA = BUILDER.add("excalibur", AnimationsBuilder.definition(2.84)
-            .marker("start_attack", 0.1).marker("attack", 1.4));
+    public static final String STRIKE_AIR = BUILDER.add("strike_air", AnimationsBuilder.definition(1.4)
+            .marker("attack", 0.72, 0.96).marker("attack_final", 1.2));
+    public static final String BLOCK = BUILDER.add("block", AnimationsBuilder.definition(0.28));
+
+    public static final String INVISIBLE_BURST = BUILDER.add("invisible_burst", AnimationsBuilder.definition(1).marker("start", 0.48));
+    public static final String INVISIBLE_BURST_HIT = BUILDER.add("invisible_burst_hit", AnimationsBuilder.definition(0.52)
+            .marker("attack", 0.4)
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.16)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.4));
+    public static final String EXCALIBAA = BUILDER.add("excalibur", AnimationsBuilder.definition(5)
+            .marker("start_attack", 0.44).marker("attack", 3.36)
+            .marker("charge_start", 0.44).marker("charge_end", 3.12));
     public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2.));
+    private static final String DEATH = BUILDER.add("death", AnimationsBuilder.definition(1.52).infinite());
     public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
 
     public static final TypedResource<Vec3> BURST_DIRECTION = new TypedResource<>(Fate.modRes("burst_direction"));
@@ -181,19 +194,19 @@ public class Artoria extends BaseServant {
                 .prepare(new SetWalkTargetToAttackTarget<BaseServant>().speedMod((owner, target) -> ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(4)
 
-//                .start(STAB_1).play(BehaviourUtils.cooldownedPlay(true, 13, 25))
-//                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
-//                .end(4)
-//                .start(INVISIBLE_BURST).play(BehaviourUtils.cooldownedPlay(false, 10, 27))
-//                .condition(BehaviourUtils.ifFurtherThan(5))
-//                .prepare(new SetWalkTargetToAttackTarget<BaseServant>().closeEnoughDist(BehaviourUtils.closeEnough(16)))
-//                .prepareOptional(BehaviourUtils.moveAttack())
-//                .end(15)
-//                .start(EXCALIBAA).play(BehaviourUtils.cooldownedPlay(false, 20, 35))
-//                .condition(BaseServant::canUseNobelPhantasm)
-//                .prepare(new SetWalkTargetWithinDist<BaseServant>()
-//                        .min(3).max(8).speedMod(1.2f)).prepareOptional(BehaviourUtils.moveAttack())
-//                .end(30)
+                .start(STRIKE_AIR).play(BehaviourUtils.cooldownedPlay(true, 13, 25))
+                .prepare(new SetWalkTargetToAttackTarget<BaseServant>().speedMod((owner, target) -> ATTACK_MOVE_SPEED).closeEnoughDist(BehaviourUtils.closeEnough(6))).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .end(6)
+                .start(INVISIBLE_BURST).play(BehaviourUtils.cooldownedPlay(false, 10, 27))
+                .condition(BehaviourUtils.ifFurtherThan(5))
+                .prepare(new SetWalkTargetToAttackTarget<BaseServant>().speedMod((owner, target) -> ATTACK_MOVE_SPEED).closeEnoughDist(BehaviourUtils.closeEnough(16)))
+                .prepareOptional(BehaviourUtils.moveAttack())
+                .end(15)
+                .start(EXCALIBAA).play(BehaviourUtils.cooldownedPlay(false, 20, 35))
+                .condition(BaseServant::canUseNobelPhantasm)
+                .prepare(new SetWalkTargetWithinDist<BaseServant>()
+                        .min(3).max(8).speedMod(ATTACK_MOVE_SPEED + 0.1f)).prepareOptional(BehaviourUtils.moveAttack())
+                .end(30)
                 .build();
     }
 
@@ -228,18 +241,30 @@ public class Artoria extends BaseServant {
                                             .build()),
                             this.getX(), this.getY(), this.getZ(), 0, 0, 0);
                 }
-                if (anim.is(STAB_1) && (anim.isAt("attack") || anim.isAt("attack_final"))) {
-                    Vec3 offset = new Vec3(0, this.getBbHeight() * 0.5, this.getBbWidth() + 1.4 * this.getScale())
-                            .yRot(-this.getViewYRot(1) * Mth.DEG_TO_RAD);
-                    for (int i = 0; i < 6; i++) {
-                        AdvancedParticleContainer.make(FateParticles.FLASH.get())
-                                .addData(new ColorData(248 / 255f, 248 / 255f, 100 / 255f, 0.5f))
-                                .addData(new ScaleData(0.4f))
-                                .addData(new ParticleMetaData(10, false, 0))
+                if (anim.is(STRIKE_AIR) && anim.isAt(0.72)) {
+                    float yRot = this.getViewYRot(1);
+                    Vec3 offset = new Vec3(0, this.getBbHeight() * 0.5, this.getBbWidth() * 2)
+                            .yRot(-yRot * Mth.DEG_TO_RAD);
+                        AdvancedParticleContainer.make(new StrikeParticleData(FateParticles.STRIKE.get(), yRot, this.getViewXRot(1),
+                                        this.getBbHeight() * 0.9f, this.getBbWidth()  + 10 * this.getScale(), 20))
+                                .addData(new ColorData(122 / 255f, 174 / 255f, 255 / 255f, 1))
                                 .add(this.level(),
-                                        this.getX() + offset.x() + this.getRandom().nextGaussian() * 0.3,
-                                        this.getY() + offset.y() + this.getRandom().nextGaussian() * 0.15,
-                                        this.getZ() + offset.z() + this.getRandom().nextGaussian() * 0.3);
+                                        this.getX() + offset.x(),
+                                        this.getY() + offset.y(),
+                                        this.getZ() + offset.z());
+                }
+                if (anim.is(TWO_HAND_OVERHEAD) && anim.isAt("attack")) {
+                    this.slamParticles();
+                }
+                if(anim.is(EXCALIBAA)) {
+                    if (anim.isPast("charge_start") && !anim.isPast("charge_end")) {
+                        for (int i = 0; i < 8; i++) {
+                            AdvancedParticleContainer.make(FateParticles.FLASH.get())
+                                    .addData(new ScaleData(0.15f + this.getRandom().nextFloat() * 0.1f))
+                                    .addData(new ColorData(243 / 255f, 228 / 255f, 39 / 255f, 1))
+                                    .addData(new ParticleMetaData(8, false, 0))
+                                    .add(this.level(), this.getRandomX(8), this.getY(this.getRandom().nextDouble() * 6 - 2), this.getRandomZ(8));
+                        }
                     }
                 }
             }
@@ -332,13 +357,38 @@ public class Artoria extends BaseServant {
                 this.mobAttack(anim, this.getTarget(), this::doHurtTarget);
             }
             if (anim.isAt("attack")) {
-                if (anim.is(STAB_1)) {
+                if (anim.is(STRIKE_AIR)) {
                     this.playSound(FateSounds.SWOOSH_1.get(), 2, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.5F);
-                } else {
+                } else if(anim.is(TWO_HAND_OVERHEAD)) {
+                    this.playSound(SoundEvents.GENERIC_EXPLODE.value(), 1, (this.random.nextFloat() - this.random.nextFloat()) * 0.1F + 1.1F);
+                }
+                else {
                     this.playSound(FateSounds.SLASH.get(), 2, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
                 }
             }
             super.handleAttack(anim);
+        }
+    }
+
+    private void slamParticles() {
+        Vec3 dir = this.calculateViewVector(0, this.getViewYRot(1));
+        Vec3 side = this.calculateViewVector(0, this.getViewYRot(1) + 90);
+        HashSet<BlockPos> visited = new HashSet<>();
+        for (int len = 0; len < 4; len++) {
+            for (int width = 0; width < 2 ; width++) {
+                Vec3 target = this.position().add(dir.scale(len)).add(side.scale(width));
+                BlockPos pos = BlockPos.containing(target);
+                if (visited.contains(pos))
+                    continue;
+                BlockState state = this.level().getBlockState(pos);
+                if (state.isAir()) {
+                    pos = pos.below();
+                    state = this.level().getBlockState(pos);
+                }
+                visited.add(pos);
+                this.level().addParticle(new BlockStateParticleData(FateParticles.BLOCK.get(), state, this.random.nextFloat() * 360, this.random.nextFloat() * 10, 30),
+                        pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 0, this.random.nextDouble() * 0.05 + 0.03, 0);
+            }
         }
     }
 
@@ -367,28 +417,24 @@ public class Artoria extends BaseServant {
         double height = this.getBbHeight();
         double width = this.getBbWidth();
         double length = 1 * this.getScale();
-        if (anim.is(TWO_HAND_1_1)) {
-            width += 2.5 * this.getScale();
-            length += 1.1 * this.getScale();
+        if (anim.is(TWO_HAND_1_1, TWO_HAND_2_1)) {
+            width += 2.75 * this.getScale();
+            length += 1.2 * this.getScale();
             return new AABB(-width * 0.6, -0.03, 0, width * 0.4, height + 0.03, length);
         }
-        if (anim.is(TWO_HAND_1_2)) {
-            width += 2.5 * this.getScale();
-            length += 1.1 * this.getScale();
+        if (anim.is(TWO_HAND_1_2, TWO_HAND_2_2)) {
+            width += 2.75 * this.getScale();
+            length += 1.2 * this.getScale();
             return new AABB(-width * 0.4, -0.03, 0, width * 0.6, height + 0.03, length);
-        }
-        if (anim.is(TWO_HAND_2_1, TWO_HAND_2_2)) {
-            width += 2 * this.getScale();
-            length += 1.1 * this.getScale();
         }
         if (anim.is(TWO_HAND_OVERHEAD)) {
             width += 0.5 * this.getScale();
             height += 1.5 * this.getScale();
-            length += 1 * this.getScale();
+            length += 2 * this.getScale();
         }
-        if (anim.is(STAB_1)) {
-            width += 0.2 * this.getScale();
-            length += 1.6 * this.getScale();
+        if (anim.is(STRIKE_AIR)) {
+            width += 1 * this.getScale();
+            length += 9.5f * this.getScale();
         }
         if (anim.is(INVISIBLE_BURST_HIT)) {
             width += 2.5 * this.getScale();
@@ -408,9 +454,11 @@ public class Artoria extends BaseServant {
         if (!anim.is(INVISIBLE_BURST))
             return super.calculateAttackAABB(anim, target, grow);
         double width = this.getBbWidth();
-        double speed = Math.max(width, this.getDeltaMovement().length() - width);
+        Vec3 dir = this.getDataContainer().get(BURST_DIRECTION);
+        float[] yXRot = MathsHelper.YXRotFrom(dir);
+        double speed = Math.max(width, dir.length() - width);
         return new OrientedBoundingBox(OrientedBoundingBox.originAABB(this)
-                .inflate(grow, 0, grow).expandTowards(0, 0, speed), this.getYRot(), this.getXRot(), this.position());
+                .inflate(grow, 0, grow).expandTowards(0, 0, speed), yXRot[0], yXRot[1], this.position());
     }
 
     @Override
@@ -420,7 +468,20 @@ public class Artoria extends BaseServant {
 
     @Override
     public boolean hurt(DamageSource damageSource, float damage) {
-        return !this.getAnimationHandler().isCurrent(EXCALIBAA) && super.hurt(damageSource, damage);
+        if (this.getAnimationHandler().isCurrent(EXCALIBAA)) {
+            return false;
+        }
+        if (!this.level().isClientSide() && !damageSource.is(DamageTypeTags.BYPASSES_SHIELD)) {
+            if (!this.getAnimationHandler().hasAnimation() && this.healthBelow(0.66f)
+                    && this.getRandom().nextFloat() < this.props().getConfig(ServantExtraData.BLOCK_CHANCE)) {
+                this.getAnimationHandler().setAnimation(BLOCK);
+            }
+            if (this.getAnimationHandler().isCurrent(BLOCK)) {
+                this.playSound(FateSounds.BLOCK.get(), 1, 1.15f);
+                return false;
+            }
+        }
+        return super.hurt(damageSource, damage);
     }
 
     @Override
@@ -449,6 +510,11 @@ public class Artoria extends BaseServant {
     @Override
     protected String getSummonAnimation() {
         return SUMMON;
+    }
+
+    @Override
+    public String getDeathAnimation() {
+        return DEATH;
     }
 
     @Override

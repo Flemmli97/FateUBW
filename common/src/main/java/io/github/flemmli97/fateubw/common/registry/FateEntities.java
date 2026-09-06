@@ -89,7 +89,8 @@ public class FateEntities {
                     .putAttributes(FateAttributes.MAGIC_ATTACK.asHolder(), 12).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 14)
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.27)
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1.5).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
-                    .npCost(80));
+                    .npCost(80)
+                    .withConfigData(ServantExtraData.BLOCK_CHANCE));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<Nero>> NERO = regServant("nero_claudius_saber", "Aestus Domus Aurea", EntityType.Builder.of(Nero::new, MobCategory.MISC)
                     .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
             0xea1b04, 0xf8ef97,

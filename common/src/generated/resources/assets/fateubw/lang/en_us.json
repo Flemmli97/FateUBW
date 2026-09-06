@@ -261,6 +261,7 @@
   "fateubw:entity.tentacle.slams": "Tentacle slams",
   "fateubw:entity.weapon.projectile.shoot": "Weapon firing",
   "fateubw:entity.weapon.projectile.spawn": "Weapon spawns",
+  "fateubw:generic.block": "Attack blocked",
   "fateubw:generic.reality_marble_cast": "Reality Marble used",
   "fateubw:generic.slash": "Weapon slashing",
   "fateubw:generic.slash_impact": "Slash impact",

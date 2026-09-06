@@ -17,7 +17,7 @@ public class LightningSparkParticle extends SpritedParticle {
 
     public LightningSparkParticle(ClientLevel level, double x, double y, double z, double motionX, double motionY, double motionZ,
                                   SpriteSet sprite) {
-        super(level, x, y, z, motionX, motionY, motionZ, sprite, LightningParticle.PARTICLE_LIGHTNING);
+        super(level, x, y, z, motionX, motionY, motionZ, sprite, ParticleRenderTypes.COLORIZE_PARTICLE);
         this.roll = level.getRandom().nextFloat() * 360 * Mth.DEG_TO_RAD;
         this.type = level.getRandom().nextInt(TYPES);
         this.oRoll = this.roll;

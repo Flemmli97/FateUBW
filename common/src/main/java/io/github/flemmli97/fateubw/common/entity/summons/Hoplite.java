@@ -219,7 +219,8 @@ public class Hoplite extends SummonedEntity {
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        if (!source.is(DamageTypeTags.BYPASSES_SHIELD)) {
+        if (!this.level().isClientSide && !source.is(DamageTypeTags.BYPASSES_SHIELD)) {
+            this.startBlockWithShield();
             if (this.isBlockingShield()) {
                 amount *= 0.5f;
                 this.shieldHealth -= Math.clamp(amount, 0.0f, 5.0f);
@@ -232,7 +233,6 @@ public class Hoplite extends SummonedEntity {
                     this.playSound(SoundEvents.SHIELD_BLOCK, 1, 1);
                 }
             }
-            this.startBlockWithShield();
         }
         return super.hurt(source, amount);
     }
