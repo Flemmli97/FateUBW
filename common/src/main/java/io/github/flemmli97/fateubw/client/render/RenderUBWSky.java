@@ -1,6 +1,7 @@
 package io.github.flemmli97.fateubw.client.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexBuffer;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -30,6 +31,9 @@ public class RenderUBWSky {
     private static final ResourceLocation UBW_GEAR_TEXTURE = Fate.modRes("textures/environment/gear.png");
     private static final Random RANDOM = new Random();
     private static GearData[] gearData;
+
+    // Custom buffer for the gear rendering. Also fixes iris breaking things
+    private static final MultiBufferSource.BufferSource BUFFER = MultiBufferSource.immediate(new ByteBufferBuilder(1536));
 
     public static void renderUBWSky(ClientLevel level, VertexBuffer skyBuffer, VertexBuffer darkBuffer, Matrix4f frustumMatrix, Matrix4f projectionMatrix, float partialTick, Runnable skyFogSetup) {
         skyFogSetup.run();
@@ -62,11 +66,10 @@ public class RenderUBWSky {
 
     private static void renderGears(PoseStack stack, float partialTick) {
         Player player = Minecraft.getInstance().player;
-        MultiBufferSource.BufferSource buffers = Minecraft.getInstance().renderBuffers().bufferSource();
         float tick = player.tickCount + partialTick;
         calculateGearData();
         RenderSystem.setShaderColor(1, 1, 1, 1);
-        VertexConsumer consumer = buffers.getBuffer(RenderType.entityTranslucent(UBW_GEAR_TEXTURE));
+        VertexConsumer consumer = BUFFER.getBuffer(RenderType.entityTranslucent(UBW_GEAR_TEXTURE));
         for (GearData data : gearData) {
             stack.pushPose();
             stack.mulPose(Axis.YP.rotationDegrees(data.yRot()));
@@ -84,7 +87,7 @@ public class RenderUBWSky {
             }
             stack.popPose();
         }
-        buffers.endLastBatch();
+        BUFFER.endBatch();
     }
 
     private static void calculateGearData() {
