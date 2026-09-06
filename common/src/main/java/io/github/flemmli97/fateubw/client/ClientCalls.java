@@ -39,7 +39,7 @@ public class ClientCalls {
         }
     }
 
-    public static void worldRender(PoseStack stack) {
+    public static void levelRender(PoseStack stack) {
         if (CommonConfig.debugAttack) {
             AttackBBRender.INST.render(stack, Minecraft.getInstance().renderBuffers().crumblingBufferSource());
         }

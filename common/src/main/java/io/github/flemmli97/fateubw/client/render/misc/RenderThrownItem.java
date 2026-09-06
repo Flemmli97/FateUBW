@@ -2,8 +2,6 @@ package io.github.flemmli97.fateubw.client.render.misc;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import io.github.flemmli97.fateubw.client.particles.TrailRenderer;
-import io.github.flemmli97.fateubw.client.render.FateRenders;
 import io.github.flemmli97.fateubw.common.entity.misc.ThrownItemEntity;
 import io.github.flemmli97.tenshilib.client.render.ItemProjectileRenderer;
 import net.minecraft.client.Minecraft;
@@ -46,9 +44,6 @@ public class RenderThrownItem extends ItemProjectileRenderer<ThrownItemEntity> {
             stack.popPose();
         } else {
             super.render(entity, rotation, partialTick, stack, buffer, packedLight);
-        }
-        if (entity.getItemType().info != null) {
-            TrailRenderer.render(entity, entity.getItemType().info, entity.trailPositions(), buffer.getBuffer(FateRenders.TRAIL_TRANSLUCENT), partialTick);
         }
     }
 

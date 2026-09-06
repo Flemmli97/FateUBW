@@ -44,6 +44,6 @@ public class ClientEvents {
     @SubscribeEvent
     public static void worldRender(RenderLevelStageEvent event) {
         if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_PARTICLES)
-            ClientCalls.worldRender(event.getPoseStack());
+            ClientCalls.levelRender(event.getPoseStack());
     }
 }

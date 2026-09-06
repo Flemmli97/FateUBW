@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.client.render.FateRenders;
 import io.github.flemmli97.tenshilib.client.particles.SpritedParticle;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -71,7 +72,7 @@ public class LightningParticle extends SpritedParticle {
         }
 
         public String toString() {
-            return "PARTICLE_SHEET_TRANSLUCENT";
+            return Fate.MODID + ":PARTICLE_LIGHTNING";
         }
     };
 
