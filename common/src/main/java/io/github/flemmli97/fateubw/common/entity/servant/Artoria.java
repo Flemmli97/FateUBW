@@ -14,12 +14,12 @@ import io.github.flemmli97.fateubw.common.registry.FateDataComponents;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.registry.FateSounds;
+import io.github.flemmli97.fateubw.common.utils.CombatUtils;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.entity.ai.TargetPosition;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.SelectableBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetWalkTargetAwayFromTarget;
-import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetWalkTargetWithinDist;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.data.AnimationPlayHolder;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionContainer;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationHandler;
@@ -61,29 +61,37 @@ import org.joml.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Arthur extends BaseServant {
+public class Artoria extends BaseServant {
+
+    private static final float ATTACK_MOVE_SPEED = 1.5f;
 
     public static final AnimationsBuilder BUILDER = new AnimationsBuilder();
-    public static final String TWO_HAND_1 = BUILDER.add("two_hand_1", AnimationsBuilder.definition(1)
-            .marker("attack", 0.88).marker("step", 0.52)
+    public static final String TWO_HAND_1_1 = BUILDER.add("two_hand_1_1", AnimationsBuilder.definition(1.08)
+            .marker("attack", 0.88).marker("step", 0.8)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
-            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.92));
-    public static final String TWO_HAND_2 = BUILDER.add("two_hand_2", AnimationsBuilder.definition(0.96)
-            .marker("attack", 0.84).marker("step", 0.52)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.96));
+    public static final String TWO_HAND_1_2 = BUILDER.add("two_hand_1_2", AnimationsBuilder.definition(1.08)
+            .marker("attack", 0.88).marker("step", 0.8)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.96));
+    public static final String TWO_HAND_1_3 = BUILDER.add("two_hand_1_3", AnimationsBuilder.definition(1.84)
+            .marker("attack_start", 0.6).marker("attack_end", 1.56)
+            .marker("reset", 1.2).marker("jump", 0.64, 1.08)
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 1.64));
+    public static final String TWO_HAND_2_1 = BUILDER.add("two_hand_2_1", AnimationsBuilder.definition(1.08)
+            .marker("attack", 0.88).marker("step", 0.8)
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.96));
+    public static final String TWO_HAND_2_2 = BUILDER.add("two_hand_2_2", AnimationsBuilder.definition(1.08)
+            .marker("attack", 0.88).marker("step", 0.8)
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.96));
+    public static final String TWO_HAND_OVERHEAD = BUILDER.add("two_hand_overhead", AnimationsBuilder.definition(1)
+            .marker("attack", 0.84)
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.72)
             .marker(EntityWeaponTrailProvider.TRAIL_END, 0.88));
-    public static final String TWO_HAND_3 = BUILDER.add("two_hand_3", AnimationsBuilder.definition(0.92)
-            .marker("attack", 0.8).marker("step", 0.52)
-            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
-            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.84));
-    public static final String TWO_HAND_4 = BUILDER.add("two_hand_4", AnimationsBuilder.definition(0.96)
-            .marker("attack", 0.84).marker("step", 0.52)
-            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
-            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.88));
-    public static final String ONE_HAND_1 = BUILDER.add("one_hand_1", AnimationsBuilder.definition(0.88)
-            .marker("attack", 0.76)
-            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
-            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.8));
+
     public static final String STAB_1 = BUILDER.add("stab_1", AnimationsBuilder.definition(1.4)
             .marker("attack", 0.72, 0.96).marker("attack_final", 1.16));
     public static final String INVISIBLE_BURST = BUILDER.add("invisible_burst", AnimationsBuilder.definition(1).marker("start", 0.44));
@@ -98,11 +106,11 @@ public class Arthur extends BaseServant {
 
     public static final TypedResource<Vec3> BURST_DIRECTION = new TypedResource<>(Fate.modRes("burst_direction"));
 
-    private final AnimationHandler<Arthur> animationHandler = new AnimationHandler<>(this, ANIMS).withChangeListener(anim -> {
+    private final AnimationHandler<Artoria> animationHandler = new AnimationHandler<>(this, ANIMS).withChangeListener(anim -> {
         if (!this.level().isClientSide()) {
             if (anim == null) {
                 this.getDataContainer().set(BURST_DIRECTION, null);
-            } else if (anim.is(INVISIBLE_BURST)) {
+            } else if (anim.is(INVISIBLE_BURST) || anim.is(TWO_HAND_1_3)) {
                 this.hitEntity = null;
                 this.getDataContainer().set(BURST_DIRECTION, null);
             }
@@ -114,7 +122,9 @@ public class Arthur extends BaseServant {
 
     protected List<LivingEntity> hitEntity;
 
-    public Arthur(EntityType<? extends Arthur> entityType, Level level) {
+    private float attackRotation;
+
+    public Artoria(EntityType<? extends Artoria> entityType, Level level) {
         super(entityType, level);
     }
 
@@ -151,59 +161,48 @@ public class Arthur extends BaseServant {
     @Override
     public ExtendedBehaviour<? extends BaseServant> getCombatAI() {
         return AttackBehaviourBuilder.<BaseServant>create()
-                .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(TWO_HAND_1)
-                        .start(TWO_HAND_2, 2, 0.52f, 3)
-                        .start(TWO_HAND_3, 2, 0.52f, 2)
-                        .start(TWO_HAND_3, 2, 0.52f, 1)
-                        .chain(ONE_HAND_1, 2, 0.52f)
+                .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(TWO_HAND_1_1)
+                        .start(TWO_HAND_1_2, 1, 0.6f, 1)
+                        .start(TWO_HAND_1_2, 1, 0.6f, 3, owner -> owner.healthBelow(0.5f))
+                        .chain(TWO_HAND_1_3, 1, 0.6f)
                         .build())).play(BehaviourUtils.cooldownedPlay(true, 15, 30))
-                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(6)
-                .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(TWO_HAND_2)
-                        .start(TWO_HAND_1, 2, 0.52f, 3)
-                        .start(TWO_HAND_4, 2, 0.52f, 2)
-                        .start(TWO_HAND_4, 2, 0.52f, 1)
-                        .chain(ONE_HAND_1, 2, 0.52f)
+                .prepare(new SetWalkTargetToAttackTarget<BaseServant>().speedMod((owner, target) -> ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .end(7)
+
+                .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(TWO_HAND_2_1)
+                        .start(TWO_HAND_2_2, 1, 0.6f, 1)
+                        .start(TWO_HAND_2_2, 1, 0.6f, 3, owner -> owner.healthBelow(0.66f))
+                        .chain(TWO_HAND_OVERHEAD, 1, 0.72f)
                         .build())).play(BehaviourUtils.cooldownedPlay(true, 15, 30))
-                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(6)
-                .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(TWO_HAND_3)
-                        .start(TWO_HAND_1, 2, 0.52f, 1)
-                        .start(TWO_HAND_4, 2, 0.52f, 1)
-                        .build())).play(BehaviourUtils.cooldownedPlay(true, 15, 30))
-                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(6)
-                .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(TWO_HAND_4)
-                        .start(TWO_HAND_2, 2, 0.52f, 1)
-                        .start(TWO_HAND_3, 2, 0.52f, 1)
-                        .build())).play(BehaviourUtils.cooldownedPlay(true, 15, 30))
-                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(6)
-                .start(ONE_HAND_1).play(BehaviourUtils.cooldownedPlay(true, 13, 25))
-                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(5)
-                .start(STAB_1).play(BehaviourUtils.cooldownedPlay(true, 13, 25))
-                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .prepare(new SetWalkTargetToAttackTarget<BaseServant>().speedMod((owner, target) -> ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .end(7)
+
+                .start(TWO_HAND_OVERHEAD).play(BehaviourUtils.cooldownedPlay(true, 13, 25))
+                .prepare(new SetWalkTargetToAttackTarget<BaseServant>().speedMod((owner, target) -> ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(4)
-                .start(INVISIBLE_BURST).play(BehaviourUtils.cooldownedPlay(false, 10, 27))
-                .condition(BehaviourUtils.ifFurtherThan(5))
-                .prepare(new SetWalkTargetToAttackTarget<BaseServant>().closeEnoughDist(BehaviourUtils.closeEnough(16)))
-                .prepareOptional(BehaviourUtils.moveAttack())
-                .end(15)
-                .start(EXCALIBAA).play(BehaviourUtils.cooldownedPlay(false, 20, 35))
-                .condition(BaseServant::canUseNobelPhantasm)
-                .prepare(new SetWalkTargetWithinDist<BaseServant>()
-                        .min(3).max(8).speedMod(1.2f)).prepareOptional(BehaviourUtils.moveAttack())
-                .end(30)
+
+//                .start(STAB_1).play(BehaviourUtils.cooldownedPlay(true, 13, 25))
+//                .prepare(new SetWalkTargetToAttackTarget<>()).prepareOptional(BehaviourUtils.timedMoveAttack())
+//                .end(4)
+//                .start(INVISIBLE_BURST).play(BehaviourUtils.cooldownedPlay(false, 10, 27))
+//                .condition(BehaviourUtils.ifFurtherThan(5))
+//                .prepare(new SetWalkTargetToAttackTarget<BaseServant>().closeEnoughDist(BehaviourUtils.closeEnough(16)))
+//                .prepareOptional(BehaviourUtils.moveAttack())
+//                .end(15)
+//                .start(EXCALIBAA).play(BehaviourUtils.cooldownedPlay(false, 20, 35))
+//                .condition(BaseServant::canUseNobelPhantasm)
+//                .prepare(new SetWalkTargetWithinDist<BaseServant>()
+//                        .min(3).max(8).speedMod(1.2f)).prepareOptional(BehaviourUtils.moveAttack())
+//                .end(30)
                 .build();
     }
 
     @Override
     public ExtendedBehaviour<? extends BaseServant> getCooldownAI() {
         return SelectableBehaviourBuilder.<BaseServant>builder()
-                .add(6, new SetWalkTargetToAttackTarget<>(), BehaviourUtils.moveTo())
+                .add(6, new SetWalkTargetToAttackTarget<BaseServant>().speedMod((owner, target) -> ATTACK_MOVE_SPEED), BehaviourUtils.moveTo())
                 .add(2, new SetWalkTargetAwayFromTarget<BaseServant>()
-                        .radius(7), BehaviourUtils.moveTo()).build();
+                        .radius(7).speedMod(ATTACK_MOVE_SPEED), BehaviourUtils.moveTo()).build();
     }
 
     @Override
@@ -292,6 +291,37 @@ public class Arthur extends BaseServant {
                     this.getAnimationHandler().setAnimation(INVISIBLE_BURST_HIT);
                 }
             }
+        } else if (anim.is(TWO_HAND_1_3)) {
+            if (this.hitEntity == null)
+                this.hitEntity = new ArrayList<>();
+            if (this.getTarget() != null) {
+                this.setTargetPosition(this.getTarget(), false);
+                this.lookAt(this.getTarget(), 60, 30);
+            }
+            if (anim.isAt("attack_start")) {
+                this.attackRotation = this.getViewYRot(1);
+                this.playSound(FateSounds.SWOOSH_1.get(), 2, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.5F);
+            }
+            if (anim.isAt("reset")) {
+                this.hitEntity.clear();
+                this.playSound(FateSounds.SWOOSH_1.get(), 2, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.5F);
+            }
+            float xRot = -Mth.clamp(this.getViewXRot(1), -40, 40);
+            CombatUtils.spinAttack(this, anim, anim.getMarker("attack_start", 0), anim.getMarker("attack_end", 0),
+                    this.attackRotation + 200, this.attackRotation - 450, this.getBbWidth() * 5.5f,
+                    (yRot, prog) -> (1 - Math.abs(Mth.wrapDegrees(yRot) - this.attackRotation) / 90) * xRot, this.targetPred, target -> {
+                if (!this.hitEntity.contains(target)) {
+                    this.doHurtTarget(target);
+                    this.hitEntity.add(target);
+                }
+            });
+            if (anim.isAt("jump")) {
+                LivingEntity target = this.getTarget();
+                Vec3 dir = target != null ? target.position().subtract(this.position()) : this.getViewVector(1);
+                double vertical = Math.clamp(dir.y(), 0.2, 0.4);
+                dir = new Vec3(dir.x(), 0, dir.z()).normalize().scale(0.5).add(0, vertical, 0);
+                this.setDeltaMovement(dir);
+            }
         } else {
             if (anim.isAt("step")) {
                 Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(0.35);
@@ -337,21 +367,21 @@ public class Arthur extends BaseServant {
         double height = this.getBbHeight();
         double width = this.getBbWidth();
         double length = 1 * this.getScale();
-        if (anim.is(TWO_HAND_1)) {
+        if (anim.is(TWO_HAND_1_1)) {
             width += 2.5 * this.getScale();
             length += 1.1 * this.getScale();
             return new AABB(-width * 0.6, -0.03, 0, width * 0.4, height + 0.03, length);
         }
-        if (anim.is(TWO_HAND_2)) {
+        if (anim.is(TWO_HAND_1_2)) {
             width += 2.5 * this.getScale();
             length += 1.1 * this.getScale();
             return new AABB(-width * 0.4, -0.03, 0, width * 0.6, height + 0.03, length);
         }
-        if (anim.is(TWO_HAND_3, TWO_HAND_4)) {
+        if (anim.is(TWO_HAND_2_1, TWO_HAND_2_2)) {
             width += 2 * this.getScale();
             length += 1.1 * this.getScale();
         }
-        if (anim.is(ONE_HAND_1)) {
+        if (anim.is(TWO_HAND_OVERHEAD)) {
             width += 0.5 * this.getScale();
             height += 1.5 * this.getScale();
             length += 1 * this.getScale();
@@ -384,7 +414,7 @@ public class Arthur extends BaseServant {
     }
 
     @Override
-    public AnimationHandler<Arthur> getAnimationHandler() {
+    public AnimationHandler<Artoria> getAnimationHandler() {
         return this.animationHandler;
     }
 

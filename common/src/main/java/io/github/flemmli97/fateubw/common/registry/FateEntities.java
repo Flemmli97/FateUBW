@@ -22,7 +22,7 @@ import io.github.flemmli97.fateubw.common.entity.misc.StarfishShot;
 import io.github.flemmli97.fateubw.common.entity.misc.ThrownGem;
 import io.github.flemmli97.fateubw.common.entity.misc.ThrownItemEntity;
 import io.github.flemmli97.fateubw.common.entity.misc.WeaponProjectile;
-import io.github.flemmli97.fateubw.common.entity.servant.Arthur;
+import io.github.flemmli97.fateubw.common.entity.servant.Artoria;
 import io.github.flemmli97.fateubw.common.entity.servant.Cuchulainn;
 import io.github.flemmli97.fateubw.common.entity.servant.Diarmuid;
 import io.github.flemmli97.fateubw.common.entity.servant.Emiya;
@@ -79,15 +79,15 @@ public class FateEntities {
     public static final Map<ResourceLocation, AttributeHolderProperties.Builder> DEFAULT_ENTITY_PROPERTIES = new HashMap<>();
     public static final List<RegistryEntrySupplier<EntityType<?>, EntityType<?>>> SERVANTS = new ArrayList<>();
 
-    public static final RegistryEntrySupplier<EntityType<?>, EntityType<Arthur>> ARTHUR = regServant("artoria_pendragon_saber", "Excalibur", EntityType.Builder.of(Arthur::new, MobCategory.MISC)
+    public static final RegistryEntrySupplier<EntityType<?>, EntityType<Artoria>> ARTHUR = regServant("artoria_pendragon_saber", "Excalibur", EntityType.Builder.of(Artoria::new, MobCategory.MISC)
                     .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
-            0x048dd0, 0xecee37,
+            0x2b6496, 0xfddb8b,
             new ServantProperties.Builder(BuiltinServantClasses.SABER)
                     .putAttributes(Attributes.MAX_HEALTH, 400).putAttributes(Attributes.ATTACK_DAMAGE, 15)
                     .putAttributes(Attributes.ARMOR, 19).putAttributes(Attributes.ARMOR_TOUGHNESS, 8)
                     .putAttributes(FateAttributes.PROJECTILE_BLOCK_CHANCE.asHolder(), 0.15f).putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 16)
                     .putAttributes(FateAttributes.MAGIC_ATTACK.asHolder(), 12).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 14)
-                    .putAttributes(Attributes.MOVEMENT_SPEED, 0.34)
+                    .putAttributes(Attributes.MOVEMENT_SPEED, 0.27)
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1.5).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(80));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<Nero>> NERO = regServant("nero_claudius_saber", "Aestus Domus Aurea", EntityType.Builder.of(Nero::new, MobCategory.MISC)
