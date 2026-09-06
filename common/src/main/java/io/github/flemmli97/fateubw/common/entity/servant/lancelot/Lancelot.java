@@ -328,7 +328,7 @@ public class Lancelot extends BaseServant {
     @Override
     public OrientedBoundingBox calculateAttackAABB(AnimationState anim, Vec3 target, double grow) {
         if (anim.is(JUMP_LAND)) {
-            return new OrientedBoundingBox(this.attackBB(anim), this.getYRot(), 0, this.position());
+            return new OrientedBoundingBox(this.attackBB(anim), this.getViewYRot(1), 0, this.position());
         }
         return super.calculateAttackAABB(anim, target, grow);
     }

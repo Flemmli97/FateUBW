@@ -222,7 +222,7 @@ public class WeaponProjectile extends BaseProjectile {
                 } else if (this.target != null) {
                     this.shootAtEntity(this.target, 1.f, 6);
                 } else if (this.getOwner() instanceof LivingEntity living) {
-                    Vec3 dir = living.calculateViewVector(15, living.getYRot());
+                    Vec3 dir = living.calculateViewVector(15, living.getViewYRot(1));
                     this.shoot(dir.x(), dir.y(), dir.z(), 1.f, 6);
                 } else {
                     this.discard();
@@ -324,15 +324,15 @@ public class WeaponProjectile extends BaseProjectile {
             weapon.setType(type);
             // Initial rotation is based of the delta. don't want to dig into where its exactly handled so this will do
             weapon.setPos(offset.x, offset.y + thrower.getBbHeight() * 0.5, offset.z);
-            Vec3 dir = Vec3.directionFromRotation(0, thrower.getYRot());
+            Vec3 dir = Vec3.directionFromRotation(0, thrower.getViewYRot(1));
             weapon.shoot(dir.x(), dir.y(), dir.z(), 0.02F, 0);
             weapon.setWeapon(CommonConfig.babylonWeapons.getRandomWeapon(weapon.random));
             weapon.level().addFreshEntity(weapon);
         }
     }
 
-    public static void spawnWeaponsAround(LivingEntity thrower, @Nullable LivingEntity target, int amount, int range) {
-        Vec3 targetPos = target == null ? thrower.position().add(thrower.calculateViewVector(0, thrower.getYRot()).scale(9)) : target.position();
+    public static void spawnWeaponsAround(LivingEntity thrower, @Nullable LivingEntity target, int amount, int range, Type type) {
+        Vec3 targetPos = target == null ? thrower.position().add(thrower.calculateViewVector(0, thrower.getViewYRot(1)).scale(9)) : target.position();
         int targetSize = target == null ? 3 : Math.max(Mth.ceil(target.getBbHeight()), Mth.ceil(target.getBbWidth()));
         range = Math.max(targetSize + 3, range);
         List<Pair<Float, Float>> angles = new ArrayList<>(amount);
@@ -362,6 +362,7 @@ public class WeaponProjectile extends BaseProjectile {
             if (offset == null)
                 continue;
             WeaponProjectile weapon = new WeaponProjectile(thrower.level(), thrower, target);
+            weapon.setType(type);
             // Initial rotation is based of the delta. don't want to dig into where its exactly handled so this will do
             Vec3 dir = Vec3.directionFromRotation(-offset.getSecond(), offset.getFirst());
             Vec3 area = targetPos.add(dir.scale(range));

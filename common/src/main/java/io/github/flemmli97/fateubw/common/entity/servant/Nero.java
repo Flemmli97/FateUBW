@@ -448,7 +448,7 @@ public class Nero extends BaseServant {
         double width = this.getBbWidth();
         double speed = Math.max(width, this.getDeltaMovement().length() - width);
         Vec3 look = this.directionToLookAt();
-        float yRot = look != null ? MathsHelper.YRotFrom(look) : this.getYRot();
+        float yRot = look != null ? MathsHelper.YRotFrom(look) : this.getViewYRot(1);
         return new OrientedBoundingBox(OrientedBoundingBox.originAABB(this)
                 .inflate(2 + grow, 1, 2 + grow).expandTowards(0, 0, speed), yRot, 0, this.position());
     }

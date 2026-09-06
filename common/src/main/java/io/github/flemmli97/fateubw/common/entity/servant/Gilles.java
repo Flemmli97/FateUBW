@@ -218,7 +218,7 @@ public class Gilles extends BaseServant {
         if (this.getTarget() != null) {
             proj.shootAtEntity(this.getTarget(), 1, 0);
         } else {
-            proj.shoot(this, this.getXRot(), this.getYRot(), 0, 1, 0);
+            proj.shoot(this, this.getXRot(), this.getViewYRot(1), 0, 1, 0);
         }
         this.playSound(FateSounds.MAGIC_SPAWN.get(), 1, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
         this.level().addFreshEntity(proj);

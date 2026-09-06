@@ -130,15 +130,8 @@ public class Utils {
 
     public static List<Vec3> randomSidedPositions(LivingEntity thrower, int amount, int range) {
         Vec3 pos = thrower.position();
-        Vec3 look = thrower.getLookAngle();
         Vec3 vert = new Vec3(0, 1, 0);
-        if (-20 < thrower.getXRot() && thrower.getXRot() > 20)
-            vert.xRot(thrower.getXRot());
-        if (-20 > thrower.getXRot())
-            vert.xRot(-20);
-        if (20 < thrower.getXRot())
-            vert.xRot(20);
-        Vec3 hor = look.cross(vert);
+        Vec3 hor = thrower.calculateViewVector(0, thrower.getViewYRot(1) - 90);
         vert.normalize();
         hor.normalize();
         float rangeSq = (range - 1f) / 2 * (range - 1f) / 2;

@@ -360,7 +360,7 @@ public class Medusa extends BaseServant implements OnProjectileHit {
     @Override
     public OrientedBoundingBox calculateAttackAABB(AnimationState anim, Vec3 target, double grow) {
         if (anim.is(LAND)) {
-            return new OrientedBoundingBox(this.attackBB(anim), this.getYRot(), 0, this.position());
+            return new OrientedBoundingBox(this.attackBB(anim), this.getViewYRot(1), 0, this.position());
         }
         if (this.getVehicle() != null) {
             Entity vehicle = this.getVehicle();
@@ -370,7 +370,7 @@ public class Medusa extends BaseServant implements OnProjectileHit {
             double width = vehicle.getBbWidth() * 0.5 + 1.7;
             double height = (this.getY() - vehicle.getY() + this.getBbHeight()) + 0.2;
             AABB aabb = new AABB(-width * 0.5, -0.02, -width * 0.5, width * 0.5, height, width * 0.5);
-            return new OrientedBoundingBox(aabb, vehicle.getYRot(), 0, vehicle.position());
+            return new OrientedBoundingBox(aabb, vehicle.getViewYRot(1), 0, vehicle.position());
         }
         return super.calculateAttackAABB(anim, target, grow);
     }
@@ -435,7 +435,7 @@ public class Medusa extends BaseServant implements OnProjectileHit {
         if (!this.level().isClientSide) {
             ChainDagger dagger = new ChainDagger(this.level(), this, true);
             if (target == null) {
-                dagger.shoot(this, this.getXRot(), this.getYRot(), 0, 3, 0);
+                dagger.shoot(this, this.getViewXRot(1), this.getViewYRot(1), 0, 3, 0);
             } else {
                 dagger.shootAtEntity(target, 3, 0);
             }
@@ -490,12 +490,12 @@ public class Medusa extends BaseServant implements OnProjectileHit {
                 return;
             Pegasus peg = FateEntities.PEGASUS.get().create(serverLevel, e -> {
                 e.setPos(this.position());
-                e.setYRot(this.getYRot());
-                e.yRotO = this.getYRot();
-                e.yHeadRot = this.getYRot();
-                e.yHeadRotO = this.getYRot();
-                e.yBodyRot = this.getYRot();
-                e.yBodyRotO = this.getYRot();
+                e.setYRot(this.getViewYRot(1));
+                e.yRotO = e.getYRot();
+                e.yHeadRot = e.getYRot();
+                e.yHeadRotO = e.getYRot();
+                e.yBodyRot = e.getYRot();
+                e.yBodyRotO = e.getYRot();
                 e.setOwner(this);
             }, this.blockPosition(), MobSpawnType.MOB_SUMMONED, false, false);
             this.level().addFreshEntity(peg);

@@ -83,7 +83,7 @@ public class GordiusWheel extends SummonedEntity implements StandingVehicle, Syn
             .marker("attack", 0.52).marker("sparks", 0.72)
             .marker("lightning", 0.82));
     public static final String EXPUGNATIO = BUILDER.add("expugnatio", AnimationsBuilder.definition(3.12)
-                    .marker("moo", 0.16)
+            .marker("moo", 0.16)
             .marker("charge_start", 0.72).marker("charge_end", 2.4));
     public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
 

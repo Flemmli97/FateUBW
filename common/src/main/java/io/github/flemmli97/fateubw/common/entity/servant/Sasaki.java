@@ -286,7 +286,7 @@ public class Sasaki extends BaseServant {
         Vec3 baseDir = new Vec3(-3.5, 0, 2).scale(1f / duration);
         Vec3 baseSweer = new Vec3(0, 0, 0.4);
         Vec3 baseNormal = baseDir.add(0, 1, 0).normalize().scale(0.4).yRot(90);
-        float yRot = -this.getYRot() * Mth.DEG_TO_RAD;
+        float yRot = -this.getViewYRot(1) * Mth.DEG_TO_RAD;
         float[] angles = new float[]{-45, 45, -135};
         for (int i = 0; i < 3; i++) {
             float angle = angles[i] * Mth.DEG_TO_RAD;

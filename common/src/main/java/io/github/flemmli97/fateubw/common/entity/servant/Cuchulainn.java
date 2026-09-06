@@ -175,7 +175,7 @@ public class Cuchulainn extends BaseServant {
                 }
                 if ((anim.is(SPEAR_4) || anim.is(SPEAR_5) || anim.is(SPEAR_COMBO)) && (anim.isAt("attack") || anim.isAt("attack_final"))) {
                     Vec3 offset = new Vec3(0, this.getBbHeight() * 0.5, this.getBbWidth() + (anim.isAt("attack_final") ? 2.5 : 1.9) * this.getScale())
-                            .yRot(-this.getYRot() * Mth.DEG_TO_RAD);
+                            .yRot(-this.getViewYRot(1) * Mth.DEG_TO_RAD);
                     for (int i = 0; i < 6; i++) {
                         AdvancedParticleContainer.make(ParticleTypes.CRIT)
                                 .addData(new ParticleMetaData(10, false, 0))

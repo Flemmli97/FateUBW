@@ -34,12 +34,59 @@
           "pivot": [0, 24, 0],
           "cubes": [
             {"origin": [0, 31.5, -4], "size": [0, 1, 8], "uv": [68, 30]},
-            {"origin": [-1, 31.5, -4], "size": [0, 1, 8], "uv": [32, 71]},
-            {"origin": [-2, 31.5, -4], "size": [0, 1, 8], "uv": [48, 71]},
-            {"origin": [-3, 31.5, -4], "size": [0, 1, 8], "uv": [72, 0]},
+            {"origin": [-1, 31.5, -4], "size": [0, 1, 8], "uv": [48, 71]},
+            {"origin": [-2, 31.5, -4], "size": [0, 1, 8], "uv": [72, 0]},
+            {"origin": [-3, 31.5, -4], "size": [0, 1, 8], "uv": [76, 9]},
             {"origin": [3, 31.5, -4], "size": [0, 1, 8], "uv": [0, 69]},
             {"origin": [2, 31.5, -4], "size": [0, 1, 8], "uv": [16, 71]},
-            {"origin": [1, 31.5, -4], "size": [0, 1, 8], "uv": [16, 71]}
+            {"origin": [1, 31.5, -4], "size": [0, 1, 8], "uv": [32, 71]}
+          ]
+        },
+        {
+          "name": "EyesBase",
+          "parent": "Head",
+          "pivot": [0, 27, -4.025]
+        },
+        {
+          "name": "EyeBrows",
+          "parent": "EyesBase",
+          "pivot": [0, 28, -4.025]
+        },
+        {
+          "name": "LeftEyeBrow",
+          "parent": "EyeBrows",
+          "pivot": [2, 27, -4.075],
+          "cubes": [
+            {"origin": [1, 27, -4.075], "size": [2, 1, 1], "uv": [32, 29]}
+          ]
+        },
+        {
+          "name": "RightEyeBrow",
+          "parent": "EyeBrows",
+          "pivot": [-2, 27, -4.075],
+          "cubes": [
+            {"origin": [-3, 27, -4.075], "size": [2, 1, 1], "uv": [32, 27]}
+          ]
+        },
+        {
+          "name": "Eyes",
+          "parent": "EyesBase",
+          "pivot": [0, 26, -4.025]
+        },
+        {
+          "name": "RightEye",
+          "parent": "Eyes",
+          "pivot": [-2, 26, -4.025],
+          "cubes": [
+            {"origin": [-3, 25, -4.025], "size": [2, 2, 0], "uv": [38, 27]}
+          ]
+        },
+        {
+          "name": "LeftEye",
+          "parent": "Eyes",
+          "pivot": [2, 26, -4.025],
+          "cubes": [
+            {"origin": [1, 25, -4.025], "size": [2, 2, 0], "uv": [38, 29]}
           ]
         },
         {

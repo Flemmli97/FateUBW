@@ -230,7 +230,7 @@ public class Artoria extends BaseServant {
                 }
                 if (anim.is(STAB_1) && (anim.isAt("attack") || anim.isAt("attack_final"))) {
                     Vec3 offset = new Vec3(0, this.getBbHeight() * 0.5, this.getBbWidth() + 1.4 * this.getScale())
-                            .yRot(-this.getYRot() * Mth.DEG_TO_RAD);
+                            .yRot(-this.getViewYRot(1) * Mth.DEG_TO_RAD);
                     for (int i = 0; i < 6; i++) {
                         AdvancedParticleContainer.make(FateParticles.FLASH.get())
                                 .addData(new ColorData(248 / 255f, 248 / 255f, 100 / 255f, 0.5f))
@@ -310,11 +310,11 @@ public class Artoria extends BaseServant {
             CombatUtils.spinAttack(this, anim, anim.getMarker("attack_start", 0), anim.getMarker("attack_end", 0),
                     this.attackRotation + 200, this.attackRotation - 450, this.getBbWidth() * 5.5f,
                     (yRot, prog) -> (1 - Math.abs(Mth.wrapDegrees(yRot) - this.attackRotation) / 90) * xRot, this.targetPred, target -> {
-                if (!this.hitEntity.contains(target)) {
-                    this.doHurtTarget(target);
-                    this.hitEntity.add(target);
-                }
-            });
+                        if (!this.hitEntity.contains(target)) {
+                            this.doHurtTarget(target);
+                            this.hitEntity.add(target);
+                        }
+                    });
             if (anim.isAt("jump")) {
                 LivingEntity target = this.getTarget();
                 Vec3 dir = target != null ? target.position().subtract(this.position()) : this.getViewVector(1);

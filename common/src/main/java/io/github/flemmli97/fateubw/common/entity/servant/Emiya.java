@@ -109,6 +109,8 @@ public class Emiya extends BaseServant {
 
     public static final String UNLIMITED_BLADE_WORKS = BUILDER.add("unlimited_blade_works", AnimationsBuilder.definition(7)
             .marker("start", 0.36).marker("cast", 4.2).marker("teleport", 6.8));
+    public static final String UNLIMITED_BLADE_WORKS_FULL = BUILDER.add("unlimited_blade_works_full", AnimationsBuilder.definition(37)
+            .marker("start", 0.36).marker("cast", 31.4).marker("teleport", 34));
     public static final String UBW_ATTACK_1 = BUILDER.add("ubw_attack_1", AnimationsBuilder.definition(1.28)
             .marker("shoot", 0.48));
     public static final String UBW_ATTACK_2 = BUILDER.add("ubw_attack_2", AnimationsBuilder.definition(1.28)
@@ -240,12 +242,22 @@ public class Emiya extends BaseServant {
                 .start(UNLIMITED_BLADE_WORKS)
                 .condition(owner -> owner.canUseNobelPhantasm() && this.canOverrideRealityMarble())
                 .prepare(new SetWalkTargetToAttackTarget<Emiya>().closeEnoughDist(BehaviourUtils.closeEnough(16))).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(30)
+                .end(35)
+                .start(UBW_ATTACK_1).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(18), 16, 28))
+                .condition(Emiya::isInRealityMarble)
+                .prepare(new SetWalkTargetWithinDist<Emiya>()
+                        .min(5).max(14).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .end(8)
                 .start(UBW_ATTACK_1).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(18), 16, 28))
                 .condition(owner -> owner.isInRealityMarble() && BehaviourUtils.ifFurtherThan(11).test(owner))
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
                         .min(5).max(14).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(19)
+                .start(UBW_ATTACK_2).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(18), 16, 28))
+                .condition(Emiya::isInRealityMarble)
+                .prepare(new SetWalkTargetWithinDist<Emiya>()
+                        .min(5).max(14).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .end(8)
                 .start(UBW_ATTACK_2).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(18), 16, 28))
                 .condition(owner -> owner.isInRealityMarble() && BehaviourUtils.ifFurtherThan(11).test(owner))
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
@@ -255,7 +267,7 @@ public class Emiya extends BaseServant {
                 .condition(owner -> owner.caladBolgCooldown.canUse())
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
                         .min(8).max(16).speedMod(ATTACK_MOVE_SPEED + 0.1f)).prepareOptional(BehaviourUtils.moveAttack())
-                .end(4)
+                .end(5)
                 .build();
     }
 
@@ -315,7 +327,7 @@ public class Emiya extends BaseServant {
 
     @Override
     public void handleAttack(AnimationState anim) {
-        if (anim.is(UNLIMITED_BLADE_WORKS)) {
+        if (anim.is(UNLIMITED_BLADE_WORKS, UNLIMITED_BLADE_WORKS_FULL)) {
             this.getNavigation().stop();
             if (anim.isPast("start")) {
                 for (int i = 0; i < 40; i++) {
@@ -432,7 +444,12 @@ public class Emiya extends BaseServant {
                 this.getLookControl().setLookAt(target, 60.0F, 30.0F);
             }
             if (anim.isAt("shoot")) {
-                WeaponProjectile.spawnWeapons(this, target, 7 + this.getRandom().nextInt(10), 7, WeaponProjectile.Type.UBW);
+                if (this.getRandom().nextFloat() < 0.4) {
+                    WeaponProjectile.spawnWeaponsAround(this, target, 7 + this.getRandom().nextInt(10), 7, WeaponProjectile.Type.UBW);
+                } else {
+                    int amount = 7 + this.getRandom().nextInt(10);
+                    WeaponProjectile.spawnWeapons(this, target, amount, 9 + amount / 5, WeaponProjectile.Type.UBW);
+                }
             }
         } else if (anim.is(DUAL_BLADE_THROW)) {
             LivingEntity target = this.getTarget();
@@ -518,7 +535,7 @@ public class Emiya extends BaseServant {
 
     @Override
     public boolean hurt(DamageSource damageSource, float damage) {
-        return !this.getAnimationHandler().isCurrent(CALADBOLG, UNLIMITED_BLADE_WORKS) && super.hurt(damageSource, damage);
+        return !this.getAnimationHandler().isCurrent(CALADBOLG, UNLIMITED_BLADE_WORKS, UNLIMITED_BLADE_WORKS_FULL) && super.hurt(damageSource, damage);
     }
 
     @Override

@@ -212,7 +212,7 @@ public class Diarmuid extends BaseServant {
                 }
                 if (anim.is(DUAL_SPEAR_3) && (anim.isAt("attack_left") || anim.isAt("attack_right"))) {
                     Vec3 offset = new Vec3(anim.isAt("attack_left") ? 0.2 : -0.2, this.getBbHeight() * 0.5, this.getBbWidth() + 1.7 * this.getScale())
-                            .yRot(-this.getYRot() * Mth.DEG_TO_RAD);
+                            .yRot(-this.getViewYRot(1) * Mth.DEG_TO_RAD);
                     for (int i = 0; i < 6; i++) {
                         AdvancedParticleContainer.make(ParticleTypes.CRIT)
                                 .addData(new ParticleMetaData(10, false, 0))

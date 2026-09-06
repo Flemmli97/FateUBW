@@ -328,7 +328,7 @@ public class Heracles extends BaseServant {
     public void handleAttack(AnimationState anim) {
         if (anim.is(UPPER_CUT)) {
             if (anim.isAt("attack")) {
-                Vec3 dir = Vec3.directionFromRotation(0, this.getYRot()).scale(2);
+                Vec3 dir = Vec3.directionFromRotation(0, this.getViewYRot(1)).scale(2);
                 this.setTargetPosition(null);
                 this.mobAttack(anim, this.getTarget(), e -> {
                     if (this.doHurtTarget(e)) {
@@ -350,7 +350,7 @@ public class Heracles extends BaseServant {
                     Vec3 dir = diff.add(0, diff.y() > 0 ? -diff.y() * 0.5 : 0, 0).normalize().scale(3.5);
                     this.setDeltaMovement(dir.x(), Mth.clamp(dir.y(), 1.5, 2.5), dir.z());
                 } else {
-                    Vec3 dir = Vec3.directionFromRotation(0, this.getYRot()).scale(2);
+                    Vec3 dir = Vec3.directionFromRotation(0, this.getViewYRot(1)).scale(2);
                     this.setDeltaMovement(dir.x(), 2, dir.z());
                 }
             }
@@ -374,7 +374,7 @@ public class Heracles extends BaseServant {
         } else if (anim.is(JUMP_HIT)) {
             if (anim.isAt("attack") && this.hits != null) {
                 this.playSound(FateSounds.SLASH_IMPACT.get(), 1, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 0.5f);
-                Vec3 dir = Vec3.directionFromRotation(0, this.getYRot());
+                Vec3 dir = Vec3.directionFromRotation(0, this.getViewYRot(1));
                 this.hits.forEach(e -> {
                     if (this.doHurtTarget(e)) {
                         e.setDeltaMovement(dir.x(), -4, dir.z());
@@ -385,7 +385,7 @@ public class Heracles extends BaseServant {
                     }
                 });
                 if (!this.hits.isEmpty()) {
-                    AdvancedParticleContainer.make(new StaticFacingParticleData(FateParticles.RING.get(), this.getYRot(), 40))
+                    AdvancedParticleContainer.make(new StaticFacingParticleData(FateParticles.RING.get(), this.getViewYRot(1), 40))
                             .addData(new ColorData(0.9f, 0.9f, 0.9f))
                             .addData(new ScaleData(1, 4, 3))
                             .addData(new ParticleMetaData(8, false, 0))

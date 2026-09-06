@@ -316,7 +316,7 @@ public class Gilgamesh extends BaseServant implements OnProjectileHit {
     }
 
     private void spawnAroundTarget(LivingEntity target, int amount) {
-        WeaponProjectile.spawnWeaponsAround(this, target, amount, 6 + amount / 5);
+        WeaponProjectile.spawnWeaponsAround(this, target, amount, 6 + amount / 5, WeaponProjectile.Type.BABYLON);
         this.chainCooldown -= 50;
     }
 

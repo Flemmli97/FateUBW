@@ -376,7 +376,7 @@ public class Iskander extends BaseServant {
             double height = (this.getY() - vehicle.getY() + this.getBbHeight()) + 0.2;
             AABB aabb = this.attackBB(anim);
             aabb = new AABB(aabb.minX, -0.02, aabb.minZ, aabb.maxX, height, aabb.maxZ);
-            return new OrientedBoundingBox(aabb, vehicle.getYRot(), 0, vehicle.position());
+            return new OrientedBoundingBox(aabb, vehicle.getViewYRot(1), 0, vehicle.position());
         }
         return super.calculateAttackAABB(anim, target, grow);
     }
