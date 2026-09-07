@@ -3,7 +3,7 @@ package io.github.flemmli97.fateubw.common.config;
 import com.google.common.collect.Lists;
 import io.github.flemmli97.fateubw.common.config.value.ExpressionConfig;
 import io.github.flemmli97.fateubw.common.config.value.PotionEffectsConfig;
-import io.github.flemmli97.fateubw.common.config.value.WeaponList;
+import io.github.flemmli97.fateubw.common.config.value.weapons.WeaponListFilterConfig;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
 import net.minecraft.world.effect.MobEffects;
@@ -45,7 +45,7 @@ public class CommonConfig {
 
     // Misc
     public static float babylonScale = 1.5f;
-    public static WeaponList babylonWeapons = new WeaponList(FateItems.ENUMAELISH.getID().toString(), "runecraftory");
+    public static WeaponListFilterConfig weaponProjectiles = new WeaponListFilterConfig(FateItems.ENUMAELISH.getID().toString(), "runecraftory");
     public static float eaDamage = 15;
     public static float excaliburDamage = 15;
     public static float caladBolgDmg = 30;

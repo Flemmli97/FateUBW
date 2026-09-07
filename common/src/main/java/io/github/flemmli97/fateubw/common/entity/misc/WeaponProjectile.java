@@ -2,6 +2,7 @@ package io.github.flemmli97.fateubw.common.entity.misc;
 
 import com.mojang.datafixers.util.Pair;
 import io.github.flemmli97.fateubw.common.config.CommonConfig;
+import io.github.flemmli97.fateubw.common.config.value.weapons.WeaponList;
 import io.github.flemmli97.fateubw.common.entity.utils.EntityTrailHandler;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.ParticlePositionProvider;
@@ -326,7 +327,7 @@ public class WeaponProjectile extends BaseProjectile {
             weapon.setPos(offset.x, offset.y + thrower.getBbHeight() * 0.5, offset.z);
             Vec3 dir = Vec3.directionFromRotation(0, thrower.getViewYRot(1));
             weapon.shoot(dir.x(), dir.y(), dir.z(), 0.02F, 0);
-            weapon.setWeapon(CommonConfig.babylonWeapons.getRandomWeapon(weapon.random));
+            weapon.setWeapon(WeaponList.getRandomWeapon(thrower));
             weapon.level().addFreshEntity(weapon);
         }
     }
@@ -368,7 +369,7 @@ public class WeaponProjectile extends BaseProjectile {
             Vec3 area = targetPos.add(dir.scale(range));
             weapon.setPos(area.x, area.y, area.z);
             weapon.shoot(-dir.x(), -dir.y(), -dir.z(), 0.02F, 0);
-            weapon.setWeapon(CommonConfig.babylonWeapons.getRandomWeapon(weapon.random));
+            weapon.setWeapon(WeaponList.getRandomWeapon(thrower));
             weapon.level().addFreshEntity(weapon);
         }
     }

@@ -40,8 +40,8 @@ public class ConfigLoader {
         CommonConfig.npBoostEffect.read(ConfigSpecs.COMMON_CONFIG.npBoostEffect.get());
 
         CommonConfig.babylonScale = ConfigSpecs.COMMON_CONFIG.babylonScale.get().floatValue();
-        CommonConfig.babylonWeapons.read(ConfigSpecs.COMMON_CONFIG.babylonWeaponsBlacklist.get());
-        CommonConfig.babylonWeapons.setWhiteList(ConfigSpecs.COMMON_CONFIG.babylonWeaponsWhitelist.get());
+        CommonConfig.weaponProjectiles.read(ConfigSpecs.COMMON_CONFIG.babylonWeaponsBlacklist.get());
+        CommonConfig.weaponProjectiles.setWhiteList(ConfigSpecs.COMMON_CONFIG.babylonWeaponsWhitelist.get());
         CommonConfig.eaDamage = ConfigSpecs.COMMON_CONFIG.eaDamage.get().floatValue();
         CommonConfig.excaliburDamage = ConfigSpecs.COMMON_CONFIG.excaliburDamage.get().floatValue();
         CommonConfig.caladBolgDmg = ConfigSpecs.COMMON_CONFIG.caladBolgDmg.get().floatValue();

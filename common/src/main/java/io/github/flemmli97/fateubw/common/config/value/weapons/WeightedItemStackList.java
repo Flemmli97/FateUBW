@@ -1,0 +1,69 @@
+package io.github.flemmli97.fateubw.common.config.value.weapons;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.mojang.serialization.DynamicOps;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.TestOnly;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class WeightedItemStackList {
+
+    private final List<WeightedItemStack> values;
+
+    private List<WeightedItemStack> filtered = new ArrayList<>();
+    private int totalWeight;
+    private double lastModifier = -1;
+
+    public WeightedItemStackList(List<WeightedItemStack> values) {
+        this.values = values;
+    }
+
+    public int getTotalWeight(double modifier) {
+        if (this.lastModifier != modifier) {
+            this.lastModifier = modifier;
+            this.calculateTotalWeight(this.lastModifier);
+        }
+        return this.totalWeight;
+    }
+
+    public ItemStack getRandomStack(RandomSource random, double difficulty) {
+        if (this.values.isEmpty())
+            return ItemStack.EMPTY;
+        int totalWeight = this.getTotalWeight(difficulty);
+        if (totalWeight <= 0)
+            return ItemStack.EMPTY;
+        int index = random.nextInt(totalWeight);
+        for (WeightedItemStack entry : this.filtered) {
+            index -= entry.getWeight(difficulty);
+            if (index < 0) {
+                return entry.getItem();
+            }
+        }
+        return ItemStack.EMPTY;
+    }
+
+    private void calculateTotalWeight(double modifier) {
+        this.filtered = this.values.stream().filter(entry -> entry.getWeight(modifier) > 0).toList();
+        this.totalWeight = this.filtered.stream().mapToInt(entry -> entry.getWeight(modifier)).sum();
+    }
+
+    @TestOnly
+    public JsonElement asProbability(DynamicOps<JsonElement> ops) {
+        JsonArray array = new JsonArray();
+        float modifier = 100;
+        float totalWeight = this.getTotalWeight(modifier);
+        for (WeightedItemStack entry : this.values) {
+            array.add(WeightedItemStack.ProbabiltyEntry.CODEC.encodeStart(ops, entry.withWeight(totalWeight != 0 ? entry.getWeight(modifier) / totalWeight : 0)).getOrThrow());
+        }
+        return array;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("TotalWeight: %d ; [%s]", this.totalWeight, this.values);
+    }
+}

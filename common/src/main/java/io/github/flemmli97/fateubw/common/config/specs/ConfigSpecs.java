@@ -128,9 +128,9 @@ public class ConfigSpecs {
 
             builder.push("misc");
             this.babylonScale = builder.comment("Damage scaling for projectiles from the gate of babylon").defineInRange("Babylon Dmg Scale", CommonConfig.babylonScale, 0, Double.MAX_VALUE);
-            this.babylonWeaponsBlacklist = builder.comment("Blacklist weapons for the gate of babylon here. You can also use the modid for a whole mod").define("Babylon Blacklist",
-                    CommonConfig.babylonWeapons.write(), stringList());
-            this.babylonWeaponsWhitelist = builder.comment("Turn the blacklist into a whitelist").define("Babylon Whitelist", CommonConfig.babylonWeapons.isWhiteList());
+            this.babylonWeaponsBlacklist = builder.comment("Blacklist weapons for weapon projectiles (used in e.g. gate of babylon, unlimited bladeworks). You can also use the modid for a whole mod").define("Weapon Projectile Blacklist",
+                    CommonConfig.weaponProjectiles.write(), stringList());
+            this.babylonWeaponsWhitelist = builder.comment("Turn the blacklist into a whitelist").define("Weapon Projectile Whitelist", CommonConfig.weaponProjectiles.isWhiteList());
             this.eaDamage = builder.comment("Damage of EA").defineInRange("EA Dmg", CommonConfig.eaDamage, 0, Double.MAX_VALUE);
             this.excaliburDamage = builder.comment("Damage of excalibur").defineInRange("Excalibur Dmg", CommonConfig.excaliburDamage, 0, Double.MAX_VALUE);
             this.caladBolgDmg = builder.comment("Caladbolg damage").defineInRange("Caladbolg Dmg", CommonConfig.caladBolgDmg, 0, Double.MAX_VALUE);
