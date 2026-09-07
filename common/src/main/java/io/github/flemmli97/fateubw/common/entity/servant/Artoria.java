@@ -23,6 +23,8 @@ import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.entity.ai.TargetPosition;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.SelectableBehaviourBuilder;
+import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.PlayAnimation;
+import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetAnimationToPlay;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetWalkTargetAwayFromTarget;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetWalkTargetWithinDist;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.data.AnimationPlayHolder;
@@ -63,6 +65,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.SequentialBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
 import org.joml.Vector3f;
 
@@ -115,6 +118,8 @@ public class Artoria extends BaseServant {
             .marker("charge_start", 0.44).marker("charge_end", 3.12));
     public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2.));
     private static final String DEATH = BUILDER.add("death", AnimationsBuilder.definition(1.52).infinite());
+
+    private static final String STAND = BUILDER.add("stand", AnimationsBuilder.definition(0.6).infinite());
     public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
 
     public static final TypedResource<Vec3> BURST_DIRECTION = new TypedResource<>(Fate.modRes("burst_direction"));
@@ -136,6 +141,8 @@ public class Artoria extends BaseServant {
     protected List<LivingEntity> hitEntity;
 
     private float attackRotation;
+
+    private int behaviourStand;
 
     public Artoria(EntityType<? extends Artoria> entityType, Level level) {
         super(entityType, level);
@@ -169,6 +176,22 @@ public class Artoria extends BaseServant {
     @Override
     public HeldEquipmentHandler getEquipmentHandler() {
         return this.heldEquipmentHandler;
+    }
+
+    @Override
+    protected ExtendedBehaviour<? extends BaseServant> idleAnimationsBehaviour() {
+        return new SequentialBehaviour<>(
+                new SetAnimationToPlay<>(STAND),
+                new PlayAnimation<Artoria>().withCallback((anim, m) -> {
+                    m.idleAnimationCooldown.use();
+                    m.behaviourStand = this.getRandom().nextInt(200, 300);
+                })
+        );
+    }
+
+    @Override
+    protected String[] idleAnimations() {
+        return new String[]{STAND};
     }
 
     @Override
@@ -219,6 +242,14 @@ public class Artoria extends BaseServant {
     }
 
     @Override
+    public void setStaying(boolean stay) {
+        super.setStaying(stay);
+        if (stay) {
+            this.getAnimationHandler().setAnimation(STAND);
+        }
+    }
+
+    @Override
     public void aiStep() {
         super.aiStep();
         if (this.healthBelow(0.25f)) {
@@ -245,18 +276,18 @@ public class Artoria extends BaseServant {
                     float yRot = this.getViewYRot(1);
                     Vec3 offset = new Vec3(0, this.getBbHeight() * 0.5, this.getBbWidth() * 2)
                             .yRot(-yRot * Mth.DEG_TO_RAD);
-                        AdvancedParticleContainer.make(new StrikeParticleData(FateParticles.STRIKE.get(), yRot, this.getViewXRot(1),
-                                        this.getBbHeight() * 0.9f, this.getBbWidth()  + 10 * this.getScale(), 20))
-                                .addData(new ColorData(122 / 255f, 174 / 255f, 255 / 255f, 1))
-                                .add(this.level(),
-                                        this.getX() + offset.x(),
-                                        this.getY() + offset.y(),
-                                        this.getZ() + offset.z());
+                    AdvancedParticleContainer.make(new StrikeParticleData(FateParticles.STRIKE.get(), yRot, this.getViewXRot(1),
+                                    this.getBbHeight() * 0.9f, this.getBbWidth() + 10 * this.getScale(), 20))
+                            .addData(new ColorData(122 / 255f, 174 / 255f, 255 / 255f, 1))
+                            .add(this.level(),
+                                    this.getX() + offset.x(),
+                                    this.getY() + offset.y(),
+                                    this.getZ() + offset.z());
                 }
                 if (anim.is(TWO_HAND_OVERHEAD) && anim.isAt("attack")) {
                     this.slamParticles();
                 }
-                if(anim.is(EXCALIBAA)) {
+                if (anim.is(EXCALIBAA)) {
                     if (anim.isPast("charge_start") && !anim.isPast("charge_end")) {
                         for (int i = 0; i < 8; i++) {
                             AdvancedParticleContainer.make(FateParticles.FLASH.get())
@@ -269,6 +300,10 @@ public class Artoria extends BaseServant {
                 }
             }
         } else {
+            --this.behaviourStand;
+            if (this.behaviourStand == 0 && this.getAnimationHandler().isCurrent(STAND)) {
+                this.getAnimationHandler().setAnimation(null);
+            }
             this.heldEquipmentHandler.setInUse(this.getAnimationHandler().isCurrent(EXCALIBAA) || this.healthBelow(0.5f));
         }
     }
@@ -359,10 +394,9 @@ public class Artoria extends BaseServant {
             if (anim.isAt("attack")) {
                 if (anim.is(STRIKE_AIR)) {
                     this.playSound(FateSounds.SWOOSH_1.get(), 2, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.5F);
-                } else if(anim.is(TWO_HAND_OVERHEAD)) {
+                } else if (anim.is(TWO_HAND_OVERHEAD)) {
                     this.playSound(SoundEvents.GENERIC_EXPLODE.value(), 1, (this.random.nextFloat() - this.random.nextFloat()) * 0.1F + 1.1F);
-                }
-                else {
+                } else {
                     this.playSound(FateSounds.SLASH.get(), 2, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
                 }
             }
@@ -375,7 +409,7 @@ public class Artoria extends BaseServant {
         Vec3 side = this.calculateViewVector(0, this.getViewYRot(1) + 90);
         HashSet<BlockPos> visited = new HashSet<>();
         for (int len = 0; len < 4; len++) {
-            for (int width = 0; width < 2 ; width++) {
+            for (int width = 0; width < 2; width++) {
                 Vec3 target = this.position().add(dir.scale(len)).add(side.scale(width));
                 BlockPos pos = BlockPos.containing(target);
                 if (visited.contains(pos))

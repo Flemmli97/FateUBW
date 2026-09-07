@@ -51,7 +51,8 @@ public class SpawnEggScreen extends Screen {
         Entity e = type.create(Minecraft.getInstance().level);
         if (e instanceof LivingEntity living) {
             this.entity = living;
-        } else {
+        }
+        if (this.entity == null) {
             Minecraft.getInstance().setScreen(null);
             return;
         }

@@ -118,6 +118,9 @@ public class Emiya extends BaseServant {
 
     private static final String DEATH = BUILDER.add("death", AnimationsBuilder.definition(2.52).infinite());
     public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2.));
+
+    public static final String IDLE_BREAK_1 = BUILDER.add("idle_break_1", AnimationsBuilder.definition(2.56));
+    public static final String IDLE_BREAK_2 = BUILDER.add("idle_break_2", AnimationsBuilder.definition(2.56));
     public static final AnimationDefinitionContainer ANIMS = BUILDER.build();
 
     private final AnimationHandler<Emiya> animationHandler = new AnimationHandler<>(this, ANIMS);
@@ -276,6 +279,11 @@ public class Emiya extends BaseServant {
         return SelectableBehaviourBuilder.<BaseServant>builder()
                 .add(4, new SetWalkTargetToAttackTarget<BaseServant>().speedMod((owner, target) -> ATTACK_MOVE_SPEED), BehaviourUtils.moveTo())
                 .add(6, new SetWalkTargetAwayFromTarget<BaseServant>().speedMod((owner, target) -> ATTACK_MOVE_SPEED), BehaviourUtils.moveTo()).build();
+    }
+
+    @Override
+    protected String[] idleAnimations() {
+        return new String[]{IDLE_BREAK_1, IDLE_BREAK_2};
     }
 
     public boolean isInRealityMarble() {

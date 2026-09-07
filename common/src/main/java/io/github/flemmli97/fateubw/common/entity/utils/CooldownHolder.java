@@ -30,12 +30,16 @@ public class CooldownHolder {
     }
 
     public void tick() {
+        if (this.entity.level().isClientSide)
+            return;
         if (this.requirement != null && !this.requirement.getAsBoolean())
             return;
         --this.cooldown;
     }
 
     public void use() {
+        if (this.entity.level().isClientSide)
+            return;
         this.cooldown = this.provider.getInt(this.createContext());
     }
 

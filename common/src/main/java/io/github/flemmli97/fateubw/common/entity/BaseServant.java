@@ -38,6 +38,8 @@ import io.github.flemmli97.tenshilib.common.entity.AOEAttackEntity;
 import io.github.flemmli97.tenshilib.common.entity.EntityUtils;
 import io.github.flemmli97.tenshilib.common.entity.ai.MoveControllerPlus;
 import io.github.flemmli97.tenshilib.common.entity.ai.TargetPosition;
+import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.PlayAnimation;
+import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetAnimationToPlay;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetMoveToRestriction;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimatedEntity;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinition;
@@ -101,6 +103,7 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
+import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
@@ -110,6 +113,7 @@ import net.tslat.smartbrainlib.api.core.behaviour.AllApplicableBehaviours;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.SequentialBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtAttackTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
@@ -186,6 +190,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
     private final EntityWeaponTrailHolder<BaseServant> trailHolder = new EntityWeaponTrailHolder<>(this);
 
     private Map<String, CooldownHolder> cooldowns;
+    public final CooldownHolder idleAnimationCooldown;
 
     public BaseServant(EntityType<? extends BaseServant> entityType, Level level) {
         super(entityType, level);
@@ -199,6 +204,8 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
             this.updateAttributes();
         }
         this.hogou = Component.translatable(BuiltInRegistries.ENTITY_TYPE.getKey(this.getType()) + ".hogou");
+        this.idleAnimationCooldown = this.createCooldown("idle_animation", UniformGenerator.between(300, 600), () -> this.idleAnimations().length > 0);
+        this.idleAnimationCooldown.use();
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -291,6 +298,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
                 && !e.getAnimationHandler().hasAnimation());
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public BrainActivityGroup<? extends BaseServant> getIdleTasks() {
         return BrainActivityGroup.idleTasks(
@@ -304,9 +312,17 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
                                         return true;
                                     return entity instanceof ServantLike<?>;
                                 }),
-                        new SetMoveToRestriction<BaseServant>(),
-                        this.getWanderBehaviour().startCondition(m -> m.getRandom().nextInt(120) == 0)
+                        new SetMoveToRestriction<BaseServant>().startCondition(m -> !m.getAnimationHandler().isCurrent(this.idleAnimations())),
+                        (ExtendedBehaviour<? super BaseServant>) this.getWanderBehaviour().startCondition(m -> m.getRandom().nextInt(120) == 0 && !m.getAnimationHandler().isCurrent(this.idleAnimations())),
+                        (ExtendedBehaviour<? super BaseServant>) this.idleAnimationsBehaviour().startCondition(m -> m.idleAnimationCooldown.canUse() && !m.getAnimationHandler().hasAnimation() && m.getNavigation().isDone() && m.idleAnimations().length > 0)
                 )
+        );
+    }
+
+    protected ExtendedBehaviour<? extends BaseServant> idleAnimationsBehaviour() {
+        return new SequentialBehaviour<>(
+                new SetAnimationToPlay<>(this.idleAnimations()),
+                new PlayAnimation<BaseServant>().withCallback((anim, m) -> m.idleAnimationCooldown.use())
         );
     }
 
@@ -355,6 +371,10 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
     protected void sendDebugPackets() {
         super.sendDebugPackets();
         DebugPackets.sendEntityBrain(this);
+    }
+
+    protected String[] idleAnimations() {
+        return new String[0];
     }
 
     public CooldownHolder createCooldown(String id, NumberProvider provider) {
@@ -420,12 +440,17 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
                     }
                 }
             }
-            if (this.getTarget() != null && this.getTarget().getVehicle() instanceof LivingEntity)
-                this.setTarget((LivingEntity) this.getTarget().getVehicle());
+            if (this.getTarget() != null) {
+                if (this.tickCount % 20 == 0) {
+                    this.idleAnimationCooldown.use();
+                }
+                if (this.getTarget().getVehicle() instanceof LivingEntity)
+                    this.setTarget((LivingEntity) this.getTarget().getVehicle());
+            }
             if (this.cooldowns != null) {
                 this.cooldowns.values().forEach(CooldownHolder::tick);
             }
-            if (this.isAlive() && this.tickCount > 400 && this.getTarget() == null && !((CombatTrackerAccessor) this.getCombatTracker()).getInCombat()) {
+            if (this.isAlive() && this.tickCount > 4000000 && this.getTarget() == null && !((CombatTrackerAccessor) this.getCombatTracker()).getInCombat()) {
                 RealityMarbleHandler.get(this.getServer())
                         .deleteGroupOf(this);
             }

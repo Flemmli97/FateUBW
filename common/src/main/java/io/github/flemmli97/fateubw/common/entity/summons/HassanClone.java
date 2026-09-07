@@ -135,6 +135,7 @@ public class HassanClone extends SummonedEntity implements ServantModelLike, Syn
         };
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public BrainActivityGroup<? extends SummonedEntity> getCoreTasks() {
         return super.getCoreTasks().behaviours(new InteractWithDoor<>(),
@@ -369,7 +370,7 @@ public class HassanClone extends SummonedEntity implements ServantModelLike, Syn
             return super.hurt(damageSource, damage);
         } else {
             if (damageSource.getEntity() == null || !damageSource.getEntity().getType().is(FateTags.EntityTypes.STRONG_MOB))
-                damage *= 0.75;
+                damage *= 0.75f;
             if (damageSource.is(DamageTypeTags.IS_PROJECTILE) && !damageSource.is(DamageTypeTags.BYPASSES_ARMOR) && this.projectileBlockChance()) {
                 this.level().playSound(null, this.blockPosition(), SoundEvents.SHIELD_BLOCK, SoundSource.NEUTRAL, 1, 1);
                 if (damageSource.getDirectEntity() != null)
