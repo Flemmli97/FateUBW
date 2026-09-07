@@ -7,6 +7,7 @@ import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.Utils;
+import io.github.flemmli97.tenshilib.common.entity.ai.TargetPosition;
 import io.github.flemmli97.tenshilib.common.entity.data.SyncedDataContainer;
 import io.github.flemmli97.tenshilib.common.entity.data.SyncedMobDataHandler;
 import io.github.flemmli97.tenshilib.common.particle.AdvancedParticleContainer;
@@ -35,9 +36,11 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class EnkiduChains extends BaseProjectile implements SyncedMobDataHandler {
 
@@ -54,7 +57,7 @@ public class EnkiduChains extends BaseProjectile implements SyncedMobDataHandler
     private final SyncedDataContainer<EnkiduChains> syncedDataContainer = SyncedDataContainer.builder(this)
             .define(START_POSITION, TenshilibSyncableEntityDatas.VEC_3.get(), null).build();
 
-    private LivingEntity target;
+    private Supplier<TargetPosition> target;
     private Entity hookedEntity;
     private Vec3 hookedEntityPosition;
     private int preparationTick, hitTimer;
@@ -70,7 +73,7 @@ public class EnkiduChains extends BaseProjectile implements SyncedMobDataHandler
         this.entityData.set(SHOOT_TIME, this.random.nextInt(15) + 15);
     }
 
-    public EnkiduChains(Level level, LivingEntity shooter, LivingEntity target) {
+    public EnkiduChains(Level level, LivingEntity shooter, Supplier<TargetPosition> target) {
         this(level, shooter);
         this.target = target;
     }
@@ -181,7 +184,11 @@ public class EnkiduChains extends BaseProjectile implements SyncedMobDataHandler
                     HitResult hit = HitResultUtils.entityRayTrace(thrower, 64, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, false, false, null);
                     this.shootAtPosition(hit.getLocation().x, hit.getLocation().y, hit.getLocation().z, 1, 6);
                 } else if (this.target != null) {
-                    this.shootAtEntity(this.target, 1, 6);
+                    Vec3 target = this.target.get().asVec(this.position());
+                    this.shootAtPosition(target.x(), target.y(), target.z(), 1.f, 6);
+                } else if (this.getOwner() instanceof LivingEntity living) {
+                    Vec3 dir = living.calculateViewVector(15, living.getViewYRot(1));
+                    this.shoot(dir.x(), dir.y(), dir.z(), 1.f, 6);
                 } else {
                     this.discard();
                 }
@@ -272,8 +279,9 @@ public class EnkiduChains extends BaseProjectile implements SyncedMobDataHandler
         return this.entityData.get(START_XROT);
     }
 
-    public static void spawnWeaponsAround(LivingEntity thrower, LivingEntity target, int amount, int range) {
-        int targetSize = Math.max(Mth.ceil(target.getBbHeight()), Mth.ceil(target.getBbWidth()));
+    public static void spawnWeaponsAround(LivingEntity thrower, @Nullable LivingEntity target, int amount, int range) {
+        Vec3 targetPos = target == null ? thrower.position().add(thrower.calculateViewVector(0, thrower.getViewYRot(1)).scale(9)) : target.position();
+        int targetSize = target == null ? 3 : Math.max(Mth.ceil(target.getBbHeight()), Mth.ceil(target.getBbWidth()));
         range = Math.max(targetSize + 3, range);
         List<Pair<Float, Float>> angles = new ArrayList<>(amount);
         for (int i = 0; i < amount; i++) {
@@ -298,14 +306,13 @@ public class EnkiduChains extends BaseProjectile implements SyncedMobDataHandler
                     break;
             }
         }
-        Vec3 pos = target.position();
         for (Pair<Float, Float> offset : angles) {
             if (offset == null)
                 continue;
-            EnkiduChains chains = new EnkiduChains(thrower.level(), thrower, target);
+            EnkiduChains chains = new EnkiduChains(thrower.level(), thrower, target == null ? () -> TargetPosition.of(targetPos) : () -> TargetPosition.fullRangeOf(target));
             // Initial rotation is based of the delta. don't want to dig into where its exactly handled so this will do
             chains.shoot(thrower, offset.getSecond(), offset.getFirst(), 0, 0.02F, 0);
-            Vec3 area = pos.add(Vec3.directionFromRotation(-offset.getSecond(), offset.getFirst()).scale(range));
+            Vec3 area = targetPos.add(Vec3.directionFromRotation(-offset.getSecond(), offset.getFirst()).scale(range));
             chains.setPos(area.x, area.y, area.z);
             chains.level().addFreshEntity(chains);
         }

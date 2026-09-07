@@ -110,7 +110,7 @@ public class Artoria extends BaseServant {
             .marker("attack", 0.72, 0.96).marker("attack_final", 1.2));
     public static final String BLOCK = BUILDER.add("block", AnimationsBuilder.definition(0.28));
 
-    public static final String INVISIBLE_BURST = BUILDER.add("invisible_burst", AnimationsBuilder.definition(1).marker("start", 0.48));
+    public static final String INVISIBLE_BURST = BUILDER.add("invisible_burst", AnimationsBuilder.definition(1.12).marker("start", 0.48));
     public static final String INVISIBLE_BURST_HIT = BUILDER.add("invisible_burst_hit", AnimationsBuilder.definition(0.52)
             .marker("attack", 0.4)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.16)
@@ -225,7 +225,7 @@ public class Artoria extends BaseServant {
                 .end(6)
                 .start(INVISIBLE_BURST).play(BehaviourUtils.cooldownedPlay(false, 10, 27))
                 .condition(BehaviourUtils.ifFurtherThan(5))
-                .prepare(new SetWalkTargetToAttackTarget<BaseServant>().speedMod((owner, target) -> ATTACK_MOVE_SPEED).closeEnoughDist(BehaviourUtils.closeEnough(16)))
+                .prepare(new SetWalkTargetToAttackTarget<BaseServant>().speedMod((owner, target) -> ATTACK_MOVE_SPEED).closeEnoughDist(BehaviourUtils.closeEnough(18)))
                 .prepareOptional(BehaviourUtils.moveAttack())
                 .end(15)
                 .start(EXCALIBAA).play(BehaviourUtils.cooldownedPlay(false, 20, 35))

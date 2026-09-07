@@ -12,6 +12,7 @@ import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.entity.EntityUtils;
+import io.github.flemmli97.tenshilib.common.entity.ai.TargetPosition;
 import io.github.flemmli97.tenshilib.common.particle.AdvancedParticleContainer;
 import io.github.flemmli97.tenshilib.common.particle.data.ColorData;
 import io.github.flemmli97.tenshilib.common.particle.data.MotionData;
@@ -52,6 +53,7 @@ import org.joml.Vector4f;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public class WeaponProjectile extends BaseProjectile {
 
@@ -62,7 +64,7 @@ public class WeaponProjectile extends BaseProjectile {
     protected static final EntityDataAccessor<BlockPos> GROUND = SynchedEntityData.defineId(WeaponProjectile.class, EntityDataSerializers.BLOCK_POS);
     private static final EntityDataAccessor<Integer> TYPE_DATA = SynchedEntityData.defineId(WeaponProjectile.class, EntityDataSerializers.INT);
 
-    private LivingEntity target;
+    private Supplier<TargetPosition> target;
 
     public final int renderRand = this.random.nextInt(1000);
 
@@ -81,7 +83,7 @@ public class WeaponProjectile extends BaseProjectile {
         this.entityData.set(SHOOT_TIME, this.random.nextInt(15) + 15);
     }
 
-    public WeaponProjectile(Level level, LivingEntity shootingEntity, LivingEntity target) {
+    public WeaponProjectile(Level level, LivingEntity shootingEntity, Supplier<TargetPosition> target) {
         this(level, shootingEntity);
         this.target = target;
     }
@@ -221,7 +223,8 @@ public class WeaponProjectile extends BaseProjectile {
                     HitResult hit = HitResultUtils.entityRayTrace(thrower, 64, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, false, false, null);
                     this.shootAtPosition(hit.getLocation().x, hit.getLocation().y, hit.getLocation().z, 1.f, 6);
                 } else if (this.target != null) {
-                    this.shootAtEntity(this.target, 1.f, 6);
+                    Vec3 target = this.target.get().asVec(this.position());
+                    this.shootAtPosition(target.x(), target.y(), target.z(), 1.f, 6);
                 } else if (this.getOwner() instanceof LivingEntity living) {
                     Vec3 dir = living.calculateViewVector(15, living.getViewYRot(1));
                     this.shoot(dir.x(), dir.y(), dir.z(), 1.f, 6);
@@ -321,7 +324,7 @@ public class WeaponProjectile extends BaseProjectile {
 
     public static void spawnWeapons(LivingEntity thrower, @Nullable LivingEntity target, int amount, int range, Type type) {
         for (Vec3 offset : Utils.randomSidedPositions(thrower, amount, range)) {
-            WeaponProjectile weapon = new WeaponProjectile(thrower.level(), thrower, target);
+            WeaponProjectile weapon = new WeaponProjectile(thrower.level(), thrower, target != null ? () -> TargetPosition.fullRangeOf(target) : null);
             weapon.setType(type);
             // Initial rotation is based of the delta. don't want to dig into where its exactly handled so this will do
             weapon.setPos(offset.x, offset.y + thrower.getBbHeight() * 0.5, offset.z);
@@ -362,7 +365,7 @@ public class WeaponProjectile extends BaseProjectile {
         for (Pair<Float, Float> offset : angles) {
             if (offset == null)
                 continue;
-            WeaponProjectile weapon = new WeaponProjectile(thrower.level(), thrower, target);
+            WeaponProjectile weapon = new WeaponProjectile(thrower.level(), thrower, target == null ? () -> TargetPosition.of(targetPos) : () -> TargetPosition.fullRangeOf(target));
             weapon.setType(type);
             // Initial rotation is based of the delta. don't want to dig into where its exactly handled so this will do
             Vec3 dir = Vec3.directionFromRotation(-offset.getSecond(), offset.getFirst());

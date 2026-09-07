@@ -42,7 +42,7 @@ public class WeaponList {
                 return ItemStack.EMPTY;
             }
         }
-        return WEAPONS.getRandomStack(entity.getRandom(), Math.clamp(1 - entity.getHealth() / entity.getMaxHealth(), 0, 1) * 100);
+        return WEAPONS.getRandomStack(entity.getRandom(), 1 - Math.clamp(entity.getHealth() / entity.getMaxHealth(), 0, 1) * 100);
     }
 
     public static void reload() {
