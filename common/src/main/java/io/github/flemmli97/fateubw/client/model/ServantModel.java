@@ -187,6 +187,7 @@ public class ServantModel<T extends LivingEntity & AnimatedEntity & ServantModel
             animation.doAnimation(this, "walk", entity.tickCount, partialTick, entity.interpolatedMoveTick(partialTick));
         }
         animation.doAnimation(this, "run", entity.tickCount, partialTick, entity.interpolatedMoveTickOf(MoveType.RUN, partialTick));
+        animation.doAnimation(this, "blink", entity.blinkTick(), partialTick, 1);
         // Legacy
         if (this.bodyVehicleOffset != null) {
             if (entity.isPassenger() && entity.getVehicle() != null) {

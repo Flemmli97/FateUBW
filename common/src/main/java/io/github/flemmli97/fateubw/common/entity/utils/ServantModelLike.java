@@ -35,6 +35,10 @@ public interface ServantModelLike {
         return null;
     }
 
+    default int blinkTick() {
+        return 0;
+    }
+
     /**
      * Animations are catered to the servants weapons.
      * So return an appropriate item to render here.

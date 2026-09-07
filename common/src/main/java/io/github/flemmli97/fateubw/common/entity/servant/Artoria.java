@@ -59,6 +59,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -105,6 +106,7 @@ public class Artoria extends BaseServant {
             .marker(EntityWeaponTrailProvider.TRAIL_END, 0.88));
 
     public static final String STRIKE_AIR = BUILDER.add("strike_air", AnimationsBuilder.definition(1.4)
+            .marker("setup", 0.72)
             .marker("attack", 0.72, 0.96).marker("attack_final", 1.2));
     public static final String BLOCK = BUILDER.add("block", AnimationsBuilder.definition(0.28));
 
@@ -140,7 +142,7 @@ public class Artoria extends BaseServant {
 
     protected List<LivingEntity> hitEntity;
 
-    private float attackRotation;
+    private float attackRotation, strikeAirYRot, strikeAirXRot;
 
     private int behaviourStand;
 
@@ -208,12 +210,13 @@ public class Artoria extends BaseServant {
                 .start(BehaviourUtils.of(AnimationPlayHolder.<BaseServant>builder(TWO_HAND_2_1)
                         .start(TWO_HAND_2_2, 1, 0.6f, 1)
                         .start(TWO_HAND_2_2, 1, 0.6f, 3, owner -> owner.healthBelow(0.66f))
-                        .chain(TWO_HAND_OVERHEAD, 1, 0.72f)
+                        .chain(TWO_HAND_OVERHEAD, 1, 0.6f)
                         .build())).play(BehaviourUtils.cooldownedPlay(true, 15, 30))
                 .prepare(new SetWalkTargetToAttackTarget<BaseServant>().speedMod((owner, target) -> ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(7)
 
                 .start(TWO_HAND_OVERHEAD).play(BehaviourUtils.cooldownedPlay(true, 13, 25))
+                .condition(owner -> owner.getTarget() != null && owner.getTarget().getY() > owner.getY() + 0.5)
                 .prepare(new SetWalkTargetToAttackTarget<BaseServant>().speedMod((owner, target) -> ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(4)
 
@@ -272,18 +275,6 @@ public class Artoria extends BaseServant {
                                             .build()),
                             this.getX(), this.getY(), this.getZ(), 0, 0, 0);
                 }
-                if (anim.is(STRIKE_AIR) && anim.isAt(0.72)) {
-                    float yRot = this.getViewYRot(1);
-                    Vec3 offset = new Vec3(0, this.getBbHeight() * 0.5, this.getBbWidth() * 2)
-                            .yRot(-yRot * Mth.DEG_TO_RAD);
-                    AdvancedParticleContainer.make(new StrikeParticleData(FateParticles.STRIKE.get(), yRot, this.getViewXRot(1),
-                                    this.getBbHeight() * 0.9f, this.getBbWidth() + 10 * this.getScale(), 20))
-                            .addData(new ColorData(122 / 255f, 174 / 255f, 255 / 255f, 1))
-                            .add(this.level(),
-                                    this.getX() + offset.x(),
-                                    this.getY() + offset.y(),
-                                    this.getZ() + offset.z());
-                }
                 if (anim.is(TWO_HAND_OVERHEAD) && anim.isAt("attack")) {
                     this.slamParticles();
                 }
@@ -301,11 +292,15 @@ public class Artoria extends BaseServant {
             }
         } else {
             --this.behaviourStand;
-            if (this.behaviourStand == 0 && this.getAnimationHandler().isCurrent(STAND)) {
+            if ((this.behaviourStand == 0 || this.getTarget() != null) && this.getAnimationHandler().isCurrent(STAND) && !this.isStaying()) {
                 this.getAnimationHandler().setAnimation(null);
             }
             this.heldEquipmentHandler.setInUse(this.getAnimationHandler().isCurrent(EXCALIBAA) || this.healthBelow(0.5f));
         }
+    }
+
+    protected float strikeAirXRot(float xRot) {
+        return Math.clamp(xRot, -40, 40);
     }
 
     @Override
@@ -382,19 +377,48 @@ public class Artoria extends BaseServant {
                 dir = new Vec3(dir.x(), 0, dir.z()).normalize().scale(0.5).add(0, vertical, 0);
                 this.setDeltaMovement(dir);
             }
+        } else if(anim.is(STRIKE_AIR)) {
+            if (anim.isAt("attack_final")) {
+                this.playSound(FateSounds.SWOOSH_1.get(), 2, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.2F);
+                this.mobAttack(anim, this.getTarget(), this::doHurtTarget);
+            }
+            if(anim.isAt("setup")) {
+                float yRot = this.getViewYRot(1);
+                float xRot = this.getViewXRot(1);
+                Vec3 target = this.tryGetTargetPosition(this.getTarget());
+                if (this.getControllingPassenger() instanceof Player player) {
+                    yRot = player.getViewYRot(1);
+                    xRot = player.getViewXRot(1);
+                } else if (target != null) {
+                    Vec3 dir = target.subtract(this.position().add(0, this.getBbHeight() * 0.5, 0)).normalize();
+                    float[] yXRot = MathsHelper.YXRotFrom(dir);
+                    yRot = yXRot[0];
+                    xRot = -yXRot[1];
+                }
+                this.strikeAirXRot = this.strikeAirXRot(xRot);
+                this.strikeAirYRot = yRot;
+                Vec3 offset = new Vec3(0, 0, this.getBbWidth() * 1.5)
+                        .xRot(this.strikeAirXRot * Mth.DEG_TO_RAD)
+                        .yRot(-this.strikeAirYRot * Mth.DEG_TO_RAD);
+                AdvancedParticleContainer.make(new StrikeParticleData(FateParticles.STRIKE.get(), this.strikeAirYRot, -this.strikeAirXRot,
+                                this.getBbHeight() * 1.5f, this.getBbWidth() + 10 * this.getScale(), 20))
+                        .addData(new ColorData(122 / 255f, 174 / 255f, 255 / 255f, 1))
+                        .add(this.level(),
+                                this.getX() + offset.x(),
+                                this.getY() + offset.y() + this.getBbHeight() * 0.5,
+                                this.getZ() + offset.z());
+            }
+            if (anim.isAt("attack")) {
+                    this.playSound(FateSounds.SWOOSH_1.get(), 2, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.5F);
+            }
+            super.handleAttack(anim);
         } else {
             if (anim.isAt("step")) {
                 Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(0.35);
                 this.setDeltaMovement(this.getDeltaMovement().add(dir));
             }
-            if (anim.isAt("attack_final")) {
-                this.playSound(FateSounds.SWOOSH_1.get(), 2, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.2F);
-                this.mobAttack(anim, this.getTarget(), this::doHurtTarget);
-            }
             if (anim.isAt("attack")) {
-                if (anim.is(STRIKE_AIR)) {
-                    this.playSound(FateSounds.SWOOSH_1.get(), 2, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.5F);
-                } else if (anim.is(TWO_HAND_OVERHEAD)) {
+                if (anim.is(TWO_HAND_OVERHEAD)) {
                     this.playSound(SoundEvents.GENERIC_EXPLODE.value(), 1, (this.random.nextFloat() - this.random.nextFloat()) * 0.1F + 1.1F);
                 } else {
                     this.playSound(FateSounds.SLASH.get(), 2, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
@@ -484,11 +508,28 @@ public class Artoria extends BaseServant {
     }
 
     @Override
+    public Vec3 tryGetTargetPosition(LivingEntity target) {
+        if (this.getTargetPosition() != null && this.getAnimationHandler().isCurrent(STRIKE_AIR))
+            return this.getTargetPosition()
+                    .asVec(this.position().add(0, this.getBbHeight() * 0.5, 0));
+        return super.tryGetTargetPosition(target);
+    }
+
+    @Override
     public OrientedBoundingBox calculateAttackAABB(AnimationState anim, Vec3 target, double grow) {
+        if (anim.is(STRIKE_AIR)) {
+            double off = this.getBbHeight() * 0.5;
+            return new OrientedBoundingBox(this.attackBB(anim)
+                    .inflate(grow, 0, grow)
+                    .move(0, -off, grow), this.strikeAirYRot, this.strikeAirXRot, this.position().add(0, off, 0));
+        }
         if (!anim.is(INVISIBLE_BURST))
             return super.calculateAttackAABB(anim, target, grow);
         double width = this.getBbWidth();
         Vec3 dir = this.getDataContainer().get(BURST_DIRECTION);
+        if(dir == null) {
+            dir = this.calculateViewVector(0, this.getViewYRot(1));
+        }
         float[] yXRot = MathsHelper.YXRotFrom(dir);
         double speed = Math.max(width, dir.length() - width);
         return new OrientedBoundingBox(OrientedBoundingBox.originAABB(this)
@@ -505,7 +546,7 @@ public class Artoria extends BaseServant {
         if (this.getAnimationHandler().isCurrent(EXCALIBAA)) {
             return false;
         }
-        if (!this.level().isClientSide() && !damageSource.is(DamageTypeTags.BYPASSES_SHIELD)) {
+        if (!this.level().isClientSide() && !damageSource.is(DamageTypeTags.BYPASSES_SHIELD) && damageSource.getEntity() instanceof LivingEntity) {
             if (!this.getAnimationHandler().hasAnimation() && this.healthBelow(0.66f)
                     && this.getRandom().nextFloat() < this.props().getConfig(ServantExtraData.BLOCK_CHANCE)) {
                 this.getAnimationHandler().setAnimation(BLOCK);

@@ -6,7 +6,7 @@
         "identifier": "geometry.unknown",
         "texture_width": 128,
         "texture_height": 128,
-        "visible_bounds_width": 3,
+        "visible_bounds_width": 4,
         "visible_bounds_height": 3.5,
         "visible_bounds_offset": [0, 1.25, 0]
       },
@@ -31,6 +31,53 @@
           "cubes": [
             {"origin": [-4, 26, -4], "size": [8, 9, 8], "uv": [0, 0]},
             {"origin": [-4, 26, -4], "size": [8, 9, 8], "inflate": 0.25, "uv": [0, 17]}
+          ]
+        },
+        {
+          "name": "EyesBase",
+          "parent": "Head",
+          "pivot": [0, 30, -4.025]
+        },
+        {
+          "name": "EyeBrows",
+          "parent": "EyesBase",
+          "pivot": [0, 31, -4.025]
+        },
+        {
+          "name": "LeftEyeBrow",
+          "parent": "EyeBrows",
+          "pivot": [2, 30, -4.075],
+          "cubes": [
+            {"origin": [1, 30, -4.075], "size": [2, 1, 1], "uv": [24, 45]}
+          ]
+        },
+        {
+          "name": "RightEyeBrow",
+          "parent": "EyeBrows",
+          "pivot": [-2, 30, -4.075],
+          "cubes": [
+            {"origin": [-3, 30, -4.075], "size": [2, 1, 1], "uv": [24, 47]}
+          ]
+        },
+        {
+          "name": "Eyes",
+          "parent": "EyesBase",
+          "pivot": [0, 29, -4.025]
+        },
+        {
+          "name": "RightEye",
+          "parent": "Eyes",
+          "pivot": [-2, 29, -4.025],
+          "cubes": [
+            {"origin": [-3, 28, -4.025], "size": [2, 2, 0], "uv": [24, 49]}
+          ]
+        },
+        {
+          "name": "LeftEye",
+          "parent": "Eyes",
+          "pivot": [2, 29, -4.025],
+          "cubes": [
+            {"origin": [1, 28, -4.025], "size": [2, 2, 0], "uv": [28, 49]}
           ]
         },
         {

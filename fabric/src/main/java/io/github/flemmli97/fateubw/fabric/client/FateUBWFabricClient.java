@@ -31,11 +31,12 @@ public class FateUBWFabricClient implements ClientSetupModInitializer {
         WorldRenderEvents.AFTER_TRANSLUCENT.register(ctx -> ClientCalls.levelRender(ctx.matrixStack()));
         HudRenderCallback.EVENT.register(ClientHandler.getManaBar()::renderBar);
         ParticleTypeRegisterEvent.EVENT.register(register -> {
-            register.addRenderType(TrailParticle.SOLID_COLOR_PARTICLE);
-            register.addRenderType(ParticleRenderTypes.COLORIZE_PARTICLE_NO_CULL);
-            register.addRenderType(SphereParticle.SPHERE_RENDER_TYPE);
-            register.addRenderType(SphereCloudParticle.SPHERE_RENDER_TYPE);
             register.addRenderType(ParticleRenderTypes.COLORIZE_PARTICLE);
+            register.addRenderType(ParticleRenderTypes.COLORIZE_PARTICLE_NO_CULL);
+            register.addRenderType(SphereCloudParticle.SPHERE_RENDER_TYPE);
+            register.addRenderType(SphereParticle.SPHERE_RENDER_TYPE);
+            register.addRenderType(TrailParticle.COLOR_PARTICLE);
+            register.addRenderType(TrailParticle.SOLID_COLOR_PARTICLE);
         });
 
         FateRenders.registerShader();

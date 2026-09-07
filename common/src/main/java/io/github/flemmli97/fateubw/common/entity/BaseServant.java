@@ -192,6 +192,8 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
     private Map<String, CooldownHolder> cooldowns;
     public final CooldownHolder idleAnimationCooldown;
 
+    private int blinkTick;
+
     public BaseServant(EntityType<? extends BaseServant> entityType, Level level) {
         super(entityType, level);
         SyncedDataContainer.Builder<BaseServant> builder = SyncedDataContainer.builder(this);
@@ -454,7 +456,17 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
                 RealityMarbleHandler.get(this.getServer())
                         .deleteGroupOf(this);
             }
+        } else {
+            this.blinkTick++;
+            if (this.blinkTick > 60 && this.getRandom().nextInt(75) == 0) {
+                this.blinkTick = 0;
+            }
         }
+    }
+
+    @Override
+    public int blinkTick() {
+        return this.blinkTick;
     }
 
     @Override
@@ -616,8 +628,8 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
     }
 
     public OrientedBoundingBox calculateAttackAABB(AnimationState anim, @Nullable Vec3 target, double grow) {
-        float yRot = this.getYHeadRot();
-        float xRot = this.getXRot();
+        float yRot = this.getViewYRot(1);
+        float xRot = this.getViewXRot(1);
         if (this.getControllingPassenger() instanceof Player player) {
             yRot = player.getViewYRot(1);
             xRot = player.getViewXRot(1);

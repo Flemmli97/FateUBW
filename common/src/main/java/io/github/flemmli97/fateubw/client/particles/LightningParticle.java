@@ -2,6 +2,7 @@ package io.github.flemmli97.fateubw.client.particles;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.github.flemmli97.tenshilib.client.particles.SpritedParticle;
+import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
@@ -9,6 +10,8 @@ import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
@@ -22,6 +25,31 @@ public class LightningParticle extends SpritedParticle {
     @Override
     public SingleQuadParticle.FacingCameraMode getFacingCameraMode() {
         return FacingCameraMode.LOOKAT_Y;
+    }
+
+    /**
+     * Requires override cause... sodium breaks this otherwise since they do their own quad rendering
+     */
+    @Override
+    public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
+        Quaternionf quaternionf = new Quaternionf();
+        this.getFacingCameraMode().setRotation(quaternionf, renderInfo, partialTicks);
+        if (this.roll != 0.0F) {
+            quaternionf.rotateZ(Mth.lerp(partialTicks, this.oRoll, this.roll));
+        }
+        this.renderRotatedQuad(buffer, renderInfo, quaternionf, partialTicks);
+    }
+
+    /**
+     * Requires override cause... sodium breaks this otherwise since they do their own quad rendering
+     */
+    @Override
+    protected void renderRotatedQuad(VertexConsumer buffer, Camera camera, Quaternionf quaternion, float partialTicks) {
+        Vec3 vec3 = camera.getPosition();
+        float f = (float)(Mth.lerp(partialTicks, this.xo, this.x) - vec3.x());
+        float f1 = (float)(Mth.lerp(partialTicks, this.yo, this.y) - vec3.y());
+        float f2 = (float)(Mth.lerp(partialTicks, this.zo, this.z) - vec3.z());
+        this.renderRotatedQuad(buffer, quaternion, f, f1, f2, partialTicks);
     }
 
     @Override

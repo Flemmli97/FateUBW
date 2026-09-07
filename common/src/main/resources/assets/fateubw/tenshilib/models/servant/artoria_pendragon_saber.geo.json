@@ -105,6 +105,53 @@
           ]
         },
         {
+          "name": "EyesBase",
+          "parent": "Head",
+          "pivot": [0, 27, -4.025]
+        },
+        {
+          "name": "EyeBrows",
+          "parent": "EyesBase",
+          "pivot": [0, 28, -4.025]
+        },
+        {
+          "name": "LeftEyeBrow",
+          "parent": "EyeBrows",
+          "pivot": [2, 27, -4.075],
+          "cubes": [
+            {"origin": [1, 27, -4.075], "size": [2, 1, 1], "uv": [52, 16]}
+          ]
+        },
+        {
+          "name": "RightEyeBrow",
+          "parent": "EyeBrows",
+          "pivot": [-2, 27, -4.075],
+          "cubes": [
+            {"origin": [-3, 27, -4.075], "size": [2, 1, 1], "uv": [58, 16]}
+          ]
+        },
+        {
+          "name": "Eyes",
+          "parent": "EyesBase",
+          "pivot": [0, 26, -4.025]
+        },
+        {
+          "name": "RightEye",
+          "parent": "Eyes",
+          "pivot": [-2, 26, -4.025],
+          "cubes": [
+            {"origin": [-4, 25, -4.025], "size": [3, 2, 0], "uv": [64, 16]}
+          ]
+        },
+        {
+          "name": "LeftEye",
+          "parent": "Eyes",
+          "pivot": [2, 26, -4.025],
+          "cubes": [
+            {"origin": [1, 25, -4.025], "size": [3, 2, 0], "uv": [70, 16]}
+          ]
+        },
+        {
           "name": "LeftArm",
           "parent": "Body",
           "pivot": [5, 22, 0],
