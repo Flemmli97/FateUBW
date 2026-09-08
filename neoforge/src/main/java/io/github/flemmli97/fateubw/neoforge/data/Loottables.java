@@ -119,6 +119,7 @@ public class Loottables extends LootTableProvider {
             this.registerLootTable(crystal, this.createOreLootPool(5, FateItems.CRYSTAL_YELLOW.get(), FateItems.CRYSTAL_GREEN.get(), FateItems.CRYSTAL_BLUE.get(), FateItems.CRYSTAL_BLACK.get(), FateItems.CRYSTAL_RED.get()));
             this.add(FateBlocks.GEM_ORE.get(), drop -> this.createSilkTouchDispatchTable(drop, NestedLootTable.lootTableReference(crystal)));
             this.add(FateBlocks.DEEP_SLATE_GEM_ORE.get(), drop -> this.createSilkTouchDispatchTable(drop, NestedLootTable.lootTableReference(crystal)));
+            this.dropSelf(FateBlocks.SWORD_DISPLAY.get());
             this.loots.forEach(output);
         }
 

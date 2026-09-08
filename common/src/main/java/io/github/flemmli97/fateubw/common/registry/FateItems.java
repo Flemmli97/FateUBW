@@ -70,6 +70,7 @@ public class FateItems {
     public static final RegistryEntrySupplier<Item, BlockItem> ARTIFACT_ORE = register("artifact_ore", () -> new BlockItem(FateBlocks.ARTIFACT_ORE.get(), new Item.Properties()));
     public static final RegistryEntrySupplier<Item, BlockItem> DEEP_SLATE_GEM_ORE = register("deepslate_gem_ore", () -> new BlockItem(FateBlocks.DEEP_SLATE_GEM_ORE.get(), new Item.Properties()));
     public static final RegistryEntrySupplier<Item, BlockItem> DEEP_SLATE_ARTIFACT_ORE = register("deepslate_artifact_ore", () -> new BlockItem(FateBlocks.DEEP_SLATE_ARTIFACT_ORE.get(), new Item.Properties()));
+    public static final RegistryEntrySupplier<Item, BlockItem> SWORD_DISPLAY = register("sword_display", () -> new BlockItem(FateBlocks.SWORD_DISPLAY.get(), new Item.Properties()));
 
     public static final RegistryEntrySupplier<Item, Item> ARTIFACT_SABER = registerArtifact(BuiltinServantClasses.SABER);
     public static final RegistryEntrySupplier<Item, Item> ARTIFACT_ARCHER = registerArtifact(BuiltinServantClasses.ARCHER);

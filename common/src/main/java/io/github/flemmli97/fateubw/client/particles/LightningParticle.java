@@ -46,9 +46,9 @@ public class LightningParticle extends SpritedParticle {
     @Override
     protected void renderRotatedQuad(VertexConsumer buffer, Camera camera, Quaternionf quaternion, float partialTicks) {
         Vec3 vec3 = camera.getPosition();
-        float f = (float)(Mth.lerp(partialTicks, this.xo, this.x) - vec3.x());
-        float f1 = (float)(Mth.lerp(partialTicks, this.yo, this.y) - vec3.y());
-        float f2 = (float)(Mth.lerp(partialTicks, this.zo, this.z) - vec3.z());
+        float f = (float) (Mth.lerp(partialTicks, this.xo, this.x) - vec3.x());
+        float f1 = (float) (Mth.lerp(partialTicks, this.yo, this.y) - vec3.y());
+        float f2 = (float) (Mth.lerp(partialTicks, this.zo, this.z) - vec3.z());
         this.renderRotatedQuad(buffer, quaternion, f, f1, f2, partialTicks);
     }
 

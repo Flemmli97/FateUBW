@@ -1,15 +1,16 @@
-package io.github.flemmli97.fateubw.client.render;
+package io.github.flemmli97.fateubw.client.render.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.github.flemmli97.fateubw.Fate;
+import io.github.flemmli97.fateubw.client.render.FateRenders;
 import io.github.flemmli97.fateubw.common.blocks.entity.AltarBlockEntity;
 import io.github.flemmli97.tenshilib.client.render.RenderUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
@@ -21,9 +22,11 @@ public class RenderAltar implements BlockEntityRenderer<AltarBlockEntity> {
 
     private final ResourceLocation texture = Fate.modRes("textures/misc/magic_circle_1.png");
     private final RenderUtils.BeamBuilder builder = new RenderUtils.BeamBuilder();
+    private final ItemRenderer itemRenderer;
 
     public RenderAltar(BlockEntityRendererProvider.Context context) {
         this.builder.setEndColor(255, 255, 255, 0);
+        this.itemRenderer = context.getItemRenderer();
     }
 
     @Override
@@ -58,7 +61,7 @@ public class RenderAltar implements BlockEntityRenderer<AltarBlockEntity> {
             poseStack.translate(0.5F, 1.125F, 0.5F);
             poseStack.mulPose(Axis.YP.rotationDegrees(ticker));
             poseStack.translate(0, 0.06F * (float) Math.sin((ticker * Math.PI) / 180), 0);
-            Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.GROUND, 0xf000f0, OverlayTexture.NO_OVERLAY, poseStack, buffer, altar.getLevel(), 0);
+            this.itemRenderer.renderStatic(stack, ItemDisplayContext.GROUND, 0xf000f0, OverlayTexture.NO_OVERLAY, poseStack, buffer, altar.getLevel(), 0);
             poseStack.popPose();
         }
         NonNullList<ItemStack> catalyst = altar.getCatalyst();
@@ -77,7 +80,7 @@ public class RenderAltar implements BlockEntityRenderer<AltarBlockEntity> {
             poseStack.mulPose(Axis.YP.rotationDegrees(ticker * (altar.isSummoning() ? 2 : 1) + (float) (i * 45.0)));
             poseStack.translate(x, 0, 0);
             poseStack.mulPose(Axis.YP.rotationDegrees(90));
-            Minecraft.getInstance().getItemRenderer().renderStatic(catalyst.get(i), ItemDisplayContext.GROUND, 0xf000f0, OverlayTexture.NO_OVERLAY, poseStack, buffer, altar.getLevel(), 0);
+            this.itemRenderer.renderStatic(catalyst.get(i), ItemDisplayContext.GROUND, 0xf000f0, OverlayTexture.NO_OVERLAY, poseStack, buffer, altar.getLevel(), 0);
             poseStack.popPose();
         }
     }

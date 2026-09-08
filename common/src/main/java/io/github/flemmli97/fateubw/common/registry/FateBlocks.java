@@ -3,7 +3,9 @@ package io.github.flemmli97.fateubw.common.registry;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.blocks.AltarBlock;
 import io.github.flemmli97.fateubw.common.blocks.ChalkBlock;
+import io.github.flemmli97.fateubw.common.blocks.SwordDisplayBlock;
 import io.github.flemmli97.fateubw.common.blocks.entity.AltarBlockEntity;
+import io.github.flemmli97.fateubw.common.blocks.entity.SwordDisplayEntity;
 import io.github.flemmli97.tenshilib.loader.LoaderRegistryAccess;
 import io.github.flemmli97.tenshilib.loader.registry.LoaderRegister;
 import io.github.flemmli97.tenshilib.loader.registry.RegistryEntrySupplier;
@@ -28,6 +30,8 @@ public class FateBlocks {
     public static final RegistryEntrySupplier<Block, DropExperienceBlock> DEEP_SLATE_GEM_ORE = BLOCKS.register("deepslate_gem_ore", () -> new DropExperienceBlock(UniformInt.of(10, 15), BlockBehaviour.Properties.of().mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops().strength(5, 7)));
     public static final RegistryEntrySupplier<Block, DropExperienceBlock> DEEP_SLATE_ARTIFACT_ORE = BLOCKS.register("deepslate_artifact_ore", () -> new DropExperienceBlock(UniformInt.of(20, 30), BlockBehaviour.Properties.of().mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops().strength(6, 8)));
     public static final RegistryEntrySupplier<Block, ChalkBlock> CHALK = BLOCKS.register("chalk_line", () -> new ChalkBlock(BlockBehaviour.Properties.of().mapColor(MapColor.WOOL).sound(SoundType.WOOL).noOcclusion().strength(0.1f, 10)));
+    public static final RegistryEntrySupplier<Block, SwordDisplayBlock> SWORD_DISPLAY = BLOCKS.register("sword_display", () -> new SwordDisplayBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(0.1f, 5)));
 
     public static final RegistryEntrySupplier<BlockEntityType<?>, BlockEntityType<AltarBlockEntity>> ALTAR_BLOCK_ENTITY = BLOCK_ENTITIES.register("altar_block_entity", () -> BlockEntityType.Builder.of(AltarBlockEntity::new, FateBlocks.ALTAR.get()).build(null));
+    public static final RegistryEntrySupplier<BlockEntityType<?>, BlockEntityType<SwordDisplayEntity>> SWORD_DISPLAY_BLOCK_ENTITY = BLOCK_ENTITIES.register("sword_display_block_entity", () -> BlockEntityType.Builder.of(SwordDisplayEntity::new, FateBlocks.SWORD_DISPLAY.get()).build(null));
 }

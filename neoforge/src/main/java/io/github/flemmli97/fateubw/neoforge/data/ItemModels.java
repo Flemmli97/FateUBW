@@ -28,7 +28,7 @@ public class ItemModels extends ItemModelProvider {
     protected void registerModels() {
         int sealid = 1;
         for (RegistryEntrySupplier<Item, ?> reg : FateItems.ITEMS.getEntries()) {
-            if (reg == FateItems.ENUMAELISH || reg == FateItems.HERACLES_AXE)
+            if (reg == FateItems.ENUMAELISH || reg == FateItems.HERACLES_AXE || reg == FateItems.SWORD_DISPLAY)
                 continue;
             if (reg == FateItems.MEDUSA_DAGGER) {
                 this.withInventoryVariant(reg, ModelLocationUtils.decorateItemModelLocation("handheld"))

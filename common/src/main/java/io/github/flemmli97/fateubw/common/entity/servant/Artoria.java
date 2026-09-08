@@ -101,20 +101,20 @@ public class Artoria extends BaseServant {
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.6)
             .marker(EntityWeaponTrailProvider.TRAIL_END, 0.96));
     public static final String TWO_HAND_OVERHEAD = BUILDER.add("two_hand_overhead", AnimationsBuilder.definition(1)
-            .marker("attack", 0.84)
+            .marker("critical", 0.84)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.72)
             .marker(EntityWeaponTrailProvider.TRAIL_END, 0.88));
 
     public static final String STRIKE_AIR = BUILDER.add("strike_air", AnimationsBuilder.definition(1.4)
             .marker("setup", 0.72)
-            .marker("attack", 0.72, 0.96).marker("attack_final", 1.2));
+            .marker("attack", 0.72, 0.96).marker("critical", 1.2));
     public static final String BLOCK = BUILDER.add("block", AnimationsBuilder.definition(0.28));
 
     public static final String INVISIBLE_BURST = BUILDER.add("invisible_burst", AnimationsBuilder.definition(1.12).marker("start", 0.48));
-    public static final String INVISIBLE_BURST_HIT = BUILDER.add("invisible_burst_hit", AnimationsBuilder.definition(0.52)
-            .marker("attack", 0.4)
-            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.16)
-            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.4));
+    public static final String INVISIBLE_BURST_HIT = BUILDER.add("invisible_burst_hit", AnimationsBuilder.definition(0.44)
+            .marker("attack", 0.28)
+            .marker(EntityWeaponTrailProvider.TRAIL_START, 0.08)
+            .marker(EntityWeaponTrailProvider.TRAIL_END, 0.32));
     public static final String EXCALIBAA = BUILDER.add("excalibur", AnimationsBuilder.definition(5)
             .marker("start_attack", 0.44).marker("attack", 3.36)
             .marker("charge_start", 0.44).marker("charge_end", 3.12));
@@ -275,7 +275,7 @@ public class Artoria extends BaseServant {
                                             .build()),
                             this.getX(), this.getY(), this.getZ(), 0, 0, 0);
                 }
-                if (anim.is(TWO_HAND_OVERHEAD) && anim.isAt("attack")) {
+                if (anim.is(TWO_HAND_OVERHEAD) && anim.isAt("critical")) {
                     this.slamParticles();
                 }
                 if (anim.is(EXCALIBAA)) {
@@ -377,12 +377,12 @@ public class Artoria extends BaseServant {
                 dir = new Vec3(dir.x(), 0, dir.z()).normalize().scale(0.5).add(0, vertical, 0);
                 this.setDeltaMovement(dir);
             }
-        } else if(anim.is(STRIKE_AIR)) {
-            if (anim.isAt("attack_final")) {
+        } else if (anim.is(STRIKE_AIR)) {
+            if (anim.isAt("critical")) {
                 this.playSound(FateSounds.SWOOSH_1.get(), 2, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.2F);
                 this.mobAttack(anim, this.getTarget(), this::doHurtTarget);
             }
-            if(anim.isAt("setup")) {
+            if (anim.isAt("setup")) {
                 float yRot = this.getViewYRot(1);
                 float xRot = this.getViewXRot(1);
                 Vec3 target = this.tryGetTargetPosition(this.getTarget());
@@ -409,7 +409,7 @@ public class Artoria extends BaseServant {
                                 this.getZ() + offset.z());
             }
             if (anim.isAt("attack")) {
-                    this.playSound(FateSounds.SWOOSH_1.get(), 2, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.5F);
+                this.playSound(FateSounds.SWOOSH_1.get(), 2, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.5F);
             }
             super.handleAttack(anim);
         } else {
@@ -417,12 +417,14 @@ public class Artoria extends BaseServant {
                 Vec3 dir = Utils.fromRelativeVector(this, new Vec3(0, 0, 1)).scale(0.35);
                 this.setDeltaMovement(this.getDeltaMovement().add(dir));
             }
-            if (anim.isAt("attack")) {
+            if (anim.isAt("critical")) {
                 if (anim.is(TWO_HAND_OVERHEAD)) {
                     this.playSound(SoundEvents.GENERIC_EXPLODE.value(), 1, (this.random.nextFloat() - this.random.nextFloat()) * 0.1F + 1.1F);
-                } else {
-                    this.playSound(FateSounds.SLASH.get(), 2, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
                 }
+                this.mobAttack(anim, this.getTarget(), this::doHurtTarget);
+            }
+            if (anim.isAt("attack")) {
+                this.playSound(FateSounds.SLASH.get(), 2, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
             }
             super.handleAttack(anim);
         }
@@ -453,7 +455,7 @@ public class Artoria extends BaseServant {
     @Override
     public float damageModifier(Entity target) {
         AnimationState anim = this.getAnimationHandler().getAnimation();
-        if (anim != null && anim.isAt("attack_final")) {
+        if (anim != null && anim.isAt("critical")) {
             return 1.5f;
         }
         return super.damageModifier(target);
@@ -462,7 +464,7 @@ public class Artoria extends BaseServant {
     @Override
     public void onEntityHit(Entity target, float damage) {
         AnimationState anim = this.getAnimationHandler().getAnimation();
-        if (anim != null && anim.isAt("attack_final")) {
+        if (anim != null && anim.isAt("critical")) {
             this.playSound(SoundEvents.PLAYER_ATTACK_CRIT, 1, 1);
             if (this.level() instanceof ServerLevel serverLevel)
                 serverLevel.getChunkSource().broadcastAndSend(this, new ClientboundAnimatePacket(target, ClientboundAnimatePacket.CRITICAL_HIT));
@@ -527,7 +529,7 @@ public class Artoria extends BaseServant {
             return super.calculateAttackAABB(anim, target, grow);
         double width = this.getBbWidth();
         Vec3 dir = this.getDataContainer().get(BURST_DIRECTION);
-        if(dir == null) {
+        if (dir == null) {
             dir = this.calculateViewVector(0, this.getViewYRot(1));
         }
         float[] yXRot = MathsHelper.YXRotFrom(dir);

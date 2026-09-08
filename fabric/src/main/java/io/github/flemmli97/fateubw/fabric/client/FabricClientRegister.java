@@ -2,7 +2,8 @@ package io.github.flemmli97.fateubw.fabric.client;
 
 import io.github.flemmli97.fateubw.client.ClientRegister;
 import io.github.flemmli97.fateubw.client.model.EAModel;
-import io.github.flemmli97.fateubw.client.render.RenderAltar;
+import io.github.flemmli97.fateubw.client.render.blockentity.RenderAltar;
+import io.github.flemmli97.fateubw.client.render.blockentity.RenderSwordDisplay;
 import io.github.flemmli97.fateubw.client.render.item.RenderEAItem;
 import io.github.flemmli97.fateubw.client.render.item.RenderExcaliburItem;
 import io.github.flemmli97.fateubw.common.registry.FateBlocks;
@@ -31,6 +32,7 @@ public class FabricClientRegister {
         ClientRegister.registerKeyBinding(KeyBindingHelper::registerKeyBinding);
 
         BlockEntityRenderers.register(FateBlocks.ALTAR_BLOCK_ENTITY.get(), RenderAltar::new);
+        BlockEntityRenderers.register(FateBlocks.SWORD_DISPLAY_BLOCK_ENTITY.get(), RenderSwordDisplay::new);
         ClientRegister.registerItemProps(ItemProperties::register);
         ClientRegister.registerRenderers(EntityRendererRegistry::register);
         LivingEntityFeatureRendererRegistrationCallback.EVENT.register(((type, renderer, helper, ctx)

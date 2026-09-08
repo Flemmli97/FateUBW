@@ -203,6 +203,7 @@ public class Bucephalos extends SummonedEntity implements SyncedMobDataHandler {
         return this.animationHandler;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     protected void playStepSound(BlockPos pos, BlockState block) {
         if (!block.liquid()) {

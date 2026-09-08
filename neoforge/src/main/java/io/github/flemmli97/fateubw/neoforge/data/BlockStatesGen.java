@@ -6,6 +6,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
+import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class BlockStatesGen extends BlockStateProvider {
@@ -32,5 +33,8 @@ public class BlockStatesGen extends BlockStateProvider {
                 .texture("ore", Fate.modRes("block/crystal_ore"))
                 .texture("stone", ResourceLocation.withDefaultNamespace("block/deepslate")));
         this.horizontalBlock(FateBlocks.ALTAR.get(), this.models().getExistingFile(Fate.modRes("block/summoning_altar")));
+        this.simpleBlock(FateBlocks.SWORD_DISPLAY.get(), this.models().getBuilder("sword_display")
+                .parent(new ModelFile.UncheckedModelFile(ResourceLocation.withDefaultNamespace("builtin/entity")))
+                .texture("particle", Fate.modRes("block/sword_display_base")));
     }
 }
