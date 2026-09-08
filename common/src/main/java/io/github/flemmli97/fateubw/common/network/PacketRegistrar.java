@@ -16,6 +16,7 @@ public class PacketRegistrar {
         register.register(C2SGuiOpenRequest.TYPE, C2SGuiOpenRequest.STREAM_CODEC, C2SGuiOpenRequest::handle);
         register.register(C2SMessageGui.TYPE, C2SMessageGui.STREAM_CODEC, C2SMessageGui::handle);
         register.register(C2SServantCommand.TYPE, C2SServantCommand.STREAM_CODEC, C2SServantCommand::handle);
+        register.register(C2SServantSpecial.TYPE, C2SServantSpecial.STREAM_CODEC, C2SServantSpecial::handle);
         register.register(C2SSpawnEgg.TYPE, C2SSpawnEgg.STREAM_CODEC, C2SSpawnEgg::handle);
         register.register(C2STeamMessage.TYPE, C2STeamMessage.STREAM_CODEC, C2STeamMessage::handle);
         register.register(C2STeamUuidMessage.TYPE, C2STeamUuidMessage.STREAM_CODEC, C2STeamUuidMessage::handle);
@@ -28,11 +29,11 @@ public class PacketRegistrar {
         register.register(S2CGrailGui.TYPE, S2CGrailGui.STREAM_CODEC, S2CGrailGui::handle);
         register.register(S2CMana.TYPE, S2CMana.STREAM_CODEC, S2CMana::handle);
         register.register(S2CPlayerCap.TYPE, S2CPlayerCap.STREAM_CODEC, S2CPlayerCap::handle);
+        register.register(S2CRealityMarbleConstraint.TYPE, S2CRealityMarbleConstraint.STREAM_CODEC, S2CRealityMarbleConstraint::handle);
         register.register(S2CScreenShake.TYPE, S2CScreenShake.STREAM_CODEC, S2CScreenShake::handle);
         register.register(S2CServantGui.TYPE, S2CServantGui.STREAM_CODEC, S2CServantGui::handle);
         register.register(S2CSpawnEggScreen.TYPE, S2CSpawnEggScreen.STREAM_CODEC, S2CSpawnEggScreen::handle);
         register.register(S2CTeamGuiData.TYPE, S2CTeamGuiData.STREAM_CODEC, S2CTeamGuiData::handle);
-        register.register(S2CRealityMarbleConstraint.TYPE, S2CRealityMarbleConstraint.STREAM_CODEC, S2CRealityMarbleConstraint::handle);
     }
 
     public interface ServerPacketRegister {
