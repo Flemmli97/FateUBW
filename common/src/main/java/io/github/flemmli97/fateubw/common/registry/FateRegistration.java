@@ -16,6 +16,7 @@ public class FateRegistration {
         FateCriterionTriggers.TRIGGERS.registerContent();
         FateDataComponents.DATA_COMPONENTS.registerContent();
         FateEntities.ENTITIES.registerContent();
+        FateFeatures.FEATURES.registerContent();
         FateGrailLootSerializer.LOOT_FUNCTION.registerContent();
         FateGrailLootSerializer.SERIALIZER.register().registerContent();
         FateItems.ITEMS.registerContent();

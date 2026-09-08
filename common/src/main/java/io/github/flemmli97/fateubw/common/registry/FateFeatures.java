@@ -2,17 +2,27 @@ package io.github.flemmli97.fateubw.common.registry;
 
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.lib.FateTags;
+import io.github.flemmli97.fateubw.common.world.features.SwordDisplayFeature;
+import io.github.flemmli97.fateubw.common.world.features.config.SwordDisplayFeatureConfig;
+import io.github.flemmli97.tenshilib.loader.LoaderRegistryAccess;
+import io.github.flemmli97.tenshilib.loader.registry.LoaderRegister;
+import io.github.flemmli97.tenshilib.loader.registry.RegistryEntrySupplier;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.random.WeightedEntry;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.OreFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.placement.BiomeFilter;
@@ -29,11 +39,17 @@ import java.util.function.Function;
 
 public class FateFeatures {
 
+    public static final LoaderRegister<Feature<?>> FEATURES = LoaderRegistryAccess.INSTANCE.of(Registries.FEATURE, Fate.MODID);
+
+    public static final RegistryEntrySupplier<Feature<?>, Feature<SwordDisplayFeatureConfig>> SWORD_FEATURE = FEATURES.register("sword_feature", () -> new SwordDisplayFeature(SwordDisplayFeatureConfig.CODEC));
+
     public static final ResourceKey<ConfiguredFeature<?, ?>> CONFIGURED_CLASS_ARTIFACT_ORE = ResourceKey.create(Registries.CONFIGURED_FEATURE, Fate.modRes("class_artifact_ore"));
     public static final ResourceKey<ConfiguredFeature<?, ?>> CONFIGURED_GEM_ORES = ResourceKey.create(Registries.CONFIGURED_FEATURE, Fate.modRes("gem_ores"));
+    public static final ResourceKey<ConfiguredFeature<?, ?>> CONFIGURED_UBW_SWORDS = ResourceKey.create(Registries.CONFIGURED_FEATURE, Fate.modRes("ubw_swords"));
 
     public static final ResourceKey<PlacedFeature> CLASS_ARTIFACT_ORE = ResourceKey.create(Registries.PLACED_FEATURE, Fate.modRes("class_artifact_ore"));
     public static final ResourceKey<PlacedFeature> GEM_ORES = ResourceKey.create(Registries.PLACED_FEATURE, Fate.modRes("gem_ores"));
+    public static final ResourceKey<PlacedFeature> UBW_SWORDS = ResourceKey.create(Registries.PLACED_FEATURE, Fate.modRes("ubw_swords"));
 
     public static void createFeatures(@Nullable FeatureRegister register,
                                       Consumer<FeatureBiomeModifier> placedFeatureHandler) {
@@ -56,6 +72,15 @@ public class FateFeatures {
                                     InSquarePlacement.spread(),
                                     BiomeFilter.biome(),
                                     HeightRangePlacement.uniform(VerticalAnchor.absolute(-33), VerticalAnchor.absolute(50)))));
+            register.registerConfigured(FateFeatures.CONFIGURED_UBW_SWORDS, provider -> new ConfiguredFeature<>(SWORD_FEATURE.get(),
+                    new SwordDisplayFeatureConfig(List.of(WeightedEntry.wrap(new ItemStack(Items.IRON_SWORD), 3),
+                            WeightedEntry.wrap(new ItemStack(Items.STONE_SWORD), 8),
+                            WeightedEntry.wrap(new ItemStack(Items.GOLDEN_SWORD), 5),
+                            WeightedEntry.wrap(new ItemStack(Items.DIAMOND_SWORD), 1)))));
+            register.registerPlaced(FateFeatures.UBW_SWORDS, provider ->
+                    new PlacedFeature(provider.get(FateFeatures.CONFIGURED_UBW_SWORDS),
+                            List.of(InSquarePlacement.spread(),
+                                    PlacementUtils.HEIGHTMAP_WORLD_SURFACE)));
         }
         placedFeatureHandler.accept(new FeatureBiomeModifier(FateTags.Biomes.FATE_ORE_GEN, GenerationStep.Decoration.UNDERGROUND_DECORATION,
                 ResourceKey.create(Registries.PLACED_FEATURE, FateFeatures.CLASS_ARTIFACT_ORE.location())));

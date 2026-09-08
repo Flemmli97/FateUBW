@@ -13,7 +13,20 @@
     "water_color": 4159204,
     "water_fog_color": 329011
   },
-  "features": [],
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "fateubw:ubw_swords"
+    ]
+  ],
   "has_precipitation": false,
   "spawn_costs": {},
   "spawners": {

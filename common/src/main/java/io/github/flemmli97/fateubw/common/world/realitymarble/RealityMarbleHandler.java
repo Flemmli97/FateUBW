@@ -214,7 +214,8 @@ public class RealityMarbleHandler extends SavedData {
         }
         int finalHeight = height;
         Entity toTeleport = entity;
-        entity.getServer().tell(new TickTask(1, () -> toTeleport.changeDimension(new DimensionTransition(targetLevel, new Vec3(pos.x(), finalHeight, pos.z()), Vec3.ZERO, toTeleport.getYRot(), toTeleport.getXRot(), DimensionTransition.PLACE_PORTAL_TICKET))));    }
+        entity.getServer().tell(new TickTask(1, () -> toTeleport.changeDimension(new DimensionTransition(targetLevel, new Vec3(pos.x(), finalHeight, pos.z()), Vec3.ZERO, toTeleport.getYRot(), toTeleport.getXRot(), DimensionTransition.PLACE_PORTAL_TICKET))));
+    }
 
     private MutableAABB collectiveBB(Entity entity, MutableAABB bb) {
         bb = bb == null ? new MutableAABB(entity.getBoundingBox()) : bb.merge(entity.getBoundingBox());

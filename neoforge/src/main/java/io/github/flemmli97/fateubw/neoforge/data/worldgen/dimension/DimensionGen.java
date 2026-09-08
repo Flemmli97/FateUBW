@@ -1,6 +1,7 @@
 package io.github.flemmli97.fateubw.neoforge.data.worldgen.dimension;
 
 import io.github.flemmli97.fateubw.common.registry.FateDimensions;
+import io.github.flemmli97.fateubw.common.registry.FateFeatures;
 import io.github.flemmli97.fateubw.common.world.chunk.UnlimitedBladeworksChunkGenerator;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
@@ -73,7 +74,8 @@ public class DimensionGen {
                             .ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS)
                             .build())
                     .mobSpawnSettings(new MobSpawnSettings.Builder().build())
-                    .generationSettings(new BiomeGenerationSettings.Builder(ctx.lookup(Registries.PLACED_FEATURE), ctx.lookup(Registries.CONFIGURED_CARVER)).build())
+                    .generationSettings(new BiomeGenerationSettings.Builder(ctx.lookup(Registries.PLACED_FEATURE), ctx.lookup(Registries.CONFIGURED_CARVER))
+                            .addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, FateFeatures.UBW_SWORDS).build())
                     .build());
         });
         List<Consumer<BootstrapContext<NoiseGeneratorSettings>>> noiseSettings = new ArrayList<>();

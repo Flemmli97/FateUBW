@@ -1,0 +1,35 @@
+{
+  "type": "fateubw:sword_feature",
+  "config": {
+    "weapons": [
+      {
+        "data": {
+          "count": 1,
+          "id": "minecraft:iron_sword"
+        },
+        "weight": 3
+      },
+      {
+        "data": {
+          "count": 1,
+          "id": "minecraft:stone_sword"
+        },
+        "weight": 8
+      },
+      {
+        "data": {
+          "count": 1,
+          "id": "minecraft:golden_sword"
+        },
+        "weight": 5
+      },
+      {
+        "data": {
+          "count": 1,
+          "id": "minecraft:diamond_sword"
+        },
+        "weight": 1
+      }
+    ]
+  }
+}
