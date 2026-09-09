@@ -30,9 +30,9 @@ import io.github.flemmli97.fateubw.client.render.misc.RenderGem;
 import io.github.flemmli97.fateubw.client.render.misc.RenderGordius;
 import io.github.flemmli97.fateubw.client.render.misc.RenderHassanCopy;
 import io.github.flemmli97.fateubw.client.render.misc.RenderHoplite;
-import io.github.flemmli97.fateubw.client.render.misc.RenderItemInGround;
 import io.github.flemmli97.fateubw.client.render.misc.RenderMagicBeam;
 import io.github.flemmli97.fateubw.client.render.misc.RenderPegasus;
+import io.github.flemmli97.fateubw.client.render.misc.RenderProjectileBlockingEntity;
 import io.github.flemmli97.fateubw.client.render.misc.RenderSpearProjectile;
 import io.github.flemmli97.fateubw.client.render.misc.RenderStarfish;
 import io.github.flemmli97.fateubw.client.render.misc.RenderTentacle;
@@ -128,7 +128,7 @@ public class ClientRegister {
         consumer.register(FateEntities.STARFISH_SHOT.get(), EmptyRender::new);
         consumer.register(FateEntities.ENKIDU_CHAINS.get(), RenderEnkiduChains::new);
         consumer.register(FateEntities.AESTUS_DOMUS_BEAM.get(), RenderAestusDomusBeam::new);
-        consumer.register(FateEntities.ITEM_IN_GROUND_ENTITY.get(), RenderItemInGround::new);
+        consumer.register(FateEntities.PROJECTILE_BLOCKING_ENTITY.get(), RenderProjectileBlockingEntity::new);
         consumer.register(FateEntities.SPEAR.get(), RenderSpearProjectile::new);
 
         consumer.register(FateEntities.LESSER_MONSTER.get(), RenderStarfish::new);

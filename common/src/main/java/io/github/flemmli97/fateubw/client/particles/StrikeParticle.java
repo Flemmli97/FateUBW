@@ -2,7 +2,6 @@ package io.github.flemmli97.fateubw.client.particles;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.common.particles.StrikeParticleData;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -29,7 +28,6 @@ public class StrikeParticle extends TextureSheetParticle {
         this.quadSize = 0.2f;
         this.scale(5);
         this.lifetime = this.data.duration();
-        Fate.LOGGER.error("Strike particle constructed!");
     }
 
     @Override

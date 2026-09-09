@@ -87,7 +87,7 @@ public class S2CServantGui implements CustomPacketPayload {
                 return new ServantMetaData(buf.readInt(), BuiltInRegistries.ENTITY_TYPE.get(buf.readResourceLocation()),
                         buf.readBoolean() ? Optional.of(buf.readList(b ->
                                 Pair.of(b.readEnum(EquipmentSlot.class), ItemStack.OPTIONAL_STREAM_CODEC.decode(buf))
-                        )) : Optional.empty(), ClientboundSetEntityDataPacketAccessor.doUnpack(buf), buf.readInt());
+                        )) : Optional.empty(), ClientboundSetEntityDataPacketAccessor.fateubw$doUnpack(buf), buf.readInt());
             }
 
             @Override
@@ -99,7 +99,7 @@ public class S2CServantGui implements CustomPacketPayload {
                     b.writeEnum(p.getFirst());
                     ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, p.getSecond());
                 }));
-                ClientboundSetEntityDataPacketAccessor.doPack(data.syncedData, buf);
+                ClientboundSetEntityDataPacketAccessor.fateubw$doPack(data.syncedData, buf);
                 buf.writeInt(data.npCost);
             }
         };

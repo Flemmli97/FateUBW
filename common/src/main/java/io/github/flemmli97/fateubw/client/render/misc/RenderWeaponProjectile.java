@@ -163,44 +163,4 @@ public class RenderWeaponProjectile extends EntityRenderer<WeaponProjectile> {
         return entity.getWeapon();
     }
 
-    private static class AlphaVertexConsumerWrapper implements VertexConsumer {
-
-        private final VertexConsumer parent;
-        private final float alpha;
-
-        private AlphaVertexConsumerWrapper(VertexConsumer parent, float alpha) {
-            this.parent = parent;
-            this.alpha = alpha;
-        }
-
-        @Override
-        public VertexConsumer addVertex(float x, float y, float z) {
-            return this.parent.addVertex(x, y, z);
-        }
-
-        @Override
-        public VertexConsumer setColor(int r, int g, int b, int alpha) {
-            return this.parent.setColor(r, g, b, (int) (alpha * this.alpha));
-        }
-
-        @Override
-        public VertexConsumer setUv(float u, float v) {
-            return this.parent.setUv(u, v);
-        }
-
-        @Override
-        public VertexConsumer setUv1(int u, int v) {
-            return this.parent.setUv1(u, v);
-        }
-
-        @Override
-        public VertexConsumer setUv2(int u, int v) {
-            return this.parent.setUv2(u, v);
-        }
-
-        @Override
-        public VertexConsumer setNormal(float x, float y, float z) {
-            return this.parent.setNormal(x, y, z);
-        }
-    }
 }

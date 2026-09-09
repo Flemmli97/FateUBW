@@ -13,5 +13,5 @@ import java.util.Map;
 public interface AttributeMapAccessor {
 
     @Accessor("attributes")
-    Map<Holder<Attribute>, AttributeInstance> getAttributes();
+    Map<Holder<Attribute>, AttributeInstance> fateubw$getAttributes();
 }

@@ -242,8 +242,10 @@ public class Medea extends BaseServant {
 
     @Override
     public void doSpecialCommand(ServerPlayer sender, String id) {
-        if (id.equals(CIRCLE_COMMAND) && this.circleDelay <= 0)
+        if (id.equals(CIRCLE_COMMAND) && this.circleDelay <= 0) {
+            this.getNavigation().stop();
             this.getAnimationHandler().setAnimation(MAGIC_CIRCLE);
+        }
     }
 
     @Override

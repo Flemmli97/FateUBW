@@ -79,7 +79,7 @@ public class EventCalls {
         if (!entity.level().isClientSide) {
             if (entity.isAlive() && entity.tickCount % 20 == 0) {
                 boolean target = entity instanceof Mob mob && mob.getTarget() != null;
-                AttributeInstance att = entity.getAttribute(target || ((CombatTrackerAccessor) entity.getCombatTracker()).getInCombat() ?
+                AttributeInstance att = entity.getAttribute(target || ((CombatTrackerAccessor) entity.getCombatTracker()).fateubw$getInCombat() ?
                         FateAttributes.COMBAT_REGEN.asHolder() : FateAttributes.PASSIVE_REGEN.asHolder());
                 if (att != null) {
                     entity.heal((float) att.getValue());

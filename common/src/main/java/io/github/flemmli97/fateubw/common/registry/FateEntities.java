@@ -13,10 +13,10 @@ import io.github.flemmli97.fateubw.common.entity.misc.EnkiduChains;
 import io.github.flemmli97.fateubw.common.entity.misc.EnumaElish;
 import io.github.flemmli97.fateubw.common.entity.misc.Excalibur;
 import io.github.flemmli97.fateubw.common.entity.misc.GaeBolg;
-import io.github.flemmli97.fateubw.common.entity.misc.ItemInGroundEntity;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicBeam;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicBufCircle;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicShot;
+import io.github.flemmli97.fateubw.common.entity.misc.ProjectileBlockingItemEntity;
 import io.github.flemmli97.fateubw.common.entity.misc.SpearProjectile;
 import io.github.flemmli97.fateubw.common.entity.misc.StarfishShot;
 import io.github.flemmli97.fateubw.common.entity.misc.ThrownGem;
@@ -263,7 +263,7 @@ public class FateEntities {
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<StarfishShot>> STARFISH_SHOT = reg("starfish_shot", EntityType.Builder.<StarfishShot>of(StarfishShot::new, MobCategory.MISC).sized(0.25F, 0.25F));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<EnkiduChains>> ENKIDU_CHAINS = reg("enkidu_chains", EntityType.Builder.<EnkiduChains>of(EnkiduChains::new, MobCategory.MISC).sized(0.25F, 0.25F));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<AestusDomusBeam>> AESTUS_DOMUS_BEAM = reg("aestus_domus_beam", EntityType.Builder.<AestusDomusBeam>of(AestusDomusBeam::new, MobCategory.MISC).sized(0.25F, 0.25F));
-    public static final RegistryEntrySupplier<EntityType<?>, EntityType<ItemInGroundEntity>> ITEM_IN_GROUND_ENTITY = reg("item_in_ground_entity", EntityType.Builder.of(ItemInGroundEntity::new, MobCategory.MISC).sized(0.75F, 1.5F));
+    public static final RegistryEntrySupplier<EntityType<?>, EntityType<ProjectileBlockingItemEntity>> PROJECTILE_BLOCKING_ENTITY = reg("projectile_blocking_entity", EntityType.Builder.<ProjectileBlockingItemEntity>of(ProjectileBlockingItemEntity::new, MobCategory.MISC).sized(0.25F, 0.25F));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<SpearProjectile>> SPEAR = reg("spear", EntityType.Builder.<SpearProjectile>of(SpearProjectile::new, MobCategory.MISC).sized(0.25F, 0.25F));
 
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<LesserMonster>> LESSER_MONSTER = regWithEgg("starfish_monster", EntityType.Builder.<LesserMonster>of(LesserMonster::new, MobCategory.MONSTER)

@@ -10,5 +10,5 @@ public interface AttributeAccessor {
 
     @Accessor("maxValue")
     @Mutable
-    void setMaxValue(double value);
+    void fateubw$setMaxValue(double value);
 }

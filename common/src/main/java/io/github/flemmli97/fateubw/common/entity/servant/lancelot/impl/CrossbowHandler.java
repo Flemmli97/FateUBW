@@ -30,7 +30,7 @@ public class CrossbowHandler implements LancelotUseHandler {
         ItemStack stack = entity.getUseItem();
         if (stack.getItem() instanceof CrossbowItem crossbow) {
             ((CrossbowAccessor) crossbow)
-                    .fetchChargingSounds(stack)
+                    .fateubw$fetchChargingSounds(stack)
                     .start().ifPresent(sound -> entity.playSound(sound.value(), 1, 0.7f));
         }
     }

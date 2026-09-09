@@ -92,7 +92,7 @@ public class FateRenders extends RenderType {
 
     private static final ClipRenderFactory CLIPPED = (wrapped, plane, color, width) ->
             new RenderType("rendertype_clipped_" + wrapped.toString(), wrapped.format(), wrapped.mode(), wrapped.bufferSize(),
-                    wrapped.affectsCrumbling(), ((RenderTypeAccessor) wrapped).getSortOnUpload(), () -> {
+                    wrapped.affectsCrumbling(), ((RenderTypeAccessor) wrapped).fateubw$getSortOnUpload(), () -> {
                 wrapped.setupRenderState();
                 CLIPPED_SHADER.setupRenderState();
                 Uniform uniform = CLIPPED_SHADER_INSTANCE.getUniform("ClippingPlane");

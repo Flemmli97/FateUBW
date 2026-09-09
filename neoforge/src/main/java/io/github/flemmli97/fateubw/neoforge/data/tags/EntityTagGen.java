@@ -45,6 +45,10 @@ public class EntityTagGen extends IntrinsicHolderTagsProvider<EntityType<?>> {
                 .add(FateEntities.PEGASUS.get())
                 .add(FateEntities.LESSER_MONSTER.get())
                 .add(FateEntities.BUCEPHALOS.get());
+        this.tag(FateTags.EntityTypes.NON_INTERCEPTABLE_PROJECTILE)
+                .add(FateEntities.CALADBOLG.get())
+                .add(FateEntities.ENKIDU_CHAINS.get())
+                .add(FateEntities.GAEBOLG.get());
 
         this.tag(TenshiLib.MULTIPART_ENTITY)
                 .add(FateEntities.MULTIPART.get())

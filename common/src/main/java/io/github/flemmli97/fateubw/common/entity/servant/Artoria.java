@@ -374,7 +374,7 @@ public class Artoria extends BaseServant {
                 LivingEntity target = this.getTarget();
                 Vec3 dir = target != null ? target.position().subtract(this.position()) : this.getViewVector(1);
                 double vertical = Math.clamp(dir.y(), 0.2, 0.4);
-                dir = new Vec3(dir.x(), 0, dir.z()).normalize().scale(0.5).add(0, vertical, 0);
+                dir = new Vec3(dir.x(), 0, dir.z()).normalize().scale(0.75).add(0, vertical, 0);
                 this.setDeltaMovement(dir);
             }
         } else if (anim.is(STRIKE_AIR)) {

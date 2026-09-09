@@ -12,12 +12,12 @@ import java.util.List;
 public interface ClientboundSetEntityDataPacketAccessor {
 
     @Invoker("pack")
-    static void doPack(List<SynchedEntityData.DataValue<?>> dataValues, RegistryFriendlyByteBuf buffer) {
+    static void fateubw$doPack(List<SynchedEntityData.DataValue<?>> dataValues, RegistryFriendlyByteBuf buffer) {
         throw new IllegalStateException();
     }
 
     @Invoker("unpack")
-    static List<SynchedEntityData.DataValue<?>> doUnpack(RegistryFriendlyByteBuf buffer) {
+    static List<SynchedEntityData.DataValue<?>> fateubw$doUnpack(RegistryFriendlyByteBuf buffer) {
         throw new IllegalStateException();
     }
 }

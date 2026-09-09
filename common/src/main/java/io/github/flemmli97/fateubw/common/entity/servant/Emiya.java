@@ -2,11 +2,14 @@ package io.github.flemmli97.fateubw.common.entity.servant;
 
 import com.mojang.math.Axis;
 import io.github.flemmli97.fateubw.api.datapack.ServantExtraData;
+import io.github.flemmli97.fateubw.common.config.CommonConfig;
+import io.github.flemmli97.fateubw.common.config.value.weapons.WeaponList;
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.entity.HeldEquipmentHandler;
 import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.misc.ArcherArrow;
 import io.github.flemmli97.fateubw.common.entity.misc.CaladBolg;
+import io.github.flemmli97.fateubw.common.entity.misc.ProjectileBlockingItemEntity;
 import io.github.flemmli97.fateubw.common.entity.misc.ThrownItemEntity;
 import io.github.flemmli97.fateubw.common.entity.misc.WeaponProjectile;
 import io.github.flemmli97.fateubw.common.entity.utils.CooldownHolder;
@@ -115,6 +118,8 @@ public class Emiya extends BaseServant {
             .marker("shoot", 0.48));
     public static final String UBW_ATTACK_2 = BUILDER.add("ubw_attack_2", AnimationsBuilder.definition(1.28)
             .marker("shoot", 0.48));
+    public static final String UBW_SUMMON_SWORDS = BUILDER.add("ubw_summon_swords", AnimationsBuilder.definition(2.2)
+            .marker("summon", 0.8));
 
     private static final String DEATH = BUILDER.add("death", AnimationsBuilder.definition(2.52).infinite());
     public static final String SUMMON = BUILDER.add("summon", AnimationsBuilder.definition(2.));
@@ -246,26 +251,30 @@ public class Emiya extends BaseServant {
                 .condition(owner -> owner.canUseNobelPhantasm() && this.canOverrideRealityMarble())
                 .prepare(new SetWalkTargetToAttackTarget<Emiya>().closeEnoughDist(BehaviourUtils.closeEnough(16))).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(35)
-                .start(UBW_ATTACK_1).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(18), 16, 28))
+                .start(UBW_ATTACK_1).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(18), 10, 18))
                 .condition(Emiya::isInRealityMarble)
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
                         .min(5).max(14).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(8)
-                .start(UBW_ATTACK_1).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(18), 16, 28))
+                .start(UBW_ATTACK_1).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(18), 10, 18))
                 .condition(owner -> owner.isInRealityMarble() && BehaviourUtils.ifFurtherThan(11).test(owner))
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
                         .min(5).max(14).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(19)
-                .start(UBW_ATTACK_2).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(18), 16, 28))
+                .start(UBW_ATTACK_2).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(18), 10, 18))
                 .condition(Emiya::isInRealityMarble)
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
                         .min(5).max(14).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(8)
-                .start(UBW_ATTACK_2).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(18), 16, 28))
+                .start(UBW_ATTACK_2).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(18), 10, 18))
                 .condition(owner -> owner.isInRealityMarble() && BehaviourUtils.ifFurtherThan(11).test(owner))
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
                         .min(5).max(14).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(19)
+                .start(UBW_SUMMON_SWORDS).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(20), 10, 18))
+                .condition(owner -> owner.isInRealityMarble() && owner.canSummonSwords())
+                .prepare(new SetWalkTargetToAttackTarget<Emiya>().speedMod((owner, target) -> ATTACK_MOVE_SPEED).closeEnoughDist(BehaviourUtils.closeEnough(20))).prepareOptional(BehaviourUtils.timedMoveAttack())
+                .end(12)
                 .start(CALADBOLG).play(BehaviourUtils.cooldownedPlay(false, 20, 30))
                 .condition(owner -> owner.caladBolgCooldown.canUse())
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
@@ -459,6 +468,14 @@ public class Emiya extends BaseServant {
                     WeaponProjectile.spawnWeapons(this, target, amount, 9 + amount / 5, WeaponProjectile.Type.UBW);
                 }
             }
+        } else if (anim.is(UBW_SUMMON_SWORDS)) {
+            LivingEntity target = this.getTarget();
+            if (!anim.isPast("summon") && target != null) {
+                this.getLookControl().setLookAt(target, 60.0F, 30.0F);
+            }
+            if (anim.isAt("summon")) {
+                this.summonSwords();
+            }
         } else if (anim.is(DUAL_BLADE_THROW)) {
             LivingEntity target = this.getTarget();
             if (!anim.isPast("throw") && target != null) {
@@ -617,6 +634,23 @@ public class Emiya extends BaseServant {
         this.level().addFreshEntity(bolg);
         this.revealServant();
         this.caladBolgCooldown.use();
+    }
+
+    protected boolean canSummonSwords() {
+        return this.level().getEntitiesOfClass(ProjectileBlockingItemEntity.class, this.getBoundingBox().inflate(4)).isEmpty();
+    }
+
+    public void summonSwords() {
+        int amount = this.getRandom().nextIntBetweenInclusive(2, 5);
+        for (int i = 0; i < amount; i++) {
+            int m = i % 2 == 0 ? -1 : 1;
+            Vec3 offset = new Vec3((2 - (i >> 1)) * m, i >> 1, 0);
+            ProjectileBlockingItemEntity entity = new ProjectileBlockingItemEntity(this.level(), this, offset);
+            entity.updatePosition();
+            entity.setDamageMultiplier(CommonConfig.ubwScale);
+            entity.setItem(WeaponList.getRandomWeapon(this));
+            this.level().addFreshEntity(entity);
+        }
     }
 
     protected InteractionHand bowHand() {

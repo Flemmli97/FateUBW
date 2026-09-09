@@ -102,6 +102,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraft.world.phys.AABB;
@@ -190,7 +191,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
     private final EntityWeaponTrailHolder<BaseServant> trailHolder = new EntityWeaponTrailHolder<>(this);
 
     private Map<String, CooldownHolder> cooldowns;
-    public final CooldownHolder idleAnimationCooldown;
+    public final CooldownHolder idleAnimationCooldown, combatTracker;
 
     private int blinkTick;
 
@@ -208,6 +209,8 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
         this.hogou = Component.translatable(BuiltInRegistries.ENTITY_TYPE.getKey(this.getType()) + ".hogou");
         this.idleAnimationCooldown = this.createCooldown("idle_animation", UniformGenerator.between(300, 600), () -> this.idleAnimations().length > 0);
         this.idleAnimationCooldown.use();
+        this.combatTracker = this.createCooldown("combat", ConstantValue.exactly(300));
+        this.combatTracker.use();
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -445,6 +448,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
             if (this.getTarget() != null) {
                 if (this.tickCount % 20 == 0) {
                     this.idleAnimationCooldown.use();
+                    this.combatTracker.use();
                 }
                 if (this.getTarget().getVehicle() instanceof LivingEntity)
                     this.setTarget((LivingEntity) this.getTarget().getVehicle());
@@ -452,7 +456,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
             if (this.cooldowns != null) {
                 this.cooldowns.values().forEach(CooldownHolder::tick);
             }
-            if (this.isAlive() && this.tickCount > 4000000 && this.getTarget() == null && !((CombatTrackerAccessor) this.getCombatTracker()).getInCombat()) {
+            if (this.isAlive() && this.tickCount > 400 && !((CombatTrackerAccessor) this.getCombatTracker()).fateubw$getInCombat() && this.combatTracker.canUse()) {
                 RealityMarbleHandler.get(this.getServer())
                         .deleteGroupOf(this);
             }

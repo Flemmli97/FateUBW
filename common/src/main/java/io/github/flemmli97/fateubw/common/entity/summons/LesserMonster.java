@@ -139,7 +139,7 @@ public class LesserMonster extends SummonedEntity {
         boolean res = super.doHurtTarget(target);
         if (res && target instanceof LivingEntity living) {
             List<CombatEntry> entries = ((CombatTrackerAccessor) living.getCombatTracker())
-                    .getEntries();
+                    .fateubw$getEntries();
             if (!entries.isEmpty() && entries.getLast().source().getEntity() == this) {
                 float damage = Math.max(0, entries.getLast().damage());
                 if (damage > 0 && this.getOwner() != null) {

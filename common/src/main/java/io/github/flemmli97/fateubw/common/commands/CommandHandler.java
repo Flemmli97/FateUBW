@@ -83,7 +83,7 @@ public class CommandHandler {
 
     private static int resetAttributes(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         Collection<ServerPlayer> players = EntityArgument.getPlayers(ctx, "players");
-        players.forEach(player -> ((AttributeMapAccessor) player.getAttributes()).getAttributes()
+        players.forEach(player -> ((AttributeMapAccessor) player.getAttributes()).fateubw$getAttributes()
                 .forEach((att, inst) -> inst.removeModifier(AttributeEntry.ATTRIBUTE_UUID)));
         ctx.getSource().sendSuccess(() -> Component.translatable("fateubw.command.attributes.reset", players), false);
         return Command.SINGLE_SUCCESS;

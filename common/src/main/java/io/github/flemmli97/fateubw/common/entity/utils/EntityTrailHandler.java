@@ -81,6 +81,6 @@ public class EntityTrailHandler {
     }
 
     public Entity getEntity() {
-        return entity;
+        return this.entity;
     }
 }

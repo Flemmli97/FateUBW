@@ -9,5 +9,5 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 public interface CrossbowAccessor {
 
     @Invoker("getChargingSounds")
-    CrossbowItem.ChargingSounds fetchChargingSounds(ItemStack stack);
+    CrossbowItem.ChargingSounds fateubw$fetchChargingSounds(ItemStack stack);
 }

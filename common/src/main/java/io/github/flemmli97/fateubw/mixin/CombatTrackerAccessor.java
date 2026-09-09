@@ -11,8 +11,8 @@ import java.util.List;
 public interface CombatTrackerAccessor {
 
     @Accessor("inCombat")
-    boolean getInCombat();
+    boolean fateubw$getInCombat();
 
     @Accessor("entries")
-    List<CombatEntry> getEntries();
+    List<CombatEntry> fateubw$getEntries();
 }

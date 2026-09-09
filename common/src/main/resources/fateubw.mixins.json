@@ -13,6 +13,8 @@
     "EntityMixin",
     "PathFinderMixin",
     "PathNavigationMixin",
+    "ProjectileAccessor",
+    "ProjectileMixin",
     "SynchedEntityDataAccessor"
   ],
   "client": [
