@@ -1,15 +1,15 @@
 package io.github.flemmli97.fateubw.client.render;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.shaders.Uniform;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 import io.github.flemmli97.fateubw.Fate;
+import io.github.flemmli97.fateubw.client.render.vertex.ClippingVertexConsumerWrapper;
 import io.github.flemmli97.fateubw.mixin.RenderTypeAccessor;
-import io.github.flemmli97.tenshilib.client.VertexUtils;
+import io.github.flemmli97.tenshilib.client.render.vertex.VertexUtils;
 import io.github.flemmli97.tenshilib.client.shader.ShaderRegister;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.minecraft.Util;
@@ -59,7 +59,19 @@ public class FateRenders extends RenderType {
             .add("Position", VertexFormatElement.POSITION)
             .add("Color", VertexFormatElement.COLOR)
             .add("UV0", VertexFormatElement.UV0)
-            .add("Time", VertexUtils.SINGLE_FLOAT.get()).build();
+            .add("Time", VertexUtils.SINGLE_FLOAT.element().get()).build();
+    public static final VertexFormat CLIPPING_NEW_ENTITY = VertexFormat.builder()
+            .add("Position", VertexFormatElement.POSITION)
+            .add("Color", VertexFormatElement.COLOR)
+            .add("UV0", VertexFormatElement.UV0)
+            .add("UV1", VertexFormatElement.UV1)
+            .add("UV2", VertexFormatElement.UV2)
+            .add("Normal", VertexFormatElement.NORMAL)
+            .add("ClippingPlane", VertexUtils.VEC4f.element().get())
+            .add("ClippingColor", ClippingVertexConsumerWrapper.CLIP_COLOR.element().get())
+            .add("ClippingWidth", VertexUtils.SINGLE_FLOAT.element().get())
+            .padding(1)
+            .build();
 
     public static final RenderType BABYLON_RENDER = RenderType.create("fateubw:babylon", POSITION_COLOR_TEX_TIME, VertexFormat.Mode.QUADS, 256, false, false, CompositeState.builder()
             .setShaderState(BABYLON_SHADER)
@@ -90,28 +102,16 @@ public class FateRenders extends RenderType {
             .setLightmapState(LIGHTMAP)
             .createCompositeState(true)));
 
-    private static final ClipRenderFactory CLIPPED = (wrapped, plane, color, width) ->
-            new RenderType("rendertype_clipped_" + wrapped.toString(), wrapped.format(), wrapped.mode(), wrapped.bufferSize(),
+    private static final Function<RenderType, RenderType> CLIPPED = Util.memoize((wrapped) ->
+            new RenderType("rendertype_clipped_" + wrapped.toString(), CLIPPING_NEW_ENTITY, wrapped.mode(), wrapped.bufferSize(),
                     wrapped.affectsCrumbling(), ((RenderTypeAccessor) wrapped).fateubw$getSortOnUpload(), () -> {
                 wrapped.setupRenderState();
                 CLIPPED_SHADER.setupRenderState();
-                Uniform uniform = CLIPPED_SHADER_INSTANCE.getUniform("ClippingPlane");
-                if (uniform != null) {
-                    uniform.set(plane);
-                }
-                Uniform uniformColor = CLIPPED_SHADER_INSTANCE.getUniform("ClippingColor");
-                if (uniformColor != null) {
-                    uniformColor.set(color);
-                }
-                Uniform uniformWidth = CLIPPED_SHADER_INSTANCE.getUniform("ClippingWidth");
-                if (uniformWidth != null) {
-                    uniformWidth.set(width);
-                }
             }, () -> {
                 wrapped.clearRenderState();
                 CLIPPED_SHADER.clearRenderState();
             }) {
-            };
+            });
 
     private static final Function<ResourceLocation, RenderType> FULL_BRIGHT_TEXT = Util.memoize((resourceLocation) -> {
         CompositeState compositeState = RenderType.CompositeState.builder().setShaderState(FULL_BRIGHT_SHADER).setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false)).setTransparencyState(TRANSLUCENT_TRANSPARENCY).setLightmapState(LIGHTMAP).setWriteMaskState(RenderStateShard.COLOR_DEPTH_WRITE).createCompositeState(true);
@@ -125,7 +125,7 @@ public class FateRenders extends RenderType {
             try {
                 register.register(Fate.modRes("rendertype_corrupted"), DefaultVertexFormat.POSITION_TEX,
                         shaderInstance -> FateRenders.CORRUPTED_SHADER_INSTANCE = shaderInstance);
-                register.register(Fate.modRes("rendertype_clipped"), DefaultVertexFormat.NEW_ENTITY,
+                register.register(Fate.modRes("rendertype_clipped"), CLIPPING_NEW_ENTITY,
                         shaderInstance -> FateRenders.CLIPPED_SHADER_INSTANCE = shaderInstance);
                 register.register(Fate.modRes("texture_full_bright"), DefaultVertexFormat.POSITION_TEX_COLOR,
                         shaderInstance -> FateRenders.FULL_BRIGHT_INSTANCE = shaderInstance);
@@ -150,12 +150,8 @@ public class FateRenders extends RenderType {
         map.computeIfAbsent(FateRenders.CORRUPTED_OVERLAY, e -> new ByteBufferBuilder(FateRenders.CORRUPTED_OVERLAY.bufferSize()));
     }
 
-    public static RenderType getClippedRendertype(RenderType origin, Vector4f clippingPlane) {
-        return getClippedRendertype(origin, clippingPlane, NO_COLOR, 0);
-    }
-
-    public static RenderType getClippedRendertype(RenderType origin, Vector4f clippingPlane, Vector4f color, float width) {
-        return CLIPPED.get(origin, clippingPlane, color, width);
+    public static RenderType getClippedRendertype(RenderType origin) {
+        return CLIPPED.apply(origin);
     }
 
     public static RenderType getFullBrightText(ResourceLocation texture) {

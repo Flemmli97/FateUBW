@@ -6,6 +6,7 @@ import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.client.model.PegasusModel;
 import io.github.flemmli97.fateubw.client.render.FateRenders;
 import io.github.flemmli97.fateubw.client.render.layer.PortalLayerRenderer;
+import io.github.flemmli97.fateubw.client.render.vertex.ClippingVertexConsumerWrapper;
 import io.github.flemmli97.fateubw.common.entity.summons.Pegasus;
 import io.github.flemmli97.tenshilib.client.render.layer.RiderEntityLayer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -16,6 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 public class RenderPegasus extends MobRenderer<Pegasus, PegasusModel> {
 
@@ -40,7 +42,22 @@ public class RenderPegasus extends MobRenderer<Pegasus, PegasusModel> {
             this.shadowRadius = 0;
         else
             this.shadowRadius = this.shadowDefault;
-        super.render(entity, entityYaw, partialTick, matrixStack, buffer, packedLight);
+        Vector4f clip;
+        if (entity.getAnimationHandler().isCurrent(Pegasus.SUMMON)) {
+            Vector3f normal = new Vector3f(0, 0, 1);
+            normal.rotate(Axis.YP.rotationDegrees(-Mth.rotLerp(this.partialTick, entity.yBodyRotO, entity.yBodyRot)));
+            clip = FateRenders.createClippingPlane(normal, entity, this.portalOffset());
+        } else {
+            clip = null;
+        }
+        MultiBufferSource buf = clip == null ? buffer
+                : renderType -> {
+            if (renderType.toString().startsWith("rendertype_clipped_")) {
+                return ClippingVertexConsumerWrapper.wrap(buffer.getBuffer(renderType), clip);
+            }
+            return buffer.getBuffer(renderType);
+        };
+        super.render(entity, entityYaw, partialTick, matrixStack, buf, packedLight);
     }
 
     @Nullable
@@ -49,10 +66,7 @@ public class RenderPegasus extends MobRenderer<Pegasus, PegasusModel> {
         RenderType origin = super.getRenderType(livingEntity, bodyVisible, translucent, glowing);
         if (origin == null || !livingEntity.getAnimationHandler().isCurrent(Pegasus.SUMMON))
             return origin;
-        Vector3f normal = new Vector3f(0, 0, 1);
-        normal.rotate(Axis.YP.rotationDegrees(-Mth.rotLerp(this.partialTick, livingEntity.yBodyRotO, livingEntity.yBodyRot)));
-        return FateRenders.getClippedRendertype(origin,
-                FateRenders.createClippingPlane(normal, livingEntity, this.portalOffset()));
+        return FateRenders.getClippedRendertype(origin);
     }
 
     private float portalOffset() {

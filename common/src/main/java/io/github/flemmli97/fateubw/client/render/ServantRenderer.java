@@ -1,16 +1,14 @@
 package io.github.flemmli97.fateubw.client.render;
 
-import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.github.flemmli97.fateubw.client.model.ServantModel;
 import io.github.flemmli97.fateubw.client.render.layer.ItemTrailLayer;
 import io.github.flemmli97.fateubw.client.render.layer.ServantItemRender;
 import io.github.flemmli97.fateubw.client.render.layer.TrailPoseGetter;
+import io.github.flemmli97.fateubw.client.render.vertex.ClippingVertexConsumerWrapper;
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
@@ -18,11 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 public class ServantRenderer<T extends BaseServant, M extends ServantModel<T>> extends LivingEntityRenderer<T, ServantModel<T>> implements TrailPoseGetter {
-
-    private static final MultiBufferSource.BufferSource SEP = MultiBufferSource.immediate(new ByteBufferBuilder(1536));
 
     private final ResourceLocation texture;
 
@@ -52,20 +46,9 @@ public class ServantRenderer<T extends BaseServant, M extends ServantModel<T>> e
             clip = FateRenders.createClippingPlane(normal, entity, -(entity.getBbHeight() + 0.3f) * (1 - summonProgress));
         } else
             clip = null;
-        AtomicInteger state = new AtomicInteger();
-        MultiBufferSource buf = clip != null ? renderType -> {
-            RenderType type = FateRenders.getClippedRendertype(renderType, clip, entity.summonColor(), 0.1f);
-            int current = state.get();
-            VertexConsumer cons = current == 1 ? SEP.getBuffer(type) : buffer.getBuffer(type);
-            if (current == 0 || current == 2)
-                state.set(1);
-            else
-                state.set(2);
-            return cons;
-        } : buffer;
+        MultiBufferSource buf = clip == null ? buffer
+                : renderType -> ClippingVertexConsumerWrapper.wrap(buffer.getBuffer(FateRenders.getClippedRendertype(renderType)), clip, entity.summonColor(), 0.1f);
         super.render(entity, yaw, partialTick, recording, buf, light);
-        if (state.get() != 0) // other buffersource was used
-            SEP.endBatch();
     }
 
     @Override

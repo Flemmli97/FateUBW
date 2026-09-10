@@ -1,6 +1,7 @@
 package io.github.flemmli97.fateubw.client.render.misc;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import io.github.flemmli97.fateubw.client.render.vertex.AlphaVertexConsumerWrapper;
 import io.github.flemmli97.fateubw.common.entity.misc.ProjectileBlockingItemEntity;
 import io.github.flemmli97.tenshilib.client.render.ItemProjectileRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;

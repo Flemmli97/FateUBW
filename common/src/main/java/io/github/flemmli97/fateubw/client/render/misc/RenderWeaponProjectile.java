@@ -1,12 +1,13 @@
 package io.github.flemmli97.fateubw.client.render.misc;
 
-import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.github.flemmli97.fateubw.client.render.FateRenders;
+import io.github.flemmli97.fateubw.client.render.vertex.AlphaVertexConsumerWrapper;
+import io.github.flemmli97.fateubw.client.render.vertex.ClippingVertexConsumerWrapper;
 import io.github.flemmli97.fateubw.common.entity.misc.WeaponProjectile;
-import io.github.flemmli97.tenshilib.client.VertexUtils;
+import io.github.flemmli97.tenshilib.client.render.vertex.VertexUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -25,8 +26,6 @@ import org.joml.Vector4f;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class RenderWeaponProjectile extends EntityRenderer<WeaponProjectile> {
-
-    private static final MultiBufferSource.BufferSource SEP = MultiBufferSource.immediate(new ByteBufferBuilder(1536));
 
     public RenderWeaponProjectile(EntityRendererProvider.Context ctx) {
         super(ctx);
@@ -48,50 +47,18 @@ public class RenderWeaponProjectile extends EntityRenderer<WeaponProjectile> {
             stack.translate(0, entity.getBbHeight() * 0.5, 0);
             float size = 1.5f;
             Matrix4f matrix4f = stack.last().pose();
-            VertexConsumer consumer = buffer.getBuffer(FateRenders.BABYLON_RENDER);
             float tick = entity.tickCount + entity.renderRand;
             tick = ((tick % 24000) + partialTick) / 24000.0f;
-            VertexUtils.addVertexData(
-                    consumer.addVertex(matrix4f, -size, -size, 0).setColor(color.x(), color.y(), color.z(), 1).setUv(0, 0),
-                    VertexUtils.SINGLE_FLOAT.get(),
-                    tick
-            );
-            VertexUtils.addVertexData(
-                    consumer.addVertex(matrix4f, size, -size, 0).setColor(color.x(), color.y(), color.z(), 1).setUv(1, 0),
-                    VertexUtils.SINGLE_FLOAT.get(),
-                    tick
-            );
-            VertexUtils.addVertexData(
-                    consumer.addVertex(matrix4f, size, size, 0).setColor(color.x(), color.y(), color.z(), 1).setUv(1, 1),
-                    VertexUtils.SINGLE_FLOAT.get(),
-                    tick
-            );
-            VertexUtils.addVertexData(
-                    consumer.addVertex(matrix4f, -size, size, 0).setColor(color.x(), color.y(), color.z(), 1).setUv(0, 1),
-                    VertexUtils.SINGLE_FLOAT.get(),
-                    tick
-            );
+            VertexConsumer consumer = VertexUtils.SINGLE_FLOAT.create(buffer.getBuffer(FateRenders.BABYLON_RENDER), tick);
+            consumer.addVertex(matrix4f, -size, -size, 0).setColor(color.x(), color.y(), color.z(), 1).setUv(0, 0);
+            consumer.addVertex(matrix4f, size, -size, 0).setColor(color.x(), color.y(), color.z(), 1).setUv(1, 0);
+            consumer.addVertex(matrix4f, size, size, 0).setColor(color.x(), color.y(), color.z(), 1).setUv(1, 1);
+            consumer.addVertex(matrix4f, -size, size, 0).setColor(color.x(), color.y(), color.z(), 1).setUv(0, 1);
 
-            VertexUtils.addVertexData(
-                    consumer.addVertex(matrix4f, -size, size, 0).setColor(color.x(), color.y(), color.z(), 1).setUv(0, 1),
-                    VertexUtils.SINGLE_FLOAT.get(),
-                    tick
-            );
-            VertexUtils.addVertexData(
-                    consumer.addVertex(matrix4f, size, size, 0).setColor(color.x(), color.y(), color.z(), 1).setUv(1, 1),
-                    VertexUtils.SINGLE_FLOAT.get(),
-                    tick
-            );
-            VertexUtils.addVertexData(
-                    consumer.addVertex(matrix4f, size, -size, 0).setColor(color.x(), color.y(), color.z(), 1).setUv(1, 0),
-                    VertexUtils.SINGLE_FLOAT.get(),
-                    tick
-            );
-            VertexUtils.addVertexData(
-                    consumer.addVertex(matrix4f, -size, -size, 0).setColor(color.x(), color.y(), color.z(), 1).setUv(0, 0),
-                    VertexUtils.SINGLE_FLOAT.get(),
-                    tick
-            );
+            consumer.addVertex(matrix4f, -size, size, 0).setColor(color.x(), color.y(), color.z(), 1).setUv(0, 1);
+            consumer.addVertex(matrix4f, size, size, 0).setColor(color.x(), color.y(), color.z(), 1).setUv(1, 1);
+            consumer.addVertex(matrix4f, size, -size, 0).setColor(color.x(), color.y(), color.z(), 1).setUv(1, 0);
+            consumer.addVertex(matrix4f, -size, -size, 0).setColor(color.x(), color.y(), color.z(), 1).setUv(0, 0);
             stack.popPose();
         }
         stack.pushPose();
@@ -129,28 +96,15 @@ public class RenderWeaponProjectile extends EntityRenderer<WeaponProjectile> {
         }
         float alpha = entity.getWeaponType() == WeaponProjectile.Type.UBW ? entity.preparationState(partialTick) : 1;
         MultiBufferSource buf = clip != null || alpha != 1 ? renderType -> {
-            boolean changed = false;
-            if (clip != null) {
-                renderType = FateRenders.getClippedRendertype(renderType, clip, color, 0.1f);
-                changed = true;
-            }
-            int current = state.get();
-            VertexConsumer cons = current == 1 && changed ? SEP.getBuffer(renderType) : buffer.getBuffer(renderType);
+            VertexConsumer cons = clip == null ? buffer.getBuffer(renderType)
+                    : ClippingVertexConsumerWrapper.wrap(buffer.getBuffer(FateRenders.getClippedRendertype(renderType)), clip, color, 0.1f);
             if (alpha != 1) {
                 cons = new AlphaVertexConsumerWrapper(cons, alpha);
-            }
-            if (changed) {
-                if (current == 0 || current == 2)
-                    state.set(1);
-                else
-                    state.set(2);
             }
             return cons;
         } : buffer;
         Minecraft.getInstance().getItemRenderer().renderStatic(this.getRenderItemStack(entity), ItemDisplayContext.GROUND, 0xff00ff, OverlayTexture.NO_OVERLAY, stack, buf, entity.level(), entity.getId());
         super.render(entity, rotation, partialTick, stack, buf, 0xff00ff);
-        if (state.get() != 0) // other buffersource was used
-            SEP.endBatch();
         stack.popPose();
     }
 

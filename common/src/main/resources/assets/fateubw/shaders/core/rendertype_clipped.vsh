@@ -9,6 +9,9 @@ in vec2 UV0;
 in ivec2 UV1;
 in ivec2 UV2;
 in vec3 Normal;
+in vec4 ClippingPlane;
+in vec4 ClippingColor;
+in float ClippingWidth;
 
 uniform sampler2D Sampler1;
 uniform sampler2D Sampler2;
@@ -20,8 +23,6 @@ uniform int FogShape;
 uniform vec3 Light0_Direction;
 uniform vec3 Light1_Direction;
 
-uniform vec4 ClippingPlane;
-
 out float vertexDistance;
 out vec4 vertexColor;
 out vec4 lightMapColor;
@@ -29,6 +30,8 @@ out vec4 overlayColor;
 out vec2 texCoord0;
 out vec4 normal;
 out float clip_distance;
+out vec4 clippingColor;
+out float clippingWidth;
 
 void main() {
     gl_Position = ProjMat * ModelViewMat * vec4(Position, 1.0);
@@ -40,4 +43,6 @@ void main() {
     texCoord0 = UV0;
     normal = ProjMat * ModelViewMat * vec4(Normal, 0.0);
     clip_distance = dot(Position, ClippingPlane.xyz) + ClippingPlane.w;
+    clippingColor = ClippingColor;
+    clippingWidth = ClippingWidth;
 }

@@ -6,7 +6,7 @@ import com.mojang.math.Axis;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.client.render.FateRenders;
 import io.github.flemmli97.fateubw.common.entity.misc.EnkiduChains;
-import io.github.flemmli97.tenshilib.client.VertexUtils;
+import io.github.flemmli97.tenshilib.client.render.vertex.VertexUtils;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -54,50 +54,18 @@ public class RenderEnkiduChains extends EntityRenderer<EnkiduChains> {
         stack.mulPose(Axis.XP.rotationDegrees(entity.getStartX()));
         float size = 1.5f;
         Matrix4f matrix4f = stack.last().pose();
-        VertexConsumer consumer = buffer.getBuffer(FateRenders.BABYLON_RENDER);
         float tick = entity.tickCount + entity.renderRand;
         tick = ((tick % 24000) + partialTick) / 24000.0f;
-        VertexUtils.addVertexData(
-                consumer.addVertex(matrix4f, -size, -size, 0).setColor(this.color.x(), this.color.y(), this.color.z(), 1).setUv(0, 0),
-                VertexUtils.SINGLE_FLOAT.get(),
-                tick
-        );
-        VertexUtils.addVertexData(
-                consumer.addVertex(matrix4f, size, -size, 0).setColor(this.color.x(), this.color.y(), this.color.z(), 1).setUv(1, 0),
-                VertexUtils.SINGLE_FLOAT.get(),
-                tick
-        );
-        VertexUtils.addVertexData(
-                consumer.addVertex(matrix4f, size, size, 0).setColor(this.color.x(), this.color.y(), this.color.z(), 1).setUv(1, 1),
-                VertexUtils.SINGLE_FLOAT.get(),
-                tick
-        );
-        VertexUtils.addVertexData(
-                consumer.addVertex(matrix4f, -size, size, 0).setColor(this.color.x(), this.color.y(), this.color.z(), 1).setUv(0, 1),
-                VertexUtils.SINGLE_FLOAT.get(),
-                tick
-        );
-        VertexUtils.addVertexData(
-                consumer.addVertex(matrix4f, -size, size, 0).setColor(this.color.x(), this.color.y(), this.color.z(), 1).setUv(0, 1),
-                VertexUtils.SINGLE_FLOAT.get(),
-                tick
-        );
+        VertexConsumer consumer = VertexUtils.SINGLE_FLOAT.create(buffer.getBuffer(FateRenders.BABYLON_RENDER), tick);
+        consumer.addVertex(matrix4f, -size, -size, 0).setColor(this.color.x(), this.color.y(), this.color.z(), 1).setUv(0, 0);
+        consumer.addVertex(matrix4f, size, -size, 0).setColor(this.color.x(), this.color.y(), this.color.z(), 1).setUv(1, 0);
+        consumer.addVertex(matrix4f, size, size, 0).setColor(this.color.x(), this.color.y(), this.color.z(), 1).setUv(1, 1);
+        consumer.addVertex(matrix4f, -size, size, 0).setColor(this.color.x(), this.color.y(), this.color.z(), 1).setUv(0, 1);
 
-        VertexUtils.addVertexData(
-                consumer.addVertex(matrix4f, size, size, 0).setColor(this.color.x(), this.color.y(), this.color.z(), 1).setUv(1, 1),
-                VertexUtils.SINGLE_FLOAT.get(),
-                tick
-        );
-        VertexUtils.addVertexData(
-                consumer.addVertex(matrix4f, size, -size, 0).setColor(this.color.x(), this.color.y(), this.color.z(), 1).setUv(1, 0),
-                VertexUtils.SINGLE_FLOAT.get(),
-                tick
-        );
-        VertexUtils.addVertexData(
-                consumer.addVertex(matrix4f, -size, -size, 0).setColor(this.color.x(), this.color.y(), this.color.z(), 1).setUv(0, 0),
-                VertexUtils.SINGLE_FLOAT.get(),
-                tick
-        );
+        consumer.addVertex(matrix4f, -size, size, 0).setColor(this.color.x(), this.color.y(), this.color.z(), 1).setUv(0, 1);
+        consumer.addVertex(matrix4f, size, size, 0).setColor(this.color.x(), this.color.y(), this.color.z(), 1).setUv(1, 1);
+        consumer.addVertex(matrix4f, size, -size, 0).setColor(this.color.x(), this.color.y(), this.color.z(), 1).setUv(1, 0);
+        consumer.addVertex(matrix4f, -size, -size, 0).setColor(this.color.x(), this.color.y(), this.color.z(), 1).setUv(0, 0);
         stack.popPose();
         if (!entity.preparing()) {
             stack.pushPose();
