@@ -297,8 +297,8 @@ public class Cuchulainn extends BaseServant {
     }
 
     @Override
-    public boolean hurt(DamageSource damageSource, float damage) {
-        return !this.getAnimationHandler().isCurrent(GAE_BOLG) && super.hurt(damageSource, damage);
+    protected boolean isInInvulnerableState(DamageSource source) {
+        return this.getAnimationHandler().isCurrent(GAE_BOLG) && super.isInInvulnerableState(source);
     }
 
     @Override

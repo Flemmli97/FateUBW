@@ -364,8 +364,8 @@ public class GordiusWheel extends SummonedEntity implements StandingVehicle, Syn
     @Override
     protected void handleAttackKnockback(Entity target, DamageSource damageSource) {
         if (this.getAnimationHandler().isCurrent(EXPUGNATIO)) {
-            Vec3 dir = new Vec3(this.getDeltaMovement().x(), 0, this.getDeltaMovement().z()).normalize().scale(0.5);
-            target.setDeltaMovement(target.getDeltaMovement().add(dir));
+            Vec3 dir = new Vec3(this.getDeltaMovement().x(), 0, this.getDeltaMovement().z()).normalize().scale(0.6);
+            target.push(dir);
         } else {
             super.handleAttackKnockback(target, damageSource);
         }

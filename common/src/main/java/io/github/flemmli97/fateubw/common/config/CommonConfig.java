@@ -24,24 +24,25 @@ public class CommonConfig {
     public static int servantMaxSpawnDelay = 6000;
     public static double classArtifactMultiplier = 2;
     public static double servantArtifactMultiplier = 2;
-    public static double realityMarbleOverride = 1;
-    public static double realityMarbleSize = 128;
-
-    public static ExpressionConfig effectiveArmor = new ExpressionConfig("max(armor - damage / (2 + armor_toughness / 4), armor * 0.2)");
-    public static ExpressionConfig armorReduction = new ExpressionConfig("effective_armor > 20 ? exp(-(ln(5)/20) * effective_armor) : effective_armor / 25");
-    public static ExpressionConfig projectileReduction = new ExpressionConfig("1 - exp(-0.05 * projectile_protection * 0.33)");
-    public static ExpressionConfig magicReduction = new ExpressionConfig("1 - exp(-0.05 * magic_protection)");
-
-    public static boolean punishTeleport = true;
     public static List<String> notifyBlacklist = Lists.newArrayList(FateEntities.HASSAN.getID().toString());
     public static boolean notificationWhitelist;
     public static boolean notifyAll = true;
+
+    public static double realityMarbleOverride = 1;
+    public static double realityMarbleSize = 128;
+    public static boolean punishTeleport = true;
     public static PotionEffectsConfig npBoostEffect = new PotionEffectsConfig(
             List.of(new PotionEffectsConfig.EffectInstance(MobEffects.DAMAGE_RESISTANCE, 6000, 2),
                     new PotionEffectsConfig.EffectInstance(MobEffects.REGENERATION, 6000, 1),
                     new PotionEffectsConfig.EffectInstance(MobEffects.DAMAGE_BOOST, 6000, 2),
                     new PotionEffectsConfig.EffectInstance(MobEffects.MOVEMENT_SPEED, 6000, 2))
     );
+    public static boolean npBypassCharge = true;
+
+    public static ExpressionConfig effectiveArmor = new ExpressionConfig("max(armor - damage / (2 + armor_toughness / 4), armor * 0.2)");
+    public static ExpressionConfig armorReduction = new ExpressionConfig("effective_armor > 20 ? exp(-(ln(5)/20) * effective_armor) : effective_armor / 25");
+    public static ExpressionConfig projectileReduction = new ExpressionConfig("1 - exp(-0.05 * projectile_protection * 0.33)");
+    public static ExpressionConfig magicReduction = new ExpressionConfig("1 - exp(-0.05 * magic_protection)");
 
     // Misc
     public static float babylonScale = 1.5f;

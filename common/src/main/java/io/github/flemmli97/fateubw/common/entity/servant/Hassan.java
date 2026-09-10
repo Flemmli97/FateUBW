@@ -320,8 +320,8 @@ public class Hassan extends BaseServant {
     }
 
     @Override
-    public boolean hurt(DamageSource damageSource, float damage) {
-        return !this.getAnimationHandler().isCurrent(DUPE) && super.hurt(damageSource, damage);
+    protected boolean isInInvulnerableState(DamageSource source) {
+        return this.getAnimationHandler().isCurrent(DUPE) && super.isInInvulnerableState(source);
     }
 
     public boolean addCopy(HassanClone copy) {

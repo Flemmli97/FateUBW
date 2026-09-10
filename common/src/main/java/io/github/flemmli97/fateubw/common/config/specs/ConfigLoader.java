@@ -25,19 +25,20 @@ public class ConfigLoader {
         CommonConfig.servantMaxSpawnDelay = ConfigSpecs.COMMON_CONFIG.servantMaxSpawnDelay.get();
         CommonConfig.classArtifactMultiplier = ConfigSpecs.COMMON_CONFIG.classArtifactMultiplier.get();
         CommonConfig.servantArtifactMultiplier = ConfigSpecs.COMMON_CONFIG.servantArtifactMultiplier.get();
+        CommonConfig.notifyBlacklist = ConfigSpecs.COMMON_CONFIG.notifyBlackList.get();
+        CommonConfig.notificationWhitelist = ConfigSpecs.COMMON_CONFIG.whiteList.get();
+        CommonConfig.notifyAll = ConfigSpecs.COMMON_CONFIG.notifyAll.get();
+
         CommonConfig.realityMarbleOverride = ConfigSpecs.COMMON_CONFIG.realityMarbleOverride.get();
         CommonConfig.realityMarbleSize = ConfigSpecs.COMMON_CONFIG.realityMarbleSize.get();
+        CommonConfig.punishTeleport = ConfigSpecs.COMMON_CONFIG.punishTeleport.get();
+        CommonConfig.npBoostEffect.read(ConfigSpecs.COMMON_CONFIG.npBoostEffect.get());
+        CommonConfig.npBypassCharge = ConfigSpecs.COMMON_CONFIG.npBypassCharge.get();
 
         CommonConfig.effectiveArmor.read(ConfigSpecs.COMMON_CONFIG.effectiveArmor.get());
         CommonConfig.armorReduction.read(ConfigSpecs.COMMON_CONFIG.armorReduction.get());
         CommonConfig.projectileReduction.read(ConfigSpecs.COMMON_CONFIG.projectileReduction.get());
         CommonConfig.magicReduction.read(ConfigSpecs.COMMON_CONFIG.magicReduction.get());
-
-        CommonConfig.punishTeleport = ConfigSpecs.COMMON_CONFIG.punishTeleport.get();
-        CommonConfig.notifyBlacklist = ConfigSpecs.COMMON_CONFIG.notifyBlackList.get();
-        CommonConfig.notificationWhitelist = ConfigSpecs.COMMON_CONFIG.whiteList.get();
-        CommonConfig.notifyAll = ConfigSpecs.COMMON_CONFIG.notifyAll.get();
-        CommonConfig.npBoostEffect.read(ConfigSpecs.COMMON_CONFIG.npBoostEffect.get());
 
         CommonConfig.babylonScale = ConfigSpecs.COMMON_CONFIG.babylonScale.get().floatValue();
         CommonConfig.weaponProjectiles.read(ConfigSpecs.COMMON_CONFIG.babylonWeaponsBlacklist.get());

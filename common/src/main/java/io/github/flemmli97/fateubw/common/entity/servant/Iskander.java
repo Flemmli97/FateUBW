@@ -421,13 +421,15 @@ public class Iskander extends BaseServant {
     }
 
     @Override
+    protected boolean isInInvulnerableState(DamageSource source) {
+        return this.getAnimationHandler().isCurrent(SUMMON_CHARIOT, IONIOI_HETAIROI) && super.isInInvulnerableState(source);
+    }
+
+    @Override
     public boolean hurt(DamageSource damageSource, float damage) {
-        if (this.getAnimationHandler().isCurrent(SUMMON_CHARIOT, IONIOI_HETAIROI)) {
-            return false;
-        }
         if (damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             return super.hurt(damageSource, damage);
-        } else if (this.getVehicle() != null) {
+        } else if (!this.isInvulnerableTo(damageSource) && this.getVehicle() != null) {
             damage *= 0.5f;
             this.getVehicle().hurt(damageSource, damage);
         }

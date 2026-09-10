@@ -215,6 +215,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
 
     public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMonsterAttributes()
+                .add(Attributes.MOVEMENT_SPEED, 0.27)
                 .add(Attributes.FOLLOW_RANGE, 32.0)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1)
                 .add(FateAttributes.MAGIC_ATTACK.asHolder()).add(FateAttributes.MAGIC_RESISTANCE.asHolder())
@@ -298,9 +299,8 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
                 new OneRandomBehaviour<>(
                         new SetRandomLookTarget<>().lookChance(ConstantFloat.of(1)),
                         new SetPlayerLookTarget<>()
-                ).startCondition(m -> m.getRandom().nextFloat() < 0.1 && !BrainUtils.hasMemory(m, MemoryModuleType.WALK_TARGET))
-        ).startCondition(e -> !BrainUtils.hasMemory(e, MemoryModuleType.ATTACK_TARGET) && !e.isSleeping()
-                && !e.getAnimationHandler().hasAnimation());
+                ).startCondition(m -> m.getTarget() == null && m.getRandom().nextInt(80) == 0 && !BrainUtils.hasMemory(m, MemoryModuleType.WALK_TARGET))
+        ).startCondition(e -> !e.isSleeping() && !e.getAnimationHandler().hasAnimation());
     }
 
     @SuppressWarnings("unchecked")
@@ -728,7 +728,11 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
     public boolean isInvulnerableTo(DamageSource source) {
         if (this.getSummonAnimation() != null && this.getAnimationHandler().isCurrent(this.getSummonAnimation()))
             return true;
-        return super.isInvulnerableTo(source);
+        return super.isInvulnerableTo(source) || this.isInInvulnerableState(source);
+    }
+
+    protected boolean isInInvulnerableState(DamageSource source) {
+        return source.is(FateTags.DamageTypes.NOBLE_PHANTASM) && !CommonConfig.npBypassCharge;
     }
 
     @Override

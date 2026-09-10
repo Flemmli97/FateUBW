@@ -544,10 +544,12 @@ public class Artoria extends BaseServant {
     }
 
     @Override
+    protected boolean isInInvulnerableState(DamageSource source) {
+        return this.getAnimationHandler().isCurrent(EXCALIBAA) && super.isInInvulnerableState(source);
+    }
+
+    @Override
     public boolean hurt(DamageSource damageSource, float damage) {
-        if (this.getAnimationHandler().isCurrent(EXCALIBAA)) {
-            return false;
-        }
         if (!this.level().isClientSide() && !damageSource.is(DamageTypeTags.BYPASSES_SHIELD) && damageSource.getEntity() instanceof LivingEntity) {
             if (!this.getAnimationHandler().hasAnimation() && this.healthBelow(0.66f)
                     && this.getRandom().nextFloat() < this.props().getConfig(ServantExtraData.BLOCK_CHANCE)) {

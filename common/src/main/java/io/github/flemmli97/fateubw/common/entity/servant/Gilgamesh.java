@@ -215,8 +215,13 @@ public class Gilgamesh extends BaseServant implements OnProjectileHit {
     }
 
     @Override
+    protected boolean isInInvulnerableState(DamageSource source) {
+        return this.getAnimationHandler().isCurrent(EA) && super.isInInvulnerableState(source);
+    }
+
+    @Override
     public boolean hurt(DamageSource damageSource, float damage) {
-        if (!this.getAnimationHandler().isCurrent(EA) && !damageSource.is(DamageTypeTags.BYPASSES_ARMOR)
+        if (!this.isInvulnerableTo(damageSource) && !damageSource.is(DamageTypeTags.BYPASSES_ARMOR)
                 && !damageSource.is(DamageTypeTags.IS_PROJECTILE)
                 && this.getMainHandItem().is(FateItems.ENUMAELISH.get()) && this.getRandom().nextFloat() < 0.15) {
             this.playSound(FateSounds.GILGAMESH_BLOCK.get(), 1, 1);

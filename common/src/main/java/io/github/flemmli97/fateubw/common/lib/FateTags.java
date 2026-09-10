@@ -38,6 +38,8 @@ public class FateTags {
     public static class DamageTypes {
 
         public static final TagKey<DamageType> IS_MAGIC = TagKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath("c", "is_magic"));
+
+        public static final TagKey<DamageType> NOBLE_PHANTASM = TagKey.create(Registries.DAMAGE_TYPE, Fate.modRes("noble_phantasm"));
     }
 
     public static class Biomes {

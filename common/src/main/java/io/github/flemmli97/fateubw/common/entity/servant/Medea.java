@@ -353,8 +353,8 @@ public class Medea extends BaseServant {
     }
 
     @Override
-    public boolean hurt(DamageSource damageSource, float damage) {
-        return !this.getAnimationHandler().isCurrent(RULE_BREAKER) && !this.transit(false) && super.hurt(damageSource, damage);
+    protected boolean isInInvulnerableState(DamageSource source) {
+        return this.getAnimationHandler().isCurrent(RULE_BREAKER) && super.isInInvulnerableState(source);
     }
 
     @Override

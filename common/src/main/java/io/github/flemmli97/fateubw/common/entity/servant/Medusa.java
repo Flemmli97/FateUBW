@@ -412,14 +412,16 @@ public class Medusa extends BaseServant implements OnProjectileHit {
     }
 
     @Override
+    protected boolean isInInvulnerableState(DamageSource source) {
+        return this.getAnimationHandler().isCurrent(BELLEROPHON) && super.isInInvulnerableState(source);
+    }
+
+    @Override
     public boolean hurt(DamageSource damageSource, float damage) {
-        if (this.getAnimationHandler().isCurrent(BELLEROPHON)) {
-            return false;
-        }
         if (damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             return super.hurt(damageSource, damage);
         }
-        if (this.getVehicle() != null) {
+        if (!this.isInvulnerableTo(damageSource) && this.getVehicle() != null) {
             damage *= 0.5f;
             this.getVehicle().hurt(damageSource, damage);
         }

@@ -434,8 +434,8 @@ public class Diarmuid extends BaseServant {
     }
 
     @Override
-    public boolean hurt(DamageSource damageSource, float damage) {
-        return !this.getAnimationHandler().isCurrent(UNSEAL) && super.hurt(damageSource, damage);
+    protected boolean isInInvulnerableState(DamageSource source) {
+        return this.getAnimationHandler().isCurrent(UNSEAL) && super.isInInvulnerableState(source);
     }
 
     @Override

@@ -34,7 +34,7 @@ public class ConfigSpecs {
 
     public static class Common {
 
-        //General
+        // General
         public final ModConfigSpec.IntValue minPlayer;
         public final ModConfigSpec.IntValue maxPlayer;
         public final ModConfigSpec.IntValue joinTime;
@@ -47,19 +47,21 @@ public class ConfigSpecs {
         public final ModConfigSpec.IntValue servantMaxSpawnDelay;
         public final ModConfigSpec.DoubleValue classArtifactMultiplier;
         public final ModConfigSpec.DoubleValue servantArtifactMultiplier;
+        public final ModConfigSpec.ConfigValue<List<String>> notifyBlackList;
+        public final ModConfigSpec.BooleanValue whiteList;
+        public final ModConfigSpec.BooleanValue notifyAll;
+
+        // Combat
         public final ModConfigSpec.DoubleValue realityMarbleOverride;
         public final ModConfigSpec.DoubleValue realityMarbleSize;
+        public final ModConfigSpec.BooleanValue punishTeleport;
+        public final ModConfigSpec.ConfigValue<List<String>> npBoostEffect;
+        public final ModConfigSpec.BooleanValue npBypassCharge;
 
         public final ModConfigSpec.ConfigValue<String> effectiveArmor;
         public final ModConfigSpec.ConfigValue<String> armorReduction;
         public final ModConfigSpec.ConfigValue<String> projectileReduction;
         public final ModConfigSpec.ConfigValue<String> magicReduction;
-
-        public final ModConfigSpec.BooleanValue punishTeleport;
-        public final ModConfigSpec.ConfigValue<List<String>> notifyBlackList;
-        public final ModConfigSpec.BooleanValue whiteList;
-        public final ModConfigSpec.BooleanValue notifyAll;
-        public final ModConfigSpec.ConfigValue<List<String>> npBoostEffect;
 
         // Misc
         public final ModConfigSpec.DoubleValue babylonScale;
@@ -102,17 +104,20 @@ public class ConfigSpecs {
             this.servantMaxSpawnDelay = builder.comment("Maximum time between each attempt to spawn masterless servants. (Fill Empty Slots needs to be true)").defineInRange("Servant Spawn Delay (Max)", CommonConfig.servantMaxSpawnDelay, 0, Integer.MAX_VALUE);
             this.classArtifactMultiplier = builder.comment("When using a class artifact increases the chance of summoning a servant of that class by x").defineInRange("Class Artifact Multiplier", CommonConfig.classArtifactMultiplier, 0, Double.MAX_VALUE);
             this.servantArtifactMultiplier = builder.comment("When using a servant artifact increases the chance of summoning that servant by x", "Note: Currently no servant artifacts are added").defineInRange("Servant Artifact Multiplier", CommonConfig.servantArtifactMultiplier, 0, Double.MAX_VALUE);
+            this.notifyBlackList = builder.comment("Servants that dont notify players when spawned (from filling missing slots)").define("Servant notification", CommonConfig.notifyBlacklist, stringList());
+            this.whiteList = builder.comment("Turn servant notification list into a whitelist").define("Notify Whitelist", CommonConfig.notificationWhitelist);
+            this.notifyAll = builder.comment("Notify everyone if a servant spawns. Else only the player the servant spawned on will be notified").define("Notify Everyone", CommonConfig.notifyAll);
+            builder.pop();
+
+            builder.push("combat");
             this.realityMarbleOverride = builder.comment("Amount of health percentage wise the caster of a reality marble needs to have when already inside a reality marble compared to the current owner of it. ",
                     "Set to 0 to never be able to use it",
                     "Set to -1 to always be able to use it", "Note this only applies when already inside a marble").defineInRange("Reality Marble Override Multiplier", CommonConfig.realityMarbleOverride, -1, Double.MAX_VALUE);
             this.realityMarbleSize = builder.comment("Radius in blocks of a reality marble").defineInRange("Reality Marble Size", CommonConfig.realityMarbleSize, 0, 1000);
-
             this.punishTeleport = builder.comment("Should teleporting servants to the owner during a fight be punished").define("Punish Teleport", CommonConfig.punishTeleport);
-            this.notifyBlackList = builder.comment("Servants that dont notify players when spawned (from filling missing slots)").define("Servant notification", CommonConfig.notifyBlacklist, stringList());
-            this.whiteList = builder.comment("Turn servant notification list into a whitelist").define("Notify Whitelist", CommonConfig.notificationWhitelist);
-            this.notifyAll = builder.comment("Notify everyone if a servant spawns. Else only the player the servant spawned on will be notified").define("Notify Everyone", CommonConfig.notifyAll);
             this.npBoostEffect = builder.comment("Potions applied when boostin servants using a command seal. Usage: " + PotionEffectsConfig.usage()).define("NP Effects",
                     CommonConfig.npBoostEffect.write(), stringList());
+            this.npBypassCharge = builder.comment("If true a servants noble phantasm attack can hit other servants during charging up").define("NP Bypass Charge", CommonConfig.npBypassCharge);
 
             this.effectiveArmor = builder.comment("The effective armor that will be used to calculate the armor reduction",
                     "Vanilla limits it to max 20 armor points",

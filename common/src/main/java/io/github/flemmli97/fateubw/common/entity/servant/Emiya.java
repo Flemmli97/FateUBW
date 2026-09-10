@@ -557,8 +557,8 @@ public class Emiya extends BaseServant {
     }
 
     @Override
-    public boolean hurt(DamageSource damageSource, float damage) {
-        return !this.getAnimationHandler().isCurrent(CALADBOLG, UNLIMITED_BLADE_WORKS, UNLIMITED_BLADE_WORKS_FULL) && super.hurt(damageSource, damage);
+    protected boolean isInInvulnerableState(DamageSource source) {
+        return this.getAnimationHandler().isCurrent(CALADBOLG, UNLIMITED_BLADE_WORKS, UNLIMITED_BLADE_WORKS_FULL) && super.isInInvulnerableState(source);
     }
 
     @Override
