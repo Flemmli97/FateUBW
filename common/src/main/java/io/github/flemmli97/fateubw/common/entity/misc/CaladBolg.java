@@ -75,7 +75,8 @@ public class CaladBolg extends BaseProjectile {
                 continue;
             dist -= 8;
             float dmgPerc = (float) Mth.clamp(1 - (dist / 26f), 0.15f, 1);
-            e.hurt(FateDamageTypes.indirect(FateDamageTypes.CALADBOLG, this, this.getOwner()), dmg * dmgPerc);
+            e.hurt(FateDamageTypes.indirect(FateDamageTypes.CALADBOLG, this, this.getOwner()),
+                    Utils.randomizeDamage(this.getRandom(), dmg * dmgPerc));
         }
         if (this.level() instanceof ServerLevel serverLevel) {
             serverLevel.sendParticles(ParticleTypes.EXPLOSION_EMITTER, pos.x(), pos.y(), pos.z(), 2, 1.0, 0.0, 0.0, 1);

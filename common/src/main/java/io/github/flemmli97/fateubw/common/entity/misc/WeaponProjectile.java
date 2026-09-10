@@ -263,7 +263,7 @@ public class WeaponProjectile extends BaseProjectile {
     @Override
     protected boolean entityRayTraceHit(EntityHitResult result) {
         DamageSource source = FateDamageTypes.indirect(FateDamageTypes.WEAPON_PROJECTILE, this, this.getOwner());
-        float damage = (float) ItemUtils.damage(this.level(), null, result.getEntity(), source, this.getWeapon());
+        float damage = Utils.randomizeDamage(this.getRandom(), (float) ItemUtils.damage(this.level(), null, result.getEntity(), source, this.getWeapon()));
         boolean res = Utils.runWithInvulTimer(this.getOwner(), result.getEntity(),
                 e -> e.hurt(source, damage * this.damageMultiplier), 2);
         if (res) {

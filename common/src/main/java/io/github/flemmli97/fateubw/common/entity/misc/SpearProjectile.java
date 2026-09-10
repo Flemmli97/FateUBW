@@ -2,6 +2,7 @@ package io.github.flemmli97.fateubw.common.entity.misc;
 
 import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
+import io.github.flemmli97.fateubw.common.utils.Utils;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -30,9 +31,10 @@ public class SpearProjectile extends BaseProjectile {
     protected boolean entityRayTraceHit(EntityHitResult result) {
         DamageSource source = FateDamageTypes.indirect(FateDamageTypes.SPEAR, this, this.getOwner());
         AttributeInstance inst;
-        float dmg = this.getOwner() instanceof LivingEntity living && (inst = living.getAttributes().getInstance(Attributes.ATTACK_DAMAGE)) != null ?
+        float damage = this.getOwner() instanceof LivingEntity living && (inst = living.getAttributes().getInstance(Attributes.ATTACK_DAMAGE)) != null ?
                 (float) inst.getValue() : 7;
-        boolean res = result.getEntity().hurt(source, dmg);
+        damage = Utils.randomizeDamage(this.getRandom(), damage);
+        boolean res = result.getEntity().hurt(source, damage);
         this.discard();
         return res;
     }

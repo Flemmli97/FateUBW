@@ -96,7 +96,8 @@ public class MagicShot extends BaseProjectile {
     @Override
     protected boolean entityRayTraceHit(EntityHitResult result) {
         this.discard();
-        return result.getEntity().hurt(FateDamageTypes.indirect(FateDamageTypes.MAGIC_SHOT, this, this.getOwner()), Utils.magicDamage(this.getOwner()));
+        return result.getEntity().hurt(FateDamageTypes.indirect(FateDamageTypes.MAGIC_SHOT, this, this.getOwner()),
+                Utils.randomizeDamage(this.getRandom(), Utils.magicDamage(this.getOwner())));
     }
 
     @Override

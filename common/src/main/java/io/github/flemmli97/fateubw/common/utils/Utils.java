@@ -6,13 +6,18 @@ import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.registry.FateAttributes;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import io.github.flemmli97.fateubw.common.world.TeamHandler;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.OwnableEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,6 +43,10 @@ public class Utils {
     }
 
     public static boolean runWithInvulTimer(@Nullable Entity source, Entity target, Predicate<Entity> attack, int invulnerability) {
+        // Vanilla
+        if (invulnerability == 20) {
+            return attack.test(target);
+        }
         int invul = target.invulnerableTime;
         boolean modified = false;
         boolean sourceCheck = true;
@@ -159,5 +168,18 @@ public class Utils {
         dir = dir.normalize();
         double dot = view.dot(dir);
         return dot > 1.0F - degrees / len;
+    }
+
+    public static float getRandomizedDamage(LivingEntity entity, DamageSource damageSource, Entity target, float multiplier) {
+        float damage = (float) entity.getAttributeValue(Attributes.ATTACK_DAMAGE);
+        if (entity.level() instanceof ServerLevel serverLevel) {
+            damage = EnchantmentHelper.modifyDamage(serverLevel, entity.getWeaponItem(), target, damageSource, damage);
+        }
+        damage *= multiplier;
+        return damage + damage * (entity.getRandom().nextFloat() * 0.2f - 0.1f);
+    }
+
+    public static float randomizeDamage(RandomSource random, float damage) {
+        return damage + damage * (random.nextFloat() * 0.2f - 0.1f);
     }
 }

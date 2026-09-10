@@ -67,7 +67,7 @@ public class ArcherArrow extends AbstractArrow {
             living.setLastHurtMob(target);
         }
         int firePre = target.getRemainingFireTicks();
-        if (target.hurt(damageSource, (float) damage)) {
+        if (target.hurt(damageSource, Utils.randomizeDamage(this.getRandom(), (float) damage))) {
             if (this.isOnFire()) {
                 target.igniteForSeconds(5.0F);
             }

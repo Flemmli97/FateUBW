@@ -58,7 +58,8 @@ public class AestusDomusBeam extends Entity implements TraceableEntity {
                     AABB hitBB = this.getBoundingBox().inflate(1.9, 8, 1.9);
                     if (hitBB.intersects(this.target.getBoundingBox())) {
                         if (Utils.runWithInvulTimer(this.getOwner(), this.target, t ->
-                                t.hurt(FateDamageTypes.indirect(FateDamageTypes.AESTUS_DOMUS, this, this.getOwner()), CommonConfig.aestusDomusDamage), 0)) {
+                                t.hurt(FateDamageTypes.indirect(FateDamageTypes.AESTUS_DOMUS, this, this.getOwner()),
+                                        Utils.randomizeDamage(this.getRandom(), Utils.magicDamage(this.getOwner()) + CommonConfig.aestusDomusDamage)), 0)) {
                             S2CScreenShake.sendAround(this, 32, 8, 2);
                             this.playSound(FateSounds.AESTUS_DOMUS_IMPACT.get(), 2, 1);
                         }

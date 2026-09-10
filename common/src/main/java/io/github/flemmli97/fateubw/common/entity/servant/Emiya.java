@@ -86,14 +86,12 @@ public class Emiya extends BaseServant {
             .marker("attack_left", 0.6).marker("attack_right", 0.6).marker("leap", 0.4)
             .marker(LEFT_TRAIL_START, 0.48).marker(LEFT_TRAIL_END, 0.68)
             .marker(RIGHT_TRAIL_START, 0.48).marker(RIGHT_TRAIL_END, 0.68));
-
     public static final String DUAL_BLADE_2_1 = BUILDER.add("dual_blade_2_1", AnimationsBuilder.definition(0.8)
             .marker("attack_left", 0.68).marker("attack_right", 0.68)
             .marker(LEFT_TRAIL_START, 0.48).marker(LEFT_TRAIL_END, 0.68)
             .marker(RIGHT_TRAIL_START, 0.48).marker(RIGHT_TRAIL_END, 0.68));
     public static final String DUAL_BLADE_2_2 = BUILDER.add("dual_blade_2_2", AnimationsBuilder.definition(0.8)
             .marker("attack_left", 0.68).marker("attack_right", 0.68));
-
     public static final String DUAL_BLADE_THROW = BUILDER.add("dual_blade_throw", AnimationsBuilder.definition(0.76)
             .marker("throw", 0.56));
 
@@ -105,10 +103,9 @@ public class Emiya extends BaseServant {
             .marker("use_start", 0.6).marker("use_end", 1.12).marker("shoot", 1.12)
             .marker("float_start", 0.6).marker("float_end", 1.24)
             .marker("jump", 0.24));
-
-    public static final String CALADBOLG = BUILDER.add("caladbolg", AnimationsBuilder.definition(5)
-            .marker("use_start", 0.68).marker("use_end", 3.2)
-            .marker("shoot", 3.2));
+    public static final String CALADBOLG = BUILDER.add("caladbolg", AnimationsBuilder.definition(4.2)
+            .marker("use_start", 0.68).marker("use_end", 2.68)
+            .marker("shoot", 2.68));
 
     public static final String UNLIMITED_BLADE_WORKS = BUILDER.add("unlimited_blade_works", AnimationsBuilder.definition(7)
             .marker("start", 0.36).marker("cast", 4.2).marker("teleport", 6.8));
@@ -406,6 +403,7 @@ public class Emiya extends BaseServant {
             }
             if (anim.isAt("teleport")) {
                 List<Entity> entities = this.level().getEntities(EntityTypeTest.forClass(Entity.class), this.getBoundingBox().inflate(48), e -> true);
+                this.heal(this.getMaxHealth() * 0.2f);
                 RealityMarbleHandler.get(this.getServer())
                         .createAndTransportTo(this, entities, FateDimensions.UNLIMITED_BLADEWORKS.dimension());
             }

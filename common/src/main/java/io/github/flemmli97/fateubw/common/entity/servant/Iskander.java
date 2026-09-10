@@ -283,6 +283,7 @@ public class Iskander extends BaseServant {
             }
             if (anim.isAt("teleport")) {
                 List<Entity> entities = this.level().getEntities(EntityTypeTest.forClass(Entity.class), this.getBoundingBox().inflate(48), e -> true);
+                this.heal(this.getMaxHealth() * 0.2f);
                 RealityMarbleHandler.get(this.getServer())
                         .createAndTransportTo(this, entities, FateDimensions.SAND_DUNES.dimension());
             }

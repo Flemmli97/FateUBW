@@ -6,7 +6,6 @@ import io.github.flemmli97.fateubw.common.entity.utils.MoveType;
 import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
-import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.SelectableBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.animated.AnimationDefinitionContainer;
@@ -20,7 +19,6 @@ import io.github.flemmli97.tenshilib.common.utils.TypedResource;
 import io.github.flemmli97.tenshilib.common.utils.math.OrientedBoundingBox;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -191,11 +189,6 @@ public class Bucephalos extends SummonedEntity implements SyncedMobDataHandler {
                     .inflate(grow);
         }
         return new OrientedBoundingBox(aabb, this.getYHeadRot(), 0, this.position());
-    }
-
-    @Override
-    public boolean doHurtTarget(Entity entity) {
-        return Utils.runWithInvulTimer(this, entity, super::doHurtTarget, 0);
     }
 
     @Override

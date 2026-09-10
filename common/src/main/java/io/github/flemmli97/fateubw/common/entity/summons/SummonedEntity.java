@@ -21,7 +21,10 @@ import net.minecraft.network.protocol.game.DebugPackets;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.util.valueproviders.ConstantFloat;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -33,6 +36,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
@@ -272,6 +276,50 @@ public abstract class SummonedEntity extends PathfinderMob implements AnimatedEn
     }
 
     public abstract OrientedBoundingBox calculateAttackAABB(AnimationState anim, double grow);
+
+    @Override
+    public boolean doHurtTarget(Entity target) {
+        return Utils.runWithInvulTimer(this, target, this::mobHurtTarget, this.getAttackInvulnerabilityTime(target));
+    }
+
+    public boolean mobHurtTarget(Entity target) {
+        DamageSource damageSource = this.damageSourceAttack(target);
+        float damage = Utils.getRandomizedDamage(this, damageSource, target, this.damageModifier(target));
+        boolean result = target.hurt(damageSource, damage);
+        if (result) {
+            this.handleAttackKnockback(target, damageSource);
+            if (this.level() instanceof ServerLevel serverLevel) {
+                EnchantmentHelper.doPostAttackEffects(serverLevel, target, damageSource);
+            }
+            this.setLastHurtMob(target);
+            this.onEntityHit(target, damage);
+        }
+        return result;
+    }
+
+    protected int getAttackInvulnerabilityTime(Entity target) {
+        return 0;
+    }
+
+    protected DamageSource damageSourceAttack(Entity target) {
+        return this.damageSources().mobAttack(this);
+    }
+
+    public float damageModifier(Entity target) {
+        return 1;
+    }
+
+    public void onEntityHit(Entity target, float damage) {
+        this.playAttackSound();
+    }
+
+    protected void handleAttackKnockback(Entity target, DamageSource damageSource) {
+        float knockback = this.getKnockback(target, damageSource);
+        if (knockback > 0 && target instanceof LivingEntity livingEntity) {
+            livingEntity.knockback(knockback * 0.5, Mth.sin(this.getYRot() * Mth.DEG_TO_RAD), -Mth.cos(this.getYRot() * Mth.DEG_TO_RAD));
+            this.setDeltaMovement(this.getDeltaMovement().multiply(0.6, 1, 0.6));
+        }
+    }
 
     @Override
     public void knockback(double strength, double xRatio, double zRatio) {

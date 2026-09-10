@@ -6,6 +6,7 @@ import io.github.flemmli97.fateubw.common.particles.trail.TrailPositions;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.ParticlePositionProvider;
 import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
+import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.utils.ItemUtils;
 import io.github.flemmli97.tenshilib.common.utils.math.MathUtils;
 import net.minecraft.nbt.CompoundTag;
@@ -94,8 +95,9 @@ public class ThrownItemEntity extends BaseProjectile {
     @Override
     protected boolean entityRayTraceHit(EntityHitResult result) {
         DamageSource source = FateDamageTypes.indirect(FateDamageTypes.THROWN_ITEM, this, this.getOwner());
-        float damage = (float) ItemUtils.damage(this.level(), null, result.getEntity(), source, this.getWeapon());
-        boolean res = result.getEntity().hurt(source, damage);
+        float damage = Utils.randomizeDamage(this.getRandom(), (float) ItemUtils.damage(this.level(), null, result.getEntity(), source, this.getWeapon()));
+        boolean res = Utils.runWithInvulTimer(this.getOwner(), result.getEntity(),
+                e -> e.hurt(source, damage * this.damageMultiplier), 2);
         if (res && this.level() instanceof ServerLevel serverLevel) {
             EnchantmentHelper.doPostAttackEffects(serverLevel, result.getEntity(), source);
         }

@@ -13,7 +13,6 @@ import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
-import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.entity.MultiPartEntity;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.AttackBehaviourBuilder;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.SelectableBehaviourBuilder;
@@ -35,7 +34,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
@@ -52,7 +50,6 @@ import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -142,7 +139,7 @@ public class GordiusWheel extends SummonedEntity implements StandingVehicle, Syn
         return AttackBehaviourBuilder.<GordiusWheel>create()
                 .start(STOMP).play(BehaviourUtils.cooldownedPlay(true, 10, 40))
                 .prepare(new SetWalkTargetToAttackTarget<GordiusWheel>().speedMod((owner, target) -> ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.moveAttack())
-                .end(1)
+                .end(3)
                 .start(EXPUGNATIO).play(BehaviourUtils.cooldownedPlay(false, 10, 40))
                 .prepare(new SetChargeTarget())
                 .end(1)
@@ -339,45 +336,39 @@ public class GordiusWheel extends SummonedEntity implements StandingVehicle, Syn
     }
 
     @Override
-    public boolean doHurtTarget(Entity entity) {
-        return Utils.runWithInvulTimer(this, entity, this::mobHurtTarget, this.getAnimationHandler().isCurrent(EXPUGNATIO) ? 4 : 0);
+    protected int getAttackInvulnerabilityTime(Entity target) {
+        return this.getAnimationHandler().isCurrent(EXPUGNATIO) ? 4 : 0;
     }
 
-    protected boolean mobHurtTarget(Entity target) {
-        float damage = (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE);
+    @Override
+    protected DamageSource damageSourceAttack(Entity target) {
         DamageSource damageSource;
         if (this.getAnimationHandler().isCurrent(EXPUGNATIO)) {
             damageSource = FateDamageTypes.direct(FateDamageTypes.GORDIUS_TRAMPLE, this);
         } else if (this.lightning) {
             damageSource = FateDamageTypes.direct(FateDamageTypes.LIGHTNING_STRIKE, this);
         } else {
-            damageSource = this.damageSources().mobAttack(this);
+            damageSource = super.damageSourceAttack(target);
         }
-        if (this.level() instanceof ServerLevel serverLevel) {
-            damage = EnchantmentHelper.modifyDamage(serverLevel, this.getWeaponItem(), target, damageSource, damage);
-        }
+        return damageSource;
+    }
+
+    @Override
+    public float damageModifier(Entity target) {
         if (this.lightning) {
-            damage *= 1.5f;
+            return 1.5f;
         }
-        boolean result = target.hurt(damageSource, damage);
-        if (result) {
-            if (this.getAnimationHandler().isCurrent(EXPUGNATIO)) {
-                Vec3 dir = new Vec3(this.getDeltaMovement().x(), 0, this.getDeltaMovement().z()).normalize().scale(0.5);
-                target.setDeltaMovement(target.getDeltaMovement().add(dir));
-            } else {
-                float knockback = this.getKnockback(target, damageSource);
-                if (knockback > 0 && target instanceof LivingEntity livingEntity) {
-                    livingEntity.knockback(knockback * 0.5, Mth.sin(this.getYRot() * Mth.DEG_TO_RAD), -Mth.cos(this.getYRot() * Mth.DEG_TO_RAD));
-                    this.setDeltaMovement(this.getDeltaMovement().multiply(0.6, 1, 0.6));
-                }
-            }
-            if (this.level() instanceof ServerLevel serverLevel) {
-                EnchantmentHelper.doPostAttackEffects(serverLevel, target, damageSource);
-            }
-            this.setLastHurtMob(target);
-            this.playAttackSound();
+        return super.damageModifier(target);
+    }
+
+    @Override
+    protected void handleAttackKnockback(Entity target, DamageSource damageSource) {
+        if (this.getAnimationHandler().isCurrent(EXPUGNATIO)) {
+            Vec3 dir = new Vec3(this.getDeltaMovement().x(), 0, this.getDeltaMovement().z()).normalize().scale(0.5);
+            target.setDeltaMovement(target.getDeltaMovement().add(dir));
+        } else {
+            super.handleAttackKnockback(target, damageSource);
         }
-        return result;
     }
 
     @Override

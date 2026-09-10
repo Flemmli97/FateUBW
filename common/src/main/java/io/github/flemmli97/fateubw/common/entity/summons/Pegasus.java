@@ -346,11 +346,6 @@ public class Pegasus extends SummonedEntity implements StandingVehicle, SyncedMo
     }
 
     @Override
-    public boolean doHurtTarget(Entity entity) {
-        return Utils.runWithInvulTimer(this, entity, super::doHurtTarget, 0);
-    }
-
-    @Override
     public AnimationHandler<Pegasus> getAnimationHandler() {
         return this.animationHandler;
     }

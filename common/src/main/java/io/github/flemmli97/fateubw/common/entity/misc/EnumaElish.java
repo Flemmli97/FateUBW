@@ -118,7 +118,8 @@ public class EnumaElish extends BaseBeam {
     @Override
     public void onImpact(EntityHitResult result) {
         Utils.runWithInvulTimer(this.getOwner(), result.getEntity(),
-                e -> e.hurt(FateDamageTypes.indirect(FateDamageTypes.ENUMA_ELISH, this, this.getOwner()), Utils.magicDamage(this.getOwner()) + CommonConfig.eaDamage),
+                e -> e.hurt(FateDamageTypes.indirect(FateDamageTypes.ENUMA_ELISH, this, this.getOwner()),
+                        Utils.randomizeDamage(this.getRandom(), Utils.magicDamage(this.getOwner()) + CommonConfig.eaDamage)),
                 4);
     }
 }

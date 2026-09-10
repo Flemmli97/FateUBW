@@ -88,9 +88,9 @@ public class GaeBolg extends BaseProjectile {
     protected boolean entityRayTraceHit(EntityHitResult res) {
         if (this.target != null && res.getEntity() != this.target)
             return false;
-        float health = res.getEntity() instanceof LivingEntity living ? living.getHealth() : 0;
+        float health = res.getEntity() instanceof LivingEntity living ? living.getMaxHealth() : 0;
         res.getEntity().hurt(FateDamageTypes.indirect(FateDamageTypes.GAE_BOLG, this, this.getOwner()),
-                Utils.magicDamage(this.getOwner()) + CommonConfig.gaeBolgDmg + health * 0.1f);
+                Utils.randomizeDamage(this.getRandom(), Utils.magicDamage(this.getOwner()) + CommonConfig.gaeBolgDmg + health * 0.1f));
         if (res.getEntity() instanceof LivingEntity living && (!(res.getEntity() instanceof Player player) || !player.getAbilities().invulnerable)) {
             for (MobEffectInstance effect : CommonConfig.gaeBolgEffect.potions()) {
                 living.addEffect(effect);

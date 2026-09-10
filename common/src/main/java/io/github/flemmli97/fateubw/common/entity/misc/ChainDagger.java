@@ -6,6 +6,7 @@ import io.github.flemmli97.fateubw.common.registry.FateAttachments;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
+import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.tenshilib.common.utils.HitResultUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -179,7 +180,8 @@ public class ChainDagger extends BaseProjectile {
                 Vec3 vector3d = entity.position().subtract(this.hookedEntity.position()).scale(0.18);
                 vector3d = vector3d.add(0, 0.5, 0);
                 if (entity instanceof LivingEntity living)
-                    this.hookedEntity.hurt(this.damageSources().mobProjectile(this, living), (float) living.getAttributeValue(Attributes.ATTACK_DAMAGE));
+                    this.hookedEntity.hurt(this.damageSources().mobProjectile(this, living),
+                            Utils.randomizeDamage(this.getRandom(), (float) living.getAttributeValue(Attributes.ATTACK_DAMAGE)));
                 this.hookedEntity.setDeltaMovement(vector3d);
                 this.hookedEntity.hurtMarked = true;
             }

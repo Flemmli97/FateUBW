@@ -223,7 +223,8 @@ public class EnkiduChains extends BaseProjectile implements SyncedMobDataHandler
             boolean hurt = false;
             if (this.getOwner() instanceof LivingEntity entity)
                 hurt = Utils.runWithInvulTimer(entity, result.getEntity(),
-                        target -> target.hurt(this.damageSources().mobProjectile(this, entity), (float) entity.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.4f), 2);
+                        target -> target.hurt(this.damageSources().mobProjectile(this, entity),
+                                Utils.randomizeDamage(this.getRandom(), (float) entity.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.5f)), 2);
             if (!hurt)
                 return false;
             this.moveEntity();

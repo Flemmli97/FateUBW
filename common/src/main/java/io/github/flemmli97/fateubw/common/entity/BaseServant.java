@@ -677,19 +677,11 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
     }
 
     protected boolean mobHurtTarget(Entity target) {
-        float damage = (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE);
         DamageSource damageSource = this.damageSourceAttack(target);
-        if (this.level() instanceof ServerLevel serverLevel) {
-            damage = EnchantmentHelper.modifyDamage(serverLevel, this.getWeaponItem(), target, damageSource, damage);
-        }
-        damage *= this.damageModifier(target);
+        float damage = Utils.getRandomizedDamage(this, damageSource, target, this.damageModifier(target));
         boolean result = target.hurt(damageSource, damage);
         if (result) {
-            float knockback = this.getKnockback(target, damageSource);
-            if (knockback > 0 && target instanceof LivingEntity livingEntity) {
-                livingEntity.knockback(knockback * 0.5, Mth.sin(this.getYRot() * Mth.DEG_TO_RAD), -Mth.cos(this.getYRot() * Mth.DEG_TO_RAD));
-                this.setDeltaMovement(this.getDeltaMovement().multiply(0.6, 1, 0.6));
-            }
+            this.handleAttackKnockback(target, damageSource);
             if (this.level() instanceof ServerLevel serverLevel) {
                 EnchantmentHelper.doPostAttackEffects(serverLevel, target, damageSource);
             }
@@ -706,6 +698,14 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
     public void onEntityHit(Entity target, float damage) {
         this.playAttackSound();
         this.servantMana += this.getAttributeValue(FateAttributes.MANA_LEECH.asHolder());
+    }
+
+    protected void handleAttackKnockback(Entity target, DamageSource damageSource) {
+        float knockback = this.getKnockback(target, damageSource);
+        if (knockback > 0 && target instanceof LivingEntity livingEntity) {
+            livingEntity.knockback(knockback * 0.5, Mth.sin(this.getYRot() * Mth.DEG_TO_RAD), -Mth.cos(this.getYRot() * Mth.DEG_TO_RAD));
+            this.setDeltaMovement(this.getDeltaMovement().multiply(0.6, 1, 0.6));
+        }
     }
 
     protected DamageSource damageSourceAttack(Entity target) {

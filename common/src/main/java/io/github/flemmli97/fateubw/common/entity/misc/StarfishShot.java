@@ -1,6 +1,7 @@
 package io.github.flemmli97.fateubw.common.entity.misc;
 
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
+import io.github.flemmli97.fateubw.common.utils.Utils;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -59,7 +60,7 @@ public class StarfishShot extends BaseProjectile {
             return false;
         this.discard();
         float damage = owner != null ? (float) owner.getAttributeValue(Attributes.ATTACK_DAMAGE) : 1;
-        return result.getEntity().hurt(this.damageSources().mobProjectile(this, owner), damage);
+        return result.getEntity().hurt(this.damageSources().mobProjectile(this, owner), Utils.randomizeDamage(this.getRandom(), damage));
     }
 
     @Override

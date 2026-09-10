@@ -286,11 +286,6 @@ public class HassanClone extends SummonedEntity implements ServantModelLike, Syn
         }
     }
 
-    @Override
-    public boolean doHurtTarget(Entity entity) {
-        return Utils.runWithInvulTimer(this, entity, this::runHurtTarget, 0);
-    }
-
     private boolean runHurtTarget(Entity entity) {
         if (entity instanceof Mob) {
             LivingEntity target = ((Mob) entity).getTarget();
