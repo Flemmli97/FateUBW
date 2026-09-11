@@ -255,13 +255,13 @@ public class Gilgamesh extends BaseServant implements OnProjectileHit {
     }
 
     @Override
-    public void regenMana(Entity source) {
+    public void onManaLeech(Entity source) {
         if (source != this) {
             double amount = this.getAttributeValue(FateAttributes.MANA_LEECH.asHolder());
             this.regenMana(amount * 0.4);
             return;
         }
-        super.regenMana(source);
+        super.onManaLeech(source);
     }
 
     @Override

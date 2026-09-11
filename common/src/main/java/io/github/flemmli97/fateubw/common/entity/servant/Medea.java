@@ -358,13 +358,13 @@ public class Medea extends BaseServant {
     }
 
     @Override
-    public void regenMana(Entity source) {
+    public void onManaLeech(Entity source) {
         if (source != this) {
             double amount = this.getAttributeValue(FateAttributes.MANA_LEECH.asHolder());
             this.regenMana(amount * 0.5);
             return;
         }
-        super.regenMana(source);
+        super.onManaLeech(source);
     }
 
     private boolean transit(boolean teleportOnly) {

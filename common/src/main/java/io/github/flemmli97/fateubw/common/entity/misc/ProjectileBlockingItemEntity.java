@@ -3,7 +3,6 @@ package io.github.flemmli97.fateubw.common.entity.misc;
 import com.mojang.serialization.DynamicOps;
 import io.github.flemmli97.fateubw.common.entity.utils.EntityTrailHandler;
 import io.github.flemmli97.fateubw.common.lib.FateTags;
-import io.github.flemmli97.fateubw.common.network.S2CAttackDebug;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.ParticlePositionProvider;
 import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
@@ -35,6 +34,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.entity.EntityTypeTest;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -172,10 +172,10 @@ public class ProjectileBlockingItemEntity extends BaseProjectile {
         if (Utils.alliedTo(projectile.getOwner(), owner)) {
             return false;
         }
-        double dist = projectile.getDeltaMovement().length() * 2;
-        OrientedBoundingBox obb = new OrientedBoundingBox(OrientedBoundingBox.baseBox(8, 8, dist),
+        double dist = projectile.getDeltaMovement().length() * 3;
+        double size = 8;
+        OrientedBoundingBox obb = new OrientedBoundingBox(new AABB(-size * 0.5, -size * 0.5, dist * 0.5, size * 0.5, size * 0.5, dist),
                 -projectile.getYRot(), projectile.getXRot(), projectile.position());
-        S2CAttackDebug.sendDebugPacket(obb, S2CAttackDebug.EnumAABBType.ATTACK, this);
         return obb.intersects(owner.getBoundingBox());
     }
 

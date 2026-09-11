@@ -3,7 +3,7 @@
     "minecraft:generic.armor": 8.0,
     "minecraft:generic.attack_damage": 11.0,
     "minecraft:generic.knockback_resistance": 1.0,
-    "minecraft:generic.max_health": 30.0,
+    "minecraft:generic.max_health": 40.0,
     "minecraft:generic.movement_speed": 0.27
   }
 }

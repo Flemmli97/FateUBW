@@ -57,7 +57,7 @@ public class FateItems {
     public static final RegistryEntrySupplier<Item, MedeasStaffItem> STAFF = register("medeas_staff", () -> new MedeasStaffItem(new Item.Properties().stacksTo(1)));
     public static final RegistryEntrySupplier<Item, SwordItem> RULE_BREAKER = register("rule_breaker", () -> new SwordItem(ItemTiers.RULE_BREAKER, new Item.Properties().attributes(createAttributes(ItemTiers.RULE_BREAKER, -2.4f))));
     public static final RegistryEntrySupplier<Item, GrimoireItem> GRIMOIRE = register("prelatis_spellbook", () -> new GrimoireItem(new Item.Properties().stacksTo(1)));
-    public static final RegistryEntrySupplier<Item, AxeItem> HERACLES_AXE = register("heracles_axe", () -> new AxeItem(ItemTiers.HERACLES_AXE, new Item.Properties().attributes(createAttributes(ItemTiers.HERACLES_AXE, -3.2f))));
+    public static final RegistryEntrySupplier<Item, AxeItem> HERACLES_AXE = register("heracles_axe", () -> new AxeItem(ItemTiers.HERACLES_AXE, new Item.Properties().attributes(createAttributes(ItemTiers.HERACLES_AXE, -3f))));
     public static final RegistryEntrySupplier<Item, SwordItem> ARONDIGHT = register("arondight", () -> new SwordItem(ItemTiers.ARONDIGHT, new Item.Properties().attributes(createAttributes(ItemTiers.ARONDIGHT, -2.4f))));
     public static final RegistryEntrySupplier<Item, SwordItem> KUPRIOTS = register("kupriots", () -> new SwordItem(ItemTiers.KUPRIOTS, new Item.Properties().attributes(createAttributes(ItemTiers.KUPRIOTS, -2.4f))));
     public static final RegistryEntrySupplier<Item, MedusasDaggerItem> MEDUSA_DAGGER = register("medusas_dagger", () -> new MedusasDaggerItem(ItemTiers.MEDUSAS_DAGGER, new Item.Properties().attributes(createAttributes(ItemTiers.MEDUSAS_DAGGER, -2))));

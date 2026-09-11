@@ -125,13 +125,13 @@ public class EventCalls {
         if (damageAmount > 0) {
             if (damageSrc.getEntity() instanceof BaseServant servant && damageSrc.getDirectEntity() != null) {
                 if (damageSrc.getEntity() == damageSrc.getDirectEntity() || damageSrc.getDirectEntity().getType().is(FateTags.EntityTypes.MANA_LEECHING_PROJECTILE)) {
-                    servant.regenMana(damageSrc.getDirectEntity());
+                    servant.onManaLeech(damageSrc.getDirectEntity());
                 }
             }
             if (damageSrc.getEntity() != null && damageSrc.getEntity() instanceof OwnableEntity ownable
                     && damageSrc.getEntity().getType().is(FateTags.EntityTypes.MANA_LEECHING_SUMMONS)) {
                 if (ownable.getOwner() instanceof BaseServant servant) {
-                    servant.regenMana(damageSrc.getDirectEntity());
+                    servant.onManaLeech(damageSrc.getDirectEntity());
                 }
             }
         }

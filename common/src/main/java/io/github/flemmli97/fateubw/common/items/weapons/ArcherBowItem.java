@@ -104,6 +104,7 @@ public class ArcherBowItem extends BowItem implements SwingItem {
                 if (f >= 0.1D) {
                     if (!level.isClientSide) {
                         AbstractArrow arrow = this.customArrow(new ArcherArrow(player.level(), player, stack), ItemStack.EMPTY, stack);
+                        arrow.setBaseDamage(arrow.getBaseDamage() + 1);
                         arrow.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, f * 2.5F, 1.0F);
                         if (f == 1.0F)
                             arrow.setCritArrow(true);

@@ -83,10 +83,10 @@ public class FateEntities {
                     .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
             0x2b6496, 0xfddb8b,
             new ServantProperties.Builder(BuiltinServantClasses.SABER)
-                    .putAttributes(Attributes.MAX_HEALTH, 400).putAttributes(Attributes.ATTACK_DAMAGE, 15)
-                    .putAttributes(Attributes.ARMOR, 19).putAttributes(Attributes.ARMOR_TOUGHNESS, 8)
-                    .putAttributes(FateAttributes.PROJECTILE_BLOCK_CHANCE.asHolder(), 0.15f).putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 16)
-                    .putAttributes(FateAttributes.MAGIC_ATTACK.asHolder(), 12).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 14)
+                    .putAttributes(Attributes.MAX_HEALTH, 500).putAttributes(Attributes.ATTACK_DAMAGE, 13)
+                    .putAttributes(Attributes.ARMOR, 20).putAttributes(Attributes.ARMOR_TOUGHNESS, 10)
+                    .putAttributes(FateAttributes.PROJECTILE_BLOCK_CHANCE.asHolder(), 0.1f).putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 15)
+                    .putAttributes(FateAttributes.MAGIC_ATTACK.asHolder(), 10).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 10)
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.27)
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1.5).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(80)
@@ -95,10 +95,10 @@ public class FateEntities {
                     .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
             0xea1b04, 0xf8ef97,
             new ServantProperties.Builder(BuiltinServantClasses.SABER)
-                    .putAttributes(Attributes.MAX_HEALTH, 380).putAttributes(Attributes.ATTACK_DAMAGE, 16)
-                    .putAttributes(Attributes.ARMOR, 17).putAttributes(Attributes.ARMOR_TOUGHNESS, 7)
+                    .putAttributes(Attributes.MAX_HEALTH, 475).putAttributes(Attributes.ATTACK_DAMAGE, 14)
+                    .putAttributes(Attributes.ARMOR, 18).putAttributes(Attributes.ARMOR_TOUGHNESS, 8)
                     .putAttributes(FateAttributes.PROJECTILE_BLOCK_CHANCE.asHolder(), 0.15f).putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 13)
-                    .putAttributes(FateAttributes.MAGIC_ATTACK.asHolder(), 10).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 15)
+                    .putAttributes(FateAttributes.MAGIC_ATTACK.asHolder(), 10).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 8)
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.34)
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1.2).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(70));
@@ -107,10 +107,10 @@ public class FateEntities {
                     .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
             0x0038ff, 0xb6c0c1,
             new ServantProperties.Builder(BuiltinServantClasses.LANCER)
-                    .putAttributes(Attributes.MAX_HEALTH, 370).putAttributes(Attributes.ATTACK_DAMAGE, 13)
-                    .putAttributes(Attributes.ARMOR, 17).putAttributes(Attributes.ARMOR_TOUGHNESS, 6)
-                    .putAttributes(FateAttributes.PROJECTILE_BLOCK_CHANCE.asHolder(), 0.1f).putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 12)
-                    .putAttributes(FateAttributes.MAGIC_ATTACK.asHolder(), 17).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 10)
+                    .putAttributes(Attributes.MAX_HEALTH, 470).putAttributes(Attributes.ATTACK_DAMAGE, 12)
+                    .putAttributes(Attributes.ARMOR, 15).putAttributes(Attributes.ARMOR_TOUGHNESS, 7)
+                    .putAttributes(FateAttributes.PROJECTILE_BLOCK_CHANCE.asHolder(), 0.2f).putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 17)
+                    .putAttributes(FateAttributes.MAGIC_ATTACK.asHolder(), 13).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 10)
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.37)
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(50));
@@ -118,10 +118,10 @@ public class FateEntities {
                     .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
             0x2d5554, 0x302f34,
             new ServantProperties.Builder(BuiltinServantClasses.LANCER)
-                    .putAttributes(Attributes.MAX_HEALTH, 380).putAttributes(Attributes.ATTACK_DAMAGE, 10)
-                    .putAttributes(Attributes.ARMOR, 17.5).putAttributes(Attributes.ARMOR_TOUGHNESS, 5)
-                    .putAttributes(FateAttributes.PROJECTILE_BLOCK_CHANCE.asHolder(), 0.1f).putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 11)
-                    .putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 9)
+                    .putAttributes(Attributes.MAX_HEALTH, 480).putAttributes(Attributes.ATTACK_DAMAGE, 10)
+                    .putAttributes(Attributes.ARMOR, 16).putAttributes(Attributes.ARMOR_TOUGHNESS, 6)
+                    .putAttributes(FateAttributes.PROJECTILE_BLOCK_CHANCE.asHolder(), 0.2f).putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 18)
+                    .putAttributes(FateAttributes.MAGIC_ATTACK.asHolder(), 10).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 9)
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.37)
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(60));
@@ -130,10 +130,10 @@ public class FateEntities {
                     .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
             0x78121e, 0x1f1e1e,
             new ServantProperties.Builder(BuiltinServantClasses.ARCHER)
-                    .putAttributes(Attributes.MAX_HEALTH, 350).putAttributes(Attributes.ATTACK_DAMAGE, 13)
-                    .putAttributes(Attributes.ARMOR, 16).putAttributes(Attributes.ARMOR_TOUGHNESS, 6)
-                    .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 17)
-                    .putAttributes(FateAttributes.MAGIC_ATTACK.asHolder(), 14).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 12)
+                    .putAttributes(Attributes.MAX_HEALTH, 450).putAttributes(Attributes.ATTACK_DAMAGE, 11)
+                    .putAttributes(Attributes.ARMOR, 15).putAttributes(Attributes.ARMOR_TOUGHNESS, 7)
+                    .putAttributes(FateAttributes.PROJECTILE_BLOCK_CHANCE.asHolder(), 0).putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 17)
+                    .putAttributes(FateAttributes.MAGIC_ATTACK.asHolder(), 10).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 9)
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.27)
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(100)
@@ -142,10 +142,10 @@ public class FateEntities {
                     .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
             0xfff400, 0xffdb00,
             new ServantProperties.Builder(BuiltinServantClasses.ARCHER)
-                    .putAttributes(Attributes.MAX_HEALTH, 430).putAttributes(Attributes.ATTACK_DAMAGE, 12)
-                    .putAttributes(Attributes.ARMOR, 18).putAttributes(Attributes.ARMOR_TOUGHNESS, 12)
-                    .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 11)
-                    .putAttributes(FateAttributes.MAGIC_ATTACK.asHolder(), 10).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 16)
+                    .putAttributes(Attributes.MAX_HEALTH, 530).putAttributes(Attributes.ATTACK_DAMAGE, 10)
+                    .putAttributes(Attributes.ARMOR, 17).putAttributes(Attributes.ARMOR_TOUGHNESS, 10)
+                    .putAttributes(FateAttributes.PROJECTILE_BLOCK_CHANCE.asHolder(), 0).putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 14)
+                    .putAttributes(FateAttributes.MAGIC_ATTACK.asHolder(), 10).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 15)
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.33)
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(80));
@@ -154,10 +154,10 @@ public class FateEntities {
                     .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
             0x6f086b, 0x4a8be5,
             new ServantProperties.Builder(BuiltinServantClasses.CASTER)
-                    .putAttributes(Attributes.MAX_HEALTH, 350).putAttributes(Attributes.ATTACK_DAMAGE, 9)
-                    .putAttributes(Attributes.ARMOR, 14).putAttributes(Attributes.ARMOR_TOUGHNESS, 4)
-                    .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 10)
-                    .putAttributes(FateAttributes.MAGIC_ATTACK.asHolder(), 19).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 18)
+                    .putAttributes(Attributes.MAX_HEALTH, 400).putAttributes(Attributes.ATTACK_DAMAGE, 8)
+                    .putAttributes(Attributes.ARMOR, 13).putAttributes(Attributes.ARMOR_TOUGHNESS, 7)
+                    .putAttributes(FateAttributes.PROJECTILE_BLOCK_CHANCE.asHolder(), 0).putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 10)
+                    .putAttributes(FateAttributes.MAGIC_ATTACK.asHolder(), 20).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 18)
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.31)
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1.25).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(70)
@@ -167,10 +167,10 @@ public class FateEntities {
                     .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
             0x100460, 0x600453,
             new ServantProperties.Builder(BuiltinServantClasses.CASTER)
-                    .putAttributes(Attributes.MAX_HEALTH, 370).putAttributes(Attributes.ATTACK_DAMAGE, 5)
-                    .putAttributes(Attributes.ARMOR, 16).putAttributes(Attributes.ARMOR_TOUGHNESS, 6)
-                    .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 12)
-                    .putAttributes(FateAttributes.MAGIC_ATTACK.asHolder(), 15).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 12)
+                    .putAttributes(Attributes.MAX_HEALTH, 444).putAttributes(Attributes.ATTACK_DAMAGE, 5)
+                    .putAttributes(Attributes.ARMOR, 17).putAttributes(Attributes.ARMOR_TOUGHNESS, 9)
+                    .putAttributes(FateAttributes.PROJECTILE_BLOCK_CHANCE.asHolder(), 0).putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 12)
+                    .putAttributes(FateAttributes.MAGIC_ATTACK.asHolder(), 15).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 14)
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.32)
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1.25).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(80)
@@ -182,21 +182,22 @@ public class FateEntities {
                     .sized(1.4f, 2.6f),
             0x3c1d06, 0x5e3c22,
             new ServantProperties.Builder(BuiltinServantClasses.BERSERKER)
-                    .putAttributes(Attributes.MAX_HEALTH, 250).putAttributes(Attributes.ATTACK_DAMAGE, 10)
-                    .putAttributes(Attributes.ARMOR, 22)
-                    .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 8)
+                    .putAttributes(Attributes.MAX_HEALTH, 275).putAttributes(Attributes.ATTACK_DAMAGE, 15)
+                    .putAttributes(Attributes.ARMOR, 14).putAttributes(Attributes.ARMOR_TOUGHNESS, 12)
+                    .putAttributes(FateAttributes.PROJECTILE_BLOCK_CHANCE.asHolder(), 0.1).putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 8)
+                    .putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 5)
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.3)
-                    .putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
+                    .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 0.5).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(0)
                     .withConfigData(ServantExtraData.LIVES));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<Lancelot>> LANCELOT = regServant("lancelot_berserker", "Knight of Owner", EntityType.Builder.of(Lancelot::new, MobCategory.MISC)
                     .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
             0x071a33, 0x1d4f94,
             new ServantProperties.Builder(BuiltinServantClasses.BERSERKER)
-                    .putAttributes(Attributes.MAX_HEALTH, 450).putAttributes(Attributes.ATTACK_DAMAGE, 15)
-                    .putAttributes(Attributes.ARMOR, 15).putAttributes(FateAttributes.PROJECTILE_BLOCK_CHANCE.asHolder(), 0.1f)
-                    .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 10)
-                    .putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 0.1)
+                    .putAttributes(Attributes.MAX_HEALTH, 550).putAttributes(Attributes.ATTACK_DAMAGE, 15)
+                    .putAttributes(Attributes.ARMOR, 12).putAttributes(Attributes.ARMOR_TOUGHNESS, 10)
+                    .putAttributes(FateAttributes.PROJECTILE_BLOCK_CHANCE.asHolder(), 0.1f).putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 10)
+                    .putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 7)
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.3)
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(0)
@@ -206,9 +207,11 @@ public class FateEntities {
                     .vehicleAttachment(new Vec3(0, 14 / 16d, 0)).sized(0.7f, 2.2f),
             0x8f1b11, 0xefab5a,
             new ServantProperties.Builder(BuiltinServantClasses.RIDER)
-                    .putAttributes(Attributes.MAX_HEALTH, 450).putAttributes(Attributes.ATTACK_DAMAGE, 12)
-                    .putAttributes(Attributes.ARMOR, 14)
-                    .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 4).putAttributes(Attributes.MOVEMENT_SPEED, 0.28)
+                    .putAttributes(Attributes.MAX_HEALTH, 480).putAttributes(Attributes.ATTACK_DAMAGE, 10)
+                    .putAttributes(Attributes.ARMOR, 15).putAttributes(Attributes.ARMOR_TOUGHNESS, 10)
+                    .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 4)
+                    .putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 8)
+                    .putAttributes(Attributes.MOVEMENT_SPEED, 0.28)
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1.5).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(70)
                     .withConfigData(ServantExtraData.MOUNT_SUMMON_COOLDOWN)
@@ -219,9 +222,11 @@ public class FateEntities {
                     .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
             0x000000, 0xf234ea,
             new ServantProperties.Builder(BuiltinServantClasses.RIDER)
-                    .putAttributes(Attributes.MAX_HEALTH, 350).putAttributes(Attributes.ATTACK_DAMAGE, 11)
-                    .putAttributes(Attributes.ARMOR, 12)
-                    .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 6).putAttributes(Attributes.MOVEMENT_SPEED, 0.36)
+                    .putAttributes(Attributes.MAX_HEALTH, 450).putAttributes(Attributes.ATTACK_DAMAGE, 12)
+                    .putAttributes(Attributes.ARMOR, 12).putAttributes(Attributes.ARMOR_TOUGHNESS, 6)
+                    .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 12)
+                    .putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 8)
+                    .putAttributes(Attributes.MOVEMENT_SPEED, 0.36)
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1.5).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(70));
 
@@ -229,9 +234,10 @@ public class FateEntities {
                     .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
             0x000000, 0x3a393a,
             new ServantProperties.Builder(BuiltinServantClasses.ASSASSIN)
-                    .putAttributes(Attributes.MAX_HEALTH, 320).putAttributes(Attributes.ATTACK_DAMAGE, 11)
-                    .putAttributes(Attributes.ARMOR, 12).putAttributes(Attributes.ARMOR_TOUGHNESS, 2)
-                    .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 14).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 8)
+                    .putAttributes(Attributes.MAX_HEALTH, 430).putAttributes(Attributes.ATTACK_DAMAGE, 13)
+                    .putAttributes(Attributes.ARMOR, 12).putAttributes(Attributes.ARMOR_TOUGHNESS, 5)
+                    .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 14)
+                    .putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 8)
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.36)
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(40)
@@ -240,9 +246,10 @@ public class FateEntities {
                     .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
             0x4e04c3, 0xa77cec,
             new ServantProperties.Builder(BuiltinServantClasses.ASSASSIN)
-                    .putAttributes(Attributes.MAX_HEALTH, 300).putAttributes(Attributes.ATTACK_DAMAGE, 13)
-                    .putAttributes(Attributes.ARMOR, 15).putAttributes(Attributes.ARMOR_TOUGHNESS, 4)
-                    .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 8).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 10)
+                    .putAttributes(Attributes.MAX_HEALTH, 415).putAttributes(Attributes.ATTACK_DAMAGE, 12)
+                    .putAttributes(Attributes.ARMOR, 15).putAttributes(Attributes.ARMOR_TOUGHNESS, 7)
+                    .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 12)
+                    .putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 13)
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.33)
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(30));
@@ -270,7 +277,7 @@ public class FateEntities {
                     .clientTrackingRange(8).sized(0.6f, 1.5f),
             0x171c3f, 0x00ff00,
             new AttributeHolderProperties.Builder()
-                    .putAttributes(Attributes.MAX_HEALTH, 30).putAttributes(Attributes.ATTACK_DAMAGE, 11)
+                    .putAttributes(Attributes.MAX_HEALTH, 40).putAttributes(Attributes.ATTACK_DAMAGE, 11)
                     .putAttributes(Attributes.ARMOR, 8).putAttributes(Attributes.MOVEMENT_SPEED, 0.27)
                     .putAttributes(Attributes.KNOCKBACK_RESISTANCE, 1));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<Bucephalos>> BUCEPHALOS = regWithEgg("bucephalos", EntityType.Builder.of(Bucephalos::new, MobCategory.CREATURE).sized(1.4f, 1.55f),

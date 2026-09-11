@@ -49,9 +49,9 @@ public class CommonConfig {
     public static WeaponListFilterConfig weaponProjectiles = new WeaponListFilterConfig(FateItems.ENUMAELISH.getID().toString(), "runecraftory");
     public static float eaDamage = 15;
     public static float excaliburDamage = 15;
-    public static float caladBolgDmg = 30;
+    public static float caladBolgDmg = 35;
     public static float ubwScale = 0.9f;
-    public static float magicBeam = 6;
+    public static float magicBeam = 5;
     public static float gaeBolgDmg = 25;
     public static PotionEffectsConfig gaeBolgEffect = new PotionEffectsConfig(
             List.of(new PotionEffectsConfig.EffectInstance(MobEffects.WITHER, 600, 3),
@@ -65,7 +65,7 @@ public class CommonConfig {
     public static int eaMana = 70;
     public static int archerBowMana = 3;
     public static int caladbolgMana = 40;
-    public static int gaeBolgMana = 15;
+    public static int gaeBolgMana = 25;
     public static int grimoireMana = 30;
     public static int chainMana = 0;
     public static int daggerThrowMana = 5;
