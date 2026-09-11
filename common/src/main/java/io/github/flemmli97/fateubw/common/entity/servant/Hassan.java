@@ -319,9 +319,13 @@ public class Hassan extends BaseServant {
         return this.animationHandler;
     }
 
+
     @Override
-    protected boolean isInInvulnerableState(DamageSource source) {
-        return this.getAnimationHandler().isCurrent(DUPE) && super.isInInvulnerableState(source);
+    public boolean isInvulnerableTo(DamageSource source) {
+        if (this.getAnimationHandler().isCurrent(DUPE) && this.isNoblePhantasmImmune(source)) {
+            return true;
+        }
+        return super.isInvulnerableTo(source);
     }
 
     public boolean addCopy(HassanClone copy) {

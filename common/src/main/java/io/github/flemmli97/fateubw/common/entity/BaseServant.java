@@ -729,11 +729,11 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
     public boolean isInvulnerableTo(DamageSource source) {
         if (this.getSummonAnimation() != null && this.getAnimationHandler().isCurrent(this.getSummonAnimation()))
             return true;
-        return super.isInvulnerableTo(source) || this.isInInvulnerableState(source);
+        return super.isInvulnerableTo(source);
     }
 
-    protected boolean isInInvulnerableState(DamageSource source) {
-        return source.is(FateTags.DamageTypes.NOBLE_PHANTASM) && !CommonConfig.npBypassCharge;
+    protected boolean isNoblePhantasmImmune(DamageSource source) {
+        return !source.is(FateTags.DamageTypes.NOBLE_PHANTASM) || !CommonConfig.npBypassCharge;
     }
 
     @Override

@@ -433,9 +433,13 @@ public class Diarmuid extends BaseServant {
         return false;
     }
 
+
     @Override
-    protected boolean isInInvulnerableState(DamageSource source) {
-        return this.getAnimationHandler().isCurrent(UNSEAL) && super.isInInvulnerableState(source);
+    public boolean isInvulnerableTo(DamageSource source) {
+        if (this.getAnimationHandler().isCurrent(UNSEAL) && this.isNoblePhantasmImmune(source)) {
+            return true;
+        }
+        return super.isInvulnerableTo(source);
     }
 
     @Override

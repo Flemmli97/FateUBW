@@ -214,9 +214,13 @@ public class Gilgamesh extends BaseServant implements OnProjectileHit {
         return new AABB(-width * 0.5, -0.03, 0, width * 0.5, height + 0.03, length);
     }
 
+
     @Override
-    protected boolean isInInvulnerableState(DamageSource source) {
-        return this.getAnimationHandler().isCurrent(EA) && super.isInInvulnerableState(source);
+    public boolean isInvulnerableTo(DamageSource source) {
+        if (this.getAnimationHandler().isCurrent(EA) && this.isNoblePhantasmImmune(source)) {
+            return true;
+        }
+        return super.isInvulnerableTo(source);
     }
 
     @Override

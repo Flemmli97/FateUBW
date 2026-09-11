@@ -370,9 +370,13 @@ public class Sasaki extends BaseServant {
         return this.animationHandler;
     }
 
+
     @Override
-    protected boolean isInInvulnerableState(DamageSource source) {
-        return this.getAnimationHandler().isCurrent(TSUBAME_GAESHI) && super.isInInvulnerableState(source);
+    public boolean isInvulnerableTo(DamageSource source) {
+        if (this.getAnimationHandler().isCurrent(TSUBAME_GAESHI) && this.isNoblePhantasmImmune(source)) {
+            return true;
+        }
+        return super.isInvulnerableTo(source);
     }
 
     @Override

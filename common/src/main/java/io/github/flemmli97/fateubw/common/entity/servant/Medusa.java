@@ -411,9 +411,13 @@ public class Medusa extends BaseServant implements OnProjectileHit {
         return false;
     }
 
+
     @Override
-    protected boolean isInInvulnerableState(DamageSource source) {
-        return this.getAnimationHandler().isCurrent(BELLEROPHON) && super.isInInvulnerableState(source);
+    public boolean isInvulnerableTo(DamageSource source) {
+        if (this.getAnimationHandler().isCurrent(BELLEROPHON) && this.isNoblePhantasmImmune(source)) {
+            return true;
+        }
+        return super.isInvulnerableTo(source);
     }
 
     @Override

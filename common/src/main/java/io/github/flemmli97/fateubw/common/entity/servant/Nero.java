@@ -458,9 +458,13 @@ public class Nero extends BaseServant {
         return this.animationHandler;
     }
 
+
     @Override
-    protected boolean isInInvulnerableState(DamageSource source) {
-        return this.getAnimationHandler().isCurrent(AESTUS_DOMUS_AUREA, AESTUS_DOMUS_AUREA_FULL) && super.isInInvulnerableState(source);
+    public boolean isInvulnerableTo(DamageSource source) {
+        if (this.getAnimationHandler().isCurrent(AESTUS_DOMUS_AUREA, AESTUS_DOMUS_AUREA_FULL) && this.isNoblePhantasmImmune(source)) {
+            return true;
+        }
+        return super.isInvulnerableTo(source);
     }
 
     @Override

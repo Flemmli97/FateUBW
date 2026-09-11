@@ -420,9 +420,13 @@ public class Iskander extends BaseServant {
         return this.animationHandler;
     }
 
+
     @Override
-    protected boolean isInInvulnerableState(DamageSource source) {
-        return this.getAnimationHandler().isCurrent(SUMMON_CHARIOT, IONIOI_HETAIROI) && super.isInInvulnerableState(source);
+    public boolean isInvulnerableTo(DamageSource source) {
+        if (this.getAnimationHandler().isCurrent(SUMMON_CHARIOT, IONIOI_HETAIROI) && this.isNoblePhantasmImmune(source)) {
+            return true;
+        }
+        return super.isInvulnerableTo(source);
     }
 
     @Override
