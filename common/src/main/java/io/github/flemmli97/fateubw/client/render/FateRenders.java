@@ -103,7 +103,7 @@ public class FateRenders extends RenderType {
             .createCompositeState(true)));
 
     private static final Function<RenderType, RenderType> CLIPPED = Util.memoize((wrapped) ->
-            new RenderType("rendertype_clipped_" + wrapped.toString(), CLIPPING_NEW_ENTITY, wrapped.mode(), wrapped.bufferSize(),
+            new RenderType("fateubw_rendertype_clipped_" + wrapped.toString(), CLIPPING_NEW_ENTITY, wrapped.mode(), wrapped.bufferSize(),
                     wrapped.affectsCrumbling(), ((RenderTypeAccessor) wrapped).fateubw$getSortOnUpload(), () -> {
                 wrapped.setupRenderState();
                 CLIPPED_SHADER.setupRenderState();
@@ -180,10 +180,5 @@ public class FateRenders extends RenderType {
 
     private FateRenders(String string, VertexFormat vertexFormat, VertexFormat.Mode mode, int i, boolean bl, boolean bl2, Runnable runnable, Runnable runnable2) {
         super(string, vertexFormat, mode, i, bl, bl2, runnable, runnable2);
-    }
-
-    public interface ClipRenderFactory {
-
-        RenderType get(RenderType wrapped, Vector4f plane, Vector4f color, float width);
     }
 }

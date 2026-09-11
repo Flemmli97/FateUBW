@@ -7,6 +7,7 @@ import io.github.flemmli97.fateubw.client.render.FateRenders;
 import io.github.flemmli97.fateubw.client.render.vertex.AlphaVertexConsumerWrapper;
 import io.github.flemmli97.fateubw.client.render.vertex.ClippingVertexConsumerWrapper;
 import io.github.flemmli97.fateubw.common.entity.misc.WeaponProjectile;
+import io.github.flemmli97.tenshilib.client.render.WrappedBufferSource;
 import io.github.flemmli97.tenshilib.client.render.vertex.VertexUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -95,14 +96,16 @@ public class RenderWeaponProjectile extends EntityRenderer<WeaponProjectile> {
             clip = null;
         }
         float alpha = entity.getWeaponType() == WeaponProjectile.Type.UBW ? entity.preparationState(partialTick) : 1;
-        MultiBufferSource buf = clip != null || alpha != 1 ? renderType -> {
-            VertexConsumer cons = clip == null ? buffer.getBuffer(renderType)
-                    : ClippingVertexConsumerWrapper.wrap(buffer.getBuffer(FateRenders.getClippedRendertype(renderType)), clip, color, 0.1f);
-            if (alpha != 1) {
-                cons = new AlphaVertexConsumerWrapper(cons, alpha);
-            }
-            return cons;
-        } : buffer;
+        MultiBufferSource buf = clip != null || alpha != 1 ? new WrappedBufferSource(buffer,
+                type -> clip == null ? type : FateRenders.getClippedRendertype(type),
+                c -> {
+                    VertexConsumer cons = clip == null ? c
+                            : ClippingVertexConsumerWrapper.wrap(c, clip, color, 0.1f);
+                    if (alpha != 1) {
+                        cons = new AlphaVertexConsumerWrapper(cons, alpha);
+                    }
+                    return cons;
+                }) : buffer;
         Minecraft.getInstance().getItemRenderer().renderStatic(this.getRenderItemStack(entity), ItemDisplayContext.GROUND, 0xff00ff, OverlayTexture.NO_OVERLAY, stack, buf, entity.level(), entity.getId());
         super.render(entity, rotation, partialTick, stack, buf, 0xff00ff);
         stack.popPose();

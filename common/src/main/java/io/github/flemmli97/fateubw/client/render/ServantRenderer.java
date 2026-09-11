@@ -8,6 +8,7 @@ import io.github.flemmli97.fateubw.client.render.layer.ServantItemRender;
 import io.github.flemmli97.fateubw.client.render.layer.TrailPoseGetter;
 import io.github.flemmli97.fateubw.client.render.vertex.ClippingVertexConsumerWrapper;
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
+import io.github.flemmli97.tenshilib.client.render.WrappedBufferSource;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
@@ -46,8 +47,8 @@ public class ServantRenderer<T extends BaseServant, M extends ServantModel<T>> e
             clip = FateRenders.createClippingPlane(normal, entity, -(entity.getBbHeight() + 0.3f) * (1 - summonProgress));
         } else
             clip = null;
-        MultiBufferSource buf = clip == null ? buffer
-                : renderType -> ClippingVertexConsumerWrapper.wrap(buffer.getBuffer(FateRenders.getClippedRendertype(renderType)), clip, entity.summonColor(), 0.1f);
+        MultiBufferSource buf = clip == null ? buffer : new WrappedBufferSource(buffer, FateRenders::getClippedRendertype,
+                c -> ClippingVertexConsumerWrapper.wrap(c, clip, entity.summonColor(), 0.1f));
         super.render(entity, yaw, partialTick, recording, buf, light);
     }
 
