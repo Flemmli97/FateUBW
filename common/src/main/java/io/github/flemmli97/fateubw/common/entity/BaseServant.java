@@ -25,6 +25,7 @@ import io.github.flemmli97.fateubw.common.registry.FateAttachments;
 import io.github.flemmli97.fateubw.common.registry.FateAttributes;
 import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateMemoryTypes;
+import io.github.flemmli97.fateubw.common.registry.FateMobEffects;
 import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.ExtendedCombatRules;
@@ -872,7 +873,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
         }
     }
 
-    public boolean useMana(float amount) {
+    public boolean useMana(double amount) {
         if (this.servantMana < amount) {
             return false;
         } else {
@@ -889,17 +890,19 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
         }
     }
 
-    public void regenMana(Entity source) {
+    public void onManaLeech(Entity source) {
         double amount = this.getAttributeValue(FateAttributes.MANA_LEECH.asHolder());
         this.regenMana(amount);
     }
 
     public void regenMana(double amount) {
+        if (this.hasEffect(FateMobEffects.RULE_BREAKER.asHolder()))
+            return;
         this.servantMana = Mth.clamp(this.servantMana + amount, 0, 100);
     }
 
-    public int getMana() {
-        return (int) this.servantMana;
+    public double getMana() {
+        return this.servantMana;
     }
 
     public void applyManaLeechDebuff(int duration, double amount) {
