@@ -4,6 +4,7 @@
   "package": "io.github.flemmli97.fateubw.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
+    "compat.LithiumEntityCollisionMixin",
     "AttributeAccessor",
     "AttributeMapAccessor",
     "ClientboundSetEntityDataPacketAccessor",
