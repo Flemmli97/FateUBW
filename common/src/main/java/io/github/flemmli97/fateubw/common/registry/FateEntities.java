@@ -126,13 +126,13 @@ public class FateEntities {
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(60));
 
-    public static final RegistryEntrySupplier<EntityType<?>, EntityType<Emiya>> EMIYA = regServant("emiya_archer", "Caladbolg", EntityType.Builder.of(Emiya::new, MobCategory.MISC)
+    public static final RegistryEntrySupplier<EntityType<?>, EntityType<Emiya>> EMIYA = regServant("emiya_archer", "Unlimited Blade Works", EntityType.Builder.of(Emiya::new, MobCategory.MISC)
                     .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
             0x78121e, 0x1f1e1e,
             new ServantProperties.Builder(BuiltinServantClasses.ARCHER)
                     .putAttributes(Attributes.MAX_HEALTH, 450).putAttributes(Attributes.ATTACK_DAMAGE, 11)
                     .putAttributes(Attributes.ARMOR, 15).putAttributes(Attributes.ARMOR_TOUGHNESS, 7)
-                    .putAttributes(FateAttributes.PROJECTILE_BLOCK_CHANCE.asHolder(), 0).putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 17)
+                    .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 17)
                     .putAttributes(FateAttributes.MAGIC_ATTACK.asHolder(), 10).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 9)
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.27)
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
@@ -144,7 +144,7 @@ public class FateEntities {
             new ServantProperties.Builder(BuiltinServantClasses.ARCHER)
                     .putAttributes(Attributes.MAX_HEALTH, 530).putAttributes(Attributes.ATTACK_DAMAGE, 10)
                     .putAttributes(Attributes.ARMOR, 17).putAttributes(Attributes.ARMOR_TOUGHNESS, 10)
-                    .putAttributes(FateAttributes.PROJECTILE_BLOCK_CHANCE.asHolder(), 0).putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 14)
+                    .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 14)
                     .putAttributes(FateAttributes.MAGIC_ATTACK.asHolder(), 10).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 15)
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.33)
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
@@ -156,7 +156,7 @@ public class FateEntities {
             new ServantProperties.Builder(BuiltinServantClasses.CASTER)
                     .putAttributes(Attributes.MAX_HEALTH, 400).putAttributes(Attributes.ATTACK_DAMAGE, 8)
                     .putAttributes(Attributes.ARMOR, 13).putAttributes(Attributes.ARMOR_TOUGHNESS, 7)
-                    .putAttributes(FateAttributes.PROJECTILE_BLOCK_CHANCE.asHolder(), 0).putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 10)
+                    .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 10)
                     .putAttributes(FateAttributes.MAGIC_ATTACK.asHolder(), 20).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 18)
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.31)
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1.25).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
@@ -169,7 +169,7 @@ public class FateEntities {
             new ServantProperties.Builder(BuiltinServantClasses.CASTER)
                     .putAttributes(Attributes.MAX_HEALTH, 444).putAttributes(Attributes.ATTACK_DAMAGE, 5)
                     .putAttributes(Attributes.ARMOR, 17).putAttributes(Attributes.ARMOR_TOUGHNESS, 9)
-                    .putAttributes(FateAttributes.PROJECTILE_BLOCK_CHANCE.asHolder(), 0).putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 12)
+                    .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 12)
                     .putAttributes(FateAttributes.MAGIC_ATTACK.asHolder(), 15).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 14)
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.32)
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1.25).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
@@ -278,42 +278,48 @@ public class FateEntities {
             0x171c3f, 0x00ff00,
             new AttributeHolderProperties.Builder()
                     .putAttributes(Attributes.MAX_HEALTH, 40).putAttributes(Attributes.ATTACK_DAMAGE, 11)
-                    .putAttributes(Attributes.ARMOR, 8).putAttributes(Attributes.MOVEMENT_SPEED, 0.27)
+                    .putAttributes(Attributes.ARMOR, 10).putAttributes(Attributes.ARMOR_TOUGHNESS, 4)
+                    .putAttributes(Attributes.MOVEMENT_SPEED, 0.27)
                     .putAttributes(Attributes.KNOCKBACK_RESISTANCE, 1));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<Bucephalos>> BUCEPHALOS = regWithEgg("bucephalos", EntityType.Builder.of(Bucephalos::new, MobCategory.CREATURE).sized(1.4f, 1.55f),
             0x0a0a0a, 0x951a15,
             new AttributeHolderProperties.Builder()
-                    .putAttributes(Attributes.MAX_HEALTH, 80).putAttributes(Attributes.ATTACK_DAMAGE, 15)
-                    .putAttributes(Attributes.ARMOR, 7).putAttributes(Attributes.ARMOR_TOUGHNESS, 2)
-                    .putAttributes(FateAttributes.PROJECTILE_BLOCK_CHANCE.asHolder(), 0.2)
-                    .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 6).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 3)
+                    .putAttributes(Attributes.MAX_HEALTH, 60).putAttributes(Attributes.ATTACK_DAMAGE, 15)
+                    .putAttributes(Attributes.ARMOR, 8).putAttributes(Attributes.ARMOR_TOUGHNESS, 5)
+                    .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 8)
+                    .putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 4)
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.29));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<Hoplite>> HOPLITE = regWithEgg("hoplite", EntityType.Builder.of(Hoplite::new, MobCategory.CREATURE).clientTrackingRange(8),
             0xa26c1d, 0xa51c13,
             new AttributeHolderProperties.Builder()
                     .putAttributes(Attributes.MAX_HEALTH, 50).putAttributes(Attributes.ATTACK_DAMAGE, 12)
                     .putAttributes(Attributes.ARMOR, 9).putAttributes(Attributes.ARMOR_TOUGHNESS, 4)
+                    .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 5)
+                    .putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 2)
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.26)
                     .putAttributes(Attributes.KNOCKBACK_RESISTANCE, 1));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<GordiusWheel>> GORDIUS_WHEEL = regWithEgg("gordius_wheel", EntityType.Builder.of(GordiusWheel::new, MobCategory.CREATURE).sized(2, 1.5f),
             0x28211f, 0x8f1b11,
             new AttributeHolderProperties.Builder()
-                    .putAttributes(Attributes.MAX_HEALTH, 120).putAttributes(Attributes.ATTACK_DAMAGE, 15)
-                    .putAttributes(Attributes.ARMOR, 12).putAttributes(Attributes.ARMOR_TOUGHNESS, 4)
-                    .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 7).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 5)
+                    .putAttributes(Attributes.MAX_HEALTH, 100).putAttributes(Attributes.ATTACK_DAMAGE, 15)
+                    .putAttributes(Attributes.ARMOR, 12).putAttributes(Attributes.ARMOR_TOUGHNESS, 8)
+                    .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 7)
+                    .putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 5)
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.27)
                     .putAttributes(Attributes.KNOCKBACK_RESISTANCE, 1));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<HassanClone>> HASSAN_COPY = hassanClone(new AttributeHolderProperties.Builder()
-            .putAttributes(Attributes.MAX_HEALTH, 75).putAttributes(Attributes.ATTACK_DAMAGE, 8)
-            .putAttributes(Attributes.ARMOR, 10).putAttributes(Attributes.ARMOR_TOUGHNESS, 2)
-            .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 10).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 6)
+            .putAttributes(Attributes.MAX_HEALTH, 75).putAttributes(Attributes.ATTACK_DAMAGE, 12)
+            .putAttributes(Attributes.ARMOR, 11).putAttributes(Attributes.ARMOR_TOUGHNESS, 5)
+            .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 12)
+            .putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 8)
             .putAttributes(Attributes.MOVEMENT_SPEED, 0.35));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<Pegasus>> PEGASUS = regWithEgg("pegasus", EntityType.Builder.of(Pegasus::new, MobCategory.CREATURE).sized(1.35f, 1.65f),
             0xffffff, 0xdde0e1,
             new AttributeHolderProperties.Builder()
                     .putAttributes(Attributes.MAX_HEALTH, 80).putAttributes(Attributes.ATTACK_DAMAGE, 17)
-                    .putAttributes(Attributes.ARMOR, 7).putAttributes(FateAttributes.PROJECTILE_BLOCK_CHANCE.asHolder(), 0.2)
-                    .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 6).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 14)
+                    .putAttributes(Attributes.ARMOR, 14).putAttributes(Attributes.ARMOR_TOUGHNESS, 6)
+                    .putAttributes(FateAttributes.PROJECTILE_BLOCK_CHANCE.asHolder(), 0.2).putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 13)
+                    .putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 12)
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.34)
                     .putAttributes(Attributes.FLYING_SPEED, 0.85));
 

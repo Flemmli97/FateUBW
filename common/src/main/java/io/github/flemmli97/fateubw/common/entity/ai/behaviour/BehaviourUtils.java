@@ -1,5 +1,6 @@
 package io.github.flemmli97.fateubw.common.entity.ai.behaviour;
 
+import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.tenshilib.common.entity.AOEAttackEntity;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.MoveToAttackTarget;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.MoveToWalkTargetWithSight;
@@ -56,6 +57,9 @@ public class BehaviourUtils {
     public static <E extends Mob & AnimatedEntity> PlayAnimation.OnStart<E> cooldownHandler(ToIntBiFunction<String, E> cooldownFunc) {
         return (animation, entity) -> {
             double calc = cooldownFunc.applyAsInt(animation, entity);
+            if (entity instanceof BaseServant servant) {
+                calc = servant.applyCooldownModifier(calc);
+            }
             calc += entity.getAnimationHandler().get(animation).length();
             int cooldown = Mth.ceil(calc);
             BrainUtils.setForgettableMemory(entity, MemoryModuleType.ATTACK_COOLING_DOWN, true, cooldown);

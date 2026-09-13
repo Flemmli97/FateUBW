@@ -1,5 +1,7 @@
 {
   "attributes": {
+    "fateubw:magic_resistance": 2.0,
+    "fateubw:projectile_resistance": 5.0,
     "minecraft:generic.armor": 9.0,
     "minecraft:generic.armor_toughness": 4.0,
     "minecraft:generic.attack_damage": 12.0,

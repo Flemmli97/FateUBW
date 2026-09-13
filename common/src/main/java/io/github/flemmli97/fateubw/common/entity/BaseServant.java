@@ -350,6 +350,10 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
         return new Idle<>();
     }
 
+    public double applyCooldownModifier(double cooldown) {
+        return cooldown;
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public Map<Activity, BrainActivityGroup<? extends BaseServant>> getAdditionalTasks() {

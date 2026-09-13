@@ -172,7 +172,7 @@ public class ProjectileBlockingItemEntity extends BaseProjectile {
         if (Utils.alliedTo(projectile.getOwner(), owner)) {
             return false;
         }
-        double dist = projectile.getDeltaMovement().length() * 3;
+        double dist = Math.max(3, projectile.getDeltaMovement().length());
         double size = 8;
         OrientedBoundingBox obb = new OrientedBoundingBox(new AABB(-size * 0.5, -size * 0.5, dist * 0.5, size * 0.5, size * 0.5, dist),
                 -projectile.getYRot(), projectile.getXRot(), projectile.position());
@@ -244,6 +244,9 @@ public class ProjectileBlockingItemEntity extends BaseProjectile {
                         this.getRandomX(1.0), this.getRandomY(), this.getRandomZ(1.0), 0, d0, d1, d2, 0);
             }
             return true;
+        }
+        if (this.protectionTime > 0) {
+            return false;
         }
         DamageSource source = FateDamageTypes.indirect(FateDamageTypes.WEAPON_PROJECTILE, this, this.getOwner());
         float damage = Utils.randomizeDamage(this.getRandom(), (float) ItemUtils.damage(this.level(), null, result.getEntity(), source, this.getItem()));

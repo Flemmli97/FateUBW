@@ -60,7 +60,8 @@ public class FateRenders extends RenderType {
             .add("Color", VertexFormatElement.COLOR)
             .add("UV0", VertexFormatElement.UV0)
             .add("Time", VertexUtils.SINGLE_FLOAT.element().get()).build();
-    public static final VertexFormat CLIPPING_NEW_ENTITY = VertexFormat.builder()
+
+    private static final VertexFormat CLIPPING_NEW_ENTITY = VertexFormat.builder()
             .add("Position", VertexFormatElement.POSITION)
             .add("Color", VertexFormatElement.COLOR)
             .add("UV0", VertexFormatElement.UV0)
@@ -72,6 +73,20 @@ public class FateRenders extends RenderType {
             .add("ClippingWidth", VertexUtils.SINGLE_FLOAT.element().get())
             .padding(1)
             .build();
+    private static final Function<VertexFormat, VertexFormat> CLIPPING_FORMATS = Util.memoize((format) -> {
+        VertexFormat.Builder vertexFormat = VertexFormat.builder();
+        int size = 0;
+        for (VertexFormatElement f : format.getElements()) {
+            vertexFormat.add(format.getElementName(f), f);
+            size += f.byteSize();
+        }
+        int padding = format.getVertexSize() - size;
+        return vertexFormat.add("ClippingPlane", VertexUtils.VEC4f.element().get())
+                .add("ClippingColor", ClippingVertexConsumerWrapper.CLIP_COLOR.element().get())
+                .add("ClippingWidth", VertexUtils.SINGLE_FLOAT.element().get())
+                .padding(padding)
+                .build();
+    });
 
     public static final RenderType BABYLON_RENDER = RenderType.create("fateubw:babylon", POSITION_COLOR_TEX_TIME, VertexFormat.Mode.QUADS, 256, false, false, CompositeState.builder()
             .setShaderState(BABYLON_SHADER)
@@ -103,7 +118,7 @@ public class FateRenders extends RenderType {
             .createCompositeState(true)));
 
     private static final Function<RenderType, RenderType> CLIPPED = Util.memoize((wrapped) ->
-            new RenderType("fateubw_rendertype_clipped_" + wrapped.toString(), CLIPPING_NEW_ENTITY, wrapped.mode(), wrapped.bufferSize(),
+            new RenderType("fateubw_rendertype_clipped_" + wrapped.toString(), CLIPPING_FORMATS.apply(wrapped.format()), wrapped.mode(), wrapped.bufferSize(),
                     wrapped.affectsCrumbling(), ((RenderTypeAccessor) wrapped).fateubw$getSortOnUpload(), () -> {
                 wrapped.setupRenderState();
                 CLIPPED_SHADER.setupRenderState();

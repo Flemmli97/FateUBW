@@ -193,16 +193,16 @@ public class Emiya extends BaseServant {
                 .prepare(new SetWalkTargetToAttackTarget<Emiya>().speedMod((owner, target) -> ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(7)
 
-                .start(DUAL_BLADE_THROW).play(BehaviourUtils.cooldownedPlay(true, 16, 28))
+                .start(DUAL_BLADE_THROW).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(12), 16, 28))
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
                         .min(5).max(12).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(6)
-                .start(DUAL_BLADE_THROW).play(BehaviourUtils.cooldownedPlay(true, 16, 28))
+                .start(DUAL_BLADE_THROW).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(12), 16, 28))
                 .condition(BehaviourUtils.ifFurtherThan(9))
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
                         .min(5).max(16).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(8)
-                .start(DUAL_BLADE_THROW).play(BehaviourUtils.cooldownedPlay(true, 16, 28))
+                .start(DUAL_BLADE_THROW).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(12), 16, 28))
                 .condition(Emiya::isInRealityMarble)
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
                         .min(5).max(16).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.moveAttack())
@@ -252,26 +252,26 @@ public class Emiya extends BaseServant {
                 .condition(Emiya::isInRealityMarble)
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
                         .min(5).max(14).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(8)
-                .start(UBW_ATTACK_1).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(18), 10, 18))
+                .end(13)
+                .start(UBW_ATTACK_1).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(18), 15, 25))
                 .condition(owner -> owner.isInRealityMarble() && BehaviourUtils.ifFurtherThan(11).test(owner))
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
                         .min(5).max(14).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(19)
-                .start(UBW_ATTACK_2).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(18), 10, 18))
+                .end(17)
+                .start(UBW_ATTACK_2).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(18), 15, 25))
                 .condition(Emiya::isInRealityMarble)
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
                         .min(5).max(14).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(8)
-                .start(UBW_ATTACK_2).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(18), 10, 18))
+                .end(13)
+                .start(UBW_ATTACK_2).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(18), 15, 25))
                 .condition(owner -> owner.isInRealityMarble() && BehaviourUtils.ifFurtherThan(11).test(owner))
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
                         .min(5).max(14).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(19)
-                .start(UBW_SUMMON_SWORDS).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(20), 10, 18))
+                .end(17)
+                .start(UBW_SUMMON_SWORDS).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(20), 15, 25))
                 .condition(owner -> owner.isInRealityMarble() && owner.canSummonSwords())
                 .prepare(new SetWalkTargetToAttackTarget<Emiya>().speedMod((owner, target) -> ATTACK_MOVE_SPEED).closeEnoughDist(BehaviourUtils.closeEnough(20))).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(12)
+                .end(13)
                 .start(CALADBOLG).play(BehaviourUtils.cooldownedPlay(false, 20, 30))
                 .condition(owner -> owner.caladBolgCooldown.canUse())
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
@@ -282,9 +282,20 @@ public class Emiya extends BaseServant {
 
     @Override
     public ExtendedBehaviour<? extends BaseServant> getCooldownAI() {
-        return SelectableBehaviourBuilder.<BaseServant>builder()
-                .add(4, new SetWalkTargetToAttackTarget<BaseServant>().speedMod((owner, target) -> ATTACK_MOVE_SPEED), BehaviourUtils.moveTo())
-                .add(6, new SetWalkTargetAwayFromTarget<BaseServant>().speedMod((owner, target) -> ATTACK_MOVE_SPEED), BehaviourUtils.moveTo()).build();
+        return SelectableBehaviourBuilder.<Emiya>builder()
+                .add(5, e -> !e.isInRealityMarble(), new SetWalkTargetToAttackTarget<Emiya>().speedMod((owner, target) -> ATTACK_MOVE_SPEED), BehaviourUtils.moveTo())
+                // Ok java wtf. why you cant infer without cast...
+                .add(1, e -> (boolean) e.isInRealityMarble(), new SetWalkTargetToAttackTarget<Emiya>().speedMod((owner, target) -> ATTACK_MOVE_SPEED), BehaviourUtils.moveTo())
+                .add(6, e -> (boolean) e.isInRealityMarble(), new SetWalkTargetWithinDist<Emiya>().min(1).max(14).speedMod(ATTACK_MOVE_SPEED), BehaviourUtils.moveTo())
+                .add(7, new SetWalkTargetAwayFromTarget<Emiya>().speedMod((owner, target) -> ATTACK_MOVE_SPEED), BehaviourUtils.moveTo()).build();
+    }
+
+    @Override
+    public double applyCooldownModifier(double cooldown) {
+        if (this.isInRealityMarble()) {
+            cooldown = Math.max(8, cooldown - 7);
+        }
+        return super.applyCooldownModifier(cooldown);
     }
 
     @Override
@@ -595,7 +606,7 @@ public class Emiya extends BaseServant {
                 arrow.shoot(look.x(), look.y(), look.z(), 2.2F, 2);
             }
             arrow.setCritArrow(true);
-            double mod = this.getAnimationHandler().isCurrent(BOW_2) ? 0.5 : 0.6;
+            double mod = this.getAnimationHandler().isCurrent(BOW_2) ? 0.5 : 0.8;
             arrow.setBaseDamage(arrow.getBaseDamage() + this.getAttributeValue(Attributes.ATTACK_DAMAGE) * mod);
             this.playSound(SoundEvents.ARROW_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
             this.level().addFreshEntity(arrow);
