@@ -31,6 +31,7 @@ public class TrailPositions {
     }
 
     public TrailPositions(int length, TrailPosition init) {
+        length = Math.max(1, length);
         this.length = length;
         this.positions = new TrailPosition[length];
         if (init != null) {
@@ -70,6 +71,13 @@ public class TrailPositions {
     @Nullable
     public TrailPosition getLast() {
         return this.positions[this.tail];
+    }
+
+    @Nullable
+    public TrailPosition getLast(float partialTicks) {
+        TrailPosition now = this.getLast();
+        TrailPosition prev = this.positions[(this.tail - 1 + this.positions.length) % this.positions.length];
+        return prev != null ? prev.lerpPos(partialTicks, now) : now;
     }
 
     public int getLength() {
@@ -135,6 +143,21 @@ public class TrailPositions {
         return this.positions[(this.head + i) % this.positions.length];
     }
 
+    @Nullable
+    public TrailPosition getAt(int i, float partialTick) {
+        if (i == 0) {
+            TrailPosition pos = this.getAt(i);
+            TrailPosition next = this.getAt(i + 1);
+            return pos != null ? pos.lerpPos(partialTick, next) : null;
+        }
+        if (i >= this.size() - 1) {
+            TrailPosition pos = this.getAt(i - 1);
+            TrailPosition next = this.getAt(i);
+            return pos != null ? pos.lerpPos(partialTick, next) : null;
+        }
+        return this.getAt(i);
+    }
+
     private int nextTail() {
         return (this.tail + 1) % this.positions.length;
     }
@@ -144,7 +167,7 @@ public class TrailPositions {
      * Used for rendering interpolation
      */
     public boolean hasBeenFull() {
-        return hasBeenFull;
+        return this.hasBeenFull;
     }
 
     @Override
@@ -154,5 +177,14 @@ public class TrailPositions {
 
     public record TrailPosition(Vec3 pos, @Nullable Vec3 normal) {
 
+        public TrailPosition lerpPos(float delta, @Nullable TrailPosition other) {
+            if (other == null)
+                return this;
+            if (delta == 0)
+                return this;
+            if (delta == 1)
+                return other;
+            return new TrailPosition(this.pos().lerp(other.pos(), delta), this.normal);
+        }
     }
 }

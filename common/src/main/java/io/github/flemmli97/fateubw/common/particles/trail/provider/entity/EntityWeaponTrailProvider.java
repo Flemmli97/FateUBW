@@ -29,9 +29,10 @@ public class EntityWeaponTrailProvider<T extends Entity & AnimatedEntity & Entit
     private final TrailPositions position;
 
     private boolean valid = true;
-    private boolean sameTick;
 
     private int invalidTicks;
+
+    private Vec3 recordedPos, recordedNormal;
 
     public EntityWeaponTrailProvider(EntityTrailData data, T entity) {
         this.data = data;
@@ -46,8 +47,10 @@ public class EntityWeaponTrailProvider<T extends Entity & AnimatedEntity & Entit
 
     @Override
     public Vec3 particleTick() {
-        this.sameTick = false;
         if (this.valid) {
+            if (this.recordedPos != null) {
+                this.position.add(new TrailPositions.TrailPosition(this.entity.position().add(this.recordedPos), this.recordedNormal));
+            }
             AnimationState anim = this.entity.getAnimationHandler().getAnimation();
             if (!this.entity.isAlive() || anim == null || !anim.is(this.data.context()) || anim.isPast(this.data.animationEnd)) {
                 this.valid = false;
@@ -69,21 +72,11 @@ public class EntityWeaponTrailProvider<T extends Entity & AnimatedEntity & Entit
         return this.invalidTicks > this.position.getLength();
     }
 
-    @Override
-    public float adjustedPartialTicks(float partialTick) {
-        return 1;
-    }
-
     public void recordData(String context, boolean left, Vec3 pos, Vec3 normal) {
         if (!this.valid || !context.equals(this.data.context) || left != this.data.left)
             return;
-        TrailPositions.TrailPosition trail = new TrailPositions.TrailPosition(this.entity.position().add(pos), normal);
-        if (!this.sameTick) {
-            this.position.add(trail);
-        } else {
-            this.position.replaceLast(trail);
-        }
-        this.sameTick = true;
+        this.recordedPos = pos;
+        this.recordedNormal = normal;
     }
 
     public record EntityTrailData(int entityId, String context, boolean left,

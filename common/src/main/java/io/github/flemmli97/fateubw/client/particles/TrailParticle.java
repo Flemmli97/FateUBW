@@ -25,7 +25,6 @@ import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -67,20 +66,18 @@ public class TrailParticle extends TextureSheetParticle {
     public void render(VertexConsumer buffer, Camera camera, float partialTick) {
         if (this.trailProvider == null)
             return;
-        partialTick = this.trailProvider.adjustedPartialTicks(partialTick);
         PoseStack stack = new PoseStack();
-        this.translate(stack, camera, partialTick);
+        this.translate(stack, camera);
         TrailRenderer.render(this.trail, this.trailProvider.positions(), stack, buffer, camera,
-                (float) this.x, (float) this.y, (float) this.z,
-                (float) this.x, (float) this.y, (float) this.z,
+                (float) this.x, (float) this.y, (float) this.z, partialTick,
                 this.getU0(), this.getU1(), this.getV0(), this.getV1());
     }
 
-    protected void translate(PoseStack stack, Camera camera, float partialTick) {
+    protected void translate(PoseStack stack, Camera camera) {
         Vec3 vec3 = camera.getPosition();
-        double dx = Mth.lerp(partialTick, this.xo, this.x) - vec3.x();
-        double dy = Mth.lerp(partialTick, this.yo, this.y) - vec3.y();
-        double dz = Mth.lerp(partialTick, this.zo, this.z) - vec3.z();
+        double dx = this.x - vec3.x();
+        double dy = this.y - vec3.y();
+        double dz = this.z - vec3.z();
         stack.translate(dx, dy, dz);
     }
 

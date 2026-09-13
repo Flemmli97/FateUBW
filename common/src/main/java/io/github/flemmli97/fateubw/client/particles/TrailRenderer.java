@@ -21,61 +21,60 @@ public class TrailRenderer {
 
     public static void render(Entity entity, TrailInfo info, TrailPositions positions, VertexConsumer consumer, float partialTick) {
         PoseStack stack = new PoseStack();
-        Vec3 vec3 = Minecraft.getInstance().getEntityRenderDispatcher().camera.getPosition();
-        double lerpX = Mth.lerp(partialTick, entity.xo, entity.getX());
-        double lerpY = Mth.lerp(partialTick, entity.yo, entity.getY());
-        double lerpZ = Mth.lerp(partialTick, entity.zo, entity.getZ());
-        double dx = lerpX - vec3.x();
-        double dy = lerpY - vec3.y();
-        double dz = lerpZ - vec3.z();
+        Camera camera = Minecraft.getInstance().getEntityRenderDispatcher().camera;
+        Vec3 vec3 = camera.getPosition();
+        double dx = entity.getX() - vec3.x();
+        double dy = entity.getY() - vec3.y();
+        double dz = entity.getZ() - vec3.z();
         stack.translate(dx, dy, dz);
-        TrailRenderer.render(info, positions, stack, consumer, Minecraft.getInstance().getEntityRenderDispatcher().camera,
-                (float) lerpX, (float) lerpY, (float) lerpZ, (float) entity.getX(), (float) entity.getY(), (float) entity.getZ(),
+        TrailRenderer.render(info, positions, stack, consumer, camera,
+                (float) entity.getX(), (float) entity.getY(), (float) entity.getZ(), partialTick,
                 0, 1, 0, 1);
     }
 
     public static void render(TrailInfo info, TrailPositions position, PoseStack stack, VertexConsumer buffer, Camera camera,
-                              float partialX, float partialY, float partialZ, float x, float y, float z,
+                              float x, float y, float z, float partialTicks,
                               float u0, float u1, float v0, float v1) {
         if (position == null || position.size() < 2)
             return;
         Matrix4f mat = stack.last().pose();
         // Calculate interpolated positions and their normals
         List<TrailPosition3f> positions = new ArrayList<>();
-        partialX = position.hasBeenFull() ? x : partialX;
-        partialY = position.hasBeenFull() ? y : partialY;
-        partialZ = position.hasBeenFull() ? z : partialZ;
+        int interpolation = Math.max(1, info.interpolation());
         for (int i = 0; i < position.size() - 1; i++) {
-            TrailPositions.TrailPosition[] current = extractPositionsFor(position, i);
+            TrailPositions.TrailPosition[] current = extractPositionsFor(position, i, partialTicks);
             if (current == null)
                 continue;
-            float step = 1f / Math.max(1, info.interpolation());
+            float step = 1f / interpolation;
             for (float j = 0; j < 1; j += step) {
-                Vector3f stepPos = catmullRom(j, current[0].pos(), current[1].pos(), current[2].pos(), current[3].pos())
-                        .sub(partialX, partialY, partialZ);
+                Vector3f stepPos = catmullRom(j, current[0].pos(), current[1].pos(), current[2].pos(), current[3].pos()).sub(x, y, z);
                 if (stepPos == null)
                     continue;
                 Vector3f stepNormal = catmullRom(j, current[0].normal(), current[1].normal(), current[2].normal(), current[3].normal());
                 if (positions.isEmpty()) {
-                    positions.add(TrailPosition3f.of(stepPos, stepNormal));
+                    positions.add(TrailPosition3f.of(stepPos, stepNormal, i));
                     break;
                 }
-                Vector3f prevPos = positions.getLast().pos();
-                Vector3f previousNormal = positions.getLast().normal();
+                TrailPosition3f last = positions.getLast();
+                Vector3f prevPos = last.pos();
+                Vector3f previousNormal = last.normal();
                 Vector3f normal = calculateNormal(prevPos, stepPos, stepNormal, previousNormal, camera);
-                if (positions.size() == 1 && previousNormal == null) {
+                if (positions.size() == 1) {
                     // Update the first normal
-                    positions.set(0, TrailPosition3f.of(prevPos, normal));
+                    positions.set(0, TrailPosition3f.of(prevPos, previousNormal == null ? normal : previousNormal, last.progressIdx()));
                 }
-                positions.add(TrailPosition3f.of(stepPos, normal));
+                positions.add(TrailPosition3f.of(stepPos, normal, Math.max(0, i - partialTicks) + j));
+                if (i == position.size() - 2) {
+                    break;
+                }
             }
         }
-        TrailPositions.TrailPosition current = position.getLast();
+        TrailPositions.TrailPosition current = position.getLast(partialTicks);
         if (current != null) {
             Vector3f currentPos = current.pos().toVector3f().sub(x, y, z);
             TrailPosition3f last = positions.getLast();
             Vector3f normal = calculateNormal(last.pos(), currentPos, current.normal() != null ? current.normal().toVector3f() : null, last.normal(), camera);
-            positions.add(TrailPosition3f.of(currentPos, normal));
+            positions.add(TrailPosition3f.of(currentPos, normal, Mth.floor(last.progressIdx() + 1)));
         }
         if (positions.size() < 2) {
             return;
@@ -87,14 +86,14 @@ public class TrailRenderer {
             first.updateNormal(positions.get(1).normal());
         }
         // Finally render the trail data
-        int size = position.getLength() * info.interpolation();
-        int diff = Math.abs(size - (positions.size() - 1));
-        for (int i = 1; i < positions.size(); i++) {
-            int idx = i - 1;
-            TrailPosition3f pos = positions.get(idx);
-            TrailPosition3f next = positions.get(idx + 1);
-            float prog = Mth.clamp((float) (idx + diff) / size, 0, 1);
-            float progNext = Mth.clamp((float) (idx + diff + 1) / size, 0, 1);
+        // This will make the trail keep its width shape even if it's not fully spawned in yet
+        int maxSegIdx = Math.max(1, position.getLength() - 2);
+        int diff = Math.abs(maxSegIdx - (Mth.ceil(positions.getLast().progressIdx())));
+        for (int i = 0; i < positions.size() - 1; i++) {
+            TrailPosition3f pos = positions.get(i);
+            TrailPosition3f next = positions.get(i + 1);
+            float prog = Mth.clamp((diff + pos.progressIdx()) / maxSegIdx, 0, 1);
+            float progNext = Mth.clamp((diff + next.progressIdx()) / maxSegIdx, 0, 1);
 
             Vector4f[] vertices = vertices(info, pos.pos(), next.pos(), pos.normal(), next.normal(), prog, progNext);
             for (Vector4f vert : vertices) {
@@ -119,17 +118,17 @@ public class TrailRenderer {
         }
     }
 
-    private static TrailPositions.TrailPosition[] extractPositionsFor(TrailPositions positions, int idx) {
-        TrailPositions.TrailPosition current = positions.getAt(idx);
+    private static TrailPositions.TrailPosition[] extractPositionsFor(TrailPositions positions, int idx, float partialTicks) {
+        TrailPositions.TrailPosition current = positions.getAt(idx, partialTicks);
         if (current == null)
             return null;
-        TrailPositions.TrailPosition next = positions.getAt(idx + 1);
+        TrailPositions.TrailPosition next = positions.getAt(idx + 1, partialTicks);
         if (next == null)
             return null;
-        TrailPositions.TrailPosition previous = positions.getAt(idx - 1);
+        TrailPositions.TrailPosition previous = positions.getAt(idx - 1, partialTicks);
         if (previous == null)
             previous = current;
-        TrailPositions.TrailPosition next2 = positions.getAt(idx + 2);
+        TrailPositions.TrailPosition next2 = positions.getAt(idx + 2, partialTicks);
         if (next2 == null)
             next2 = next;
         return new TrailPositions.TrailPosition[]{
@@ -140,12 +139,8 @@ public class TrailRenderer {
     protected static Vector3f catmullRom(float delta, @Nullable Vec3 p1, @Nullable Vec3 p2, @Nullable Vec3 p3, @Nullable Vec3 p4) {
         if (delta == 0)
             return p2 != null ? p2.toVector3f() : null;
-        if (delta == 1)
-            return p3 != null ? p3.toVector3f() : null;
         if (p1 == null || p2 == null || p3 == null || p4 == null)
             return null;
-        if (p2.equals(p3))
-            return p2.toVector3f();
         return new Vector3f(Mth.catmullrom(delta, (float) p1.x(), (float) p2.x(), (float) p3.x(), (float) p4.x()),
                 Mth.catmullrom(delta, (float) p1.y(), (float) p2.y(), (float) p3.y(), (float) p4.y()),
                 Mth.catmullrom(delta, (float) p1.z(), (float) p2.z(), (float) p3.z(), (float) p4.z()));
@@ -188,22 +183,32 @@ public class TrailRenderer {
 
         private final Vector3f pos;
         private Vector3f normal;
+        private final float progressIdx;
 
-        private TrailPosition3f(Vector3f pos, Vector3f normal) {
+        private TrailPosition3f(Vector3f pos, Vector3f normal, float progressIdx) {
             this.pos = pos;
             this.normal = normal;
+            this.progressIdx = progressIdx;
         }
 
         public static TrailPosition3f of(Vector3f pos, Vector3f normal) {
-            return new TrailPosition3f(pos, normal);
+            return new TrailPosition3f(pos, normal, 0);
+        }
+
+        public static TrailPosition3f of(Vector3f pos, Vector3f normal, float progressIdx) {
+            return new TrailPosition3f(pos, normal, progressIdx);
         }
 
         public Vector3f pos() {
-            return pos;
+            return this.pos;
         }
 
         public Vector3f normal() {
-            return normal;
+            return this.normal;
+        }
+
+        public float progressIdx() {
+            return this.progressIdx;
         }
 
         public void updateNormal(Vector3f normal) {

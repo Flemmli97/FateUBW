@@ -40,11 +40,6 @@ public class ParticlePositionProvider implements TrailProvider {
     }
 
     @Override
-    public float adjustedPartialTicks(float partialTick) {
-        return this.isFading() ? 1 : partialTick;
-    }
-
-    @Override
     public Vec3 particleTick() {
         this.ticks++;
         if (this.isFading()) {
@@ -53,6 +48,9 @@ public class ParticlePositionProvider implements TrailProvider {
         }
         Vec3 pos = this.positionSup.get();
         this.position.add(pos, this.data.normal);
+        if (this.ticks == 1) {
+            this.position.add(pos, this.data.normal);
+        }
         return pos;
     }
 
