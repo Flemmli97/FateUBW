@@ -10,7 +10,7 @@ import io.github.flemmli97.fateubw.common.entity.ai.behaviour.BehaviourUtils;
 import io.github.flemmli97.fateubw.common.entity.misc.ArcherArrow;
 import io.github.flemmli97.fateubw.common.entity.misc.CaladBolg;
 import io.github.flemmli97.fateubw.common.entity.misc.ProjectileBlockingItemEntity;
-import io.github.flemmli97.fateubw.common.entity.misc.ThrownItemEntity;
+import io.github.flemmli97.fateubw.common.entity.misc.ReturningItemProjectile;
 import io.github.flemmli97.fateubw.common.entity.misc.WeaponProjectile;
 import io.github.flemmli97.fateubw.common.entity.utils.CooldownHolder;
 import io.github.flemmli97.fateubw.common.entity.utils.ServantModelLike;
@@ -492,19 +492,19 @@ public class Emiya extends BaseServant {
             }
             if (anim.isAt("throw")) {
                 Vec3 dir = target != null ? target.position().subtract(this.position()) : this.getViewVector(1);
-                Vec3 side = new Vec3(dir.x(), 0, dir.z()).normalize().yRot(90 * Mth.DEG_TO_RAD).scale(0.3);
+                Vec3 side = new Vec3(dir.x(), 0, dir.z()).normalize().yRot(90 * Mth.DEG_TO_RAD).scale(this.getBbWidth() * 0.4);
 
-                ThrownItemEntity item = new ThrownItemEntity(this.level(), this);
+                ReturningItemProjectile item = new ReturningItemProjectile(this.level(), this);
                 item.setPos(item.getX() + side.x(), item.getY(), item.getZ() + side.z());
-                item.setItemType(ThrownItemEntity.ItemType.KANSHOU);
                 item.setWeapon(this.getMainHandItem().copy());
+                item.setItemType(ReturningItemProjectile.ItemType.KANSHOU);
                 item.shoot(dir.x(), dir.y(), dir.z(), 1.2f, 0);
                 this.level().addFreshEntity(item);
 
-                item = new ThrownItemEntity(this.level(), this);
+                item = new ReturningItemProjectile(this.level(), this);
                 item.setPos(item.getX() - side.x(), item.getY(), item.getZ() - side.z());
                 item.setWeapon(new ItemStack(FateItems.BAKUYA.get()));
-                item.setItemType(ThrownItemEntity.ItemType.BAKUYA);
+                item.setItemType(ReturningItemProjectile.ItemType.BAKUYA);
                 item.shoot(dir.x(), dir.y(), dir.z(), 1.2f, 0);
                 this.playSound(FateSounds.DAGGER_THROW.get(), 1.0F, (this.getRandom().nextFloat() - this.getRandom().nextFloat()) * 0.2F + 1.0F);
                 this.level().addFreshEntity(item);

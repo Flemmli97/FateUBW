@@ -45,6 +45,8 @@ public class EntityTrailHandler {
     }
 
     public boolean tick() {
+        if (this.entity.level().tickRateManager().isEntityFrozen(this.entity))
+            return false;
         if (!this.spawned) {
             this.spawned = this.entity.level().getEntity(this.entity.getId()) == this.entity;
             if (!this.spawned) {

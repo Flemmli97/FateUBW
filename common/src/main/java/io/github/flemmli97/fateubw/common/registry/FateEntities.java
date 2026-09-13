@@ -17,6 +17,7 @@ import io.github.flemmli97.fateubw.common.entity.misc.MagicBeam;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicBufCircle;
 import io.github.flemmli97.fateubw.common.entity.misc.MagicShot;
 import io.github.flemmli97.fateubw.common.entity.misc.ProjectileBlockingItemEntity;
+import io.github.flemmli97.fateubw.common.entity.misc.ReturningItemProjectile;
 import io.github.flemmli97.fateubw.common.entity.misc.SpearProjectile;
 import io.github.flemmli97.fateubw.common.entity.misc.StarfishShot;
 import io.github.flemmli97.fateubw.common.entity.misc.ThrownGem;
@@ -272,6 +273,7 @@ public class FateEntities {
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<AestusDomusBeam>> AESTUS_DOMUS_BEAM = reg("aestus_domus_beam", EntityType.Builder.<AestusDomusBeam>of(AestusDomusBeam::new, MobCategory.MISC).sized(0.25F, 0.25F));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<ProjectileBlockingItemEntity>> PROJECTILE_BLOCKING_ENTITY = reg("projectile_blocking_entity", EntityType.Builder.<ProjectileBlockingItemEntity>of(ProjectileBlockingItemEntity::new, MobCategory.MISC).sized(0.25F, 0.25F));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<SpearProjectile>> SPEAR = reg("spear", EntityType.Builder.<SpearProjectile>of(SpearProjectile::new, MobCategory.MISC).sized(0.25F, 0.25F));
+    public static final RegistryEntrySupplier<EntityType<?>, EntityType<ReturningItemProjectile>> RETURNING_ITEM = reg("returning_item", EntityType.Builder.<ReturningItemProjectile>of(ReturningItemProjectile::new, MobCategory.MISC).sized(0.25F, 0.25F));
 
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<LesserMonster>> LESSER_MONSTER = regWithEgg("starfish_monster", EntityType.Builder.<LesserMonster>of(LesserMonster::new, MobCategory.MONSTER)
                     .clientTrackingRange(8).sized(0.6f, 1.5f),
