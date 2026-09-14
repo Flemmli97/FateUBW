@@ -131,7 +131,7 @@ public class FateEntities {
                     .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
             0x78121e, 0x1f1e1e,
             new ServantProperties.Builder(BuiltinServantClasses.ARCHER)
-                    .putAttributes(Attributes.MAX_HEALTH, 450).putAttributes(Attributes.ATTACK_DAMAGE, 11)
+                    .putAttributes(Attributes.MAX_HEALTH, 450).putAttributes(Attributes.ATTACK_DAMAGE, 9)
                     .putAttributes(Attributes.ARMOR, 15).putAttributes(Attributes.ARMOR_TOUGHNESS, 7)
                     .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 17)
                     .putAttributes(FateAttributes.MAGIC_ATTACK.asHolder(), 10).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 9)

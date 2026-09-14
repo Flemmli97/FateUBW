@@ -49,7 +49,7 @@ public class ArcherArrow extends AbstractArrow {
     protected boolean damageTarget(Entity target) {
         if (target == this.getOwner())
             return false;
-        double speedMod = Math.max(0.1, this.getDeltaMovement().length() * 1.2);
+        double speedMod = Math.max(0.1, this.getDeltaMovement().length());
         double damage = this.getBaseDamage();
         Entity owner = this.getOwner();
         DamageSource damageSource = FateDamageTypes.indirect(FateDamageTypes.ARCHER_NORMAL, this, owner == null ? this : owner);
@@ -57,7 +57,7 @@ public class ArcherArrow extends AbstractArrow {
             damage = EnchantmentHelper.modifyDamage(serverLevel, this.getWeaponItem(), target, damageSource, (float) damage);
         }
         if (this.isCritArrow()) {
-            damage += damage * this.getRandom().nextIntBetweenInclusive(20, 50) * 0.01;
+            damage += damage * this.getRandom().nextIntBetweenInclusive(10, 50) * 0.01;
         }
         damage = Mth.clamp(speedMod * damage, 0.0F, Double.MAX_VALUE);
         if (owner instanceof LivingEntity living) {

@@ -83,6 +83,7 @@ public abstract class SummonedEntity extends PathfinderMob implements AnimatedEn
         if (!level.isClientSide) {
             this.updateAttributes();
         }
+        this.getNavigation().setCanFloat(true);
     }
 
     private void updateAttributes() {

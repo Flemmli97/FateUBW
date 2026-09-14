@@ -151,7 +151,7 @@ public class ReturningItemProjectile extends BaseProjectile {
         DamageSource source = FateDamageTypes.indirect(FateDamageTypes.THROWN_ITEM, this, this.getOwner());
         float damage = Utils.randomizeDamage(this.getRandom(), (float) ItemUtils.damage(this.level(), null, result.getEntity(), source, this.getWeapon()));
         boolean res = Utils.runWithInvulTimer(this.getOwner(), result.getEntity(),
-                e -> e.hurt(source, damage * this.damageMultiplier), 2);
+                e -> e.hurt(source, damage * this.damageMultiplier), 0);
         if (res && this.level() instanceof ServerLevel serverLevel) {
             EnchantmentHelper.doPostAttackEffects(serverLevel, result.getEntity(), source);
         }

@@ -49,7 +49,7 @@ public class CommonConfig {
     public static WeaponListFilterConfig weaponProjectiles = new WeaponListFilterConfig(FateItems.ENUMAELISH.getID().toString(), "runecraftory");
     public static float eaDamage = 15;
     public static float excaliburDamage = 15;
-    public static float caladBolgDmg = 35;
+    public static float caladBolgDmg = 20;
     public static float ubwScale = 0.9f;
     public static float magicBeam = 5;
     public static float gaeBolgDmg = 25;

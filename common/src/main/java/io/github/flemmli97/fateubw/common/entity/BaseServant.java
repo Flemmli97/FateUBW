@@ -212,6 +212,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
         this.idleAnimationCooldown.use();
         this.combatTracker = this.createCooldown("combat", ConstantValue.exactly(300));
         this.combatTracker.use();
+        this.getNavigation().setCanFloat(true);
     }
 
     public static AttributeSupplier.Builder createAttributes() {

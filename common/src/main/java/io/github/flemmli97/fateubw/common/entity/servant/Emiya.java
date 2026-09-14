@@ -395,10 +395,10 @@ public class Emiya extends BaseServant {
                 }
             }
             if (anim.isAt("cast")) {
-//                if (!this.canOverrideRealityMarble() || !this.attemptUseNobelPhantasm()) {
-//                    this.getAnimationHandler().setAnimation(null);
-//                    return;
-//                }
+                if (!this.canOverrideRealityMarble() || !this.attemptUseNobelPhantasm()) {
+                    this.getAnimationHandler().setAnimation(null);
+                    return;
+                }
                 AdvancedParticleContainer.make(FateParticles.SPHERE.get())
                         .addData(new ScaleData(0, 48, 40))
                         .addData(new ColorData(1, 1, 1, 0.5f))
@@ -518,6 +518,7 @@ public class Emiya extends BaseServant {
 
                 ReturningItemProjectile item = new ReturningItemProjectile(this.level(), this);
                 item.setPos(item.getX() + side.x(), item.getY(), item.getZ() + side.z());
+                item.setDamageMultiplier(1.2f);
                 item.setWeapon(this.getMainHandItem().copy());
                 item.setItemType(ReturningItemProjectile.ItemType.KANSHOU);
                 item.shoot(dir.x(), dir.y(), dir.z(), 1.2f, 0);
@@ -525,6 +526,7 @@ public class Emiya extends BaseServant {
 
                 item = new ReturningItemProjectile(this.level(), this);
                 item.setPos(item.getX() - side.x(), item.getY(), item.getZ() - side.z());
+                item.setDamageMultiplier(1.2f);
                 item.setWeapon(new ItemStack(FateItems.BAKUYA.get()));
                 item.setItemType(ReturningItemProjectile.ItemType.BAKUYA);
                 item.shoot(dir.x(), dir.y(), dir.z(), 1.2f, 0);
@@ -585,6 +587,11 @@ public class Emiya extends BaseServant {
     }
 
     @Override
+    public float damageModifier(Entity target) {
+        return this.getAnimationHandler().isCurrent(DUAL_BLADE_2_1, DUAL_BLADE_2_2) ? 0.9f : super.damageModifier(target);
+    }
+
+    @Override
     public AnimationHandler<Emiya> getAnimationHandler() {
         return this.animationHandler;
     }
@@ -622,10 +629,10 @@ public class Emiya extends BaseServant {
                 double dY = target.getY(0.3333333333333333) - arrow.getY();
                 double dZ = target.getZ() - this.getZ();
                 double l = Math.sqrt(dX * dX + dZ * dZ);
-                arrow.shoot(dX, dY + l * 0.13, dZ, 2.2F, 2);
+                arrow.shoot(dX, dY + l * 0.13, dZ, 2.1F, 2);
             } else {
                 Vec3 look = this.getViewVector(1);
-                arrow.shoot(look.x(), look.y(), look.z(), 2.2F, 2);
+                arrow.shoot(look.x(), look.y(), look.z(), 2.1F, 2);
             }
             arrow.setCritArrow(true);
             double mod = this.getAnimationHandler().isCurrent(BOW_2) ? 0.5 : 0.8;
@@ -646,10 +653,10 @@ public class Emiya extends BaseServant {
                 double dY = target.getY(0.33) - arrow.getY();
                 double dZ = target.getZ() - this.getZ();
                 double l = Math.sqrt(dX * dX + dZ * dZ);
-                arrow.shoot(dX, dY + l * 0.13, dZ, 2.2F, 11);
+                arrow.shoot(dX, dY + l * 0.13, dZ, 2.1F, 11);
             } else {
                 Vec3 look = this.getViewVector(1);
-                arrow.shoot(look.x(), look.y(), look.z(), 2.2F, 11);
+                arrow.shoot(look.x(), look.y(), look.z(), 2.1F, 11);
             }
             arrow.setCritArrow(true);
             arrow.setBaseDamage(arrow.getBaseDamage() + this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.33);

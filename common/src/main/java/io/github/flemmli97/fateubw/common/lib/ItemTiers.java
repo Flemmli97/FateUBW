@@ -23,7 +23,7 @@ public class ItemTiers {
     public static final TierImpl GAE_BUIDHE = new TierImpl(1200, 0, 10, 14);
     public static final TierImpl GAE_DEARG = new TierImpl(1200, 0, 11, 14);
 
-    public static final TierImpl KANSHOU_BAKUYA = new TierImpl(1000, 0, 8, 16);
+    public static final TierImpl KANSHOU_BAKUYA = new TierImpl(1000, 0, 7, 16);
 
     public static class TierImpl implements Tier {
 
