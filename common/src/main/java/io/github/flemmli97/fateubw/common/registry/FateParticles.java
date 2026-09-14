@@ -6,6 +6,7 @@ import io.github.flemmli97.fateubw.common.particles.ParticleTypeContainer;
 import io.github.flemmli97.fateubw.common.particles.SimpleParticleTypeExp;
 import io.github.flemmli97.fateubw.common.particles.StaticFacingParticleData;
 import io.github.flemmli97.fateubw.common.particles.StrikeParticleData;
+import io.github.flemmli97.fateubw.common.particles.SwirlingCylinderData;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
 import io.github.flemmli97.tenshilib.loader.LoaderRegistryAccess;
 import io.github.flemmli97.tenshilib.loader.registry.LoaderRegister;
@@ -33,4 +34,5 @@ public class FateParticles {
     public static final RegistryEntrySupplier<ParticleType<?>, SimpleParticleType> SPHERE_CLOUD = PARTICLES.register("sphere_cloud", () -> SimpleParticleTypeExp.of(false));
     public static final RegistryEntrySupplier<ParticleType<?>, ParticleTypeContainer<BlockStateParticleData>> BLOCK = PARTICLES.register("block", () -> new ParticleTypeContainer<>(false, BlockStateParticleData::codec, BlockStateParticleData::streamCodec));
     public static final RegistryEntrySupplier<ParticleType<?>, ParticleTypeContainer<StrikeParticleData>> STRIKE = PARTICLES.register("strike", () -> new ParticleTypeContainer<>(false, StrikeParticleData::codec, StrikeParticleData::streamCodec));
+    public static final RegistryEntrySupplier<ParticleType<?>, ParticleTypeContainer<SwirlingCylinderData>> SWIRLING_CYLINDER = PARTICLES.register("swirling_cylinder", () -> new ParticleTypeContainer<>(false, SwirlingCylinderData::codec, SwirlingCylinderData::streamCodec));
 }

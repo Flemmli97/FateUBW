@@ -32,6 +32,7 @@ public class ParticleGen extends ParticleDescriptionProvider {
         this.empty(FateParticles.SPHERE_CLOUD.get());
         this.empty(FateParticles.BLOCK.get());
         this.spriteSet(FateParticles.STRIKE.get(), 3);
+        this.empty(FateParticles.SWIRLING_CYLINDER.get());
     }
 
     public void spriteSet(ParticleType<?> type) {

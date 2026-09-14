@@ -6,6 +6,7 @@ import io.github.flemmli97.fateubw.client.ShakeHandler;
 import io.github.flemmli97.fateubw.client.particles.ParticleRenderTypes;
 import io.github.flemmli97.fateubw.client.particles.SphereCloudParticle;
 import io.github.flemmli97.fateubw.client.particles.SphereParticle;
+import io.github.flemmli97.fateubw.client.particles.SwirlingCylinderParticle;
 import io.github.flemmli97.fateubw.client.particles.TrailParticle;
 import io.github.flemmli97.fateubw.client.render.FateRenders;
 import io.github.flemmli97.fateubw.fabric.compat.GeoEvents;
@@ -16,6 +17,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.particle.ParticleRenderType;
 
 public class FateUBWFabricClient implements ClientSetupModInitializer {
 
@@ -33,8 +35,11 @@ public class FateUBWFabricClient implements ClientSetupModInitializer {
         ParticleTypeRegisterEvent.EVENT.register(register -> {
             register.addRenderType(ParticleRenderTypes.COLORIZE_PARTICLE);
             register.addRenderType(ParticleRenderTypes.COLORIZE_PARTICLE_NO_CULL);
-            register.addRenderType(SphereCloudParticle.SPHERE_RENDER_TYPE);
+            register.addRenderType(SphereCloudParticle.SPHERE_CLOUD_RENDER_TYPE);
             register.addRenderType(SphereParticle.SPHERE_RENDER_TYPE);
+            for (ParticleRenderType type : SwirlingCylinderParticle.getRenderTypes()) {
+                register.addRenderType(type);
+            }
             register.addRenderType(TrailParticle.COLOR_PARTICLE);
             register.addRenderType(TrailParticle.SOLID_COLOR_PARTICLE);
         });

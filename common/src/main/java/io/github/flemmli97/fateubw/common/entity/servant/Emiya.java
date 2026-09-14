@@ -15,6 +15,7 @@ import io.github.flemmli97.fateubw.common.entity.misc.WeaponProjectile;
 import io.github.flemmli97.fateubw.common.entity.utils.CooldownHolder;
 import io.github.flemmli97.fateubw.common.entity.utils.ServantModelLike;
 import io.github.flemmli97.fateubw.common.network.S2CScreenShake;
+import io.github.flemmli97.fateubw.common.particles.SwirlingCylinderData;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailInfo;
 import io.github.flemmli97.fateubw.common.particles.trail.TrailParticleData;
 import io.github.flemmli97.fateubw.common.particles.trail.provider.entity.EntityWeaponTrailProvider;
@@ -331,6 +332,21 @@ public class Emiya extends BaseServant {
                                             .setColor2(10 / 255f, 10 / 255f, 10 / 255f, 0.2f)
                                             .setType(TrailInfo.Visual.TEXTURE, 0)
                                             .build()),
+                            this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+                }
+                if (anim.is(CALADBOLG) && this.tickCount % 2 == 0 && !anim.isPast("shoot")) {
+                    float r = this.getRandom().nextIntBetweenInclusive(225, 255) / 255f;
+                    float g = this.getRandom().nextIntBetweenInclusive(0, 20) / 255f;
+                    float b = this.getRandom().nextIntBetweenInclusive(10, 40) / 255f;
+                    this.level().addParticle(new SwirlingCylinderData(FateParticles.SWIRLING_CYLINDER.get(),
+                                    this.getBbWidth() * 2, this.getBbWidth() * 2, this.getBbHeight() * 2,
+                                    r, g, b, 1,
+                                    r, g, b, 0, 10, false),
+                            this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+                    this.level().addParticle(new SwirlingCylinderData(FateParticles.SWIRLING_CYLINDER.get(),
+                                    this.getBbWidth() * 2, this.getBbWidth() * 2, this.getBbHeight() * 2,
+                                    r, g, b, 1,
+                                    r, g, b, 0, 10, true),
                             this.getX(), this.getY(), this.getZ(), 0, 0, 0);
                 }
             }
