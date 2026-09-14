@@ -84,6 +84,7 @@ public class EventCalls {
                 if (att != null) {
                     entity.heal((float) att.getValue());
                 }
+                FateAttachments.DAMAGE_CONTAINER.get().get(entity).tick();
             }
         }
     }

@@ -2,7 +2,9 @@ package io.github.flemmli97.fateubw.common.utils;
 
 import com.mojang.datafixers.util.Pair;
 import io.github.flemmli97.fateubw.api.entity.ServantLike;
+import io.github.flemmli97.fateubw.common.attachment.DamageContainer;
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
+import io.github.flemmli97.fateubw.common.registry.FateAttachments;
 import io.github.flemmli97.fateubw.common.registry.FateAttributes;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import io.github.flemmli97.fateubw.common.world.TeamHandler;
@@ -47,20 +49,26 @@ public class Utils {
         if (invulnerability == 20) {
             return attack.test(target);
         }
+        if (source == null || !(target instanceof LivingEntity living)) {
+            return attack.test(target);
+        }
         int invul = target.invulnerableTime;
         boolean modified = false;
-        boolean sourceCheck = true;
-        if (target instanceof LivingEntity living && source != null) {
-            if (living.getLastHurtByMob() != source) {
-                sourceCheck = false;
+        DamageContainer damageContainer = FateAttachments.DAMAGE_CONTAINER.get().get(living);
+        DamageContainer.HurtState state = damageContainer.canHurtThis(source, invulnerability);
+        switch (state) {
+            case DENY -> {
+                return false;
+            }
+            case ALLOW -> {
+                target.invulnerableTime = Math.min(target.invulnerableTime, 10);
+                modified = true;
             }
         }
-        if (target.invulnerableTime + invulnerability <= 20 && sourceCheck) {
-            target.invulnerableTime = Math.min(target.invulnerableTime, 10);
-            modified = true;
-        }
         boolean success = attack.test(target);
-        if (!success && modified) {
+        if (success) {
+            damageContainer.recordDamage(source);
+        } else if (modified) {
             target.invulnerableTime = invul;
         }
         return success;
