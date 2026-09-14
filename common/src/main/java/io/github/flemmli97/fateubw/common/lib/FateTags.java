@@ -33,6 +33,7 @@ public class FateTags {
         public static final TagKey<EntityType<?>> MANA_LEECHING_SUMMONS = TagKey.create(Registries.ENTITY_TYPE, Fate.modRes("mana_leeching_summons"));
 
         public static final TagKey<EntityType<?>> NON_INTERCEPTABLE_PROJECTILE = TagKey.create(Registries.ENTITY_TYPE, Fate.modRes("non_interceptable_projectile"));
+        public static final TagKey<EntityType<?>> CANNOT_BE_WARPED = TagKey.create(Registries.ENTITY_TYPE, Fate.modRes("cannot_be_warped"));
     }
 
     public static class DamageTypes {

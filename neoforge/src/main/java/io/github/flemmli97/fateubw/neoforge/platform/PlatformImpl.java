@@ -9,6 +9,7 @@ import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.neoforged.neoforge.entity.PartEntity;
 import net.neoforged.neoforge.event.EventHooks;
 
 public class PlatformImpl implements Platform {
@@ -33,5 +34,10 @@ public class PlatformImpl implements Platform {
         if (stack.getItem() instanceof BowItem bow)
             return bow.customArrow(arrow, ammo, stack);
         return arrow;
+    }
+
+    @Override
+    public boolean isPartEntity(Entity entity) {
+        return Platform.super.isPartEntity(entity) || entity instanceof PartEntity<?>;
     }
 }

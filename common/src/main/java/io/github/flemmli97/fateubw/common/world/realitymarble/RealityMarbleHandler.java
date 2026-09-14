@@ -1,7 +1,9 @@
 package io.github.flemmli97.fateubw.common.world.realitymarble;
 
 import io.github.flemmli97.fateubw.common.config.CommonConfig;
+import io.github.flemmli97.fateubw.common.lib.FateTags;
 import io.github.flemmli97.fateubw.common.registry.FateAttachments;
+import io.github.flemmli97.fateubw.platform.Platform;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -101,7 +103,7 @@ public class RealityMarbleHandler extends SavedData {
         List<Entity> vehicles = new ArrayList<>();
         entities.forEach(entity -> this.addVehicles(vehicles, entity, entities));
         entities.addAll(vehicles);
-        entities.remove(creator);
+        entities.removeIf(e -> Platform.INSTANCE.isPartEntity(e) || e == creator || e.getType().is(FateTags.EntityTypes.CANNOT_BE_WARPED));
         RealityMarbleGroup current = this.getGroupOf(creator);
         RealityMarbleGroup group;
         if (current != null) {

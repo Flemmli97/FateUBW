@@ -442,6 +442,9 @@ public class Emiya extends BaseServant {
             }
         } else if (anim.is(CALADBOLG)) {
             LivingEntity target = this.getTarget();
+            if (target != null) {
+                this.getLookControl().setLookAt(target, 60.0F, 30.0F);
+            }
             if (anim.isAt("use_start")) {
                 this.startUsingItem(this.bowHand());
             }
@@ -454,6 +457,9 @@ public class Emiya extends BaseServant {
             }
         } else if (anim.is(BOW_1, BOW_2)) {
             LivingEntity target = this.getTarget();
+            if (target != null) {
+                this.getLookControl().setLookAt(target, 60.0F, 30.0F);
+            }
             if (anim.isAt("use_start")) {
                 this.startUsingItem(this.bowHand());
             }
@@ -488,7 +494,7 @@ public class Emiya extends BaseServant {
             this.fallDistance = 0;
         } else if (anim.is(UBW_ATTACK_1, UBW_ATTACK_2)) {
             LivingEntity target = this.getTarget();
-            if (!anim.isPast("shoot") && target != null) {
+            if (target != null) {
                 this.getLookControl().setLookAt(target, 60.0F, 30.0F);
             }
             if (anim.isAt("shoot")) {
