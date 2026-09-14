@@ -138,7 +138,8 @@ public class FateEntities {
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.27)
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(100)
-                    .withConfigData(ServantExtraData.CALADBOLG_COOLDOWN));
+                    .withConfigData(ServantExtraData.CALADBOLG_COOLDOWN)
+                    .withConfigData(ServantExtraData.REALITY_MARBLE_DURATION));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<Gilgamesh>> GILGAMESH = regServant("gilgamesh_archer", "Gate of Babylon/EA", EntityType.Builder.of(Gilgamesh::new, MobCategory.MISC)
                     .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
             0xfff400, 0xffdb00,
@@ -218,7 +219,8 @@ public class FateEntities {
                     .withConfigData(ServantExtraData.MOUNT_SUMMON_COOLDOWN)
                     .withConfigData(ServantExtraData.ARMY_SUMMON_COOLDOWN)
                     .withConfigData(ServantExtraData.MAX_NEARBY_ARMY)
-                    .withConfigData(ServantExtraData.STRONG_HOPLITE_CHANCE));
+                    .withConfigData(ServantExtraData.STRONG_HOPLITE_CHANCE)
+                    .withConfigData(ServantExtraData.REALITY_MARBLE_DURATION));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<Medusa>> MEDUSA = regServant("medusa_rider", "Bellerophon", EntityType.Builder.of(Medusa::new, MobCategory.MISC)
                     .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
             0x000000, 0xf234ea,

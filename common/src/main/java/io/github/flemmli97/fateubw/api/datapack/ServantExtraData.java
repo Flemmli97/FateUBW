@@ -11,6 +11,7 @@ import com.mojang.serialization.RecordBuilder;
 import io.github.flemmli97.fateubw.Fate;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProviders;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
@@ -39,6 +40,7 @@ public class ServantExtraData {
     public static final DataType<Integer> MAX_NEARBY_ARMY = register(Fate.MODID, "max_nearby_army", Codec.INT, 12);
     public static final DataType<Float> STRONG_HOPLITE_CHANCE = register(Fate.MODID, "strong_hoplite_chance", Codec.FLOAT, 0.1f);
     public static final DataType<Float> BLOCK_CHANCE = register(Fate.MODID, "block_chance", Codec.FLOAT, 0.33f);
+    public static final DataType<NumberProvider> REALITY_MARBLE_DURATION = register(Fate.MODID, "reality_marble_duration", NumberProviders.CODEC, ConstantValue.exactly(1200));
 
     public static final Codec<ServantExtraData> CODEC = new Codec<>() {
         @Override

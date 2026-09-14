@@ -320,7 +320,9 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
                                 }),
                         new SetMoveToRestriction<BaseServant>().startCondition(m -> !m.getAnimationHandler().isCurrent(this.idleAnimations())),
                         (ExtendedBehaviour<? super BaseServant>) this.getWanderBehaviour().startCondition(m -> m.getRandom().nextInt(120) == 0 && !m.getAnimationHandler().isCurrent(this.idleAnimations())),
-                        (ExtendedBehaviour<? super BaseServant>) this.idleAnimationsBehaviour().startCondition(m -> m.idleAnimationCooldown.canUse() && !m.getAnimationHandler().hasAnimation() && m.getNavigation().isDone() && m.idleAnimations().length > 0)
+                        (ExtendedBehaviour<? super BaseServant>) this.idleAnimationsBehaviour()
+                                .startCondition(m -> m.idleAnimationCooldown.offCooldown() && !m.isInLiquid() && !m.getAnimationHandler().hasAnimation()
+                                        && m.getNavigation().isDone() && m.idleAnimations().length > 0)
                 )
         );
     }
@@ -461,7 +463,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
             if (this.cooldowns != null) {
                 this.cooldowns.values().forEach(CooldownHolder::tick);
             }
-            if (this.isAlive() && this.tickCount > 400 && !((CombatTrackerAccessor) this.getCombatTracker()).fateubw$getInCombat() && this.combatTracker.canUse()) {
+            if (this.isAlive() && this.tickCount > 400 && !((CombatTrackerAccessor) this.getCombatTracker()).fateubw$getInCombat() && this.combatTracker.offCooldown()) {
                 RealityMarbleHandler.get(this.getServer())
                         .deleteGroupOf(this);
             }
@@ -512,6 +514,11 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
         return move;
     }
 
+    @Override
+    protected float getWaterSlowDown() {
+        return 0.85f;
+    }
+
     protected Vec3 directionToLookAt() {
         return this.getAnimationHandler().hasAnimation() && this.getTargetPosition() != null
                 ? this.getTargetPosition().asVec(this.position()).subtract(this.position()) : null;
@@ -532,6 +539,13 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
         if (this.getEquipmentHandler() != null) {
             tag.put("EquipmentHandler", this.getEquipmentHandler().save(this.registryAccess()));
         }
+        CompoundTag cooldowns = new CompoundTag();
+        this.cooldowns.forEach((key, value) -> {
+            if (value.shouldPersist()) {
+                cooldowns.put(key, value.save());
+            }
+        });
+        tag.put("Cooldowns", cooldowns);
     }
 
     @Override
@@ -549,6 +563,13 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
         if (this.getEquipmentHandler() != null) {
             this.getEquipmentHandler().read(tag.getCompound("EquipmentHandler"), this.registryAccess());
         }
+        CompoundTag cooldowns = tag.getCompound("Cooldowns");
+        cooldowns.getAllKeys().forEach(k -> {
+            CooldownHolder holder = this.cooldowns.get(k);
+            if (holder != null) {
+                holder.load(cooldowns.get(k));
+            }
+        });
     }
 
     public TargetPosition getTargetPosition() {

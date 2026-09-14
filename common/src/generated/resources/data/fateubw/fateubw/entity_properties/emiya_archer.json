@@ -17,7 +17,8 @@
       "type": "minecraft:uniform",
       "max": 500.0,
       "min": 200.0
-    }
+    },
+    "fateubw:reality_marble_duration": 1200.0
   },
   "noble_phantasm_cost": 100,
   "weight": 1

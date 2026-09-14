@@ -134,10 +134,12 @@ public class Emiya extends BaseServant {
     private boolean leftHandAttackFlag;
 
     private final CooldownHolder caladBolgCooldown;
+    private final CooldownHolder realityMarbleDuration;
 
     public Emiya(EntityType<? extends Emiya> entityType, Level level) {
         super(entityType, level);
         this.caladBolgCooldown = this.createCooldown("caladbolg", this.props().getConfig(ServantExtraData.CALADBOLG_COOLDOWN));
+        this.realityMarbleDuration = this.createCooldown("reality_marble_duration", this.props().getConfig(ServantExtraData.REALITY_MARBLE_DURATION)).persist();
     }
 
     @Override
@@ -196,12 +198,12 @@ public class Emiya extends BaseServant {
                 .start(DUAL_BLADE_THROW).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(12), 16, 28))
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
                         .min(5).max(12).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.moveAttack())
-                .end(6)
+                .end(3)
                 .start(DUAL_BLADE_THROW).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(12), 16, 28))
                 .condition(BehaviourUtils.ifFurtherThan(9))
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
                         .min(5).max(16).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.moveAttack())
-                .end(8)
+                .end(7)
                 .start(DUAL_BLADE_THROW).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(12), 16, 28))
                 .condition(Emiya::isInRealityMarble)
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
@@ -273,7 +275,7 @@ public class Emiya extends BaseServant {
                 .prepare(new SetWalkTargetToAttackTarget<Emiya>().speedMod((owner, target) -> ATTACK_MOVE_SPEED).closeEnoughDist(BehaviourUtils.closeEnough(20))).prepareOptional(BehaviourUtils.timedMoveAttack())
                 .end(13)
                 .start(CALADBOLG).play(BehaviourUtils.cooldownedPlay(false, 20, 30))
-                .condition(owner -> owner.caladBolgCooldown.canUse())
+                .condition(owner -> owner.caladBolgCooldown.offCooldown())
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
                         .min(8).max(16).speedMod(ATTACK_MOVE_SPEED + 0.1f)).prepareOptional(BehaviourUtils.moveAttack())
                 .end(5)
@@ -334,6 +336,9 @@ public class Emiya extends BaseServant {
             }
         } else {
             this.heldEquipmentHandler.setInUse(this.getAnimationHandler().isCurrent(BOW_1, BOW_2, BOW_AIR, CALADBOLG));
+            if (this.realityMarbleDuration.offCooldown()) {
+                RealityMarbleHandler.get(this.getServer()).deleteGroupOf(this);
+            }
         }
     }
 
@@ -374,10 +379,10 @@ public class Emiya extends BaseServant {
                 }
             }
             if (anim.isAt("cast")) {
-                if (!this.canOverrideRealityMarble() || !this.attemptUseNobelPhantasm()) {
-                    this.getAnimationHandler().setAnimation(null);
-                    return;
-                }
+//                if (!this.canOverrideRealityMarble() || !this.attemptUseNobelPhantasm()) {
+//                    this.getAnimationHandler().setAnimation(null);
+//                    return;
+//                }
                 AdvancedParticleContainer.make(FateParticles.SPHERE.get())
                         .addData(new ScaleData(0, 48, 40))
                         .addData(new ColorData(1, 1, 1, 0.5f))
@@ -415,6 +420,7 @@ public class Emiya extends BaseServant {
             if (anim.isAt("teleport")) {
                 List<Entity> entities = this.level().getEntities(EntityTypeTest.forClass(Entity.class), this.getBoundingBox().inflate(48), e -> true);
                 this.heal(this.getMaxHealth() * 0.2f);
+                this.realityMarbleDuration.use();
                 RealityMarbleHandler.get(this.getServer())
                         .createAndTransportTo(this, entities, FateDimensions.UNLIMITED_BLADEWORKS.dimension());
             }

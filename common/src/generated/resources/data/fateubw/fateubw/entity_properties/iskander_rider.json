@@ -23,6 +23,7 @@
       "max": 600.0,
       "min": 250.0
     },
+    "fateubw:reality_marble_duration": 1200.0,
     "fateubw:strong_hoplite_chance": 0.1
   },
   "noble_phantasm_cost": 70,

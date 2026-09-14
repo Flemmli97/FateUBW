@@ -118,6 +118,8 @@ public class ProjectileBlockingItemEntity extends BaseProjectile {
             Entity owner = this.getOwner();
             if (owner != null) {
                 this.setRot(owner.getViewYRot(1), 0);
+            } else {
+                this.discard();
             }
         } else {
             Vec3 motion = this.getDeltaMovement();

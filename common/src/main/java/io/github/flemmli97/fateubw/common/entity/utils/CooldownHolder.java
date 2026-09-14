@@ -1,5 +1,8 @@
 package io.github.flemmli97.fateubw.common.entity.utils;
 
+import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.NumericTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -16,6 +19,7 @@ public class CooldownHolder {
     private final Entity entity;
     private final NumberProvider provider;
     private final BooleanSupplier requirement;
+    private boolean shouldPersist;
 
     private int cooldown;
 
@@ -25,7 +29,12 @@ public class CooldownHolder {
         this.requirement = requirement;
     }
 
-    public boolean canUse() {
+    public CooldownHolder persist() {
+        this.shouldPersist = true;
+        return this;
+    }
+
+    public boolean offCooldown() {
         return this.cooldown <= 0;
     }
 
@@ -49,5 +58,17 @@ public class CooldownHolder {
                 .withParameter(LootContextParams.THIS_ENTITY, this.entity)
                 .create(LootContextParamSets.COMMAND))
                 .create(Optional.empty());
+    }
+
+    public boolean shouldPersist() {
+        return this.shouldPersist;
+    }
+
+    public Tag save() {
+        return IntTag.valueOf(this.cooldown);
+    }
+
+    public void load(Tag tag) {
+        this.cooldown = tag instanceof NumericTag t ? t.getAsInt() : 0;
     }
 }

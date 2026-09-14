@@ -119,11 +119,13 @@ public class Iskander extends BaseServant {
 
     private final CooldownHolder summonCooldown;
     private final CooldownHolder armySummonCooldown;
+    private final CooldownHolder realityMarbleDuration;
 
     public Iskander(EntityType<? extends Iskander> entityType, Level level) {
         super(entityType, level);
         this.summonCooldown = this.createCooldown("summon", this.props().getConfig(ServantExtraData.MOUNT_SUMMON_COOLDOWN), () -> !this.isPassenger());
         this.armySummonCooldown = this.createCooldown("army_summon", this.props().getConfig(ServantExtraData.ARMY_SUMMON_COOLDOWN));
+        this.realityMarbleDuration = this.createCooldown("reality_marble_duration", this.props().getConfig(ServantExtraData.REALITY_MARBLE_DURATION)).persist();
     }
 
     @Override
@@ -232,6 +234,10 @@ public class Iskander extends BaseServant {
                             this.getX(), this.getY(), this.getZ(), 0, 0, 0);
                 }
             }
+        } else {
+            if (this.realityMarbleDuration.offCooldown()) {
+                RealityMarbleHandler.get(this.getServer()).deleteGroupOf(this);
+            }
         }
     }
 
@@ -284,6 +290,7 @@ public class Iskander extends BaseServant {
             if (anim.isAt("teleport")) {
                 List<Entity> entities = this.level().getEntities(EntityTypeTest.forClass(Entity.class), this.getBoundingBox().inflate(48), e -> true);
                 this.heal(this.getMaxHealth() * 0.2f);
+                this.realityMarbleDuration.use();
                 RealityMarbleHandler.get(this.getServer())
                         .createAndTransportTo(this, entities, FateDimensions.SAND_DUNES.dimension());
             }
@@ -446,7 +453,7 @@ public class Iskander extends BaseServant {
     }
 
     protected boolean canSummonMounts() {
-        return !this.isPassenger() && this.summonCooldown.canUse();
+        return !this.isPassenger() && this.summonCooldown.offCooldown();
     }
 
     public void summonChariot() {
@@ -490,7 +497,7 @@ public class Iskander extends BaseServant {
     }
 
     public boolean canSummonHoplites() {
-        return this.armySummonCooldown.canUse() && this.level().getEntitiesOfClass(Hoplite.class, this.getBoundingBox().inflate(32), e -> this.getUUID().equals(e.getOwnerUUID())).size() < this.props().getConfig(ServantExtraData.MAX_NEARBY_ARMY);
+        return this.armySummonCooldown.offCooldown() && this.level().getEntitiesOfClass(Hoplite.class, this.getBoundingBox().inflate(32), e -> this.getUUID().equals(e.getOwnerUUID())).size() < this.props().getConfig(ServantExtraData.MAX_NEARBY_ARMY);
     }
 
     public void summonArmy() {
