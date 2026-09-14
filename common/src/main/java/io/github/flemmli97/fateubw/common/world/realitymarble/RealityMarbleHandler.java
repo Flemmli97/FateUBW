@@ -106,7 +106,7 @@ public class RealityMarbleHandler extends SavedData {
         RealityMarbleGroup group;
         if (current != null) {
             this.removeGroup(current.id());
-            Pair<Integer, BlockPos> free = this.findFreePosition(targetLevel);
+            Pair<Integer, BlockPos> free = this.findFreePosition(target);
             // Add all entities from existing group since we need to teleport them too
             ServerLevel currentLevel = (ServerLevel) creator.level();
             current.loadChunks(currentLevel);
@@ -121,7 +121,7 @@ public class RealityMarbleHandler extends SavedData {
                     current.sourcePosition(),
                     targetLevel, free.right(), free.first(), entities.stream().map(Entity::getUUID).toList());
         } else {
-            Pair<Integer, BlockPos> free = this.findFreePosition(targetLevel);
+            Pair<Integer, BlockPos> free = this.findFreePosition(target);
             group = new RealityMarbleGroup(UUID.randomUUID(), creator.getUUID(),
                     creator.level().dimension(),
                     creator.blockPosition(),
@@ -133,14 +133,18 @@ public class RealityMarbleHandler extends SavedData {
         this.setDirty();
     }
 
-    private Pair<Integer, BlockPos> findFreePosition(ResourceKey<Level> targetLevel) {
+    private Pair<Integer, BlockPos> findFreePosition(ServerLevel targetLevel) {
         int idx = 0;
-        Int2ObjectMap<UUID> lookup = this.spacingLookup.get(targetLevel);
+        Int2ObjectMap<UUID> lookup = this.spacingLookup.get(targetLevel.dimension());
         while (lookup != null && lookup.containsKey(idx)) {
             idx++;
         }
         int[] coords = PositionUtil.spiralCoord(idx);
-        return Pair.of(idx, new BlockPos(coords[0] * PositionUtil.SPACING, 0, coords[1] * PositionUtil.SPACING));
+        int x = coords[0] * PositionUtil.SPACING;
+        int z = coords[1] * PositionUtil.SPACING;
+        int height = targetLevel.getChunk(SectionPos.blockToSectionCoord(x), SectionPos.blockToSectionCoord(z))
+                .getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) + 1;
+        return Pair.of(idx, new BlockPos(coords[0] * PositionUtil.SPACING, height, coords[1] * PositionUtil.SPACING));
     }
 
     private void addVehicles(List<Entity> vehicles, Entity current, List<Entity> entities) {
@@ -201,10 +205,9 @@ public class RealityMarbleHandler extends SavedData {
         if (entity.level().dimension().equals(targetLevel.dimension())) {
             return;
         }
-        Vec3 offset = entity.position().subtract(center.getX() + 0.5, 0, center.getZ() + 0.5);
-        Vec3 pos = offset.add(targetPosition.getX() + 0.5, 0, targetPosition.getZ() + 0.5);
-        BlockPos blockPos = BlockPos.containing(pos);
-        int height = targetLevel.getChunkAt(blockPos).getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, blockPos.getX(), blockPos.getZ()) + 1;
+        Vec3 offset = entity.position().subtract(center.getX() + 0.5, center.getY(), center.getZ() + 0.5);
+        Vec3 pos = offset.add(targetPosition.getX() + 0.5, targetPosition.getY(), targetPosition.getZ() + 0.5);
+        double height = Math.clamp(pos.y(), targetLevel.getMinBuildHeight(), targetLevel.getMaxBuildHeight());
         AABB aabb = this.collectiveBB(entity, null).toAABB()
                 .move(-entity.getX(), -entity.getY(), -entity.getZ())
                 .move(pos.x(), height, pos.z());
@@ -212,7 +215,7 @@ public class RealityMarbleHandler extends SavedData {
             height++;
             aabb = aabb.move(0, 1, 0);
         }
-        int finalHeight = height;
+        double finalHeight = height;
         Entity toTeleport = entity;
         entity.getServer().tell(new TickTask(1, () -> toTeleport.changeDimension(new DimensionTransition(targetLevel, new Vec3(pos.x(), finalHeight, pos.z()), Vec3.ZERO, toTeleport.getYRot(), toTeleport.getXRot(), DimensionTransition.PLACE_PORTAL_TICKET))));
     }
@@ -322,10 +325,6 @@ public class RealityMarbleHandler extends SavedData {
                 lookup.put(id.toString(), EntityMarbleData.CODEC.encodeStart(NbtOps.INSTANCE, data).getOrThrow()));
         tag.put("lookup", lookup);
         return tag;
-    }
-
-    public String debug() {
-        return String.format("%s %s ", this.realityMarbleGroups, this.entityGroupLookup);
     }
 
     private static class MutableAABB {
