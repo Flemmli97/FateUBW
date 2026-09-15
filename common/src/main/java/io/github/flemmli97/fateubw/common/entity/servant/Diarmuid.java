@@ -103,8 +103,8 @@ public class Diarmuid extends BaseServant {
     }
 
     @Override
-    protected void definedAdditinoalSyncedData(SyncedDataContainer.Builder<BaseServant> builder) {
-        super.definedAdditinoalSyncedData(builder);
+    protected void definedAdditionalSyncedData(SyncedDataContainer.Builder<BaseServant> builder) {
+        super.definedAdditionalSyncedData(builder);
         builder.define(BLINK_TARGET, TenshilibSyncableEntityDatas.VEC_3.get(), null);
     }
 

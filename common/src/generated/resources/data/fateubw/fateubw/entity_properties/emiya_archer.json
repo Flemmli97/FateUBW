@@ -3,6 +3,7 @@
     "fateubw:combat_regen": 1.0,
     "fateubw:magic_attack": 10.0,
     "fateubw:magic_resistance": 9.0,
+    "fateubw:mana_leech": 0.5,
     "fateubw:passive_regen": 10.0,
     "fateubw:projectile_resistance": 17.0,
     "minecraft:generic.armor": 15.0,

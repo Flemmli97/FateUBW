@@ -121,8 +121,8 @@ public class Nero extends BaseServant {
     }
 
     @Override
-    protected void definedAdditinoalSyncedData(SyncedDataContainer.Builder<BaseServant> builder) {
-        super.definedAdditinoalSyncedData(builder);
+    protected void definedAdditionalSyncedData(SyncedDataContainer.Builder<BaseServant> builder) {
+        super.definedAdditionalSyncedData(builder);
         builder.define(CHARGE_DIRECTION, TenshilibSyncableEntityDatas.VEC_3.get(), null);
     }
 

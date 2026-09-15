@@ -199,7 +199,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
     public BaseServant(EntityType<? extends BaseServant> entityType, Level level) {
         super(entityType, level);
         SyncedDataContainer.Builder<BaseServant> builder = SyncedDataContainer.builder(this);
-        this.definedAdditinoalSyncedData(builder);
+        this.definedAdditionalSyncedData(builder);
         this.syncedDataContainer = builder.build();
         this.moveControl = new MoveControllerPlus(this);
         this.xpReward = 35;
@@ -248,7 +248,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
         builder.define(MOVE_FLAGS, (byte) 0);
     }
 
-    protected void definedAdditinoalSyncedData(SyncedDataContainer.Builder<BaseServant> builder) {
+    protected void definedAdditionalSyncedData(SyncedDataContainer.Builder<BaseServant> builder) {
         builder.define(TARGET_POSITION, TenshilibSyncableEntityDatas.TARGET_POS.get(), null);
     }
 
@@ -467,6 +467,9 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
             if (this.isAlive() && this.tickCount > 400 && !((CombatTrackerAccessor) this.getCombatTracker()).fateubw$getInCombat() && this.combatTracker.offCooldown()) {
                 RealityMarbleHandler.get(this.getServer())
                         .deleteGroupOf(this);
+            }
+            if (this.tickCount % 20 == 0 && RealityMarbleHandler.get(this.getServer()).isManagingRealityMarble(this)) {
+                this.useMana(this.getMana());
             }
         } else {
             this.blinkTick++;

@@ -137,6 +137,7 @@ public class FateEntities {
                     .putAttributes(FateAttributes.MAGIC_ATTACK.asHolder(), 10).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 9)
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.27)
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
+                    .putAttributes(FateAttributes.MANA_LEECH.asHolder(), 0.5f)
                     .npCost(100)
                     .withConfigData(ServantExtraData.CALADBOLG_COOLDOWN)
                     .withConfigData(ServantExtraData.REALITY_MARBLE_DURATION));
@@ -215,6 +216,7 @@ public class FateEntities {
                     .putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 8)
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.28)
                     .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1.5).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
+                    .putAttributes(FateAttributes.MANA_LEECH.asHolder(), 0.5f)
                     .npCost(70)
                     .withConfigData(ServantExtraData.MOUNT_SUMMON_COOLDOWN)
                     .withConfigData(ServantExtraData.ARMY_SUMMON_COOLDOWN)
