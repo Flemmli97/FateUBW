@@ -359,19 +359,6 @@ public class Emiya extends BaseServant {
     }
 
     @Override
-    protected Vec3 directionToLookAt() {
-        if (this.getAnimationHandler().isCurrent(CALADBOLG)) {
-            if (!this.getAnimationHandler().getAnimation().isPast("shoot")) {
-                LivingEntity target = this.getTarget();
-                if (target != null)
-                    return target.getEyePosition().subtract(this.getEyePosition());
-            }
-            return null;
-        }
-        return super.directionToLookAt();
-    }
-
-    @Override
     public void handleAttack(AnimationState anim) {
         if (anim.is(UNLIMITED_BLADE_WORKS, UNLIMITED_BLADE_WORKS_FULL)) {
             this.getNavigation().stop();
@@ -442,8 +429,8 @@ public class Emiya extends BaseServant {
             }
         } else if (anim.is(CALADBOLG)) {
             LivingEntity target = this.getTarget();
-            if (target != null) {
-                this.getLookControl().setLookAt(target, 60.0F, 30.0F);
+            if (target != null && !anim.isPast("shoot")) {
+                this.setTargetPositionFromAttackTarget();
             }
             if (anim.isAt("use_start")) {
                 this.startUsingItem(this.bowHand());
@@ -457,8 +444,8 @@ public class Emiya extends BaseServant {
             }
         } else if (anim.is(BOW_1, BOW_2)) {
             LivingEntity target = this.getTarget();
-            if (target != null) {
-                this.getLookControl().setLookAt(target, 60.0F, 30.0F);
+            if (target != null && !anim.isPast("use_end")) {
+                this.setTargetPositionFromAttackTarget();
             }
             if (anim.isAt("use_start")) {
                 this.startUsingItem(this.bowHand());
@@ -494,8 +481,8 @@ public class Emiya extends BaseServant {
             this.fallDistance = 0;
         } else if (anim.is(UBW_ATTACK_1, UBW_ATTACK_2)) {
             LivingEntity target = this.getTarget();
-            if (target != null) {
-                this.getLookControl().setLookAt(target, 60.0F, 30.0F);
+            if (target != null && !anim.isPast("shoot")) {
+                this.setTargetPositionFromAttackTarget();
             }
             if (anim.isAt("shoot")) {
                 if (this.getRandom().nextFloat() < 0.4) {

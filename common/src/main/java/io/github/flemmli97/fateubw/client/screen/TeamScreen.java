@@ -13,6 +13,7 @@ import io.github.flemmli97.tenshilib.client.gui.widget.list.SelectableText;
 import io.github.flemmli97.tenshilib.loader.LoaderNetwork;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.WidgetSprites;
@@ -150,7 +151,8 @@ public class TeamScreen extends Screen {
                                         .with(this.getButton(C2STeamUuidMessage.Type.RETRACT_REQUEST, t.getFirst().id()));
                             } else if (t.getSecond() == GrailTeam.TeamStatus.ALLY) {
                                 return new SelectableText("\uD83D\uDEE1 " + t.getFirst().name(), ChatFormatting.AQUA)
-                                        .with(this.getButton(C2STeamUuidMessage.Type.DISSOLVE_ALLY, t.getFirst().id()));
+                                        .with(this.getButton(C2STeamUuidMessage.Type.DISSOLVE_ALLY, t.getFirst().id()))
+                                        .withSimpleHoverComponent(Component.translatable("fateubw.gui.shift.more"), () -> this.admin && !Screen.hasShiftDown());
                             } else {
                                 return new SelectableText(t.getFirst().name())
                                         .with(this.getButton(C2STeamUuidMessage.Type.REQUEST_ALLY, t.getFirst().id()));
@@ -166,14 +168,15 @@ public class TeamScreen extends Screen {
                             members.stream().<SelectableEntry>map(t -> {
                                 if (t.getSecond() == GrailTeam.TeamPosition.ADMIN) {
                                     return new SelectableText("◇ " + t.getFirst().getName(), ChatFormatting.AQUA)
-                                            .with(this.getButton(C2STeamUuidMessage.Type.DEMOTE, t.getFirst().getId()));
+                                            .with(this.getButton(C2STeamUuidMessage.Type.DEMOTE, t.getFirst().getId()))
+                                            .withSimpleHoverComponent(Component.translatable("fateubw.gui.shift.more"), () -> this.admin && !Screen.hasShiftDown());
                                 } else if (t.getSecond() == GrailTeam.TeamPosition.CREATOR) {
-                                    return new SelectableText("☆ " + t.getFirst().getName(), ChatFormatting.GOLD)
-                                            .noSelect();
+                                    return new SelectableText("☆ " + t.getFirst().getName(), ChatFormatting.GOLD).noSelect();
                                 } else {
                                     return new SelectableText(t.getFirst().getName())
                                             .with(this.getButton(C2STeamUuidMessage.Type.PROMOTE, t.getFirst().getId()),
-                                                    this.getButton(C2STeamUuidMessage.Type.KICK, t.getFirst().getId()));
+                                                    this.getButton(C2STeamUuidMessage.Type.KICK, t.getFirst().getId()))
+                                            .withSimpleHoverComponent(Component.translatable("fateubw.gui.shift.more"), () -> this.admin && !Screen.hasShiftDown());
                                 }
                             }).toList()));
                 }
@@ -188,6 +191,9 @@ public class TeamScreen extends Screen {
         graphics.blit(this.page.texture, this.leftPos, this.topPos, 0, 0, this.sizeX, this.sizeY);
         if (this.leaveButton != null) {
             this.leaveButton.active = hasShiftDown();
+        }
+        if (!hasShiftDown() && this.isOverWidget(this.leaveButton, mouseX, mouseY)) {
+            graphics.renderTooltip(this.font, Component.translatable("fateubw.gui.shift"), mouseX, mouseY);
         }
         if (this.page == Pages.MAIN) {
             if (this.info.team().isPresent()) {
@@ -216,6 +222,13 @@ public class TeamScreen extends Screen {
             int width = this.font.width(txt);
             graphics.drawString(this.font, txt, this.leftPos + this.sizeX / 2 - width / 2, this.topPos + 12, 0, false);
         }
+    }
+
+    protected boolean isOverWidget(AbstractWidget widget, int mouseX, int mouseY) {
+        return mouseX >= (double) widget.getX()
+                && mouseY >= (double) widget.getY()
+                && mouseX < (double) (widget.getX() + widget.getWidth())
+                && mouseY < (double) (widget.getY() + widget.getHeight());
     }
 
     private SelectableText.SelectButton getButton(C2STeamUuidMessage.Type type, UUID uuid) {

@@ -130,7 +130,7 @@ public class TeamHandler extends SavedData {
             this.removeFromTeam(player, target, team);
     }
 
-    public void removeFromTeam(Player source, UUID player, UUID teamID) {
+    private void removeFromTeam(Player source, UUID player, UUID teamID) {
         GrailTeam team = this.teams.get(teamID);
         if (team == null) {
             return;
@@ -138,6 +138,7 @@ public class TeamHandler extends SavedData {
         if (source.getUUID().equals(player) && team.getCreator().equals(player)) {
             team.onDisband(this);
             this.teamsByPlayer.remove(player);
+            team.members().forEach(this.teamsByPlayer::remove);
             this.teams.remove(team.getId());
             this.onTeamChange(this.listeners.keySet());
         } else if (team.removePlayer(source, player)) {

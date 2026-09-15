@@ -318,13 +318,16 @@ public class Artoria extends BaseServant {
                 this.startUsingItem(InteractionHand.MAIN_HAND);
                 this.getMainHandItem().set(FateDataComponents.GLOWING_ITEM.get(), Unit.INSTANCE);
             }
-            if (!anim.isAt("attack")) {
+            if (!anim.isPast("attack")) {
                 this.setTargetPositionFromAttackTarget();
             }
             if (anim.isAt("attack")) {
                 this.excalibur(this.getTargetPosition());
             }
         } else if (anim.is(INVISIBLE_BURST)) {
+            if (!anim.isPast("start")) {
+                this.setTargetPositionFromAttackTarget();
+            }
             if (anim.isAt("start")) {
                 Vec3 dir = this.getTarget() != null ? this.getTarget().position().subtract(this.position()) : this.getViewVector(1);
                 dir = new Vec3(dir.x(), 0, dir.z());
@@ -381,6 +384,9 @@ public class Artoria extends BaseServant {
             if (anim.isAt("critical")) {
                 this.playSound(FateSounds.SWOOSH_1.get(), 2, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.2F);
                 this.mobAttack(anim, this.getTarget(), this::doHurtTarget);
+            }
+            if (!anim.isPast("attack")) {
+                this.setTargetPositionFromAttackTarget();
             }
             if (anim.isAt("setup")) {
                 float yRot = this.getViewYRot(1);

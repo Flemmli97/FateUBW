@@ -181,6 +181,8 @@
   "fateubw.gui.nobel_phantasm": "Nobel Phantasm",
   "fateubw.gui.nobel_phantasm_cost": "Mana Cost",
   "fateubw.gui.save": "Save",
+  "fateubw.gui.shift": "Hold shift",
+  "fateubw.gui.shift.more": "Hold shift for more...",
   "fateubw.gui.spawn.master": "Master",
   "fateubw.gui.spawn.war": "Create/Join grailwar",
   "fateubw.gui.spawn.war.help": "Requires being master",

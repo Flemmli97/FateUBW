@@ -205,6 +205,8 @@ public class Lang implements DataProvider {
         this.add("fateubw.gui.team.demote", "Demote");
         this.add("fateubw.gui.team.request", "Request");
         this.add("fateubw.gui.team.rename", "Click to rename team");
+        this.add("fateubw.gui.shift", "Hold shift");
+        this.add("fateubw.gui.shift.more", "Hold shift for more...");
 
         this.add("fateubw.gui.holy_grail", "Holy Grail");
 

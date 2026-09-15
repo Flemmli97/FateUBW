@@ -297,7 +297,7 @@ public class Iskander extends BaseServant {
         } else if (anim.is(SUMMON_CHARIOT, SUMMON_BUCEPHALOS)) {
             LivingEntity target = this.getTarget();
             if (target != null && !anim.isPast(0.28)) {
-                this.lookAt(target, 60, 30);
+                this.setTargetPositionFromAttackTarget();
             }
             this.level().getEntities(EntityTypeTest.forClass(LivingEntity.class),
                             this.getBoundingBox().inflate(12, 8, 12),
@@ -319,7 +319,7 @@ public class Iskander extends BaseServant {
         } else if (anim.is(SUMMON_ARMY)) {
             LivingEntity target = this.getTarget();
             if (target != null && !anim.isPast(0.28)) {
-                this.lookAt(target, 60, 30);
+                this.setTargetPositionFromAttackTarget();
             }
             if (anim.isAt("summon")) {
                 this.summonArmy();
