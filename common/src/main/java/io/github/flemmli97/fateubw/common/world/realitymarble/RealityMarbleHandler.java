@@ -213,7 +213,9 @@ public class RealityMarbleHandler extends SavedData {
         AABB aabb = this.collectiveBB(entity, null).toAABB()
                 .move(-entity.getX(), -entity.getY(), -entity.getZ())
                 .move(pos.x(), height, pos.z());
-        while (!targetLevel.noCollision(entity, aabb)) {
+        // We need to load the chunk because the collision check does not
+        targetLevel.getChunk(SectionPos.blockToSectionCoord(pos.x()), SectionPos.blockToSectionCoord(pos.z()));
+        while (!targetLevel.noBlockCollision(entity, aabb)) {
             height++;
             aabb = aabb.move(0, 1, 0);
         }
