@@ -316,7 +316,6 @@ public class Lang implements DataProvider {
 
     public void add(Holder<SoundEvent> key) {
         String path = key.getKey().location().getPath();
-        path.substring(path.indexOf(".")).replace(".", "_");
         this.add(key.getKey().location().toString(), this.simpleTranslation(path.substring(path.indexOf(".")).replace(".", "_")));
     }
 

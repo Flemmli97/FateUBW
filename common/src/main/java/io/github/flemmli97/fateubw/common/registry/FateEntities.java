@@ -279,7 +279,7 @@ public class FateEntities {
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<SpearProjectile>> SPEAR = reg("spear", EntityType.Builder.<SpearProjectile>of(SpearProjectile::new, MobCategory.MISC).sized(0.25F, 0.25F));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<ReturningItemProjectile>> RETURNING_ITEM = reg("returning_item", EntityType.Builder.<ReturningItemProjectile>of(ReturningItemProjectile::new, MobCategory.MISC).sized(0.25F, 0.25F));
 
-    public static final RegistryEntrySupplier<EntityType<?>, EntityType<LesserMonster>> LESSER_MONSTER = regWithEgg("starfish_monster", EntityType.Builder.<LesserMonster>of(LesserMonster::new, MobCategory.MONSTER)
+    public static final RegistryEntrySupplier<EntityType<?>, EntityType<LesserMonster>> LESSER_MONSTER = regWithEgg("starfish_monster", EntityType.Builder.of(LesserMonster::new, MobCategory.MONSTER)
                     .clientTrackingRange(8).sized(0.6f, 1.5f),
             0x171c3f, 0x00ff00,
             new AttributeHolderProperties.Builder()

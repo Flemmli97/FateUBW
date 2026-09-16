@@ -36,6 +36,7 @@ public class CommandScreen extends Screen {
     private static final ResourceLocation SEAL_2 = Fate.modRes("icon/command_seal_2");
     private static final ResourceLocation SEAL_3 = Fate.modRes("icon/command_seal_3");
     private static final ResourceLocation SEAL_4 = Fate.modRes("icon/command_seal_4");
+    private static final Random RANDOM = new Random();
 
     private final Map<String, Component> translationCache = new HashMap<>();
 
@@ -43,7 +44,6 @@ public class CommandScreen extends Screen {
     private int leftPos, topPos;
 
     private Pages currentPage = Pages.MENU;
-    private final Random rand = new Random();
 
     private final int command1;
     private final int command2;
@@ -55,10 +55,10 @@ public class CommandScreen extends Screen {
     public CommandScreen(S2CServantGui.ServantMetaData data) {
         super(Component.translatable("fateubw.gui.command"));
         this.servant = this.createFrom(data);
-        this.rand.setSeed(Minecraft.getInstance().player.getUUID().getLeastSignificantBits());
-        this.command1 = this.rand.nextInt(3);
-        this.command2 = this.rand.nextInt(3);
-        this.command3 = this.rand.nextInt(3);
+        RANDOM.setSeed(Minecraft.getInstance().player.getUUID().getLeastSignificantBits());
+        this.command1 = RANDOM.nextInt(3);
+        this.command2 = RANDOM.nextInt(3);
+        this.command3 = RANDOM.nextInt(3);
         this.update(data);
     }
 

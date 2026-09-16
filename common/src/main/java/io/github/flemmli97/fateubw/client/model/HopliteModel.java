@@ -71,9 +71,4 @@ public class HopliteModel<T extends Hoplite> extends ExtendedEntityModel<T> {
             variables.setVariable("query.has_spear", this.entity.get().hasSpear() ? 1 : 0);
         }
     }
-
-    @Override
-    public ModelPartsContainer getModel() {
-        return this.model.get();
-    }
 }

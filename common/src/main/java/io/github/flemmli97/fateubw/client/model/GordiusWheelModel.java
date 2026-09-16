@@ -88,11 +88,6 @@ public class GordiusWheelModel extends ExtendedEntityModel<GordiusWheel> impleme
     }
 
     @Override
-    public ModelPartsContainer getModel() {
-        return this.model.get();
-    }
-
-    @Override
     public boolean transform(GordiusWheel entity, EntityRenderer<GordiusWheel> entityRenderer, Entity rider, EntityRenderer<?> ridingEntityRenderer, PoseStack stack, int riderNum) {
         this.ridingPosition.translateAndRotateWithParents(stack);
         translateRider(stack, entity, rider);

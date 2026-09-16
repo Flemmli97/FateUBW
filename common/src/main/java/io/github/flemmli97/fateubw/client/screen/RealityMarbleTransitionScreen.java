@@ -37,9 +37,4 @@ public class RealityMarbleTransitionScreen extends ReceivingLevelScreen {
             super.tick();
         }
     }
-
-    @Override
-    public boolean isPauseScreen() {
-        return false;
-    }
 }

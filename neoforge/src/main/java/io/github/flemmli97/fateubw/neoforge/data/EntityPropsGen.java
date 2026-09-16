@@ -25,9 +25,7 @@ public class EntityPropsGen extends ServantPropertiesProvider {
 
     @Override
     protected void add(HolderLookup.Provider provider) {
-        FateEntities.DEFAULT_SERVANT_PROPERTIES.forEach((id, builder) -> {
-            this.contents.put(id, builder.build());
-        });
+        FateEntities.DEFAULT_SERVANT_PROPERTIES.forEach((id, builder) -> this.contents.put(id, builder.build()));
     }
 
     @Override

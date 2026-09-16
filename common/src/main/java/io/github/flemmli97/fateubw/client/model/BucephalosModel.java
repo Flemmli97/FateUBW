@@ -51,11 +51,6 @@ public class BucephalosModel<T extends Bucephalos> extends ExtendedEntityModel<T
     }
 
     @Override
-    public ModelPartsContainer getModel() {
-        return this.model.get();
-    }
-
-    @Override
     public boolean transform(T entity, EntityRenderer<T> entityRenderer, Entity rider, EntityRenderer<?> ridingEntityRenderer, PoseStack stack, int riderNum) {
         this.ridingPosition.translateAndRotateWithParents(stack);
         ClientHandler.translateRider(stack, entity, rider);

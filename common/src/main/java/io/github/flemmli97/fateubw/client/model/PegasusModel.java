@@ -54,11 +54,6 @@ public class PegasusModel extends ExtendedEntityModel<Pegasus> implements Rideab
     }
 
     @Override
-    public ModelPartsContainer getModel() {
-        return this.model.get();
-    }
-
-    @Override
     public boolean transform(Pegasus entity, EntityRenderer<Pegasus> entityRenderer, Entity rider, EntityRenderer<?> ridingEntityRenderer, PoseStack stack, int riderNum) {
         this.ridingPosition.translateAndRotateWithParents(stack);
         AnimationState animation = entity.getAnimationHandler().getAnimation();

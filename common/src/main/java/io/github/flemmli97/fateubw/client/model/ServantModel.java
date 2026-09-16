@@ -103,11 +103,6 @@ public class ServantModel<T extends LivingEntity & AnimatedEntity & ServantModel
     }
 
     @Override
-    public ModelPartsContainer getModel() {
-        return this.model.get();
-    }
-
-    @Override
     public void transform(HumanoidArm hand, PoseStack stack) {
         if (hand == HumanoidArm.LEFT) {
             this.leftItem.getPart().translateAndRotateWithParents(stack);

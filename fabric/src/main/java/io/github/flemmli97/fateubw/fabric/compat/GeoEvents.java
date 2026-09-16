@@ -6,8 +6,6 @@ import software.bernie.geckolib.event.GeoRenderEvent;
 public class GeoEvents {
 
     public static void init() {
-        GeoRenderEvent.Entity.CompileRenderLayers.EVENT.register(event -> {
-            event.addLayer(new PetrificationGeoLayer<>(event.getRenderer()));
-        });
+        GeoRenderEvent.Entity.CompileRenderLayers.EVENT.register(event -> event.addLayer(new PetrificationGeoLayer<>(event.getRenderer())));
     }
 }

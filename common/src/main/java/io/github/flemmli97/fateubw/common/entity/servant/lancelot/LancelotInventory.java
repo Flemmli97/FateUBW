@@ -154,7 +154,7 @@ public class LancelotInventory implements Iterable<ItemStack> {
         return this.swappedStack != null;
     }
 
-    public LancelotInventory setSwappedStack(SwappedStack swappedStack) {
+    LancelotInventory setSwappedStack(SwappedStack swappedStack) {
         this.swappedStack = swappedStack;
         return this;
     }
