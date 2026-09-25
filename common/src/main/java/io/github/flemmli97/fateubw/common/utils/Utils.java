@@ -84,6 +84,9 @@ public class Utils {
         if (entity.getServer() == null) {
             return false;
         }
+        if (entity.getTeam() != null && entity.getTeam().equals(other.getTeam())) {
+            return true;
+        }
         if (entity instanceof OwnableEntity ownable) {
             if (other.getUUID().equals(ownable.getOwnerUUID())) {
                 return true;
