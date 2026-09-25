@@ -471,6 +471,9 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
             if (this.tickCount % 20 == 0 && RealityMarbleHandler.get(this.getServer()).isManagingRealityMarble(this)) {
                 this.useMana(this.getMana());
             }
+            if (this.getAnimationHandler().isCurrent(this.idleAnimations()) && this.interpolatedMoveTick(1) > 0) {
+                this.getAnimationHandler().setAnimation(null);
+            }
         } else {
             this.blinkTick++;
             if (this.blinkTick > 60 && this.getRandom().nextInt(75) == 0) {
@@ -1040,6 +1043,7 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
     public void setOwner(Player player) {
         if (player != null) {
             this.entityData.set(OWNER_UUID, Optional.of(player.getUUID()));
+            this.onBehaviourCommand(CommandType.FOLLOW);
         } else
             this.entityData.set(OWNER_UUID, Optional.empty());
         this.owner = player;
