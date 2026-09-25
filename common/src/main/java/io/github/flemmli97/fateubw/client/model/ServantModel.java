@@ -177,7 +177,7 @@ public class ServantModel<T extends LivingEntity & AnimatedEntity & ServantModel
         }
         animation.doAnimation(this, "look", entity.tickCount, partialTick, 1);
         if (!animation.has("walk")) {
-            defaulted.doAnimation(this, "walk", entity.tickCount, partialTick, 1, false, true);
+            defaulted.doAnimation(this, "walk", entity.tickCount, partialTick, entity.interpolatedMoveTick(partialTick), false, true);
         } else {
             animation.doAnimation(this, "walk", entity.tickCount, partialTick, entity.interpolatedMoveTick(partialTick));
         }

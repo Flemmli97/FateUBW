@@ -747,7 +747,7 @@
         }
       }
     },
-    "blink": {
+    "blink_teleport": {
       "animation_length": 1.12,
       "bones": {
         "Body": {

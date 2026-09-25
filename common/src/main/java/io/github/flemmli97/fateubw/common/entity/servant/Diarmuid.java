@@ -80,7 +80,7 @@ public class Diarmuid extends BaseServant {
             .marker("attack_left", 0.56).marker("attack_right", 0.56)
             .marker(EntityWeaponTrailProvider.TRAIL_START, 0.4).marker(LEFT_TRAIL_END, 0.6)
             .marker(RIGHT_TRAIL_START, 0.4).marker(EntityWeaponTrailProvider.TRAIL_END, 0.6));
-    public static final String BLINK = BUILDER.add("blink", AnimationsBuilder.definition(1.12)
+    public static final String BLINK = BUILDER.add("blink_teleport", AnimationsBuilder.definition(1.12)
             .marker("teleport_start", 0.28).marker("teleport", 0.5).marker("teleport_end", 0.84));
     public static final String BLINK_AWAY = BUILDER.add("blink_away", BLINK);
     public static final String UNSEAL = BUILDER.add("hogou_unseal", AnimationsBuilder.definition(5.04)
