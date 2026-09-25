@@ -114,6 +114,11 @@ public class Participant<T extends Mob & ServantLike<T>> {
         return this.getId().equals(participant.getId());
     }
 
+    @Override
+    public String toString() {
+        return String.format("Participant: %s, Ref: %s", this.uuid, this.servant);
+    }
+
     public CompoundTag save() {
         CompoundTag tag = new CompoundTag();
         tag.putUUID("UUID", this.uuid.participant());

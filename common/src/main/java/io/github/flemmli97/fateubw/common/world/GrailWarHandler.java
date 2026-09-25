@@ -56,6 +56,8 @@ import java.util.function.Function;
 
 public class GrailWarHandler extends SavedData {
 
+    private static final int INIT_SPAWN_TIME = 200;
+
     private static final String IDENTIFIER = "FateGrailWar";
     private static final Function<MinecraftServer, SavedData.Factory<GrailWarHandler>> FACTORY =
             server -> new Factory<>(() -> new GrailWarHandler(server), (tag, provider) -> new GrailWarHandler(server, tag, provider), DataFixTypes.LEVEL);
@@ -79,9 +81,9 @@ public class GrailWarHandler extends SavedData {
     private Phase phase = Phase.NONE;
 
     private int lastGrailEndDay, joinTime;
-    private int timeToNextServant;
+    private int timeToNextServant = INIT_SPAWN_TIME;
 
-    private Map<ChunkPos, ResourceKey<Level>> servantTickets;
+    private Map<ChunkPos, ResourceKey<Level>> servantTickets = new HashMap<>();
 
     private GrailWarHandler(MinecraftServer server) {
         this.server = server;
@@ -187,7 +189,9 @@ public class GrailWarHandler extends SavedData {
     }
 
     public void tick(ServerLevel level) {
-        this.loadTickets(level);
+        if (this.loadTickets(level)) {
+            return;
+        }
         switch (this.phase) {
             case NONE -> {
                 if (Math.abs(day(level) - this.lastGrailEndDay) > CommonConfig.grailWarCooldown
@@ -220,7 +224,7 @@ public class GrailWarHandler extends SavedData {
         this.setDirty();
     }
 
-    private void loadTickets(ServerLevel level) {
+    private boolean loadTickets(ServerLevel level) {
         if (this.servantTickets != null) {
             this.servantTickets.forEach((c, r) -> {
                 if (level.dimension().equals(r))
@@ -231,7 +235,9 @@ public class GrailWarHandler extends SavedData {
                 }
             });
             this.servantTickets = null;
+            return true;
         }
+        return false;
     }
 
     private void setupStart() {
@@ -323,7 +329,7 @@ public class GrailWarHandler extends SavedData {
         this.phase = Phase.NONE;
         this.lastGrailEndDay = day(this.server.overworld());
         this.joinTime = 0;
-        this.timeToNextServant = 0;
+        this.timeToNextServant = INIT_SPAWN_TIME;
         if (notify)
             this.server.getPlayerList().broadcastSystemMessage(Component.translatable("fateubw.chat.grailwar.end").withStyle(ChatFormatting.RED), true);
         this.setDirty();
@@ -437,6 +443,8 @@ public class GrailWarHandler extends SavedData {
         LivingEntity servant = servantLike.get();
         if (!this.hasPlayersNearby(servant)) {
             List<ServerPlayer> players = servant.getServer().getPlayerList().getPlayers().stream().filter(this::isParticipant).toList();
+            if (players.isEmpty())
+                return;
             ServerPlayer player = players.get(servant.getRandom().nextInt(players.size()));
             for (int i = 0; i < 10; i++) {
                 double xR = servant.getRandom().nextDouble() - 0.5;
