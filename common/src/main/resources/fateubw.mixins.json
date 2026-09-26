@@ -7,7 +7,6 @@
     "compat.LithiumEntityCollisionMixin",
     "AttributeAccessor",
     "AttributeMapAccessor",
-    "ClientboundSetEntityDataPacketAccessor",
     "CombatTrackerAccessor",
     "CrossbowAccessor",
     "EnchantmentHelperMixin",
@@ -19,6 +18,7 @@
     "SynchedEntityDataAccessor"
   ],
   "client": [
+    "ClientboundSetEntityDataPacketAccessor",
     "ItemEntityRenderMixin",
     "ItemRendererMixin",
     "LevelRendererMixin",
