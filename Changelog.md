@@ -1,3 +1,28 @@
+FateUBW 2.3.0
+=================
+- Reality marbles are here!
+  - Added Unlimited Blade Works
+  - Added Ionioi Hetairoi
+  - Reality marbles lasts till the caster dispels it or the caster is dead
+  - Caster dispels if no targets are alive or after 1 min (configurable) whichever is first
+- Updated AI, Attacks, Animations & Models of Artoria, Emiya, Iskander, Gordius Wheel
+- Added Bucephalos and Hoplites (Iskander summons)
+- Various stat changes
+- Updated (and fixed) various visual/assets
+- Gate of Babylon (+ Unlimited Blade Works) now uses weighted lists
+  - Stronger weapons get used the lower hp the user has
+- All damage now got a bit of randomness
+- Added sword display block used in UBW dimension. But also functions as deco
+- Noble Phantasm attacks now bypass invincibility charge up of other servants (configurable)
+- Add some tooltips to team gui for more clearance
+- Improve follow behavior and allow teleporting onto water
+- Fix players not removed from lookup map when disbanding teams (so they cant join new teams)
+- Fix rule breaker not disabling mana regen for servants
+- Fix special commands crashing
+- Fix entities unable to swim properly
+- Fix grail war ending during load when it shouldn't
+- Fix nullpointer in data sync packet
+
 FateUBW 2.2.0
 =================
 - Add Nero (Saber) ~ umu ~
