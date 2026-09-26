@@ -39,6 +39,7 @@ import io.github.flemmli97.tenshilib.common.entity.AOEAttackEntity;
 import io.github.flemmli97.tenshilib.common.entity.EntityUtils;
 import io.github.flemmli97.tenshilib.common.entity.ai.MoveControllerPlus;
 import io.github.flemmli97.tenshilib.common.entity.ai.TargetPosition;
+import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.FollowEntityExt;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.PlayAnimation;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetAnimationToPlay;
 import io.github.flemmli97.tenshilib.common.entity.ai.brain.behaviour.SetMoveToRestriction;
@@ -120,7 +121,6 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtAttackTarget
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FloatToSurfaceOfFluid;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FollowEntity;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.InteractWithDoor;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
@@ -284,12 +284,11 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
                 new FloatToSurfaceOfFluid<BaseServant>(),
                 new SetTargetFromRider<>(),
                 new InteractWithDoor<>(),
-                new FollowEntity<BaseServant, Player>()
-                        .following(BaseServant::getOwner)
+                new FollowEntityExt<BaseServant, Player>()
+                        .following(owner -> owner.commandBehaviour == CommandType.FOLLOW ? owner.getOwner() : null)
                         .teleportToTargetAfter(17)
                         .stopFollowingWithin(6)
-                        .speedMod(1.1f)
-                        .startCondition(m -> m.commandBehaviour == CommandType.FOLLOW),
+                        .speedMod(1.2f),
                 this.lookBehaviour(),
                 new LookAtTarget<>().runFor(entity -> entity.getRandom().nextIntBetweenInclusive(40, 100))
                         .whenStopping(m -> BrainUtils.clearMemory(m, MemoryModuleType.LOOK_TARGET)));
