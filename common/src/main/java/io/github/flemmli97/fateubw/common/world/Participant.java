@@ -116,7 +116,7 @@ public class Participant<T extends Mob & ServantLike<T>> {
 
     @Override
     public String toString() {
-        return String.format("Participant: %s, Ref: %s", this.uuid, this.servant);
+        return String.format("Participant: %s, Ref: %s", this.uuid, this.servant != null ? this.servant.get() : null);
     }
 
     public CompoundTag save() {

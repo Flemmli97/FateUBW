@@ -4,7 +4,6 @@ import io.github.flemmli97.fateubw.api.datapack.ServantProperties;
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
@@ -24,7 +23,12 @@ import java.util.Comparator;
  */
 public interface ServantLike<T extends Mob & ServantLike<T>> extends OwnableEntity {
 
-    TicketType<ChunkPos> TRACKINGTICKET = TicketType.create("servant", Comparator.comparingLong(ChunkPos::toLong), 5);
+    int TRACKING_DISTANCE = 2;
+    TicketType<ChunkPos> TRACKING_TICKET = TicketType.create("servant", Comparator.comparingLong(ChunkPos::toLong), 5);
+
+    static void addTicket(ServerLevel level, ChunkPos chunkPos) {
+        level.getChunkSource().addRegionTicket(TRACKING_TICKET, chunkPos, TRACKING_DISTANCE, chunkPos);
+    }
 
     @SuppressWarnings("unchecked")
     default T get() {
@@ -42,7 +46,7 @@ public interface ServantLike<T extends Mob & ServantLike<T>> extends OwnableEnti
             GrailWarHandler handler = GrailWarHandler.get(serverLevel.getServer());
             if (handler.isParticipant(entity)) {
                 ChunkPos pos = entity.chunkPosition();
-                ((ServerChunkCache) entity.level().getChunkSource()).addRegionTicket(TRACKINGTICKET, pos, 2, pos);
+                addTicket(serverLevel, pos);
                 handler.moveToPlayer(entity);
             }
         }

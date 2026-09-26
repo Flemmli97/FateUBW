@@ -227,11 +227,11 @@ public class GrailWarHandler extends SavedData {
     private boolean loadTickets(ServerLevel level) {
         if (this.servantTickets != null) {
             this.servantTickets.forEach((c, r) -> {
-                if (level.dimension().equals(r))
-                    level.getChunkSource().addRegionTicket(ServantLike.TRACKINGTICKET, c, 2, c);
-                else {
+                if (level.dimension().equals(r)) {
+                    ServantLike.addTicket(level, c);
+                } else {
                     ServerLevel w = this.server.getLevel(r);
-                    w.getChunkSource().addRegionTicket(ServantLike.TRACKINGTICKET, c, 2, c);
+                    ServantLike.addTicket(w, c);
                 }
             });
             this.servantTickets = null;
@@ -388,7 +388,7 @@ public class GrailWarHandler extends SavedData {
             int y = chunk.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) + 1;
             ServantLike<?> servant = this.summonRandomServant(player.serverLevel(), new Vec3(x, y, z), null, null, true, true);
             if (servant != null) {
-                player.serverLevel().getChunkSource().addRegionTicket(ServantLike.TRACKINGTICKET, cpos, 2, cpos);
+                ServantLike.addTicket(player.serverLevel(), cpos);
                 this.timeToNextServant = Mth.nextInt(player.serverLevel().random, CommonConfig.servantMinSpawnDelay, CommonConfig.servantMaxSpawnDelay);
                 if (this.notify(BuiltInRegistries.ENTITY_TYPE.getKey(servant.get().getType()))) {
                     if (CommonConfig.notifyAll)
