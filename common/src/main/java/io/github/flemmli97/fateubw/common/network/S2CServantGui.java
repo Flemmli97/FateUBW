@@ -18,6 +18,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +80,7 @@ public class S2CServantGui implements CustomPacketPayload {
 
     public record ServantMetaData(int entityId, EntityType<?> type,
                                   Optional<List<Pair<EquipmentSlot, ItemStack>>> equipment,
-                                  List<SynchedEntityData.DataValue<?>> syncedData, int npCost) {
+                                  @Nullable List<SynchedEntityData.DataValue<?>> syncedData, int npCost) {
 
         public static final StreamCodec<RegistryFriendlyByteBuf, ServantMetaData> STREAM_CODEC = new StreamCodec<>() {
             @Override
@@ -87,7 +88,7 @@ public class S2CServantGui implements CustomPacketPayload {
                 return new ServantMetaData(buf.readInt(), BuiltInRegistries.ENTITY_TYPE.get(buf.readResourceLocation()),
                         buf.readBoolean() ? Optional.of(buf.readList(b ->
                                 Pair.of(b.readEnum(EquipmentSlot.class), ItemStack.OPTIONAL_STREAM_CODEC.decode(buf))
-                        )) : Optional.empty(), ClientboundSetEntityDataPacketAccessor.fateubw$doUnpack(buf), buf.readInt());
+                        )) : Optional.empty(), buf.readBoolean() ? ClientboundSetEntityDataPacketAccessor.fateubw$doUnpack(buf) : null, buf.readInt());
             }
 
             @Override
@@ -99,7 +100,10 @@ public class S2CServantGui implements CustomPacketPayload {
                     b.writeEnum(p.getFirst());
                     ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, p.getSecond());
                 }));
-                ClientboundSetEntityDataPacketAccessor.fateubw$doPack(data.syncedData, buf);
+                buf.writeBoolean(data.syncedData != null);
+                if (data.syncedData != null) {
+                    ClientboundSetEntityDataPacketAccessor.fateubw$doPack(data.syncedData, buf);
+                }
                 buf.writeInt(data.npCost);
             }
         };
