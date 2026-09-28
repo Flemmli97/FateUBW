@@ -191,9 +191,9 @@ public class TeamScreen extends Screen {
         graphics.blit(this.page.texture, this.leftPos, this.topPos, 0, 0, this.sizeX, this.sizeY);
         if (this.leaveButton != null) {
             this.leaveButton.active = hasShiftDown();
-        }
-        if (!hasShiftDown() && this.isOverWidget(this.leaveButton, mouseX, mouseY)) {
-            graphics.renderTooltip(this.font, Component.translatable("fateubw.gui.shift"), mouseX, mouseY);
+            if (!this.leaveButton.active && this.isOverWidget(this.leaveButton, mouseX, mouseY)) {
+                graphics.renderTooltip(this.font, Component.translatable("fateubw.gui.shift"), mouseX, mouseY);
+            }
         }
         if (this.page == Pages.MAIN) {
             if (this.info.team().isPresent()) {
