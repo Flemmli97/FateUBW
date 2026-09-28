@@ -30,6 +30,7 @@ import io.github.flemmli97.fateubw.common.registry.FateParticles;
 import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.ExtendedCombatRules;
 import io.github.flemmli97.fateubw.common.utils.MathsHelper;
+import io.github.flemmli97.fateubw.common.utils.TeleportUtils;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import io.github.flemmli97.fateubw.common.world.realitymarble.RealityMarbleGroup;
@@ -443,11 +444,17 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
                 inst.removeModifier(MANA_LEECH_DEBUFF_ID);
             }
             this.getAnimationHandler().runIfNotNull(this::handleAttack);
-            if (this.getOwner() instanceof ServerPlayer serverPlayer) {
-                if (!this.tracked.contains(serverPlayer) && !this.isRemoved()) {
+            if (this.getOwner() instanceof ServerPlayer owner) {
+                if (!this.tracked.contains(owner) && !this.isRemoved()) {
                     if (this.sendToOwnerData) {
                         // Update meta for the player with gui open
-                        S2CServantGui.sendServantGui(serverPlayer, this, false);
+                        S2CServantGui.sendServantGui(owner, this, false);
+                    }
+                }
+                if (this.commandBehaviour == CommandType.FOLLOW) {
+                    if (owner.level().dimension() != this.level().dimension()) {
+                        TeleportUtils.safeTeleportTo(this, (ServerLevel) this.owner.level(),
+                                entity -> entity.randomTeleport(owner.getX(), owner.getY(), owner.getZ(), false));
                     }
                 }
             }
