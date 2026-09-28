@@ -2,7 +2,6 @@ package io.github.flemmli97.fateubw.api.entity;
 
 import io.github.flemmli97.fateubw.api.datapack.ServantProperties;
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
-import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -33,23 +32,6 @@ public interface ServantLike<T extends Mob & ServantLike<T>> extends OwnableEnti
     @SuppressWarnings("unchecked")
     default T get() {
         return (T) this;
-    }
-
-    /**
-     * Call this from the tick method within your entity.
-     * This will make your entity load the chunk its currently in which is required for proper participant lookup.
-     * Else your entity won't be found if unloaded
-     */
-    default void trackingTick() {
-        T entity = this.get();
-        if (entity.level() instanceof ServerLevel serverLevel) {
-            GrailWarHandler handler = GrailWarHandler.get(serverLevel.getServer());
-            if (handler.isParticipant(entity)) {
-                ChunkPos pos = entity.chunkPosition();
-                addTicket(serverLevel, pos);
-                handler.moveToPlayer(entity);
-            }
-        }
     }
 
     @Override

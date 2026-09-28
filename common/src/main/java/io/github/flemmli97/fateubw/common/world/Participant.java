@@ -1,7 +1,6 @@
 package io.github.flemmli97.fateubw.common.world;
 
 import io.github.flemmli97.fateubw.api.entity.ServantLike;
-import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import io.github.flemmli97.tenshilib.common.entity.EntityUtils;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -13,6 +12,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,6 +28,8 @@ public class Participant<T extends Mob & ServantLike<T>> {
 
     private ResourceKey<Level> levelCache;
     private WeakReference<T> servant;
+
+    private int validTicks = 20;
 
     public Participant(ServantLike<T> servant, @Nullable Player player) {
         this(servant.get(), player != null ? player.getUUID() : null);
@@ -79,7 +81,7 @@ public class Participant<T extends Mob & ServantLike<T>> {
                 }
             }
             for (ServerLevel level : server.getAllLevels()) {
-                Entity entity = EntityUtils.findFromUUID(BaseServant.class, level, this.uuid.servant());
+                Entity entity = EntityUtils.findFromUUID(Entity.class, level, this.uuid.servant());
                 if (entity instanceof ServantLike) {
                     this.servant = new WeakReference<>((T) entity);
                     this.levelCache = entity.level().dimension();
@@ -90,9 +92,21 @@ public class Participant<T extends Mob & ServantLike<T>> {
         return servant;
     }
 
-    public boolean valid(MinecraftServer server) {
+    public void tick(GrailWarHandler handler, MinecraftServer server) {
         T servant = this.getServant(server);
-        return servant != null && servant.isAlive();
+        if (servant != null && servant.isAlive())
+            this.validTicks = 20;
+        else
+            --this.validTicks;
+        if (this.valid()) {
+            ChunkPos pos = servant.chunkPosition();
+            ServantLike.addTicket((ServerLevel) servant.level(), pos);
+            handler.moveToPlayer(servant);
+        }
+    }
+
+    public boolean valid() {
+        return this.validTicks > 0;
     }
 
     private ResourceKey<Level> cachedLevel() {
@@ -116,7 +130,7 @@ public class Participant<T extends Mob & ServantLike<T>> {
 
     @Override
     public String toString() {
-        return String.format("Participant: %s, Ref: %s", this.uuid, this.servant != null ? this.servant.get() : null);
+        return String.format("Participant: %s, Ref: %s, Dim: %s", this.uuid, this.servant != null ? this.servant.get() : null, this.cachedLevel());
     }
 
     public CompoundTag save() {

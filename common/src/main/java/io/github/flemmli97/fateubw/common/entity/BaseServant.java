@@ -423,7 +423,6 @@ public abstract class BaseServant extends PathfinderMob implements AnimatedEntit
             this.setYHeadRot(this.getYRot());
         }
         this.getTrailHolder().tick();
-        this.trackingTick();
     }
 
     @Override

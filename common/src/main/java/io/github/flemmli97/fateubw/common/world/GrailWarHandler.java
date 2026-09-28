@@ -183,7 +183,7 @@ public class GrailWarHandler extends SavedData {
      */
     public Set<UUID> players(boolean valid) {
         return ImmutableSet.copyOf(this.participants.entrySet().stream().filter(p ->
-                        p.getValue().isPlayerParticipant() && (!valid || p.getValue().valid(this.server)))
+                        p.getValue().isPlayerParticipant() && (!valid || p.getValue().valid()))
                 .map(Map.Entry::getKey)
                 .toList());
     }
@@ -205,7 +205,7 @@ public class GrailWarHandler extends SavedData {
                 // Remove invalid servants during join times too. joinedParticipants is not updated to prevent players killing their servants and try to rejoin
                 Set<UUID> invalid = new HashSet<>();
                 this.participants.forEach((id, participant) -> {
-                    if (!participant.valid(this.server)) {
+                    if (!participant.valid()) {
                         invalid.add(id);
                         Entity servant = participant.getServant(this.server);
                         if (servant != null)
@@ -267,7 +267,8 @@ public class GrailWarHandler extends SavedData {
     private void runGrailWar() {
         Set<UUID> invalid = new HashSet<>();
         this.participants.forEach((id, participant) -> {
-            if (!participant.valid(this.server) && invalid.size() + 1 < this.participants.size()) {
+            participant.tick(this, this.server);
+            if (!participant.valid() && invalid.size() + 1 < this.participants.size()) {
                 invalid.add(id);
                 if (participant.isPlayerParticipant()) {
                     this.server.getProfileCache()
