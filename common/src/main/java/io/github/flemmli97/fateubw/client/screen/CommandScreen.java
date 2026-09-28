@@ -100,7 +100,7 @@ public class CommandScreen extends Screen {
                 this.onClose();
             }).bounds(buttonPos, buttonY += 30, 80, 20).build());
             this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.command.kill"), b -> {
-                LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.ActionType.KILL, this.entityId()));
+                LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.ActionType.KILL, this.data));
                 LoaderNetwork.INSTANCE.sendToServer(new C2SMessageGui(C2SMessageGui.Type.SERVANT));
             }).bounds(buttonPos, buttonY += 30, 80, 20).build());
             if (this.servant != null) {
@@ -114,28 +114,28 @@ public class CommandScreen extends Screen {
             this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.back"), this::backButton)
                     .bounds(buttonPos, buttonY, 80, 20).build());
             this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.command.aggressive"),
-                            b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.ActionType.AGGRESSIVE, this.entityId())))
+                            b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.ActionType.AGGRESSIVE, this.data)))
                     .bounds(buttonPos, buttonY += 30, 80, 20).build());
             this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.command.normal"),
-                            b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.ActionType.NORMAL, this.entityId())))
+                            b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.ActionType.NORMAL, this.data)))
                     .bounds(buttonPos, buttonY += 30, 80, 20).build());
             this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.command.defensive"),
-                            b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.ActionType.DEFENSIVE, this.entityId())))
+                            b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.ActionType.DEFENSIVE, this.data)))
                     .bounds(buttonPos, buttonY + 30, 80, 20).build());
         } else if (this.currentPage == Pages.MOVEMENT) {
             this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.back"), this::backButton)
                     .bounds(buttonPos, buttonY, 80, 20).build());
             this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.command.follow"),
-                            b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.ActionType.FOLLOW, this.entityId())))
+                            b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.ActionType.FOLLOW, this.data)))
                     .bounds(buttonPos, buttonY += 30, 80, 20).build());
             this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.command.stay"),
-                            b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.ActionType.STAY, this.entityId())))
+                            b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.ActionType.STAY, this.data)))
                     .bounds(buttonPos, buttonY += 30, 80, 20).build());
             this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.command.protect"),
-                            b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.ActionType.GUARD, this.entityId())))
+                            b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.ActionType.GUARD, this.data)))
                     .bounds(buttonPos, buttonY += 30, 80, 20).build());
             this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.command.call"),
-                            b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.ActionType.TELEPORT, this.entityId())))
+                            b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.ActionType.TELEPORT, this.data)))
                     .bounds(buttonPos, buttonY + 30, 80, 20).build());
         } else if (this.currentPage == Pages.SPECIAL) {
             this.addRenderableWidget(Button.builder(Component.translatable("fateubw.gui.back"), this::backButton)
@@ -145,7 +145,7 @@ public class CommandScreen extends Screen {
                     String id = this.servant.specialCommands()[i];
                     this.addRenderableWidget(Button.builder(
                                     Component.translatable(id),
-                                    b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantSpecial(id, this.entityId())))
+                                    b -> LoaderNetwork.INSTANCE.sendToServer(new C2SServantSpecial(id, this.data)))
                             .bounds(buttonPos, buttonY += 30, 80, 20).build());
                 }
         }
@@ -218,7 +218,7 @@ public class CommandScreen extends Screen {
     @Override
     public void removed() {
         super.removed();
-        LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.ActionType.CLOSE, this.entityId()));
+        LoaderNetwork.INSTANCE.sendToServer(new C2SServantCommand(C2SServantCommand.ActionType.CLOSE, this.data));
     }
 
     @Override
@@ -252,10 +252,6 @@ public class CommandScreen extends Screen {
             return s;
         }
         return null;
-    }
-
-    private int entityId() {
-        return this.data != null ? this.data.entityId() : 0;
     }
 
     private enum Pages {

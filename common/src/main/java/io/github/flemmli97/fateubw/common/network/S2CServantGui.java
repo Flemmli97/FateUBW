@@ -8,16 +8,20 @@ import io.github.flemmli97.fateubw.client.ClientHandler;
 import io.github.flemmli97.fateubw.mixin.ClientboundSetEntityDataPacketAccessor;
 import io.github.flemmli97.fateubw.mixinhelper.SynchedEntityDataExtension;
 import io.github.flemmli97.tenshilib.loader.LoaderNetwork;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -78,14 +82,16 @@ public class S2CServantGui implements CustomPacketPayload {
         return TYPE;
     }
 
-    public record ServantMetaData(int entityId, EntityType<?> type,
+    public record ServantMetaData(int entityId, EntityType<?> type, ResourceKey<Level> dimension,
                                   Optional<List<Pair<EquipmentSlot, ItemStack>>> equipment,
                                   @Nullable List<SynchedEntityData.DataValue<?>> syncedData, int npCost) {
+
+        private static final StreamCodec<ByteBuf, ResourceKey<Level>> KEY_CODEC = ResourceKey.streamCodec(Registries.DIMENSION);
 
         public static final StreamCodec<RegistryFriendlyByteBuf, ServantMetaData> STREAM_CODEC = new StreamCodec<>() {
             @Override
             public ServantMetaData decode(RegistryFriendlyByteBuf buf) {
-                return new ServantMetaData(buf.readInt(), BuiltInRegistries.ENTITY_TYPE.get(buf.readResourceLocation()),
+                return new ServantMetaData(buf.readInt(), BuiltInRegistries.ENTITY_TYPE.get(buf.readResourceLocation()), KEY_CODEC.decode(buf),
                         buf.readBoolean() ? Optional.of(buf.readList(b ->
                                 Pair.of(b.readEnum(EquipmentSlot.class), ItemStack.OPTIONAL_STREAM_CODEC.decode(buf))
                         )) : Optional.empty(), buf.readBoolean() ? ClientboundSetEntityDataPacketAccessor.fateubw$doUnpack(buf) : null, buf.readInt());
@@ -95,6 +101,7 @@ public class S2CServantGui implements CustomPacketPayload {
             public void encode(RegistryFriendlyByteBuf buf, ServantMetaData data) {
                 buf.writeInt(data.entityId);
                 buf.writeResourceLocation(BuiltInRegistries.ENTITY_TYPE.getKey(data.type()));
+                KEY_CODEC.encode(buf, data.dimension);
                 buf.writeBoolean(data.equipment.isPresent());
                 data.equipment.ifPresent(list -> buf.writeCollection(list, (b, p) -> {
                     b.writeEnum(p.getFirst());
@@ -122,7 +129,7 @@ public class S2CServantGui implements CustomPacketPayload {
             } else {
                 equip = Optional.empty();
             }
-            return new ServantMetaData(servant.getId(), servant.getType(), equip,
+            return new ServantMetaData(servant.getId(), servant.getType(), servant.level().dimension(), equip,
                     full ? ((SynchedEntityDataExtension) servant.getEntityData()).fate$getAll() : servant.getEntityData().packDirty(), servantLike.props().manaCost());
         }
     }

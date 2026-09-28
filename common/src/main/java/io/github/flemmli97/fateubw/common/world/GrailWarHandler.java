@@ -9,6 +9,7 @@ import io.github.flemmli97.fateubw.common.registry.FateAttachments;
 import io.github.flemmli97.fateubw.common.registry.FateCriterionTriggers;
 import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateItems;
+import io.github.flemmli97.fateubw.common.utils.TeleportUtils;
 import io.github.flemmli97.fateubw.platform.Platform;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
@@ -228,10 +229,10 @@ public class GrailWarHandler extends SavedData {
         if (this.servantTickets != null) {
             this.servantTickets.forEach((c, r) -> {
                 if (level.dimension().equals(r)) {
-                    ServantLike.addTicket(level, c);
+                    Participant.addTicket(level, c);
                 } else {
                     ServerLevel w = this.server.getLevel(r);
-                    ServantLike.addTicket(w, c);
+                    Participant.addTicket(w, c);
                 }
             });
             this.servantTickets = null;
@@ -389,7 +390,6 @@ public class GrailWarHandler extends SavedData {
             int y = chunk.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) + 1;
             ServantLike<?> servant = this.summonRandomServant(player.serverLevel(), new Vec3(x, y, z), null, null, true, true);
             if (servant != null) {
-                ServantLike.addTicket(player.serverLevel(), cpos);
                 this.timeToNextServant = Mth.nextInt(player.serverLevel().random, CommonConfig.servantMinSpawnDelay, CommonConfig.servantMaxSpawnDelay);
                 if (this.notify(BuiltInRegistries.ENTITY_TYPE.getKey(servant.get().getType()))) {
                     if (CommonConfig.notifyAll)
@@ -447,16 +447,19 @@ public class GrailWarHandler extends SavedData {
             if (players.isEmpty())
                 return;
             ServerPlayer player = players.get(servant.getRandom().nextInt(players.size()));
-            for (int i = 0; i < 10; i++) {
-                double xR = servant.getRandom().nextDouble() - 0.5;
-                double zR = servant.getRandom().nextDouble() - 0.5;
-                double x = player.getX() + xR * 128 + (xR <= 0 ? -24 : 24);
-                double z = player.getZ() + zR * 128 + (zR <= 0 ? -24 : 24);
-                double y = player.getY() + (servant.getRandom().nextInt(64) - 32);
-                if (servant.randomTeleport(x, y, z, false)) {
-                    break;
+            TeleportUtils.safeTeleportTo(servant, (ServerLevel) player.level(), entity -> {
+                for (int i = 0; i < 10; i++) {
+                    double xR = entity.getRandom().nextDouble() - 0.5;
+                    double zR = entity.getRandom().nextDouble() - 0.5;
+                    double x = player.getX() + xR * 128 + (xR <= 0 ? -24 : 24);
+                    double z = player.getZ() + zR * 128 + (zR <= 0 ? -24 : 24);
+                    double y = Mth.clamp(player.getY() + (entity.getRandom().nextInt(64) - 32), player.level().getMinBuildHeight() + 1, player.level().getMaxBuildHeight() - 1);
+                    if (entity.randomTeleport(x, y, z, false)) {
+                        return true;
+                    }
                 }
-            }
+                return false;
+            });
         }
     }
 

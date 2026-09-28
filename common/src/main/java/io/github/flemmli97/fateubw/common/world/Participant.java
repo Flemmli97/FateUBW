@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.TicketType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
@@ -17,9 +18,13 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
+import java.util.Comparator;
 import java.util.UUID;
 
 public class Participant<T extends Mob & ServantLike<T>> {
+
+    private static final int TRACKING_DISTANCE = 1;
+    private static final TicketType<ChunkPos> TRACKING_TICKET = TicketType.create("servant", Comparator.comparingLong(ChunkPos::toLong), 5);
 
     /**
      * UUID for this participant. If it's a player will be the players uuid, otherwise the servants
@@ -42,6 +47,10 @@ public class Participant<T extends Mob & ServantLike<T>> {
     private Participant(T servant, @Nullable UUID player) {
         this.uuid = new ParticipantId(player != null ? player : servant.getUUID(), servant.getUUID());
         this.servant = new WeakReference<>(servant);
+    }
+
+    public static void addTicket(ServerLevel level, ChunkPos chunkPos) {
+        level.getChunkSource().addRegionTicket(TRACKING_TICKET, chunkPos, TRACKING_DISTANCE, chunkPos);
     }
 
     public Participant(CompoundTag tag) {
@@ -98,9 +107,9 @@ public class Participant<T extends Mob & ServantLike<T>> {
             this.validTicks = 20;
         else
             --this.validTicks;
-        if (this.valid()) {
+        if (this.valid() && servant != null) {
             ChunkPos pos = servant.chunkPosition();
-            ServantLike.addTicket((ServerLevel) servant.level(), pos);
+            addTicket((ServerLevel) servant.level(), pos);
             handler.moveToPlayer(servant);
         }
     }

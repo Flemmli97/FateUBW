@@ -3,17 +3,12 @@ package io.github.flemmli97.fateubw.api.entity;
 import io.github.flemmli97.fateubw.api.datapack.ServantProperties;
 import io.github.flemmli97.fateubw.common.entity.BaseServant;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.level.TicketType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.ChunkPos;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Comparator;
 
 /**
  * Entities able to participate in a grailwar should implement this in case you want to run your own entity version.
@@ -21,13 +16,6 @@ import java.util.Comparator;
  * One implementation example can be seen at {@link BaseServant}
  */
 public interface ServantLike<T extends Mob & ServantLike<T>> extends OwnableEntity {
-
-    int TRACKING_DISTANCE = 2;
-    TicketType<ChunkPos> TRACKING_TICKET = TicketType.create("servant", Comparator.comparingLong(ChunkPos::toLong), 5);
-
-    static void addTicket(ServerLevel level, ChunkPos chunkPos) {
-        level.getChunkSource().addRegionTicket(TRACKING_TICKET, chunkPos, TRACKING_DISTANCE, chunkPos);
-    }
 
     @SuppressWarnings("unchecked")
     default T get() {
