@@ -10,6 +10,7 @@ import io.github.flemmli97.fateubw.common.entity.misc.WeaponProjectile;
 import io.github.flemmli97.tenshilib.client.render.WrappedBufferSource;
 import io.github.flemmli97.tenshilib.client.render.vertex.VertexUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -23,8 +24,6 @@ import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class RenderWeaponProjectile extends EntityRenderer<WeaponProjectile> {
 
@@ -63,18 +62,15 @@ public class RenderWeaponProjectile extends EntityRenderer<WeaponProjectile> {
             stack.popPose();
         }
         stack.pushPose();
-        stack.scale(2, 2, 2);
         stack.translate(0, entity.getBbHeight() * 0.5, 0);
-        stack.mulPose(Axis.YP.rotationDegrees(90 + yRot));
-        stack.mulPose(Axis.ZP.rotationDegrees(xRot));
+        stack.mulPose(Axis.YP.rotationDegrees(yRot - 90));
+        stack.mulPose(Axis.ZP.rotationDegrees(-(xRot + 90)));
         if (babylonRender) {
-            stack.translate(Math.max(0, 2 * (0.8 - entity.preparationState(partialTick))), 0, 0);
+            stack.translate(0, -Math.max(0, 2 * (0.8 - entity.preparationState(partialTick))), 0);
         }
-        stack.translate(-entity.getBbWidth() * 0.25, 0, 0);
-        stack.mulPose(Axis.ZP.rotationDegrees(135));
-        // Item rendering sometimes use double vertexconsumer but clipped rendertype will always return default and thus crash
-        // Use separate buffersource for that instead
-        AtomicInteger state = new AtomicInteger();
+        stack.translate(0, entity.getBbWidth() * 0.5, 0);
+        stack.mulPose(Axis.ZP.rotationDegrees(-45));
+        stack.translate(0, 1 / 16d, 0);
         Vector4f clip;
         if (babylonRender) {
             Vector3f normal = new Vector3f(0, 0, 1);
@@ -106,8 +102,8 @@ public class RenderWeaponProjectile extends EntityRenderer<WeaponProjectile> {
                     }
                     return cons;
                 }) : buffer;
-        Minecraft.getInstance().getItemRenderer().renderStatic(this.getRenderItemStack(entity), ItemDisplayContext.GROUND, 0xff00ff, OverlayTexture.NO_OVERLAY, stack, buf, entity.level(), entity.getId());
-        super.render(entity, rotation, partialTick, stack, buf, 0xff00ff);
+        Minecraft.getInstance().getItemRenderer().renderStatic(this.getRenderItemStack(entity), ItemDisplayContext.FIXED, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, stack, buf, entity.level(), entity.getId());
+        super.render(entity, rotation, partialTick, stack, buf, LightTexture.FULL_BRIGHT);
         stack.popPose();
     }
 
