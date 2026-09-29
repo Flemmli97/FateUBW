@@ -40,7 +40,7 @@ public class CommonConfig {
     public static boolean npBypassCharge = true;
 
     public static ExpressionConfig effectiveArmor = new ExpressionConfig("max(armor - damage / (2 + armor_toughness / 4), armor * 0.2)");
-    public static ExpressionConfig armorReduction = new ExpressionConfig("effective_armor > 20 ? exp(-(ln(5)/20) * effective_armor) : effective_armor / 25");
+    public static ExpressionConfig armorReduction = new ExpressionConfig("effective_armor > 20 ? 1 - exp(-(ln(5)/20) * effective_armor) : effective_armor / 25");
     public static ExpressionConfig projectileReduction = new ExpressionConfig("1 - exp(-0.05 * projectile_protection * 0.33)");
     public static ExpressionConfig magicReduction = new ExpressionConfig("1 - exp(-0.05 * magic_protection)");
 
