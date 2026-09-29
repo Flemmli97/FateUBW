@@ -1,3 +1,15 @@
+FateUBW 2.3.1
+=================
+- Servants no longer load chunks in a meaningful way
+- Following servants can follow across dimensions now
+- Balancing changes for the updated servants
+- Fix nullpointer with team ui
+- Add buffer before participants are invalidated. Fixes e.g. issues with dimension changes
+- Fix servants unable to teleport across dimensions (both enemy and your own via ui etc.)
+- Fix reality marble source position ignored if moving between rm
+- Fix GoB and UBW projectiles quality not working correctly
+- Fix Armor Reduction config using wrong formular (ATM the wrong part is not used but if you want the fix you need to regen your config)
+
 FateUBW 2.3.0
 =================
 - Reality marbles are here!
