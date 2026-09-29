@@ -19,6 +19,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
@@ -35,6 +37,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -106,6 +109,7 @@ public class RealityMarbleHandler extends SavedData {
         entities.removeIf(e -> Platform.INSTANCE.isPartEntity(e) || e == creator || e.getType().is(FateTags.EntityTypes.CANNOT_BE_WARPED));
         RealityMarbleGroup current = this.getGroupOf(creator);
         RealityMarbleGroup group;
+        Optional<BlockPos> currentSourcePos;
         if (current != null) {
             this.removeGroup(current.id());
             Pair<Integer, BlockPos> free = this.findFreePosition(target);
@@ -122,15 +126,17 @@ public class RealityMarbleHandler extends SavedData {
                     current.sourceLevel(),
                     current.sourcePosition(),
                     targetLevel, free.right(), free.first(), entities.stream().map(Entity::getUUID).toList());
+            currentSourcePos = Optional.ofNullable(current.targetPosition());
         } else {
             Pair<Integer, BlockPos> free = this.findFreePosition(target);
             group = new RealityMarbleGroup(UUID.randomUUID(), creator.getUUID(),
                     creator.level().dimension(),
                     creator.blockPosition(),
                     targetLevel, free.right(), free.first(), entities.stream().map(Entity::getUUID).toList());
+            currentSourcePos = Optional.empty();
         }
-        entities.forEach(entity -> this.overrideAndTransportEntity(entity, target, group));
-        this.overrideAndTransportEntity(creator, target, group);
+        entities.forEach(entity -> this.overrideAndTransportEntity(entity, target, group, currentSourcePos));
+        this.overrideAndTransportEntity(creator, target, group, currentSourcePos);
         this.addGroup(group);
         this.setDirty();
     }
@@ -187,8 +193,8 @@ public class RealityMarbleHandler extends SavedData {
         return null;
     }
 
-    private void overrideAndTransportEntity(Entity entity, ServerLevel targetLevel, RealityMarbleGroup group) {
-        this.teleportEntityTo(entity, targetLevel, group.sourcePosition(), group.targetPosition());
+    private void overrideAndTransportEntity(Entity entity, ServerLevel targetLevel, RealityMarbleGroup group, Optional<BlockPos> currentPos) {
+        this.teleportEntityTo(entity, targetLevel, currentPos.orElse(group.sourcePosition()), group.targetPosition());
         entity.getServer().tell(new TickTask(1, () -> this.entityGroupLookup.put(entity.getUUID(), new EntityMarbleData(group))));
     }
 
@@ -221,7 +227,18 @@ public class RealityMarbleHandler extends SavedData {
         }
         double finalHeight = height;
         Entity toTeleport = entity;
-        entity.getServer().tell(new TickTask(1, () -> toTeleport.changeDimension(new DimensionTransition(targetLevel, new Vec3(pos.x(), finalHeight, pos.z()), Vec3.ZERO, toTeleport.getYRot(), toTeleport.getXRot(), DimensionTransition.PLACE_PORTAL_TICKET))));
+        entity.getServer().tell(new TickTask(1, () -> {
+            Entity teleported = toTeleport.changeDimension(new DimensionTransition(targetLevel, new Vec3(pos.x(), finalHeight, pos.z()), Vec3.ZERO, toTeleport.getYRot(), toTeleport.getXRot(), DimensionTransition.PLACE_PORTAL_TICKET));
+            // Set the target too if needed. Since not all entities might be transported yet we need to schedule it
+            if (teleported instanceof Mob newMob && toTeleport instanceof Mob mob && mob.getTarget() != null) {
+                int target = mob.getTarget().getId();
+                teleported.getServer().tell(new TickTask(2, () -> {
+                    if (teleported.level().getEntity(target) instanceof LivingEntity newTarget && newMob.getTarget() == null) {
+                        newMob.setTarget(newTarget);
+                    }
+                }));
+            }
+        }));
     }
 
     private MutableAABB collectiveBB(Entity entity, MutableAABB bb) {
