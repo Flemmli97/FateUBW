@@ -280,7 +280,7 @@ public abstract class SummonedEntity extends PathfinderMob implements AnimatedEn
 
     @Override
     public boolean doHurtTarget(Entity target) {
-        return Utils.runWithInvulTimer(this, target, this::mobHurtTarget, this.getAttackInvulnerabilityTime(target));
+        return Utils.runWithInvulTimer(this, target, this::mobHurtTarget, this.getAttackInvulnerabilityTime(target), true);
     }
 
     public boolean mobHurtTarget(Entity target) {

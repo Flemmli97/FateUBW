@@ -337,7 +337,7 @@ public class GordiusWheel extends SummonedEntity implements StandingVehicle, Syn
 
     @Override
     protected int getAttackInvulnerabilityTime(Entity target) {
-        return this.getAnimationHandler().isCurrent(EXPUGNATIO) ? 4 : 0;
+        return this.getAnimationHandler().isCurrent(EXPUGNATIO) ? 5 : 0;
     }
 
     @Override

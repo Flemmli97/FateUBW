@@ -20,7 +20,7 @@ public class DamageContainer {
         this.lastDamages.put(entity.getUUID(), this.entity.tickCount);
     }
 
-    public HurtState canHurtThis(Entity entity, int invulnerability) {
+    public HurtState canHurtThis(Entity entity, int invulnerability, boolean shared) {
         if (this.entity.invulnerableTime <= 10) {
             return HurtState.VANILLA;
         }
@@ -30,7 +30,8 @@ public class DamageContainer {
                 return HurtState.VANILLA;
             }
         }
-        return (this.entity.tickCount - last) >= invulnerability ? HurtState.ALLOW : HurtState.DENY;
+        int invulnerableTime = shared ? (20 - this.entity.invulnerableTime) : (this.entity.tickCount - last);
+        return invulnerableTime >= invulnerability ? HurtState.ALLOW : HurtState.DENY;
     }
 
     public void tick() {

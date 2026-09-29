@@ -84,12 +84,12 @@ public class FateEntities {
                     .vehicleAttachment(new Vec3(0, 12 / 16d, 0)),
             0x2b6496, 0xfddb8b,
             new ServantProperties.Builder(BuiltinServantClasses.SABER)
-                    .putAttributes(Attributes.MAX_HEALTH, 500).putAttributes(Attributes.ATTACK_DAMAGE, 13)
-                    .putAttributes(Attributes.ARMOR, 20).putAttributes(Attributes.ARMOR_TOUGHNESS, 10)
+                    .putAttributes(Attributes.MAX_HEALTH, 500).putAttributes(Attributes.ATTACK_DAMAGE, 12)
+                    .putAttributes(Attributes.ARMOR, 18).putAttributes(Attributes.ARMOR_TOUGHNESS, 10)
                     .putAttributes(FateAttributes.PROJECTILE_BLOCK_CHANCE.asHolder(), 0.1f).putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 15)
                     .putAttributes(FateAttributes.MAGIC_ATTACK.asHolder(), 10).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 10)
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.27)
-                    .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1.5).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
+                    .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(80)
                     .withConfigData(ServantExtraData.BLOCK_CHANCE));
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<Nero>> NERO = regServant("nero_claudius_saber", "Aestus Domus Aurea", EntityType.Builder.of(Nero::new, MobCategory.MISC)
@@ -97,11 +97,11 @@ public class FateEntities {
             0xea1b04, 0xf8ef97,
             new ServantProperties.Builder(BuiltinServantClasses.SABER)
                     .putAttributes(Attributes.MAX_HEALTH, 475).putAttributes(Attributes.ATTACK_DAMAGE, 14)
-                    .putAttributes(Attributes.ARMOR, 18).putAttributes(Attributes.ARMOR_TOUGHNESS, 8)
-                    .putAttributes(FateAttributes.PROJECTILE_BLOCK_CHANCE.asHolder(), 0.15f).putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 13)
+                    .putAttributes(Attributes.ARMOR, 17).putAttributes(Attributes.ARMOR_TOUGHNESS, 8)
+                    .putAttributes(FateAttributes.PROJECTILE_BLOCK_CHANCE.asHolder(), 0.15f).putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 12)
                     .putAttributes(FateAttributes.MAGIC_ATTACK.asHolder(), 10).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 8)
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.34)
-                    .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1.2).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
+                    .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(70));
 
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<Cuchulainn>> CUCHULAINN = regServant("cu_chulainn_lancer", "Gae Bolg", EntityType.Builder.of(Cuchulainn::new, MobCategory.MISC)
@@ -132,7 +132,7 @@ public class FateEntities {
             0x78121e, 0x1f1e1e,
             new ServantProperties.Builder(BuiltinServantClasses.ARCHER)
                     .putAttributes(Attributes.MAX_HEALTH, 450).putAttributes(Attributes.ATTACK_DAMAGE, 9)
-                    .putAttributes(Attributes.ARMOR, 15).putAttributes(Attributes.ARMOR_TOUGHNESS, 7)
+                    .putAttributes(Attributes.ARMOR, 16).putAttributes(Attributes.ARMOR_TOUGHNESS, 7)
                     .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 17)
                     .putAttributes(FateAttributes.MAGIC_ATTACK.asHolder(), 10).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 9)
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.27)
@@ -162,7 +162,7 @@ public class FateEntities {
                     .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 10)
                     .putAttributes(FateAttributes.MAGIC_ATTACK.asHolder(), 20).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 18)
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.31)
-                    .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1.25).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
+                    .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(70)
                     .withConfigData(ServantExtraData.MAGIC_CIRCLE_DURATION)
                     .withConfigData(ServantExtraData.MAGIC_CIRCLE_RANGE));
@@ -175,7 +175,7 @@ public class FateEntities {
                     .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 12)
                     .putAttributes(FateAttributes.MAGIC_ATTACK.asHolder(), 15).putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 14)
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.32)
-                    .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1.25).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
+                    .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(80)
                     .withConfigData(ServantExtraData.SUMMONED_MONSTER_DURATION)
                     .withConfigData(ServantExtraData.SUMMONED_MONSTER_MAX)
@@ -211,11 +211,11 @@ public class FateEntities {
             0x8f1b11, 0xefab5a,
             new ServantProperties.Builder(BuiltinServantClasses.RIDER)
                     .putAttributes(Attributes.MAX_HEALTH, 480).putAttributes(Attributes.ATTACK_DAMAGE, 10)
-                    .putAttributes(Attributes.ARMOR, 15).putAttributes(Attributes.ARMOR_TOUGHNESS, 10)
+                    .putAttributes(Attributes.ARMOR, 16).putAttributes(Attributes.ARMOR_TOUGHNESS, 10)
                     .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 4)
                     .putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 8)
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.28)
-                    .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1.5).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
+                    .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .putAttributes(FateAttributes.MANA_LEECH.asHolder(), 0.5f)
                     .npCost(70)
                     .withConfigData(ServantExtraData.MOUNT_SUMMON_COOLDOWN)
@@ -232,7 +232,7 @@ public class FateEntities {
                     .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 12)
                     .putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 8)
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.36)
-                    .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1.5).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
+                    .putAttributes(FateAttributes.COMBAT_REGEN.asHolder(), 1).putAttributes(FateAttributes.PASSIVE_REGEN.asHolder(), 10)
                     .npCost(70));
 
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<Hassan>> HASSAN = regServant("hassan-i-sabbah_assassin", "Delusional Illusion", EntityType.Builder.of(Hassan::new, MobCategory.MISC)
@@ -298,8 +298,8 @@ public class FateEntities {
     public static final RegistryEntrySupplier<EntityType<?>, EntityType<Hoplite>> HOPLITE = regWithEgg("hoplite", EntityType.Builder.of(Hoplite::new, MobCategory.CREATURE).clientTrackingRange(8),
             0xa26c1d, 0xa51c13,
             new AttributeHolderProperties.Builder()
-                    .putAttributes(Attributes.MAX_HEALTH, 50).putAttributes(Attributes.ATTACK_DAMAGE, 12)
-                    .putAttributes(Attributes.ARMOR, 9).putAttributes(Attributes.ARMOR_TOUGHNESS, 4)
+                    .putAttributes(Attributes.MAX_HEALTH, 50).putAttributes(Attributes.ATTACK_DAMAGE, 10)
+                    .putAttributes(Attributes.ARMOR, 8).putAttributes(Attributes.ARMOR_TOUGHNESS, 4)
                     .putAttributes(FateAttributes.PROJECTILE_RESISTANCE.asHolder(), 5)
                     .putAttributes(FateAttributes.MAGIC_RESISTANCE.asHolder(), 2)
                     .putAttributes(Attributes.MOVEMENT_SPEED, 0.26)

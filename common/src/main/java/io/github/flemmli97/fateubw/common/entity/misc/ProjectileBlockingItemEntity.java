@@ -11,7 +11,6 @@ import io.github.flemmli97.fateubw.common.registry.FateSounds;
 import io.github.flemmli97.fateubw.common.utils.Utils;
 import io.github.flemmli97.fateubw.mixin.ProjectileAccessor;
 import io.github.flemmli97.fateubw.mixinhelper.ProjectileExtension;
-import io.github.flemmli97.tenshilib.common.utils.ItemUtils;
 import io.github.flemmli97.tenshilib.common.utils.math.OrientedBoundingBox;
 import io.github.flemmli97.tenshilib.loader.TenshiLibCrossPlat;
 import net.minecraft.core.particles.ParticleTypes;
@@ -53,7 +52,7 @@ public class ProjectileBlockingItemEntity extends BaseProjectile {
             .setWidth2(0.001f)
             .setInterpolation(1)
             .build();
-    protected static final int LIVE_TIME = 500;
+    protected static final int LIVE_TIME = 300;
 
     private Vec3 offset = Vec3.ZERO;
     private Projectile targeting;
@@ -251,7 +250,7 @@ public class ProjectileBlockingItemEntity extends BaseProjectile {
             return false;
         }
         DamageSource source = FateDamageTypes.indirect(FateDamageTypes.WEAPON_PROJECTILE, this, this.getOwner());
-        float damage = Utils.randomizeDamage(this.getRandom(), (float) ItemUtils.damage(this.level(), null, result.getEntity(), source, this.getItem()));
+        float damage = Utils.itemBasedProjectileDamage(this.getOwner(), this, source, this.getItem(), result.getEntity(), 0.5f);
         boolean res = Utils.runWithInvulTimer(this.getOwner(), result.getEntity(),
                 e -> e.hurt(source, damage * this.damageMultiplier), 2);
         if (res) {

@@ -36,10 +36,10 @@ public class ServantExtraData {
     public static final DataType<Integer> LIVES = register(Fate.MODID, "lives", ExtraCodecs.POSITIVE_INT, 2);
     public static final DataType<NumberProvider> CALADBOLG_COOLDOWN = register(Fate.MODID, "caladbolg_cooldown", NumberProviders.CODEC, UniformGenerator.between(200, 500));
     public static final DataType<NumberProvider> MOUNT_SUMMON_COOLDOWN = register(Fate.MODID, "mount_summon_cooldown", NumberProviders.CODEC, UniformGenerator.between(250, 600));
-    public static final DataType<NumberProvider> ARMY_SUMMON_COOLDOWN = register(Fate.MODID, "army_summon_cooldown", NumberProviders.CODEC, UniformGenerator.between(200, 500));
-    public static final DataType<Integer> MAX_NEARBY_ARMY = register(Fate.MODID, "max_nearby_army", Codec.INT, 12);
+    public static final DataType<NumberProvider> ARMY_SUMMON_COOLDOWN = register(Fate.MODID, "army_summon_cooldown", NumberProviders.CODEC, UniformGenerator.between(300, 600));
+    public static final DataType<Integer> MAX_NEARBY_ARMY = register(Fate.MODID, "max_nearby_army", Codec.INT, 7);
     public static final DataType<Float> STRONG_HOPLITE_CHANCE = register(Fate.MODID, "strong_hoplite_chance", Codec.FLOAT, 0.1f);
-    public static final DataType<Float> BLOCK_CHANCE = register(Fate.MODID, "block_chance", Codec.FLOAT, 0.33f);
+    public static final DataType<Float> BLOCK_CHANCE = register(Fate.MODID, "block_chance", Codec.FLOAT, 0.1f);
     public static final DataType<NumberProvider> REALITY_MARBLE_DURATION = register(Fate.MODID, "reality_marble_duration", NumberProviders.CODEC, ConstantValue.exactly(1200));
 
     public static final Codec<ServantExtraData> CODEC = new Codec<>() {

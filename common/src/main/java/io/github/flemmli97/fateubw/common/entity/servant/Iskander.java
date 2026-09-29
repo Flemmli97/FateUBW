@@ -377,7 +377,7 @@ public class Iskander extends BaseServant {
     @Override
     public float damageModifier(Entity target) {
         if (this.animationHandler.isCurrent(LIGHTNING_1)) {
-            return 1.25f;
+            return 1.5f;
         }
         return super.damageModifier(target);
     }

@@ -3,6 +3,7 @@ package io.github.flemmli97.fateubw.common.entity.misc;
 import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.utils.Utils;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -20,8 +21,14 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.Vec3;
+
+import javax.annotation.Nullable;
 
 public class ArcherArrow extends AbstractArrow {
+
+    @Nullable
+    private IntOpenHashSet checkedEntities, attackedEntities;
 
     public ArcherArrow(EntityType<? extends ArcherArrow> type, Level level) {
         super(type, level);
@@ -42,8 +49,30 @@ public class ArcherArrow extends AbstractArrow {
     }
 
     @Override
+    public byte getPierceLevel() {
+        return 3;
+    }
+
+    @Override
     protected void onHitEntity(EntityHitResult result) {
         Utils.runWithInvulTimer(this.getOwner(), result.getEntity(), this::damageTarget, this.getOwner() instanceof Player ? 20 : 0);
+    }
+
+    @Override
+    protected EntityHitResult findHitEntity(Vec3 startVec, Vec3 endVec) {
+        EntityHitResult result = super.findHitEntity(startVec, endVec);
+        if (result != null) {
+            if (this.checkedEntities == null) {
+                this.checkedEntities = new IntOpenHashSet(5);
+            }
+            this.checkedEntities.add(result.getEntity().getId());
+        }
+        return result;
+    }
+
+    @Override
+    protected boolean canHitEntity(Entity target) {
+        return super.canHitEntity(target) && (this.checkedEntities == null || !this.checkedEntities.contains(target.getId()));
     }
 
     protected boolean damageTarget(Entity target) {
@@ -65,6 +94,10 @@ public class ArcherArrow extends AbstractArrow {
         }
         int firePre = target.getRemainingFireTicks();
         if (target.hurt(damageSource, Utils.randomizeDamage(this.getRandom(), (float) damage))) {
+            if (this.attackedEntities == null) {
+                this.attackedEntities = new IntOpenHashSet(5);
+            }
+            this.attackedEntities.add(target.getId());
             if (this.isOnFire()) {
                 target.igniteForSeconds(5.0F);
             }
@@ -81,7 +114,10 @@ public class ArcherArrow extends AbstractArrow {
                 }
             }
             this.playSound(SoundEvents.ARROW_HIT, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
-            this.discard();
+            if (this.attackedEntities.size() >= this.getPierceLevel()) {
+                this.discard();
+                return false;
+            }
             return true;
         }
         target.setRemainingFireTicks(firePre);

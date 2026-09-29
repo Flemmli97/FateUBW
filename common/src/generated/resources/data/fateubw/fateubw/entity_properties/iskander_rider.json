@@ -1,11 +1,11 @@
 {
   "attributes": {
-    "fateubw:combat_regen": 1.5,
+    "fateubw:combat_regen": 1.0,
     "fateubw:magic_resistance": 8.0,
     "fateubw:mana_leech": 0.5,
     "fateubw:passive_regen": 10.0,
     "fateubw:projectile_resistance": 4.0,
-    "minecraft:generic.armor": 15.0,
+    "minecraft:generic.armor": 16.0,
     "minecraft:generic.armor_toughness": 10.0,
     "minecraft:generic.attack_damage": 10.0,
     "minecraft:generic.max_health": 480.0,
@@ -15,10 +15,10 @@
   "configs": {
     "fateubw:army_summon_cooldown": {
       "type": "minecraft:uniform",
-      "max": 500.0,
-      "min": 200.0
+      "max": 600.0,
+      "min": 300.0
     },
-    "fateubw:max_nearby_army": 12,
+    "fateubw:max_nearby_army": 7,
     "fateubw:mount_summon_cooldown": {
       "type": "minecraft:uniform",
       "max": 600.0,

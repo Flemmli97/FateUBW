@@ -19,7 +19,6 @@ import io.github.flemmli97.tenshilib.common.particle.data.MotionData;
 import io.github.flemmli97.tenshilib.common.particle.data.ParticleMetaData;
 import io.github.flemmli97.tenshilib.common.particle.data.ScaleData;
 import io.github.flemmli97.tenshilib.common.utils.HitResultUtils;
-import io.github.flemmli97.tenshilib.common.utils.ItemUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -53,7 +52,7 @@ import org.joml.Vector4f;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 public class WeaponProjectile extends BaseProjectile {
 
@@ -64,7 +63,9 @@ public class WeaponProjectile extends BaseProjectile {
     protected static final EntityDataAccessor<BlockPos> GROUND = SynchedEntityData.defineId(WeaponProjectile.class, EntityDataSerializers.BLOCK_POS);
     private static final EntityDataAccessor<Integer> TYPE_DATA = SynchedEntityData.defineId(WeaponProjectile.class, EntityDataSerializers.INT);
 
-    private Supplier<TargetPosition> target;
+    private static final float SPEED = 1.5f;
+
+    private Function<WeaponProjectile, TargetPosition> target;
 
     public final int renderRand = this.random.nextInt(1000);
 
@@ -83,7 +84,7 @@ public class WeaponProjectile extends BaseProjectile {
         this.entityData.set(SHOOT_TIME, this.random.nextInt(15) + 15);
     }
 
-    public WeaponProjectile(Level level, LivingEntity shootingEntity, Supplier<TargetPosition> target) {
+    public WeaponProjectile(Level level, LivingEntity shootingEntity, Function<WeaponProjectile, TargetPosition> target) {
         this(level, shootingEntity);
         this.target = target;
     }
@@ -221,13 +222,13 @@ public class WeaponProjectile extends BaseProjectile {
                 Entity thrower = this.getOwner();
                 if (thrower instanceof Player) {
                     HitResult hit = HitResultUtils.entityRayTrace(thrower, 64, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, false, false, null);
-                    this.shootAtPosition(hit.getLocation().x, hit.getLocation().y, hit.getLocation().z, 1.f, 6);
+                    this.shootAtPosition(hit.getLocation().x, hit.getLocation().y, hit.getLocation().z, SPEED, 3);
                 } else if (this.target != null) {
-                    Vec3 target = this.target.get().asVec(this.position());
-                    this.shootAtPosition(target.x(), target.y(), target.z(), 1.f, 6);
+                    Vec3 target = this.target.apply(this).asVec(this.position());
+                    this.shootAtPosition(target.x(), target.y(), target.z(), SPEED, 3);
                 } else if (this.getOwner() instanceof LivingEntity living) {
                     Vec3 dir = living.calculateViewVector(15, living.getViewYRot(1));
-                    this.shoot(dir.x(), dir.y(), dir.z(), 1.f, 6);
+                    this.shoot(dir.x(), dir.y(), dir.z(), SPEED, 3);
                 } else {
                     this.discard();
                 }
@@ -263,7 +264,7 @@ public class WeaponProjectile extends BaseProjectile {
     @Override
     protected boolean entityRayTraceHit(EntityHitResult result) {
         DamageSource source = FateDamageTypes.indirect(FateDamageTypes.WEAPON_PROJECTILE, this, this.getOwner());
-        float damage = Utils.randomizeDamage(this.getRandom(), (float) ItemUtils.damage(this.level(), null, result.getEntity(), source, this.getWeapon()));
+        float damage = Utils.itemBasedProjectileDamage(this.getOwner(), this, source, this.getWeapon(), result.getEntity(), 0.5f);
         boolean res = Utils.runWithInvulTimer(this.getOwner(), result.getEntity(),
                 e -> e.hurt(source, damage * this.damageMultiplier), 2);
         if (res) {
@@ -324,7 +325,7 @@ public class WeaponProjectile extends BaseProjectile {
 
     public static void spawnWeapons(LivingEntity thrower, @Nullable LivingEntity target, int amount, int range, Type type) {
         for (Vec3 offset : Utils.randomSidedPositions(thrower, amount, range)) {
-            WeaponProjectile weapon = new WeaponProjectile(thrower.level(), thrower, target != null ? () -> TargetPosition.fullRangeOf(target) : null);
+            WeaponProjectile weapon = new WeaponProjectile(thrower.level(), thrower, target != null ? forTarget(target) : null);
             weapon.setType(type);
             // Initial rotation is based of the delta. don't want to dig into where its exactly handled so this will do
             weapon.setPos(offset.x, offset.y + thrower.getBbHeight() * 0.5, offset.z);
@@ -365,7 +366,7 @@ public class WeaponProjectile extends BaseProjectile {
         for (Pair<Float, Float> offset : angles) {
             if (offset == null)
                 continue;
-            WeaponProjectile weapon = new WeaponProjectile(thrower.level(), thrower, target == null ? () -> TargetPosition.of(targetPos) : () -> TargetPosition.fullRangeOf(target));
+            WeaponProjectile weapon = new WeaponProjectile(thrower.level(), thrower, target == null ? proj -> TargetPosition.of(targetPos) : forTarget(target));
             weapon.setType(type);
             // Initial rotation is based of the delta. don't want to dig into where its exactly handled so this will do
             Vec3 dir = Vec3.directionFromRotation(-offset.getSecond(), offset.getFirst());
@@ -375,6 +376,16 @@ public class WeaponProjectile extends BaseProjectile {
             weapon.setWeapon(WeaponList.getRandomWeapon(thrower));
             weapon.level().addFreshEntity(weapon);
         }
+    }
+
+    private static Function<WeaponProjectile, TargetPosition> forTarget(LivingEntity target) {
+        return projectile -> {
+            // Roughly predict position
+            double distSqr = target.position().subtract(projectile.position()).length();
+            double time = distSqr / SPEED;
+            Vec3 pos = target.position().add(target.getDeltaMovement().scale(time));
+            return new TargetPosition(pos, pos.y(), pos.y() + target.getBbHeight());
+        };
     }
 
     private static float greatCircDist(float yRot1, float xRot1, float yRot2, float xRot2) {

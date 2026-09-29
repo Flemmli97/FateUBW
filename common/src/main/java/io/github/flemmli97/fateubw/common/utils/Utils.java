@@ -8,17 +8,22 @@ import io.github.flemmli97.fateubw.common.registry.FateAttachments;
 import io.github.flemmli97.fateubw.common.registry.FateAttributes;
 import io.github.flemmli97.fateubw.common.world.GrailWarHandler;
 import io.github.flemmli97.fateubw.common.world.TeamHandler;
+import io.github.flemmli97.tenshilib.common.utils.ItemUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.OwnableEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -45,6 +50,10 @@ public class Utils {
     }
 
     public static boolean runWithInvulTimer(@Nullable Entity source, Entity target, Predicate<Entity> attack, int invulnerability) {
+        return runWithInvulTimer(source, target, attack, invulnerability, false);
+    }
+
+    public static boolean runWithInvulTimer(@Nullable Entity source, Entity target, Predicate<Entity> attack, int invulnerability, boolean shared) {
         // Vanilla
         if (invulnerability == 20) {
             return attack.test(target);
@@ -55,7 +64,7 @@ public class Utils {
         int invul = target.invulnerableTime;
         boolean modified = false;
         DamageContainer damageContainer = FateAttachments.DAMAGE_CONTAINER.get().get(living);
-        DamageContainer.HurtState state = damageContainer.canHurtThis(source, invulnerability);
+        DamageContainer.HurtState state = damageContainer.canHurtThis(source, invulnerability, shared);
         switch (state) {
             case DENY -> {
                 return false;
@@ -192,5 +201,18 @@ public class Utils {
 
     public static float randomizeDamage(RandomSource random, float damage) {
         return damage + damage * (random.nextFloat() * 0.2f - 0.1f);
+    }
+
+    public static float itemBasedProjectileDamage(Entity owner, Projectile projectile, DamageSource source, ItemStack weapon, Entity target,
+                                                  float baseMultiplier) {
+        float attackRaw = 0;
+        if (owner instanceof LivingEntity living) {
+            AttributeInstance inst = living.getAttribute(Attributes.ATTACK_DAMAGE);
+            if (inst != null) {
+                double equipmentDmg = ItemUtils.attribute(living.getMainHandItem(), Attributes.ATTACK_DAMAGE, 0, EquipmentSlotGroup.MAINHAND);
+                attackRaw = (float) Math.max((inst.getValue() - equipmentDmg), 0);
+            }
+        }
+        return Utils.randomizeDamage(projectile.getRandom(), attackRaw * baseMultiplier + (float) ItemUtils.damage(projectile.level(), null, target, source, weapon));
     }
 }

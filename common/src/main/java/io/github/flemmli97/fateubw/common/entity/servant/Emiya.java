@@ -62,6 +62,7 @@ import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.tslat.smartbrainlib.api.core.behaviour.ExtendedBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -187,7 +188,7 @@ public class Emiya extends BaseServant {
                         .build())).play(BehaviourUtils.cooldownedPlay(true, 16, 28))
                 .condition(BehaviourUtils.ifCloserThan(7))
                 .prepare(new SetWalkTargetToAttackTarget<Emiya>().speedMod((owner, target) -> ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(11)
+                .end(10)
 
                 .start(BehaviourUtils.of(AnimationPlayHolder.<Emiya>builder(DUAL_BLADE_2_1)
                         .start(DUAL_BLADE_2_2, 2, 0.32f, 1)
@@ -255,22 +256,22 @@ public class Emiya extends BaseServant {
                 .condition(Emiya::isInRealityMarble)
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
                         .min(5).max(14).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(13)
+                .end(14)
                 .start(UBW_ATTACK_1).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(18), 15, 25))
                 .condition(owner -> owner.isInRealityMarble() && BehaviourUtils.ifFurtherThan(11).test(owner))
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
                         .min(5).max(14).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(17)
+                .end(18)
                 .start(UBW_ATTACK_2).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(18), 15, 25))
                 .condition(Emiya::isInRealityMarble)
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
                         .min(5).max(14).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(13)
+                .end(14)
                 .start(UBW_ATTACK_2).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(18), 15, 25))
                 .condition(owner -> owner.isInRealityMarble() && BehaviourUtils.ifFurtherThan(11).test(owner))
                 .prepare(new SetWalkTargetWithinDist<Emiya>()
                         .min(5).max(14).speedMod(ATTACK_MOVE_SPEED)).prepareOptional(BehaviourUtils.timedMoveAttack())
-                .end(17)
+                .end(18)
                 .start(UBW_SUMMON_SWORDS).play(BehaviourUtils.cooldownedPlay(BehaviourUtils.ifCloserThan(20), 15, 25))
                 .condition(owner -> owner.isInRealityMarble() && owner.canSummonSwords())
                 .prepare(new SetWalkTargetToAttackTarget<Emiya>().speedMod((owner, target) -> ATTACK_MOVE_SPEED).closeEnoughDist(BehaviourUtils.closeEnough(20))).prepareOptional(BehaviourUtils.timedMoveAttack())
@@ -289,14 +290,15 @@ public class Emiya extends BaseServant {
                 .add(5, e -> !e.isInRealityMarble(), new SetWalkTargetToAttackTarget<Emiya>().speedMod((owner, target) -> ATTACK_MOVE_SPEED), BehaviourUtils.moveTo())
                 // Ok java wtf. why you cant infer without cast...
                 .add(1, e -> (boolean) e.isInRealityMarble(), new SetWalkTargetToAttackTarget<Emiya>().speedMod((owner, target) -> ATTACK_MOVE_SPEED), BehaviourUtils.moveTo())
-                .add(6, e -> (boolean) e.isInRealityMarble(), new SetWalkTargetWithinDist<Emiya>().min(1).max(14).speedMod(ATTACK_MOVE_SPEED), BehaviourUtils.moveTo())
+                .add(4, e -> (boolean) e.isInRealityMarble(), new SetWalkTargetWithinDist<Emiya>().min(1).max(14).speedMod(ATTACK_MOVE_SPEED), BehaviourUtils.moveTo())
+                .add(6, e -> (boolean) e.isInRealityMarble(), new Idle<Emiya>().runFor(e -> 5))
                 .add(7, new SetWalkTargetAwayFromTarget<Emiya>().speedMod((owner, target) -> ATTACK_MOVE_SPEED), BehaviourUtils.moveTo()).build();
     }
 
     @Override
     public double applyCooldownModifier(double cooldown) {
         if (this.isInRealityMarble()) {
-            cooldown = Math.max(8, cooldown - 7);
+            cooldown = Math.max(8, cooldown * 0.5);
         }
         return super.applyCooldownModifier(cooldown);
     }

@@ -23,6 +23,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -200,6 +201,11 @@ public class Hoplite extends SummonedEntity {
                 this.playSound(FateSounds.SWOOSH_2.get(), 1, 1.2f);
             }
         }
+    }
+
+    @Override
+    protected int getAttackInvulnerabilityTime(Entity target) {
+        return 5;
     }
 
     @Override

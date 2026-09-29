@@ -53,8 +53,6 @@ import net.minecraft.util.Unit;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -255,10 +253,6 @@ public class Artoria extends BaseServant {
     @Override
     public void aiStep() {
         super.aiStep();
-        if (this.healthBelow(0.25f)) {
-            if (!this.hasEffect(MobEffects.REGENERATION))
-                this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 50, 1, false, false));
-        }
         if (this.level().isClientSide) {
             if (this.duringBurst()) {
                 for (int i = 0; i < 8; i++)
@@ -462,9 +456,9 @@ public class Artoria extends BaseServant {
     public float damageModifier(Entity target) {
         AnimationState anim = this.getAnimationHandler().getAnimation();
         if (anim != null && anim.isAt("critical")) {
-            return 1.5f;
+            return anim.is(STRIKE_AIR) ? 1.25f : 1.5f;
         }
-        return super.damageModifier(target);
+        return anim != null && anim.is(STRIKE_AIR) ? 0.8f : super.damageModifier(target);
     }
 
     @Override

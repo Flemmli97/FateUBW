@@ -8,11 +8,11 @@ import net.minecraft.world.level.block.Block;
 public class ItemTiers {
 
     public static final TierImpl EXCALIBUR = new TierImpl(1500, 0, 12, 15);
-    public static final TierImpl INVIS_EXCALIBUR = new TierImpl(1500, 0, 8, 10);
+    public static final TierImpl INVIS_EXCALIBUR = new TierImpl(1500, 0, 7, 10);
     public static final TierImpl ENUMA_ELISH = new TierImpl(1500, 0, 15, 15);
     public static final TierImpl ARONDIGHT = new TierImpl(1500, 0, 12, 15);
-    public static final TierImpl MEDUSAS_DAGGER = new TierImpl(1000, 0, 7, 11);
-    public static final TierImpl KUPRIOTS = new TierImpl(1000, 0, 7, 11);
+    public static final TierImpl MEDUSAS_DAGGER = new TierImpl(1000, 0, 8, 11);
+    public static final TierImpl KUPRIOTS = new TierImpl(1000, 0, 8, 11);
     public static final TierImpl ASSASSIN_DAGGER = new TierImpl(1000, 0, 6, 11);
     public static final TierImpl MONOHOSHI_ZAO = new TierImpl(1000, 0, 12, 15);
     public static final TierImpl RULE_BREAKER = new TierImpl(800, 0, 5, 10);
@@ -23,7 +23,7 @@ public class ItemTiers {
     public static final TierImpl GAE_BUIDHE = new TierImpl(1200, 0, 10, 14);
     public static final TierImpl GAE_DEARG = new TierImpl(1200, 0, 11, 14);
 
-    public static final TierImpl KANSHOU_BAKUYA = new TierImpl(1000, 0, 7, 16);
+    public static final TierImpl KANSHOU_BAKUYA = new TierImpl(1000, 0, 8, 16);
 
     public static class TierImpl implements Tier {
 

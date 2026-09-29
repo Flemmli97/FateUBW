@@ -6,7 +6,6 @@ import io.github.flemmli97.fateubw.common.particles.trail.provider.ParticlePosit
 import io.github.flemmli97.fateubw.common.registry.FateDamageTypes;
 import io.github.flemmli97.fateubw.common.registry.FateEntities;
 import io.github.flemmli97.fateubw.common.utils.Utils;
-import io.github.flemmli97.tenshilib.common.utils.ItemUtils;
 import io.github.flemmli97.tenshilib.common.utils.math.MathUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -149,7 +148,7 @@ public class ReturningItemProjectile extends BaseProjectile {
             return true;
         }
         DamageSource source = FateDamageTypes.indirect(FateDamageTypes.THROWN_ITEM, this, this.getOwner());
-        float damage = Utils.randomizeDamage(this.getRandom(), (float) ItemUtils.damage(this.level(), null, result.getEntity(), source, this.getWeapon()));
+        float damage = Utils.itemBasedProjectileDamage(this.getOwner(), this, source, this.getWeapon(), result.getEntity(), 0.5f);
         boolean res = Utils.runWithInvulTimer(this.getOwner(), result.getEntity(),
                 e -> e.hurt(source, damage * this.damageMultiplier), 0);
         if (res && this.level() instanceof ServerLevel serverLevel) {
