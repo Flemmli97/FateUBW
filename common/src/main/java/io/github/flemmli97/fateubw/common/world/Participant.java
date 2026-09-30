@@ -103,7 +103,7 @@ public class Participant<T extends Mob & ServantLike<T>> {
 
     public void tick(GrailWarHandler handler, MinecraftServer server) {
         T servant = this.getServant(server);
-        if (servant != null && servant.isAlive())
+        if (servant != null && servant.isValidParticipant())
             this.validTicks = 20;
         else
             --this.validTicks;
