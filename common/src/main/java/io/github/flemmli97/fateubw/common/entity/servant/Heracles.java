@@ -496,6 +496,11 @@ public class Heracles extends BaseServant {
     }
 
     @Override
+    public boolean isValidParticipant() {
+        return super.isValidParticipant() || this.getAnimationHandler().isCurrent(FAKE_DEATH);
+    }
+
+    @Override
     public String getDeathAnimation() {
         return DEATH;
     }

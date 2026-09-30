@@ -56,4 +56,8 @@ public interface ServantLike<T extends Mob & ServantLike<T>> extends OwnableEnti
      * If you want that data you need to manually sync it
      */
     void shouldScheduleEntityDataSync(boolean sync);
+
+    default boolean isValidParticipant() {
+        return this.get().isAlive();
+    }
 }
