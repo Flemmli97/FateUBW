@@ -19,7 +19,7 @@ public class CommandEntry extends GrailLootEntry<CommandEntry> {
     public static final MapCodec<CommandEntry> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
                     Codec.STRING.fieldOf("command").forGetter(d -> d.command),
                     LootItemCondition.DIRECT_CODEC.listOf().optionalFieldOf("conditions").forGetter(d -> d.conditions.isEmpty() ? Optional.empty() : Optional.of(d.conditions))
-            ).apply(inst, (command, cond) -> new CommandEntry(command, cond.orElse(List.of())))
+            ).apply(inst, (command, cond) -> new CommandEntry(command, cond.orElseGet(List::of)))
     );
 
     private final String command;

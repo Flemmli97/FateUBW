@@ -32,7 +32,7 @@ public class AttributeEntry extends GrailLootEntry<AttributeEntry> {
                     Codec.DOUBLE.fieldOf("max").forGetter(d -> d.max),
                     NumberProviders.CODEC.fieldOf("range").forGetter(d -> d.range),
                     LootItemCondition.DIRECT_CODEC.listOf().optionalFieldOf("conditions").forGetter(d -> d.conditions.isEmpty() ? Optional.empty() : Optional.of(d.conditions))
-            ).apply(inst, (att, max, range, cond) -> new AttributeEntry(att, max, range, cond.orElse(List.of())))
+            ).apply(inst, (att, max, range, cond) -> new AttributeEntry(att, max, range, cond.orElseGet(List::of)))
     );
 
     private final Holder<Attribute> att;

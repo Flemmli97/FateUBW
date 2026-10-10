@@ -20,7 +20,7 @@ public class XPEntry extends GrailLootEntry<XPEntry> {
     public static final MapCodec<XPEntry> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
                     NumberProviders.CODEC.fieldOf("range").forGetter(d -> d.range),
                     LootItemCondition.DIRECT_CODEC.listOf().optionalFieldOf("conditions").forGetter(d -> d.conditions.isEmpty() ? Optional.empty() : Optional.of(d.conditions))
-            ).apply(inst, (range, cond) -> new XPEntry(range, cond.orElse(List.of())))
+            ).apply(inst, (range, cond) -> new XPEntry(range, cond.orElseGet(List::of)))
     );
 
     private final NumberProvider range;

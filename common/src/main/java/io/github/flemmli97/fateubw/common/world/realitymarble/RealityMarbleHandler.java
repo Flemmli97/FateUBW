@@ -194,7 +194,7 @@ public class RealityMarbleHandler extends SavedData {
     }
 
     private void overrideAndTransportEntity(Entity entity, ServerLevel targetLevel, RealityMarbleGroup group, Optional<BlockPos> currentPos) {
-        this.teleportEntityTo(entity, targetLevel, currentPos.orElse(group.sourcePosition()), group.targetPosition());
+        this.teleportEntityTo(entity, targetLevel, currentPos.orElseGet(group::sourcePosition), group.targetPosition());
         entity.getServer().tell(new TickTask(1, () -> this.entityGroupLookup.put(entity.getUUID(), new EntityMarbleData(group))));
     }
 

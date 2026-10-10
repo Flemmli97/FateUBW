@@ -21,7 +21,7 @@ public class LootTableEntry extends GrailLootEntry<LootTableEntry> {
     public static final MapCodec<LootTableEntry> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
                     ResourceKey.codec(Registries.LOOT_TABLE).listOf().fieldOf("loot_tables").forGetter(d -> d.lootTables),
                     LootItemCondition.DIRECT_CODEC.listOf().optionalFieldOf("conditions").forGetter(d -> d.conditions.isEmpty() ? Optional.empty() : Optional.of(d.conditions))
-            ).apply(inst, (command, cond) -> new LootTableEntry(command, cond.orElse(List.of())))
+            ).apply(inst, (command, cond) -> new LootTableEntry(command, cond.orElseGet(List::of)))
     );
 
     private final List<ResourceKey<LootTable>> lootTables;
