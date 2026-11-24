@@ -1,3 +1,8 @@
+FateUBW 2.3.2
+=================
+- Fix heracles getting kicked during fake death
+- Fix pegasus render crash
+
 FateUBW 2.3.1
 =================
 - Servants no longer load chunks in a meaningful way
