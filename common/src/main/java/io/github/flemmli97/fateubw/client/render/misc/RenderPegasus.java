@@ -1,6 +1,7 @@
 package io.github.flemmli97.fateubw.client.render.misc;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.github.flemmli97.fateubw.Fate;
 import io.github.flemmli97.fateubw.client.model.PegasusModel;
@@ -8,7 +9,6 @@ import io.github.flemmli97.fateubw.client.render.FateRenders;
 import io.github.flemmli97.fateubw.client.render.layer.PortalLayerRenderer;
 import io.github.flemmli97.fateubw.client.render.vertex.ClippingVertexConsumerWrapper;
 import io.github.flemmli97.fateubw.common.entity.summons.Pegasus;
-import io.github.flemmli97.tenshilib.client.render.WrappedBufferSource;
 import io.github.flemmli97.tenshilib.client.render.layer.RiderEntityLayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -49,9 +49,7 @@ public class RenderPegasus extends MobRenderer<Pegasus, PegasusModel> {
         } else {
             clip = null;
         }
-        MultiBufferSource buf = clip == null ? buffer
-                : new WrappedBufferSource(buffer, FateRenders::getClippedRendertype,
-                c -> ClippingVertexConsumerWrapper.wrap(c, clip));
+        MultiBufferSource buf = clip == null ? buffer : new WrappedClipBuffer(buffer, clip);
         super.render(entity, entityYaw, partialTick, matrixStack, buf, packedLight);
     }
 
@@ -71,5 +69,17 @@ public class RenderPegasus extends MobRenderer<Pegasus, PegasusModel> {
     @Override
     public ResourceLocation getTextureLocation(Pegasus pegasus) {
         return TEX;
+    }
+
+    private record WrappedClipBuffer(MultiBufferSource delegate, Vector4f clip) implements MultiBufferSource {
+
+        @Override
+        public VertexConsumer getBuffer(RenderType renderType) {
+            VertexConsumer consumer = this.delegate.getBuffer(renderType);
+            if (renderType.format().contains(ClippingVertexConsumerWrapper.CLIP_COLOR.element().get())) {
+                return ClippingVertexConsumerWrapper.wrap(consumer, this.clip());
+            }
+            return consumer;
+        }
     }
 }

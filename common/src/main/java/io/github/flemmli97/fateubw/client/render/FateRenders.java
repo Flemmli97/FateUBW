@@ -118,15 +118,16 @@ public class FateRenders extends RenderType {
             .createCompositeState(true)));
 
     private static final Function<RenderType, RenderType> CLIPPED = Util.memoize((wrapped) ->
-            new RenderType("fateubw_rendertype_clipped_" + wrapped.toString(), CLIPPING_FORMATS.apply(wrapped.format()), wrapped.mode(), wrapped.bufferSize(),
-                    wrapped.affectsCrumbling(), ((RenderTypeAccessor) wrapped).fateubw$getSortOnUpload(), () -> {
-                wrapped.setupRenderState();
-                CLIPPED_SHADER.setupRenderState();
-            }, () -> {
-                wrapped.clearRenderState();
-                CLIPPED_SHADER.clearRenderState();
-            }) {
-            });
+            wrapped.format().contains(ClippingVertexConsumerWrapper.CLIP_COLOR.element().get()) ? wrapped :
+                    new RenderType("fateubw_rendertype_clipped_" + wrapped, CLIPPING_FORMATS.apply(wrapped.format()), wrapped.mode(), wrapped.bufferSize(),
+                            wrapped.affectsCrumbling(), ((RenderTypeAccessor) wrapped).fateubw$getSortOnUpload(), () -> {
+                        wrapped.setupRenderState();
+                        CLIPPED_SHADER.setupRenderState();
+                    }, () -> {
+                        wrapped.clearRenderState();
+                        CLIPPED_SHADER.clearRenderState();
+                    }) {
+                    });
 
     private static final Function<ResourceLocation, RenderType> FULL_BRIGHT_TEXT = Util.memoize((resourceLocation) -> {
         CompositeState compositeState = RenderType.CompositeState.builder().setShaderState(FULL_BRIGHT_SHADER).setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false)).setTransparencyState(TRANSLUCENT_TRANSPARENCY).setLightmapState(LIGHTMAP).setWriteMaskState(RenderStateShard.COLOR_DEPTH_WRITE).createCompositeState(true);
